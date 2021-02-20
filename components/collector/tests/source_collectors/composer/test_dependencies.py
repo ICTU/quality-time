@@ -51,11 +51,11 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
 
     async def test_dependencies(self):
         """Test that the number of dependencies is returned."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.composer_json)
+        response = await self.collect(get_request_json_return_value=self.composer_json)
         self.assert_measurement(response, value="2", total="2", entities=self.expected_entities)
 
     async def test_dependencies_by_status(self):
         """Test that the number of dependencies can be filtered by status."""
         self.set_source_parameter("latest_version_status", ["safe update possible"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.composer_json)
+        response = await self.collect(get_request_json_return_value=self.composer_json)
         self.assert_measurement(response, value="1", total="2", entities=self.expected_entities[:1])

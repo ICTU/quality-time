@@ -13,11 +13,11 @@ class TrelloSourceUpToDatenessTest(TrelloTestCase):
 
     async def test_age(self):
         """Test that the source up to dateness is the number of days since the most recent change."""
-        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
+        response = await self.collect(get_request_json_side_effect=self.json)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 3, 3)).days))
 
     async def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the source up to dateness."""
-        self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
+        self.set_source_parameter("lists_to_ignore", ["list1"])
+        response = await self.collect(get_request_json_side_effect=self.json)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 2, 10)).days))

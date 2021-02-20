@@ -10,7 +10,7 @@ class OWASPDependencyCheckDependenciesTest(OWASPDependencyCheckTestCase):
 
     async def test_dependencies(self):
         """Test that the dependencies are returned."""
-        response = await self.collect(self.metric, get_request_text=self.xml)
+        response = await self.collect(get_request_text=self.xml)
         expected_entities = [
             dict(
                 key="12345",

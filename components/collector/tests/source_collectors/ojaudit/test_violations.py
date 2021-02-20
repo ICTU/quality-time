@@ -59,7 +59,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(get_request_text=ojaudit_xml)
         expected_entities = [
             dict(
                 component="a:20:4",
@@ -103,7 +103,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </violation>
   </construct>
 </audit>"""
-        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(get_request_text=ojaudit_xml)
         self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
 
     async def test_filter_violations(self):
@@ -135,8 +135,8 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </violation>
   </construct>
 </audit>"""
-        self.metric["sources"]["source_id"]["parameters"]["severities"] = ["error"]
-        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
+        self.set_source_parameter("severities", ["error"])
+        response = await self.collect(get_request_text=ojaudit_xml)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_ignore_duplicated_violations(self):
@@ -184,7 +184,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(get_request_text=ojaudit_xml)
         expected_entities = [
             dict(
                 component="a:20:4",

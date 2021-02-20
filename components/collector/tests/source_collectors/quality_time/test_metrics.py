@@ -10,7 +10,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     async def test_nr_of_metrics(self):
         """Test that the number of metrics is returned."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.reports)
+        response = await self.collect(get_request_json_return_value=self.reports)
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
@@ -37,13 +37,13 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
     async def test_nr_of_metrics_without_reports(self):
         """Test that the number of metrics is returned."""
         self.set_source_parameter("reports", [])
-        response = await self.collect(self.metric, get_request_json_return_value=dict(reports=[]))
+        response = await self.collect(get_request_json_return_value=dict(reports=[]))
         self.assert_measurement(response, value=None, total="100", parse_error="No reports found", entities=[])
 
     async def test_nr_of_metrics_without_correct_report(self):
         """Test that the number of metrics is returned."""
         self.reports["reports"].pop(0)
-        response = await self.collect(self.metric, get_request_json_return_value=self.reports)
+        response = await self.collect(get_request_json_return_value=self.reports)
         self.assert_measurement(
             response, value=None, total="100", parse_error="No reports found with title or id", entities=[]
         )

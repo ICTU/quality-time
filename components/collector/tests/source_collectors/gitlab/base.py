@@ -63,11 +63,11 @@ class CommonGitLabJobsTestsMixin:
     async def test_ignore_job_by_name(self):
         """Test that jobs can be ignored by name."""
         self.set_source_parameter("jobs_to_ignore", ["job2"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
     async def test_ignore_job_by_ref(self):
         """Test that jobs can be ignored by ref."""
         self.set_source_parameter("refs_to_ignore", ["develop"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])

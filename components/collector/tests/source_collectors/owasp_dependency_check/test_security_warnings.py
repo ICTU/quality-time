@@ -12,7 +12,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        response = await self.collect(self.metric, get_request_text=self.xml)
+        response = await self.collect(get_request_text=self.xml)
         expected_entities = [
             dict(
                 key="12345",
@@ -42,7 +42,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 </vulnerabilities>
             </dependency>
         </analysis>"""
-        response = await self.collect(self.metric, get_request_text=xml)
+        response = await self.collect(get_request_text=xml)
         expected_entities = [
             dict(
                 key="12345",
@@ -82,7 +82,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                     </vulnerabilities>
                 </dependency>
             </analysis>"""
-        response = await self.collect(self.metric, get_request_text=xml)
+        response = await self.collect(get_request_text=xml)
         expected_entities = [
             dict(
                 key="498ac4bf0c766490ad58cd04a71e07a439b97fc8",
@@ -108,7 +108,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         xml = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
         </analysis>"""
-        response = await self.collect(self.metric, get_request_text=xml)
+        response = await self.collect(get_request_text=xml)
         self.assert_measurement(
             response,
             value=None,

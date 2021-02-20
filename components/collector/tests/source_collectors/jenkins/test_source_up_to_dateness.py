@@ -14,7 +14,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
     async def test_job(self):
         """Test that the age of the last build is returned."""
         jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_value = str((date.today() - date.fromisoformat("2019-03-15")).days)
         expected_entities = [
             dict(build_date="2019-03-15", build_status="Failure", key="job", name="job", url=self.job_url)
@@ -24,7 +24,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
     async def test_job_without_builds(self):
         """Test that the age is None when the job has no builds."""
         jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=[])])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_entities = [dict(build_date="", build_status="Not built", key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, value=None, entities=expected_entities)
 
@@ -33,7 +33,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
         self.set_source_parameter("result_type", ["Success"])
         self.builds.append(dict(result="SUCCESS", timestamp="1553686540953"))
         jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_value = str((date.today() - date.fromisoformat("2019-03-27")).days)
         expected_entities = [
             dict(build_date="2019-03-27", build_status="Success", key="job", name="job", url=self.job_url)

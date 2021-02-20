@@ -14,7 +14,7 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
 
     async def test_warnings(self):
         """Test the number of security warnings."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         expected_entities = [
             dict(
                 key=md5_hash("CVE-000:package"),
@@ -35,7 +35,7 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
         zipfile = self.zipped_report(
             (filename, json.dumps(self.vulnerabilities_json)), ("details.json", json.dumps(self.details_json))
         )
-        response = await self.collect(self.metric, get_request_content=zipfile)
+        response = await self.collect(get_request_content=zipfile)
         expected_entities = [
             dict(
                 key=md5_hash(f"{filename}CVE-000:package"),

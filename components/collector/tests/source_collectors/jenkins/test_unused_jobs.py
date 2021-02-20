@@ -17,11 +17,11 @@ class JenkinsUnusedJobsTest(JenkinsTestCase):
                 )
             ]
         )
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, value="1")
 
     async def test_unbuild_job(self):
         """Test that jobs without builds are ignored."""
         jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red")])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, value="0")

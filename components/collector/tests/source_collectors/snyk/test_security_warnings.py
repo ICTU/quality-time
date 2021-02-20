@@ -38,13 +38,13 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_one_low_severity_warning(self):
         """Test only low severity warnings."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="1", entities=[self.expected_entity])
 
     async def test_minimum_severity(self):
         """Test that security warnings with a lower severity than selected are ignored."""
         self.set_source_parameter("severities", ["medium", "high"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_one_warning_with_multiple_severities(self):
@@ -77,7 +77,7 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
                 highest_severity="medium",
             )
         ]
-        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_warning_without_indirect_dependencies(self):
@@ -103,5 +103,5 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
                 highest_severity="high",
             ),
         ]
-        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="2", entities=expected_entities)

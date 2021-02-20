@@ -14,7 +14,6 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
         self.set_source_parameter("test_run_names_to_include", ["A.*"])
         self.set_source_parameter("test_run_states_to_include", ["completed"])
         response = await self.collect(
-            self.metric,
             get_request_json_return_value=dict(
                 value=[
                     dict(id=1, name="A", build=dict(id="1"), state="Completed", passedTests=2, totalTests=2),
@@ -36,7 +35,7 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
                     dict(id=6, name="A+", build=dict(id="1"), state="Completed", passedTests=6, totalTests=6),
                     dict(id=7, name="A+", build=dict(id="2"), state="InProgress", passedTests=6, totalTests=6),
                 ]
-            ),
+            )
         )
         self.assert_measurement(
             response,
@@ -95,9 +94,8 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
         """Test that the number of failed tests is returned."""
         self.sources["source_id"]["test_result"] = ["failed"]
         response = await self.collect(
-            self.metric,
             get_request_json_return_value=dict(
                 value=[dict(id="1", build=dict(id="1"), state="Completed", unanalyzedTests=4)]
-            ),
+            )
         )
         self.assert_measurement(response, value="4")

@@ -13,5 +13,5 @@ class RandomNumberTest(SourceCollectorTestCase):
 
     async def test_violations(self):
         """Test the number of violations."""
-        response = await self.collect(self.metric)
+        response = await self.collect()
         self.assertTrue(Random.MIN <= int(response["sources"][0]["value"]) <= Random.MAX)

@@ -27,11 +27,11 @@ class ClocLOCTest(SourceCollectorTestCase):
         self.expected_entities.append(
             dict(key="JavaScript", language="JavaScript", nr_files="1", blank="2", comment="0", code="30")
         )
-        response = await self.collect(self.metric, get_request_json_return_value=self.cloc_json)
+        response = await self.collect(get_request_json_return_value=self.cloc_json)
         self.assert_measurement(response, value="90", total="100", entities=self.expected_entities)
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
         self.set_source_parameter("languages_to_ignore", ["Java.*"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.cloc_json)
+        response = await self.collect(get_request_json_return_value=self.cloc_json)
         self.assert_measurement(response, value="60", total="100", entities=self.expected_entities)

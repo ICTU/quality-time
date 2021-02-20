@@ -56,7 +56,7 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
             ]
         )
         response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.repositories, azure_devops_json, azure_devops_json]
+            get_request_json_side_effect=[self.repositories, azure_devops_json, azure_devops_json]
         )
         self.assert_measurement(
             response, value="1", total="4", entities=[self.create_entity(1)], landing_url=self.landing_url
@@ -70,9 +70,7 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
             dict(value=[self.create_merge_request(2)]),
             dict(value=[]),
         ]
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.repositories] + 2 * azure_devops_json
-        )
+        response = await self.collect(get_request_json_side_effect=[self.repositories] + 2 * azure_devops_json)
         self.assert_measurement(
             response,
             value="2",

@@ -13,6 +13,6 @@ class JenkinsPluginSourceUpToDatenessMixin:  # pylint: disable=too-few-public-me
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness is returned."""
-        response = await self.collect(self.metric, get_request_json_return_value=dict(timestamp="1565284457173"))
+        response = await self.collect(get_request_json_return_value=dict(timestamp="1565284457173"))
         expected_age = days_ago(datetime.fromtimestamp(1565284457173 / 1000.0))
         self.assert_measurement(response, value=str(expected_age))

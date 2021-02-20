@@ -16,11 +16,11 @@ class ManualNumberTest(SourceCollectorTestCase):
 
     async def test_violations(self):
         """Test the number of violations."""
-        response = await self.collect(self.metric)
+        response = await self.collect()
         self.assert_measurement(response, value="42", total="100")
 
     async def test_percentage(self):
         """Test that the manual source can also be a metric source for metrics with a percentage scale."""
         self.metric["scale"] = "percentage"
-        response = await self.collect(self.metric)
+        response = await self.collect()
         self.assert_measurement(response, value="42", total="100")

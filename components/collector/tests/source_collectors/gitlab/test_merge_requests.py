@@ -61,13 +61,12 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             self.create_merge_request(3, upvotes=2),  # Excluded because of upvotes
             self.create_merge_request(4, branch="dev"),  # Excluded because of target branch
         ]
-        response = await self.collect(self.metric, get_request_json_return_value=gitlab_json)
+        response = await self.collect(get_request_json_return_value=gitlab_json)
         self.assert_measurement(response, value="1", total="4", entities=[self.entity1], landing_url=self.landing_url)
 
     async def test_pagination(self):
         """Test that pagination works."""
         response = await self.collect(
-            self.metric,
             get_request_json_side_effect=[[self.merge_request1], [self.merge_request2]],
             get_request_links=dict(next=dict(url="https://gitlab/next_page")),
         )

@@ -50,7 +50,7 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
 
     async def test_warnings(self):
         """Test that the number of security warnings is returned."""
-        response = await self.collect(self.metric, get_request_text=self.OWASP_ZAP_XML)
+        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
@@ -78,7 +78,7 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
         self.set_source_parameter("variable_url_regexp", ["[A-Za-z_]+.jpg"])
-        response = await self.collect(self.metric, get_request_text=self.OWASP_ZAP_XML)
+        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             dict(

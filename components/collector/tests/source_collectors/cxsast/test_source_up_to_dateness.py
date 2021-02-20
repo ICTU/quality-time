@@ -19,9 +19,7 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
             [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))],
         ]
         post_json = dict(access_token="token")
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=get_json, post_request_json_return_value=post_json
-        )
+        response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assert_measurement(
             response,
@@ -31,5 +29,5 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
 
     async def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
-        response = await self.collect(self.metric, post_request_side_effect=RuntimeError)
+        response = await self.collect(post_request_side_effect=RuntimeError)
         self.assert_measurement(response, landing_url="https://cxsast", connection_error="Traceback")

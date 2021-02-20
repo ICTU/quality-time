@@ -56,5 +56,5 @@ class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     async def get_wekan_response(self):
         """Pass the Wekan JSON and a token."""
         return await self.collect(
-            self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token")
+            get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token")
         )

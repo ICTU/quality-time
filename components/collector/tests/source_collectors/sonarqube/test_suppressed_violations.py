@@ -41,7 +41,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
         )
         total_violations_json = dict(total="4")
         response = await self.collect(
-            self.metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json]
+            get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json]
         )
         expected_entities = [
             self.entity(

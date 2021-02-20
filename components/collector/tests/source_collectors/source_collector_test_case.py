@@ -41,7 +41,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     async def collect(
         self,
-        metric,
         *,
         get_request_json_return_value=None,
         get_request_json_side_effect=None,
@@ -68,7 +67,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 async with aiohttp.ClientSession() as session:
                     collector = MetricsCollector()
                     collector.data_model = self.data_model
-                    return await collector.collect_sources(session, metric)
+                    return await collector.collect_sources(session, self.metric)
 
     @staticmethod
     def __mock_get_request(json_side_effect, json_return_value, content, text, links) -> AsyncMock:

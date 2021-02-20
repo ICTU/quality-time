@@ -38,4 +38,4 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
 
     async def get_response(self, issues_json, fields_json=None):
         """Get the collector's response."""
-        return await self.collect(self.metric, get_request_json_side_effect=[fields_json or [], issues_json])
+        return await self.collect(get_request_json_side_effect=[fields_json or [], issues_json])

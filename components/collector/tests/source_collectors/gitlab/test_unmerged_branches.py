@@ -35,7 +35,7 @@ class GitLabUnmergedBranchesTest(GitLabTestCase):
             ),
             dict(name="merged_branch", default=False, merged=True),
         ]
-        response = await self.collect(self.metric, get_request_json_return_value=gitlab_json)
+        response = await self.collect(get_request_json_return_value=gitlab_json)
         expected_entities = [
             dict(
                 key="unmerged_branch",

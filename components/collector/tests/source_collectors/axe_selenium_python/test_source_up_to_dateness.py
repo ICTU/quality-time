@@ -14,6 +14,6 @@ class AxeSeleniumPythonSourceUpToDatenessTest(AxeSeleniumPythonTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         axe_json = dict(timestamp="2020-09-01T14:07:09.445Z")
-        response = await self.collect(self.metric, get_request_json_return_value=axe_json)
+        response = await self.collect(get_request_json_return_value=axe_json)
         expected_age = (datetime.now(tz=timezone.utc) - datetime(2020, 9, 1, 14, 6, 9, tzinfo=timezone.utc)).days
         self.assert_measurement(response, value=str(expected_age))

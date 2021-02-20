@@ -18,7 +18,5 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(id="scan_id")],
         ]
         post_json = dict(access_token="token")
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=get_json, post_request_json_return_value=post_json
-        )
+        response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         self.assert_measurement(response, value="10", entities=[])

@@ -11,7 +11,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
     async def test_no_transactions(self):
         """Test that the number of slow transactions is 0 if there are no transactions in the details table."""
         html = '<html><table class="details"><tr></tr></table></html>'
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="0")
 
     async def test_one_slow_transaction(self):
@@ -20,7 +20,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<html><table class="details"><tr class="transaction"><td class="name">Name</td>'
             '<td class="red evaluated"/></tr></table></html>'
         )
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="1")
 
     async def test_ignore_fast_transactions(self):
@@ -30,7 +30,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<td class="red evaluated"/></tr><tr class="transaction"><td class="green evaluated"/></tr></table>'
             "</html>"
         )
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="1")
 
     async def test_warning_only(self):
@@ -41,7 +41,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<tr class="transaction"><td class="green evaluated"/></tr></table></html>'
         )
         self.set_source_parameter("thresholds", ["warning"])
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="Name", name="Name", threshold="warning")])
 
     async def test_ignore_transactions_by_name(self):
@@ -54,7 +54,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             "</table></html>"
         )
         self.set_source_parameter("transactions_to_ignore", ["T[1|3]"])
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])
 
     async def test_include_transactions_by_name(self):
@@ -67,5 +67,5 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             "</table></html>"
         )
         self.set_source_parameter("transactions_to_include", ["T2"])
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])

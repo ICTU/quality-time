@@ -43,36 +43,36 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = await self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
     async def test_no_issues(self):
         """Test zero issues."""
-        response = await self.collect(self.metric, get_request_text="")
+        response = await self.collect(get_request_text="")
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.set_source_parameter("impact", ["serious", "critical"])
-        response = await self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
     async def test_filter_by_violation_type(self):
         """Test that violations can be filtered by violation type."""
         self.set_source_parameter("violation_type", ["aria-input-field-name", "area-hidden-focus"])
-        response = await self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.set_source_parameter("url", "https://axecsv.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.csv", self.csv) for index in range(2)])
-        response = await self.collect(self.metric, get_request_content=zipfile)
+        response = await self.collect(get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
 
     async def test_empty_line(self):
         """Test that empty lines are ignored."""
-        response = await self.collect(self.metric, get_request_text=self.csv + "\n\n")
+        response = await self.collect(get_request_text=self.csv + "\n\n")
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
     async def test_embedded_newlines(self):
@@ -88,5 +88,5 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             "help": "help3",
         }
         expected_entity["key"] = md5_hash(",".join(str(value) for value in expected_entity.values()))
-        response = await self.collect(self.metric, get_request_text=self.csv + violation_with_newline)
+        response = await self.collect(get_request_text=self.csv + violation_with_newline)
         self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])

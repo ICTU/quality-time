@@ -18,7 +18,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="1234",
@@ -41,7 +41,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100", entities=[], landing_url=self.metric_landing_url.format("lines")
         )
@@ -57,7 +57,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="1000",

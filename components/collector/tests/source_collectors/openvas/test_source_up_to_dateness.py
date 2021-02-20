@@ -18,6 +18,6 @@ class OpenVASSourceUpToDatenessTest(OpenVASTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the report age in days is returned."""
-        response = await self.collect(self.metric, get_request_text=self.OPENVAS_XML)
+        response = await self.collect(get_request_text=self.OPENVAS_XML)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 4, 9, 17, 56, 14, tzinfo=timezone.utc)).days
         self.assert_measurement(response, value=str(expected_age))

@@ -16,7 +16,7 @@ class SonarQubeTestsTest(SonarQubeTestCase):
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(response, value="123", total="123")
 
     async def test_nr_of_skipped_tests(self):
@@ -25,17 +25,17 @@ class SonarQubeTestsTest(SonarQubeTestCase):
             component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")])
         )
         self.set_source_parameter("test_result", ["skipped"])
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(response, value="4", total="123")
 
     async def test_nr_of_tests_without_tests(self):
         """Test that the collector throws an exception if there are no tests."""
         json = dict(component=dict(measures=[]))
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(response, value=None, total="100", parse_error="KeyError")
 
     async def test_nr_of_tests_with_faulty_component(self):
         """Test that the measurement fails if the component does not exist."""
         json = dict(errors=[dict(msg="No such component")])
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(response, value=None, total=None, connection_error="No such component")

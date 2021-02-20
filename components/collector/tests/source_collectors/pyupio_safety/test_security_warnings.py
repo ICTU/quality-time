@@ -12,7 +12,7 @@ class PyupioSafetyTest(SourceCollectorTestCase):
     async def test_warnings(self):
         """Test the number of security warnings."""
         pyupio_json = [["ansible", "<1.9.2", "1.8.5", "Ansible before 1.9.2 does not ...", "25625"]]
-        response = await self.collect(self.metric, get_request_json_return_value=pyupio_json)
+        response = await self.collect(get_request_json_return_value=pyupio_json)
         expected_entities = [
             dict(
                 package="ansible",

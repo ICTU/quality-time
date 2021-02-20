@@ -19,13 +19,11 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(self.metric, get_request_text=self.JACOCO_XML)
+        response = await self.collect(get_request_text=self.JACOCO_XML)
         self.assert_measurement(response, value=str(self.expected_age))
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.set_source_parameter("url", "https://jacoco.zip")
-        response = await self.collect(
-            self.metric, get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML))
-        )
+        response = await self.collect(get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML)))
         self.assert_measurement(response, value=str(self.expected_age))

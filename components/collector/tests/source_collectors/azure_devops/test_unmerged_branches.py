@@ -18,7 +18,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     async def test_no_branches_except_master(self):
         """Test that the number of unmerged branches is returned."""
         branches = dict(value=[dict(name="master", isBaseVersion=True)])
-        response = await self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
+        response = await self.collect(get_request_json_side_effect=[self.repositories, branches])
         self.assert_measurement(response, value="0", entities=[], landing_url=self.landing_url)
 
     async def test_unmerged_branches(self):
@@ -41,7 +41,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
                 ),
             ]
         )
-        response = await self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
+        response = await self.collect(get_request_json_side_effect=[self.repositories, branches])
         self.assert_measurement(
             response,
             value="1",
@@ -52,7 +52,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     async def test_wrong_repository(self):
         """Test that if the repository cannot be found, an error message is returned."""
         self.set_source_parameter("repository", "wrong_repo")
-        response = await (self.collect(self.metric, get_request_json_return_value=self.repositories))
+        response = await (self.collect(get_request_json_return_value=self.repositories))
         self.assert_measurement(
             response,
             landing_url=f"{self.url}/_git/wrong_repo/branches",

@@ -19,6 +19,6 @@ class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase)
             '<html><table class="config"><tr><td class="name">Start of the test</td>'
             '<td id="start_of_the_test">2019.06.22.06.23.00</td></tr></table></html>'
         )
-        response = await self.collect(self.metric, get_request_text=html)
+        response = await self.collect(get_request_text=html)
         expected_age = days_ago(datetime(2019, 6, 22, 6, 23, 0))
         self.assert_measurement(response, value=str(expected_age))

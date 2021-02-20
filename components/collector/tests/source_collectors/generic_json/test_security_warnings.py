@@ -28,5 +28,5 @@ class GenericJSONSecurityWarningsTest(SourceCollectorTestCase):
                 severity="high",
             )
         ]
-        response = await self.collect(self.metric, get_request_json_return_value=vulnerabilities_json)
+        response = await self.collect(get_request_json_return_value=vulnerabilities_json)
         self.assert_measurement(response, value="1", entities=expected_entities)

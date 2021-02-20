@@ -22,7 +22,7 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
                 )
             ],
         )
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         self.assert_measurement(
             response,
             value="2",
@@ -53,7 +53,7 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
                 )
             ]
         )
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         self.assert_measurement(
             response,
             value="2",
@@ -79,7 +79,7 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             ],
         )
         self.set_source_parameter("test_result", ["passed"])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_entities = [dict(class_name="c2", key="tc2", name="tc2", test_result="passed", age="0")]
         self.assert_measurement(response, value="1", total="2", entities=expected_entities)
 
@@ -99,7 +99,7 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             ],
         )
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_entities = [
             dict(class_name="c1", key="tc1", name="tc1", test_result="failed", age="1"),
             dict(class_name="c2", key="tc2", name="tc2", test_result="failed", age="2"),

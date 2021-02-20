@@ -56,7 +56,7 @@ class JiraVelocityTest(JiraTestCase):
     async def test_completed_velocity(self):
         """Test that the completed velocity is returned."""
         response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
+            get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
         )
         self.assert_measurement(
             response,
@@ -73,7 +73,7 @@ class JiraVelocityTest(JiraTestCase):
         """Test that the committed velocity is returned."""
         self.set_source_parameter("velocity_type", "committed points")
         response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
+            get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
         )
         self.assert_measurement(
             response,
@@ -90,7 +90,7 @@ class JiraVelocityTest(JiraTestCase):
         """Test that the difference between completed and committed velocity is returned."""
         self.set_source_parameter("velocity_type", "completed points minus committed points")
         response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
+            get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
         )
         self.assert_measurement(
             response,
@@ -106,7 +106,7 @@ class JiraVelocityTest(JiraTestCase):
     async def test_velocity_missing_board(self):
         """Test that no velocity is returned if the board name or id is invalid."""
         boards_json = dict(startAt=0, maxResults=50, isLast=True, values=[dict(id=1, name="Board 1")])
-        response = await self.collect(self.metric, get_request_json_side_effect=[boards_json])
+        response = await self.collect(get_request_json_side_effect=[boards_json])
         self.assert_measurement(
             response, value=None, connection_error="Could not find a Jira board with id or name", landing_url=self.url
         )

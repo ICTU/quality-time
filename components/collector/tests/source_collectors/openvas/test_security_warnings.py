@@ -22,7 +22,7 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        response = await self.collect(self.metric, get_request_text=self.OPENVAS_XML)
+        response = await self.collect(get_request_text=self.OPENVAS_XML)
         expected_entities = [
             dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")
         ]

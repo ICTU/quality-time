@@ -11,5 +11,5 @@ class JaCoCoJenkinsPluginUncoveredBranchesTest(JaCoCoJenkinsPluginTestCase):
 
     async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the total number of branches are returned."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.JACOCO_JENKINS_PLUGIN_JSON)
+        response = await self.collect(get_request_json_return_value=self.JACOCO_JENKINS_PLUGIN_JSON)
         self.assert_measurement(response, value="2", total="6")

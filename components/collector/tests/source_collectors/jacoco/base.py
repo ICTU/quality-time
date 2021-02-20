@@ -18,7 +18,7 @@ class JaCoCoCommonTestsMixin:  # pylint: disable=too-few-public-methods
         report = self.zipped_report(
             ("jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>")
         )
-        response = await self.collect(self.metric, get_request_content=report)
+        response = await self.collect(get_request_content=report)
         self.assert_measurement(response, value=None, connection_error="Zipfile contains no files with extension xml")
 
 
@@ -29,13 +29,11 @@ class JaCoCoCommonCoverageTestsMixin:
 
     async def test_coverage(self):
         """Test that the number of uncovered lines/branches and the total number of lines/branches are returned."""
-        response = await self.collect(self.metric, get_request_text=self.JACOCO_XML)
+        response = await self.collect(get_request_text=self.JACOCO_XML)
         self.assert_measurement(response, value="2", total="6")
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.set_source_parameter("url", "https://jacoco.zip")
-        response = await self.collect(
-            self.metric, get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML))
-        )
+        response = await self.collect(get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML)))
         self.assert_measurement(response, value="2", total="6")

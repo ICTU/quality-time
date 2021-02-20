@@ -14,6 +14,6 @@ class RobotFrameworkSourceUpToDatenessTest(RobotFrameworkTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         xml = """<?xml version="1.0"?><robot generated="2009-12-19T17:58:59"/>"""
-        response = await self.collect(self.metric, get_request_text=xml)
+        response = await self.collect(get_request_text=xml)
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
         self.assert_measurement(response, value=str(expected_age))

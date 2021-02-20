@@ -13,7 +13,6 @@ class SonarQubeComplexUnitsTest(SonarQubeTestCase):
         complex_units_json = dict(total="2")
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         response = await self.collect(
-            self.metric,
             get_request_json_side_effect=[
                 {},
                 complex_units_json,
@@ -21,7 +20,7 @@ class SonarQubeComplexUnitsTest(SonarQubeTestCase):
                 complex_units_json,
                 functions_json,
                 complex_units_json,
-            ],
+            ]
         )
         self.assert_measurement(
             response,

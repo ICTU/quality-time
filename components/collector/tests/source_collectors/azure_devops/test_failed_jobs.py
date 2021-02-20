@@ -17,7 +17,6 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
         self.set_source_parameter("jobs_to_include", ["include.*"])
         self.set_source_parameter("jobs_to_ignore", ["include_but_ignore_by_name", "folder/.*ignore.*"])
         response = await self.collect(
-            self.metric,
             get_request_json_return_value=dict(
                 value=self.jobs
                 + [
@@ -27,7 +26,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
                         latestCompletedBuild=dict(result="canceled"),
                     ),
                 ]
-            ),
+            )
         )
         self.assert_measurement(
             response, value="1", landing_url=self.landing_url, api_url=self.api_url, entities=self.expected_entities

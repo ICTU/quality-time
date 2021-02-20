@@ -18,7 +18,7 @@ class SonarQubeUncoveredBranchesTest(SonarQubeTestCase):
                 ]
             )
         )
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(get_request_json_return_value=json)
         self.assert_measurement(
             response, value="10", total="200", landing_url=self.metric_landing_url.format("uncovered_conditions")
         )

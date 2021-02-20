@@ -61,36 +61,36 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
     async def test_no_issues(self):
         """Test zero issues."""
         self.json["violations"] = []
-        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.set_source_parameter("impact", ["serious", "critical"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1")
 
     async def test_filter_by_tag_include(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_include", ["wcag2aa"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
 
     async def test_filter_by_tag_ignore(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_ignore", ["wcag2aa"])
-        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
 
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
         self.set_source_parameter("url", "axe.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.json", json.dumps(self.json)) for index in range(2)])
-        response = await self.collect(self.metric, get_request_content=zipfile)
+        response = await self.collect(get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)

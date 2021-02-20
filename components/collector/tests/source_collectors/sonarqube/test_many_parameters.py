@@ -14,7 +14,6 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         response = await self.collect(
-            self.metric,
             get_request_json_side_effect=[
                 {},
                 many_parameters_json,
@@ -22,7 +21,7 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
                 many_parameters_json,
                 functions_json,
                 many_parameters_json,
-            ],
+            ]
         )
         self.assert_measurement(
             response,
