@@ -129,7 +129,7 @@ from .file_source_collectors.performancetest_runner.tests import PerformanceTest
 
 from .file_source_collectors.pip.dependencies import PipDependencies
 
-from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
+from .file_source_collectors.pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
 
 from .file_source_collectors.robot_framework import RobotFrameworkSourceUpToDateness, RobotFrameworkTests
 

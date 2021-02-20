@@ -1,4 +1,4 @@
-"""Pyup.io Safety metrics collector."""
+"""Pyup.io Safety security warnings collector."""
 
 from typing import Final
 
@@ -16,12 +16,19 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     KEY: Final[int] = 4
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Return a list of warnings."""
+        """Override to parse the security warnings from the JSON."""
         entities = []
         for response in responses:
             entities.extend(
-                [Entity(
-                    key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
-                    affected=warning[self.AFFECTED], vulnerability=warning[self.VULNERABILITY])
-                 for warning in await response.json(content_type=None)])
+                [
+                    Entity(
+                        key=warning[self.KEY],
+                        package=warning[self.PACKAGE],
+                        installed=warning[self.INSTALLED],
+                        affected=warning[self.AFFECTED],
+                        vulnerability=warning[self.VULNERABILITY],
+                    )
+                    for warning in await response.json(content_type=None)
+                ]
+            )
         return SourceMeasurement(entities=entities)
