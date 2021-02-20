@@ -131,7 +131,8 @@ from .file_source_collectors.pip.dependencies import PipDependencies
 
 from .file_source_collectors.pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
 
-from .file_source_collectors.robot_framework import RobotFrameworkSourceUpToDateness, RobotFrameworkTests
+from .file_source_collectors.robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
+from .file_source_collectors.robot_framework.tests import RobotFrameworkTests
 
 from .file_source_collectors.snyk import SnykSecurityWarnings
 

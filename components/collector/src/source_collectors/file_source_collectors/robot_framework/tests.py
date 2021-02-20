@@ -1,29 +1,18 @@
-"""Robot Framework metric collector."""
+"""Robot Framework tests collector."""
 
-from abc import ABC
-from datetime import datetime
 from typing import List, cast
 
-from dateutil.parser import parse
-
-from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import URL, Response
 from source_model import Entity, SourceMeasurement, SourceResponses
 
-
-class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for Robot Framework collectors."""
-
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        url = str(await super()._landing_url(responses))
-        return URL(url.replace("output.html", "report.html"))
+from .base import RobotFrameworkBaseClass
 
 
 class RobotFrameworkTests(RobotFrameworkBaseClass):
     """Collector for Robot Framework tests."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the tests from the Robot Framework XML."""
         count = 0
         total = 0
         entities = []
@@ -38,12 +27,6 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
                     count += int(stats.get(test_result, 0))
                     for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/.."):
                         entities.append(
-                            Entity(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
+                            Entity(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result)
+                        )
         return SourceMeasurement(value=str(count), total=str(total), entities=entities)
-
-
-class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass, SourceUpToDatenessCollector):
-    """Collector to collect the Robot Framework report age."""
-
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse((await parse_source_response_xml(response)).get("generated", ""))
