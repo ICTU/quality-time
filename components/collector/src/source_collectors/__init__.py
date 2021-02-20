@@ -134,7 +134,7 @@ from .file_source_collectors.pyupio_safety.security_warnings import PyupioSafety
 from .file_source_collectors.robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
 from .file_source_collectors.robot_framework.tests import RobotFrameworkTests
 
-from .file_source_collectors.snyk import SnykSecurityWarnings
+from .file_source_collectors.snyk.security_warnings import SnykSecurityWarnings
 
 from .file_source_collectors.testng import TestNGSourceUpToDateness, TestNGTests
 

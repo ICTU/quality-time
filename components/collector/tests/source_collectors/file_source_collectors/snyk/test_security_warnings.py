@@ -1,18 +1,19 @@
-"""Unit tests for the Snyk source."""
+"""Unit tests for the Snyk security warnings collector."""
 
 from source_model import Entity
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
 class SnykSecurityWarningsTest(SourceCollectorTestCase):
     """Unit tests for the security warning metric."""
 
+    SOURCE_TYPE = "snyk"
+    METRIC_TYPE = "security_warnings"
+
     def setUp(self):
-        """Prepare the security warnings metric and sources."""
+        """Prepare the security warnings."""
         super().setUp()
-        self.sources = dict(source_id=dict(type="snyk", parameters=dict(url="snyk.json")))
-        self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
         self.direct_dependency = "laravel-mix@4.0.16"
         self.direct_dependency_key = Entity.safe_entity_key(self.direct_dependency)
         self.direct_dependency_path = ["package.json@*", self.direct_dependency]
