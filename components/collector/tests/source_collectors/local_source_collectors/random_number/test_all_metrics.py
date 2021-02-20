@@ -1,8 +1,8 @@
 """Unit tests for the random number collector."""
 
-from ...source_collector_test_case import SourceCollectorTestCase
-
 from source_collectors import Random
+
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
 class RandomNumberTest(SourceCollectorTestCase):

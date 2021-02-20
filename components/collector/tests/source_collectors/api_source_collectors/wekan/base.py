@@ -64,8 +64,8 @@ class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         get_request_links=None,
         post_request_side_effect=None,
         post_request_json_return_value=None,
-    ):  # pylint: disable=duplicate-code
-        """Extend to always pass the Wekan JSON and a token."""
+    ):
+        """Extend to always pass the Wekan JSON and a token."""  # pylint: disable=duplicate-code
         return await super().collect(
             metric,
             get_request_json_return_value=get_request_json_return_value,

@@ -2,7 +2,7 @@
 
 from typing import List
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import Tag
 
 from collector_utilities.functions import match_string_or_regular_expression
 from source_model import Entity, SourceMeasurement, SourceResponses

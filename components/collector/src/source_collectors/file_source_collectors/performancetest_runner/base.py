@@ -2,7 +2,7 @@
 
 from abc import ABC
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 from base_collectors import HTMLFileSourceCollector
 from collector_utilities.type import Response

@@ -11,7 +11,7 @@ class NCoverSourceUpToDatenessTest(NCoverTestCase):
     METRIC_TYPE = "source_up_to_dateness"
     NCOVER_HTML = """
          <script type="text/javascript">
-            ncover.serverRoot = 'http://127.0.0.1:11235';
+            ncover.serverRoot = 'https://127.0.0.1:11235';
             ncover.createDateTime = '1440425155042';
         </script>"""
 
