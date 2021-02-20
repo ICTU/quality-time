@@ -1,146 +1,138 @@
 """Metric collectors per source."""
 
-from .api_source_collectors.azure_devops.failed_jobs import AzureDevopsFailedJobs
-from .api_source_collectors.azure_devops.issues import AzureDevopsIssues
-from .api_source_collectors.azure_devops.merge_requests import AzureDevopsMergeRequests
-from .api_source_collectors.azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
-from .api_source_collectors.azure_devops.tests import AzureDevopsTests
-from .api_source_collectors.azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
-from .api_source_collectors.azure_devops.unused_jobs import AzureDevopsUnusedJobs
-from .api_source_collectors.azure_devops.user_story_points import AzureDevopsUserStoryPoints
+from .anchore.security_warnings import AnchoreSecurityWarnings
+from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 
-from .api_source_collectors.cobertura_jenkins_plugin.source_up_to_dateness import (
-    CoberturaJenkinsPluginSourceUpToDateness,
-)
-from .api_source_collectors.cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
-from .api_source_collectors.cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
+from .axe_csv.accessibility import AxeCSVAccessibility
 
-from .api_source_collectors.cxsast.security_warnings import CxSASTSecurityWarnings
-from .api_source_collectors.cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
+from .axe_selenium_python.accessibility import AxeSeleniumPythonAccessibility
+from .axe_selenium_python.source_up_to_dateness import AxeSeleniumPythonSourceUpToDateness
 
-from .api_source_collectors.gitlab.failed_jobs import GitLabFailedJobs
-from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
-from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
-from .api_source_collectors.gitlab.unmerged_branches import GitLabUnmergedBranches
-from .api_source_collectors.gitlab.unused_jobs import GitLabUnusedJobs
+from .azure_devops.failed_jobs import AzureDevopsFailedJobs
+from .azure_devops.issues import AzureDevopsIssues
+from .azure_devops.merge_requests import AzureDevopsMergeRequests
+from .azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
+from .azure_devops.tests import AzureDevopsTests
+from .azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
+from .azure_devops.unused_jobs import AzureDevopsUnusedJobs
+from .azure_devops.user_story_points import AzureDevopsUserStoryPoints
 
-from .api_source_collectors.jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
-from .api_source_collectors.jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
-from .api_source_collectors.jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
+from .bandit.security_warnings import BanditSecurityWarnings
+from .bandit.source_up_to_dateness import BanditSourceUpToDateness
 
-from .api_source_collectors.jenkins.failed_jobs import JenkinsFailedJobs
-from .api_source_collectors.jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
-from .api_source_collectors.jenkins.unused_jobs import JenkinsUnusedJobs
+from .calendar.source_up_to_dateness import CalendarSourceUpToDateness
 
-from .api_source_collectors.jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
-from .api_source_collectors.jenkins_test_report.tests import JenkinsTestReportTests
+from .cloc.loc import ClocLOC
 
-from .api_source_collectors.jira.issues import JiraIssues
-from .api_source_collectors.jira.manual_test_duration import JiraManualTestDuration
-from .api_source_collectors.jira.manual_test_execution import JiraManualTestExecution
-from .api_source_collectors.jira.user_story_points import JiraUserStoryPoints
-from .api_source_collectors.jira.velocity import JiraVelocity
+from .cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
+from .cobertura.uncovered_branches import CoberturaUncoveredBranches
+from .cobertura.uncovered_lines import CoberturaUncoveredLines
 
-from .api_source_collectors.quality_time.metrics import QualityTimeMetrics
-from .api_source_collectors.quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
+from .cobertura_jenkins_plugin.source_up_to_dateness import CoberturaJenkinsPluginSourceUpToDateness
+from .cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
+from .cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
 
-from .api_source_collectors.robot_framework_jenkins_plugin.source_up_to_dateness import (
-    RobotFrameworkJenkinsPluginSourceUpToDateness,
-)
-from .api_source_collectors.robot_framework_jenkins_plugin.tests import RobotFrameworkJenkinsPluginTests
+from .composer.dependencies import ComposerDependencies
 
-from .api_source_collectors.sonarqube.commented_out_code import SonarQubeCommentedOutCode
-from .api_source_collectors.sonarqube.complex_units import SonarQubeComplexUnits
-from .api_source_collectors.sonarqube.duplicated_lines import SonarQubeDuplicatedLines
-from .api_source_collectors.sonarqube.loc import SonarQubeLOC
-from .api_source_collectors.sonarqube.long_units import SonarQubeLongUnits
-from .api_source_collectors.sonarqube.many_parameters import SonarQubeManyParameters
-from .api_source_collectors.sonarqube.remediation_effort import SonarQubeRemediationEffort
-from .api_source_collectors.sonarqube.security_warnings import SonarQubeSecurityWarnings
-from .api_source_collectors.sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
-from .api_source_collectors.sonarqube.suppressed_violations import SonarQubeSuppressedViolations
-from .api_source_collectors.sonarqube.tests import SonarQubeTests
-from .api_source_collectors.sonarqube.uncovered_branches import SonarQubeUncoveredBranches
-from .api_source_collectors.sonarqube.uncovered_lines import SonarQubeUncoveredLines
-from .api_source_collectors.sonarqube.violations import SonarQubeViolations
+from .cxsast.security_warnings import CxSASTSecurityWarnings
+from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 
-from .api_source_collectors.trello.issues import TrelloIssues
-from .api_source_collectors.trello.source_up_to_dateness import TrelloSourceUpToDateness
+from .generic_json.security_warnings import GenericJSONSecurityWarnings
 
-from .api_source_collectors.wekan.issues import WekanIssues
-from .api_source_collectors.wekan.source_up_to_dateness import WekanSourceUpToDateness
+from .gitlab.failed_jobs import GitLabFailedJobs
+from .gitlab.merge_requests import GitLabMergeRequests
+from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
+from .gitlab.unmerged_branches import GitLabUnmergedBranches
+from .gitlab.unused_jobs import GitLabUnusedJobs
 
-from .file_source_collectors.anchore.security_warnings import AnchoreSecurityWarnings
-from .file_source_collectors.anchore.source_up_to_dateness import AnchoreSourceUpToDateness
+from .jacoco.source_up_to_dateness import JacocoSourceUpToDateness
+from .jacoco.uncovered_branches import JacocoUncoveredBranches
+from .jacoco.uncovered_lines import JacocoUncoveredLines
 
-from .file_source_collectors.axe_csv.accessibility import AxeCSVAccessibility
+from .jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
+from .jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
+from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
 
-from .file_source_collectors.axe_selenium_python.accessibility import AxeSeleniumPythonAccessibility
-from .file_source_collectors.axe_selenium_python.source_up_to_dateness import AxeSeleniumPythonSourceUpToDateness
+from .jenkins.failed_jobs import JenkinsFailedJobs
+from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
+from .jenkins.unused_jobs import JenkinsUnusedJobs
 
-from .file_source_collectors.bandit.security_warnings import BanditSecurityWarnings
-from .file_source_collectors.bandit.source_up_to_dateness import BanditSourceUpToDateness
+from .jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
+from .jenkins_test_report.tests import JenkinsTestReportTests
 
-from .file_source_collectors.cloc.loc import ClocLOC
+from .jira.issues import JiraIssues
+from .jira.manual_test_duration import JiraManualTestDuration
+from .jira.manual_test_execution import JiraManualTestExecution
+from .jira.user_story_points import JiraUserStoryPoints
+from .jira.velocity import JiraVelocity
 
-from .file_source_collectors.cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
-from .file_source_collectors.cobertura.uncovered_branches import CoberturaUncoveredBranches
-from .file_source_collectors.cobertura.uncovered_lines import CoberturaUncoveredLines
+from .junit.source_up_to_dateness import JUnitSourceUpToDateness
+from .junit.tests import JUnitTests
 
-from .file_source_collectors.composer.dependencies import ComposerDependencies
+from .manual_number.all_metrics import ManualNumber
 
-from .file_source_collectors.generic_json.security_warnings import GenericJSONSecurityWarnings
+from .ncover.uncovered_branches import NCoverUncoveredBranches
+from .ncover.uncovered_lines import NCoverUncoveredLines
+from .ncover.source_up_to_dateness import NCoverSourceUpToDateness
 
-from .file_source_collectors.jacoco.source_up_to_dateness import JacocoSourceUpToDateness
-from .file_source_collectors.jacoco.uncovered_branches import JacocoUncoveredBranches
-from .file_source_collectors.jacoco.uncovered_lines import JacocoUncoveredLines
+from .npm.dependencies import NpmDependencies
 
-from .file_source_collectors.junit.source_up_to_dateness import JUnitSourceUpToDateness
-from .file_source_collectors.junit.tests import JUnitTests
+from .ojaudit.violations import OJAuditViolations
 
-from .file_source_collectors.ncover.uncovered_branches import NCoverUncoveredBranches
-from .file_source_collectors.ncover.uncovered_lines import NCoverUncoveredLines
-from .file_source_collectors.ncover.source_up_to_dateness import NCoverSourceUpToDateness
+from .openvas.security_warnings import OpenVASSecurityWarnings
+from .openvas.source_up_to_dateness import OpenVASSourceUpToDateness
 
-from .file_source_collectors.npm.dependencies import NpmDependencies
+from .owasp_dependency_check.dependencies import OWASPDependencyCheckDependencies
+from .owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
+from .owasp_dependency_check.source_up_to_dateness import OWASPDependencyCheckSourceUpToDateness
 
-from .file_source_collectors.ojaudit.violations import OJAuditViolations
+from .owasp_zap.security_warnings import OWASPZAPSecurityWarnings
+from .owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness
 
-from .file_source_collectors.openvas.security_warnings import OpenVASSecurityWarnings
-from .file_source_collectors.openvas.source_up_to_dateness import OpenVASSourceUpToDateness
+from .performancetest_runner.performancetest_duration import PerformanceTestRunnerPerformanceTestDuration
+from .performancetest_runner.performancetest_scalability import PerformanceTestRunnerScalability
+from .performancetest_runner.performancetest_stability import PerformanceTestRunnerPerformanceTestStability
+from .performancetest_runner.slow_transactions import PerformanceTestRunnerSlowTransactions
+from .performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
+from .performancetest_runner.tests import PerformanceTestRunnerTests
 
-from .file_source_collectors.owasp_dependency_check.dependencies import OWASPDependencyCheckDependencies
-from .file_source_collectors.owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
-from .file_source_collectors.owasp_dependency_check.source_up_to_dateness import OWASPDependencyCheckSourceUpToDateness
+from .pip.dependencies import PipDependencies
 
-from .file_source_collectors.owasp_zap.security_warnings import OWASPZAPSecurityWarnings
-from .file_source_collectors.owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness
+from .pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
 
-from .file_source_collectors.performancetest_runner.performancetest_duration import (
-    PerformanceTestRunnerPerformanceTestDuration,
-)
-from .file_source_collectors.performancetest_runner.performancetest_scalability import PerformanceTestRunnerScalability
-from .file_source_collectors.performancetest_runner.performancetest_stability import (
-    PerformanceTestRunnerPerformanceTestStability,
-)
-from .file_source_collectors.performancetest_runner.slow_transactions import PerformanceTestRunnerSlowTransactions
-from .file_source_collectors.performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
-from .file_source_collectors.performancetest_runner.tests import PerformanceTestRunnerTests
+from .quality_time.metrics import QualityTimeMetrics
+from .quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
 
-from .file_source_collectors.pip.dependencies import PipDependencies
+from .random_number.all_metrics import Random
 
-from .file_source_collectors.pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
+from .robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
+from .robot_framework.tests import RobotFrameworkTests
 
-from .file_source_collectors.robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
-from .file_source_collectors.robot_framework.tests import RobotFrameworkTests
+from .robot_framework_jenkins_plugin.source_up_to_dateness import RobotFrameworkJenkinsPluginSourceUpToDateness
+from .robot_framework_jenkins_plugin.tests import RobotFrameworkJenkinsPluginTests
 
-from .file_source_collectors.snyk.security_warnings import SnykSecurityWarnings
+from .snyk.security_warnings import SnykSecurityWarnings
 
-from .file_source_collectors.testng.source_up_to_dateness import TestNGSourceUpToDateness
-from .file_source_collectors.testng.tests import TestNGTests
+from .sonarqube.commented_out_code import SonarQubeCommentedOutCode
+from .sonarqube.complex_units import SonarQubeComplexUnits
+from .sonarqube.duplicated_lines import SonarQubeDuplicatedLines
+from .sonarqube.loc import SonarQubeLOC
+from .sonarqube.long_units import SonarQubeLongUnits
+from .sonarqube.many_parameters import SonarQubeManyParameters
+from .sonarqube.remediation_effort import SonarQubeRemediationEffort
+from .sonarqube.security_warnings import SonarQubeSecurityWarnings
+from .sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
+from .sonarqube.suppressed_violations import SonarQubeSuppressedViolations
+from .sonarqube.tests import SonarQubeTests
+from .sonarqube.uncovered_branches import SonarQubeUncoveredBranches
+from .sonarqube.uncovered_lines import SonarQubeUncoveredLines
+from .sonarqube.violations import SonarQubeViolations
 
-from .local_source_collectors.calendar.source_up_to_dateness import CalendarSourceUpToDateness
+from .testng.source_up_to_dateness import TestNGSourceUpToDateness
+from .testng.tests import TestNGTests
 
-from .local_source_collectors.manual_number.all_metrics import ManualNumber
+from .trello.issues import TrelloIssues
+from .trello.source_up_to_dateness import TrelloSourceUpToDateness
 
-from .local_source_collectors.random_number.all_metrics import Random
+from .wekan.issues import WekanIssues
+from .wekan.source_up_to_dateness import WekanSourceUpToDateness
