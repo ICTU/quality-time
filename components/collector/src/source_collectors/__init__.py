@@ -136,7 +136,8 @@ from .file_source_collectors.robot_framework.tests import RobotFrameworkTests
 
 from .file_source_collectors.snyk.security_warnings import SnykSecurityWarnings
 
-from .file_source_collectors.testng import TestNGSourceUpToDateness, TestNGTests
+from .file_source_collectors.testng.source_up_to_dateness import TestNGSourceUpToDateness
+from .file_source_collectors.testng.tests import TestNGTests
 
 from .local_source_collectors.calendar import CalendarSourceUpToDateness
 
