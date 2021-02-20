@@ -53,26 +53,8 @@ class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             date_last_activity="2019-01-01",
         )
 
-    async def collect(
-        self,
-        metric,
-        *,
-        get_request_json_return_value=None,
-        get_request_json_side_effect=None,
-        get_request_content="",
-        get_request_text="",
-        get_request_links=None,
-        post_request_side_effect=None,
-        post_request_json_return_value=None,
-    ):
-        """Extend to always pass the Wekan JSON and a token."""  # pylint: disable=duplicate-code
-        return await super().collect(
-            metric,
-            get_request_json_return_value=get_request_json_return_value,
-            get_request_json_side_effect=get_request_json_side_effect or self.json,
-            get_request_content=get_request_content,
-            get_request_text=get_request_text,
-            get_request_links=get_request_links,
-            post_request_side_effect=post_request_side_effect,
-            post_request_json_return_value=post_request_json_return_value or dict(token="token"),
+    async def get_wekan_response(self):
+        """Always pass the Wekan JSON and a token."""
+        return await self.collect(
+            self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token")
         )

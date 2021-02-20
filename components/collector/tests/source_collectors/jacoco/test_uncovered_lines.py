@@ -3,9 +3,9 @@
 from .base import JaCoCoCommonCoverageTestsMixin, JaCoCoCommonTestsMixin, JaCoCoTestCase
 
 
-class JaCoCoUncoveredLinesTest(
+class JaCoCoUncoveredLinesTest(  # skipcq: PTC-W0046
     JaCoCoCommonCoverageTestsMixin, JaCoCoCommonTestsMixin, JaCoCoTestCase
-):  # skipcq: PTC-W0046
+):
     """Unit tests for the JaCoCo metrics."""
 
     METRIC_TYPE = "uncovered_lines"

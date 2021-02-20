@@ -1,4 +1,4 @@
-"""Base classes for the JaCoCo coverage report collectoes."""
+"""Base classes for the JaCoCo coverage report collectors."""
 
 from ..source_collector_test_case import SourceCollectorTestCase
 
@@ -7,10 +7,9 @@ class JaCoCoTestCase(SourceCollectorTestCase):  # pylint: disable=too-few-public
     """Base class for JaCoCo collectors."""
 
     SOURCE_TYPE = "jacoco"
-    JACOCO_XML = "Subclass responsibility"
 
 
-class JaCoCoCommonTestsMixin:
+class JaCoCoCommonTestsMixin:  # pylint: disable=too-few-public-methods
     """Tests common to all JaCoCo collectors."""
 
     async def test_zipped_report_without_xml(self):
@@ -25,6 +24,8 @@ class JaCoCoCommonTestsMixin:
 
 class JaCoCoCommonCoverageTestsMixin:
     """Tests common to JaCoCo coverage collectors."""
+
+    JACOCO_XML = "Subclass responsibility"
 
     async def test_coverage(self):
         """Test that the number of uncovered lines/branches and the total number of lines/branches are returned."""
