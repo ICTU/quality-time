@@ -143,4 +143,4 @@ from .local_source_collectors.calendar.source_up_to_dateness import CalendarSour
 
 from .local_source_collectors.manual_number.all_metrics import ManualNumber
 
-from .local_source_collectors.random_number import Random
+from .local_source_collectors.random_number.all_metrics import Random
