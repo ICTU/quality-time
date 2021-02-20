@@ -141,6 +141,6 @@ from .file_source_collectors.testng.tests import TestNGTests
 
 from .local_source_collectors.calendar.source_up_to_dateness import CalendarSourceUpToDateness
 
-from .local_source_collectors.manual_number import ManualNumber
+from .local_source_collectors.manual_number.all_metrics import ManualNumber
 
 from .local_source_collectors.random_number import Random
