@@ -1,9 +1,12 @@
 """Base class for source collector unit tests."""
 
+import io
 import json
 import logging
 import pathlib
 import unittest
+import zipfile
+from typing import List, Tuple, Union
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -13,6 +16,9 @@ from base_collectors import MetricsCollector
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     """Base class for source collector unit tests."""
+
+    METRIC_TYPE = SOURCE_TYPE = "Subclass responsibility"
+    METRIC_ADDITION = "sum"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -28,9 +34,13 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         """Override to reset logging."""
         logging.disable(logging.NOTSET)
 
+    def setUp(self) -> None:
+        """Extend to set up the source and metric under test."""
+        self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url=f"https://{self.SOURCE_TYPE}")))
+        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+
     async def collect(
         self,
-        metric,
         *,
         get_request_json_return_value=None,
         get_request_json_side_effect=None,
@@ -57,7 +67,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 async with aiohttp.ClientSession() as session:
                     collector = MetricsCollector()
                     collector.data_model = self.data_model
-                    return await collector.collect_sources(session, metric)
+                    return await collector.collect_sources(session, self.metric)
 
     @staticmethod
     def __mock_get_request(json_side_effect, json_return_value, content, text, links) -> AsyncMock:
@@ -88,3 +98,16 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
+
+    @staticmethod
+    def zipped_report(*filenames_and_contents: Tuple[str, str]) -> bytes:
+        """Return a zipped report."""
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
+            for filename, content in filenames_and_contents:
+                zipped_report.writestr(filename, content)
+        return bytes_io.getvalue()
+
+    def set_source_parameter(self, key: str, value: Union[str, List[str]]) -> None:
+        """Set a source parameter."""
+        self.sources["source_id"]["parameters"][key] = value
