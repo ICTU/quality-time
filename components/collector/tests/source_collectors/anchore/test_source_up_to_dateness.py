@@ -1,8 +1,6 @@
 """Unit tests for the Anchore source up-to-dateness collector."""
 
-import io
 import json
-import zipfile
 from datetime import datetime, timezone
 
 from .base import AnchoreTestCase
@@ -27,9 +25,9 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.set_source_parameter("details_url", "anchore.zip")
-        bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr("vulnerabilities.json", json.dumps(self.vulnerabilities_json))
-            zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
-        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        zipfile = self.zipped_report(
+            ("vulnerabilities.json", json.dumps(self.vulnerabilities_json)),
+            ("details.json", json.dumps(self.details_json)),
+        )
+        response = await self.collect(self.metric, get_request_content=zipfile)
         self.assert_measurement(response, value=str(self.expected_age))

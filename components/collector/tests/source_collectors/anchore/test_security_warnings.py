@@ -1,8 +1,6 @@
 """Unit tests for the Anchore security warnings collector."""
 
-import io
 import json
-import zipfile
 
 from collector_utilities.functions import md5_hash
 
@@ -34,11 +32,10 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
         """Test that a zip with reports can be read."""
         self.set_source_parameter("url", "anchore.zip")
         filename = "vuln.json"
-        bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr(filename, json.dumps(self.vulnerabilities_json))
-            zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
-        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        zipfile = self.zipped_report(
+            (filename, json.dumps(self.vulnerabilities_json)), ("details.json", json.dumps(self.details_json))
+        )
+        response = await self.collect(self.metric, get_request_content=zipfile)
         expected_entities = [
             dict(
                 key=md5_hash(f"{filename}CVE-000:package"),

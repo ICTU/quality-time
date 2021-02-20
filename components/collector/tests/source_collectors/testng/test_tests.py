@@ -42,6 +42,6 @@ class TestNGTestsTest(TestNGCollectorTestCase):
         """Test that the number of tests is returned from a zip with TestNG reports."""
         self.set_source_parameter("url", "testng.zip")
         response = await self.collect(
-            self.metric, get_request_content=self.zipped_report("testng.xml", self.TESTNG_XML)
+            self.metric, get_request_content=self.zipped_report(("testng.xml", self.TESTNG_XML))
         )
         self.assert_measurement(response, value="3", total="3")

@@ -1,8 +1,5 @@
 """Unit tests for the Axe accessibility collectors."""
 
-import io
-import zipfile
-
 from collector_utilities.functions import md5_hash
 
 from ..source_collector_test_case import SourceCollectorTestCase
@@ -72,11 +69,8 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.metric["sources"]["source_id"]["parameters"]["url"] = "https://axecsv.zip"
-        bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_axe_csv:
-            for index in range(2):
-                zipped_axe_csv.writestr(f"axe{index}.csv", self.csv)
-        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        zipfile = self.zipped_report(*[(f"axe{index}.csv", self.csv) for index in range(2)])
+        response = await self.collect(self.metric, get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
 
     async def test_empty_line(self):

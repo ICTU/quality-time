@@ -38,5 +38,7 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
         self.set_source_parameter("url", "junit.zip")
-        response = await self.collect(self.metric, get_request_content=self.zipped_report("junit.xml", self.JUNIT_XML))
+        response = await self.collect(
+            self.metric, get_request_content=self.zipped_report(("junit.xml", self.JUNIT_XML))
+        )
         self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)

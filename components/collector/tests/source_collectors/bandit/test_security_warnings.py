@@ -1,8 +1,6 @@
 """Unit tests for the Bandit security warnings collector."""
 
-import io
 import json
-import zipfile
 
 from .base import BanditTestCase
 
@@ -60,11 +58,9 @@ class BanditSecurityWarningsTest(BanditTestCase):
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.set_source_parameter("url", "bandit.zip")
-        bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_bandit_report:
-            zipped_bandit_report.writestr("bandit.json", json.dumps(self.bandit_json))
-        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        zipfile = self.zipped_report(*[(f"bandit{index}.json", json.dumps(self.bandit_json)) for index in range(2)])
+        response = await self.collect(self.metric, get_request_content=zipfile)
+        self.assert_measurement(response, value="2", entities=self.expected_entities + self.expected_entities)
 
     async def test_report_in_gitlab(self):
         """Test that a private token can be added to the request header for accessing a report in GitLab."""
