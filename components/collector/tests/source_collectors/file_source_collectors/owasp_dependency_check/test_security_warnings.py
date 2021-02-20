@@ -1,8 +1,8 @@
 """Unit tests for the OWASP Dependency Check security warnings collector."""
 
-from .base import OWASPDependencyCheckTestCase
-
 from source_collectors.file_source_collectors.owasp_dependency_check.dependencies import OWASPDependencyCheckBase
+
+from .base import OWASPDependencyCheckTestCase
 
 
 class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):

@@ -3,9 +3,9 @@
 import io
 import zipfile
 
-from ...source_collector_test_case import SourceCollectorTestCase
-
 from collector_utilities.functions import md5_hash
+
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
 class AxeCSVAccessibilityTest(SourceCollectorTestCase):
