@@ -19,36 +19,16 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
         response = await self.collect(
             self.metric,
             get_request_json_return_value=dict(
-                value=[
-                    dict(
-                        path=self.path,
-                        name="include_pipeline",
-                        _links=dict(web=dict(href=f"{self.url}/build")),
-                        latestCompletedBuild=dict(result="failed", finishTime="2019-11-15T12:24:10.1905868Z"),
-                    ),
+                value=self.jobs
+                + [
                     dict(
                         path=fr"{self.path}\\subfolder",
                         name="include_pipeline",
                         latestCompletedBuild=dict(result="canceled"),
                     ),
-                    dict(path=self.path, name="include_but_ignore_by_re", latestCompletedBuild=dict(result="failed")),
-                    dict(path=r"\\", name="include_but_ignore_by_name", latestCompletedBuild=dict(result="failed")),
-                    dict(path=r"\\", name="include_but_no_builds"),
                 ]
             ),
         )
         self.assert_measurement(
-            response,
-            value="1",
-            landing_url=f"{self.url}/_build",
-            api_url=self.api_url,
-            entities=[
-                dict(
-                    name=self.pipeline,
-                    key=self.pipeline.replace("/", "-"),
-                    url=f"{self.url}/build",
-                    build_date="2019-11-15",
-                    build_status="failed",
-                )
-            ],
+            response, value="1", landing_url=self.landing_url, api_url=self.api_url, entities=self.expected_entities
         )

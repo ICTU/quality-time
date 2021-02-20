@@ -36,3 +36,25 @@ class AzureDevopsJobsTestCase(AzureDevopsTestCase):
         self.path = r"\\folder"
         self.pipeline = r"folder/include_pipeline"
         self.api_url = f"{self.url}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1"
+        self.landing_url = f"{self.url}/_build"
+        self.jobs = [
+            dict(
+                path=self.path,
+                name="include_pipeline",
+                _links=dict(web=dict(href=f"{self.url}/build")),
+                latestCompletedBuild=dict(result="failed", finishTime="2019-10-15T12:24:10.1905868Z"),
+            ),
+            dict(path=self.path, name="no_completed_builds"),
+            dict(path=self.path, name="include_but_ignore_by_re", latestCompletedBuild=dict(result="failed")),
+            dict(path=self.path, name="dont_include_by_re", latestCompletedBuild=dict(result="failed")),
+            dict(path=r"\\", name="include_but_ignore_by_name", latestCompletedBuild=dict(result="failed")),
+        ]
+        self.expected_entities = [
+            dict(
+                name=self.pipeline,
+                key=self.pipeline.replace("/", "-"),
+                url=f"{self.url}/build",
+                build_date="2019-10-15",
+                build_status="failed",
+            )
+        ]
