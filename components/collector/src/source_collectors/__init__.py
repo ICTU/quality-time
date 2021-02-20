@@ -116,14 +116,16 @@ from .file_source_collectors.owasp_dependency_check.source_up_to_dateness import
 from .file_source_collectors.owasp_zap.security_warnings import OWASPZAPSecurityWarnings
 from .file_source_collectors.owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness
 
-from .file_source_collectors.performancetest_runner import (
+from .file_source_collectors.performancetest_runner.performancetest_duration import (
     PerformanceTestRunnerPerformanceTestDuration,
-    PerformanceTestRunnerPerformanceTestStability,
-    PerformanceTestRunnerScalability,
-    PerformanceTestRunnerSlowTransactions,
-    PerformanceTestRunnerSourceUpToDateness,
-    PerformanceTestRunnerTests,
 )
+from .file_source_collectors.performancetest_runner.performancetest_scalability import PerformanceTestRunnerScalability
+from .file_source_collectors.performancetest_runner.performancetest_stability import (
+    PerformanceTestRunnerPerformanceTestStability,
+)
+from .file_source_collectors.performancetest_runner.slow_transactions import PerformanceTestRunnerSlowTransactions
+from .file_source_collectors.performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
+from .file_source_collectors.performancetest_runner.tests import PerformanceTestRunnerTests
 
 from .file_source_collectors.pip import PipDependencies
 
