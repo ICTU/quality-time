@@ -2,7 +2,7 @@
 
 import logging
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock
 
 import bottle
@@ -33,13 +33,17 @@ class AuthPluginTest(unittest.TestCase):
 
     def test_valid_session(self):
         """Test that session ids are authenticated."""
-        self.mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.max)
+        self.mock_database.sessions.find_one.return_value = dict(
+            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc)
+        )
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertEqual(self.success, route.call())
 
     def test_expired_session(self):
         """Test that the session is invalid when it's expired."""
-        self.mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.min)
+        self.mock_database.sessions.find_one.return_value = dict(
+            session_expiration_datetime=datetime.min.replace(tzinfo=timezone.utc)
+        )
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertRaises(bottle.HTTPError, route.call)
 
@@ -53,7 +57,9 @@ class AuthPluginTest(unittest.TestCase):
         """Test that an unauthorized session is invalid."""
         self.mock_database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe"])
         self.mock_database.sessions.find_one.return_value = dict(
-            user="jadoe", email="jadoe@example.org", session_expiration_datetime=datetime.max
+            user="jadoe",
+            email="jadoe@example.org",
+            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc),
         )
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertRaises(bottle.HTTPError, route.call)

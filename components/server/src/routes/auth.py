@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import string
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from http.cookies import Morsel
 from typing import Union, cast
 
@@ -20,16 +20,17 @@ from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 
 
-def create_session(database: Database, username: str, email: str) -> None:
+def create_session(database: Database, username: str, email: str) -> datetime:
     """Create a new user session.
 
     Generate a new random, secret and unique session id and a session expiration datetime and add it to the
     database and the session cookie.
     """
     session_id = cast(SessionId, uuid())
-    session_expiration_datetime = datetime.now() + timedelta(hours=24)
+    session_expiration_datetime = datetime.now(timezone.utc) + timedelta(hours=24)
     sessions.upsert(database, username, email, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
+    return session_expiration_datetime
 
 
 def delete_session(database: Database) -> None:
@@ -107,23 +108,25 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
                 logging.info("LDAP bind for %s succeeded", user(username, email))
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error for %s: %s", user(username, email), reason)
-        return False, email
+        return False, ""
     return True, email
 
 
 @bottle.post("/api/v3/login")
-def login(database: Database) -> dict[str, Union[bool, str]]:
+def login(database: Database) -> dict[str, Union[bool, datetime, str]]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
-        verified, email = username is not None, username
+        verified, email = username is not None, username or ""
     else:
         username, password = get_credentials()
         verified, email = verify_user(username, password)
     if verified:
-        create_session(database, username, email)
-    return dict(ok=verified, email=email)
+        session_expiration_datetime = create_session(database, username, email)
+    else:
+        session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
+    return dict(ok=verified, email=email, session_expiration_datetime=session_expiration_datetime.isoformat())
 
 
 @bottle.post("/api/v3/logout")
