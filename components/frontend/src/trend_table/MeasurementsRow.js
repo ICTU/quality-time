@@ -13,7 +13,7 @@ export function MeasurementsRow({ metricType, metricName, metric, measurements, 
 
   dates.forEach((date) => {
     const iso_date_string = date.toISOString().split("T")[0];
-    const measurement = measurements?.find((m) => { return m.start <= iso_date_string && iso_date_string <= m.end })
+    const measurement = measurements?.find((m) => { return m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
     const metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
     const status = !measurement?.[metric.scale]?.status ? "unknown" : measurement[metric.scale].status;
     measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)

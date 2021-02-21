@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.19.0-rc.2] - [2021-02-21]
+## [Unreleased]
 
 ### Added
 
@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When measuring size (lines of code) with SonarQube as source, some languages couldn't be ignored. Fixes [#1818](https://github.com/ICTU/quality-time/issues/1818).
 - Anchore security warnings have no hash. *Quality-time* would create a hash based on the security warning's CVE and affected package. However, if the Anchore source consists of a zip file with multiple reports, multiple combinations of the same CVE and package may be present. Add the report filename to the hash to make it unique. Fixes [#1907](https://github.com/ICTU/quality-time/issues/1907).
 - When measuring security warnings with SonarQube as source, allow for filtering security hotspots by review priority. Fixes [#1910](https://github.com/ICTU/quality-time/issues/1910).
+- The trend table view would sometimes, erroneously, show recent data as missing. Fixes [#1924](https://github.com/ICTU/quality-time/issues/1924).
 
 ## [3.18.0] - [2021-02-03]
 
