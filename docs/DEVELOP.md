@@ -233,13 +233,7 @@ Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for th
 
 To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](../components/collector/src/base_collectors/source_collector.py) needs to be created.
 
-Currently, the subclasses of `SourceCollector` are grouped into three modules:
-
-1. [API collectors](../components/collector/src/source_collectors/api_source_collectors) consume an API, e.g. the GitLab API or Azure DevOps API, to collect data,
-1. [file collectors](../components/collector/src/source_collectors/file_source_collectors) parse files, e.g. XML or JSON, to collect data,
-1. [local collectors](../components/collector/src/source_collectors/local_source_collectors) don't need remote access because they e.g. use a fixed value specified by the user as measurement or the time since a specific date.
-
-Decide on the type of collector you're creating and add a file to the correct module. In the file, create a subclass of `SourceCollector` for each metric that the source can support. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-uo-to-dateness, you would create two subclasses of `SourceCollector`: a `ClocLOC` class a `ClocSourceUpToDateness` class.
+Add a new Python package to the [`source_collectors` folder](../components/collector/src/source_collectors) with the same name as the source type in the data model. For example, if the new source type is `cloc`, the folder name of the collectors is also `cloc`. Next, create a module for each metric that the new source supports. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-up-to-dateness, you would create two modules, each containing a subclass of `SourceCollector`: a `ClocLOC` class in `cloc/loc.py` and a `ClocSourceUpToDateness` class if `cloc/source_up_to_dateness.py`. If code can be shared between these classes, add a `cloc/base.py` file with a `ClocBaseClass`.
 
 To reduce duplication, `SourceCollector` has several abstract subclasses. The class hierarchy is currently as follows:
 
@@ -255,10 +249,10 @@ To reduce duplication, `SourceCollector` has several abstract subclasses. The cl
     - `JSONFileSourceCollector`: for sources that parse JSON files
     - `XMLFileSourceCollector`: for sources that parse XML files
 
-To support [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric we need to read the size of source code from the JSON file that cloc can produce. We add a `cloc.py` file to the `file collectors` module and in `cloc.py` we create a `ClocLOC` class with `JSONFileSourceCollector` a super class. The only method that needs to be implemented is `_parse_source_responses()` to get the amount of lines from the cloc JSON file. This could be as simple as:
+To support [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric we need to read the size of source code from the JSON file that cloc can produce. We add a `cloc/loc.py` file and in `loc.py` we create a `ClocLOC` class with `JSONFileSourceCollector` as super class. The only method that needs to be implemented is `_parse_source_responses()` to get the amount of lines from the cloc JSON file. This could be as simple as:
 
 ```python
-"""cloc metrics collector."""
+"""cloc lines of code collector."""
 
 from base_collectors import JSONFileSourceCollector
 from source_model import SourceMeasurement, SourceResponses
@@ -285,11 +279,14 @@ To test the `ClocLOC` collector class, we add unit tests to the [collector tests
 ```python
 """Unit tests for the cloc source."""
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class ClocTest(SourceCollectorTestCase):
-    """Unit tests for the cloc metrics."""
+class ClocLOCTest(SourceCollectorTestCase):
+    """Unit tests for the cloc loc collector."""
+    
+    SOURCE_TYPE = "cloc"
+    METRIC_TYPE = "loc"
 
     async def test_loc(self):
         """Test that the number of lines is returned."""
@@ -297,15 +294,13 @@ class ClocTest(SourceCollectorTestCase):
             "header": {}, "SUM": {},  # header and SUM are not used
             "Python": {"nFiles": 1, "blank": 5, "comment": 10, "code": 60},
             "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30}}
-        sources = dict(source_id=dict(type="cloc", parameters=dict(url="https://cloc.json")))
-        metric = dict(type="loc", sources=sources, addition="sum")
-        response = await self.collect(metric, get_request_json_return_value=cloc_json)
+        response = await self.collect(get_request_json_return_value=cloc_json)
         self.assert_measurement(response, value="90", total="100")
 ```
 
-Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
+Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which creates a source and metric for us, specified using `SOURCE_TYPE` and `METRIC_TYPE`, and provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
 
-In the case of file collectors, also add an example file to the [test data component](../components/testdata/README.md).
+In the case of collectors that use files as source, also add an example file to the [test data component](../components/testdata/README.md).
 
 To run the unit tests:
 
