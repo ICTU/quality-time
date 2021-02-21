@@ -1,5 +1,5 @@
 import { Table } from "semantic-ui-react";
-import { formatMetricScale, formatMetricUnit, format_metric_direction } from "../utils";
+import { formatMetricScale, formatMetricUnit, format_metric_direction, format_minutes } from "../utils";
 import './TrendTable.css'
 
 
@@ -14,7 +14,8 @@ export function MeasurementsRow({ metricType, metricName, metric, measurements, 
   dates.forEach((date) => {
     const iso_date_string = date.toISOString().split("T")[0];
     const measurement = measurements?.find((m) => { return m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-    const metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
+    let metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
+    metric_value = metric_value !== "?" && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric_value) : metric_value;
     const status = !measurement?.[metric.scale]?.status ? "unknown" : measurement[metric.scale].status;
     measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
 
