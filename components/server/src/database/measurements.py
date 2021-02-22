@@ -1,7 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, cast
+from typing import Optional, cast
 
 import pymongo
 from pymongo.database import Database
@@ -33,7 +33,7 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
         sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False},
     )
-    measurements_by_metric_uuid: Dict[MetricId, List] = {}
+    measurements_by_metric_uuid: dict[MetricId, list] = {}
     for measurement in recent_measurements:
         measurements_by_metric_uuid.setdefault(measurement["metric_uuid"], []).append(measurement)
     return measurements_by_metric_uuid
@@ -46,7 +46,7 @@ def measurements_by_metric(
     max_iso_timestamp: str = "",
 ):
     """Return all measurements for one metric, without the entities, except for the most recent one."""
-    measurement_filter: Dict = {"metric_uuid": {"$in": metric_uuids}}
+    measurement_filter: dict = {"metric_uuid": {"$in": metric_uuids}}
     if min_iso_timestamp:
         measurement_filter["end"] = {"$gt": min_iso_timestamp}
     if max_iso_timestamp:
@@ -73,8 +73,8 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric_data: Dict, measurement: Dict, previous_measurement: Dict
-) -> Dict:
+    database: Database, data_model, metric_data: dict, measurement: dict, previous_measurement: dict
+) -> dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
@@ -136,7 +136,7 @@ def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
 
 
 def determine_status_start(
-    current_status: Optional[Status], previous_measurement: Dict, scale: Scale, now: str
+    current_status: Optional[Status], previous_measurement: dict, scale: Scale, now: str
 ) -> Optional[str]:
     """Determine the date time since when the metric has the current status."""
     if previous_measurement:
@@ -146,7 +146,7 @@ def determine_status_start(
     return now
 
 
-def determine_target_value(metric: Metric, measurement: Dict, scale: Scale, target: TargetType):
+def determine_target_value(metric: Metric, measurement: dict, scale: Scale, target: TargetType):
     """Determine the target, near target or debt target value."""
     target_value = metric.get_target(target) if scale == metric.scale() else measurement.get(scale, {}).get(target)
     return None if target == "debt_target" and metric.accept_debt_expired() else target_value

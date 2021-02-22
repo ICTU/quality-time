@@ -1,6 +1,6 @@
 """Source routes."""
 
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Optional, Union, cast
 
 import bottle
 import requests
@@ -68,7 +68,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         f"'{target.subject_name}' in report '{target.report_name}'."
     )
     target.metric["sources"][source_uuid] = source.source
-    target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = [
+    target_uuids: list[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = [
         target.report_uuid
     ]
     reports_to_insert = [(target.report, target_uuids)]
@@ -180,7 +180,7 @@ def _source_description(data, edit_scope, parameter_key, old_value):
     return source_description
 
 
-def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, int]]]:
+def _availability_checks(data, parameter_key: str) -> list[dict[str, Union[str, int]]]:
     """Check the availability of the URLs."""
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
     source_parameters = data.source["parameters"]
@@ -201,7 +201,7 @@ def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, 
     return availability_checks
 
 
-def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict[str, Union[int, str]]:
+def _check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, Union[int, str]]:
     """Check the availability of the URL."""
     # Allow for mal-configured sources:
     try:
@@ -213,7 +213,7 @@ def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict
         return dict(status_code=-1, reason="Unknown error")
 
 
-def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
+def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:
     """Return the basic authentication credentials, if any."""
     if private_token := source_parameters.get("private_token", ""):
         return private_token, ""
@@ -222,6 +222,6 @@ def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
     return (username, password) if username and password else None
 
 
-def _headers(source_parameters) -> Dict:
+def _headers(source_parameters) -> dict:
     """Return the headers for the url-check."""
     return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}

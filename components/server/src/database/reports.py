@@ -1,6 +1,6 @@
 """Reports collection."""
 
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Union, cast
 
 import pymongo
 from pymongo.database import Database
@@ -33,7 +33,7 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
     return reports
 
 
-def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
+def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
     """Return the latest reports overview."""
     timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
@@ -57,16 +57,16 @@ def latest_metric(database: Database, metric_uuid: MetricId):
     return None
 
 
-def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> List[MetricId]:
+def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[MetricId]:
     """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
-    report_filter: Dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
-    projection: Dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
+    report_filter: dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
+    projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
     report = database.reports.find_one(report_filter, projection=projection)
 
     return list(report["subjects"][subject_uuid]["metrics"].keys())
 
 
-def insert_new_report(database: Database, delta_description: str, *reports_and_uuids) -> Dict[str, Any]:
+def insert_new_report(database: Database, delta_description: str, *reports_and_uuids) -> dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
     _prepare_documents_for_insertion(database, delta_description, *reports_and_uuids, last=True)
     reports = [report for report, uuids in reports_and_uuids]
@@ -79,7 +79,7 @@ def insert_new_report(database: Database, delta_description: str, *reports_and_u
     return dict(ok=True)
 
 
-def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> Dict[str, Any]:
+def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
     _prepare_documents_for_insertion(database, delta_description, (reports_overview, []))
     database.reports_overviews.insert(reports_overview)
@@ -114,8 +114,8 @@ def changelog(database: Database, nr_changes: int, **uuids):
     metric_uuid="metric_uuid", and source_uuid="source_uuid".
     """
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
-    delta_filter: Dict[str, Union[Dict, List]] = {"delta": DOES_EXIST}
-    changes: List[Change] = []
+    delta_filter: dict[str, Union[dict, list]] = {"delta": DOES_EXIST}
+    changes: list[Change] = []
     if not uuids:
         changes.extend(
             database.reports_overviews.find(
@@ -132,4 +132,4 @@ def changelog(database: Database, nr_changes: int, **uuids):
     )
     changes = sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
-    return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
+    return list(unique(changes, lambda change: cast(dict[str, str], change["delta"])["description"]))[:nr_changes]

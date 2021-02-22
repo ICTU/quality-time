@@ -1,6 +1,6 @@
 """Data models collection."""
 
-from typing import Any, Dict
+from typing import Any
 
 import pymongo
 from pymongo.database import Database
@@ -40,12 +40,22 @@ def default_metric_attributes(database: Database, metric_type: str = ""):
         metric_type = list(metric_types.keys())[0]
     defaults = metric_types[metric_type]
     return dict(
-        type=metric_type, sources={}, name=None, scale=defaults["default_scale"], unit=None,
-        addition=defaults["addition"], accept_debt=False, debt_target=None, direction=None, target=defaults["target"],
-        near_target=defaults["near_target"], tags=defaults["tags"])
+        type=metric_type,
+        sources={},
+        name=None,
+        scale=defaults["default_scale"],
+        unit=None,
+        addition=defaults["addition"],
+        accept_debt=False,
+        debt_target=None,
+        direction=None,
+        target=defaults["target"],
+        near_target=defaults["near_target"],
+        tags=defaults["tags"],
+    )
 
 
-def default_subject_attributes(database: Database, subject_type: str = "") -> Dict[str, Any]:
+def default_subject_attributes(database: Database, subject_type: str = "") -> dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
     if not subject_type:
