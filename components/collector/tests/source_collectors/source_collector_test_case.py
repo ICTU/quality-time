@@ -6,7 +6,7 @@ import logging
 import pathlib
 import unittest
 import zipfile
-from typing import List, Tuple, Union
+from typing import Union
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -100,7 +100,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
 
     @staticmethod
-    def zipped_report(*filenames_and_contents: Tuple[str, str]) -> bytes:
+    def zipped_report(*filenames_and_contents: tuple[str, str]) -> bytes:
         """Return a zipped report."""
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
@@ -108,6 +108,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 zipped_report.writestr(filename, content)
         return bytes_io.getvalue()
 
-    def set_source_parameter(self, key: str, value: Union[str, List[str]]) -> None:
+    def set_source_parameter(self, key: str, value: Union[str, list[str]]) -> None:
         """Set a source parameter."""
         self.sources["source_id"]["parameters"][key] = value

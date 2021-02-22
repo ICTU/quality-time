@@ -1,7 +1,5 @@
 """Base classes for unit tests of the Wekan collectors."""
 
-from typing import Dict
-
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
@@ -27,22 +25,22 @@ class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.entities = [self.entity(1, 1), self.entity(3, 2)]
 
     @staticmethod
-    def card(index: int) -> Dict:
+    def card(index: int) -> dict:
         """Create a card."""
         return dict(_id=f"card{index}", title=f"Card {index}")
 
     @classmethod
-    def full_card(cls, index: int) -> Dict:
+    def full_card(cls, index: int) -> dict:
         """Create a full card."""
         return dict(archived=False, boardId="board1", dateLastActivity="2019-01-01", **cls.card(index))
 
     @staticmethod
-    def list(index: int, archived: bool = False) -> Dict:
+    def list(index: int, archived: bool = False) -> dict:
         """Create a list."""
         return dict(_id=f"list{index}", title=f"List {index}", archived=archived)
 
     @staticmethod
-    def entity(card_index: int, list_index: int) -> Dict:
+    def entity(card_index: int, list_index: int) -> dict:
         """Return an entity."""
         return dict(
             key=f"card{card_index}",
