@@ -1,6 +1,6 @@
 """Quality-time metrics collector."""
 
-from typing import Dict, List, Tuple, cast
+from typing import cast
 
 from collector_utilities.type import Response, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -8,7 +8,7 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 from .base import QualityTimeCollector
 
 
-Measurements = List[Dict[str, Dict[str, str]]]
+Measurements = list[dict[str, dict[str, str]]]
 
 
 class QualityTimeMetrics(QualityTimeCollector):
@@ -19,7 +19,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        entities: List[Entity] = []
+        entities: list[Entity] = []
         for metric, entity in metrics_and_entities:
             recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
             status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
@@ -39,13 +39,13 @@ class QualityTimeMetrics(QualityTimeCollector):
         return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
 
     @staticmethod
-    def __get_status_and_value(metric, measurement) -> Tuple[str, Value]:
+    def __get_status_and_value(metric, measurement) -> tuple[str, Value]:
         """Return the measurement value and status."""
         scale = metric.get("scale", "count")
         scale_data = measurement.get(scale, {})
         return scale_data.get("status") or "unknown", scale_data.get("value")
 
-    async def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Measurements], Entity]]:
+    async def __get_metrics_and_entities(self, response: Response) -> list[tuple[dict[str, Measurements], Entity]]:
         """Get the relevant metrics from the reports response."""
         tags = set(self._parameter("tags"))
         metric_types = self._parameter("metric_type")

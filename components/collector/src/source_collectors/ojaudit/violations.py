@@ -1,6 +1,6 @@
 """OJAudit violations collector."""
 
-from typing import Dict, List, Optional, cast
+from typing import Optional, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from base_collectors import SourceCollectorException, XMLFileSourceCollector
@@ -9,7 +9,7 @@ from collector_utilities.type import Namespaces
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
+ModelFilePaths = dict[str, str]  # Model id to model file path mapping
 
 
 class OJAuditViolations(XMLFileSourceCollector):
@@ -17,11 +17,11 @@ class OJAuditViolations(XMLFileSourceCollector):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.violation_counts: Dict[str, int] = {}  # Keep track of the number of duplicated violations per key
+        self.violation_counts: dict[str, int] = {}  # Keep track of the number of duplicated violations per key
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the violations from the OJAudit XML."""
-        severities = cast(List[str], self._parameter("severities"))
+        severities = cast(list[str], self._parameter("severities"))
         count = 0
         entities = []
         for response in responses:
@@ -31,7 +31,7 @@ class OJAuditViolations(XMLFileSourceCollector):
                 count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return SourceMeasurement(value=str(count), entities=entities)
 
-    def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> List[Entity]:
+    def __violations(self, tree: Element, namespaces: Namespaces, severities: list[str]) -> list[Entity]:
         """Return the violations."""
         models = self.__model_file_paths(tree, namespaces)
         violation_elements = tree.findall(".//ns:violation", namespaces)
@@ -46,7 +46,7 @@ class OJAuditViolations(XMLFileSourceCollector):
         return violations
 
     def __violation(
-        self, violation: Element, namespaces: Namespaces, models: ModelFilePaths, severities: List[str]
+        self, violation: Element, namespaces: Namespaces, models: ModelFilePaths, severities: list[str]
     ) -> Optional[Entity]:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)

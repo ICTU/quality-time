@@ -1,20 +1,20 @@
 """Jenkins test report metric tests collector."""
 
-from typing import Dict, Final, List, cast
+from typing import Final, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-TestCase = Dict[str, str]
-Suite = Dict[str, List[TestCase]]
+TestCase = dict[str, str]
+Suite = dict[str, list[TestCase]]
 
 
 class JenkinsTestReportTests(SourceCollector):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    JENKINS_TEST_REPORT_COUNTS: Final[Dict[str, str]] = dict(
+    JENKINS_TEST_REPORT_COUNTS: Final[dict[str, str]] = dict(
         failed="failCount", passed="passCount", skipped="skipCount"
     )
 
@@ -25,13 +25,13 @@ class JenkinsTestReportTests(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the test report."""
         json = await responses[0].json()
-        statuses = cast(List[str], self._parameter("test_result"))
+        statuses = cast(list[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
         all_status_counts = self.JENKINS_TEST_REPORT_COUNTS.values()
         results = [report["result"] for report in json["childReports"]] if "childReports" in json else [json]
         value = sum(int(result.get(status_count, 0)) for status_count in status_counts for result in results)
         total = sum(int(result.get(status_count, 0)) for status_count in all_status_counts for result in results)
-        suites: List[Suite] = []
+        suites: list[Suite] = []
         for result in results:
             suites.extend(result["suites"])
         entities = [

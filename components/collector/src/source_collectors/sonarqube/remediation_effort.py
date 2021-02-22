@@ -1,7 +1,5 @@
 """SonarQube remediation effort collector."""
 
-from typing import Dict, List
-
 from collector_utilities.type import URL
 from source_model import Entity, SourceResponses
 
@@ -22,7 +20,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
         """Override to return the metric keys to use for the metric value."""
         return ",".join(self.__effort_types())
 
-    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
+    async def _entities(self, metrics: dict[str, str]) -> list[Entity]:
         """Override to return the effort entities."""
         entities = []
         api_values = self._data_model["sources"][self.source_type]["parameters"]["effort_types"]["api_values"]
@@ -47,6 +45,6 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
 
-    def __effort_types(self) -> List[str]:
+    def __effort_types(self) -> list[str]:
         """Return the user-selected effort types."""
         return list(self._parameter("effort_types"))

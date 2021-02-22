@@ -1,7 +1,8 @@
 """Calendar source up-to-dateness collector."""
 
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Sequence, cast
+from typing import cast
 
 from base_collectors import SourceUpToDatenessCollector
 from collector_utilities.type import Response

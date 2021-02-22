@@ -1,7 +1,5 @@
 """SonarQube LOC collector."""
 
-from typing import Dict, List
-
 from collector_utilities.functions import match_string_or_regular_expression
 from source_model import Entity
 
@@ -50,7 +48,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             metric_keys += ",ncloc_language_distribution"  # Also get the ncloc per language
         return metric_keys
 
-    def _value(self, metrics: Dict[str, str]) -> str:
+    def _value(self, metrics: dict[str, str]) -> str:
         """Extend to only count selected languages if the user wants to measure ncloc."""
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can sum the ncloc per language, skipping
@@ -58,7 +56,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
         return super()._value(metrics)
 
-    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
+    async def _entities(self, metrics: dict[str, str]) -> list[Entity]:
         """Extend to return ncloc per language, if the users picked ncloc to measure."""
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
@@ -69,7 +67,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             ]
         return await super()._entities(metrics)
 
-    def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
+    def __language_ncloc(self, metrics: dict[str, str]) -> list[list[str]]:
         """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = [language.lower() for language in self._parameter("languages_to_ignore")]
         keys_to_ignore = [key for key, language in self.LANGUAGES.items() if language.lower() in languages_to_ignore]

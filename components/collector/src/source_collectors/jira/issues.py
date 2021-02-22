@@ -1,7 +1,7 @@
 """Jira issues collector."""
 
 import re
-from typing import Dict, List, Union
+from typing import Union
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
@@ -33,7 +33,7 @@ class JiraIssues(SourceCollector):
         jql = str(self._parameter("jql", quote=True))
         return URL(f"{url}/issues/?jql={jql}")
 
-    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
         """Extend to replace field names with field ids, if the parameter is a field."""
         parameter_value = super()._parameter(parameter_key, quote)
         if parameter_key.endswith("field"):
@@ -48,11 +48,11 @@ class JiraIssues(SourceCollector):
         return SourceMeasurement(value=self._compute_value(entities), entities=entities)
 
     @classmethod
-    def _compute_value(cls, entities: List[Entity]) -> Value:  # pylint: disable=unused-argument
+    def _compute_value(cls, entities: list[Entity]) -> Value:  # pylint: disable=unused-argument
         """Allow subclasses to compute the value from the entities."""
         return None
 
-    def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
+    def _create_entity(self, issue: dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
         entity_attributes = dict(
@@ -68,7 +68,7 @@ class JiraIssues(SourceCollector):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
 
-    def _include_issue(self, issue: Dict) -> bool:  # pylint: disable=no-self-use,unused-argument
+    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=no-self-use,unused-argument
         """Return whether this issue should be counted."""
         return True
 
@@ -78,7 +78,7 @@ class JiraIssues(SourceCollector):
         return "issuetype,summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
 
     @classmethod
-    def __get_sprint_names(cls, sprint_texts: List[str]) -> str:
+    def __get_sprint_names(cls, sprint_texts: list[str]) -> str:
         """Parse the sprint name from the sprint text."""
         matches = [cls.SPRINT_NAME_RE.search(sprint_text) for sprint_text in sprint_texts]
         sprint_names = [match.group(1) for match in matches if match]

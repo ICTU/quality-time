@@ -5,8 +5,9 @@ import logging
 import traceback
 import urllib
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Dict, Final, List, Optional, Set, Sequence, Tuple, Type, Union, cast
+from typing import Any, Final, Optional, Union, cast
 
 import aiohttp
 
@@ -28,19 +29,19 @@ class SourceCollector(ABC):
 
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
-    subclasses: Set[Type["SourceCollector"]] = set()
+    subclasses: set[type["SourceCollector"]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
         self._data_model: Final = data_model
-        self.__parameters: Final[Dict[str, Union[str, List[str]]]] = source.get("parameters", {})
+        self.__parameters: Final[dict[str, Union[str, list[str]]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_type: str, metric_type: str) -> Optional[Type["SourceCollector"]]:
+    def get_subclass(cls, source_type: str, metric_type: str) -> Optional[type["SourceCollector"]]:
         """Return the subclass registered for the source/metric name.
 
         First try to find a match on both source type and metric type. If no match is found, return the generic
@@ -73,7 +74,7 @@ class SourceCollector(ABC):
         """Translate the url parameter into the API url."""
         return URL(cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/"))
 
-    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
         """Return the parameter value."""
 
         def quote_if_needed(parameter_value: str) -> str:
@@ -123,7 +124,7 @@ class SourceCollector(ABC):
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
@@ -136,7 +137,7 @@ class SourceCollector(ABC):
                 raise response
         return SourceResponses(responses=list(responses), api_url=urls[0])
 
-    def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
+    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
         if token := cast(str, self.__parameters.get("private_token", "")):
             return token, ""
@@ -144,7 +145,7 @@ class SourceCollector(ABC):
         password = cast(str, self.__parameters.get("password", ""))
         return (username, password) if username and password else None
 
-    def _headers(self) -> Dict[str, str]:  # pylint: disable=no-self-use
+    def _headers(self) -> dict[str, str]:  # pylint: disable=no-self-use
         """Return the headers for the get request."""
         return {}
 
@@ -211,7 +212,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         return SourceMeasurement(entities=entities)
 
     @abstractmethod
-    async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
+    async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
         """Return the list of unmerged branches."""
 
     @abstractmethod

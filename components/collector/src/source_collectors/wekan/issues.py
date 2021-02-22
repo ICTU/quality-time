@@ -1,7 +1,7 @@
 """Wekan issues collector."""
 
 from datetime import datetime
-from typing import Dict, cast
+from typing import cast
 
 from dateutil.parser import parse
 
@@ -25,7 +25,7 @@ class WekanIssues(WekanBase):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
         return SourceMeasurement(entities=entities)
 
-    def _ignore_card(self, card: Dict) -> bool:
+    def _ignore_card(self, card: dict) -> bool:
         """Extend to check for card status."""
 
         def card_is_inactive() -> bool:

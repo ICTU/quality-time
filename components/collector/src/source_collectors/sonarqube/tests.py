@@ -1,7 +1,5 @@
 """SonarQube tests collector."""
 
-from typing import Dict
-
 from collector_utilities.type import URL
 from source_model import SourceMeasurement, SourceResponses
 
@@ -35,7 +33,7 @@ class SonarQubeTests(SonarQubeCollector):
         return SourceMeasurement(value=value, total=total)
 
     @staticmethod
-    async def __nr_of_tests(responses: SourceResponses) -> Dict[str, int]:
+    async def __nr_of_tests(responses: SourceResponses) -> dict[str, int]:
         """Return the number of tests by test result."""
         measures = {
             measure["metric"]: int(measure["value"]) for measure in (await responses[0].json())["component"]["measures"]

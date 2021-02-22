@@ -1,7 +1,5 @@
 """Anchore security warnings collector."""
 
-from typing import Dict
-
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -27,7 +25,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
         return SourceMeasurement(entities=entities)
 
     @staticmethod
-    def _create_entity(vulnerability: Dict[str, str], filename: str) -> Entity:
+    def _create_entity(vulnerability: dict[str, str], filename: str) -> Entity:
         """Create an entity from the vulnerability."""
         return Entity(
             # Include the filename in the hash so that it is unique even when multiple images contain the

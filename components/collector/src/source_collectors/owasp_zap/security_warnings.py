@@ -1,7 +1,7 @@
 """OWASP ZAP security warnings collector."""
 
 import re
-from typing import Dict, List, cast
+from typing import cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
@@ -15,9 +15,9 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the securty warnings from the XML."""
-        entities: Dict[str, Entity] = {}
+        entities: dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
-        risks = cast(List[str], self._parameter("risks"))
+        risks = cast(list[str], self._parameter("risks"))
         for alert in await self.__alerts(responses, risks):
             ids = [
                 alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid", "sourceid")
@@ -49,7 +49,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         return URL(stable_url)
 
     @staticmethod
-    async def __alerts(responses: SourceResponses, risks: List[str]) -> List[Element]:
+    async def __alerts(responses: SourceResponses, risks: list[str]) -> list[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         alerts = []
         for response in responses:
