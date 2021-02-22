@@ -1,6 +1,5 @@
 """Subject routes."""
 
-from typing import List
 from datetime import datetime, timedelta
 import bottle
 from pymongo.database import Database
@@ -101,7 +100,7 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
 @bottle.get("/api/v3/subject/<subject_uuid>/measurements")
 def get_subject_measurements(subject_uuid: SubjectId, database: Database):
     """Return all measurements for the subjects within the last 28 weeks."""
-    metric_uuids: List[MetricId] = metrics_of_subject(database, subject_uuid)
+    metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid)
 
     report_timestamp = datetime.fromisoformat(report_date_time()) if report_date_time() != "" else datetime.now()
     min_datetime = report_timestamp - timedelta(weeks=28)

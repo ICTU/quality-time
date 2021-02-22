@@ -1,6 +1,7 @@
 """Snyk metrics security warnings collector."""
 
-from typing import Collection, Dict, Literal, Set
+from collections.abc import Collection
+from typing import Literal
 
 from base_collectors import JSONFileSourceCollector
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -15,8 +16,8 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the direct dependencies with vulnerabilities from the responses."""
         selected_severities = self._parameter("severities")
-        severities: Dict[str, Set[Severity]] = {}
-        nr_vulnerabilities: Dict[str, int] = {}
+        severities: dict[str, set[Severity]] = {}
+        nr_vulnerabilities: dict[str, int] = {}
         example_vulnerability = {}
         for response in responses:
             json = await response.json(content_type=None)

@@ -1,7 +1,8 @@
 """Model transformations."""
 
+from collections.abc import Iterator
 from datetime import date
-from typing import Dict, Iterator, List, Optional, cast
+from typing import Optional, cast
 
 from server_utilities.functions import unique
 from server_utilities.type import Color, EditScope, ItemId, Status
@@ -18,12 +19,12 @@ def hide_credentials(data_model, *reports) -> None:
                 source["parameters"][parameter_key] = "this string replaces credentials"
 
 
-def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> List[ItemId]:
+def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> list[ItemId]:
     """Change the parameter of all sources of the specified type and the same old value to the new value.
 
     Return the ids of the changed reports, subjects, metrics, and sources.
     """
-    changed_ids: List[ItemId] = []
+    changed_ids: list[ItemId] = []
     for source, uuids in _sources_to_change(data, scope):
         if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
             old_value or None
@@ -66,8 +67,8 @@ def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
 
 def summarize_report(report, recent_measurements, data_model) -> None:
     """Add a summary of the measurements to each subject."""
-    status_color_mapping: Dict[Status, Color] = cast(
-        Dict[Status, Color],
+    status_color_mapping: dict[Status, Color] = cast(
+        dict[Status, Color],
         dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
     )
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)

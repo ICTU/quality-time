@@ -1,7 +1,7 @@
 """GitLab unmerged branches collector."""
 
 from datetime import datetime
-from typing import Any, Dict, List, cast
+from typing import Any, cast
 
 from dateutil.parser import parse
 
@@ -24,7 +24,7 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
-    async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
+    async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
         """Override to return a list of unmerged and inactive branches."""
         branches = []
         for response in responses:

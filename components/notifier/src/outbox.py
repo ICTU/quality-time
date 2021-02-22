@@ -1,7 +1,5 @@
 """Outbox for handling and sending collected notifications."""
 
-from typing import List
-
 from destinations.ms_teams import build_notification_text, send_notification
 from models.notification import Notification
 
@@ -9,11 +7,11 @@ from models.notification import Notification
 class Outbox:
     """Handle storing and sending notifications."""
 
-    def __init__(self, notifications: List[Notification] = None) -> None:
+    def __init__(self, notifications: list[Notification] = None) -> None:
         """Initialise the Notification with the required info."""
         self.notifications = notifications or []
 
-    def add_notifications(self, notifications: List[Notification]):
+    def add_notifications(self, notifications: list[Notification]):
         """Check if a notification is already in the outbox, and if not, add it."""
         merged = False
         for new_notification in notifications:

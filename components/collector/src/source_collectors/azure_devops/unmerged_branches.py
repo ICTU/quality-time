@@ -1,7 +1,7 @@
 """Azure Devops Server unmerged branches collector."""
 
 from datetime import datetime
-from typing import Any, Dict, List, cast
+from typing import Any, cast
 
 from dateutil.parser import parse
 
@@ -26,7 +26,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         landing_url = str(await super()._landing_url(responses))
         return URL(f"{landing_url}/branches")
 
-    async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
+    async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
         """Override to get the unmerged branches response.
 
         Branches are considered unmerged if they have a base branch, have commits that are not on the base branch,

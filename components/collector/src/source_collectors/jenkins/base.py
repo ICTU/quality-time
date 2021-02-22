@@ -1,7 +1,7 @@
 """Jenkins metric collector base classes."""
 
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Iterator
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression

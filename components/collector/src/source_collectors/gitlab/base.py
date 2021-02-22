@@ -1,7 +1,8 @@
 """GitLab collector base classes."""
 
 from abc import ABC
-from typing import Dict, Optional, Tuple, Sequence, List, Set
+from collections.abc import Sequence
+from typing import Optional
 
 from dateutil.parser import parse
 
@@ -33,11 +34,11 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
             responses.extend(await self._get_source_responses(*next_urls))
         return responses
 
-    def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
+    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
         """Override to return None, as the private token is passed as header."""
         return None
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         """Extend to add the private token, if any, to the headers."""
         headers = super()._headers()
         if private_token := self._parameter("private_token"):
@@ -71,8 +72,8 @@ class GitLabJobsBase(GitLabBase):
 
     async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""
-        jobs: List[Job] = []
-        jobs_seen: Set[Tuple[str, str, str]] = set()
+        jobs: list[Job] = []
+        jobs_seen: set[tuple[str, str, str]] = set()
         for response in responses:
             for job in await response.json():
                 job_fingerprint = job["name"], job["stage"], job["ref"]

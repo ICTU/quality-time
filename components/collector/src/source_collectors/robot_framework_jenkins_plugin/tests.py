@@ -1,6 +1,6 @@
 """Robot Framework Jenkins plugin tests collector."""
 
-from typing import cast, List
+from typing import cast
 
 from source_model import SourceMeasurement, SourceResponses
 
@@ -12,7 +12,7 @@ class RobotFrameworkJenkinsPluginTests(RobotFrameworkJenkinsPluginBaseClass):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the number of tests."""
-        statuses = cast(List[str], self._parameter("test_result"))
+        statuses = cast(list[str], self._parameter("test_result"))
         json = await responses[0].json()
         value = sum(int(json[status]) for status in statuses)
         return SourceMeasurement(value=str(value), total=str(json["overallTotal"]))

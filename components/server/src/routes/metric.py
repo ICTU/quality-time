@@ -1,6 +1,6 @@
 """Metric routes."""
 
-from typing import Any, Dict
+from typing import Any
 
 import bottle
 from pymongo.database import Database
@@ -17,7 +17,7 @@ from server_utilities.type import MetricId, SubjectId
 @bottle.get("/internal-api/v3/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
-    metrics: Dict[str, Any] = {}
+    metrics: dict[str, Any] = {}
     for report in latest_reports(database):
         for subject in report["subjects"].values():
             for metric_uuid, metric in subject["metrics"].items():

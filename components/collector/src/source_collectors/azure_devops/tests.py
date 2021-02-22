@@ -3,7 +3,7 @@
 import itertools
 from collections import defaultdict
 from types import SimpleNamespace
-from typing import Dict, List, cast
+from typing import cast
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
@@ -29,13 +29,13 @@ class AzureDevopsTests(SourceCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the test runs."""
-        test_results = cast(List[str], self._parameter("test_result"))
-        test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
+        test_results = cast(list[str], self._parameter("test_result"))
+        test_run_names_to_include = cast(list[str], self._parameter("test_run_names_to_include")) or ["all"]
         test_run_states_to_include = [value.lower() for value in self._parameter("test_run_states_to_include")] or [
             "all"
         ]
         runs = (await responses[0].json()).get("value", [])
-        highest_build: Dict[str, TestRun] = defaultdict(TestRun)
+        highest_build: dict[str, TestRun] = defaultdict(TestRun)
         for run in runs:
             name = run.get("name", "Unknown test run name")
             if test_run_names_to_include != ["all"] and not match_string_or_regular_expression(

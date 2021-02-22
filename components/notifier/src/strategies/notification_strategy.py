@@ -1,7 +1,7 @@
 """Strategies for notifying users about metrics."""
 
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Optional
 
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
@@ -15,7 +15,7 @@ class NotificationFinder:
         self.already_notified = []
         self.data_model = data_model
 
-    def get_notifications(self, json, most_recent_measurement_seen: datetime) -> List[Notification]:
+    def get_notifications(self, json, most_recent_measurement_seen: datetime) -> list[Notification]:
         """Return the reports that have a webhook and metrics that require notifying."""
         notifications = []
         for report in json["reports"]:

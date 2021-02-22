@@ -1,6 +1,5 @@
 """OWASP Dependency Check security warnings collector."""
 
-from typing import List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces
@@ -12,7 +11,7 @@ from .dependencies import OWASPDependencyCheckDependencies
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
     """Collector to get security warnings from the OWASP Dependency Check XML report."""
 
-    def _dependencies(self, tree: Element, namespaces: Namespaces) -> List[Element]:
+    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:
         """Return the vulnerable dependencies."""
         return [
             dependency
@@ -40,7 +39,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
         )
         return entity
 
-    def __vulnerabilities(self, element: Element, namespaces: Namespaces) -> List[Element]:
+    def __vulnerabilities(self, element: Element, namespaces: Namespaces) -> list[Element]:
         """Return the vulnerabilities that have one of the severities specified in the parameters."""
         severities = self._parameter("severities")
         vulnerabilities = element.findall(".//ns:vulnerabilities/ns:vulnerability", namespaces)

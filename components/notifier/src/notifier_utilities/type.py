@@ -1,6 +1,6 @@
 """Quality-time specific types."""
 
-from typing import Any, Dict, NewType
+from typing import Any, NewType
 
-JSON = Dict[str, Any]
+JSON = dict[str, Any]
 URL = NewType("URL", str)

@@ -1,7 +1,7 @@
 """Base classes for Quality-time collectors."""
 
 from abc import ABC
-from typing import Any, Dict, List
+from typing import Any
 from urllib import parse
 
 from base_collectors import SourceCollector, SourceCollectorException
@@ -17,7 +17,7 @@ class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
         netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
 
-    async def _get_reports(self, response: Response) -> List[Dict[str, Any]]:
+    async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         reports = list((await response.json())["reports"])

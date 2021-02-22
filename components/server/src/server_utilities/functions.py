@@ -3,9 +3,10 @@
 import hashlib
 import re
 import uuid as _uuid
+from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
+from typing import TypeVar
 
 import bottle
 
@@ -56,7 +57,7 @@ Item = TypeVar("Item")
 
 def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:
     """Return the unique items in the list."""
-    seen: Set[Hashable] = set()
+    seen: set[Hashable] = set()
     for item in items:
         if (key := get_key(item)) not in seen:
             seen.add(key)

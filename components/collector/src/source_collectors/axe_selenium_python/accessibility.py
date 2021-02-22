@@ -1,6 +1,6 @@
 """axe-selenium-python accessibility analysis collectors."""
 
-from typing import Collection
+from collections.abc import Collection
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression

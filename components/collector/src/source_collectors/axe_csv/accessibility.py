@@ -3,7 +3,6 @@
 import csv
 import re
 from io import StringIO
-from typing import Dict, List
 
 from base_collectors import CSVFileSourceCollector
 from collector_utilities.functions import md5_hash
@@ -33,7 +32,7 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
         ]
         return SourceMeasurement(entities=entities)
 
-    async def __parse_csv(self, responses: SourceResponses) -> List[Dict[str, str]]:
+    async def __parse_csv(self, responses: SourceResponses) -> list[dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""
         impact_levels = self._parameter("impact")
         violation_types = self._parameter("violation_type")

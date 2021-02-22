@@ -1,6 +1,6 @@
 """JUnit tests collector."""
 
-from typing import List, cast
+from typing import cast
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
@@ -13,7 +13,7 @@ class JUnitTests(XMLFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the tests from the JUnit XML."""
         entities = []
-        test_statuses_to_count = cast(List[str], self._parameter("test_result"))
+        test_statuses_to_count = cast(list[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
         total = 0
         for response in responses:

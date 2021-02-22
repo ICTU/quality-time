@@ -1,7 +1,5 @@
 """Performancetest-runner slow transactions collector."""
 
-from typing import List
-
 from bs4 import Tag
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -25,7 +23,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
         threshold = "high" if transaction.select("td.red.evaluated") else "warning"
         return Entity(key=name, name=name, threshold=threshold)
 
-    async def __slow_transactions(self, responses: SourceResponses) -> List[Tag]:
+    async def __slow_transactions(self, responses: SourceResponses) -> list[Tag]:
         """Return the slow transactions in the performance test report."""
         thresholds = self._parameter("thresholds")
         transactions_to_include = self._parameter("transactions_to_include")
@@ -38,7 +36,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
                 return False
             return not match_string_or_regular_expression(name, transactions_to_ignore)
 
-        slow_transactions: List[Tag] = []
+        slow_transactions: list[Tag] = []
         for response in responses:
             soup = await self._soup(response)
             for color in thresholds:

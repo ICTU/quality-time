@@ -1,7 +1,7 @@
 """Metric model class."""
 
 from datetime import date
-from typing import Dict, Optional, cast
+from typing import Optional, cast
 
 from server_utilities.type import Direction, Scale, Status, TargetType
 
@@ -78,6 +78,6 @@ class Metric:
             status = "target_not_met"
         return status
 
-    def sources(self) -> Dict:
+    def sources(self) -> dict:
         """Return the metric sources."""
-        return cast(Dict, self.__data.get("sources", {}))
+        return cast(dict, self.__data.get("sources", {}))

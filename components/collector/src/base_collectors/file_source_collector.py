@@ -7,7 +7,7 @@ import json
 import zipfile
 from abc import ABC
 from http import HTTPStatus
-from typing import Dict, List, cast
+from typing import cast
 
 from collector_utilities.type import JSON, URL, Response, Responses
 from source_model import SourceResponses
@@ -37,7 +37,7 @@ class FakeResponse:
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that retrieve files."""
 
-    file_extensions: List[str] = []  # Subclass responsibility
+    file_extensions: list[str] = []  # Subclass responsibility
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to unzip any zipped responses."""
@@ -47,7 +47,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
             responses[:] = list(itertools.chain(*unzipped_responses))
         return responses
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         """Extend to add a private token to the headers, if present in the parameters."""
         headers = super()._headers()
         if token := cast(str, self._parameter("private_token")):

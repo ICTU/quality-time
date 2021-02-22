@@ -1,6 +1,6 @@
 """Robot Framework tests collector."""
 
-from typing import List, cast
+from typing import cast
 
 from collector_utilities.functions import parse_source_response_xml
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -16,7 +16,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
         count = 0
         total = 0
         entities = []
-        test_results = cast(List[str], self._parameter("test_result"))
+        test_results = cast(list[str], self._parameter("test_result"))
         all_test_results = self._data_model["sources"][self.source_type]["parameters"]["test_result"]["values"]
         for response in responses:
             tree = await parse_source_response_xml(response)

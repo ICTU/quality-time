@@ -1,6 +1,6 @@
 """Model queries."""
 
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 def is_password_parameter(data_model, source_type: str, parameter: str) -> bool:
@@ -19,8 +19,11 @@ def get_measured_attribute(data_model, metric_type: str, source_type: str) -> Op
     return str(attribute) if attribute else attribute
 
 
-def get_attribute_type(entity: Dict[str, List[Dict[str, str]]], attribute_key: Optional[str]) -> str:
+def get_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
     """Look up the type of an entity attribute."""
-    attribute_type = [attribute for attribute in entity["attributes"] if attribute["key"] == attribute_key][0].get(
-        "type", "text") if entity and attribute_key else "text"
+    attribute_type = (
+        [attribute for attribute in entity["attributes"] if attribute["key"] == attribute_key][0].get("type", "text")
+        if entity and attribute_key
+        else "text"
+    )
     return str(attribute_type)

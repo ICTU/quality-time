@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime, timedelta
-from typing import Any, Dict, Final, NoReturn, cast
+from typing import Any, Final, NoReturn, cast
 
 import aiohttp
 
@@ -49,8 +49,8 @@ class MetricsCollector:
             f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
         )
         self.data_model: JSON = {}
-        self.last_parameters: Dict[str, Any] = {}
-        self.next_fetch: Dict[str, datetime] = {}
+        self.last_parameters: dict[str, Any] = {}
+        self.next_fetch: dict[str, datetime] = {}
 
     @staticmethod
     def record_health(filename: str = "/home/collector/health_check.txt") -> None:

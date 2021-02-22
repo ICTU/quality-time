@@ -1,6 +1,5 @@
 """Jira velocity collector."""
 
-from typing import Dict, List
 from urllib.parse import parse_qs, urlparse
 
 from typing_extensions import TypedDict
@@ -16,7 +15,7 @@ class JiraVelocity(SourceCollector):
     Board = TypedDict("Board", {"id": int, "name": str})
     Points = TypedDict("Points", {"text": str, "value": float})
     Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
-    SprintPoints = Dict[str, Points]
+    SprintPoints = dict[str, Points]
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to pass the Greenhopper velocity chart API."""
@@ -79,7 +78,7 @@ class JiraVelocity(SourceCollector):
         """Return the board id."""
         last = False
         start_at = 0
-        boards: List[JiraVelocity.Board] = []
+        boards: list[JiraVelocity.Board] = []
         while not last:
             url = URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")
             response = (await super()._get_source_responses(url))[0]

@@ -6,7 +6,7 @@ import logging
 import pathlib
 import unittest
 import zipfile
-from typing import List, Tuple, Union
+from typing import Union
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -21,7 +21,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     METRIC_ADDITION = "sum"
 
     @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(cls) -> None:  # pylint: disable=invalid-name
         """Override to disable logging and load the data model so it is available for all unit tests."""
         logging.disable(logging.CRITICAL)
         module_dir = pathlib.Path(__file__).resolve().parent
@@ -30,11 +30,11 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
             cls.data_model = json.load(json_data_model)
 
     @classmethod
-    def tearDownClass(cls) -> None:
+    def tearDownClass(cls) -> None:  # pylint: disable=invalid-name
         """Override to reset logging."""
         logging.disable(logging.NOTSET)
 
-    def setUp(self) -> None:
+    def setUp(self) -> None:  # pylint: disable=invalid-name
         """Extend to set up the source and metric under test."""
         self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url=f"https://{self.SOURCE_TYPE}")))
         self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
@@ -100,7 +100,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
 
     @staticmethod
-    def zipped_report(*filenames_and_contents: Tuple[str, str]) -> bytes:
+    def zipped_report(*filenames_and_contents: tuple[str, str]) -> bytes:
         """Return a zipped report."""
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
@@ -108,6 +108,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 zipped_report.writestr(filename, content)
         return bytes_io.getvalue()
 
-    def set_source_parameter(self, key: str, value: Union[str, List[str]]) -> None:
+    def set_source_parameter(self, key: str, value: Union[str, list[str]]) -> None:
         """Set a source parameter."""
         self.sources["source_id"]["parameters"][key] = value

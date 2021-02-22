@@ -1,7 +1,6 @@
 """Notification."""
 
 from datetime import datetime, timedelta
-from typing import List
 
 from models.metric_notification_data import MetricNotificationData
 
@@ -13,16 +12,18 @@ class Notification:
         """Initialise the Notification with the required info."""
         self.report_title = report["title"]
         self.url = report.get("url")
-        self.metrics: List[MetricNotificationData] = metrics
+        self.metrics: list[MetricNotificationData] = metrics
         self.destination_uuid = destination_uuid
         self.destination = destination
         self.creation_time = datetime.now()
 
     def __eq__(self, other):
         """Check if the notification itself is the same, regardless of it's metric content."""
-        return self.report_title == other.report_title and \
-            self.destination_uuid == other.destination_uuid and \
-            self.destination == other.destination
+        return (
+            self.report_title == other.report_title
+            and self.destination_uuid == other.destination_uuid
+            and self.destination == other.destination
+        )
 
     def ready(self):
         """Return whether this notification can be sent."""

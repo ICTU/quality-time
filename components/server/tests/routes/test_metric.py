@@ -1,7 +1,6 @@
 """Unit tests for the metric routes."""
 
 import unittest
-from typing import List
 from unittest.mock import Mock, patch
 
 from routes.metric import (
@@ -86,7 +85,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Simulate Mongo setting an id on the inserted measurement."""
         measurement["_id"] = "measurement_id"
 
-    def assert_delta(self, description: str, uuids: List[str] = None, email: str = JOHN["email"]):
+    def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"]):
         """Assert that the report delta contains the correct data."""
         uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
         description = f"John changed the {description}."
@@ -294,7 +293,7 @@ class MetricTest(unittest.TestCase):
             sources=dict(source_type=dict(name="Source type")),
         )
 
-    def assert_delta(self, description: str, uuids: List[str] = None, email: str = JOHN["email"], report=None):
+    def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
         uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
         report = report or self.report

@@ -1,7 +1,7 @@
 """Collector base classes for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import Dict, Optional, Tuple, cast
+from typing import Optional, cast
 
 import aiohttp
 
@@ -19,13 +19,13 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self._scan_id: Optional[str] = None
         super().__init__(*args, **kwargs)
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         """Extend to add the token."""
         headers = super()._headers()
         headers["Authorization"] = f"Bearer {self.__token}"
         return headers
 
-    def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
+    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
         """Override to return nothing because the token is added as header."""
         return None
 

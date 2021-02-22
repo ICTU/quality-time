@@ -1,16 +1,16 @@
 """Wekan collector base classes."""
 
 from abc import ABC
-from typing import Dict, List, cast
+from typing import cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from source_model import SourceResponses
 
 
-WekanCard = Dict[str, str]
-WekanBoard = Dict[str, str]
-WekanList = Dict[str, str]
+WekanCard = dict[str, str]
+WekanBoard = dict[str, str]
+WekanList = dict[str, str]
 
 
 class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -20,8 +20,8 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self.__token = ""
         self._board: WekanBoard = {}
         self._board_url = ""
-        self._lists: List[WekanList] = []
-        self._cards: Dict[str, List[WekanCard]] = {}
+        self._lists: list[WekanList] = []
+        self._cards: dict[str, list[WekanCard]] = {}
         super().__init__(*args, **kwargs)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -29,7 +29,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = await self._api_url()
         return URL(f"{api_url}/b/{self._board['_id']}") if responses else api_url
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         """Override to add the token to the headers."""
         return dict(Authorization=f"Bearer {self.__token}")
 
@@ -74,9 +74,9 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         """Return whether the list should be ignored."""
         if card_list.get("archived", False):
             return True
-        lists_to_ignore = cast(List[str], self._parameter("lists_to_ignore"))
+        lists_to_ignore = cast(list[str], self._parameter("lists_to_ignore"))
         return card_list["_id"] in lists_to_ignore or card_list["title"] in lists_to_ignore
 
-    def _ignore_card(self, card: Dict) -> bool:  # pylint: disable=unused-argument,no-self-use
+    def _ignore_card(self, card: dict) -> bool:  # pylint: disable=unused-argument,no-self-use
         """Return whether the card should be ignored."""
         return card.get("archived", False)

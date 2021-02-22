@@ -1,7 +1,6 @@
 """Base collectors for SonarQube."""
 
 from abc import ABC
-from typing import Dict, List
 
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL
@@ -65,15 +64,15 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         value_key, total_key = self._value_key(), self._total_key()
         return f"{value_key},{total_key}" if total_key else value_key
 
-    def _value(self, metrics: Dict[str, str]) -> str:
+    def _value(self, metrics: dict[str, str]) -> str:
         """Return the metric value."""
         return str(sum(int(metrics[key]) for key in self._value_key().split(",")))
 
-    def _total(self, metrics: Dict[str, str]) -> str:
+    def _total(self, metrics: dict[str, str]) -> str:
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: dict[str, str]) -> list[Entity]:  # pylint: disable=no-self-use,unused-argument
         """Return the entities."""
         return []
 
@@ -86,7 +85,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return self.totalKey
 
     @staticmethod
-    async def __get_metrics(responses: SourceResponses) -> Dict[str, str]:
+    async def __get_metrics(responses: SourceResponses) -> dict[str, str]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
         return {measure["metric"]: measure["value"] for measure in measures}

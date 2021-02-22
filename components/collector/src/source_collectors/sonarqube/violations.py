@@ -1,7 +1,5 @@
 """SonarQube violations collector."""
 
-from typing import Dict, List
-
 from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -47,7 +45,7 @@ class SonarQubeViolations(SonarQubeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the issues."""
         value = 0
-        entities: List[Entity] = []
+        entities: list[Entity] = []
         for response in responses:
             json = await response.json()
             value += int(json.get("total", 0))
@@ -106,7 +104,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Extend to parse the total number of violations."""
         measurement = await super()._parse_source_responses(responses)
-        measures: List[Dict[str, str]] = []
+        measures: list[dict[str, str]] = []
         for response in responses:
             measures.extend((await response.json()).get("component", {}).get("measures", []))
         measurement.total = str(sum(int(measure["value"]) for measure in measures))

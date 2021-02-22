@@ -4,8 +4,9 @@ import contextlib
 import hashlib
 import re
 import urllib
+from collections.abc import Collection, Generator
 from datetime import datetime
-from typing import Collection, Generator, Pattern, Tuple, cast
+from typing import cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -23,7 +24,7 @@ async def parse_source_response_xml(response: Response, allowed_root_tags: Colle
 
 async def parse_source_response_xml_with_namespace(
     response: Response, allowed_root_tags: Collection[str] = None
-) -> Tuple[Element, Namespaces]:
+) -> tuple[Element, Namespaces]:
     """Parse the XML with namespace from the source response."""
     tree = await parse_source_response_xml(response, allowed_root_tags)
     # ElementTree has no API to get the namespace so we extract it from the root tag:
@@ -31,7 +32,7 @@ async def parse_source_response_xml_with_namespace(
     return tree, namespaces
 
 
-Substitution = Tuple[Pattern[str], str]
+Substitution = tuple[re.Pattern[str], str]
 MEMORY_ADDRESS_SUB: Substitution = (re.compile(r" at 0x[0-9abcdef]+>"), ">")
 TOKEN_SUB: Substitution = (re.compile(r"token=[^&]+"), "token=<redacted>")
 KEY_SUB: Substitution = (re.compile(r"key=[0-9abcdef]+"), "key=<redacted>")

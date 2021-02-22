@@ -2,8 +2,9 @@
 
 import logging
 import time
+from collections.abc import Iterator
 from datetime import date
-from typing import Dict, Iterator, cast
+from typing import cast
 
 import bottle
 from pymongo.database import Database
@@ -25,7 +26,7 @@ from server_utilities.type import MetricId, SourceId
 
 
 @bottle.post("/internal-api/v3/measurements")
-def post_measurement(database: Database) -> Dict:
+def post_measurement(database: Database) -> dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
     metric_uuid = measurement["metric_uuid"]
@@ -79,7 +80,7 @@ def debt_target_expired(data_model, metric, measurement) -> bool:
 @bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
 def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
-) -> Dict:
+) -> dict:
     """Set an entity attribute."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
     old_measurement = latest_measurement(database, metric_uuid)
@@ -136,7 +137,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 
 
 @bottle.get("/api/v3/measurements/<metric_uuid>")
-def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
+def get_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
     return dict(measurements=list(measurements_by_metric(database, metric_uuid, max_iso_timestamp=report_date_time())))

@@ -1,7 +1,5 @@
 """Composer dependencies collector."""
 
-from typing import Dict, List
-
 from base_collectors import JSONFileSourceCollector
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -12,7 +10,7 @@ class ComposerDependencies(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the dependencies."""
         statuses = self._parameter("latest_version_status")
-        installed_dependencies: List[Dict[str, str]] = []
+        installed_dependencies: list[dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend((await response.json(content_type=None)).get("installed", []))
         entities = [

@@ -1,6 +1,5 @@
 """OWASP Dependency Check dependencies collector."""
 
-from typing import List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
@@ -27,7 +26,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             )
         return SourceMeasurement(entities=entities)
 
-    def _dependencies(self, tree: Element, namespaces: Namespaces) -> List[Element]:  # pylint: disable=no-self-use
+    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:  # pylint: disable=no-self-use
         """Return the dependencies."""
         return tree.findall(".//ns:dependency", namespaces)
 
