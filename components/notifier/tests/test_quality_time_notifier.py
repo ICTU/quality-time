@@ -72,7 +72,7 @@ class FakeResponse:
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """Define info that is used in multiple tests."""
         self.url = "https://report1"
         self.title = "Report 1"
@@ -95,7 +95,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         )
 
     @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(cls) -> None:  # pylint: disable=invalid-name
         """Provide the data_model to the class."""
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent / "server" / "src" / "data" / "datamodel.json"
