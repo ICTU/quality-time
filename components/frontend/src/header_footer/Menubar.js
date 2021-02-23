@@ -14,7 +14,7 @@ function Login(props) {
     login(username, password)
       .then(function (json) {
         if (json.ok) {
-          props.set_user(username, json.email)
+          props.set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
         } else {
           setLoginError(true);
         }

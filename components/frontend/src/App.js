@@ -209,22 +209,24 @@ class App extends Component {
     login("", "")
       .then(function (json) {
         if (json.ok) {
-          self.set_user(json.email, json.email);
+          self.set_user(json.email, json.email, json.session_expiration_datetime);
           return true;
         }
       });
     return false;
   }
 
-  set_user(username, email) {
+  set_user(username, email, session_expiration_datetime) {
     const email_address = email && email.indexOf("@") > -1 ? email : null;
     this.setState({ user: username, email: email_address });
     if (username === null) {
       localStorage.removeItem("user");
       localStorage.removeItem("email");
+      localStorage.removeItem("session_expiration_datetime");
     } else {
       localStorage.setItem("user", username);
       localStorage.setItem("email", email_address);
+      localStorage.setItem("session_expiration_datetime", session_expiration_datetime);
     }
   }
 
@@ -247,7 +249,7 @@ class App extends Component {
           onSearch={(e) => this.handleSearchChange(e)}
           report_date_string={this.state.report_date_string}
           searchable={current_report !== null}
-          set_user={(username, email) => this.set_user(username, email)}
+          set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
           user={this.state.user}
         />
         <SemanticToastContainer />

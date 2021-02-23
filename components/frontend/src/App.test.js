@@ -73,7 +73,7 @@ describe("<App/>", () => {
 
   it('sets the user', () => {
     const wrapper = mount(<App />);
-    wrapper.instance().set_user("admin", "email@example.org");
+    wrapper.instance().set_user("admin", "email@example.org", new Date(Date.parse("3000-02-23T22:00:50.945872+00:00")));
     expect(wrapper.state("user")).toBe("admin");
     expect(wrapper.state("email")).toBe("email@example.org");
     wrapper.instance().set_user(null);
@@ -83,7 +83,7 @@ describe("<App/>", () => {
 
   it('resets the user when the session is expired', () => {
     const wrapper = mount(<App />);
-    wrapper.instance().set_user("admin", "email@example.org");
+    wrapper.instance().set_user("admin", "email@example.org", new Date(Date.parse("3000-02-23T22:00:50.945872+00:00")));
     wrapper.instance().check_session({ ok: true });
     expect(wrapper.state("user")).toBe("admin");
     wrapper.instance().check_session({ ok: false, status: 401 });
