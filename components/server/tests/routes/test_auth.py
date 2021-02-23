@@ -44,22 +44,22 @@ class LoginTests(AuthTestCase):
 
     NOW = datetime(2021, 2, 21, 21, 8, 0, tzinfo=timezone.utc)
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
+    USER_EMAIL = f"{USERNAME}@example.org"
+    LDAP_ROOT_DN = "dc=example,dc=org"
+    USER_DN = f"cn={USERNAME},{LDAP_ROOT_DN}"
+    LOOKUP_USER_DN = f"cn=admin,{LDAP_ROOT_DN}"
+    LOG_ERROR_MESSAGE_TEMPLATE = "LDAP error for %s: %s"
 
     def setUp(self):
         """Extend to add a mock LDAP."""
         super().setUp()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
-        self.user_email = f"{USERNAME}@example.org"
-        self.ldap_root_dn = "dc=example,dc=org"
-        self.user_dn = f"cn={USERNAME},{self.ldap_root_dn}"
-        self.lookup_user_dn = f"cn=admin,{self.ldap_root_dn}"
-        self.log_error_message_template = "LDAP error for %s: %s"
-        self.ldap_entry = Mock(entry_dn=self.user_dn)
+        self.ldap_entry = Mock(entry_dn=self.USER_DN)
         self.ldap_entry.userPassword = Mock()
-        self.ldap_entry.mail = Mock(value=self.user_email)
+        self.ldap_entry.mail = Mock(value=self.USER_EMAIL)
         self.ldap_connection = Mock(bind=Mock(return_value=True), search=Mock(), entries=[self.ldap_entry])
         self.login_ok = dict(
-            ok=True, email=self.user_email, session_expiration_datetime=(self.NOW + timedelta(hours=24)).isoformat()
+            ok=True, email=self.USER_EMAIL, session_expiration_datetime=(self.NOW + timedelta(hours=24)).isoformat()
         )
         self.login_nok = dict(
             ok=False, email="", session_expiration_datetime=datetime.min.replace(tzinfo=timezone.utc).isoformat()
@@ -68,22 +68,22 @@ class LoginTests(AuthTestCase):
     def assert_ldap_connection_search_called(self):
         """Assert that the LDAP connection search method is called with the correct arguments."""
         self.ldap_connection.search.assert_called_with(
-            self.ldap_root_dn, f"(|(uid={USERNAME})(cn={USERNAME}))", attributes=["userPassword", "mail"]
+            self.LDAP_ROOT_DN, f"(|(uid={USERNAME})(cn={USERNAME}))", attributes=["userPassword", "mail"]
         )
 
     def assert_ldap_lookup_connection_created(self, connection_mock):
         """Assert that the LDAP lookup connection was created with the lookup user dn and password."""
-        self.assertEqual(connection_mock.call_args_list[0][1], dict(user=self.lookup_user_dn, password="admin"))
+        self.assertEqual(connection_mock.call_args_list[0][1], dict(user=self.LOOKUP_USER_DN, password="admin"))
 
     def assert_ldap_bind_connection_created(self, connection_mock):
         """Assert that the LDAP bind connection was created with the lookup user dn and password."""
         self.assertEqual(
-            connection_mock.call_args_list[1][1], dict(user=self.user_dn, password=PASSWORD, auto_bind=True)
+            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind=True)
         )
 
     def assert_log(self, logging_mock, exception, username, email="unknown email"):
         """Assert that the correct error message is logged."""
-        self.assertEqual(self.log_error_message_template, logging_mock.call_args[0][0])
+        self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
         self.assertEqual(f"user {username} <{email}>", logging_mock.call_args[0][1])
         self.assertIsInstance(logging_mock.call_args[0][2], exception)
 
@@ -92,7 +92,7 @@ class LoginTests(AuthTestCase):
         """Test successful login from forwarded authentication header."""
         connection_mock.return_value = None
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
-            with patch("bottle.request.get_header", Mock(return_value=self.user_email)):
+            with patch("bottle.request.get_header", Mock(return_value=self.USER_EMAIL)):
                 self.assertEqual(self.login_ok, auth.login(self.database))
         self.assert_cookie_has_session_id()
         connection_mock.assert_not_called()
@@ -149,7 +149,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
-        self.assert_log(logging_mock, exceptions.LDAPBindError, self.lookup_user_dn)
+        self.assert_log(logging_mock, exceptions.LDAPBindError, self.LOOKUP_USER_DN)
 
     @patch.object(logging, "warning")
     def test_login_search_error(self, logging_mock, connection_mock, connection_enter):
@@ -171,7 +171,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         self.assert_ldap_connection_search_called()
         self.assertEqual("Only SSHA LDAP password digest supported!", logging_mock.call_args_list[0][0][0])
-        self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult, self.user_dn, self.user_email)
+        self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult, self.USER_DN, self.USER_EMAIL)
 
     @patch.object(logging, "warning")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
@@ -181,7 +181,7 @@ class LoginTests(AuthTestCase):
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, auth.login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult, self.user_dn, self.user_email)
+        self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult, self.USER_DN, self.USER_EMAIL)
 
 
 class LogoutTests(AuthTestCase):
