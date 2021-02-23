@@ -44,7 +44,10 @@ class App extends Component {
     const report_date_iso_string = parse(this.history.location.search).report_date || "";
     const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
     this.login_forwardauth();
-    this.connect_to_nr_measurements_event_source()
+    this.connect_to_nr_measurements_event_source();
+    if (new Date(localStorage.getItem("session_expiration_datetime")) < new Date()) {
+      this.set_user(null)  // The session expired while the user was away
+    }
     this.setState(
       {
         report_uuid: report_uuid, report_date_string: report_date_string, loading: true,

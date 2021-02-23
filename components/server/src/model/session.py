@@ -13,8 +13,8 @@ class Session:
     def is_valid(self) -> bool:
         """Return whether the session is valid."""
         expiration_datetime = cast(
-            datetime, self.__session_data.get("session_expiration_datetime", datetime.min.replace(tzinfo=timezone.utc))
-        )
+            datetime, self.__session_data.get("session_expiration_datetime", datetime.min)
+        ).replace(tzinfo=timezone.utc)
         return bool(expiration_datetime > datetime.now(timezone.utc))
 
     def is_authorized(self, authorized_users: list[str]) -> bool:
