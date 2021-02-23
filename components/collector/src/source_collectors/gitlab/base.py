@@ -26,13 +26,10 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
-        responses = await super()._get_source_responses(*urls)
-        next_urls = [
-            next_url for response in responses if (next_url := response.links.get("next", {}).get("url"))
-        ]  # pylint: disable=superfluous-parens
-        if next_urls:
-            responses.extend(await self._get_source_responses(*next_urls))
-        return responses
+        all_responses = responses = await super()._get_source_responses(*urls)
+        while next_urls := self.__next_urls(responses):
+            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
+        return all_responses
 
     def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
         """Override to return None, as the private token is passed as header."""
@@ -44,6 +41,11 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         if private_token := self._parameter("private_token"):
             headers["Private-Token"] = str(private_token)
         return headers
+
+    @staticmethod
+    def __next_urls(responses: SourceResponses) -> list[URL]:
+        """Return the next (pagination) links from the responses."""
+        return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
 class GitLabJobsBase(GitLabBase):
