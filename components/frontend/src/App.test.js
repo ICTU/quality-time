@@ -99,6 +99,18 @@ describe("<App/>", () => {
     expect(localStorage.getItem("session_expiration_datetime")).toBe(null);
   });
 
+  it('does not reset the user when the session is not expired on mount', () => {
+    localStorage.setItem("session_expiration_datetime", "3000-02-23T22:00:50.945Z")
+    localStorage.setItem("user", "admin")
+    localStorage.setItem("email", "admin@example.org")
+    const wrapper = mount(<App />);
+    expect(wrapper.state("user")).toBe("admin");
+    expect(localStorage.getItem("user")).toBe("admin");
+    expect(wrapper.state("email")).toBe("admin@example.org");
+    expect(localStorage.getItem("email")).toBe("admin@example.org");
+    expect(localStorage.getItem("session_expiration_datetime")).toBe("3000-02-23T22:00:50.945Z");
+  });
+
   it('resets the user when the session is expired', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org", new Date(Date.parse("3000-02-23T22:00:50.945872+00:00")));
