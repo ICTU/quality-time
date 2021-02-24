@@ -44,7 +44,10 @@ class App extends Component {
     const report_date_iso_string = parse(this.history.location.search).report_date || "";
     const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
     this.login_forwardauth();
-    this.connect_to_nr_measurements_event_source()
+    this.connect_to_nr_measurements_event_source();
+    if (new Date(localStorage.getItem("session_expiration_datetime")) < new Date()) {
+      this.set_user(null)  // The session expired while the user was away
+    }
     this.setState(
       {
         report_uuid: report_uuid, report_date_string: report_date_string, loading: true,
@@ -209,22 +212,24 @@ class App extends Component {
     login("", "")
       .then(function (json) {
         if (json.ok) {
-          self.set_user(json.email, json.email);
+          self.set_user(json.email, json.email, json.session_expiration_datetime);
           return true;
         }
       });
     return false;
   }
 
-  set_user(username, email) {
+  set_user(username, email, session_expiration_datetime) {
     const email_address = email && email.indexOf("@") > -1 ? email : null;
     this.setState({ user: username, email: email_address });
     if (username === null) {
       localStorage.removeItem("user");
       localStorage.removeItem("email");
+      localStorage.removeItem("session_expiration_datetime");
     } else {
       localStorage.setItem("user", username);
       localStorage.setItem("email", email_address);
+      localStorage.setItem("session_expiration_datetime", session_expiration_datetime.toISOString());
     }
   }
 
@@ -247,7 +252,7 @@ class App extends Component {
           onSearch={(e) => this.handleSearchChange(e)}
           report_date_string={this.state.report_date_string}
           searchable={current_report !== null}
-          set_user={(username, email) => this.set_user(username, email)}
+          set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
           user={this.state.user}
         />
         <SemanticToastContainer />
