@@ -8,7 +8,7 @@ import unittest
 from strategies.notification_strategy import NotificationFinder
 
 
-class Base(unittest.TestCase):
+class Base(unittest.TestCase):  # skipcq: PTC-W0046
     """Base data needed by the other test classes."""
 
     @classmethod

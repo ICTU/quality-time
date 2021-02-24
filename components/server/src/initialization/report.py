@@ -40,7 +40,7 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
 
 
 def import_json_report(database: Database, imported_report):
-    """ Store the report given as json in the database. """
+    """ Store the report given as json in the database."""
     report_to_store = dict(
         title=imported_report.get("title", "Example report"), report_uuid=imported_report["report_uuid"], subjects={}
     )

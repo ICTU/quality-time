@@ -5,8 +5,7 @@ from source_model import Entity
 
 
 class SourceMeasurement:  # pylint: disable=too-few-public-methods
-    """Class to hold measurement values, entities, and error messages from collecting the measurement from one
-    source."""
+    """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
 
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
 

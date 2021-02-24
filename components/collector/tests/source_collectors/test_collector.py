@@ -61,9 +61,11 @@ class CollectorTest(SourceCollectorTestCase):
             """Add a landing_url implementation that fails."""
 
             async def _api_url(self) -> URL:
+                """Override to return an URL fixture."""
                 return "https://api_url"
 
             async def _landing_url(self, responses: SourceResponses) -> URL:
+                """Override to raise an error."""
                 raise NotImplementedError
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):

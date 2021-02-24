@@ -46,3 +46,7 @@ enabled = true
     "components/server/Dockerfile",
     "components/testdata/Dockerfile",
   ]
+
+[[analyzers]]
+name = "secrets"
+enabled = true

@@ -14,7 +14,7 @@ import aiohttp
 from base_collectors import MetricsCollector
 
 
-class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
+class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-W0046
     """Base class for source collector unit tests."""
 
     METRIC_TYPE = SOURCE_TYPE = "Subclass responsibility"
