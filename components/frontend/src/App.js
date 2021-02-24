@@ -229,7 +229,7 @@ class App extends Component {
     } else {
       localStorage.setItem("user", username);
       localStorage.setItem("email", email_address);
-      localStorage.setItem("session_expiration_datetime", session_expiration_datetime);
+      localStorage.setItem("session_expiration_datetime", session_expiration_datetime.toISOString());
     }
   }
 

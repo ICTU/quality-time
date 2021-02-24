@@ -75,10 +75,28 @@ describe("<App/>", () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org", new Date(Date.parse("3000-02-23T22:00:50.945872+00:00")));
     expect(wrapper.state("user")).toBe("admin");
+    expect(localStorage.getItem("user")).toBe("admin");
     expect(wrapper.state("email")).toBe("email@example.org");
+    expect(localStorage.getItem("email")).toBe("email@example.org");
+    expect(localStorage.getItem("session_expiration_datetime")).toBe("3000-02-23T22:00:50.945Z");
     wrapper.instance().set_user(null);
     expect(wrapper.state("user")).toBe(null);
+    expect(localStorage.getItem("user")).toBe(null);
     expect(wrapper.state("email")).toBe(null);
+    expect(localStorage.getItem("email")).toBe(null);
+    expect(localStorage.getItem("session_expiration_datetime")).toBe(null);
+  });
+
+  it('resets the user when the session is expired on mount', () => {
+    localStorage.setItem("session_expiration_datetime", "2000-02-23T22:00:50.945Z")
+    localStorage.setItem("user", "admin")
+    localStorage.setItem("email", "admin@example.org")
+    const wrapper = mount(<App />);
+    expect(wrapper.state("user")).toBe(null);
+    expect(localStorage.getItem("user")).toBe(null);
+    expect(wrapper.state("email")).toBe(null);
+    expect(localStorage.getItem("email")).toBe(null);
+    expect(localStorage.getItem("session_expiration_datetime")).toBe(null);
   });
 
   it('resets the user when the session is expired', () => {
