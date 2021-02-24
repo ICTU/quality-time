@@ -16,7 +16,7 @@ USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class AuthTestCase(unittest.TestCase):
+class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for authorization tests."""
 
     def setUp(self):

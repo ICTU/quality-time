@@ -11,7 +11,7 @@ def setUpModule():  # pylint: disable=invalid-name
         DataModelTestCase.data_model = json.load(data_model_json)
 
 
-class DataModelTestCase(unittest.TestCase):
+class DataModelTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for data model unit tests."""
 
     data_model = {}
