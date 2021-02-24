@@ -24,16 +24,19 @@ class StableTracebackTest(unittest.TestCase):
         """Test that tokens are redacted from tracebacks."""
         self.assertEqual(
             "https://example.com?id=5&token=<redacted>&page=0",
-            stable_traceback("https://example.com?id=5&token=abcdef_45321-a&page=0"))
+            stable_traceback("https://example.com?id=5&token=abcdef_45321-a&page=0"),
+        )
 
     def test_no_keys(self):
         """Test that keys are redacted from tracebacks."""
         self.assertEqual(
-            "https://example.com?key=<redacted>&id=5", stable_traceback("https://example.com?key=abcdef45321a&id=5"))
+            "https://example.com?key=<redacted>&id=5", stable_traceback("https://example.com?key=abcdef45321a&id=5")
+        )
 
 
 class SafeURLTest(unittest.TestCase):
     """Unit tests for the safe for logging function."""
+
     def test_no_token(self):
         """Test that the URL is returned unchanged if it does not contain a token."""
         url = URL("https://url/path/1")
@@ -43,7 +46,8 @@ class SafeURLTest(unittest.TestCase):
         """Test that the URL is returned without the private token."""
         self.assertEqual(
             URL("https://url/path?private_token=<redacted>"),
-            tokenless(URL("https://url/path?private_token=abcdef45321a")))
+            tokenless(URL("https://url/path?private_token=abcdef45321a")),
+        )
 
 
 class DaysAgoTest(unittest.TestCase):

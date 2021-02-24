@@ -32,6 +32,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             """Register a fake collector automatically."""
 
             async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+                """Override to return a source measurement fixture."""
                 return SourceMeasurement(value="42", total="84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))

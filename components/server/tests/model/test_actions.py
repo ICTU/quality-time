@@ -8,7 +8,9 @@ from model.actions import copy_metric, copy_report, copy_source, copy_subject
 
 class CopySourceTest(unittest.TestCase):
     """Unit tests for the copy source action."""
+
     def setUp(self):
+        """Override to set up the data model and source under test."""
         self.data_model = dict(sources=dict(source_type=dict(name="Source type")))
         self.source = dict(name="Source", type="source_type")
 
@@ -31,11 +33,15 @@ class CopySourceTest(unittest.TestCase):
 
 class CopyMetricTest(unittest.TestCase):
     """Unit tests for the copy metric action."""
+
     def setUp(self):
+        """Override to set up the data model and metric under test."""
         self.data_model = dict(
-            metrics=dict(metric_type=dict(name="Metric type")), sources=dict(source_type=dict(name="Source type")))
+            metrics=dict(metric_type=dict(name="Metric type")), sources=dict(source_type=dict(name="Source type"))
+        )
         self.metric = dict(
-            name="Metric", type="metric_type", sources=dict(source_uuid=dict(type="source_type", name="Source")))
+            name="Metric", type="metric_type", sources=dict(source_uuid=dict(type="source_type", name="Source"))
+        )
 
     def test_copy_name(self):
         """Test that the copy name is changed."""
@@ -61,13 +67,17 @@ class CopyMetricTest(unittest.TestCase):
 
 class CopySubjectTest(unittest.TestCase):
     """Unit tests for the copy subject action."""
+
     def setUp(self):
+        """Override to set up the data model and the subject under test."""
         self.data_model = dict(
-            subjects=dict(subject_type=dict(name="Subject type")),
-            metrics=dict(metric_type=dict(name="Metric type")))
+            subjects=dict(subject_type=dict(name="Subject type")), metrics=dict(metric_type=dict(name="Metric type"))
+        )
         self.subject = dict(
-            type="subject_type", name="Subject", metrics=dict(
-                metric_uuid=dict(type="metric_type", name="Metric", sources={})))
+            type="subject_type",
+            name="Subject",
+            metrics=dict(metric_uuid=dict(type="metric_type", name="Metric", sources={})),
+        )
 
     def test_copy_name(self):
         """Test that the copy name is changed."""
@@ -93,11 +103,15 @@ class CopySubjectTest(unittest.TestCase):
 
 class CopyReportTest(unittest.TestCase):
     """Unit tests for the copy report action."""
+
     def setUp(self):
+        """Override to set up the data model and report under test."""
         self.data_model = dict(subjects=dict(subject_type=dict(name="Subject type")))
         self.report = dict(
-            report_uuid="report_uuid", title="Report",
-            subjects=dict(subject_uuid=dict(name="Subject", type="subject_type", metrics={})))
+            report_uuid="report_uuid",
+            title="Report",
+            subjects=dict(subject_uuid=dict(name="Subject", type="subject_type", metrics={})),
+        )
 
     def test_copy_title(self):
         """Test that the copy title is changed."""
