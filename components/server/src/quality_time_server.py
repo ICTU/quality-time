@@ -1,5 +1,7 @@
 """Quality-time server."""
 
+# pragma: no cover
+
 # isort: off
 from gevent import monkey  # pylint: disable=import-error
 
