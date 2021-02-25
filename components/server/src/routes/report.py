@@ -91,7 +91,7 @@ def export_report_as_pdf(report_uuid: ReportId):
 
 @bottle.get("/api/v3/report/<report_uuid>/json")
 def export_report_as_json(database: Database, report_uuid: ReportId):
-    """Return the quality report, including information about other reports needed for move/copy actions."""
+    """Return the quality-time report, including iencrypted credentials for api access to the sources."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     report = latest_report(database, report_uuid)

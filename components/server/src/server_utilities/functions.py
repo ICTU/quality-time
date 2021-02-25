@@ -80,7 +80,8 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
 def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
     """
     Encrypt the given value using Fernet 32 byte key.
-    Returns the generated key and the encrypted message.
+
+    @return: a tuple with the generated key and the encrypted message. Both as bytes.
     """
     key = Fernet.generate_key()
     fernet = Fernet(key)
@@ -93,7 +94,8 @@ def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, st
     Encrypts the message using symmetric Fernet encryption.
     The key of the Fernet encryption is encrypted using RSA for public/private key authentication
     and base64 encoded to be able to convert the result into a string.
-    Returns a tuple with encrypted Fernet key and encrypted message.
+
+    @return: a tuple with encrypted Fernet key and encrypted message. Both as string.
     """
     fernet_key, fernet_token = symmetric_encrypt(message)
 

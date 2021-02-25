@@ -30,9 +30,8 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
                     password = json.dumps(password)
 
                 password_bytes = password.encode()
-                key_encrypted_value = asymmetric_encrypt(public_key.encode(), password_bytes)
-
-                source["parameters"][parameter_key] = key_encrypted_value
+                encrypted_key_value = asymmetric_encrypt(public_key.encode(), password_bytes)
+                source["parameters"][parameter_key] = encrypted_key_value
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> list[ItemId]:
