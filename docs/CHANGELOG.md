@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.19.1-rc.2] - [2021-02-25]
+## [Unreleased]
 
 ### Fixed
 
 - The *Quality-time* API would return an internal server error (status code 500) if the database contains a source of a type that is no longer supported. Fixes [#1732](https://github.com/ICTU/quality-time/issues/1732).
 - When opening *Quality-time*, don't show the user as logged in when their session has expired. Fixes [#1927](https://github.com/ICTU/quality-time/issues/1927).
 - When measuring the up-to-dateness of a folder in GitLab with more than 100 files or subfolders, *Quality-time* uses the GitLab pagination API to retrieve the files and subfolders in batches of 100 each. However, due to a bug, the collector component would get stuck in a loop, retrieving the same files over and over again. Fixes [#1938](https://github.com/ICTU/quality-time/issues/1938).
+- Notifier would not work for recently set notification destinations. Fixes [#1946](https://github.com/ICTU/quality-time/issues/1946).
 
 ## [3.19.0] - [2021-02-21]
 

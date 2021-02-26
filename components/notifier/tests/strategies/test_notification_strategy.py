@@ -33,7 +33,7 @@ class Base(unittest.TestCase):  # skipcq: PTC-W0046
         )
 
 
-class StrategiesTestCase(Base):
+class StrategiesTests(Base):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
 
     def setUp(self):
@@ -193,7 +193,7 @@ class StrategiesTestCase(Base):
         report1 = dict(
             title="Title",
             report_uuid="report1",
-            teams_webhook="webhook",
+            webhook="webhook",
             subjects=dict(subject1=subject1),
             notification_destinations=dict(uuid1=dict(url=self.report_url, name="destination1")),
         )
@@ -210,7 +210,7 @@ class StrategiesTestCase(Base):
         report2 = dict(
             title="Title",
             report_uuid="report2",
-            teams_webhook="webhook",
+            webhook="webhook",
             subjects=dict(subject1=subject2),
             notification_destinations=dict(uuid1=dict(url="https://report2", name="destination2")),
         )
@@ -221,7 +221,7 @@ class StrategiesTestCase(Base):
         self.assertEqual(["metric1", "metric2"], [result[0][0].metric_name, result[1][0].metric_name])
 
     def test_no_notification_destinations_configured(self):
-        """Test that no notification is to be send if there are no configurations in notification destinations."""
+        """Test that no notification is to be sent if there are no configurations in notification destinations."""
         old_count = dict(status="target_met", value="5")
         new_count = dict(status="target_not_met", value="10")
         red_metric = self.metric(
@@ -236,7 +236,7 @@ class StrategiesTestCase(Base):
         report = dict(
             title="Title",
             report_uuid="report1",
-            teams_webhook="webhook",
+            webhook="webhook",
             subjects=dict(subject1=subject1),
             notification_destinations={},
         )
@@ -244,7 +244,7 @@ class StrategiesTestCase(Base):
         self.assertEqual([], self.notification_finder.get_notifications(report_json, self.most_recent_measurement_seen))
 
     def test_no_notification_destinations_in_json(self):
-        """Test that no notification is to be send if notification destinations doesnt exist in the data."""
+        """Test that no notification is to be sent if notification destinations do not exist in the data."""
         old_count = dict(status="target_met", value="5")
         new_count = dict(status="target_not_met", value="10")
         red_metric = self.metric(
@@ -256,12 +256,12 @@ class StrategiesTestCase(Base):
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
-        report = dict(title="Title", report_uuid="report1", teams_webhook="webhook", subjects=dict(subject1=subject1))
+        report = dict(title="Title", report_uuid="report1", webhook="webhook", subjects=dict(subject1=subject1))
         report_json = dict(reports=[report])
         self.assertEqual([], self.notification_finder.get_notifications(report_json, self.most_recent_measurement_seen))
 
 
-class LongUnchangedTestCase(Base):
+class LongUnchangedTests(Base):
     """Unit tests for the 'status long unchanged' notification strategy."""
 
     def setUp(self):
@@ -297,14 +297,14 @@ class LongUnchangedTestCase(Base):
         self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", now))
 
     def test_short_unchanged_status(self):
-        """Test that a metric isn't notable if its current status has been different in the last 3 weeks."""
+        """Test that a metric isn't notable if its current status has changed in the last 3 weeks."""
         now = datetime.now()
         self.red_metric["status_start"] = str(now - timedelta(days=20, hours=23))
         self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", now))
 
 
 class CheckIfMetricIsNotableTestCase(Base):
-    """Testcases for the check_if_metric_is_notable method."""
+    """Unit tests for the check_if_metric_is_notable method."""
 
     def setUp(self):
         """Set variables for the tests."""
