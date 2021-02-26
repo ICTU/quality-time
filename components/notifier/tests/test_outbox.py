@@ -39,8 +39,8 @@ class OutboxTestCase(unittest.TestCase):
         metric_notification_data4 = MetricNotificationData(metric4, self.data_model, self.reason1)
         metrics2 = [metric_notification_data3, metric_notification_data4]
         self.notifications = [
-            Notification(self.report, metrics1, "uuid1", dict(teams_webhook="https://url/1")),
-            Notification(self.report, metrics2, "uuid2", dict(teams_webhook="https://url/2")),
+            Notification(self.report, metrics1, "uuid1", dict(webhook="https://url/1")),
+            Notification(self.report, metrics2, "uuid2", dict(webhook="https://url/2")),
         ]
 
     @staticmethod
@@ -95,7 +95,7 @@ class OutboxTestCase(unittest.TestCase):
         metric1 = dict(metric_name="new metric 1")
         metric2 = dict(metric_name="new metric 2")
         metrics1 = [metric1, metric2]
-        new_notifications = [Notification(report, metrics1, "uuid1", dict(teams_webhook="https://url/1"))]
+        new_notifications = [Notification(report, metrics1, "uuid1", dict(webhook="https://url/1"))]
         outbox = Outbox(self.notifications)
         outbox.add_notifications(new_notifications)
         self.assertEqual(
@@ -122,8 +122,8 @@ class OutboxTestCase(unittest.TestCase):
         """Test that notifications without a destination aren't sent."""
         mocked_ready.side_effect = [True, True]
         notifications = self.notifications
-        notifications[0].destination["teams_webhook"] = None
-        notifications[1].destination["teams_webhook"] = None
+        notifications[0].destination["webhook"] = None
+        notifications[1].destination["webhook"] = None
         outbox = Outbox(notifications)
         self.assertEqual(0, outbox.send_notifications())
 

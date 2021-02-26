@@ -149,7 +149,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             report_uuid="report1",
             title=self.title,
             url=self.url,
-            notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="www.webhook.com")),
+            notification_destinations=dict(destination1=dict(name="destination name", webhook="www.webhook.com")),
             subjects=self.subjects,
         )
         now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
@@ -175,7 +175,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             report_uuid="report1",
             title=self.title,
             url=self.url,
-            teams_webhook="https://webhook",
+            webhook="https://webhook",
             subjects=dict(
                 subject1=dict(
                     metrics=dict(
@@ -224,7 +224,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             report_uuid="report1",
             title=self.title,
             url=self.url,
-            notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="")),
+            notification_destinations=dict(destination1=dict(name="destination name", webhook="")),
             subjects=self.subjects,
         )
         now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
