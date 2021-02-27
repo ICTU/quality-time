@@ -12,8 +12,8 @@ from typing import Any, Final, Optional, Union, cast
 import aiohttp
 
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
-from collector_utilities.type import URL, Response
-from source_model import Entity, SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Response, Value
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class SourceCollectorException(Exception):
@@ -167,10 +167,29 @@ class SourceCollector(ABC):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
 
-        This method should be overridden by collectors to parse the retrieved sources data.
+        Either this method or self._create_entities() need to be overridden in the subclass to implement the actual
+        parsing of the source responses.
         """
+        return SourceMeasurement(
+            entities=await self._parse_entities(responses),
+            total=await self._parse_total(responses),
+            value=await self._parse_value(responses),
+        )
+
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Parse the entities from the responses."""
         # pylint: disable=no-self-use,unused-argument
-        raise NotImplementedError
+        return []  # pragma: no cover
+
+    async def _parse_value(self, responses: SourceResponses) -> Value:
+        """Parse the value from the responses."""
+        # pylint: disable=no-self-use,unused-argument
+        return None  # pragma: no cover
+
+    async def _parse_total(self, responses: SourceResponses) -> Value:
+        """Parse the total from the responses."""
+        # pylint: disable=no-self-use,unused-argument
+        return "100"  # pragma: no cover
 
     async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:
         """Parse the responses to get the landing url, without failing.
@@ -198,9 +217,9 @@ class SourceCollector(ABC):
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for unmerged branches source collectors."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
-        entities = [
+        return [
             Entity(
                 key=branch["name"],
                 name=branch["name"],
@@ -209,7 +228,6 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
             )
             for branch in await self._unmerged_branches(responses)
         ]
-        return SourceMeasurement(entities=entities)
 
     @abstractmethod
     async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:

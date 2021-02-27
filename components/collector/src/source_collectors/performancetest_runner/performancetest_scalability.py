@@ -1,7 +1,8 @@
 """Performancetest-runner performancetest scalability collector."""
 
 from base_collectors import SourceCollectorException
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import Value
+from source_model import SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 
@@ -9,7 +10,7 @@ from .base import PerformanceTestRunnerBaseClass
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the scalability breaking point from the responses."""
         trend_breaks = []
         for response in responses:
@@ -19,4 +20,4 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
                     "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)"
                 )
             trend_breaks.append(breaking_point)
-        return SourceMeasurement(value=str(min(trend_breaks)))
+        return str(min(trend_breaks))

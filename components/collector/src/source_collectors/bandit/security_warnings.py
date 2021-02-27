@@ -1,13 +1,13 @@
 """Bandit security warnings collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class BanditSecurityWarnings(JSONFileSourceCollector):
     """Bandit collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings."""
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
@@ -28,4 +28,4 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                     and warning["issue_confidence"].lower() in confidence_levels
                 ]
             )
-        return SourceMeasurement(entities=entities)
+        return entities

@@ -4,13 +4,13 @@ from collections.abc import Collection
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
     """Collector class to get accessibility violations."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the violations."""
         entity_attributes = []
         for response in responses:
@@ -33,8 +33,7 @@ class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
                                 violation_type=violation.get("id"),
                             )
                         )
-        entities = [Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes]
-        return SourceMeasurement(entities=entities)
+        return [Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes]
 
     def __include_violation(self, impact: str, tags: Collection[str]) -> bool:
         """Return whether to include the violation."""

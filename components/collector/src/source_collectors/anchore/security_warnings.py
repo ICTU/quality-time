@@ -2,13 +2,13 @@
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
     """Anchore collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Anchore security warnings."""
         severities = self._parameter("severities")
         entities = []
@@ -22,7 +22,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
                     if vulnerability["severity"] in severities
                 ]
             )
-        return SourceMeasurement(entities=entities)
+        return entities
 
     @staticmethod
     def _create_entity(vulnerability: dict[str, str], filename: str) -> Entity:

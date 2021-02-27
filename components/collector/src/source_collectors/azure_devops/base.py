@@ -9,7 +9,7 @@ from dateutil.parser import parse
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -49,7 +49,7 @@ class AzureDevopsJobs(SourceCollector):
         """Override to add the builds path."""
         return URL(f"{await super()._api_url()}/_build")
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs/pipelines."""
         entities = []
         for job in (await responses[0].json())["value"]:
@@ -62,7 +62,7 @@ class AzureDevopsJobs(SourceCollector):
             entities.append(
                 Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status)
             )
-        return SourceMeasurement(entities=entities)
+        return entities
 
     def _include_job(self, job: Job) -> bool:
         """Return whether this job should be included."""

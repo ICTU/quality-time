@@ -4,7 +4,8 @@ import random
 from typing import Final
 
 from base_collectors import SourceCollector
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import Value
+from source_model import SourceResponses
 
 
 class Random(SourceCollector):
@@ -13,7 +14,6 @@ class Random(SourceCollector):
     MIN: Final[int] = 1
     MAX: Final[int] = 99
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to return a random number."""
-        value = random.randint(self.MIN, self.MAX)  # noqa: DUO102, # nosec, random generator is not used for security
-        return SourceMeasurement(value=str(value))
+        return str(random.randint(self.MIN, self.MAX))  # noqa: DUO102, # nosec, random generator not used for security

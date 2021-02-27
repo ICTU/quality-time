@@ -3,7 +3,7 @@
 from bs4 import Tag
 
 from collector_utilities.functions import match_string_or_regular_expression
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 
@@ -11,10 +11,9 @@ from .base import PerformanceTestRunnerBaseClass
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performance test report."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the slow transactions from the responses."""
-        entities = [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
-        return SourceMeasurement(entities=entities)
+        return [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
 
     @classmethod
     def __entity(cls, transaction) -> Entity:

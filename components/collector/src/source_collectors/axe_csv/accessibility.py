@@ -6,13 +6,13 @@ from io import StringIO
 
 from base_collectors import CSVFileSourceCollector
 from collector_utilities.functions import md5_hash
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class AxeCSVAccessibility(CSVFileSourceCollector):
     """Collector class to get accessibility violations."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the CSV and create the entities."""
         entity_attributes = [
             dict(
@@ -26,11 +26,10 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
             )
             for row in await self.__parse_csv(responses)
         ]
-        entities = [
+        return [
             Entity(key=md5_hash(",".join(str(value) for value in attributes.values())), **attributes)
             for attributes in entity_attributes
         ]
-        return SourceMeasurement(entities=entities)
 
     async def __parse_csv(self, responses: SourceResponses) -> list[dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""

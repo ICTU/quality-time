@@ -6,7 +6,7 @@ from datetime import datetime
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class JenkinsJobs(SourceCollector):
@@ -18,9 +18,9 @@ class JenkinsJobs(SourceCollector):
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
-        entities = [
+        return [
             Entity(
                 key=job["name"],
                 name=job["name"],
@@ -30,7 +30,6 @@ class JenkinsJobs(SourceCollector):
             )
             for job in self.__jobs((await responses[0].json())["jobs"])
         ]
-        return SourceMeasurement(entities=entities)
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""

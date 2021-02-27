@@ -5,8 +5,8 @@ from typing import Final
 import aiohttp
 
 from base_collectors import SourceCollector
-from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Value
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -33,10 +33,9 @@ class AzureDevopsIssues(SourceCollector):
         work_items.insert(0, response)
         return work_items
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the work items from the WIQL query response."""
-        value = str(len((await responses[0].json())["workItems"]))
-        entities = [
+        return [
             Entity(
                 key=work_item["id"],
                 project=work_item["fields"]["System.TeamProject"],
@@ -47,7 +46,13 @@ class AzureDevopsIssues(SourceCollector):
             )
             for work_item in await self._work_items(responses)
         ]
-        return SourceMeasurement(value=value, entities=entities)
+
+    async def _parse_value(self, responses: SourceResponses) -> Value:
+        """Override to parse the value from the responses.
+
+        We can't just count the entities because due to pagination the response may not contain all work items.
+        """
+        return str(len((await responses[0].json())["workItems"]))
 
     @staticmethod
     async def _work_items(responses: SourceResponses):

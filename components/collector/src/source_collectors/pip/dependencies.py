@@ -1,18 +1,18 @@
 """pip dependencies collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class PipDependencies(JSONFileSourceCollector):
     """pip collector for dependencies."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the dependencies from the JSON."""
         installed_dependencies: list[dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend(await response.json(content_type=None))
-        entities = [
+        return [
             Entity(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',
                 name=dependency["name"],
@@ -21,4 +21,3 @@ class PipDependencies(JSONFileSourceCollector):
             )
             for dependency in installed_dependencies
         ]
-        return SourceMeasurement(entities=entities)
