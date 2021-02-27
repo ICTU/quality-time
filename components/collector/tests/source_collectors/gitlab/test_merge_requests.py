@@ -67,7 +67,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
     async def test_pagination(self):
         """Test that pagination works."""
         response = await self.collect(
-            get_request_json_side_effect=[[self.merge_request1], [self.merge_request2]],
+            get_request_json_side_effect=2 * [[self.merge_request1], [self.merge_request2]],
             get_request_links=dict(next=dict(url="https://gitlab/next_page")),
         )
         entity2 = self.create_entity(2, state="locked", upvotes=2)

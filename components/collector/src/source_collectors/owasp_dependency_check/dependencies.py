@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 from .base import OWASPDependencyCheckBase
 
@@ -12,7 +12,7 @@ from .base import OWASPDependencyCheckBase
 class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     """Collector to get the dependencies from the OWASP Dependency Check XML report."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the dependencies from the XML."""
         landing_url = await self._landing_url(responses)
         entities = []
@@ -24,7 +24,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
                     for (index, dependency) in enumerate(self._dependencies(tree, namespaces))
                 ]
             )
-        return SourceMeasurement(entities=entities)
+        return entities
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:  # pylint: disable=no-self-use
         """Return the dependencies."""

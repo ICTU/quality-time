@@ -5,13 +5,13 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the OpenVAS XML."""
         entities = []
         severities = cast(list[str], self._parameter("severities"))
@@ -30,7 +30,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
                     for result in self.__results(tree, severities)
                 ]
             )
-        return SourceMeasurement(entities=entities)
+        return entities
 
     @staticmethod
     def __results(element: Element, severities: list[str]) -> list[Element]:

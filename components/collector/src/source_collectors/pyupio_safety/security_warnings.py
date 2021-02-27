@@ -3,7 +3,7 @@
 from typing import Final
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
@@ -15,7 +15,7 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     VULNERABILITY: Final[int] = 3
     KEY: Final[int] = 4
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the JSON."""
         entities = []
         for response in responses:
@@ -31,4 +31,4 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                     for warning in await response.json(content_type=None)
                 ]
             )
-        return SourceMeasurement(entities=entities)
+        return entities

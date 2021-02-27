@@ -4,7 +4,7 @@ from collections.abc import Collection
 from typing import Literal
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 Severity = Literal["low", "medium", "high"]
@@ -13,7 +13,7 @@ Severity = Literal["low", "medium", "high"]
 class SnykSecurityWarnings(JSONFileSourceCollector):
     """Snyk collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the direct dependencies with vulnerabilities from the responses."""
         selected_severities = self._parameter("severities")
         severities: dict[str, set[Severity]] = {}
@@ -44,7 +44,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                     highest_severity=self.__highest_severity(severities[dependency]),
                 )
             )
-        return SourceMeasurement(entities=entities)
+        return entities
 
     @staticmethod
     def __highest_severity(severities: Collection[Severity]) -> Severity:

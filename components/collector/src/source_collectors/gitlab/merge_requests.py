@@ -3,8 +3,8 @@
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Value
+from source_model import Entities, Entity, SourceResponses
 
 from .base import GitLabBase
 
@@ -20,13 +20,16 @@ class GitLabMergeRequests(GitLabBase):
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Override to get the merge requests."""
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Override to parse the merge requests."""
         merge_requests = []
         for response in responses:
             merge_requests.extend(await response.json())
-        entities = [self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr)]
-        return SourceMeasurement(entities=entities, total=str(len(merge_requests)))
+        return [self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr)]
+
+    async def _parse_total(self, responses: SourceResponses) -> Value:
+        """Override to parse the total number of merge requests."""
+        return str(sum([len(await response.json()) for response in responses]))
 
     @staticmethod
     def _create_entity(merge_request) -> Entity:

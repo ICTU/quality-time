@@ -6,7 +6,7 @@ from typing import cast
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 from .base import TrelloBase
 
@@ -14,13 +14,12 @@ from .base import TrelloBase
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the issues from the JSON."""
         json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
-        entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
-        return SourceMeasurement(entities=entities)
+        return [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

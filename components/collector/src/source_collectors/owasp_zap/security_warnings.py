@@ -7,13 +7,13 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the securty warnings from the XML."""
         entities: dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
@@ -38,7 +38,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
                     location=f"{method} {uri}",
                     risk=risk,
                 )
-        return SourceMeasurement(entities=list(entities.values()))
+        return list(entities.values())
 
     def __stable(self, url: URL) -> URL:
         """Return the url without the variable parts."""

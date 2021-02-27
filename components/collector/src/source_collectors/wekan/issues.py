@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceResponses
 
 from .base import WekanBase
 
@@ -15,7 +15,7 @@ from .base import WekanBase
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the cards."""
         api_url = await self._api_url()
         board_slug = self._board["slug"]
@@ -23,7 +23,7 @@ class WekanIssues(WekanBase):
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return SourceMeasurement(entities=entities)
+        return entities
 
     def _ignore_card(self, card: dict) -> bool:
         """Extend to check for card status."""

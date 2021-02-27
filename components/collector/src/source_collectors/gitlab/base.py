@@ -9,7 +9,7 @@ from dateutil.parser import parse
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
-from source_model import SourceResponses, SourceMeasurement, Entity
+from source_model import Entities, Entity, SourceResponses
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -55,10 +55,9 @@ class GitLabJobsBase(GitLabBase):
         """Override to return the jobs API."""
         return await self._gitlab_api_url("jobs")
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs from the responses."""
-        jobs = await self.__jobs(responses)
-        entities = [
+        return [
             Entity(
                 key=job["id"],
                 name=job["name"],
@@ -68,9 +67,8 @@ class GitLabJobsBase(GitLabBase):
                 stage=job["stage"],
                 build_date=str(parse(job["created_at"]).date()),
             )
-            for job in jobs
+            for job in await self.__jobs(responses)
         ]
-        return SourceMeasurement(entities=entities)
 
     async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""
