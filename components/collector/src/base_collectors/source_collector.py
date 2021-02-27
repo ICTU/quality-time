@@ -168,7 +168,8 @@ class SourceCollector(ABC):
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
 
         Either this method or self._create_entities() need to be overridden in the subclass to implement the actual
-        parsing of the source responses."""
+        parsing of the source responses.
+        """
         return SourceMeasurement(
             entities=await self._parse_entities(responses),
             total=await self._parse_total(responses),
