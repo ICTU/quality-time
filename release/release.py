@@ -17,7 +17,7 @@ PART = "part-is-a-mandatory-bump2version-argument-even-when-not-used"
 
 def get_version() -> str:
     """Return the current version."""
-    command = f"bump2version --list --dry-run --allow-dirty {PART}"
+    command = f"bump2version --list --dry-run --allow-dirty --no-configured-files {PART} .bumpversion.cfg"
     output = subprocess.check_output(command.split(" "), text=True)  # skipcq: BAN-B603
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
 
