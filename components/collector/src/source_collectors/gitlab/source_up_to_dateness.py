@@ -7,8 +7,8 @@ from urllib.parse import quote
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Value
+from source_model import SourceResponses
 
 from .base import GitLabBase
 
@@ -63,8 +63,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return await super()._get_source_responses(commit_api_url)
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the dates from the commits."""
         commit_responses = responses[1:]
-        value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
-        return SourceMeasurement(value=value)
+        return str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
