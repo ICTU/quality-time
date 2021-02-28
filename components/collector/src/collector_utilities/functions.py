@@ -3,6 +3,7 @@
 import contextlib
 import hashlib
 import re
+import time
 import urllib
 from collections.abc import Collection, Generator
 from datetime import datetime
@@ -96,12 +97,12 @@ class Clock:  # pylint: disable=too-few-public-methods
     """Class to keep track of time."""
 
     def __init__(self) -> None:
-        self.start = datetime.now()
+        self.start = time.perf_counter()
         self.duration = 0.0
 
     def stop(self) -> None:
         """Stop the clock."""
-        self.duration = (datetime.now() - self.start).total_seconds()
+        self.duration = time.perf_counter() - self.start
 
 
 @contextlib.contextmanager
