@@ -29,16 +29,24 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
             entity_kwargs = dict(name=name, description=description, risk=risk)
             if count_alert_instances:
                 for alert_instance in alert.findall("./instances/instance"):
-                    method = alert_instance.findtext("method", default="")
-                    uri = self.__stable(hashless(URL(alert_instance.findtext("uri", default=""))))
-                    key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
-                    old_key = md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}")
-                    location = f"{method} {uri}"
-                    entities[key] = Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
+                    entity = self.__alert_entity(ids, entity_kwargs, alert_instance)
+                    entities[entity["key"]] = entity
             else:
-                key = md5_hash(f"{':'.join(ids)}")
-                entities[key] = Entity(key=key, **entity_kwargs)
+                entity = self.__alert_entity(ids, entity_kwargs)
+                entities[entity["key"]] = entity
         return list(entities.values())
+
+    def __alert_entity(self, ids, entity_kwargs, alert_instance=None) -> Entity:
+        """Create an alert entity."""
+        if alert_instance:
+            method = alert_instance.findtext("method", default="")
+            uri = self.__stable(hashless(URL(alert_instance.findtext("uri", default=""))))
+            key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
+            old_key = md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}")
+            location = f"{method} {uri}"
+            return Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
+        key = md5_hash(f"{':'.join(ids)}")
+        return Entity(key=key, **entity_kwargs)
 
     def __stable(self, url: URL) -> URL:
         """Return the url without the variable parts."""

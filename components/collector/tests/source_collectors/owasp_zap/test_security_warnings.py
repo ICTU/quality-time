@@ -76,7 +76,7 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     async def test_alert_types(self):
-        """Test that the number of alert types is returned"""
+        """Test that the number of alert types is returned."""
         self.set_source_parameter("alerts", "alert types")
         response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         expected_entities = [
