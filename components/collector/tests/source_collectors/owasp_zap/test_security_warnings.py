@@ -48,8 +48,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
     WARNING_DESCRIPTION = "The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'."
     WARNING_RISK = "Low (Medium)"
 
-    async def test_warnings(self):
-        """Test that the number of security warnings is returned."""
+    async def test_alert_instances(self):
+        """Test that the number of alert instances is returned."""
         response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
@@ -74,6 +74,20 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
             ),
         ]
         self.assert_measurement(response, value="2", entities=expected_entities)
+
+    async def test_alert_types(self):
+        """Test that the number of alert types is returned"""
+        self.set_source_parameter("alerts", "alert types")
+        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
+        expected_entities = [
+            dict(
+                key=md5_hash("X-Content-Type-Options Header Missing:10021:16:15:3"),
+                name=self.WARNING_NAME,
+                description=self.WARNING_DESCRIPTION,
+                risk=self.WARNING_RISK,
+            ),
+        ]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""

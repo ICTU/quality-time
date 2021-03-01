@@ -711,6 +711,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Count alert types or alert instances | Single choice | alert instances, alert types | alert instances | No | Determine whether to count each alert type in the OWASP ZAP report as a security warning or to count each alert instance (URL). |
 | Parts of URLs to ignore (regular expressions) | Multiple choice with addition |  |  | No | Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported. |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
