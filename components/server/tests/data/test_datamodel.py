@@ -95,6 +95,18 @@ class DataModelTest(DataModelTestCase):
 class DataModelSourcesTest(DataModelTestCase):
     """Unit tests for sources in the data model."""
 
+    def test_source_attributes(self):
+        """Test that sources have a name and description."""
+        for source_id, source in self.data_model["sources"].items():
+            expected_attributes = ["name", "description"]
+            if source_id not in ["calendar", "manual_number", "random_number"]:
+                expected_attributes.append("url")
+            for attribute in expected_attributes:
+                self.assertTrue(attribute in source, f"Source '{source_id} has no '{attribute}' attribute.")
+            self.assertTrue(
+                source["description"].endswith("."), f"The description of source '{source_id}' doesn't end with a dot."
+            )
+
     def test_sources_with_landing_url(self):
         """Test that the the sources with landing url also have url."""
         for source in self.data_model["sources"]:

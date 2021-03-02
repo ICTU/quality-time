@@ -748,7 +748,7 @@
     "sources": {
         "anchore": {
             "name": "Anchore",
-            "description": "Anchore image scan analysis report in JSON format",
+            "description": "Anchore image scan analysis report in JSON format.",
             "url": "https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/",
             "parameters": {
                 "url": {
@@ -826,7 +826,7 @@
                         "source_up_to_dateness"
                     ]
                 },
-                 "severities": {
+                "severities": {
                     "name": "Severities",
                     "short_name": "severities",
                     "help": "If provided, only count security warnings with the selected severities.",
@@ -1365,8 +1365,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -1453,8 +1453,8 @@
                     ]
                 },
                 "failure_type": {
-                    "name": "Failure type",
-                    "short_name": "failure type",
+                    "name": "Failure types",
+                    "short_name": "failure types",
                     "type": "multiple_choice",
                     "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
@@ -1475,8 +1475,8 @@
                     ]
                 },
                 "merge_request_state": {
-                    "name": "Merge request state",
-                    "short_name": "state",
+                    "name": "Merge request states",
+                    "short_name": "states",
                     "help": "Limit which merge request states to count.",
                     "type": "multiple_choice",
                     "placeholder": "all states",
@@ -1894,7 +1894,7 @@
         },
         "cloc": {
             "name": "cloc",
-            "description": "cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages",
+            "description": "cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages.",
             "url": "https://github.com/AlDanial/cloc",
             "parameters": {
                 "url": {
@@ -2187,8 +2187,8 @@
                     ]
                 },
                 "latest_version_status": {
-                    "name": "Latest version status",
-                    "short_name": "status",
+                    "name": "Latest version statuses",
+                    "short_name": "statuses",
                     "type": "multiple_choice",
                     "placeholder": "all statuses",
                     "help": "Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible.",
@@ -2325,6 +2325,110 @@
             },
             "entities": {}
         },
+        "generic_json": {
+            "name": "JSON file with security warnings",
+            "description": "A generic vulnerability report with security warnings in JSON format.",
+            "url": "https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings",
+            "parameters": {
+                "url": {
+                    "name": "URL to a generic vulnerability report in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a generic vulnerability report in a human readable format",
+                    "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                 "severities": {
+                    "name": "Severities",
+                    "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
+                    "type": "multiple_choice",
+                    "placeholder": "all severities",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Title",
+                            "key": "title"
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "high": "negative",
+                                "medium": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "gitlab": {
             "name": "GitLab",
             "description": "GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.",
@@ -2450,8 +2554,8 @@
                     ]
                 },
                 "failure_type": {
-                    "name": "Failure type",
-                    "short_name": "failure type",
+                    "name": "Failure types",
+                    "short_name": "failure types",
                     "type": "multiple_choice",
                     "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
@@ -2480,8 +2584,8 @@
                     ]
                 },
                 "merge_request_state": {
-                    "name": "Merge request state",
-                    "short_name": "state",
+                    "name": "Merge request states",
+                    "short_name": "states",
                     "help": "Limit which merge request states to count.",
                     "type": "multiple_choice",
                     "placeholder": "all states",
@@ -2819,8 +2923,8 @@
                     ]
                 },
                 "result_type": {
-                    "name": "Build result type",
-                    "short_name": "result type",
+                    "name": "Build result types",
+                    "short_name": "result types",
                     "type": "multiple_choice",
                     "help": "Limit which build result types to include.",
                     "mandatory": false,
@@ -2838,8 +2942,8 @@
                     ]
                 },
                 "failure_type": {
-                    "name": "Failure type",
-                    "short_name": "failure type",
+                    "name": "Failure types",
+                    "short_name": "failure types",
                     "type": "multiple_choice",
                     "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
@@ -3032,8 +3136,8 @@
                     ]
                 },
                  "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -3462,8 +3566,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -3556,7 +3660,7 @@
         },
         "ncover": {
             "name": "NCover",
-            "description": "A .NET code coverage solution",
+            "description": "A .NET code coverage solution.",
             "url": "https://www.ncover.com/",
             "parameters": {
                 "url": {
@@ -4279,8 +4383,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -4541,8 +4645,8 @@
                     ]
                 },
                 "status": {
-                    "name": "Metric status",
-                    "short_name": "metric status",
+                    "name": "Metric statuses",
+                    "short_name": "metric statuses",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "placeholder": "all statuses",
@@ -4879,8 +4983,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -4961,8 +5065,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -4983,113 +5087,9 @@
             },
             "entities": {}
         },
-        "generic_json": {
-            "name": "JSON file with security warnings",
-            "description": "A generic vulnerability report with security warnings in JSON format",
-            "url": "https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings",
-            "parameters": {
-                "url": {
-                    "name": "URL to a generic vulnerability report in JSON format",
-                    "short_name": "URL",
-                    "type": "url",
-                    "mandatory": true,
-                    "default_value": "",
-                    "validate_on": [
-                        "username",
-                        "password",
-                        "private_token"
-                    ],
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                },
-                "landing_url": {
-                    "name": "URL to a generic vulnerability report in a human readable format",
-                    "short_name": "URL",
-                    "help": "If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.",
-                    "type": "string",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                },
-                "username": {
-                    "name": "Username for basic authentication",
-                    "short_name": "username",
-                    "type": "string",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                },
-                "password": {
-                    "name": "Password for basic authentication",
-                    "short_name": "password",
-                    "type": "password",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                },
-                "private_token": {
-                    "name": "Private token",
-                    "short_name": "private token",
-                    "type": "password",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                },
-                 "severities": {
-                    "name": "Severities",
-                    "short_name": "severities",
-                    "help": "If provided, only count security warnings with the selected severities.",
-                    "type": "multiple_choice",
-                    "placeholder": "all severities",
-                    "mandatory": false,
-                    "default_value": [],
-                    "values": [
-                        "low",
-                        "medium",
-                        "high"
-                    ],
-                    "metrics": [
-                        "security_warnings"
-                    ]
-                }
-            },
-            "entities": {
-                "security_warnings": {
-                    "name": "security warning",
-                    "name_plural": "security warnings",
-                    "attributes": [
-                        {
-                            "name": "Title",
-                            "key": "title"
-                        },
-                        {
-                            "name": "Description",
-                            "key": "description"
-                        },
-                        {
-                            "name": "Severity",
-                            "key": "severity",
-                            "color": {
-                                "high": "negative",
-                                "medium": "warning"
-                            }
-                        }
-                    ]
-                }
-            }
-        },
         "snyk": {
             "name": "Snyk",
-            "description": "Snyk vulnerability report in JSON format",
+            "description": "Snyk vulnerability report in JSON format.",
             "url": "https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI",
             "parameters": {
                 "url": {
@@ -5481,8 +5481,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "type": "multiple_choice",
                     "placeholder": "all test results",
@@ -5976,8 +5976,8 @@
                     ]
                 },
                 "test_result": {
-                    "name": "Test result",
-                    "short_name": "test result",
+                    "name": "Test results",
+                    "short_name": "test results",
                     "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "placeholder": "all test results",
                     "type": "multiple_choice",
@@ -6066,7 +6066,7 @@
                 },
                 "cards_to_count": {
                     "name": "Cards to count",
-                    "short_name": "cards to count",
+                    "short_name": "cards",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -6187,7 +6187,7 @@
                 },
                 "cards_to_count": {
                     "name": "Cards to count",
-                    "short_name": "cards to count",
+                    "short_name": "cards",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
