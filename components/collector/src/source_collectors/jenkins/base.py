@@ -20,16 +20,20 @@ class JenkinsJobs(SourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
-        return [
-            Entity(
-                key=job["name"],
-                name=job["name"],
-                url=job["url"],
-                build_status=self._build_status(job),
-                build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "",
-            )
-            for job in self.__jobs((await responses[0].json())["jobs"])
-        ]
+        return Entities(
+            [
+                Entity(
+                    key=job["name"],
+                    name=job["name"],
+                    url=job["url"],
+                    build_status=self._build_status(job),
+                    build_date=str(self._build_datetime(job).date())
+                    if self._build_datetime(job) > datetime.min
+                    else "",
+                )
+                for job in self.__jobs((await responses[0].json())["jobs"])
+            ]
+        )
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""

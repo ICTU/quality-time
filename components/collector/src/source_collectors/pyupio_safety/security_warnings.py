@@ -17,7 +17,7 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the JSON."""
-        entities = []
+        entities = Entities()
         for response in responses:
             entities.extend(
                 [

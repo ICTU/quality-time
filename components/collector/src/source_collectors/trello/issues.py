@@ -19,7 +19,7 @@ class TrelloIssues(TrelloBase):
         json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
-        return [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
+        return Entities(self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists))
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

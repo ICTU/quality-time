@@ -3,7 +3,7 @@
 from typing import Optional, cast
 
 from collector_utilities.type import URL, Value
-from source_model import Entity
+from source_model import Entities, Entity
 
 from .issues import JiraIssues
 
@@ -15,7 +15,7 @@ class JiraFieldSumBase(JiraIssues):
     entity_key = "subclass responsibility"
 
     @classmethod
-    def _compute_value(cls, entities: list[Entity]) -> Value:
+    def _compute_value(cls, entities: Entities) -> Value:
         """Override to sum the field, as specified by the entity key, from the entities."""
         return str(round(sum(float(entity[cls.entity_key]) for entity in entities)))
 

@@ -11,7 +11,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Anchore security warnings."""
         severities = self._parameter("severities")
-        entities = []
+        entities = Entities()
         for response in responses:
             json = await response.json(content_type=None)
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []

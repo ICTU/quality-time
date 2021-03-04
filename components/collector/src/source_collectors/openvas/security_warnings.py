@@ -13,7 +13,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the OpenVAS XML."""
-        entities = []
+        entities = Entities()
         severities = cast(list[str], self._parameter("severities"))
         for response in responses:
             tree = await parse_source_response_xml(response)

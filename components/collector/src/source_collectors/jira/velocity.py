@@ -6,7 +6,7 @@ from typing_extensions import TypedDict
 
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class JiraVelocity(SourceCollector):
@@ -37,7 +37,9 @@ class JiraVelocity(SourceCollector):
         nr_sprints = int(str(self._parameter("velocity_sprints")))
         # Get the points, either completed, committed, or completed minus committed, as determined by the velocity type
         sprint_values = [self.__velocity(points[str(sprint["id"])], velocity_type) for sprint in sprints[:nr_sprints]]
-        entities = [self.__entity(sprint, points[str(sprint["id"])], velocity_type, entity_url) for sprint in sprints]
+        entities = Entities(
+            self.__entity(sprint, points[str(sprint["id"])], velocity_type, entity_url) for sprint in sprints
+        )
         return SourceMeasurement(
             value=str(round(sum(sprint_values) / len(sprint_values))) if sprint_values else "0", entities=entities
         )

@@ -1,7 +1,5 @@
 """Measurement entity model class."""
 
-from collections.abc import Sequence
-
 
 class Entity(dict):
     """Class to hold information about an individual measurement entity, e.g. one violation, or one security warning."""
@@ -17,4 +15,5 @@ class Entity(dict):
         return str(key).replace("/", "-").replace(".", "_")
 
 
-Entities = Sequence[Entity]
+class Entities(list[Entity]):
+    """Class to hold a list of entities."""

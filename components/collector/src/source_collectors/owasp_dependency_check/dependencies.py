@@ -15,7 +15,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the dependencies from the XML."""
         landing_url = await self._landing_url(responses)
-        entities = []
+        entities = Entities()
         for response in responses:
             tree, namespaces = await parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
             entities.extend(

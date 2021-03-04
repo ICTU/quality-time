@@ -2,7 +2,7 @@
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
 from .violations import SonarQubeViolations
@@ -71,7 +71,8 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             nr_hotspots = 0
             hotspots = []
         return SourceMeasurement(
-            value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots
+            value=str(int(vulnerabilities.value or 0) + nr_hotspots),
+            entities=Entities(vulnerabilities.entities + hotspots),
         )
 
     async def __entity(self, hotspot) -> Entity:

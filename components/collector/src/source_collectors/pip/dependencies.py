@@ -12,7 +12,7 @@ class PipDependencies(JSONFileSourceCollector):
         installed_dependencies: list[dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend(await response.json(content_type=None))
-        return [
+        return Entities(
             Entity(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',
                 name=dependency["name"],
@@ -20,4 +20,4 @@ class PipDependencies(JSONFileSourceCollector):
                 latest=dependency.get("latest_version", "unknown"),
             )
             for dependency in installed_dependencies
-        ]
+        )

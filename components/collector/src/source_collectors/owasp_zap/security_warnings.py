@@ -34,7 +34,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
             else:
                 entity = self.__alert_type_entity(ids, entity_kwargs)
                 entities[entity["key"]] = entity
-        return list(entities.values())
+        return Entities(entities.values())
 
     def __alert_instance_entity(self, ids, entity_kwargs, alert_instance) -> Entity:
         """Create an alert instance entity."""

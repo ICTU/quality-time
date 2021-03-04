@@ -2,7 +2,7 @@
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class ClocLOC(JSONFileSourceCollector):
@@ -11,7 +11,7 @@ class ClocLOC(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the LOC from the JSON responses."""
         loc = 0
-        entities = []
+        entities = Entities()
         languages_to_ignore = self._parameter("languages_to_ignore")
         for response in responses:
             for key, value in (await response.json(content_type=None)).items():

@@ -4,7 +4,7 @@ from abc import ABC
 
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, SourceMeasurement, SourceResponses
 
 
 class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
@@ -72,9 +72,9 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: dict[str, str]) -> list[Entity]:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
         """Return the entities."""
-        return []
+        return Entities()
 
     def _value_key(self) -> str:
         """Return the SonarQube metric key(s) to use for the value. The string can be a comma-separated list of keys."""

@@ -57,18 +57,20 @@ class GitLabJobsBase(GitLabBase):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs from the responses."""
-        return [
-            Entity(
-                key=job["id"],
-                name=job["name"],
-                url=job["web_url"],
-                build_status=job["status"],
-                branch=job["ref"],
-                stage=job["stage"],
-                build_date=str(parse(job["created_at"]).date()),
-            )
-            for job in await self.__jobs(responses)
-        ]
+        return Entities(
+            [
+                Entity(
+                    key=job["id"],
+                    name=job["name"],
+                    url=job["web_url"],
+                    build_status=job["status"],
+                    branch=job["ref"],
+                    stage=job["stage"],
+                    build_date=str(parse(job["created_at"]).date()),
+                )
+                for job in await self.__jobs(responses)
+            ]
+        )
 
     async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""

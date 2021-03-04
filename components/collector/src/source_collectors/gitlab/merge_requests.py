@@ -25,7 +25,7 @@ class GitLabMergeRequests(GitLabBase):
         merge_requests = []
         for response in responses:
             merge_requests.extend(await response.json())
-        return [self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr)]
+        return Entities(self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr))
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of merge requests."""

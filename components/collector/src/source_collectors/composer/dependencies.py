@@ -1,7 +1,7 @@
 """Composer dependencies collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class ComposerDependencies(JSONFileSourceCollector):
@@ -13,7 +13,7 @@ class ComposerDependencies(JSONFileSourceCollector):
         installed_dependencies: list[dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend((await response.json(content_type=None)).get("installed", []))
-        entities = [
+        entities = Entities(
             Entity(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',
                 name=dependency["name"],
@@ -26,5 +26,5 @@ class ComposerDependencies(JSONFileSourceCollector):
             )
             for dependency in installed_dependencies
             if dependency.get("latest-status", "unknown") in statuses
-        ]
+        )
         return SourceMeasurement(total=str(len(installed_dependencies)), entities=entities)
