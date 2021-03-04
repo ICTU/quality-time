@@ -3,9 +3,10 @@
 from collections.abc import Iterator
 import json
 from datetime import date
+from json.decoder import JSONDecodeError
 from typing import Optional, cast
 
-from server_utilities.functions import asymmetric_encrypt, unique
+from server_utilities.functions import asymmetric_decrypt, asymmetric_encrypt, unique
 from server_utilities.type import Color, EditScope, ItemId, Status
 
 from .iterators import sources as iter_sources
@@ -31,6 +32,22 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
 
                 encrypted_key_value = asymmetric_encrypt(public_key, password)
                 source["parameters"][parameter_key] = encrypted_key_value
+
+
+def decrypt_credentials(data_model, private_key: str, *reports: dict):
+    """Decrypt all credentials in the reports."""
+    for source in iter_sources(reports):
+        for parameter_key, parameter_value in source.get("parameters", {}).items():
+            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
+
+                encrypted_key_value = source["parameters"][parameter_key]
+                password = asymmetric_decrypt(private_key, encrypted_key_value)
+
+                try:
+                    password = json.loads(password)
+                except JSONDecodeError:
+                    pass
+                source["parameters"][parameter_key] = password
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> list[ItemId]:
