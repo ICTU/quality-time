@@ -4241,6 +4241,21 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "alerts": {
+                    "name": "Count alert types or alert instances",
+                    "short_name": "count alert types or instances setting",
+                    "type": "single_choice",
+                    "help": "Determine whether to count each alert type in the OWASP ZAP report as a security warning or to count each alert instance (URL).",
+                    "mandatory": false,
+                    "default_value": "alert instances",
+                    "values": [
+                        "alert types",
+                        "alert instances"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
                 "risks": {
                     "name": "Risks",
                     "short_name": "risks",
