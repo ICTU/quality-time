@@ -6,8 +6,8 @@ import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Optional, TypeVar
-from base64 import b64encode
+from typing import Optional, Tuple, TypeVar
+from base64 import b64decode, b64encode
 
 import bottle
 from cryptography.hazmat.backends import default_backend, openssl
@@ -100,7 +100,18 @@ def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
     return key, token
 
 
-def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, str]:
+def symmetric_decrypt(key: bytes, message: bytes) -> bytes:
+    """
+    Decrypt the given value using Fernet with a given key.
+
+    @return: decrypted message as b64 encoded bytes.
+    """
+    fernet = Fernet(key)
+    decrypted_message = fernet.decrypt(message)
+    return decrypted_message
+
+
+def asymmetric_encrypt(public_key: str, message: str) -> tuple[str, str]:
     """
     Encrypts the message using symmetric Fernet encryption.
     The key of the Fernet encryption is encrypted using RSA for public/private key authentication
@@ -108,7 +119,10 @@ def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, st
 
     @return: a tuple with encrypted Fernet key and encrypted message. Both as string.
     """
-    fernet_key, fernet_token = symmetric_encrypt(message)
+    public_key_bytes = public_key.encode()
+    message_bytes = message.encode()
+
+    fernet_key, fernet_token = symmetric_encrypt(message_bytes)
 
     public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
     if not isinstance(public_key_obj, openssl.rsa.RSAPublicKey):
@@ -119,3 +133,27 @@ def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, st
     )
     b64_key = b64encode(encrypted_key)
     return b64_key.decode(), fernet_token.decode()
+
+
+def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) -> str:
+    """
+    Decrypts the Fernet key with the provided private rsa key.
+    Then decrypts the message with the decrypted Fernet key.
+
+    @return: The decrypted message as string
+    """
+    private_key_bytes = private_key.encode()
+    fernet_key_bytes = b64decode(fernet_key_message[0].encode())
+    message_bytes = fernet_key_message[1].encode()
+
+    private_key_obj = serialization.load_pem_private_key(private_key_bytes, None, default_backend())
+    if not isinstance(private_key_obj, openssl.rsa.RSAPrivateKey):
+        raise TypeError(f"Private key object should be of type RSAPrivateKey, found {type(private_key_obj)}.")
+
+    decrypted_key = private_key_obj.decrypt(
+        fernet_key_bytes,
+        padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
+    )
+
+    message = symmetric_decrypt(decrypted_key, message_bytes)
+    return message.decode()

@@ -29,8 +29,7 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
                 if isinstance(password, (dict, list)):
                     password = json.dumps(password)
 
-                password_bytes = password.encode()
-                encrypted_key_value = asymmetric_encrypt(public_key.encode(), password_bytes)
+                encrypted_key_value = asymmetric_encrypt(public_key, password)
                 source["parameters"][parameter_key] = encrypted_key_value
 
 
