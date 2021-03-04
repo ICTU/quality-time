@@ -29,26 +29,28 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
             entity_kwargs = dict(name=name, description=description, risk=risk)
             if count_alert_instances:
                 for alert_instance in alert.findall("./instances/instance"):
-                    entity = self.__alert_entity(ids, entity_kwargs, alert_instance)
+                    entity = self.__alert_instance_entity(ids, entity_kwargs, alert_instance)
                     entities[entity["key"]] = entity
             else:
-                entity = self.__alert_entity(ids, entity_kwargs)
+                entity = self.__alert_type_entity(ids, entity_kwargs)
                 entities[entity["key"]] = entity
         return list(entities.values())
 
-    def __alert_entity(self, ids, entity_kwargs, alert_instance=None) -> Entity:
-        """Create an alert entity."""
-        if alert_instance:
-            method = alert_instance.findtext("method", default="")
-            uri = self.__stable(hashless(URL(alert_instance.findtext("uri", default=""))))
-            key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
-            old_key = md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}")
-            location = f"{method} {uri}"
-            return Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
-        key = md5_hash(f"{':'.join(ids)}")
-        return Entity(key=key, **entity_kwargs)
+    def __alert_instance_entity(self, ids, entity_kwargs, alert_instance) -> Entity:
+        """Create an alert instance entity."""
+        method = alert_instance.findtext("method", default="")
+        uri = self.__stable_url(hashless(URL(alert_instance.findtext("uri", default=""))))
+        key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
+        old_key = md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}")
+        location = f"{method} {uri}"
+        return Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
 
-    def __stable(self, url: URL) -> URL:
+    @staticmethod
+    def __alert_type_entity(ids, entity_kwargs) -> Entity:
+        """Create an alert type entity."""
+        return Entity(key=md5_hash(f"{':'.join(ids)}"), **entity_kwargs)
+
+    def __stable_url(self, url: URL) -> URL:
         """Return the url without the variable parts."""
         reg_exps = self._parameter("variable_url_regexp")
         stable_url = cast(str, url)
