@@ -15,7 +15,7 @@ from initialization.report import import_json_report
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
-from model.transformations import encrypt_credentials, hide_credentials, summarize_report
+from model.transformations import decrypt_credentials, encrypt_credentials, hide_credentials, summarize_report
 from server_utilities.functions import iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
@@ -40,6 +40,14 @@ def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
     report["delta"] = dict(uuids=[report["report_uuid"]])
+
+    date_time = report_date_time()
+    data_model = latest_datamodel(database, date_time)
+
+    document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
+    private_key = document["private_key"]
+    decrypt_credentials(data_model, private_key, report)
+
     result = import_json_report(database, report)
     result["new_report_uuid"] = report["report_uuid"]
     return result
