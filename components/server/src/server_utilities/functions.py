@@ -7,8 +7,14 @@ from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import TypeVar
+from base64 import b64encode
 
 import bottle
+from cryptography.hazmat.backends import default_backend, openssl
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.fernet import Fernet
 
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
@@ -69,3 +75,36 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     if denominator == 0:
         return 0 if direction == "<" else 100
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
+
+
+def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
+    """
+    Encrypt the given value using Fernet 32 byte key.
+
+    @return: a tuple with the generated key and the encrypted message. Both as bytes.
+    """
+    key = Fernet.generate_key()
+    fernet = Fernet(key)
+    token = fernet.encrypt(message)
+    return key, token
+
+
+def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, str]:
+    """
+    Encrypts the message using symmetric Fernet encryption.
+    The key of the Fernet encryption is encrypted using RSA for public/private key authentication
+    and base64 encoded to be able to convert the result into a string.
+
+    @return: a tuple with encrypted Fernet key and encrypted message. Both as string.
+    """
+    fernet_key, fernet_token = symmetric_encrypt(message)
+
+    public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
+    if not isinstance(public_key_obj, openssl.rsa.RSAPublicKey):
+        raise TypeError(f"Public key object should be of type RSAPublicKey, found {type(public_key_obj)}.")
+
+    encrypted_key = public_key_obj.encrypt(
+        fernet_key, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+    )
+    b64_key = b64encode(encrypted_key)
+    return b64_key.decode(), fernet_token.decode()

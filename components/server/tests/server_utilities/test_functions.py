@@ -3,8 +3,14 @@
 import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
+from base64 import b64decode
 
-from server_utilities.functions import iso_timestamp, report_date_time, uuid
+from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
+
+from server_utilities.functions import asymmetric_encrypt, iso_timestamp, report_date_time, symmetric_encrypt, uuid
 
 
 class UtilTests(unittest.TestCase):
@@ -20,6 +26,42 @@ class UtilTests(unittest.TestCase):
     def test_uuid(self):
         """Test the expected length of the uuid."""
         self.assertEqual(36, len(uuid()))
+
+    def test_symmetric_encryption(self):
+        """Test wether message is encrypted using and can be decrypted."""
+        # encryption
+        test_message = b"this is a test message"
+        key, encrypted_message = symmetric_encrypt(test_message)
+        self.assertNotEqual(test_message, encrypted_message)
+
+        # decryption
+        fernet = Fernet(key)
+        decrypted_message = fernet.decrypt(encrypted_message)
+        self.assertEqual(decrypted_message, test_message)
+
+    def test_asymmetric_encrypt(self):
+        """Test wether message is encrypted using public/private keys."""
+        # get public and private keys
+        private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
+        public_key = private_key.public_key()
+        pubkey = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        # encryption
+        test_message = b"this is a test message"
+        encrypted_key, encrypted_message = asymmetric_encrypt(pubkey, test_message)
+        self.assertNotEqual(test_message, encrypted_message)
+
+        # decryption
+        decrypted_key = private_key.decrypt(
+            b64decode(encrypted_key.encode()),
+            padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
+        )
+        fernet = Fernet(decrypted_key)
+        decrypted_message = fernet.decrypt(encrypted_message.encode())
+
+        self.assertEqual(decrypted_message, test_message)
 
 
 @patch("server_utilities.functions.bottle.request")

@@ -6,6 +6,8 @@ import os
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
 
+from initialization.secrets import initialize_secrets
+
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
 
@@ -23,6 +25,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
     create_indexes(database)
     import_datamodel(database)
+    initialize_secrets(database)
     initialize_reports_overview(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)

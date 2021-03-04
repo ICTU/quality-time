@@ -1,6 +1,7 @@
 """Report routes."""
 
 import os
+import json
 from urllib import parse
 
 import bottle
@@ -9,11 +10,12 @@ from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import insert_new_report, latest_reports
+from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.report import import_json_report
+from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
-from model.transformations import hide_credentials, summarize_report
+from model.transformations import encrypt_credentials, hide_credentials, summarize_report
 from server_utilities.functions import iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
@@ -85,6 +87,29 @@ def export_report_as_pdf(report_uuid: ReportId):
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content
+
+
+@bottle.get("/api/v3/report/<report_uuid>/json")
+def export_report_as_json(database: Database, report_uuid: ReportId):
+    """Return the quality-time report, including iencrypted credentials for api access to the sources."""
+    date_time = report_date_time()
+    data_model = latest_datamodel(database, date_time)
+    report = latest_report(database, report_uuid)
+
+    # pylint doesn't seem to be able to see that bottle.request.query is dict(like) at runtime
+    if "public_key" in bottle.request.query:  # pylint: disable=unsupported-membership-test
+        public_key = bottle.request.query["public_key"]  # pylint: disable=unsubscriptable-object
+    else:  # default to own public key
+        document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
+        public_key = document["public_key"]
+
+    try:
+        encrypt_credentials(data_model, public_key, report)
+    except TypeError:
+        bottle.response.status = 400
+        bottle.response.content_type = "application/json"
+        return json.dumps({"error": "Invalid public key."})
+    return report
 
 
 @bottle.delete("/api/v3/report/<report_uuid>")
