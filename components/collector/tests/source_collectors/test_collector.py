@@ -68,7 +68,7 @@ class CollectorTest(SourceCollectorTestCase):
                 """Override to raise an error."""
                 raise NotImplementedError
 
-        with patch("aiohttp.ClientSession.get", side_effect=Exception):
+        with patch("aiohttp.ClientSession.get", side_effect=Exception):  # skipcq: PTC-W0062
             async with aiohttp.ClientSession() as session:
                 response = await FailingLandingUrl(session, self.metric, {}).get()
         self.assertEqual("https://api_url", response["landing_url"])
