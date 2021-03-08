@@ -66,12 +66,11 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
                 for hotspot in json.get("hotspots", [])
                 if hotspot["vulnerabilityProbability"] in self._review_priorities()
             ]
-            nr_hotspots = len(hotspots)
         else:
-            nr_hotspots = 0
             hotspots = []
         return SourceMeasurement(
-            value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots
+            value=str(int(vulnerabilities.value or 0) + len(hotspots)),
+            entities=vulnerabilities.entities + hotspots,
         )
 
     async def __entity(self, hotspot) -> Entity:

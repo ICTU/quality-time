@@ -26,10 +26,10 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
             )
             for row in await self.__parse_csv(responses)
         ]
-        return [
+        return Entities(
             Entity(key=md5_hash(",".join(str(value) for value in attributes.values())), **attributes)
             for attributes in entity_attributes
-        ]
+        )
 
     async def __parse_csv(self, responses: SourceResponses) -> list[dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""

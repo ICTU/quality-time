@@ -3,7 +3,7 @@
 from typing import cast
 
 from collector_utilities.type import Response, Value
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import QualityTimeCollector
 
@@ -19,7 +19,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        entities: list[Entity] = []
+        entities = Entities()
         for metric, entity in metrics_and_entities:
             recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
             status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})

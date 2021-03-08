@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from base_collectors import SourceCollectorException, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 ModelFilePaths = dict[str, str]  # Model id to model file path mapping
@@ -23,7 +23,7 @@ class OJAuditViolations(XMLFileSourceCollector):
         """Override to parse the violations from the OJAudit XML."""
         severities = cast(list[str], self._parameter("severities"))
         count = 0
-        entities = []
+        entities = Entities()
         for response in responses:
             tree, namespaces = await parse_source_response_xml_with_namespace(response)
             entities.extend(self.__violations(tree, namespaces, severities))
@@ -31,11 +31,11 @@ class OJAuditViolations(XMLFileSourceCollector):
                 count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return SourceMeasurement(value=str(count), entities=entities)
 
-    def __violations(self, tree: Element, namespaces: Namespaces, severities: list[str]) -> list[Entity]:
+    def __violations(self, tree: Element, namespaces: Namespaces, severities: list[str]) -> Entities:
         """Return the violations."""
         models = self.__model_file_paths(tree, namespaces)
         violation_elements = tree.findall(".//ns:violation", namespaces)
-        violations = []
+        violations = Entities()
         for element in violation_elements:
             violation = self.__violation(element, namespaces, models, severities)
             if violation is not None:

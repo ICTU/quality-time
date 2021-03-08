@@ -8,7 +8,7 @@ from typing import cast
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
@@ -72,5 +72,5 @@ class AzureDevopsTests(SourceCollector):
             )
         test_count = sum(build.test_count for build in highest_build.values())
         total_test_count = sum(build.total_test_count for build in highest_build.values())
-        test_runs = list(itertools.chain.from_iterable([build.entities for build in highest_build.values()]))
+        test_runs = Entities(itertools.chain.from_iterable([build.entities for build in highest_build.values()]))
         return SourceMeasurement(value=str(test_count), total=str(total_test_count), entities=test_runs)

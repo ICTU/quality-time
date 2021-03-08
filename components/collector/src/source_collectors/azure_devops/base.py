@@ -51,7 +51,7 @@ class AzureDevopsJobs(SourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs/pipelines."""
-        entities = []
+        entities = Entities()
         for job in (await responses[0].json())["value"]:
             if not self._include_job(job):
                 continue

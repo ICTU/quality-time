@@ -33,7 +33,7 @@ class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
                                 violation_type=violation.get("id"),
                             )
                         )
-        return [Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes]
+        return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 
     def __include_violation(self, impact: str, tags: Collection[str]) -> bool:
         """Return whether to include the violation."""

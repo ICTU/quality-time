@@ -31,7 +31,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                 path = " ➜ ".join(str(dependency) for dependency in vulnerability["from"])
                 example_vulnerability[dependency] = (vulnerability["id"], path)
 
-        entities = []
+        entities = Entities()
         for dependency in severities:
             entities.append(
                 Entity(

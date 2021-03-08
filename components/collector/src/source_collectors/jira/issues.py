@@ -5,7 +5,7 @@ from typing import Union
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class JiraIssues(SourceCollector):
@@ -44,11 +44,13 @@ class JiraIssues(SourceCollector):
         """Override to get the issues from the responses."""
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
-        entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
+        entities = Entities(
+            self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)
+        )
         return SourceMeasurement(value=self._compute_value(entities), entities=entities)
 
     @classmethod
-    def _compute_value(cls, entities: list[Entity]) -> Value:  # pylint: disable=unused-argument
+    def _compute_value(cls, entities: Entities) -> Value:  # pylint: disable=unused-argument
         """Allow subclasses to compute the value from the entities."""
         return None
 

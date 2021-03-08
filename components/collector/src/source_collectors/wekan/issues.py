@@ -19,7 +19,7 @@ class WekanIssues(WekanBase):
         """Override to parse the cards."""
         api_url = await self._api_url()
         board_slug = self._board["slug"]
-        entities = []
+        entities = Entities()
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))

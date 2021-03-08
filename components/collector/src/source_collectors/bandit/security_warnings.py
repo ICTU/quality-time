@@ -11,7 +11,7 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
         """Override to parse the security warnings."""
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
-        entities = []
+        entities = Entities()
         for response in responses:
             entities.extend(
                 [

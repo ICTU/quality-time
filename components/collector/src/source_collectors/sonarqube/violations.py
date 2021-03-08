@@ -1,7 +1,7 @@
 """SonarQube violations collector."""
 
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
 
@@ -45,7 +45,7 @@ class SonarQubeViolations(SonarQubeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the issues."""
         value = 0
-        entities: list[Entity] = []
+        entities = Entities()
         for response in responses:
             json = await response.json()
             value += int(json.get("total", 0))

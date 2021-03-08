@@ -18,7 +18,7 @@ class CollectorTest(SourceCollectorTestCase):
     SOURCE_TYPE = "junit"
     METRIC_TYPE = "tests"
     JUNIT_URL = "https://junit"
-    JUNIT_XML = "<testsuite><testcase/><testcase/></testsuite>"
+    JUNIT_XML = '<testsuite><testcase name="tc1" /><testcase name="tc2" /></testsuite>'
 
     async def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -62,13 +62,13 @@ class CollectorTest(SourceCollectorTestCase):
 
             async def _api_url(self) -> URL:
                 """Override to return an URL fixture."""
-                return "https://api_url"
+                return URL("https://api_url")
 
             async def _landing_url(self, responses: SourceResponses) -> URL:
                 """Override to raise an error."""
                 raise NotImplementedError
 
-        with patch("aiohttp.ClientSession.get", side_effect=Exception):
+        with patch("aiohttp.ClientSession.get", side_effect=Exception):  # skipcq: PTC-W0062
             async with aiohttp.ClientSession() as session:
                 response = await FailingLandingUrl(session, self.metric, {}).get()
         self.assertEqual("https://api_url", response["landing_url"])

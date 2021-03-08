@@ -12,7 +12,7 @@ class NpmDependencies(JSONFileSourceCollector):
         installed_dependencies: dict[str, dict[str, str]] = {}
         for response in responses:
             installed_dependencies.update(await response.json(content_type=None))
-        return [
+        return Entities(
             Entity(
                 key=f'{dependency}@{versions.get("current", "?")}',
                 name=dependency,
@@ -21,4 +21,4 @@ class NpmDependencies(JSONFileSourceCollector):
                 latest=versions.get("latest", "unknown"),
             )
             for dependency, versions in installed_dependencies.items()
-        ]
+        )

@@ -35,7 +35,7 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the work items from the WIQL query response."""
-        return [
+        return Entities(
             Entity(
                 key=work_item["id"],
                 project=work_item["fields"]["System.TeamProject"],
@@ -45,7 +45,7 @@ class AzureDevopsIssues(SourceCollector):
                 url=work_item["url"],
             )
             for work_item in await self._work_items(responses)
-        ]
+        )
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the value from the responses.

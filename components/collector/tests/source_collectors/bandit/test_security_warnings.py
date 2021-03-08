@@ -60,7 +60,7 @@ class BanditSecurityWarningsTest(BanditTestCase):
         self.set_source_parameter("url", "bandit.zip")
         zipfile = self.zipped_report(*[(f"bandit{index}.json", json.dumps(self.bandit_json)) for index in range(2)])
         response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value="2", entities=self.expected_entities + self.expected_entities)
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
 
     async def test_report_in_gitlab(self):
         """Test that a private token can be added to the request header for accessing a report in GitLab."""

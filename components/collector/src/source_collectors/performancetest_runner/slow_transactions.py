@@ -13,7 +13,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the slow transactions from the responses."""
-        return [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
+        return Entities([self.__entity(transaction) for transaction in await self.__slow_transactions(responses)])
 
     @classmethod
     def __entity(cls, transaction) -> Entity:

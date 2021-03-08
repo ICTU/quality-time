@@ -14,5 +14,5 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods
     ) -> None:
         self.value = str(len(entities)) if value is None and entities is not None else value
         self.total = total
-        self.entities = list(entities)[: self.MAX_ENTITIES] if entities else []
+        self.entities = entities[: self.MAX_ENTITIES] if entities else Entities()
         self.parse_error = parse_error

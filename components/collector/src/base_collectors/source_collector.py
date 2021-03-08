@@ -179,7 +179,7 @@ class SourceCollector(ABC):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
         # pylint: disable=no-self-use,unused-argument
-        return []  # pragma: no cover
+        return Entities()  # pragma: no cover
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Parse the value from the responses."""
@@ -219,7 +219,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
-        return [
+        return Entities(
             Entity(
                 key=branch["name"],
                 name=branch["name"],
@@ -227,7 +227,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
                 url=str(self._branch_landing_url(branch)),
             )
             for branch in await self._unmerged_branches(responses)
-        ]
+        )
 
     @abstractmethod
     async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:

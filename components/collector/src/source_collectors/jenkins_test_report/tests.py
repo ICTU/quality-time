@@ -4,7 +4,7 @@ from typing import Final, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 TestCase = dict[str, str]
@@ -34,12 +34,12 @@ class JenkinsTestReportTests(SourceCollector):
         suites: list[Suite] = []
         for result in results:
             suites.extend(result["suites"])
-        entities = [
+        entities = Entities(
             self.__entity(case)
             for suite in suites
             for case in suite.get("cases", [])
             if self.__status(case) in statuses
-        ]
+        )
         return SourceMeasurement(value=str(value), total=str(total), entities=entities)
 
     def __entity(self, case: TestCase) -> Entity:
