@@ -11,7 +11,7 @@ from routes.measurement import (
     stream_nr_measurements,
 )
 
-from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report
+from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 class GetMeasurementsTest(unittest.TestCase):
@@ -111,7 +111,7 @@ class PostMeasurementTests(unittest.TestCase):
             _id="id",
             metric_uuid=METRIC_ID,
             count=dict(status="target_met"),
-            sources=[self.source(value="0")],
+            sources=[self.source(value="0"), dict(source_uuid=SOURCE_ID2)],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
         self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
@@ -132,10 +132,10 @@ class PostMeasurementTests(unittest.TestCase):
         )
 
     @staticmethod
-    def source(value="1", entities=None, entity_user_data=None, connection_error=None):
+    def source(*, source_uuid=SOURCE_ID, value="1", entities=None, entity_user_data=None, connection_error=None):
         """Return a measurement source."""
         return dict(
-            source_uuid=SOURCE_ID,
+            source_uuid=source_uuid,
             value=value,
             total=None,
             parse_error=None,
@@ -260,11 +260,20 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.insert_one.assert_called_once()
 
     def test_deleted_metric(self, request):
-        """Post an measurement for a deleted metric."""
+        """Post a measurement for a deleted metric."""
         self.report["subjects"][SUBJECT_ID]["metrics"] = {}
         request.json = self.posted_measurement
         self.assertEqual(dict(ok=False), post_measurement(self.database))
         self.database.measurements.update_one.assert_not_called()
+
+    def test_new_source(self, request):
+        """Post a measurement for a new source."""
+        del self.old_measurement["sources"][0]
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
+        request.json = self.posted_measurement
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
+        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
 
     def test_expired_technical_debt(self, request):
         """Test that a new measurement is added when technical debt expires."""

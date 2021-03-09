@@ -6,7 +6,7 @@ import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import TypeVar
+from typing import Optional, TypeVar
 from base64 import b64encode
 
 import bottle
@@ -68,6 +68,13 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
         if (key := get_key(item)) not in seen:
             seen.add(key)
             yield item
+
+
+def find_one(items: Iterable[Item], key: Hashable, get_key: Callable[[Item], Hashable]) -> Optional[Item]:
+    """Return the first item that matches or None if no items match."""
+    return (
+        matches[0] if (matches := list(filter(lambda item: get_key(item) == key, items))) else None
+    )  # pylint: disable=used-before-assignment
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:
