@@ -22,7 +22,7 @@ def serve() -> None:  # pragma: no cover-behave
     database = init_database()
     init_bottle(database)
     server_port = os.environ.get("SERVER_PORT", "5001")
-    bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
+    bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=False, log=logging.getLogger())  # nosec
 
 
 if __name__ == "__main__":  # pragma: no cover-behave
