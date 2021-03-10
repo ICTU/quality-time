@@ -90,6 +90,7 @@ jobs:
       - run:
           background: true
           working_directory: components/server
+          no_output_timeout: 15m
           command: |
             . venv/bin/activate
             export COVERAGE_PROCESS_START=../../tests/feature_tests/.coveragerc
