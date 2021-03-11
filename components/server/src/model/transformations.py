@@ -1,7 +1,6 @@
 """Model transformations."""
 
 import json
-import binascii
 
 from collections.abc import Iterator
 from datetime import date
@@ -46,7 +45,7 @@ def decrypt_credentials(data_model, private_key: str, *reports: dict):
 
                 try:
                     password = asymmetric_decrypt(private_key, encrypted_key_value)
-                except (ValueError, binascii.Error) as error:
+                except ValueError as error:
                     raise DecryptionError from error
 
                 try:
