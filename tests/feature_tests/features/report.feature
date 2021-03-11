@@ -71,9 +71,7 @@ Feature: report
                     "type": "sonarqube",
                     "parameters": {
                       "url": "https://sonarcloud.io",
-                      "password": [
-                        "zhqA7B71yTu1/u59RnbQhXczdEWFKpdSn04mVVixqnYlG6T7426fwAf8LNj9fiwrSG7Qk7LPg8/gQ3/3lQiH159jDdj+VAn89k2sbMKRC5tlSALmoaNL3PHYhoICenlOM+tWXxiZngz8CFaxAV2T1Wi/X0aKFPhcYY9YWoj0xEUjdlIVufwXvZpK2qt29uy0OtqLIFqCQoH+7dU0C4coE8rALttkM/dxhOUUZWybI83VQjA/j+mqzwwGNpD1APLqTRsIi1QL3LL4x9m60qmaJqmUCtSO8QrDk/vLOH0ImCDDP+I0Ggx+B0QRFWFzPxKbHJ0bvTb0hwtI74wosgpHVHWe7SWk741H0xQ2UzG0TWrvnlYJr3porEI5rsIu8HwTVquYJLz7an3215fSeo34J9pmGqneKqXowomW4/ehhtS2ktylNQoLBKEoGw9aglSLcWo14lIrmW+eEhc9qJP7b+9psgho7BwCVprYDZnuvEdZg308wGhHjj2HRLYn9CphltMLOUDoXQhnMtDeOHXdnYauEMu3ZAndIYtO06A6OVh8Sr4jHL/E+jme8sky7RR9s+Mk5gkxfIb6yxc8oYlT2fUGx2LmL7noIiCsJo6NNyHQJYTFlWLAJ8VmkjbdJRwJnBYk1AgMJyQ5QUlIMVwbMg8kPBWWSci26ODeijXh8ow=",
-                        "gAAAAABgShzE8ZlHKCKNnuGue5R7G8zPkhYp68hZRz68WAyFK4Sbj1goRdP_g8az_tGC81rlTphlKeDMBZXTenhHk4_it3VEVEi8GBB12yM3SQFVB_pvGbR8WJL_styBi8rI4YzyDu6sHe99cvnveQCM1QEbiL-c_g=="]
+                      "password": ["not_properly_encrypted", "password"]
                     }
                   }
                 }
@@ -83,7 +81,7 @@ Feature: report
         }
       }
       """
-    Then the report title is "Imported report"
+    Then the import failed
 
   Scenario: time travel to the past, before the report existed
     When the client creates a report

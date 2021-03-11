@@ -236,6 +236,17 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertEqual("Report", inserted["title"])
         self.assertEqual("report_uuid", inserted["report_uuid"])
 
+    @patch("bottle.request")
+    def test_post_report_import_with_failed_decryption(self, request):
+        """Test that a report is imported correctly."""
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = ("not_properly_encrypted==", "test_message")
+        request.json = mocked_report
+        response = post_report_import(self.database)
+        self.assertIn("error", response)
+
     @patch("server_utilities.functions.datetime")
     def test_get_tag_report(self, date_time):
         """Test that a tag report can be retrieved."""

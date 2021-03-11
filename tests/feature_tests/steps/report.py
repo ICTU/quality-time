@@ -31,8 +31,7 @@ def download_report_as_json_with_key(context):
 @when("the client imports a report")
 def import_report(context):
     """Import a JSON report."""
-    response = context.post("report/import", json=json.loads(context.text))
-    context.uuid["report"] = response["new_report_uuid"]
+    context.post("report/import", json=json.loads(context.text))
 
 
 @when("the client enters a report date that's too old")
@@ -73,3 +72,10 @@ def get_non_existing_report(context):
     """Get a non-existing report."""
     context.uuid["report"] = report_uuid = "report-does-not-exist"
     context.get(f"report/{report_uuid}")
+
+
+@then("the import failed")
+def import_failed(context):
+    """Check the json."""
+    assert_equal(400, context.response.status_code)
+    assert_equal("application/json", context.response.headers["Content-Type"])
