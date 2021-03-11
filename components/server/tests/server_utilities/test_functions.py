@@ -8,7 +8,7 @@ from base64 import b64decode
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives.asymmetric import padding, rsa, dsa
 
 from server_utilities.functions import (
     asymmetric_decrypt,
@@ -81,6 +81,19 @@ class UtilTests(unittest.TestCase):
 
         self.assertEqual(decrypted_message, test_message)
 
+    def test_asymmetric_encrypt_with_dsa_key(self):
+        """Test wether message is encrypted using public/private keys."""
+        # get public and private keys
+        private_key = dsa.generate_private_key(key_size=4096, backend=default_backend())
+        public_key = private_key.public_key()
+        pubkey = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        # encryption
+        test_message = "this is a test message"
+        self.assertRaises(TypeError, asymmetric_encrypt, pubkey.decode(), test_message)
+
     def test_asymmetric_decrypt(self):
         """Test wether message that has been encrypted using asymmetric_encrypt ca be decrypted."""
         # get public and private keys
@@ -104,6 +117,20 @@ class UtilTests(unittest.TestCase):
         message = asymmetric_decrypt(privkey.decode(), (encrypted_key, encrypted_message))
 
         self.assertEqual(message, test_message)
+
+    def test_asymmetric_decrypt_with_dsa_key(self):
+        """Test wether message that has been encrypted using asymmetric_encrypt ca be decrypted."""
+        # get public and private keys
+        private_key = dsa.generate_private_key(key_size=4096, backend=default_backend())
+        privkey = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+
+        # decryption
+        test_message_and_key = "this is a test message=="
+        self.assertRaises(TypeError, asymmetric_decrypt, privkey.decode(), (test_message_and_key, test_message_and_key))
 
 
 @patch("server_utilities.functions.bottle.request")
