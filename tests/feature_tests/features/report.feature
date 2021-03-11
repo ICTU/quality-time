@@ -53,6 +53,16 @@ Feature: report
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
+  Scenario: re-import report
+    When the client creates a report
+    And the client creates a subject
+    And the client creates a metric
+    And the client creates a source
+    And the client sets the source parameter password to "['item_1', 'item_2']"
+    And the client downloads the report as json
+    And the client re-imports a report
+    Then the report title is "New report"
+
   Scenario: failed import report
     When the client imports a report
       """

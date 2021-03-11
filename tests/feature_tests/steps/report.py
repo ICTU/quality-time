@@ -18,7 +18,8 @@ def download_report_as_pdf(context):
 @when("the client downloads the report as json")
 def download_report_as_json(context):
     """Download the report as json."""
-    context.get(f"report/{context.uuid['report']}/json")
+    report = context.get(f"report/{context.uuid['report']}/json")
+    context.exported_report = report
 
 
 @when("the client downloads the report as json with his own public key")
@@ -26,6 +27,13 @@ def download_report_as_json_with_key(context):
     """Download the report as json with public key."""
     public_key = urllib.parse.quote_plus(context.public_key)
     context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
+
+
+@when("the client re-imports a report")
+def re_import_report(context):
+    """Import a JSON report."""
+    response = context.post("report/import", json=context.exported_report)
+    context.uuid["report"] = response["new_report_uuid"]
 
 
 @when("the client imports a report")

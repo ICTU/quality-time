@@ -1,6 +1,6 @@
 """Steps for authentication."""
 
-from asserts import assert_equal, assert_false
+from asserts import assert_equal, assert_false, assert_in
 from behave import given, then, when
 
 
@@ -41,3 +41,13 @@ def check_unauthenticated(context):
 def check_unauthorized(context):
     """Check that the server responded with an unauthorized error message."""
     assert_equal(403, context.response.status_code)
+
+
+@when("the client requests the public key")
+def get_public_key(context):
+    context.public_key = context.get("public_key")
+
+
+@then("the client receives the public key")
+def check_public_key(context):
+    assert_in("public_key", context.public_key)
