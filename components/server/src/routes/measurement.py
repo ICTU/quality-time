@@ -48,19 +48,18 @@ def copy_entity_user_data(old_sources, new_sources) -> None:
     """Copy the entity user data from the old sources to the new sources."""
     for new_source in new_sources:
         old_source = find_one(old_sources, new_source["source_uuid"], lambda source: SourceId(source["source_uuid"]))
-        if old_source is None:
-            continue
-        new_entity_keys = {entity["key"] for entity in new_source.get("entities", [])}
-        # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
-        # unique. Create a mapping of old keys to new keys so we can move the entity user data to the new keys
-        changed_entity_keys = {
-            entity["old_key"]: entity["key"] for entity in new_source.get("entities", []) if "old_key" in entity
-        }
-        copy_source_entity_user_data(old_source, new_source, new_entity_keys, changed_entity_keys)
+        if old_source:
+            copy_source_entity_user_data(old_source, new_source)
 
 
-def copy_source_entity_user_data(old_source, new_source, new_entity_keys, changed_entity_keys) -> None:
+def copy_source_entity_user_data(old_source, new_source) -> None:
     """Copy the user entity data of the source."""
+    new_entity_keys = {entity["key"] for entity in new_source.get("entities", [])}
+    # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
+    # unique. Create a mapping of old keys to new keys so we can move the entity user data to the new keys
+    changed_entity_keys = {
+        entity["old_key"]: entity["key"] for entity in new_source.get("entities", []) if "old_key" in entity
+    }
     # Copy the user data of entities, keeping 'orphaned' entity user data around for a while in case the entity
     # returns in a later measurement:
     days_after_which_to_remove_orphaned_entity_user_data = 21
