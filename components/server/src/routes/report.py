@@ -1,7 +1,6 @@
 """Report routes."""
 
 import os
-import json
 from urllib import parse
 
 import bottle

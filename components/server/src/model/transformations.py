@@ -1,12 +1,14 @@
 """Model transformations."""
 
-from collections.abc import Iterator
 import json
+import binascii
+
+from collections.abc import Iterator
 from datetime import date
 from json.decoder import JSONDecodeError
 from typing import Optional, cast
 
-from server_utilities.functions import asymmetric_decrypt, asymmetric_encrypt, unique
+from server_utilities.functions import DecryptionError, asymmetric_decrypt, asymmetric_encrypt, unique
 from server_utilities.type import Color, EditScope, ItemId, Status
 
 from .iterators import sources as iter_sources
@@ -41,7 +43,11 @@ def decrypt_credentials(data_model, private_key: str, *reports: dict):
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
 
                 encrypted_key_value = source["parameters"][parameter_key]
-                password = asymmetric_decrypt(private_key, encrypted_key_value)
+
+                try:
+                    password = asymmetric_decrypt(private_key, encrypted_key_value)
+                except (ValueError, binascii.Error) as error:
+                    raise DecryptionError from error
 
                 try:
                     password = json.loads(password)

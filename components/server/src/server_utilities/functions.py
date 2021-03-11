@@ -152,13 +152,10 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
     private_key_obj = serialization.load_pem_private_key(private_key_bytes, None, default_backend())
     private_key_obj = cast(openssl.rsa.RSAPrivateKey, private_key_obj)
 
-    try:
-        decrypted_key = private_key_obj.decrypt(
-            fernet_key_bytes,
-            padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
-        )
-        message = symmetric_decrypt(decrypted_key, message_bytes)
-    except ValueError as v_e:
-        raise DecryptionError from v_e
+    decrypted_key = private_key_obj.decrypt(
+        fernet_key_bytes,
+        padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
+    )
+    message = symmetric_decrypt(decrypted_key, message_bytes)
 
     return message.decode()

@@ -53,7 +53,7 @@ Feature: report
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
-  Scenario: import report
+  Scenario: failed import report
     When the client imports a report
       """
       {
@@ -71,7 +71,7 @@ Feature: report
                     "type": "sonarqube",
                     "parameters": {
                       "url": "https://sonarcloud.io",
-                      "password": ["not_properly_encrypted", "password"]
+                      "password": "not_properly_encrypted_password"
                     }
                   }
                 }
