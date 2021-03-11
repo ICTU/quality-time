@@ -38,6 +38,11 @@ def report_date_time() -> str:
     return ""
 
 
+def days_ago(date_time: datetime) -> int:
+    """Return the days since the date/time."""
+    return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
+
+
 def uuid() -> ReportId:
     """Return a UUID."""
     return ReportId(str(_uuid.uuid4()))
@@ -72,9 +77,8 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
 
 def find_one(items: Iterable[Item], key: Hashable, get_key: Callable[[Item], Hashable]) -> Optional[Item]:
     """Return the first item that matches or None if no items match."""
-    return (
-        matches[0] if (matches := list(filter(lambda item: get_key(item) == key, items))) else None
-    )  # pylint: disable=used-before-assignment
+    matches = list(filter(lambda item: get_key(item) == key, items))
+    return matches[0] if matches else None
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:

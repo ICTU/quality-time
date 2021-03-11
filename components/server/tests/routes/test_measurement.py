@@ -1,7 +1,7 @@
 """Unit tests for the measurement routes."""
 
 import unittest
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
 from routes.measurement import (
@@ -64,6 +64,7 @@ class GetMeasurementsTest(unittest.TestCase):
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("routes.measurement.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""
@@ -166,15 +167,58 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
+    @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
     def test_changed_measurement_entities(self, request):
-        """Post a measurement whose value is the same, but with different entities."""
+        """Post a measurement whose value is the same, but with different entities.
+
+        Entity user data will be changed as follows:
+        - Entity data belonging to entities still present is simply copied.
+        - Entity data no longer belonging to an entity because the entity disappeared will be marked as orphaned.
+        - Entity data that was orphaned recently will still be orphaned.
+        - Entity data that was orphaned long ago will be deleted.
+        - Entity data that was orphaned, but whose entity reappears, will no longer be orphaned."""
         self.old_measurement["count"] = dict(status="near_target_met", status_start="2018-01-01", value="1")
-        self.old_measurement["sources"] = [self.source(entities=[dict(key="a")], entity_user_data=dict(a="attributes"))]
+        self.old_measurement["sources"] = [
+            self.source(
+                entities=[dict(key="a")],
+                entity_user_data=dict(
+                    a=dict(status="confirmed"),  # Will be newly orphaned
+                    b=dict(status="confirmed", orphaned_since="2021-01-01"),  # Will be reunited with its entity
+                    c=dict(status="confirmed", orphaned_since="2021-01-01"),  # Will still be orphaned
+                    d=dict(status="confirmed", orphaned_since="2020-01-01"),  # Orphaned too long, will be deleted
+                ),
+            )
+        ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2018-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
-        self.database.measurements.insert_one.assert_called_once()
+        self.database.measurements.insert_one.assert_called_once_with(
+            dict(
+                metric_uuid=METRIC_ID,
+                sources=[
+                    self.source(
+                        entities=[dict(key="b")],
+                        entity_user_data=dict(
+                            a=dict(status="confirmed", orphaned_since="2020-01-01"),  # Newly orphaned
+                            b=dict(status="confirmed"),  # No longer orphaned
+                            c=dict(status="confirmed", orphaned_since="2021-01-01"),  # Still orphaned
+                        ),
+                    )
+                ],
+                count=dict(
+                    value="1",
+                    status="near_target_met",
+                    status_start="2018-01-01",
+                    direction="<",
+                    target="0",
+                    near_target="10",
+                    debt_target=None,
+                ),
+                start="2019-01-01",
+                end="2019-01-01",
+            )
+        )
 
     def test_changed_measurement_entity_key(self, request):
         """Post a measurement whose value and entities are the same, except for a changed entity key."""
