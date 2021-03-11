@@ -139,10 +139,7 @@ def logout(database: Database) -> dict[str, bool]:
 
 @bottle.get("/api/v3/public_key")
 def get_public_key(database: Database) -> dict:
-    """
-    Returns a serialized version of the public key that this
-    Quality-time instance uses for credential encryption in exports.
-    """
+    """Returns a serialized version of the public key."""
     public_key = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
     public_key_as_dict = cast(dict, public_key)
     return public_key_as_dict

@@ -45,9 +45,11 @@ def check_unauthorized(context):
 
 @when("the client requests the public key")
 def get_public_key(context):
+    """Get the public key."""
     context.public_key = context.get("public_key")
 
 
 @then("the client receives the public key")
 def check_public_key(context):
+    """Check that this is actually a public key."""
     assert_in("public_key", context.public_key)
