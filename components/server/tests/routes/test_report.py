@@ -102,18 +102,18 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
 -----END PUBLIC KEY-----
 """
 
-        #         self.dsa_public_key = """-----BEGIN PUBLIC KEY-----
-        # MIIBtjCCASsGByqGSM44BAEwggEeAoGBAN2YsbQRxa3noHUehRXbDaTmCQCsBW6D
-        # Gy4Yo/Rzg1O6S4gBrk9/h64V3ZcNzKgh3G73v5nReLJo545vq5ZdglRxVqRzEkvK
-        # ecbRrKJfSL/Ir6+utojcBte9u8mK8VBzOEzu3d9VMXhohnLc8AKJgoVz2VLYboHb
-        # DDqil8n5GA81AhUA1zdcpHIsos80Xr8W67v+zc1NugMCgYBO9ui2yfUJK67P3yKm
-        # 5kcD7owtqdrgEWo3zPSU94Dyq83ZKnQCqW4jyNVvLHE8vorfrzQG05yxA27fh9y3
-        # 13CqD3+SRs1/bh+OoHTYfOg5nQpd+wmpD1KcliwozSa4UoB6L0HGSsmdfDMnyjY6
-        # 57A/6fvkIPfFWwiZqDw/UbvXJAOBhAACgYAClAnMuoF2cRmHIkgx7rkBtQQDUuL+
-        # w+tVREFni2i1NBgXEN18fFRtebuPKJvoY0ISQgR+XPoKsgfnQ7jy8bsoZvrto3CP
-        # pwEguMmZYw493abU3P4d66wDe/sFyNLW0rhIx+sYsQ6YhGVWF46peoFC3Aa2H439
-        # frfI8VlILbIxGw==
-        # -----END PUBLIC KEY-----"""
+        self.dsa_public_key = """-----BEGIN PUBLIC KEY-----
+MIIBtjCCASsGByqGSM44BAEwggEeAoGBAN2YsbQRxa3noHUehRXbDaTmCQCsBW6D
+Gy4Yo/Rzg1O6S4gBrk9/h64V3ZcNzKgh3G73v5nReLJo545vq5ZdglRxVqRzEkvK
+ecbRrKJfSL/Ir6+utojcBte9u8mK8VBzOEzu3d9VMXhohnLc8AKJgoVz2VLYboHb
+DDqil8n5GA81AhUA1zdcpHIsos80Xr8W67v+zc1NugMCgYBO9ui2yfUJK67P3yKm
+5kcD7owtqdrgEWo3zPSU94Dyq83ZKnQCqW4jyNVvLHE8vorfrzQG05yxA27fh9y3
+13CqD3+SRs1/bh+OoHTYfOg5nQpd+wmpD1KcliwozSa4UoB6L0HGSsmdfDMnyjY6
+57A/6fvkIPfFWwiZqDw/UbvXJAOBhAACgYAClAnMuoF2cRmHIkgx7rkBtQQDUuL+
+w+tVREFni2i1NBgXEN18fFRtebuPKJvoY0ISQgR+XPoKsgfnQ7jy8bsoZvrto3CP
+pwEguMmZYw493abU3P4d66wDe/sFyNLW0rhIx+sYsQ6YhGVWF46peoFC3Aa2H439
+frfI8VlILbIxGw==
+-----END PUBLIC KEY-----"""
 
         self.database = Mock()
         self.database.sessions.find_one.return_value = JENNY
@@ -228,20 +228,20 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
-    # @patch("routes.report.bottle.request")
-    # def test_get_json_report_with_faulty_public_key(self, request):
-    #     """Test that a faulty public key will raise a typeerror."""
-    #     request.query = {"public_key": self.dsa_public_key}
-    #     mocked_report = copy.deepcopy(self.report)
-    #     mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
-    #         "password"
-    #     ] = [
-    #         "0",
-    #         "1",
-    #     ]  # use a list as password for coverage of the last line
-    #     self.database.reports.find_one.return_value = mocked_report
-    #     exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
-    #     self.assertIn("error", exported_report)
+    @patch("routes.report.bottle.request")
+    def test_get_json_report_with_faulty_public_key(self, request):
+        """Test that a faulty public key will raise a typeerror."""
+        request.query = {"public_key": self.dsa_public_key}
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = [
+            "0",
+            "1",
+        ]  # use a list as password for coverage of the last line
+        self.database.reports.find_one.return_value = mocked_report
+        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
+        self.assertIn("error", exported_report)
 
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):
