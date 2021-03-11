@@ -3,7 +3,7 @@ version: 2
 jobs:
   unittest_backend:
     docker:
-      - image: circleci/python:3.9.1-buster
+      - image: circleci/python:3.9.2-buster
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -48,11 +48,11 @@ jobs:
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.1-browsers tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.2-browsers tests/application_tests/ci/test.sh
 
   feature_tests:
     docker:
-      - image: circleci/python:3.9.1-buster
+      - image: circleci/python:3.9.2-buster
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
