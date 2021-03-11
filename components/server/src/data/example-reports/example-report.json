@@ -370,6 +370,7 @@
                             "type": "pyupio_safety",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/pyupio_safety/pyupio_safety.json",
+                                "landing_url": "http://localhost:8000/reports/pyupio_safety/pyupio_safety.json",
                                 "username": "",
                                 "password": "",
                                 "private_token": ""

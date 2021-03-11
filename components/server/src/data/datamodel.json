@@ -4586,6 +4586,18 @@
                         "security_warnings"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to a Safety report in a human readable format",
+                    "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
                 "username": {
                     "name": "Username for basic authentication",
                     "short_name": "username",
