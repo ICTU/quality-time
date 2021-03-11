@@ -176,7 +176,8 @@ class PostMeasurementTests(unittest.TestCase):
         - Entity data no longer belonging to an entity because the entity disappeared will be marked as orphaned.
         - Entity data that was orphaned recently will still be orphaned.
         - Entity data that was orphaned long ago will be deleted.
-        - Entity data that was orphaned, but whose entity reappears, will no longer be orphaned."""
+        - Entity data that was orphaned, but whose entity reappears, will no longer be orphaned.
+        """
         self.old_measurement["count"] = dict(status="near_target_met", status_start="2018-01-01", value="1")
         self.old_measurement["sources"] = [
             self.source(
@@ -412,6 +413,10 @@ class StreamNrMeasurementsTest(unittest.TestCase):
         database.measurements.count_documents.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements(database)
-            self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
-            self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
-            self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
+            try:
+                self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
+                self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
+                self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
+            except StopIteration:  # pragma: no cover
+                # DeepSource says: calls to next() should be inside try-except block.
+                self.fail("Unexpected StopIteration")
