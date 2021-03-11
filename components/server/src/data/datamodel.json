@@ -4594,8 +4594,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "source_up_to_dateness",
-                        "tests"
+                        "security_warnings"
                     ]
                 },
                 "username": {

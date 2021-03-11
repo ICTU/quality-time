@@ -1,6 +1,7 @@
 """Report routes."""
 
 import os
+import json
 from urllib import parse
 
 import bottle
@@ -14,7 +15,7 @@ from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
 from model.transformations import decrypt_credentials, encrypt_credentials, hide_credentials, summarize_report
-from server_utilities.functions import iso_timestamp, report_date_time, uuid
+from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -44,7 +45,15 @@ def post_report_import(database: Database):
 
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
     private_key = secret["private_key"]
-    decrypt_credentials(data_model, private_key, report)
+
+    try:
+        decrypt_credentials(data_model, private_key, report)
+    except DecryptionError:
+        bottle.response.status = 400
+        bottle.response.content_type = "application/json"
+        return json.dumps(
+            {"error": "Decryption of source credentials failed. Did you use the correct public key for encryption?"}
+        )
 
     result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))
     result["new_report_uuid"] = report["report_uuid"]

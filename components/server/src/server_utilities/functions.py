@@ -24,6 +24,10 @@ from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, 
 from server_utilities.type import Direction, ReportId
 
 
+class DecryptionError(Exception):
+    """Exception to be raised when decryption has failed."""
+
+
 def iso_timestamp() -> str:
     """Return the ISO-format version of the current UTC date and time without microseconds."""
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -147,13 +151,14 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
 
     private_key_obj = serialization.load_pem_private_key(private_key_bytes, None, default_backend())
     private_key_obj = cast(openssl.rsa.RSAPrivateKey, private_key_obj)
-    # if not isinstance(private_key_obj, openssl.rsa.RSAPrivateKey):
-    #     raise TypeError(f"Private key object should be of type RSAPrivateKey, found {type(private_key_obj)}.")
 
-    decrypted_key = private_key_obj.decrypt(
-        fernet_key_bytes,
-        padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
-    )
+    try:
+        decrypted_key = private_key_obj.decrypt(
+            fernet_key_bytes,
+            padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
+        )
+        message = symmetric_decrypt(decrypted_key, message_bytes)
+    except ValueError as v_e:
+        raise DecryptionError from v_e
 
-    message = symmetric_decrypt(decrypted_key, message_bytes)
     return message.decode()

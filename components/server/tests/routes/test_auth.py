@@ -12,6 +12,8 @@ from ldap3.core import exceptions
 from database import sessions
 from routes import auth
 
+from routes.auth import get_public_key
+
 USERNAME = "john-doe"
 PASSWORD = "secret"
 
@@ -22,6 +24,7 @@ class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up a mock database."""
         self.database = Mock()
+        self.database.secrets.find_one.return_value = {"public_key": "this_is_a_public_key"}
 
     def tearDown(self):
         """Override to remove the cookies and reset the logging."""
@@ -33,6 +36,11 @@ class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         return cookie
+
+    def test_get_public_key(self, *_):
+        """Test that the correct public key is returned as dict."""
+        public_key = get_public_key(self.database)
+        self.assertDictEqual(public_key, {"public_key": "this_is_a_public_key"})
 
 
 @patch("bottle.request", Mock(json=dict(username=USERNAME, password=PASSWORD)))
