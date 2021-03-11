@@ -1,144 +1,315 @@
 {
+    "_id": "6049fa3b2df30500f9702a6a",
     "title": "Quality-time",
     "report_uuid": "example-report-quality-time",
-    "subjects": [
-        {
-            "name": "Quality-time",
+    "subjects": {
+        "8cd7fc6e-5a65-4958-83c3-8afcc461b628": {
             "type": "software",
-            "metrics": [
-                {
+            "name": "Quality-time",
+            "description": "A custom software application or component.",
+            "metrics": {
+                "f51c0391-0a51-43f1-9bd1-69046d1acc06": {
                     "type": "tests",
-                    "sources": [
-                        {
+                    "sources": {
+                        "d8af382c-eebf-4062-a178-cf98c13b0203": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master",
+                                "test_result": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "0",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "b6fcc649-5873-48ac-8da3-61a18b3f055f": {
                     "type": "uncovered_lines",
-                    "sources": [
-                        {
+                    "sources": {
+                        "06723c91-cc64-4dea-ab09-129f7ee5f3ce": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "5a00e164-744c-4cd2-bf57-5dfca2c55a1f": {
                     "type": "uncovered_branches",
-                    "sources": [
-                        {
+                    "sources": {
+                        "7bba5c46-67de-48ae-ae9c-3b303c38cc45": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "22545de2-835f-4150-b9e8-d693e791429a": {
                     "type": "duplicated_lines",
-                    "sources": [
-                        {
+                    "sources": {
+                        "9abef8e5-426c-441a-b9b4-491f4e04f31a": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "f7ac921d-0954-4701-858a-96845e637ed3": {
                     "type": "complex_units",
-                    "sources": [
-                        {
+                    "sources": {
+                        "fc65e528-5844-4499-a437-79d6eb3381dc": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability",
+                        "testability"
                     ]
                 },
-                {
+                "f95322e2-202c-4fee-93c2-46b4a6755fb6": {
                     "type": "many_parameters",
-                    "sources": [
-                        {
+                    "sources": {
+                        "28ec1812-a833-499a-9969-e780a7cd380a": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "25764450-478f-4225-8966-14ea79f8f7bd": {
                     "type": "long_units",
-                    "sources": [
-                        {
+                    "sources": {
+                        "673fd8c1-a6f1-4734-abfe-43761b136a6e": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "62bbedcb-0197-4a10-97fa-690067c75120": {
                     "type": "loc",
-                    "sources": [
-                        {
+                    "sources": {
+                        "727f25e1-d94d-48fd-9c3a-b27846d09dec": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master",
+                                "languages_to_ignore": [],
+                                "lines_to_count": "lines with code"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "30000",
+                    "near_target": "35000",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "1315f4e4-3acb-4412-abef-5904d76b4d35": {
                     "type": "violations",
-                    "sources": [
-                        {
+                    "sources": {
+                        "77fc79c8-15d7-4eec-bd8f-d7f6e974cb85": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master",
+                                "severities": [],
+                                "types": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "ffb0f4a0-5b4a-44dc-9437-a3c2c2b4a8f9": {
                     "type": "suppressed_violations",
-                    "sources": [
-                        {
+                    "sources": {
+                        "db2886ce-8149-4d08-923a-3cb1b3152a90": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master",
+                                "severities": [],
+                                "types": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "79528152-36cc-4dfe-88db-18b021f0130f": {
                     "type": "source_up_to_dateness",
-                    "sources": [
-                        {
+                    "sources": {
+                        "5ec44756-4f01-442d-b1e6-1c6ef9025914": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:quality-time"
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 }
-            ]
+            }
         }
-    ]
+    },
+    "timestamp": "2021-03-11T11:08:43+00:00",
+    "delta": {
+        "description": "{An operator} imported a new report",
+        "email": "",
+        "uuids": "example-report-quality-time"
+    },
+    "last": true
 }

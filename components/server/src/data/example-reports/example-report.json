@@ -1,401 +1,804 @@
 {
+    "_id": "6049fa3b2df30500f9702a68",
     "title": "Demo report",
     "report_uuid": "example-report",
-    "subjects": [
-        {
-            "name": "Demo application",
+    "subjects": {
+        "ee220264-9e66-49a4-981e-4dfe37a86a2c": {
             "type": "software",
-            "metrics": [
-                {
+            "name": "Demo application",
+            "description": "A custom software application or component.",
+            "metrics": {
+                "3ddbacd8-882c-4c0c-8f63-7f9fb00ade27": {
                     "type": "loc",
-                    "sources": [
-                        {
+                    "sources": {
+                        "713bf9c9-9b29-45fa-b428-6890443a60c1": {
                             "type": "cloc",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/cloc/cloc.json",
-                                "landing_url": "http://localhost:8000/reports/cloc/cloc.json"
+                                "landing_url": "http://localhost:8000/reports/cloc/cloc.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "languages_to_ignore": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "30000",
+                    "near_target": "35000",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "823001ba-d45f-4e91-83ba-5843708cb475": {
                     "type": "tests",
-                    "sources": [
-                        {
+                    "sources": {
+                        "462713f3-76c7-40c6-8e85-8987c40ee013": {
                             "type": "junit",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/junit/junit-report.xml",
-                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html"
+                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
                             }
                         },
-                        {
+                        "2f32b0fe-4bb7-4485-ad11-6215a5777754": {
                             "type": "robot_framework",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/robot-framework/output.xml",
-                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
+                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
                             }
                         },
-                        {
+                        "210ba452-685c-4959-a88e-c1cbb6f31f3e": {
                             "type": "testng",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/testng/testng-results.xml",
-                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml"
+                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "0",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "41b76e57-a3d8-4a65-9814-3df900f2f2ba": {
                     "type": "source_up_to_dateness",
-                    "sources": [
-                        {
+                    "sources": {
+                        "713ce91a-979c-47d2-876f-3f5f85d48f97": {
                             "type": "junit",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/junit/junit-report.xml",
-                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html"
+                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "cd3bb542-1aa1-4eb6-89a0-ecbaec2da760": {
                             "type": "robot_framework",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/robot-framework/output.xml",
-                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
+                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "741c5291-b6d2-4b1e-9c69-46c9b3db9836": {
                             "type": "testng",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/testng/testng-results.xml",
-                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml"
+                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 },
-                {
+                "f7e1d0d7-37e1-42e4-8da1-5acdd48c65fc": {
                     "type": "uncovered_lines",
-                    "sources": [
-                        {
+                    "sources": {
+                        "8858a237-e1a4-4936-adf5-9610670e343c": {
                             "type": "jacoco",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
-                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "5d960cf2-bd59-4f6c-87e6-aaceadfb2a1f": {
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
+                                "landing_url": [
+                                    "pYexpGYYPhJ+6K0YAYYMzRS8l8YF7/GMnebxM3oUKCaXZI1tWNumV65g5elYDPsYSgRdn1KVpA+KGHV+6lE6L9tPLgRALVWstRdv6RXTKjZ1xVbmG7L6lMCXCFvyq1j93vUg0Blw5FWBghJl7EwVVS0QIPhO+qi2tVGE4f39wfo=",
+                                    "gAAAAABgSf2dIrTz9AdBE5FvXgShExbBRLLbxjFKCz0BixS4bCzNdxe-sPUW7S0PLX4DyvxhDbmL7IqxTocR-nBk6NWPtmyFZu_YwVJIt8CkvLdswgxVe3b8XqQ6MhOl0uOFmSpVCWbpXc6LlYFcUzxPBkBTVscNnQ=="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "fbb43b6c-8ab2-4347-a3de-6230d174ce20": {
                             "type": "cobertura",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
-                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "a72882ff-36fb-40ea-a25e-7b92c5559317": {
                     "type": "uncovered_branches",
-                    "sources": [
-                        {
+                    "sources": {
+                        "7dd294a5-c488-4167-98fb-ea46a8df1317": {
                             "type": "jacoco",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
-                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "e9c66cc9-f44d-4ecb-9a91-daae42429bb9": {
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
+                                "landing_url": [
+                                    "TTfhQ7pAHZibotyAYT+qe0g+31TsylTuAtyJ/zyrQ+zBPZaJinsMYB1IWD6IvUYeoHKGS2LzUJnBprni5w8P58PKO1yKj8yl78Lcb7/bY9GMsSrMmLcSsWKuF08YMw8QyDxiPsUl+9y5aISAIMjadKoZNW2kSsee/LuFYbD28fY=",
+                                    "gAAAAABgSf2de8aQv8Z5tP-CgvbqogBffuzmOpVxRS4NQz9gUtu9m63E3BuQqF03BcbUEJlELE0iZdux1v_kYnQW159Cag9sggwqq4r1NirH0cee0pLzUe70-iT6y0XVzcVCB52Mj-qJ1JeKGX5OamoZqwGwSuW-_g=="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "e50c5bb7-4ea5-49ab-a225-aa8777c18a35": {
                             "type": "cobertura",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
-                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "848f2641-b170-4b55-8b7e-14f1ff283f1a": {
                     "type": "source_up_to_dateness",
-                    "sources": [
-                        {
+                    "sources": {
+                        "740e0270-65b4-4f20-a52a-6b55186ab752": {
                             "type": "jacoco",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
-                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "190c25ba-eb24-4648-808b-a7eddf89b5e8": {
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
+                                "landing_url": [
+                                    "gCsouZpL7oHAKpv1RlgWDdYSxF2td1UksmPlNTZCU0U14F07d2dsohQoUKD9flM5ee2eR1WylAcUn0XLxE/rYGKswWSG+nowMtsLslGIYB+KIEF4SWvM9u21rc6OC6qEkoUloKOZmRpHGKOg/yXoOQ/2o10+1paliqAGhIrH/4s=",
+                                    "gAAAAABgSf2dSPN4fmWpwKRBsAWLPMsNjrKPeoToCwD60V7vMTw150gXym06RU4Hb0F9AeQyfSqOZxsE8Ki8jN4ShkadIzSG7WKEvLDDX8hmnsIhspO_JXX9bJfEi2YmTHXAmvdmPHpLnptsb2BwhQInqXkwcD2-sg=="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "efc40c61-5ea4-441c-b2a8-a1edf7299186": {
                             "type": "cobertura",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
-                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 },
-                {
+                "1b13d390-7521-48c4-a9ee-edfb2002d3a4": {
                     "type": "dependencies",
-                    "sources": [
-                        {
+                    "sources": {
+                        "f03fe783-7fc7-46fe-875f-643638ed24f4": {
                             "type": "composer",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/composer/composer-outdated.json",
-                                "landing_url": "http://localhost:8000/reports/composer/composer-outdated.json"
+                                "landing_url": "http://localhost:8000/reports/composer/composer-outdated.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "latest_version_status": []
                             }
                         },
-                        {
+                        "b7e16888-b025-49d7-96f3-511656f83f1d": {
                             "type": "npm",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/npm/npm-outdated.json",
-                                "landing_url": "http://localhost:8000/reports/npm/npm-outdated.json"
+                                "landing_url": "http://localhost:8000/reports/npm/npm-outdated.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "3b43dc7f-4ced-4a3f-ac7d-8d43c7bc574e": {
                             "type": "owasp_dependency_check",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
-                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "84dee32d-9458-446f-a95f-32382e09c196": {
                             "type": "pip",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/pip/pip-outdated.json",
-                                "landing_url": "http://localhost:8000/reports/pip/pip-outdated.json"
+                                "landing_url": "http://localhost:8000/reports/pip/pip-outdated.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "e7bfd848-869e-4e8e-b244-9e6568906973": {
                     "type": "security_warnings",
-                    "sources": [
-                        {
+                    "sources": {
+                        "38dee1e7-5408-4fd5-93bd-9891e20092cc": {
                             "type": "owasp_dependency_check",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
-                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "severities": []
                             }
                         },
-                        {
+                        "cdb5ebd4-1696-4840-b584-31704c38b44a": {
                             "type": "owasp_zap",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-zap/zap-report.xml",
-                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html"
+                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "risks": [],
+                                "variable_url_regexp": []
                             }
                         },
-                        {
+                        "47ff11e4-1f73-4acf-9a6c-40a691c83086": {
                             "type": "openvas",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/openvas/openvas-report.xml",
-                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html"
+                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "severities": []
                             }
                         },
-                        {
+                        "bf947975-c7a6-429c-a341-ca7d7c403493": {
                             "type": "pyupio_safety",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/pyupio_safety/pyupio_safety.json",
-                                "landing_url": "http://localhost:8000/reports/pyupio_safety/pyupio_safety.json"
+                                "landing_url": [
+                                    "lRHFRevzaYDex/w47c1PIst2vLtBbShVNJ5F6HiZgG3yxEDbORXCx6P2XoblUJTGjG/JbBslxyqi9uARa5o+r2jPLVLHsiO3mac4HglBHUv3UMAjJ+ec8viVEldtHrFwjHp49WhIZUEQPnyAVag2UOqh1pSguHz/IBxqz6f/nco=",
+                                    "gAAAAABgSf2dfgvaV_i5MFXq6UK2IOmDt7mqCUi6vKJb_n_hoxU3L1SlXkVx36li4OwnVDnYOfQdf0bK-cE8Ek6AMHQ6Ti1_xNSOD9aKzQeHuhTDOrZlDEQgMxu3z3V3XJFZaAmxMQouRjtarWykloM0WzY3b69KDA=="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "be44b420-0d8b-49af-81f2-6334006057fe": {
                             "type": "bandit",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/bandit/bandit.json",
-                                "landing_url": "http://localhost:8000/reports/bandit/bandit.json"
+                                "landing_url": "http://localhost:8000/reports/bandit/bandit.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "severities": [],
+                                "confidence_levels": []
                             }
                         },
-                        {
+                        "30f37182-62fa-4970-85bb-474b7940e646": {
                             "type": "anchore",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/anchore/anchore-vuln.json",
-                                "landing_url": "http://localhost:8000/reports/anchore/anchore-vuln.json"
+                                "landing_url": "http://localhost:8000/reports/anchore/anchore-vuln.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "severities": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "5",
+                    "tags": [
+                        "security"
                     ]
                 },
-                {
+                "fa330b0f-4775-4b5f-bf5b-aea9d13da3be": {
                     "type": "source_up_to_dateness",
-                    "sources": [
-                        {
+                    "sources": {
+                        "8413bbe3-68f0-42fa-a7e4-e7017acd90c7": {
                             "type": "owasp_dependency_check",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
-                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "71c885f9-6c5e-4046-9e6d-11558ddfbb29": {
                             "type": "owasp_zap",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-zap/zap-report.xml",
-                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html"
+                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "44cef844-c187-4bb4-beec-ec44d0fffeb2": {
                             "type": "openvas",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/openvas/openvas-report.xml",
-                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html"
+                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         },
-                        {
+                        "347b760d-b99c-4c87-9714-5eb3ac969ddb": {
                             "type": "anchore",
                             "parameters": {
                                 "details_url": "http://testdata:8000/reports/anchore/anchore-details.json",
-                                "landing_url": "http://localhost:8000/reports/anchore/anchore-details.json"
+                                "landing_url": "http://localhost:8000/reports/anchore/anchore-details.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 },
-                {
+                "d551f09b-f89b-4b4d-a257-b9ae0bbbaf0d": {
                     "type": "source_up_to_dateness",
-                    "name": "Time since last security test",
-                    "target": "90",
-                    "near_target": "120",
-                    "tags": ["security"],
-                    "sources": [
-                        {
+                    "sources": {
+                        "08f703ba-65f7-441e-b9e2-b60b8bb1c945": {
                             "type": "calendar",
                             "parameters": {
                                 "date": "2019-04-01"
                             }
                         }
+                    },
+                    "name": "Time since last security test",
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "90",
+                    "near_target": "120",
+                    "tags": [
+                        "security"
                     ]
                 },
-                {
+                "de6f1067-0b64-4feb-a91c-e38b97146cb0": {
                     "type": "violations",
-                    "sources": [
-                        {
+                    "sources": {
+                        "03a5308a-f856-477c-a105-ee41daf6f489": {
                             "type": "ojaudit",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ojaudit/ojaudit-report.xml",
-                                "landing_url": "http://localhost:8000/reports/ojaudit/ojaudit-report.html"
+                                "landing_url": "http://localhost:8000/reports/ojaudit/ojaudit-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "severities": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "f854b9a4-715a-4083-b528-ce65ff7c229b": {
                     "type": "tests",
+                    "sources": {
+                        "30a14fbe-3d33-4632-9c68-abc41688d76e": {
+                            "type": "performancetest_runner",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": [
+                                    "EiOMv+KaVCBqqyi6mESSGLDgfTH7rPlSwvDQb1NSpvIe1A5ndQnZAKDpj/QwXcv7atjzwwa9up+bXlACcrNFe59wEN1O9i7rTthFjhEWws0W1K2sYvxLu68Sc03q2AmPY0g8+i0UHRwlv6G38GXjJYAQ8JUjh8U0+xO7VdrkmRU=",
+                                    "gAAAAABgSf2doRnQ2HBFr-mKDtS0o4gT-MEM9B8OQQBVIjG2O5T0cbPe_A_DL7jkFZaZyGF-iNu-tEHWWptneFEvceXWB3BT9R9cbGLb3T7PdcvAQ3tznsKOaD8oTak7y19vYgaGZvdLVidCNU24vhTDSsSSk3sdqiM3tWo6lQlzH_788arHRyI="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
+                        }
+                    },
                     "name": "Number of performance tests",
-                    "sources": [
-                        {
-                            "type": "performancetest_runner",
-                            "parameters": {
-                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
-                            }
-                        }
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "0",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "55d7177f-3d26-4f41-8bee-adc9fa7ffc2d": {
                     "type": "slow_transactions",
-                    "sources": [
-                        {
+                    "sources": {
+                        "4844536a-295f-4b19-975a-2ed9e81b4dc5": {
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                                "landing_url": [
+                                    "A4Cy2pg4OrOn2+3gaJTj07YVbHuh5jtwVkNBy97NJjz/8sS/aFL4vgL5YXvckWmb/2OSqNOH63yEXukQEgaXIfgqsbYdKWbLLUnv1tcduoEHN2QCeRyBphL3bHgzmzxhD9Uv6srbAdJPGeoQ9L+JWgB7W+uTU0vZHm45UmD9f30=",
+                                    "gAAAAABgSf2dBvPsPgtxlYzANNbZLVu_KdecydsrsRKCy9SVdPB8bBm92Y_JzIaTAfU-lYHpP-lQnlA2X3KU5h8NS8UoNXIBWvo6KAgza0j7G6e5Q6u_4iwD9IuVrxfggbsEEIEqI2jiKTayMgZgUsQdlOomJox9PYZ11L2xHKN060LfkKOYfAk="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "5",
+                    "tags": [
+                        "performance"
                     ]
                 },
-                {
+                "426631f9-3632-4c67-9769-ced54bdfac35": {
                     "type": "scalability",
-                    "sources": [
-                        {
+                    "sources": {
+                        "b0e7d94d-a07a-491c-8971-da75c00fc7d9": {
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                                "landing_url": [
+                                    "m6YPBVaUeh3J9FW3XnBwy/rIgr/T6lywdmoY8lfxZQ/e9+TJA2I/61w+xTYWIRZWkpvJSDndAHFDpb4/FJ+w5OMn5UFuzqKoRH3qD+SwpHYsC7CXHHKSVPGn/qgr9xGDhk9VlFblf5c3oBMKia4op71ydtKI3NxkMtFVtE/Escc=",
+                                    "gAAAAABgSf2dgMrUNpnQzhSnzRRwsAhvpT4TSXl11eKVPT6ht1qphoK2-bvw8ePCcW51fXHrPAYFf-lGbpp065CHJkEdZPe232P0Z6an2I88NVSUkvFqS7cut---WIc3FBgD2JrGl6q5chwJ8whLI43LlLRkUUth76gTaLOAB0tWVa7lt91X2Tg="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "percentage",
+                    "unit": null,
+                    "addition": "min",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "75",
+                    "near_target": "50",
+                    "tags": [
+                        "performance"
                     ]
                 },
-                {
+                "69d0dc8c-4eab-4198-bc8a-d2effe854b1f": {
                     "type": "performancetest_stability",
-                    "sources": [
-                        {
+                    "sources": {
+                        "60009959-b7e5-4128-b03a-48cdc42b91f6": {
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                                "landing_url": [
+                                    "lSph5z0OW4inbE2aZpwfhxIbKdr4hoaUd7A49V3R7mqAt5sO/DJpB/3Ex6YKyk0pSfPfdPwBKjXkLNJjdCnP3SY6vTaD5jVw5m5hUWcEcjNH8odL5JEnV15ztOgdzQp4r0ukRtFlIl88OoRZV1TDUt4cyNDy4H7QKlYSPkNLeYw=",
+                                    "gAAAAABgSf2dEWvTOMAcG2kyXqOUQuBp2Z62o6wfHYjUn1XiWrvw8AKzr0o7avf0eqK7o2nmLiEwstysfAu3Nxc7HwgPfKkPpsMNbiQVioFMvQ1bE5Yh_jaakzTF24hMoqzwwjJiNLYk9wk-LwsYPQaeQXZI7SnB1Km648-1bQpUSBY9TBh_duI="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "percentage",
+                    "unit": null,
+                    "addition": "min",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "100",
+                    "near_target": "90",
+                    "tags": [
+                        "performance"
                     ]
                 },
-                {
+                "3704a21e-b444-465d-a4a8-dcebcd8f487e": {
                     "type": "performancetest_duration",
-                    "sources": [
-                        {
+                    "sources": {
+                        "369b29ed-a983-4aea-933b-874c3c3b55a2": {
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                                "landing_url": [
+                                    "WvdlOv+JjDuouryNUfxzLvGHgg9Jfz04ajkmXK8NJVdlYZd0X1PbgTaAGNKy+ynNS+Nn2qN2H/QHgSubbVCVJmRwCKuBjdxgqaYRuXTpAoC3NTc4QyLMdTVhOTaMjczEWAGPeMeOg++iIyaA/ipllTG5mp5Hg9EPyjPNkT8b6rU=",
+                                    "gAAAAABgSf2dk4XwYvRxv0rekNXMdRSasXG7tfD7wCWWrc8iLL7w8eP26ufcgxKPCMIUbmSyzHYjEvAHz6P0NVMoYibZYRI5nCs5hrBU4pkPbNi6VnogjgElUeKCImGJq4DouypbAQDpBSlXrlrCGgQvhGeJ4tmpysiUYgFdvoW89ymkGNF5uzo="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "min",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "30",
+                    "near_target": "25",
+                    "tags": [
+                        "performance"
                     ]
                 },
-                {
+                "8865c5fc-6269-44b9-8924-095371fe537d": {
                     "type": "source_up_to_dateness",
-                    "name": "Time since last performance test",
-                    "tags": ["performance"],
-                    "sources": [
-                        {
+                    "sources": {
+                        "9dd68d9f-5c64-4238-960b-0c76e1bf4935": {
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                                "landing_url": [
+                                    "M+xy6C8KCayvoJOHSYUqxmMEzplMK6HtIw6Rt7AC+/mU9+PoXZVafQ+d+fMR8HXQ0o73UVtZGrRp537zqMpbs4fr9t4a1M2PNard1CxsFGCZOuGxCqEDH5ZPQAAeY1oRExio/ec5u4KHCTSn3BJTjhFPfrQZgmZhVY3hnymHcFw=",
+                                    "gAAAAABgSf2dHqfAgRNTSO1YVsluKobPpK5ajfU8GtrRNsl5f-C7SLg664WtC9kNF9OF-QFKOqP-SSZycosFGrAFeiQm9n3-NZbfCh_s2_ojtcS-sDwFG7NSpKj-LKEq5wHjzKeo3fgUBRs9wue8vYjzUfJwP_shWglrbodrZ2mQfH2waqUCRlw="
+                                ],
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": "Time since last performance test",
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "performance"
                     ]
                 },
-                {
+                "88151acf-0977-4ec0-8093-e9e8f41f409c": {
                     "type": "accessibility",
-                    "sources": [
-                        {
+                    "sources": {
+                        "f2380a5e-aa3c-4252-8d80-2463fa322b9b": {
                             "type": "axecsv",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/axe/public-axe-results.csv",
-                                "landing_url": "http://localhost:8000/reports/axe/public-axe-results.csv"
+                                "landing_url": "http://localhost:8000/reports/axe/public-axe-results.csv",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "impact": [],
+                                "violation_type": []
                             }
                         },
-                        {
+                        "25b357bd-0318-4d61-a092-475fd2b2dc35": {
                             "type": "axe_selenium_python",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
-                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json"
+                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "tags_to_include": [],
+                                "tags_to_ignore": [],
+                                "impact": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "accessibility"
                     ]
                 },
-                {
+                "e3edc109-2f71-40cf-8825-0d9e8665bc0f": {
                     "type": "source_up_to_dateness",
-                    "name": "Time since last axe-selenium-python report",
-                    "sources": [
-                        {
+                    "sources": {
+                        "36724d22-baf6-4830-a277-b72c8c1fadb7": {
                             "type": "axe_selenium_python",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
-                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json"
+                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
                             }
                         }
+                    },
+                    "name": "Time since last axe-selenium-python report",
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 }
-            ]
+            }
         }
-    ]
+    },
+    "timestamp": "2021-03-11T11:08:43+00:00",
+    "delta": {
+        "description": "{An operator} imported a new report",
+        "email": "",
+        "uuids": "example-report"
+    },
+    "last": true
 }

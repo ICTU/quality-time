@@ -1,144 +1,315 @@
 {
+    "_id": "6049fa3b2df30500f9702a69",
     "title": "HQ",
     "report_uuid": "example-report-hq",
-    "subjects": [
-        {
-            "name": "HQ",
+    "subjects": {
+        "dc8c9e76-123f-4acc-a30b-f0b02753e908": {
             "type": "software",
-            "metrics": [
-                {
+            "name": "HQ",
+            "description": "A custom software application or component.",
+            "metrics": {
+                "24607510-c9af-437b-adb5-a0bbccf736fe": {
                     "type": "tests",
-                    "sources": [
-                        {
+                    "sources": {
+                        "55353069-d75b-4e3a-9dbd-561811ec32bc": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master",
+                                "test_result": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "0",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "d6386caa-3fbf-40bb-93b0-1c6ddbeaccb8": {
                     "type": "uncovered_lines",
-                    "sources": [
-                        {
+                    "sources": {
+                        "2c29c306-d01e-4fe2-ae81-a547e6e36493": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "270025c5-bc64-44b4-950b-90e6bfced374": {
                     "type": "uncovered_branches",
-                    "sources": [
-                        {
+                    "sources": {
+                        "e709150e-eea0-475e-9858-eae5db18dbec": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "100",
+                    "tags": [
+                        "test quality"
                     ]
                 },
-                {
+                "4d7f8752-20e0-48e1-b2f6-bd5c5112668f": {
                     "type": "duplicated_lines",
-                    "sources": [
-                        {
+                    "sources": {
+                        "d3f1fc49-ee0a-490a-9e4b-1f8fb699256b": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "93652f4e-373e-4246-9507-f02d5326a5f8": {
                     "type": "complex_units",
-                    "sources": [
-                        {
+                    "sources": {
+                        "609f266c-334f-481a-9100-7dd753442799": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability",
+                        "testability"
                     ]
                 },
-                {
+                "881ff997-9b16-47b6-a94b-cba8482b12a3": {
                     "type": "many_parameters",
-                    "sources": [
-                        {
+                    "sources": {
+                        "c1ad2976-2d07-4a3a-a870-d7f2eff06f58": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "b5f58c95-9e51-48f7-bdcf-688c8d22462e": {
                     "type": "long_units",
-                    "sources": [
-                        {
+                    "sources": {
+                        "eb076e7e-38a2-428e-96c7-6a5524b39181": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "617af3a4-be6f-44b4-978f-cd3a089fd876": {
                     "type": "loc",
-                    "sources": [
-                        {
+                    "sources": {
+                        "5ed3151b-ca08-42c1-b7e8-1b7654e2e5f5": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master",
+                                "languages_to_ignore": [],
+                                "lines_to_count": "lines with code"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "30000",
+                    "near_target": "35000",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "903e809e-14f7-45c9-a9e5-ad67d416cbbc": {
                     "type": "violations",
-                    "sources": [
-                        {
+                    "sources": {
+                        "412de691-8d72-4286-8a18-18a4a4bb4b4d": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master",
+                                "severities": [],
+                                "types": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "d985083e-d741-436e-a498-afd5eb0e6444": {
                     "type": "suppressed_violations",
-                    "sources": [
-                        {
+                    "sources": {
+                        "5184aa4e-9b11-4550-a9e8-e313a5c271e4": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master",
+                                "severities": [],
+                                "types": []
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "10",
+                    "tags": [
+                        "maintainability"
                     ]
                 },
-                {
+                "4ddef009-4c2f-4499-a768-e8f28b435eca": {
                     "type": "source_up_to_dateness",
-                    "sources": [
-                        {
+                    "sources": {
+                        "854d5a3a-1eb9-4296-8f4a-9b875d2ef225": {
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:hq",
+                                "private_token": "",
+                                "branch": "master"
                             }
                         }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "max",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "3",
+                    "near_target": "7",
+                    "tags": [
+                        "ci"
                     ]
                 }
-            ]
+            }
         }
-    ]
+    },
+    "timestamp": "2021-03-11T11:08:43+00:00",
+    "delta": {
+        "description": "{An operator} imported a new report",
+        "email": "",
+        "uuids": "example-report-hq"
+    },
+    "last": true
 }
