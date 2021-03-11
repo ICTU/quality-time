@@ -1,7 +1,6 @@
 """Report routes."""
 
 import os
-import json
 from urllib import parse
 
 import bottle
@@ -110,12 +109,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         public_key = document["public_key"]
 
-    try:
-        encrypt_credentials(data_model, public_key, report)
-    except TypeError:
-        bottle.response.status = 400
-        bottle.response.content_type = "application/json"
-        return json.dumps({"error": "Invalid public key."})
+    encrypt_credentials(data_model, public_key, report)
     return report
 
 

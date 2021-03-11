@@ -6,7 +6,7 @@ import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Optional, Tuple, TypeVar
+from typing import Optional, Tuple, TypeVar, cast
 from base64 import b64decode, b64encode
 
 import bottle
@@ -125,8 +125,7 @@ def asymmetric_encrypt(public_key: str, message: str) -> tuple[str, str]:
     fernet_key, fernet_token = symmetric_encrypt(message_bytes)
 
     public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
-    if not isinstance(public_key_obj, openssl.rsa.RSAPublicKey):
-        raise TypeError(f"Public key object should be of type RSAPublicKey, found {type(public_key_obj)}.")
+    public_key_obj = cast(openssl.rsa.RSAPublicKey, public_key_obj)
 
     encrypted_key = public_key_obj.encrypt(
         fernet_key, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
@@ -147,8 +146,9 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
     message_bytes = fernet_key_message[1].encode()
 
     private_key_obj = serialization.load_pem_private_key(private_key_bytes, None, default_backend())
-    if not isinstance(private_key_obj, openssl.rsa.RSAPrivateKey):
-        raise TypeError(f"Private key object should be of type RSAPrivateKey, found {type(private_key_obj)}.")
+    private_key_obj = cast(openssl.rsa.RSAPrivateKey, private_key_obj)
+    # if not isinstance(private_key_obj, openssl.rsa.RSAPrivateKey):
+    #     raise TypeError(f"Private key object should be of type RSAPrivateKey, found {type(private_key_obj)}.")
 
     decrypted_key = private_key_obj.decrypt(
         fernet_key_bytes,
