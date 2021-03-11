@@ -68,25 +68,28 @@ Feature: report
       {
         "title": "Imported report",
         "report_uuid": "imported_report",
-        "subjects": [
-          {
+        "subjects": {
+          "subject_uuid": {
             "name": "Imported subject",
             "type": "software",
-            "metrics": [
-              {
+            "metrics": {
+              "metric_uuid": {
                 "type": "violations",
-                "sources": [
-                  {
+                "sources": {
+                  "source_uuid": {
                     "type": "sonarqube",
                     "parameters": {
-                      "url": "https://sonarcloud.io"
+                      "url": "https://sonarcloud.io",
+                      "password": [
+                        "h+9BmTf7RpWpwB+DA4BsjtQ4OE1FEU3RkOfgQD5o3AVVRw4Yoy9ubmIa+t7HYLxLqVsV/ixUI8XXbN7iFqCM9Y/5EfB/hf+BVCdO2mFaY7rt9tPgKzBeXvhIweBhff1Vyd9Emc03kDNyM8ZRStY3BYknZxXJBp3fINpq+aQNnYY=",
+                        "gAAAAABgSf_oQQnqaAkg8ewrjMqE3AmDyqtmncc53auc6Ue681BLV_9m0hB7xqD4bkklT7YR6GDbcY_x9c1-ytLNuuLFvpF940r-d0fVj6wIHSjVVHQ1xMYyQdD1IX2mVXTmHmj9aEUxV7qEcTqfloRp-kdg-n4jNA=="]
                     }
                   }
-                ]
+                }
               }
-            ]
+            }
           }
-        ]
+        }
       }
       """
     Then the report title is "Imported report"
