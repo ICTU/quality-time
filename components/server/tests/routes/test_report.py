@@ -271,7 +271,7 @@ frfI8VlILbIxGw==
         request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert.call_args_list[0][0][0]
-        self.assertEqual("Title", inserted["title"])
+        self.assertEqual("Report", inserted["title"])
         self.assertEqual("report_uuid", inserted["report_uuid"])
 
     @patch("server_utilities.functions.datetime")

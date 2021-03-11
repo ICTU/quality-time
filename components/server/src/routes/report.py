@@ -11,7 +11,6 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_report, latest_report, latest_reports
-from initialization.report import import_json_report
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
@@ -44,11 +43,11 @@ def post_report_import(database: Database):
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
 
-    document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
-    private_key = document["private_key"]
+    secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
+    private_key = secret["private_key"]
     decrypt_credentials(data_model, private_key, report)
 
-    result = import_json_report(database, report)
+    result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))
     result["new_report_uuid"] = report["report_uuid"]
     return result
 

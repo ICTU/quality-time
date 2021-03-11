@@ -150,10 +150,6 @@
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": [
-                                    "pYexpGYYPhJ+6K0YAYYMzRS8l8YF7/GMnebxM3oUKCaXZI1tWNumV65g5elYDPsYSgRdn1KVpA+KGHV+6lE6L9tPLgRALVWstRdv6RXTKjZ1xVbmG7L6lMCXCFvyq1j93vUg0Blw5FWBghJl7EwVVS0QIPhO+qi2tVGE4f39wfo=",
-                                    "gAAAAABgSf2dIrTz9AdBE5FvXgShExbBRLLbxjFKCz0BixS4bCzNdxe-sPUW7S0PLX4DyvxhDbmL7IqxTocR-nBk6NWPtmyFZu_YwVJIt8CkvLdswgxVe3b8XqQ6MhOl0uOFmSpVCWbpXc6LlYFcUzxPBkBTVscNnQ=="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -200,10 +196,6 @@
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": [
-                                    "TTfhQ7pAHZibotyAYT+qe0g+31TsylTuAtyJ/zyrQ+zBPZaJinsMYB1IWD6IvUYeoHKGS2LzUJnBprni5w8P58PKO1yKj8yl78Lcb7/bY9GMsSrMmLcSsWKuF08YMw8QyDxiPsUl+9y5aISAIMjadKoZNW2kSsee/LuFYbD28fY=",
-                                    "gAAAAABgSf2de8aQv8Z5tP-CgvbqogBffuzmOpVxRS4NQz9gUtu9m63E3BuQqF03BcbUEJlELE0iZdux1v_kYnQW159Cag9sggwqq4r1NirH0cee0pLzUe70-iT6y0XVzcVCB52Mj-qJ1JeKGX5OamoZqwGwSuW-_g=="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -250,10 +242,6 @@
                             "type": "ncover",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/ncover/ncover-report.html",
-                                "landing_url": [
-                                    "gCsouZpL7oHAKpv1RlgWDdYSxF2td1UksmPlNTZCU0U14F07d2dsohQoUKD9flM5ee2eR1WylAcUn0XLxE/rYGKswWSG+nowMtsLslGIYB+KIEF4SWvM9u21rc6OC6qEkoUloKOZmRpHGKOg/yXoOQ/2o10+1paliqAGhIrH/4s=",
-                                    "gAAAAABgSf2dSPN4fmWpwKRBsAWLPMsNjrKPeoToCwD60V7vMTw150gXym06RU4Hb0F9AeQyfSqOZxsE8Ki8jN4ShkadIzSG7WKEvLDDX8hmnsIhspO_JXX9bJfEi2YmTHXAmvdmPHpLnptsb2BwhQInqXkwcD2-sg=="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -382,10 +370,6 @@
                             "type": "pyupio_safety",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/pyupio_safety/pyupio_safety.json",
-                                "landing_url": [
-                                    "lRHFRevzaYDex/w47c1PIst2vLtBbShVNJ5F6HiZgG3yxEDbORXCx6P2XoblUJTGjG/JbBslxyqi9uARa5o+r2jPLVLHsiO3mac4HglBHUv3UMAjJ+ec8viVEldtHrFwjHp49WhIZUEQPnyAVag2UOqh1pSguHz/IBxqz6f/nco=",
-                                    "gAAAAABgSf2dfgvaV_i5MFXq6UK2IOmDt7mqCUi6vKJb_n_hoxU3L1SlXkVx36li4OwnVDnYOfQdf0bK-cE8Ek6AMHQ6Ti1_xNSOD9aKzQeHuhTDOrZlDEQgMxu3z3V3XJFZaAmxMQouRjtarWykloM0WzY3b69KDA=="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -543,10 +527,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "EiOMv+KaVCBqqyi6mESSGLDgfTH7rPlSwvDQb1NSpvIe1A5ndQnZAKDpj/QwXcv7atjzwwa9up+bXlACcrNFe59wEN1O9i7rTthFjhEWws0W1K2sYvxLu68Sc03q2AmPY0g8+i0UHRwlv6G38GXjJYAQ8JUjh8U0+xO7VdrkmRU=",
-                                    "gAAAAABgSf2doRnQ2HBFr-mKDtS0o4gT-MEM9B8OQQBVIjG2O5T0cbPe_A_DL7jkFZaZyGF-iNu-tEHWWptneFEvceXWB3BT9R9cbGLb3T7PdcvAQ3tznsKOaD8oTak7y19vYgaGZvdLVidCNU24vhTDSsSSk3sdqiM3tWo6lQlzH_788arHRyI="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -576,10 +556,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "A4Cy2pg4OrOn2+3gaJTj07YVbHuh5jtwVkNBy97NJjz/8sS/aFL4vgL5YXvckWmb/2OSqNOH63yEXukQEgaXIfgqsbYdKWbLLUnv1tcduoEHN2QCeRyBphL3bHgzmzxhD9Uv6srbAdJPGeoQ9L+JWgB7W+uTU0vZHm45UmD9f30=",
-                                    "gAAAAABgSf2dBvPsPgtxlYzANNbZLVu_KdecydsrsRKCy9SVdPB8bBm92Y_JzIaTAfU-lYHpP-lQnlA2X3KU5h8NS8UoNXIBWvo6KAgza0j7G6e5Q6u_4iwD9IuVrxfggbsEEIEqI2jiKTayMgZgUsQdlOomJox9PYZ11L2xHKN060LfkKOYfAk="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -609,10 +585,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "m6YPBVaUeh3J9FW3XnBwy/rIgr/T6lywdmoY8lfxZQ/e9+TJA2I/61w+xTYWIRZWkpvJSDndAHFDpb4/FJ+w5OMn5UFuzqKoRH3qD+SwpHYsC7CXHHKSVPGn/qgr9xGDhk9VlFblf5c3oBMKia4op71ydtKI3NxkMtFVtE/Escc=",
-                                    "gAAAAABgSf2dgMrUNpnQzhSnzRRwsAhvpT4TSXl11eKVPT6ht1qphoK2-bvw8ePCcW51fXHrPAYFf-lGbpp065CHJkEdZPe232P0Z6an2I88NVSUkvFqS7cut---WIc3FBgD2JrGl6q5chwJ8whLI43LlLRkUUth76gTaLOAB0tWVa7lt91X2Tg="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -639,10 +611,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "lSph5z0OW4inbE2aZpwfhxIbKdr4hoaUd7A49V3R7mqAt5sO/DJpB/3Ex6YKyk0pSfPfdPwBKjXkLNJjdCnP3SY6vTaD5jVw5m5hUWcEcjNH8odL5JEnV15ztOgdzQp4r0ukRtFlIl88OoRZV1TDUt4cyNDy4H7QKlYSPkNLeYw=",
-                                    "gAAAAABgSf2dEWvTOMAcG2kyXqOUQuBp2Z62o6wfHYjUn1XiWrvw8AKzr0o7avf0eqK7o2nmLiEwstysfAu3Nxc7HwgPfKkPpsMNbiQVioFMvQ1bE5Yh_jaakzTF24hMoqzwwjJiNLYk9wk-LwsYPQaeQXZI7SnB1Km648-1bQpUSBY9TBh_duI="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -669,10 +637,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "WvdlOv+JjDuouryNUfxzLvGHgg9Jfz04ajkmXK8NJVdlYZd0X1PbgTaAGNKy+ynNS+Nn2qN2H/QHgSubbVCVJmRwCKuBjdxgqaYRuXTpAoC3NTc4QyLMdTVhOTaMjczEWAGPeMeOg++iIyaA/ipllTG5mp5Hg9EPyjPNkT8b6rU=",
-                                    "gAAAAABgSf2dk4XwYvRxv0rekNXMdRSasXG7tfD7wCWWrc8iLL7w8eP26ufcgxKPCMIUbmSyzHYjEvAHz6P0NVMoYibZYRI5nCs5hrBU4pkPbNi6VnogjgElUeKCImGJq4DouypbAQDpBSlXrlrCGgQvhGeJ4tmpysiUYgFdvoW89ymkGNF5uzo="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
@@ -699,10 +663,6 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
-                                "landing_url": [
-                                    "M+xy6C8KCayvoJOHSYUqxmMEzplMK6HtIw6Rt7AC+/mU9+PoXZVafQ+d+fMR8HXQ0o73UVtZGrRp537zqMpbs4fr9t4a1M2PNard1CxsFGCZOuGxCqEDH5ZPQAAeY1oRExio/ec5u4KHCTSn3BJTjhFPfrQZgmZhVY3hnymHcFw=",
-                                    "gAAAAABgSf2dHqfAgRNTSO1YVsluKobPpK5ajfU8GtrRNsl5f-C7SLg664WtC9kNF9OF-QFKOqP-SSZycosFGrAFeiQm9n3-NZbfCh_s2_ojtcS-sDwFG7NSpKj-LKEq5wHjzKeo3fgUBRs9wue8vYjzUfJwP_shWglrbodrZ2mQfH2waqUCRlw="
-                                ],
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
