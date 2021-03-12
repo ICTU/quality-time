@@ -6,7 +6,7 @@ import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import TypeVar
+from typing import Optional, TypeVar
 from base64 import b64encode
 
 import bottle
@@ -36,6 +36,11 @@ def report_date_time() -> str:
         if iso_report_date_string < iso_timestamp():
             return iso_report_date_string
     return ""
+
+
+def days_ago(date_time: datetime) -> int:
+    """Return the days since the date/time."""
+    return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
 
 
 def uuid() -> ReportId:
@@ -68,6 +73,12 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
         if (key := get_key(item)) not in seen:
             seen.add(key)
             yield item
+
+
+def find_one(items: Iterable[Item], key: Hashable, get_key: Callable[[Item], Hashable]) -> Optional[Item]:
+    """Return the first item that matches or None if no items match."""
+    matches = list(filter(lambda item: get_key(item) == key, items))
+    return matches[0] if matches else None
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:

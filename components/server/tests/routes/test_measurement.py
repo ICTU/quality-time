@@ -1,7 +1,7 @@
 """Unit tests for the measurement routes."""
 
 import unittest
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
 from routes.measurement import (
@@ -11,7 +11,7 @@ from routes.measurement import (
     stream_nr_measurements,
 )
 
-from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report
+from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 class GetMeasurementsTest(unittest.TestCase):
@@ -64,6 +64,7 @@ class GetMeasurementsTest(unittest.TestCase):
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("routes.measurement.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""
@@ -111,7 +112,7 @@ class PostMeasurementTests(unittest.TestCase):
             _id="id",
             metric_uuid=METRIC_ID,
             count=dict(status="target_met"),
-            sources=[self.source(value="0")],
+            sources=[self.source(value="0"), dict(source_uuid=SOURCE_ID2)],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
         self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
@@ -132,10 +133,10 @@ class PostMeasurementTests(unittest.TestCase):
         )
 
     @staticmethod
-    def source(value="1", entities=None, entity_user_data=None, connection_error=None):
+    def source(*, source_uuid=SOURCE_ID, value="1", entities=None, entity_user_data=None, connection_error=None):
         """Return a measurement source."""
         return dict(
-            source_uuid=SOURCE_ID,
+            source_uuid=source_uuid,
             value=value,
             total=None,
             parse_error=None,
@@ -166,15 +167,59 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
+    @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
     def test_changed_measurement_entities(self, request):
-        """Post a measurement whose value is the same, but with different entities."""
+        """Post a measurement whose value is the same, but with different entities.
+
+        Entity user data will be changed as follows:
+        - Entity data belonging to entities still present is simply copied.
+        - Entity data no longer belonging to an entity because the entity disappeared will be marked as orphaned.
+        - Entity data that was orphaned recently will still be orphaned.
+        - Entity data that was orphaned long ago will be deleted.
+        - Entity data that was orphaned, but whose entity reappears, will no longer be orphaned.
+        """
         self.old_measurement["count"] = dict(status="near_target_met", status_start="2018-01-01", value="1")
-        self.old_measurement["sources"] = [self.source(entities=[dict(key="a")], entity_user_data=dict(a="attributes"))]
+        self.old_measurement["sources"] = [
+            self.source(
+                entities=[dict(key="a")],
+                entity_user_data=dict(
+                    a=dict(status="confirmed"),  # Will be newly orphaned
+                    b=dict(status="confirmed", orphaned_since="2021-01-01"),  # Will be reunited with its entity
+                    c=dict(status="confirmed", orphaned_since="2021-01-01"),  # Will still be orphaned
+                    d=dict(status="confirmed", orphaned_since="2020-01-01"),  # Orphaned too long, will be deleted
+                ),
+            )
+        ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2018-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
-        self.database.measurements.insert_one.assert_called_once()
+        self.database.measurements.insert_one.assert_called_once_with(
+            dict(
+                metric_uuid=METRIC_ID,
+                sources=[
+                    self.source(
+                        entities=[dict(key="b")],
+                        entity_user_data=dict(
+                            a=dict(status="confirmed", orphaned_since="2020-01-01"),  # Newly orphaned
+                            b=dict(status="confirmed"),  # No longer orphaned
+                            c=dict(status="confirmed", orphaned_since="2021-01-01"),  # Still orphaned
+                        ),
+                    )
+                ],
+                count=dict(
+                    value="1",
+                    status="near_target_met",
+                    status_start="2018-01-01",
+                    direction="<",
+                    target="0",
+                    near_target="10",
+                    debt_target=None,
+                ),
+                start="2019-01-01",
+                end="2019-01-01",
+            )
+        )
 
     def test_changed_measurement_entity_key(self, request):
         """Post a measurement whose value and entities are the same, except for a changed entity key."""
@@ -260,11 +305,20 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.insert_one.assert_called_once()
 
     def test_deleted_metric(self, request):
-        """Post an measurement for a deleted metric."""
+        """Post a measurement for a deleted metric."""
         self.report["subjects"][SUBJECT_ID]["metrics"] = {}
         request.json = self.posted_measurement
         self.assertEqual(dict(ok=False), post_measurement(self.database))
         self.database.measurements.update_one.assert_not_called()
+
+    def test_new_source(self, request):
+        """Post a measurement for a new source."""
+        del self.old_measurement["sources"][0]
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
+        request.json = self.posted_measurement
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
+        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
 
     def test_expired_technical_debt(self, request):
         """Test that a new measurement is added when technical debt expires."""
@@ -359,6 +413,10 @@ class StreamNrMeasurementsTest(unittest.TestCase):
         database.measurements.count_documents.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements(database)
-            self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
-            self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
-            self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
+            try:
+                self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
+                self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
+                self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
+            except StopIteration:  # pragma: no cover
+                # DeepSource says: calls to next() should be inside try-except block.
+                self.fail("Unexpected StopIteration")

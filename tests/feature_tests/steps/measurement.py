@@ -3,7 +3,7 @@
 import time
 
 from asserts import assert_equal, assert_true
-from behave import then, when
+from behave import given, then, when
 from sseclient import SSEClient
 
 
@@ -13,6 +13,7 @@ def get_metrics(context):
     context.get("metrics", internal=True)
 
 
+@given('the collector has measured "{number}"')
 @when('the collector measures "{number}"')
 @when('the collector measures "{number}" with total "{total}"')
 def measure(context, number, total="100"):
