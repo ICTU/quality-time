@@ -32,7 +32,7 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
     # measurement of the last two lines and the if-statement has been turned off.
     with filename.open() as json_report:
         imported_report = json.load(json_report)
-    if report_exists(database, imported_report["report_uuid"]):  # pragma: no-cover behave
+    if report_exists(database, imported_report["report_uuid"]):  # pragma: no cover-behave
         logging.info("Skipping import of %s; it already exists", filename)
     else:
         import_json_report(database, imported_report)  # pragma: no cover-behave

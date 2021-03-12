@@ -62,7 +62,7 @@ def copy_source_entity_user_data(old_source, new_source) -> None:
     }
     # Copy the user data of entities, keeping 'orphaned' entity user data around for a while in case the entity
     # returns in a later measurement:
-    days_after_which_to_remove_orphaned_entity_user_data = 21
+    max_days_to_keep_orphaned_entity_user_data = 21
     for entity_key, attributes in old_source.get("entity_user_data", {}).items():
         entity_key = changed_entity_keys.get(entity_key, entity_key)
         if entity_key in new_entity_keys:
@@ -71,7 +71,7 @@ def copy_source_entity_user_data(old_source, new_source) -> None:
         else:
             if "orphaned_since" in attributes:
                 days_since_orphaned = days_ago(datetime.fromisoformat(attributes["orphaned_since"]))
-                if days_since_orphaned > days_after_which_to_remove_orphaned_entity_user_data:
+                if days_since_orphaned > max_days_to_keep_orphaned_entity_user_data:  # pragma: no cover-behave
                     continue  # Don't copy this user data, it has been orphaned too long
             else:
                 # The entity user data refers to a disappeared entity. Keep it around in case the entity
