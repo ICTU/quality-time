@@ -213,7 +213,7 @@ When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
-If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "api" in the private token field.
+If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_api" in the private token field.
 
 #### GitLab repository file
 
@@ -283,6 +283,10 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 ### Hiding columns
 
 Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide specific columns from the metric tables.
+
+### Showing trend data
+
+Each metric table has a 'hamburger' menu on the top left-hand side that can be used to switch between the default details view and a trend table view that shows the current and past measurements. Use the hamburger menu to show more or fewer dates and to configure the number of weeks between dates.
 
 ## Exporting quality reports
 

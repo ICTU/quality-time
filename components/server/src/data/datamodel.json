@@ -2468,7 +2468,7 @@
                     ]
                 },
                 "private_token": {
-                    "name": "Private token",
+                    "name": "Private token (with read_api scope)",
                     "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
