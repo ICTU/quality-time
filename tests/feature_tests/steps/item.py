@@ -8,6 +8,7 @@ from behave import given, when, then
 @given('an existing {item} with {attribute} "{value}"')
 @given('an existing {item} with {attribute} "{value}" and parameter {parameter} "{parameter_value}"')
 @when("the client creates a {item}")
+@when('the client creates a {item} with {attribute} "{value}"')
 @when("the client tries to create a {item}")
 def add_item(context, item, attribute=None, value=None, parameter=None, parameter_value=None):
     """Add an item with and optionally set attribute to value."""

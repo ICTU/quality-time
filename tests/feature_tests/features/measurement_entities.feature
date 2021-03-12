@@ -63,6 +63,24 @@ Feature: measurement entities
       | 2   | 20           |
     Then the metric status is "target_not_met"
 
+  Scenario: when an entity's source is deleted, the entity status is not kept
+    Given an existing metric with type "user_story_points"
+    And an existing source with type "azure_devops"
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    And the client sets the status of entity 1 to "false_positive"
+    Then the metric status is "target_not_met"
+    When the client deletes the source
+    And the collector measures "0"
+    And the client creates a source with type "azure_devops"
+    And the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    Then the metric status is "target_met"
+
   Scenario: mark an entity as false positive
     Given an existing metric with type "user_story_points"
     And an existing source with type "azure_devops"
