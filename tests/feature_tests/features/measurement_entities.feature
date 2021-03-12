@@ -54,6 +54,9 @@ Feature: measurement entities
     And the collector measures "20"
       | key | story_points |
       | 2   | 20           |
+    And the collector measures "20"
+      | key | story_points |
+      | 2   | 20           |
     And the collector measures "120"
       | key | story_points |
       | 1   | 100          |
