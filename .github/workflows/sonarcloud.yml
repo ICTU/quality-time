@@ -24,7 +24,6 @@ jobs:
         node-version: '13'
     - name: Prepare scan
       run: |
-        sudo apt-get install libxml2-dev libxslt-dev python-dev
         python -m pip install --upgrade pip
         python -m pip install wheel
     - name: Collector

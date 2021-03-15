@@ -1,8 +1,5 @@
 image: python:3.9.2-buster
 
-before_script:
-  - apt-get install libxml2-dev libxslt-dev
-
 stages:
   - test
 
@@ -18,7 +15,7 @@ collector:
     paths:
       - components/collector/build/unittest-coverage
 
-notifer:
+notifier:
   stage: test
   script:
     - cd components/notifier
