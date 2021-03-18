@@ -1,7 +1,7 @@
 [run]
 branch = True
 dynamic_context = test_function
-source = .
+source = src, tests
 omit =
     */venv/*
     */.venv/*
