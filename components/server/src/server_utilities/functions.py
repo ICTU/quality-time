@@ -163,3 +163,7 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
 
 def test_how_many_functions_i_need_for_bch():
     print("test")
+
+
+def second_function():
+    print("test")
