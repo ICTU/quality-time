@@ -21,6 +21,7 @@ from database.measurements import (
 )
 from database.reports import latest_metric, latest_reports
 from model.data import SourceData
+from model.metric import Metric
 from server_utilities.functions import days_ago, find_one, iso_timestamp, report_date_time
 from server_utilities.type import MetricId, SourceId
 
@@ -41,7 +42,7 @@ def post_measurement(database: Database) -> dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, data_model, metric, measurement, latest)
+    return insert_new_measurement(database, data_model, Metric(data_model, metric), measurement, latest)
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -116,7 +117,9 @@ def set_entity_attribute(
         f"'{new_value}'.",
         email=user["email"],
     )
-    return insert_new_measurement(database, data.datamodel, data.metric, new_measurement, old_measurement)
+    return insert_new_measurement(
+        database, data.datamodel, Metric(data.datamodel, data.metric), new_measurement, old_measurement
+    )
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

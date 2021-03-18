@@ -73,12 +73,11 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric_data: dict, measurement: dict, previous_measurement: dict
+    database: Database, data_model, metric: Metric, measurement: dict, previous_measurement: dict
 ) -> dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    metric = Metric(data_model, metric_data)
     metric_type = data_model["metrics"][metric.type()]
     measurement["start"] = measurement["end"] = now = iso_timestamp()
     for scale in metric_type["scales"]:
