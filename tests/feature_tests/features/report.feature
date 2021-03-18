@@ -59,6 +59,8 @@ Feature: report
     And the client creates a metric
     And the client creates a source
     And the client sets the source parameter password to "['item_1', 'item_2']"
+    And the client creates a source
+    And the client sets the source parameter password to "test_password"
     And the client downloads the report as json
     And the client re-imports a report
     Then the report title is "New report"
