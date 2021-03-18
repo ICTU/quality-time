@@ -159,3 +159,7 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
     message = symmetric_decrypt(decrypted_key, message_bytes)
 
     return message.decode()
+
+
+def test_how_many_functions_i_need_for_bch():
+    print("test")
