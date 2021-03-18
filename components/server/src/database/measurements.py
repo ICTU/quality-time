@@ -140,7 +140,7 @@ def determine_status_start(
 ) -> Optional[str]:
     """Determine the date time since when the metric has the current status."""
     if current_status == previous_measurement.status(scale):
-        return str(previous_measurement.get(scale, {}).get("status_start", "")) or None
+        return previous_measurement.status_start(scale)
     return now
 
 

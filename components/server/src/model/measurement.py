@@ -22,3 +22,7 @@ class Measurement(dict):
     def status(self, scale: Scale) -> Optional[Status]:
         """Return the measurement status for the scale."""
         return cast(Optional[Status], self.get(scale, {}).get("status"))
+
+    def status_start(self, scale: Scale) -> Optional[str]:
+        """Return the start date of the status."""
+        return str(self.get(scale, {}).get("status_start", "")) or None
