@@ -13,7 +13,13 @@ from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
-from model.transformations import decrypt_credentials, encrypt_credentials, hide_credentials, summarize_report
+from model.transformations import (
+    decrypt_credentials,
+    encrypt_credentials,
+    hide_credentials,
+    replace_report_uuids,
+    summarize_report,
+)
 from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
@@ -52,6 +58,7 @@ def post_report_import(database: Database):
         bottle.response.content_type = "application/json"
         return {"error": "Decryption of source credentials failed. Did you use the correct public key for encryption?"}
 
+    replace_report_uuids(report)
     result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))
     result["new_report_uuid"] = report["report_uuid"]
     return result

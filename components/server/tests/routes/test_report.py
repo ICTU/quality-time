@@ -234,7 +234,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         post_report_import(self.database)
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("Report", inserted["title"])
-        self.assertEqual("report_uuid", inserted["report_uuid"])
+        self.assertNotEqual("report_uuid", inserted["report_uuid"])
 
     @patch("bottle.request")
     def test_post_report_import_with_failed_decryption(self, request):
