@@ -8,4 +8,8 @@
         border-radius: .28571429rem;
         box-shadow: none !important;
     }
+    .ui.card .header {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
