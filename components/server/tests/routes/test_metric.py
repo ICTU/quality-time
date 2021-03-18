@@ -112,7 +112,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
         self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'")
 
-    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
@@ -130,7 +130,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         )
         self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'")
 
-    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_technical_debt(self, request):
         """Test that accepting technical debt also sets the technical debt value."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
@@ -155,7 +155,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         )
         self.assert_delta("accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'")
 
-    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_technical_debt_without_sources(self, request):
         """Test that accepting technical debt when the metric has no sources also sets the status to debt target met."""
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = {}
@@ -182,7 +182,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         )
         self.assert_delta("accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'")
 
-    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])

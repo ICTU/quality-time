@@ -64,6 +64,7 @@ class GetMeasurementsTest(unittest.TestCase):
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("routes.measurement.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
@@ -97,11 +98,12 @@ class PostMeasurementTests(unittest.TestCase):
             },
         )
         self.database.reports.find.return_value = [self.report]
-        self.database.datamodels.find_one.return_value = dict(
+        self.data_model = dict(
             _id="",
             metrics=dict(metric_type=dict(direction="<", scales=["count"])),
             sources=dict(junit=dict(entities={})),
         )
+        self.database.datamodels.find_one.return_value = self.data_model
 
         def set_measurement_id(measurement):
             """Fake setting a measurement id on the inserted measurement."""
@@ -149,6 +151,19 @@ class PostMeasurementTests(unittest.TestCase):
         """Post the first measurement for a metric."""
         self.database.measurements.find_one.return_value = None
         request.json = self.posted_measurement
+        del self.new_measurement["count"]["status_start"]
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
+    def test_first_measurement_two_scales(self, request):
+        """Post the first measurement for a metric with two scales."""
+        self.database.measurements.find_one.return_value = None
+        self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
+        del self.new_measurement["count"]["status_start"]
+        request.json = self.posted_measurement
+        self.new_measurement["percentage"] = dict(
+            debt_target=None, direction="<", near_target=None, status=None, target=None, value=None
+        )
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 

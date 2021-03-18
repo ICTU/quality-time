@@ -6,6 +6,7 @@ from typing import Optional, cast
 import pymongo
 from pymongo.database import Database
 
+from model.measurement import Measurement
 from model.metric import Metric
 from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
@@ -73,19 +74,20 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric: Metric, measurement: dict, previous_measurement: dict
+    database: Database, data_model, metric: Metric, measurement_data: dict, previous_measurement_data: Optional[dict]
 ) -> dict:
     """Insert a new measurement."""
-    if "_id" in measurement:
-        del measurement["_id"]
-    measurement["start"] = measurement["end"] = now = iso_timestamp()
+    measurement = Measurement(measurement_data)
+    previous_measurement = Measurement(previous_measurement_data or {})
     for scale in metric.scales():
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, status=status, direction=metric.direction())
         # We can't cover determine_status_start() returning False in the feature tests because all new measurements have
         # a status start timestamp, hence the pragma: no cover-behave:
-        if status_start := determine_status_start(status, previous_measurement, scale, now):  # pragma: no cover-behave
+        if status_start := determine_status_start(
+            status, previous_measurement, scale, measurement["start"]
+        ):  # pragma: no cover-behave
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
@@ -134,20 +136,18 @@ def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
 
 
 def determine_status_start(
-    current_status: Optional[Status], previous_measurement: dict, scale: Scale, now: str
+    current_status: Optional[Status], previous_measurement: Measurement, scale: Scale, now: str
 ) -> Optional[str]:
     """Determine the date time since when the metric has the current status."""
-    if previous_measurement:
-        previous_status = previous_measurement.get(scale, {}).get("status")
-        if current_status == previous_status:
-            return str(previous_measurement.get(scale, {}).get("status_start", "")) or None
+    if current_status == previous_measurement.status(scale):
+        return str(previous_measurement.get(scale, {}).get("status_start", "")) or None
     return now
 
 
-def determine_target_value(metric: Metric, measurement: dict, scale: Scale, target: TargetType):
+def determine_target_value(metric: Metric, measurement: Measurement, scale: Scale, target_type: TargetType):
     """Determine the target, near target or debt target value."""
-    target_value = metric.get_target(target) if scale == metric.scale() else measurement.get(scale, {}).get(target)
-    return None if target == "debt_target" and metric.accept_debt_expired() else target_value
+    target_value = metric.get_target(target_type) if scale == metric.scale() else measurement.target(scale, target_type)
+    return None if target_type == "debt_target" and metric.accept_debt_expired() else target_value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
