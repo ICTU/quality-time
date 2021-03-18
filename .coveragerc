@@ -1,8 +1,9 @@
 [run]
 branch = True
 dynamic_context = test_function
-source = src, tests
+source = .
 omit =
+    tests/*under_coverage.py
     */venv/*
     */.venv/*
 
