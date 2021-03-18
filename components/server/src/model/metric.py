@@ -1,5 +1,6 @@
 """Metric model class."""
 
+from collections.abc import Sequence
 from datetime import date
 from typing import Optional, cast
 
@@ -28,6 +29,10 @@ class Metric:
     def scale(self) -> Scale:
         """Return the current metric scale."""
         return cast(Scale, self.__data.get("scale", "count"))
+
+    def scales(self) -> Sequence[Scale]:
+        """Return the current metric's supported scales."""
+        return cast(Sequence[Scale], self.__data_model["metrics"][self.type()]["scales"])
 
     def accept_debt(self) -> bool:
         """Return whether the metric has its technical debt accepted."""
