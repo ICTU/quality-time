@@ -78,9 +78,8 @@ def insert_new_measurement(
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    metric_type = data_model["metrics"][metric.type()]
     measurement["start"] = measurement["end"] = now = iso_timestamp()
-    for scale in metric_type["scales"]:
+    for scale in metric.scales():
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, status=status, direction=metric.direction())
