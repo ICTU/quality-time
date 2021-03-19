@@ -38,13 +38,13 @@ def post_measurement(database: Database) -> dict:
     metric = Metric(data_model, metric_data)
     if latest := latest_measurement(database, metric_uuid):
         latest_successful = latest_successful_measurement(database, metric_uuid)
-        latest_sources = latest_successful["sources"] if latest_successful else latest["sources"]
+        latest_sources = latest["sources"] if latest_successful is None else latest_successful["sources"]
         copy_entity_user_data(latest_sources, measurement["sources"])
         if not debt_target_expired(metric, latest) and latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, data_model, metric, measurement, Measurement(latest or {}))
+    return insert_new_measurement(database, data_model, metric, measurement, latest or Measurement())
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -100,7 +100,7 @@ def set_entity_attribute(
 ) -> dict:
     """Set an entity attribute."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
-    old_measurement = latest_measurement(database, metric_uuid)
+    old_measurement = cast(Measurement, latest_measurement(database, metric_uuid))
     new_measurement = old_measurement.copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
@@ -119,8 +119,8 @@ def set_entity_attribute(
         database,
         data.datamodel,
         Metric(data.datamodel, data.metric),
-        Measurement(new_measurement),
-        Measurement(old_measurement or {}),
+        new_measurement,
+        old_measurement,
     )
 
 

@@ -13,16 +13,18 @@ from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import MeasurementId, MetricId, Scale, TargetType
 
 
-def latest_measurement(database: Database, metric_uuid: MetricId):
+def latest_measurement(database: Database, metric_uuid: MetricId) -> Optional[Measurement]:
     """Return the latest measurement."""
-    return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
+    latest = database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
+    return None if latest is None else Measurement(latest)
 
 
-def latest_successful_measurement(database: Database, metric_uuid: MetricId):
+def latest_successful_measurement(database: Database, metric_uuid: MetricId) -> Optional[Measurement]:
     """Return the latest successful measurement."""
-    return database.measurements.find_one(
+    latest_successful = database.measurements.find_one(
         filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
     )
+    return None if latest_successful is None else Measurement(latest_successful)
 
 
 def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):
@@ -85,6 +87,8 @@ def insert_new_measurement(
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
             measurement[scale][target] = determine_target_value(metric, measurement, scale, target_type)
+    if "_id" in measurement:
+        del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
