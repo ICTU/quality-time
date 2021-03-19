@@ -12,7 +12,7 @@ class Measurement(dict):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if "_id" in self:
-            del self["_id"]
+            del self["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
         self["start"] = self["end"] = iso_timestamp()
 
     def target(self, scale: Scale, target_type: TargetType) -> Optional[str]:

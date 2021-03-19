@@ -74,11 +74,9 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric: Metric, measurement_data: dict, previous_measurement_data: Optional[dict]
+    database: Database, data_model, metric: Metric, measurement: Measurement, previous_measurement: Measurement
 ) -> dict:
     """Insert a new measurement."""
-    measurement = Measurement(measurement_data)
-    previous_measurement = Measurement(previous_measurement_data or {})
     for scale in metric.scales():
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
