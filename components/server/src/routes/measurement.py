@@ -30,7 +30,7 @@ from server_utilities.type import MetricId, SourceId
 @bottle.post("/internal-api/v3/measurements")
 def post_measurement(database: Database) -> dict:
     """Put the measurement in the database."""
-    measurement = dict(bottle.request.json)
+    measurement = Measurement(dict(bottle.request.json))
     metric_uuid = measurement["metric_uuid"]
     if not (metric_data := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
@@ -44,7 +44,7 @@ def post_measurement(database: Database) -> dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, data_model, metric, Measurement(measurement), Measurement(latest or {}))
+    return insert_new_measurement(database, data_model, metric, measurement, Measurement(latest or {}))
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
