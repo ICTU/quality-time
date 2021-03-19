@@ -10,7 +10,7 @@ from model.measurement import Measurement
 from model.metric import Metric
 from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import MeasurementId, MetricId, Scale, Status, TargetType
+from server_utilities.type import MeasurementId, MetricId, Scale, TargetType
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId):
@@ -83,12 +83,7 @@ def insert_new_measurement(
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, status=status, direction=metric.direction())
-        # We can't cover determine_status_start() returning False in the feature tests because all new measurements have
-        # a status start timestamp, hence the pragma: no cover-behave:
-        if status_start := determine_status_start(
-            status, previous_measurement, scale, measurement["start"]
-        ):  # pragma: no cover-behave
-            measurement[scale]["status_start"] = status_start
+        measurement.set_status_start(scale, previous_measurement)
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
             measurement[scale][target] = determine_target_value(metric, measurement, scale, target_type)
@@ -133,15 +128,6 @@ def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
     else:
         value = len(ignored_entities)
     return int(value)
-
-
-def determine_status_start(
-    current_status: Optional[Status], previous_measurement: Measurement, scale: Scale, now: str
-) -> Optional[str]:
-    """Determine the date time since when the metric has the current status."""
-    if current_status == previous_measurement.status(scale):
-        return previous_measurement.status_start(scale)
-    return now
 
 
 def determine_target_value(metric: Metric, measurement: Measurement, scale: Scale, target_type: TargetType):
