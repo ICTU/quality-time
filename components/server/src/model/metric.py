@@ -87,8 +87,8 @@ class Metric:
         """Return the metric sources."""
         return cast(dict, self.__data.get("sources", {}))
 
-    def get_measured_attribute(self, source_type: str) -> Optional[str]:
-        """Return the attribute of the entities of a source type that is measured in the context of this metric.
+    def get_measured_attribute(self, source_type: str) -> tuple[Optional[str], str]:
+        """Return the attribute of the entities of a source type that is measured, and its type.
 
         For example, when using Jira as source for user story points, the points of user stories (the source entities)
         are summed to arrive at the total number of user story points.
@@ -100,4 +100,19 @@ class Metric:
             .get(self.type(), {})
             .get("measured_attribute")
         )
-        return None if attribute is None else str(attribute)
+        measured_attribute = None if attribute is None else str(attribute)
+        entity_type = self.__data_model["sources"][source_type]["entities"].get(self.type(), {})
+        attribute_type = self.get_attribute_type(entity_type, measured_attribute)
+        return measured_attribute, attribute_type
+
+    @staticmethod
+    def get_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
+        """Look up the type of an entity attribute."""
+        attribute_type = (
+            [attribute for attribute in entity["attributes"] if attribute["key"] == attribute_key][0].get(
+                "type", "text"
+            )
+            if entity and attribute_key
+            else "text"
+        )
+        return str(attribute_type)

@@ -9,7 +9,6 @@ from pymongo.database import Database
 
 from model.measurement import Measurement, Source
 from model.metric import Metric
-from model.queries import get_attribute_type
 from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import MeasurementId, MetricId, Scale
 
@@ -77,11 +76,11 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric: Metric, measurement: Measurement, previous_measurement: Measurement
+    database: Database, metric: Metric, measurement: Measurement, previous_measurement: Measurement
 ) -> dict:
     """Insert a new measurement."""
     for scale in metric.scales():
-        value = calculate_measurement_value(data_model, metric, measurement.sources(), scale)
+        value = calculate_measurement_value(metric, measurement.sources(), scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, direction=metric.direction())
         measurement.set_status(scale, status, previous_measurement)
@@ -97,16 +96,14 @@ def insert_new_measurement(
     return measurement
 
 
-def calculate_measurement_value(data_model, metric: Metric, sources: Sequence[Source], scale: Scale) -> Optional[str]:
+def calculate_measurement_value(metric: Metric, sources: Sequence[Source], scale: Scale) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
     values = []
     for source in sources:
         source_type = metric.sources()[source["source_uuid"]]["type"]
-        measured_attribute = metric.get_measured_attribute(source_type)
-        entity_type = data_model["sources"][source_type]["entities"].get(metric.type(), {})
-        attribute_type = get_attribute_type(entity_type, measured_attribute)
+        measured_attribute, attribute_type = metric.get_measured_attribute(source_type)
         values.append(source.value(measured_attribute, attribute_type))
     add = metric.addition()
     if scale == "percentage":
