@@ -3,7 +3,6 @@
 from collections.abc import Sequence
 from typing import Optional, cast
 
-from model.queries import get_attribute_type
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import Scale, Status, TargetType
 
@@ -11,14 +10,15 @@ from server_utilities.type import Scale, Status, TargetType
 class Source(dict):
     """Class representing a measurement source."""
 
-    def ignored_entity_keys(self) -> Sequence[str]:
-        """Return the keys of the ignored entities."""
-        entities = self.get("entity_user_data", {}).items()
-        return [entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
+    def total(self) -> int:
+        """Return the measurement total of the source."""
+        return int(self["total"])
 
-    def value_of_entities_to_ignore(
-        self, entity_type: dict[str, list[dict[str, str]]], measured_attribute: Optional[str]
-    ) -> int:
+    def value(self, measured_attribute: Optional[str], attribute_type: str) -> int:
+        """Return the measurement value of the source."""
+        return int(self["value"]) - self._value_of_entities_to_ignore(measured_attribute, attribute_type)
+
+    def _value_of_entities_to_ignore(self, measured_attribute: Optional[str], attribute_type: str) -> int:
         """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
 
         If the entities have a measured attribute, return the sum of the measured attributes of the ignored
@@ -26,9 +26,8 @@ class Source(dict):
         user story points, the source entities are user stories and the measured attribute is the amount of story
         points of each user story.
         """
-        ignored_entity_keys = self.ignored_entity_keys()
+        ignored_entity_keys = self._ignored_entity_keys()
         if measured_attribute:
-            attribute_type = get_attribute_type(entity_type, measured_attribute)
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
             value = sum(
                 convert(entity[measured_attribute])
@@ -39,13 +38,10 @@ class Source(dict):
             value = len(ignored_entity_keys)
         return int(value)
 
-    def value(self) -> int:
-        """Return the measurement value of the source."""
-        return int(self["value"])
-
-    def total(self) -> int:
-        """Return the measurement total of the source."""
-        return int(self["total"])
+    def _ignored_entity_keys(self) -> Sequence[str]:
+        """Return the keys of the ignored entities."""
+        entities = self.get("entity_user_data", {}).items()
+        return [entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
 
 
 class Measurement(dict):
