@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from model.measurement import Measurement, Source
 from model.metric import Metric
-from model.queries import get_attribute_type, get_measured_attribute
+from model.queries import get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import MeasurementId, MetricId, Scale
 
@@ -106,7 +106,7 @@ def calculate_measurement_value(data_model, metric: Metric, sources: Sequence[So
         source_type = metric.sources()[source["source_uuid"]]["type"]
         entity_type = data_model["sources"][source_type]["entities"].get(metric.type(), {})
         measured_attribute = get_measured_attribute(data_model, metric.type(), source_type)
-        values.append(int(source["value"]) - value_of_entities_to_ignore(source, entity_type, measured_attribute))
+        values.append(int(source["value"]) - source.value_of_entities_to_ignore(entity_type, measured_attribute))
     add = metric.addition()
     if scale == "percentage":
         direction = metric.direction()
@@ -115,28 +115,6 @@ def calculate_measurement_value(data_model, metric: Metric, sources: Sequence[So
             values, totals = [sum(values)], [sum(totals)]
         values = [percentage(value, total, direction) for value, total in zip(values, totals)]
     return str(add(values))
-
-
-def value_of_entities_to_ignore(
-    source: Source, entity_type: dict[str, list[dict[str, str]]], measured_attribute: Optional[str]
-) -> int:
-    """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
-
-    If the entities have a measured attribute, return the sum of the measured attributes of the ignored
-    entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
-    user story points, the source entities are user stories and the measured attribute is the amount of story
-    points of each user story.
-    """
-    ignored_entity_keys = source.ignored_entity_keys()
-    if measured_attribute:
-        attribute_type = get_attribute_type(entity_type, measured_attribute)
-        convert = dict(float=float, integer=int, minutes=int)[attribute_type]
-        value = sum(
-            convert(entity[measured_attribute]) for entity in source["entities"] if entity["key"] in ignored_entity_keys
-        )
-    else:
-        value = len(ignored_entity_keys)
-    return int(value)
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
