@@ -1,9 +1,19 @@
 """Measurement model class."""
 
+from collections.abc import Sequence
 from typing import Optional, cast
 
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import Scale, Status, TargetType
+
+
+class Source(dict):
+    """Class representing a measurement source."""
+
+    def ignored_entity_keys(self) -> Sequence[str]:
+        """Return the keys of the ignored entities."""
+        entities = self.get("entity_user_data", {}).items()
+        return [entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
 
 
 class Measurement(dict):
@@ -36,3 +46,7 @@ class Measurement(dict):
     def status_start(self, scale: Scale) -> Optional[str]:
         """Return the start date of the status."""
         return str(self.get(scale, {}).get("status_start", "")) or None
+
+    def sources(self) -> Sequence[Source]:
+        """Return the measurement's sources."""
+        return [Source(source) for source in self["sources"]]
