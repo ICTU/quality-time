@@ -4,6 +4,7 @@ from collections.abc import Sequence
 from datetime import date
 from typing import Optional, cast
 
+from model.measurement import Source
 from server_utilities.type import Direction, Scale, Status, TargetType
 
 
@@ -87,12 +88,13 @@ class Metric:
         """Return the metric sources."""
         return cast(dict, self.__data.get("sources", {}))
 
-    def get_measured_attribute(self, source_type: str) -> tuple[Optional[str], str]:
-        """Return the attribute of the entities of a source type that is measured, and its type.
+    def get_measured_attribute(self, source: Source) -> tuple[Optional[str], str]:
+        """Return the attribute of the source entities that is used to measure the value, if any, and its type.
 
         For example, when using Jira as source for user story points, the points of user stories (the source entities)
         are summed to arrive at the total number of user story points.
         """
+        source_type = self.sources()[source["source_uuid"]]["type"]
         attribute = (
             self.__data_model["sources"]
             .get(source_type, {})
@@ -102,11 +104,11 @@ class Metric:
         )
         measured_attribute = None if attribute is None else str(attribute)
         entity_type = self.__data_model["sources"][source_type]["entities"].get(self.type(), {})
-        attribute_type = self.get_attribute_type(entity_type, measured_attribute)
+        attribute_type = self._get_measured_attribute_type(entity_type, measured_attribute)
         return measured_attribute, attribute_type
 
     @staticmethod
-    def get_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
+    def _get_measured_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
         """Look up the type of an entity attribute."""
         attribute_type = (
             [attribute for attribute in entity["attributes"] if attribute["key"] == attribute_key][0].get(

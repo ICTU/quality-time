@@ -102,8 +102,7 @@ def calculate_measurement_value(metric: Metric, sources: Sequence[Source], scale
         return None
     values = []
     for source in sources:
-        source_type = metric.sources()[source["source_uuid"]]["type"]
-        measured_attribute, attribute_type = metric.get_measured_attribute(source_type)
+        measured_attribute, attribute_type = metric.get_measured_attribute(source)
         values.append(source.value(measured_attribute, attribute_type))
     add = metric.addition()
     if scale == "percentage":
