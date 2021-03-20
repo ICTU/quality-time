@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from model.measurement import Measurement, Source
 from model.metric import Metric
-from model.queries import get_attribute_type, get_measured_attribute
+from model.queries import get_attribute_type
 from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import MeasurementId, MetricId, Scale
 
@@ -104,8 +104,8 @@ def calculate_measurement_value(data_model, metric: Metric, sources: Sequence[So
     values = []
     for source in sources:
         source_type = metric.sources()[source["source_uuid"]]["type"]
+        measured_attribute = metric.get_measured_attribute(source_type)
         entity_type = data_model["sources"][source_type]["entities"].get(metric.type(), {})
-        measured_attribute = get_measured_attribute(data_model, metric.type(), source_type)
         attribute_type = get_attribute_type(entity_type, measured_attribute)
         values.append(source.value(measured_attribute, attribute_type))
     add = metric.addition()

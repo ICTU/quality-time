@@ -13,18 +13,6 @@ def is_password_parameter(data_model, source_type: str, parameter: str) -> bool:
     return str(parameter_type) == "password"
 
 
-def get_measured_attribute(data_model, metric_type: str, source_type: str) -> Optional[str]:
-    """Return the attribute of the entities of a source that are measured in the context of a metric.
-
-    For example, when using Jira as source for user story points, the points of user stories (the source entities) are
-    summed to arrive at the total number of user story points.
-    """
-    attribute = (
-        data_model["sources"].get(source_type, {}).get("entities", {}).get(metric_type, {}).get("measured_attribute")
-    )
-    return str(attribute) if attribute else attribute
-
-
 def get_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
     """Look up the type of an entity attribute."""
     attribute_type = (
