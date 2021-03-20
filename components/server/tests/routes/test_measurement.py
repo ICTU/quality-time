@@ -161,9 +161,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
         del self.new_measurement["count"]["status_start"]
         request.json = self.posted_measurement
-        self.new_measurement["percentage"] = dict(
-            debt_target=None, direction="<", near_target=None, status=None, target=None, value=None
-        )
+        self.new_measurement["percentage"] = dict(direction="<", status=None, value=None)
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 

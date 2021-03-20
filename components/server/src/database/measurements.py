@@ -1,7 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Optional, cast
+from typing import Optional
 
 import pymongo
 from pymongo.database import Database
@@ -10,7 +10,7 @@ from model.measurement import Measurement
 from model.metric import Metric
 from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import MeasurementId, MetricId, Scale, TargetType
+from server_utilities.type import MeasurementId, MetricId, Scale
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId) -> Optional[Measurement]:
@@ -82,11 +82,13 @@ def insert_new_measurement(
     for scale in metric.scales():
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
-        measurement[scale] = dict(value=value, status=status, direction=metric.direction())
-        measurement.set_status_start(scale, previous_measurement)
-        for target in ("target", "near_target", "debt_target"):
-            target_type = cast(TargetType, target)
-            measurement[scale][target] = determine_target_value(metric, measurement, scale, target_type)
+        measurement[scale] = dict(value=value, direction=metric.direction())
+        measurement.set_status(scale, status, previous_measurement)
+        if scale == metric.scale():
+            measurement.set_target(scale, "target", metric.get_target("target"))
+            measurement.set_target(scale, "near_target", metric.get_target("near_target"))
+            target_value = None if metric.accept_debt_expired() else metric.get_target("debt_target")
+            measurement.set_target(scale, "debt_target", target_value)
     if "_id" in measurement:
         del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)
@@ -130,12 +132,6 @@ def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
     else:
         value = len(ignored_entities)
     return int(value)
-
-
-def determine_target_value(metric: Metric, measurement: Measurement, scale: Scale, target_type: TargetType):
-    """Determine the target, near target or debt target value."""
-    target_value = metric.get_target(target_type) if scale == metric.scale() else measurement.target(scale, target_type)
-    return None if target_type == "debt_target" and metric.accept_debt_expired() else target_value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
