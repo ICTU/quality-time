@@ -39,6 +39,14 @@ class Source(dict):
             value = len(ignored_entity_keys)
         return int(value)
 
+    def value(self) -> int:
+        """Return the measurement value of the source."""
+        return int(self["value"])
+
+    def total(self) -> int:
+        """Return the measurement total of the source."""
+        return int(self["total"])
+
 
 class Measurement(dict):
     """Class representing a measurement."""

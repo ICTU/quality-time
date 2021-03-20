@@ -106,11 +106,11 @@ def calculate_measurement_value(data_model, metric: Metric, sources: Sequence[So
         source_type = metric.sources()[source["source_uuid"]]["type"]
         entity_type = data_model["sources"][source_type]["entities"].get(metric.type(), {})
         measured_attribute = get_measured_attribute(data_model, metric.type(), source_type)
-        values.append(int(source["value"]) - source.value_of_entities_to_ignore(entity_type, measured_attribute))
+        values.append(source.value() - source.value_of_entities_to_ignore(entity_type, measured_attribute))
     add = metric.addition()
     if scale == "percentage":
         direction = metric.direction()
-        totals = [int(source["total"]) for source in sources]
+        totals = [source.total() for source in sources]
         if add is sum:
             values, totals = [sum(values)], [sum(totals)]
         values = [percentage(value, total, direction) for value, total in zip(values, totals)]
