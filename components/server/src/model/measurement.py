@@ -43,7 +43,44 @@ class Measurement(dict):
         """Return the measurement status for the scale."""
         return cast(Optional[Status], self.get(scale, {}).get("status"))
 
-    def set_status(self, scale: Scale, status: Optional[str]) -> None:
+    def status_start(self, scale: Scale) -> Optional[str]:
+        """Return the start date of the status."""
+        return str(self.get(scale, {}).get("status_start", "")) or None
+
+    def update_measurement(self) -> None:
+        """Update the measurement scales."""
+        self._update_targets()
+        for scale in self.__metric.scales():
+            self._update_scale(scale)
+
+    def _update_scale(self, scale: Scale) -> None:
+        """Update the measurement value and status for the scale."""
+        sources = self._sources()
+        self.setdefault(scale, {})["direction"] = self.__metric.direction()
+        if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
+            value = None
+        else:
+            values = [source.value() for source in sources]
+            add = self.__metric.addition()
+            if scale == "percentage":
+                direction = self.__metric.direction()
+                totals = [source.total() for source in sources]
+                if add is sum:
+                    values, totals = [sum(values)], [sum(totals)]
+                values = [percentage(value, total, direction) for value, total in zip(values, totals)]
+            value = str(add(values))
+        self[scale]["value"] = value
+        self._set_status(scale, self.__metric.status(value))
+
+    def _update_targets(self) -> None:
+        """Update the measurement targets"""
+        scale = self.__metric.scale()
+        self.set_target(scale, "target", self.__metric.get_target("target"))
+        self.set_target(scale, "near_target", self.__metric.get_target("near_target"))
+        target_value = None if self.__metric.accept_debt_expired() else self.__metric.get_target("debt_target")
+        self.set_target(scale, "debt_target", target_value)
+
+    def _set_status(self, scale: Scale, status: Optional[str]) -> None:
         """Set the measurement status for the scale and the status start date."""
         self.setdefault(scale, {})["status"] = status
         if self.__previous_measurement is None:
@@ -56,39 +93,6 @@ class Measurement(dict):
         if status_start:
             self[scale]["status_start"] = status_start
 
-    def status_start(self, scale: Scale) -> Optional[str]:
-        """Return the start date of the status."""
-        return str(self.get(scale, {}).get("status_start", "")) or None
-
-    def sources(self) -> Sequence[Source]:
+    def _sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
         return [Source(self.__metric, source) for source in self["sources"]]
-
-    def update_scales(self) -> None:
-        """Update the measurement scales."""
-        for scale in self.__metric.scales():
-            self._update_scale(scale)
-
-    def _update_scale(self, scale: Scale) -> None:
-        """Update the measurement value and status for the scale."""
-        sources = self.sources()
-        self.setdefault(scale, {})["direction"] = self.__metric.direction()
-        if scale == self.__metric.scale():
-            self.set_target(scale, "target", self.__metric.get_target("target"))
-            self.set_target(scale, "near_target", self.__metric.get_target("near_target"))
-            target_value = None if self.__metric.accept_debt_expired() else self.__metric.get_target("debt_target")
-            self.set_target(scale, "debt_target", target_value)
-        if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
-            self[scale]["value"] = None
-            self.set_status(scale, self.__metric.status(None))
-            return
-        values = [source.value() for source in sources]
-        add = self.__metric.addition()
-        if scale == "percentage":
-            direction = self.__metric.direction()
-            totals = [source.total() for source in sources]
-            if add is sum:
-                values, totals = [sum(values)], [sum(totals)]
-            values = [percentage(value, total, direction) for value, total in zip(values, totals)]
-        self.setdefault(scale, {})["value"] = value = str(add(values))
-        self.set_status(scale, self.__metric.status(value))
