@@ -5,7 +5,7 @@ from typing import Optional, cast
 
 from model.metric import Metric
 from model.source import Source
-from server_utilities.functions import iso_timestamp
+from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import Scale, Status, TargetType
 
 
@@ -44,3 +44,18 @@ class Measurement(dict):
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
         return [Source(self.__metric, source) for source in self["sources"]]
+
+    def update_value(self, scale: Scale) -> Optional[str]:
+        """Calculate the measurement value from the source measurements."""
+        sources = self.sources()
+        if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
+            return None
+        values = [source.value() for source in sources]
+        add = self.__metric.addition()
+        if scale == "percentage":
+            direction = self.__metric.direction()
+            totals = [source.total() for source in sources]
+            if add is sum:
+                values, totals = [sum(values)], [sum(totals)]
+            values = [percentage(value, total, direction) for value, total in zip(values, totals)]
+        return str(add(values))

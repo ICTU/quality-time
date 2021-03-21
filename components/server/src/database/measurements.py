@@ -1,16 +1,15 @@
 """Measurements collection."""
 
-from collections.abc import Sequence
 from datetime import datetime, timedelta
 from typing import Optional
 
 import pymongo
 from pymongo.database import Database
 
-from model.measurement import Measurement, Source
+from model.measurement import Measurement
 from model.metric import Metric
-from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import MeasurementId, MetricId, Scale
+from server_utilities.functions import iso_timestamp
+from server_utilities.type import MeasurementId, MetricId
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId, metric: Metric) -> Optional[Measurement]:
@@ -80,7 +79,7 @@ def insert_new_measurement(
 ) -> dict:
     """Insert a new measurement."""
     for scale in metric.scales():
-        value = calculate_measurement_value(metric, measurement.sources(), scale)
+        value = measurement.update_value(scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, direction=metric.direction())
         measurement.set_status(scale, status, previous_measurement)
@@ -94,21 +93,6 @@ def insert_new_measurement(
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
-
-
-def calculate_measurement_value(metric: Metric, sources: Sequence[Source], scale: Scale) -> Optional[str]:
-    """Calculate the measurement value from the source measurements."""
-    if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
-        return None
-    values = [source.value() for source in sources]
-    add = metric.addition()
-    if scale == "percentage":
-        direction = metric.direction()
-        totals = [source.total() for source in sources]
-        if add is sum:
-            values, totals = [sum(values)], [sum(totals)]
-        values = [percentage(value, total, direction) for value, total in zip(values, totals)]
-    return str(add(values))
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
