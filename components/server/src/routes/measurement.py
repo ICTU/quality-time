@@ -30,21 +30,22 @@ from server_utilities.type import MetricId, SourceId
 @bottle.post("/internal-api/v3/measurements")
 def post_measurement(database: Database) -> dict:
     """Put the measurement in the database."""
-    measurement = Measurement(dict(bottle.request.json))
-    metric_uuid = measurement["metric_uuid"]
+    measurement_data = dict(bottle.request.json)
+    metric_uuid = measurement_data["metric_uuid"]
     if not (metric_data := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
     data_model = latest_datamodel(database)
     metric = Metric(data_model, metric_data)
-    if latest := latest_measurement(database, metric_uuid):
-        latest_successful = latest_successful_measurement(database, metric_uuid)
+    measurement = Measurement(metric, measurement_data)
+    if latest := latest_measurement(database, metric_uuid, metric):
+        latest_successful = latest_successful_measurement(database, metric_uuid, metric)
         latest_sources = latest["sources"] if latest_successful is None else latest_successful["sources"]
         copy_entity_user_data(latest_sources, measurement["sources"])
         if not debt_target_expired(metric, latest) and latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, metric, measurement, latest or Measurement())
+    return insert_new_measurement(database, metric, measurement, latest or Measurement(metric))
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -100,7 +101,8 @@ def set_entity_attribute(
 ) -> dict:
     """Set an entity attribute."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
-    old_measurement = cast(Measurement, latest_measurement(database, metric_uuid))
+    metric = Metric(data.datamodel, data.metric)
+    old_measurement = cast(Measurement, latest_measurement(database, metric_uuid, metric))
     new_measurement = old_measurement.copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
@@ -115,7 +117,7 @@ def set_entity_attribute(
         f"'{new_value}'.",
         email=user["email"],
     )
-    return insert_new_measurement(database, Metric(data.datamodel, data.metric), new_measurement, old_measurement)
+    return insert_new_measurement(database, metric, new_measurement, old_measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

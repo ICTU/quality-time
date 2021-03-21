@@ -13,18 +13,18 @@ from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import MeasurementId, MetricId, Scale
 
 
-def latest_measurement(database: Database, metric_uuid: MetricId) -> Optional[Measurement]:
+def latest_measurement(database: Database, metric_uuid: MetricId, metric: Metric) -> Optional[Measurement]:
     """Return the latest measurement."""
     latest = database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
-    return None if latest is None else Measurement(latest)
+    return None if latest is None else Measurement(metric, latest)
 
 
-def latest_successful_measurement(database: Database, metric_uuid: MetricId) -> Optional[Measurement]:
+def latest_successful_measurement(database: Database, metric_uuid: MetricId, metric: Metric) -> Optional[Measurement]:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
         filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
     )
-    return None if latest_successful is None else Measurement(latest_successful)
+    return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
 def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):

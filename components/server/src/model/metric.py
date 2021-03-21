@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from datetime import date
 from typing import Optional, cast
 
-from model.measurement import Source
+from model.source import Source
 from server_utilities.type import Direction, Scale, Status, TargetType
 
 
@@ -32,7 +32,7 @@ class Metric:
         return cast(Scale, self.__data.get("scale", "count"))
 
     def scales(self) -> Sequence[Scale]:
-        """Return the current metric's supported scales."""
+        """Return the scales supported by the metric."""
         return cast(Sequence[Scale], self.__data_model["metrics"][self.type()]["scales"])
 
     def accept_debt(self) -> bool:
@@ -89,7 +89,7 @@ class Metric:
         return cast(dict, self.__data.get("sources", {}))
 
     def get_measured_attribute(self, source: Source) -> tuple[Optional[str], str]:
-        """Return the attribute of the source entities that is used to measure the value, if any, and its type.
+        """Return the attribute of the source entities that is used to measure the value, and its type.
 
         For example, when using Jira as source for user story points, the points of user stories (the source entities)
         are summed to arrive at the total number of user story points.

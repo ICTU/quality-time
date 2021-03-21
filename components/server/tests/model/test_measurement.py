@@ -3,8 +3,8 @@
 import unittest
 
 from database.measurements import calculate_measurement_value
-from model.measurement import Source
 from model.metric import Metric
+from model.source import Source
 
 from ..fixtures import SOURCE_ID, SOURCE_ID2
 
