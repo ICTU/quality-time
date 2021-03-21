@@ -1,5 +1,7 @@
 """Measurement model class."""
 
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import Optional, cast
 
@@ -15,11 +17,23 @@ class Measurement(dict):
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.__metric = metric
+        self.__previous_measurement: Optional[Measurement] = None
         self["start"] = self["end"] = iso_timestamp()
 
-    def copy(self) -> "Measurement":
+    @classmethod
+    def copy_from(cls, previous_measurement: Measurement) -> Measurement:
+        """Create a measurement from a previous measurement."""
+        new_measurement = previous_measurement.copy()
+        new_measurement.set_previous_measurement(previous_measurement)
+        return new_measurement
+
+    def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
         return self.__class__(self.__metric, super().copy())
+
+    def set_previous_measurement(self, previous_measurement: Measurement):
+        """Set the previous measurement."""
+        self.__previous_measurement = previous_measurement
 
     def set_target(self, scale: Scale, target_type: TargetType, value: Optional[str]) -> None:
         """Set the specified target for the scale."""
@@ -29,11 +43,16 @@ class Measurement(dict):
         """Return the measurement status for the scale."""
         return cast(Optional[Status], self.get(scale, {}).get("status"))
 
-    def set_status(self, scale: Scale, status: Optional[str], previous_measurement: "Measurement") -> None:
+    def set_status(self, scale: Scale, status: Optional[str]) -> None:
         """Set the measurement status for the scale and the status start date."""
         self.setdefault(scale, {})["status"] = status
-        previous_status = previous_measurement.status(scale)
-        status_start = previous_measurement.status_start(scale) if status == previous_status else self["start"]
+        if self.__previous_measurement is None:
+            status_start = None
+        else:
+            previous_status = self.__previous_measurement.status(scale)
+            status_start = (
+                self.__previous_measurement.status_start(scale) if status == previous_status else self["start"]
+            )
         if status_start:
             self[scale]["status_start"] = status_start
 

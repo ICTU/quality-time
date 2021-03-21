@@ -74,14 +74,12 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
-def insert_new_measurement(
-    database: Database, metric: Metric, measurement: Measurement, previous_measurement: Measurement
-) -> dict:
+def insert_new_measurement(database: Database, metric: Metric, measurement: Measurement) -> dict:
     """Insert a new measurement."""
     for scale in metric.scales():
         value = measurement.update_value(scale)
         status = metric.status(value)
-        measurement.set_status(scale, status, previous_measurement)
+        measurement.set_status(scale, status)
         if scale == metric.scale():
             measurement.set_target(scale, "target", metric.get_target("target"))
             measurement.set_target(scale, "near_target", metric.get_target("near_target"))

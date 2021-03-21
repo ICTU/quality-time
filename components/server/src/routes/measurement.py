@@ -38,6 +38,7 @@ def post_measurement(database: Database) -> dict:
     metric = Metric(data_model, metric_data)
     measurement = Measurement(metric, measurement_data)
     if latest := latest_measurement(database, metric_uuid, metric):
+        measurement.set_previous_measurement(latest)
         latest_successful = latest_successful_measurement(database, metric_uuid, metric)
         latest_sources = latest["sources"] if latest_successful is None else latest_successful["sources"]
         copy_entity_user_data(latest_sources, measurement["sources"])
@@ -45,7 +46,7 @@ def post_measurement(database: Database) -> dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, metric, measurement, latest or Measurement(metric))
+    return insert_new_measurement(database, metric, measurement)
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -103,7 +104,7 @@ def set_entity_attribute(
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
     metric = Metric(data.datamodel, data.metric)
     old_measurement = cast(Measurement, latest_measurement(database, metric_uuid, metric))
-    new_measurement = old_measurement.copy()
+    new_measurement = Measurement.copy_from(old_measurement)
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([entity[key] for key in entity.keys() if key not in ("key", "url")])
@@ -117,7 +118,7 @@ def set_entity_attribute(
         f"'{new_value}'.",
         email=user["email"],
     )
-    return insert_new_measurement(database, metric, new_measurement, old_measurement)
+    return insert_new_measurement(database, metric, new_measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
