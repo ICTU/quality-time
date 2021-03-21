@@ -100,10 +100,7 @@ def calculate_measurement_value(metric: Metric, sources: Sequence[Source], scale
     """Calculate the measurement value from the source measurements."""
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
-    values = []
-    for source in sources:
-        measured_attribute, attribute_type = metric.get_measured_attribute(source)
-        values.append(source.value(measured_attribute, attribute_type))
+    values = [source.value() for source in sources]
     add = metric.addition()
     if scale == "percentage":
         direction = metric.direction()

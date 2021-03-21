@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from model.metric import Metric
@@ -20,11 +20,11 @@ class Source(dict):
         """Return the measurement total of the source."""
         return int(self["total"])
 
-    def value(self, measured_attribute: Optional[str], attribute_type: str) -> int:
+    def value(self) -> int:
         """Return the measurement value of the source."""
-        return int(self["value"]) - self._value_of_entities_to_ignore(measured_attribute, attribute_type)
+        return int(self["value"]) - self._value_of_entities_to_ignore()
 
-    def _value_of_entities_to_ignore(self, measured_attribute: Optional[str], attribute_type: str) -> int:
+    def _value_of_entities_to_ignore(self) -> int:
         """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
 
         If the entities have a measured attribute, return the sum of the measured attributes of the ignored
@@ -33,6 +33,7 @@ class Source(dict):
         points of each user story.
         """
         ignored_entity_keys = self._ignored_entity_keys()
+        measured_attribute, attribute_type = self.__metric.get_measured_attribute(self)
         if measured_attribute:
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
             value = sum(
