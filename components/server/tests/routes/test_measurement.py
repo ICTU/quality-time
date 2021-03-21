@@ -162,14 +162,14 @@ class PostMeasurementTests(unittest.TestCase):
         del self.new_measurement["count"]["status_start"]
         request.json = self.posted_measurement
         self.new_measurement["percentage"] = dict(direction="<", status=None, value=None)
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_unchanged_measurement(self, request):
         """Post an unchanged measurement for a metric."""
         self.posted_measurement["sources"] = self.old_measurement["sources"]
         request.json = self.posted_measurement
-        self.assertEqual(dict(ok=True), post_measurement(self.database))
+        self.assertDictEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once()
 
     def test_changed_measurement_value(self, request):
@@ -177,7 +177,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source())
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
@@ -206,7 +206,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2018-01-01", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once_with(
             dict(
                 metric_uuid=METRIC_ID,
@@ -242,7 +242,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source(entities=[dict(old_key="a", key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once_with(
             dict(
                 metric_uuid=METRIC_ID,
@@ -275,7 +275,7 @@ class PostMeasurementTests(unittest.TestCase):
         ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
-        self.assertEqual(dict(ok=True), post_measurement(self.database))
+        self.assertDictEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(
             filter={"_id": "id"}, update={"$set": {"end": "2019-01-01"}}
         )
@@ -302,7 +302,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="target_met", value="0"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_all_previous_measurements_were_failed_measurements(self, request):
@@ -314,14 +314,14 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_deleted_metric(self, request):
         """Post a measurement for a deleted metric."""
         self.report["subjects"][SUBJECT_ID]["metrics"] = {}
         request.json = self.posted_measurement
-        self.assertEqual(dict(ok=False), post_measurement(self.database))
+        self.assertDictEqual(dict(ok=False), post_measurement(self.database))
         self.database.measurements.update_one.assert_not_called()
 
     def test_new_source(self, request):
@@ -330,7 +330,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_expired_technical_debt(self, request):
@@ -344,7 +344,7 @@ class PostMeasurementTests(unittest.TestCase):
         )
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_technical_debt_off(self, request):
@@ -357,7 +357,7 @@ class PostMeasurementTests(unittest.TestCase):
         )
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
-        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
 

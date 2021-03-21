@@ -89,7 +89,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Assert that the report delta contains the correct data."""
         uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
         description = f"John changed the {description}."
-        self.assertEqual(dict(uuids=uuids, email=email, description=description), self.report["delta"])
+        self.assertDictEqual(dict(uuids=uuids, email=email, description=description), self.report["delta"])
 
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
@@ -136,7 +136,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
         self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(accept_debt=True)
-        self.assertEqual(
+        self.assertDictEqual(
             dict(
                 end="2019-01-01",
                 sources=[],
@@ -162,7 +162,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
         self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(accept_debt=True)
-        self.assertEqual(
+        self.assertDictEqual(
             dict(
                 end="2019-01-01",
                 sources=[],

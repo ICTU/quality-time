@@ -64,13 +64,14 @@ class Measurement(dict):
         """Return the measurement's sources."""
         return [Source(self.__metric, source) for source in self["sources"]]
 
-    def update_value(self, scale: Scale) -> Optional[str]:
-        """Update the measurement value from the source measurements and return it."""
+    def update_scale(self, scale: Scale) -> None:
+        """Update the measurement value and status for the scale."""
         sources = self.sources()
         self.setdefault(scale, {})["direction"] = self.__metric.direction()
         if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
             self[scale]["value"] = None
-            return None
+            self.set_status(scale, self.__metric.status(None))
+            return
         values = [source.value() for source in sources]
         add = self.__metric.addition()
         if scale == "percentage":
@@ -80,4 +81,4 @@ class Measurement(dict):
                 values, totals = [sum(values)], [sum(totals)]
             values = [percentage(value, total, direction) for value, total in zip(values, totals)]
         self.setdefault(scale, {})["value"] = value = str(add(values))
-        return value
+        self.set_status(scale, self.__metric.status(value))
