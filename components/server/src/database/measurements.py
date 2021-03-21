@@ -81,7 +81,6 @@ def insert_new_measurement(
     for scale in metric.scales():
         value = measurement.update_value(scale)
         status = metric.status(value)
-        measurement[scale] = dict(value=value, direction=metric.direction())
         measurement.set_status(scale, status, previous_measurement)
         if scale == metric.scale():
             measurement.set_target(scale, "target", metric.get_target("target"))

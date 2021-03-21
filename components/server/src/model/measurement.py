@@ -46,9 +46,11 @@ class Measurement(dict):
         return [Source(self.__metric, source) for source in self["sources"]]
 
     def update_value(self, scale: Scale) -> Optional[str]:
-        """Calculate the measurement value from the source measurements."""
+        """Update the measurement value from the source measurements and return it."""
         sources = self.sources()
+        self.setdefault(scale, {})["direction"] = self.__metric.direction()
         if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
+            self[scale]["value"] = None
             return None
         values = [source.value() for source in sources]
         add = self.__metric.addition()
@@ -58,4 +60,5 @@ class Measurement(dict):
             if add is sum:
                 values, totals = [sum(values)], [sum(totals)]
             values = [percentage(value, total, direction) for value, total in zip(values, totals)]
-        return str(add(values))
+        self.setdefault(scale, {})["value"] = value = str(add(values))
+        return value
