@@ -74,15 +74,9 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
-def insert_new_measurement(database: Database, metric: Metric, measurement: Measurement) -> dict:
+def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
     """Insert a new measurement."""
-    for scale in metric.scales():
-        measurement.update_scale(scale)
-        if scale == metric.scale():
-            measurement.set_target(scale, "target", metric.get_target("target"))
-            measurement.set_target(scale, "near_target", metric.get_target("near_target"))
-            target_value = None if metric.accept_debt_expired() else metric.get_target("debt_target")
-            measurement.set_target(scale, "debt_target", target_value)
+    measurement.update_scales()
     if "_id" in measurement:
         del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)

@@ -64,10 +64,20 @@ class Measurement(dict):
         """Return the measurement's sources."""
         return [Source(self.__metric, source) for source in self["sources"]]
 
-    def update_scale(self, scale: Scale) -> None:
+    def update_scales(self) -> None:
+        """Update the measurement scales."""
+        for scale in self.__metric.scales():
+            self._update_scale(scale)
+
+    def _update_scale(self, scale: Scale) -> None:
         """Update the measurement value and status for the scale."""
         sources = self.sources()
         self.setdefault(scale, {})["direction"] = self.__metric.direction()
+        if scale == self.__metric.scale():
+            self.set_target(scale, "target", self.__metric.get_target("target"))
+            self.set_target(scale, "near_target", self.__metric.get_target("near_target"))
+            target_value = None if self.__metric.accept_debt_expired() else self.__metric.get_target("debt_target")
+            self.set_target(scale, "debt_target", target_value)
         if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
             self[scale]["value"] = None
             self.set_status(scale, self.__metric.status(None))

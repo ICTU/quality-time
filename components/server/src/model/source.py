@@ -18,7 +18,7 @@ class Source(dict):
 
     def total(self) -> int:
         """Return the measurement total of the source."""
-        return int(self["total"])
+        return int(self["total"] or "100")
 
     def value(self) -> int:
         """Return the measurement value of the source."""

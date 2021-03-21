@@ -126,5 +126,5 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         latest := latest_measurement(database, metric_uuid, metric)
     ):
         new_measurement = Measurement.copy_from(latest)
-        return insert_new_measurement(database, metric, new_measurement)
+        return insert_new_measurement(database, new_measurement)
     return dict(ok=True)

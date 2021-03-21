@@ -46,7 +46,7 @@ def post_measurement(database: Database) -> dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, metric, measurement)
+    return insert_new_measurement(database, measurement)
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -118,7 +118,7 @@ def set_entity_attribute(
         f"'{new_value}'.",
         email=user["email"],
     )
-    return insert_new_measurement(database, metric, new_measurement)
+    return insert_new_measurement(database, new_measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

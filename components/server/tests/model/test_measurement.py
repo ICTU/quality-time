@@ -13,7 +13,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
     def setUp(self):
         """Override to set up a metric fixture."""
         self.data_model = dict(
-            metrics=dict(metric_type=dict(direction="<")),
+            metrics=dict(metric_type=dict(direction="<", scales=["count", "percentage"])),
             sources=dict(
                 source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
             ),
@@ -44,26 +44,26 @@ class CalculateMeasurementValueTest(unittest.TestCase):
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""
         measurement = Measurement(self.metric, dict(sources=[]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual(None, measurement["count"]["value"])
 
     def test_error(self):
         """Test that the measurement value is None if a source has an error."""
         measurement = Measurement(self.metric, dict(sources=[self.source(parse_error="error")]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual(None, measurement["count"]["value"])
 
     def test_add_two_sources(self):
         """Test that the values of two sources are added."""
         measurement = Measurement(self.metric, dict(sources=[self.source(value="10"), self.source(value="20")]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual("30", measurement["count"]["value"])
 
     def test_max_two_sources(self):
         """Test that the max value of two sources is returned."""
         self.metric_data["addition"] = "max"
         measurement = Measurement(self.metric, dict(sources=[self.source(value="10"), self.source(value="20")]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual("20", measurement["count"]["value"])
 
     def test_ignored_entities(self):
@@ -76,7 +76,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
             entity3=dict(status="false_positive"),
         )
         measurement = Measurement(self.metric, dict(sources=[source]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual("7", measurement["count"]["value"])
 
     def test_value_ignored_entities(self):
@@ -95,21 +95,21 @@ class CalculateMeasurementValueTest(unittest.TestCase):
             entity3=dict(status="false_positive"),
         )
         measurement = Measurement(self.metric, dict(sources=[source]))
-        measurement.update_scale("count")
+        measurement.update_scales()
         self.assertEqual("0", measurement["count"]["value"])
 
     def test_percentage(self):
         """Test a non-zero percentage."""
         sources = [self.source(value="10", total="70"), self.source(value="20", total="50")]
         measurement = Measurement(self.metric, dict(sources=sources))
-        measurement.update_scale("percentage")
+        measurement.update_scales()
         self.assertEqual("25", measurement["percentage"]["value"])
 
     def test_percentage_is_zero(self):
         """Test that the percentage is zero when the total is zero and the direction is 'fewer is better'."""
         sources = [self.source(value="0", total="0")]
         measurement = Measurement(self.metric, dict(sources=sources))
-        measurement.update_scale("percentage")
+        measurement.update_scales()
         self.assertEqual("0", measurement["percentage"]["value"])
 
     def test_percentage_is_100(self):
@@ -117,7 +117,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         self.metric_data["direction"] = ">"
         sources = [self.source(value="0", total="0")]
         measurement = Measurement(self.metric, dict(sources=sources))
-        measurement.update_scale("percentage")
+        measurement.update_scales()
         self.assertEqual("100", measurement["percentage"]["value"])
 
     def test_min_of_percentages(self):
@@ -125,7 +125,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         self.metric_data["addition"] = "min"
         sources = [self.source(value="10", total="70"), self.source(value="20", total="50")]
         measurement = Measurement(self.metric, dict(sources=sources))
-        measurement.update_scale("percentage")
+        measurement.update_scales()
         self.assertEqual("14", measurement["percentage"]["value"])
 
     def test_min_of_percentages_with_zero_denominator(self):
@@ -133,5 +133,5 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         self.metric_data["addition"] = "min"
         sources = [self.source(value="10", total="70"), self.source(value="0", total="0")]
         measurement = Measurement(self.metric, dict(sources=sources))
-        measurement.update_scale("percentage")
+        measurement.update_scales()
         self.assertEqual("0", measurement["percentage"]["value"])
