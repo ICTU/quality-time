@@ -32,20 +32,18 @@ class Source(dict):
         user story points, the source entities are user stories and the measured attribute is the amount of story
         points of each user story.
         """
-        ignored_entity_keys = self._ignored_entity_keys()
+        entities_to_ignore = self._entities_to_ignore()
         measured_attribute, attribute_type = self.__metric.get_measured_attribute(self)
         if measured_attribute:
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
-            value = sum(
-                convert(entity[measured_attribute])
-                for entity in self["entities"]
-                if entity["key"] in ignored_entity_keys
-            )
+            value = sum(convert(entity[measured_attribute]) for entity in entities_to_ignore)
         else:
-            value = len(ignored_entity_keys)
+            value = len(entities_to_ignore)
         return int(value)
 
-    def _ignored_entity_keys(self) -> Sequence[str]:
-        """Return the keys of the ignored entities."""
-        entities = self.get("entity_user_data", {}).items()
-        return [entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
+    def _entities_to_ignore(self) -> Sequence[dict[str, str]]:
+        """Return the entities to ignore."""
+        statuses_to_ignore = ("fixed", "false_positive", "wont_fix")
+        user_data = self.get("entity_user_data", {})
+        entities = self.get("entities", [])
+        return [entity for entity in entities if user_data.get(entity["key"], {}).get("status") in statuses_to_ignore]

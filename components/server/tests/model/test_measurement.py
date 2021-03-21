@@ -63,6 +63,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
     def test_ignored_entities(self):
         """Test that the number of ignored entities is subtracted."""
         source = self.source(value="10")
+        source["entities"] = [dict(key="entity1"), dict(key="entity2"), dict(key="entity3"), dict(key="entity4")]
         source["entity_user_data"] = dict(
             entity1=dict(status="fixed"),
             entity2=dict(status="wont_fix"),
