@@ -31,13 +31,14 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         """Create a source fixture."""
         self.source_count += 1
         return Source(
+            self.metric,
             dict(
                 source_uuid=f"uuid-{self.source_count}",
                 connection_error=None,
                 parse_error=parse_error,
                 total=total,
                 value=value,
-            )
+            ),
         )
 
     def test_no_source_measurements(self):

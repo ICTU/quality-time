@@ -43,4 +43,4 @@ class Measurement(dict):
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
-        return [Source(source) for source in self["sources"]]
+        return [Source(self.__metric, source) for source in self["sources"]]

@@ -1,11 +1,20 @@
 """Source model class."""
 
+from __future__ import annotations
+
 from collections.abc import Sequence
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from model.metric import Metric
 
 
 class Source(dict):
     """Class representing a measurement source."""
+
+    def __init__(self, metric: Metric, *args, **kwargs):
+        self.__metric = metric
+        super().__init__(*args, **kwargs)
 
     def total(self) -> int:
         """Return the measurement total of the source."""

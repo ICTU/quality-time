@@ -12,6 +12,7 @@ omit =
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
+    if TYPE_CHECKING:
 fail_under = 100
 skip_covered = True
 
@@ -21,4 +22,3 @@ show_contexts = True
 
 [xml]
 output = build/unittest-coverage.xml
-
