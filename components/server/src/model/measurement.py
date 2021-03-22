@@ -15,21 +15,14 @@ class Measurement(dict):
     """Class representing a measurement."""
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+        self.__previous_measurement: Optional[Measurement] = kwargs.pop("previous_measurement", None)
         self.__metric = metric
-        self.__previous_measurement: Optional[Measurement] = None
+        super().__init__(*args, **kwargs)
         self["start"] = self["end"] = iso_timestamp()
-
-    @classmethod
-    def copy_from(cls, previous_measurement: Measurement) -> Measurement:
-        """Create a measurement from a previous measurement."""
-        new_measurement = previous_measurement.copy()
-        new_measurement.set_previous_measurement(previous_measurement)
-        return new_measurement
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
-        return self.__class__(self.__metric, super().copy())
+        return self.__class__(self.__metric, super().copy(), previous_measurement=self)
 
     def set_previous_measurement(self, previous_measurement: Measurement):
         """Set the previous measurement."""
@@ -48,7 +41,7 @@ class Measurement(dict):
         return str(self.get(scale, {}).get("status_start", "")) or None
 
     def update_measurement(self) -> None:
-        """Update the measurement scales."""
+        """Update the measurement targets and scales."""
         self._update_targets()
         for scale in self.__metric.scales():
             self._update_scale(scale)
@@ -73,7 +66,7 @@ class Measurement(dict):
         self._set_status(scale, self.__metric.status(value))
 
     def _update_targets(self) -> None:
-        """Update the measurement targets"""
+        """Update the measurement targets."""
         scale = self.__metric.scale()
         self.set_target(scale, "target", self.__metric.get_target("target"))
         self.set_target(scale, "near_target", self.__metric.get_target("near_target"))

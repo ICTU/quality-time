@@ -10,7 +10,6 @@ from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import insert_new_report, latest_reports
 from model.actions import copy_metric, move_item
 from model.data import MetricData, SubjectData
-from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
@@ -125,6 +124,5 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (
         latest := latest_measurement(database, metric_uuid, metric)
     ):
-        new_measurement = Measurement.copy_from(latest)
-        return insert_new_measurement(database, new_measurement)
+        return insert_new_measurement(database, latest.copy())
     return dict(ok=True)
