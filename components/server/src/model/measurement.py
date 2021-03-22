@@ -11,7 +11,7 @@ from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import Scale, Status, TargetType
 
 
-class Measurement(dict):
+class Measurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement."""
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
