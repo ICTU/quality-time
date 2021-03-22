@@ -24,10 +24,6 @@ class Measurement(dict):
         """Extend to return an instance of this class instead of a dict."""
         return self.__class__(self.__metric, super().copy(), previous_measurement=self)
 
-    def set_previous_measurement(self, previous_measurement: Measurement):
-        """Set the previous measurement."""
-        self.__previous_measurement = previous_measurement
-
     def set_target(self, scale: Scale, target_type: TargetType, value: Optional[str]) -> None:
         """Set the specified target for the scale."""
         self.setdefault(scale, {})[target_type] = value

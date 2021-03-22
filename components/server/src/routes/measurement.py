@@ -36,9 +36,8 @@ def post_measurement(database: Database) -> dict:
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
     data_model = latest_datamodel(database)
     metric = Metric(data_model, metric_data)
-    measurement = Measurement(metric, measurement_data)
     if latest := latest_measurement(database, metric_uuid, metric):
-        measurement.set_previous_measurement(latest)
+        measurement = Measurement(metric, measurement_data, previous_measurement=latest)
         latest_successful = latest_successful_measurement(database, metric_uuid, metric)
         latest_sources = latest["sources"] if latest_successful is None else latest_successful["sources"]
         copy_entity_user_data(latest_sources, measurement["sources"])
@@ -46,6 +45,8 @@ def post_measurement(database: Database) -> dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
+    else:
+        measurement = Measurement(metric, measurement_data)
     return insert_new_measurement(database, measurement)
 
 
