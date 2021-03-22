@@ -95,15 +95,9 @@ class Metric:
         are summed to arrive at the total number of user story points.
         """
         source_type = self.sources()[source["source_uuid"]]["type"]
-        attribute = (
-            self.__data_model["sources"]
-            .get(source_type, {})
-            .get("entities", {})
-            .get(self.type(), {})
-            .get("measured_attribute")
-        )
-        measured_attribute = None if attribute is None else str(attribute)
         entity_type = self.__data_model["sources"][source_type]["entities"].get(self.type(), {})
+        attribute = entity_type.get("measured_attribute")
+        measured_attribute = None if attribute is None else str(attribute)
         attribute_type = self._get_measured_attribute_type(entity_type, measured_attribute)
         return measured_attribute, attribute_type
 

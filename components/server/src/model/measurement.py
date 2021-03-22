@@ -62,7 +62,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         self._set_status(scale, self.__metric.status(value))
 
     def _update_targets(self) -> None:
-        """Update the measurement targets."""
+        """Update the measurement targets using the latest target values from the metric."""
         scale = self.__metric.scale()
         self.set_target(scale, "target", self.__metric.get_target("target"))
         self.set_target(scale, "near_target", self.__metric.get_target("near_target"))
