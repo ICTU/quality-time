@@ -120,9 +120,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     )
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
     insert_new_report(database, description, (data.report, uuids))
-    metric = Metric(data.datamodel, data.metric)
-    if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (
-        latest := latest_measurement(database, metric_uuid, metric)
-    ):
+    metric = Metric(data.datamodel, data.metric, metric_uuid)
+    if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
     return dict(ok=True)

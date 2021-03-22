@@ -12,16 +12,16 @@ from server_utilities.functions import iso_timestamp
 from server_utilities.type import MeasurementId, MetricId
 
 
-def latest_measurement(database: Database, metric_uuid: MetricId, metric: Metric) -> Optional[Measurement]:
+def latest_measurement(database: Database, metric: Metric) -> Optional[Measurement]:
     """Return the latest measurement."""
-    latest = database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
+    latest = database.measurements.find_one(filter={"metric_uuid": metric.uuid}, sort=[("start", pymongo.DESCENDING)])
     return None if latest is None else Measurement(metric, latest)
 
 
-def latest_successful_measurement(database: Database, metric_uuid: MetricId, metric: Metric) -> Optional[Measurement]:
+def latest_successful_measurement(database: Database, metric: Metric) -> Optional[Measurement]:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
+        filter={"metric_uuid": metric.uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 

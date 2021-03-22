@@ -6,6 +6,8 @@ from model.measurement import Measurement
 from model.metric import Metric
 from model.source import Source
 
+from ..fixtures import METRIC_ID
+
 
 class CalculateMeasurementValueTest(unittest.TestCase):
     """Unit tests for calculating the measurement value from one or more source measurements."""
@@ -24,7 +26,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
             type="metric_type",
             sources={"uuid-1": dict(type="source_type"), "uuid-2": dict(type="source_type")},
         )
-        self.metric = Metric(self.data_model, self.metric_data)
+        self.metric = Metric(self.data_model, self.metric_data, METRIC_ID)
         self.source_count = 0
 
     def source(self, parse_error: str = None, total: str = None, value: str = None) -> Source:

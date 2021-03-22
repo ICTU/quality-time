@@ -5,15 +5,17 @@ from datetime import date
 from typing import Optional, cast
 
 from model.source import Source
-from server_utilities.type import Direction, Scale, Status, TargetType
+from server_utilities.functions import find_one
+from server_utilities.type import Direction, MetricId, Scale, Status, TargetType
 
 
 class Metric:
     """Class representing a metric."""
 
-    def __init__(self, data_model, metric_data) -> None:
+    def __init__(self, data_model, metric_data, metric_uuid: MetricId) -> None:
         self.__data_model = data_model
         self.__data = metric_data
+        self.uuid = metric_uuid
 
     def type(self) -> str:
         """Return the type of the metric."""
@@ -104,11 +106,5 @@ class Metric:
     @staticmethod
     def _get_measured_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
         """Look up the type of an entity attribute."""
-        attribute_type = (
-            [attribute for attribute in entity["attributes"] if attribute["key"] == attribute_key][0].get(
-                "type", "text"
-            )
-            if entity and attribute_key
-            else "text"
-        )
-        return str(attribute_type)
+        attribute = find_one(entity.get("attributes", []), attribute_key, lambda attr: attr["key"]) or {}
+        return str(attribute.get("type", "text"))

@@ -35,10 +35,10 @@ def post_measurement(database: Database) -> dict:
     if not (metric_data := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
     data_model = latest_datamodel(database)
-    metric = Metric(data_model, metric_data)
-    if latest := latest_measurement(database, metric_uuid, metric):
+    metric = Metric(data_model, metric_data, metric_uuid)
+    if latest := latest_measurement(database, metric):
         measurement = Measurement(metric, measurement_data, previous_measurement=latest)
-        latest_successful = latest_successful_measurement(database, metric_uuid, metric)
+        latest_successful = latest_successful_measurement(database, metric)
         latest_sources = latest["sources"] if latest_successful is None else latest_successful["sources"]
         copy_entity_user_data(latest_sources, measurement["sources"])
         if not debt_target_expired(metric, latest) and latest["sources"] == measurement["sources"]:
@@ -103,8 +103,8 @@ def set_entity_attribute(
 ) -> dict:
     """Set an entity attribute."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
-    metric = Metric(data.datamodel, data.metric)
-    old_measurement = cast(Measurement, latest_measurement(database, metric_uuid, metric))
+    metric = Metric(data.datamodel, data.metric, metric_uuid)
+    old_measurement = cast(Measurement, latest_measurement(database, metric))
     new_measurement = old_measurement.copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
