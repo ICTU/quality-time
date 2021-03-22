@@ -48,7 +48,7 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(decrypted_message, test_message)
 
     def test_symmetric_decryption(self):
-        """Test wether message that has been encrypted using symmetric_encrypt ca be decrypted."""
+        """Test whether the message that has been encrypted using symmetric_encrypt can be decrypted."""
         # encryption
         test_message = b"this is a test message"
         key, encrypted_message = symmetric_encrypt(test_message)
@@ -58,7 +58,7 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(message, test_message)
 
     def test_asymmetric_encrypt(self):
-        """Test wether message is encrypted using public/private keys."""
+        """Test whether the message is encrypted using public/private keys."""
         # get public and private keys
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         public_key = private_key.public_key()
@@ -82,7 +82,7 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(decrypted_message, test_message)
 
     def test_asymmetric_decrypt(self):
-        """Test wether message that has been encrypted using asymmetric_encrypt ca be decrypted."""
+        """Test whether the message that has been encrypted using asymmetric_encrypt can be decrypted."""
         # get public and private keys
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         privkey = private_key.private_bytes(
