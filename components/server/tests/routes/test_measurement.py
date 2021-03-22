@@ -65,7 +65,7 @@ class GetMeasurementsTest(unittest.TestCase):
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("routes.measurement.iso_timestamp", new=Mock(return_value="2020-01-01"))
+@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""

@@ -7,8 +7,8 @@ from typing import Optional, cast
 
 from model.metric import Metric
 from model.source import Source
-from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import Scale, Status, TargetType
+from server_utilities.functions import find_one, iso_timestamp, percentage
+from server_utilities.type import Scale, SourceId, Status, TargetType
 
 
 class Measurement(dict):  # lgtm [py/missing-equals]
@@ -19,6 +19,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         self.__metric = metric
         super().__init__(*args, **kwargs)
         self["start"] = self["end"] = iso_timestamp()
+        self["sources"] = [Source(self.__metric, source) for source in self["sources"]]
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
@@ -36,6 +37,25 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return the start date of the status."""
         return str(self.get(scale, {}).get("status_start", "")) or None
 
+    def debt_target_expired(self) -> bool:
+        """Return whether the technical debt target is expired.
+
+        Technical debt can expire because it was turned off or because the end date passed.
+        """
+        any_debt_target = any(self.get(scale, {}).get("debt_target") is not None for scale in self.__metric.scales())
+        if not any_debt_target:
+            return False
+        return self.__metric.accept_debt_expired()
+
+    def copy_entity_user_data(self, measurement: Measurement) -> None:
+        """Copy the entity user data from the measurement to this measurement."""
+        for new_source in self.sources():
+            old_source = find_one(
+                measurement.sources(), new_source["source_uuid"], lambda source: SourceId(source["source_uuid"])
+            )
+            if old_source:
+                new_source.copy_entity_user_data(old_source)
+
     def update_measurement(self) -> None:
         """Update the measurement targets and scales."""
         self._update_targets()
@@ -44,7 +64,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def _update_scale(self, scale: Scale) -> None:
         """Update the measurement value and status for the scale."""
-        sources = self._sources()
+        sources = self.sources()
         self.setdefault(scale, {})["direction"] = self.__metric.direction()
         if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
             value = None
@@ -82,6 +102,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         if status_start:
             self[scale]["status_start"] = status_start
 
-    def _sources(self) -> Sequence[Source]:
+    def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
-        return [Source(self.__metric, source) for source in self["sources"]]
+        return cast(Sequence[Source], self["sources"])
