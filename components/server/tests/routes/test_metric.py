@@ -325,7 +325,7 @@ class MetricTest(unittest.TestCase):
         target_subject = self.report["subjects"][SUBJECT_ID2] = dict(name="Target", metrics={})
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # noqa: PTC-W0063
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
         self.assert_delta(
             "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
             "'Report'.",
@@ -342,7 +342,7 @@ class MetricTest(unittest.TestCase):
         self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # noqa: PTC-W0063
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
         expected_description = (
             "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
             "'Target'."
