@@ -68,22 +68,26 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def _update_scale(self, scale: Scale) -> None:
         """Update the measurement value and status for the scale."""
-        sources = self.sources()
         self.setdefault(scale, {})["direction"] = self.__metric.direction()
-        if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
-            value = None
-        else:
-            values = [source.value() for source in sources]
-            add = self.__metric.addition()
-            if scale == "percentage":
-                direction = self.__metric.direction()
-                totals = [source.total() for source in sources]
-                if add is sum:
-                    values, totals = [sum(values)], [sum(totals)]
-                values = [percentage(value, total, direction) for value, total in zip(values, totals)]
-            value = str(add(values))
-        self[scale]["value"] = value
+        self[scale]["value"] = value = self._calculate_value(scale) if self._sources_ok() else None
         self._set_status(scale, self.__metric.status(value))
+
+    def _calculate_value(self, scale: Scale) -> str:
+        """Calculate the value of the measurement."""
+        values = [source.value() for source in self.sources()]
+        add = self.__metric.addition()
+        if scale == "percentage":
+            direction = self.__metric.direction()
+            totals = [source.total() for source in self.sources()]
+            if add is sum:
+                values, totals = [sum(values)], [sum(totals)]
+            values = [percentage(value, total, direction) for value, total in zip(values, totals)]
+        return str(add(values))
+
+    def _sources_ok(self) -> bool:
+        """Return whether there are sources and none have parse or connection errors."""
+        sources = self.sources()
+        return bool(sources) and not any(source["parse_error"] or source["connection_error"] for source in sources)
 
     def _update_targets(self) -> None:
         """Update the measurement targets using the latest target values from the metric."""
