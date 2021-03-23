@@ -1,13 +1,14 @@
 """Reports collection."""
 
-from typing import Any, Union, cast
+from typing import Any, Optional, Union, cast
 
 import pymongo
 from pymongo.database import Database
 
+from model.metric import Metric
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
-from . import sessions
+from . import datamodels, sessions
 
 
 # Sort order:
@@ -54,13 +55,13 @@ def report_exists(database: Database, report_uuid: ReportId):
     return report_uuid in database.reports.distinct("report_uuid")
 
 
-def latest_metric(database: Database, metric_uuid: MetricId):
+def latest_metric(database: Database, metric_uuid: MetricId) -> Optional[Metric]:
     """Return the latest metric with the specified metric uuid."""
     for report in latest_reports(database):
         for subject in report.get("subjects", {}).values():
             metrics = subject.get("metrics", {})
             if metric_uuid in metrics:
-                return metrics[metric_uuid]
+                return Metric(datamodels.latest_datamodel(database), metrics[metric_uuid], metric_uuid)
     return None
 
 

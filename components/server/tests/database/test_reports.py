@@ -1,9 +1,12 @@
 """Test the reports collection."""
+
 import unittest
 from unittest.mock import Mock
 
 from database.reports import latest_metric, metrics_of_subject
+from model.metric import Metric
 from server_utilities.type import MetricId
+
 from ..fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
 
 
@@ -13,7 +16,7 @@ class MetricsTest(unittest.TestCase):
     def setUp(self):
         """Override to create a mock database fixture."""
         self.database = Mock()
-        self.database.datamodels.find_one.return_value = dict(_id="id", metrics=dict(metric_type={}))
+        self.database.datamodels.find_one.return_value = self.data_model = dict(_id="id", metrics=dict(metric_type={}))
         self.database.reports.find.return_value = [
             dict(
                 _id="1",
@@ -27,12 +30,15 @@ class MetricsTest(unittest.TestCase):
         self.database.measurements.find.return_value = [
             dict(
                 _id="id",
-                metric_uuid="metric_uuid",
+                metric_uuid=METRIC_ID,
                 status="red",
                 sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")],
             )
         ]
-        self.assertEqual(dict(tags=[], type="metric_type"), latest_metric(self.database, MetricId("metric_uuid")))
+        self.assertEqual(
+            Metric(self.data_model, dict(tags=[], type="metric_type"), METRIC_ID),
+            latest_metric(self.database, METRIC_ID),
+        )
 
     def test_no_latest_metrics(self):
         """Test that None is returned for missing metrics."""

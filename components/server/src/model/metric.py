@@ -1,5 +1,7 @@
 """Metric model class."""
 
+from __future__ import annotations
+
 from collections.abc import Sequence
 from datetime import date
 from typing import Optional, cast
@@ -16,6 +18,10 @@ class Metric:
         self.__data_model = data_model
         self.__data = metric_data
         self.uuid = metric_uuid
+
+    def __eq__(self, other):
+        """Return whether the metrics are equal."""
+        return self.uuid == other.uuid
 
     def type(self) -> str:
         """Return the type of the metric."""

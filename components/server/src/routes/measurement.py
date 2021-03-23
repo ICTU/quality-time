@@ -30,11 +30,8 @@ from server_utilities.type import MetricId, SourceId
 def post_measurement(database: Database) -> dict:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
-    metric_uuid = measurement_data["metric_uuid"]
-    if not (metric_data := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
+    if (metric := latest_metric(database, measurement_data["metric_uuid"])) is None:
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
-    data_model = latest_datamodel(database)
-    metric = Metric(data_model, metric_data, metric_uuid)
     latest = latest_measurement(database, metric)
     measurement = Measurement(metric, measurement_data, previous_measurement=latest)
     if latest:
