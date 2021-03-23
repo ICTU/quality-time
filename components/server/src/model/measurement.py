@@ -100,14 +100,10 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def _set_status(self, scale: Scale, status: Optional[str]) -> None:
         """Set the measurement status for the scale and the status start date."""
         self.setdefault(scale, {})["status"] = status
-        if self.__previous_measurement is None:
-            status_start = None
-        else:
-            previous_status = self.__previous_measurement.status(scale)
-            status_start = (
-                self.__previous_measurement.status_start(scale) if status == previous_status else self["start"]
-            )
-        if status_start:
+        if (previous := self.__previous_measurement) is None:
+            return
+        previous_status = previous.status(scale)
+        if status_start := previous.status_start(scale) if status == previous_status else self["start"]:
             self[scale]["status_start"] = status_start
 
     def sources(self) -> Sequence[Source]:
