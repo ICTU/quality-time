@@ -56,7 +56,9 @@ def post_report_import(database: Database):
     except DecryptionError:
         bottle.response.status = 400
         bottle.response.content_type = "application/json"
-        return {"error": "Decryption of source credentials failed. Did you use the correct public key for encryption?"}
+        return {
+            "error": "Decryption of source credentials failed. Did you use the public key of this Quality-time instance to encrypt this report?"
+        }
 
     replace_report_uuids(report)
     result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))

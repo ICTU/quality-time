@@ -288,7 +288,7 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 
 Each metric table has a 'hamburger' menu on the top left-hand side that can be used to switch between the default details view and a trend table view that shows the current and past measurements. Use the hamburger menu to show more or fewer dates and to configure the number of weeks between dates.
 
-## Exporting quality reports
+## PDF report export
 
 *Quality-time* reports can be downloaded as PDF. To create PDFs, *Quality-time* has a rendering service included to convert the HTML report into PDF.
 
@@ -317,6 +317,25 @@ The use the subject trend table view instead of the default details view, use th
 To change the number of dates and the time between dates shown in the trend table, use the `trend_table_nr_dates` and the `trend_table_interval` parameters. The number of dates should be an integer between 2 and 7. The interval should be an integer between 1 and 4 and is in weeks.
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
+
+## JSON report import/export
+
+*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently this functionality is only available via the api, with one endpoint for importing and one for exporting the JSON reports.
+
+A *Quality-time* report JSON contains the configuration of the report, with all it's subjects, metrics and sources. It does not contain any actual measurements. 
+The credentials of configured sources will be encrypted to prevent the loss of sensitive data.
+
+### Export API
+
+The exporting endpoint is available under `http://www.quality-time.example.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The public key argument is optional, if no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be opbtained at `www.quality-time.example.org/public_key`. The exported JSON report can only be imported into the *Quality-time* who's public key has been used for the credential encryption during the export.
+
+### Import API
+
+Exported reports can be imported back into *Quality-time*. The endpoint for this is `http://www.quality-time.example.org/api/v3/report/import`. The import accepts JSON content only.
+
+Only exports that have been exported using the public key of the imported *Quality-time* instance can be imported. The Source credentials will be decrypted on import and the sources should be ready to collect measurements automatically.
+
+On import, all UUID's contained in the report (UUID's of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
 
 ## Notifications
 
