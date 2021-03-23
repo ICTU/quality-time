@@ -11,6 +11,44 @@ from server_utilities.functions import find_one, iso_timestamp, percentage
 from server_utilities.type import Scale, SourceId, Status, TargetType
 
 
+class ScaleMeasurement(dict):
+    """Class representing a measurement on a specific scale."""
+
+    def __init__(self, *args, **kwargs):
+        self.__previous_measurement_by_scale: Optional[ScaleMeasurement] = kwargs.pop("previous_measurement_by_scale")
+        self.__measurement = kwargs.pop("measurement")
+        super().__init__(*args, **kwargs)
+
+    def set_target(self, target_type: TargetType, value: Optional[str]) -> None:
+        """Set the specified target."""
+        self[target_type] = value
+
+    def set_status(self, status: Optional[str]) -> None:
+        """Set the measurement status and the status start date."""
+        self["status"] = status
+        if (previous := self.__previous_measurement_by_scale) is None:
+            return
+        previous_status = previous.status()
+        if status_start := previous.status_start() if status == previous_status else self.__measurement["start"]:
+            self["status_start"] = status_start
+
+    def status(self) -> Optional[Status]:
+        """Return the measurement status."""
+        return cast(Optional[Status], self.get("status"))
+
+    def status_start(self) -> Optional[str]:
+        """Return the start date of the status."""
+        return str(self.get("status_start", "")) or None
+
+
+class CountScaleMeasurement(ScaleMeasurement):
+    """Measurement with a count scale."""
+
+
+class PercentageScaleMeasurement(ScaleMeasurement):
+    """Measurement with a percentage scale."""
+
+
 class Measurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement."""
 
@@ -25,28 +63,32 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         self["start"] = self["end"] = iso_timestamp()
         self["sources"] = [Source(self.__metric, source) for source in self["sources"]]
 
+    def measurement_by_scale(self, scale: Scale) -> ScaleMeasurement:
+        """Create a measurement with a specific scale."""
+        measurement_class = CountScaleMeasurement if scale == "count" else PercentageScaleMeasurement
+        previous = None if self.__previous_measurement is None else self.__previous_measurement[scale]
+        return measurement_class(self.get(scale, {}), measurement=self, previous_measurement_by_scale=previous)
+
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
         return self.__class__(self.__metric, super().copy(), previous_measurement=self)
 
+    def __getitem__(self, item):
+        """Override to convert the scale dictionary to a measurement by scale instance before returning it."""
+        if item in self.__metric.scales() and not isinstance(self.get(item), ScaleMeasurement):
+            self[item] = self.measurement_by_scale(item)
+        return super().__getitem__(item)
+
     def set_target(self, scale: Scale, target_type: TargetType, value: Optional[str]) -> None:
         """Set the specified target for the scale."""
-        self.setdefault(scale, {})[target_type] = value
-
-    def status(self, scale: Scale) -> Optional[Status]:
-        """Return the measurement status for the scale."""
-        return cast(Optional[Status], self.get(scale, {}).get("status"))
-
-    def status_start(self, scale: Scale) -> Optional[str]:
-        """Return the start date of the status."""
-        return str(self.get(scale, {}).get("status_start", "")) or None
+        self[scale].set_target(target_type, value)
 
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.
 
         Technical debt can expire because it was turned off or because the end date passed.
         """
-        any_debt_target = any(self.get(scale, {}).get("debt_target") is not None for scale in self.__metric.scales())
+        any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.__metric.scales())
         if not any_debt_target:
             return False
         return self.__metric.accept_debt_expired()
@@ -68,9 +110,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def _update_scale(self, scale: Scale) -> None:
         """Update the measurement value and status for the scale."""
-        self.setdefault(scale, {})["direction"] = self.__metric.direction()
+        self[scale]["direction"] = self.__metric.direction()
         self[scale]["value"] = value = self._calculate_value(scale) if self._sources_ok() else None
-        self._set_status(scale, self.__metric.status(value))
+        self[scale].set_status(self.__metric.status((value)))
 
     def _calculate_value(self, scale: Scale) -> str:
         """Calculate the value of the measurement."""
@@ -96,15 +138,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         self.set_target(scale, "near_target", self.__metric.get_target("near_target"))
         target_value = None if self.__metric.accept_debt_expired() else self.__metric.get_target("debt_target")
         self.set_target(scale, "debt_target", target_value)
-
-    def _set_status(self, scale: Scale, status: Optional[str]) -> None:
-        """Set the measurement status for the scale and the status start date."""
-        self.setdefault(scale, {})["status"] = status
-        if (previous := self.__previous_measurement) is None:
-            return
-        previous_status = previous.status(scale)
-        if status_start := previous.status_start(scale) if status == previous_status else self["start"]:
-            self[scale]["status_start"] = status_start
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
