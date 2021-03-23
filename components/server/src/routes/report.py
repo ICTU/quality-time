@@ -57,7 +57,8 @@ def post_report_import(database: Database):
         bottle.response.status = 400
         bottle.response.content_type = "application/json"
         return {
-            "error": "Decryption of source credentials failed. Did you use the public key of this Quality-time instance to encrypt this report?"
+            "error": "Decryption of source credentials failed. \
+                Did you use the public key of this Quality-time instance to encrypt this report?"
         }
 
     replace_report_uuids(report)
