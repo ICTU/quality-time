@@ -14,6 +14,10 @@ from server_utilities.type import Scale, SourceId, Status, TargetType
 class Measurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement."""
 
+    # LGTM wants us to implement __eq__ because this class has extra instance attributes. However, the measurement
+    # dictionary contains the metric UUID and thus we don't need to compare the instance attributes to know whether
+    # two measurements are the same.
+
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         self.__previous_measurement: Optional[Measurement] = kwargs.pop("previous_measurement", None)
         self.__metric = metric

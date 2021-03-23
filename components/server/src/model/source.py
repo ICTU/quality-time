@@ -13,8 +13,12 @@ if TYPE_CHECKING:
     from model.metric import Metric
 
 
-class Source(dict):
+class Source(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement source."""
+
+    # LGTM wants us to implement __eq__ because this class has metric as instance attribute. However, the source
+    # dictionary contains the source UUID and thus we don't need to compare the metrics to know whether two sources
+    # are the same.
 
     def __init__(self, metric: Metric, *args, **kwargs):
         self.__metric = metric

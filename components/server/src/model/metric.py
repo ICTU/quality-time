@@ -21,7 +21,7 @@ class Metric:
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
-        return self.uuid == other.uuid
+        return self.uuid == other.uuid  # pragma: no cover-behave
 
     def type(self) -> str:
         """Return the type of the metric."""
