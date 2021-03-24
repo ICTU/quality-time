@@ -333,6 +333,24 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
+    def test_accepted_technical_debt(self, request):
+        """Test that a new measurement is not added when technical debt has not expired yet."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = True
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
+        self.old_measurement["count"] = dict(
+            value="1",
+            status="debt_target_met",
+            target="0",
+            near_target="10",
+            debt_target="100",
+            status_start="once upon a time",
+        )
+        self.posted_measurement["sources"].append(self.source())
+        request.json = self.posted_measurement
+        self.new_measurement["count"].update(self.old_measurement["count"])
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
     def test_expired_technical_debt(self, request):
         """Test that a new measurement is added when technical debt expires."""
         debt_end_date = date.today() - timedelta(days=1)

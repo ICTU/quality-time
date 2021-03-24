@@ -8,7 +8,7 @@ from typing import Optional, cast
 
 from model.source import Source
 from server_utilities.functions import find_one
-from server_utilities.type import Direction, MetricId, Scale, Status, TargetType
+from server_utilities.type import Direction, MetricId, Scale, TargetType
 
 
 class Metric:
@@ -55,42 +55,10 @@ class Metric:
         """Return the end date of the accepted technical debt."""
         return str(self.__data.get("debt_end_date")) or date.max.isoformat()
 
-    def target(self) -> float:
-        """Return the metric target value."""
-        return float(
-            self.__data.get("target", self.__data_model.get("metric", {}).get(self.type(), {}).get("target")) or 0
-        )
-
-    def near_target(self) -> float:
-        """Return the metric near target value."""
-        return float(self.__data.get("near_target") or 0)
-
-    def debt_target(self) -> float:
-        """Return the metric debt target value."""
-        return float(self.__data.get("debt_target") or 0)
-
     def get_target(self, target_type: TargetType) -> Optional[str]:
         """Return the target."""
         target = self.__data.get(target_type)
         return str(target) if target else None
-
-    def status(self, measurement_value: Optional[str]) -> Optional[Status]:
-        """Return the metric status, given a measurement value."""
-        if measurement_value is None:
-            # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
-            # source can be accepted as technical debt
-            return None if self.accept_debt_expired() or self.sources() else "debt_target_met"
-        value = float(measurement_value)
-        better_or_equal = {">": float.__ge__, "<": float.__le__}[self.direction()]
-        if better_or_equal(value, self.target()):
-            status: Status = "target_met"
-        elif better_or_equal(value, self.debt_target()) and not self.accept_debt_expired():
-            status = "debt_target_met"
-        elif better_or_equal(self.target(), self.near_target()) and better_or_equal(value, self.near_target()):
-            status = "near_target_met"
-        else:
-            status = "target_not_met"
-        return status
 
     def sources(self) -> dict:
         """Return the metric sources."""

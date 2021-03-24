@@ -16,8 +16,8 @@ class ScaleMeasurement(dict):
 
     def __init__(self, *args, **kwargs):
         self.__previous_scale_measurement: Optional[ScaleMeasurement] = kwargs.pop("previous_scale_measurement")
-        self._measurement = kwargs.pop("measurement")
-        self._metric = self._measurement.metric
+        self._measurement: Measurement = kwargs.pop("measurement")
+        self._metric: Metric = self._measurement.metric
         super().__init__(*args, **kwargs)
 
     def __set_status_start(self, status: Optional[str]) -> None:
@@ -39,7 +39,7 @@ class ScaleMeasurement(dict):
         """Update the measurement value and status."""
         self["direction"] = self._metric.direction()
         self["value"] = value = self._calculate_value() if self._measurement.sources_ok() else None
-        self["status"] = status = self._metric.status(value)
+        self["status"] = status = self._calculate_status(value)
         self.__set_status_start(status)
 
     def update_targets(self) -> None:
@@ -51,6 +51,33 @@ class ScaleMeasurement(dict):
     def _calculate_value(self) -> str:
         """Calculate the value of the measurement."""
         raise NotImplementedError
+
+    def _calculate_status(self, measurement_value: Optional[str]) -> Optional[Status]:
+        """Determined the status of the measurement."""
+        if measurement_value is None:
+            # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
+            # source can be accepted as technical debt
+            return None if self._metric.accept_debt_expired() or self._metric.sources() else "debt_target_met"
+        value = float(measurement_value)
+        better_or_equal = {">": float.__ge__, "<": float.__le__}[self["direction"]]
+        if better_or_equal(value, self._target()):
+            status: Status = "target_met"
+        elif better_or_equal(value, self._debt_target()) and not self._metric.accept_debt_expired():
+            status = "debt_target_met"
+        elif better_or_equal(self._target(), self._near_target()) and better_or_equal(value, self._near_target()):
+            status = "near_target_met"
+        else:
+            status = "target_not_met"
+        return status
+
+    def _target(self) -> float:
+        return float(self.get("target") or 0)
+
+    def _near_target(self) -> float:
+        return float(self.get("near_target") or 0)
+
+    def _debt_target(self) -> float:
+        return float(self.get("debt_target") or 0)
 
 
 class CountScaleMeasurement(ScaleMeasurement):
