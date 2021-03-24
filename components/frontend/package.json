@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
-    "@testing-library/user-event": "^13.0.7",
+    "@testing-library/user-event": "^13.0.10",
     "history": "^5.0.0",
     "md5": "^2.3.0",
     "query-string": "^7.0.0",
