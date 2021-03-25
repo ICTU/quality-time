@@ -20,13 +20,17 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
     @classmethod
     def apply(cls, callback, context):
         """Apply the plugin to the route."""
-        path = context.rule.strip("/").split("/")
+        config = context.config
 
-        if path[-1] == "login" or path[0] == "internal-api":
+        if "authentication_required" not in config and "permissions_required" not in config:
+            raise AttributeError(
+                f"Neither authentication_required nor permission_required set for endpoint {context.rule}"
+            )
+
+        if not config.get(["authentication_required"], True):
             return callback  # Unauthenticated access allowed
 
-        if context.method == "GET" and not (len(path) == 5 and path[2] == "report" and path[4] == "json"):
-            return callback  # Unauthenticated access allowed
+        required_permissions = config.get("permissions_required", [])
 
         def wrapper(*args, **kwargs):
             """Wrap the route."""
@@ -35,9 +39,12 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
             session = Session(sessions.find_session(database, session_id))
             if not session.is_valid():
                 cls.abort(401, "%s-access to %s denied: session %s not authenticated", context, session_id)
-            authorized_users = latest_reports_overview(database).get("editors")
-            if not session.is_authorized(authorized_users):
-                cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
+
+            for permission in required_permissions:
+                authorized_users = latest_reports_overview(database).get("permissions").get(permission)
+                if not session.is_authorized(authorized_users):
+                    cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
+
             return callback(*args, **kwargs)
 
         # Replace the route callback with the wrapped one.
