@@ -123,7 +123,7 @@ class App extends Component {
             datamodel: data_model,
             reports: reports.reports || [],
             reports_overview: {
-              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, editors: reports.editors },
+              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, permissions: reports.permissions },
             last_update: now
           })
         }
@@ -236,7 +236,8 @@ class App extends Component {
   render() {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
-    const editors = this.state.reports_overview.editors || [];
+    const permissions = this.state.reports_overview.permissions || {};
+    const editors = permissions.edit_reports || [];
     const editor = editors.length === 0 || editors.includes(this.state.user) || editors.includes(this.state.email);
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-" || !editor;
     const props = {

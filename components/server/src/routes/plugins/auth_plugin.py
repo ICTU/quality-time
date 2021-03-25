@@ -8,8 +8,8 @@ from database import sessions
 from database.reports import latest_reports_overview
 from model.session import Session
 
-EDIT_REPORT_PERMISSION = "edit_report"
-EDIT_ENTITY_PERMISSION = "edit_entity"
+EDIT_REPORT_PERMISSION = "edit_reports"
+EDIT_ENTITY_PERMISSION = "edit_entities"
 
 
 class AuthPlugin:  # pylint: disable=too-few-public-methods
@@ -30,7 +30,7 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
                 f"Neither authentication_required nor permission_required set for endpoint {context.rule}"
             )
 
-        if not config.get(["authentication_required"], True):
+        if not config.get("authentication_required", True):
             return callback  # Unauthenticated access allowed
 
         required_permissions = config.get("permissions_required", [])
@@ -44,7 +44,7 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
                 cls.abort(401, "%s-access to %s denied: session %s not authenticated", context, session_id)
 
             for permission in required_permissions:
-                authorized_users = latest_reports_overview(database).get("permissions").get(permission)
+                authorized_users = latest_reports_overview(database).get("permissions", {}).get(permission, [])
                 if not session.is_authorized(authorized_users):
                     cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
 

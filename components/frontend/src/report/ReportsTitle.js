@@ -7,6 +7,7 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 
 export function ReportsTitle(props) {
+    console.log(props.permissions)
     return (
         <HeaderWithDetails level="h1" header={props.title} subheader={props.subtitle}>
             <Grid stackable>
@@ -31,10 +32,22 @@ export function ReportsTitle(props) {
                         <MultipleChoiceInput
                             allowAdditions
                             label="Users allowed to edit reports (user name or email address)"
-                            options={props.editors}
+                            options={props.permissions.edit_reports || []}
                             placeholder="All authenticated users"
-                            set_value={(value) => set_reports_attribute("editors", value, props.reload)}
-                            value={props.editors}
+                            set_value={(value) => set_reports_attribute("permissions", {edit_reports: value}, props.reload)}
+                            value={props.permissions.edit_reports || []}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={1}>
+                    <Grid.Column>
+                        <MultipleChoiceInput
+                            allowAdditions
+                            label="Users allowed to edit measured entities (user name or email address)"
+                            options={props.permissions.edit_entities || []}
+                            placeholder="All authenticated users"
+                            set_value={(value) => set_reports_attribute("permissions", {edit_entities: value}, props.reload)}
+                            value={props.permissions.edit_entities || []}
                         />
                     </Grid.Column>
                 </Grid.Row>
