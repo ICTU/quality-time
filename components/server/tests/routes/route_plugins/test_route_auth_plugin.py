@@ -54,7 +54,7 @@ class AuthPluginTest(unittest.TestCase):
         self.assertRaises(bottle.HTTPError, route.call)
 
     def test_unauthorized_post_sessions(self):
-        """Test that an unauthorized session is invalid."""
+        """Test that an unauthorized cannot post."""
         self.mock_database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe"])
         self.mock_database.sessions.find_one.return_value = dict(
             user="jadoe",
@@ -65,7 +65,7 @@ class AuthPluginTest(unittest.TestCase):
         self.assertRaises(bottle.HTTPError, route.call)
 
     def test_login_needs_no_auth(self):
-        """Test that an unauthorized session is invalid."""
+        """Test that an unauthorized can login."""
         route = bottle.Route(bottle.app(), "/login", "GET", self.route)
         response = route.call()
         self.assertDictEqual(response, dict(ok=True))
