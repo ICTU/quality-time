@@ -113,7 +113,7 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
     return True, email
 
 
-@bottle.post("/api/v3/login")
+@bottle.post("/api/v3/login", authentication_required=False)
 def login(database: Database) -> dict[str, Union[bool, datetime, str]]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
@@ -130,14 +130,14 @@ def login(database: Database) -> dict[str, Union[bool, datetime, str]]:
     return dict(ok=verified, email=email, session_expiration_datetime=session_expiration_datetime.isoformat())
 
 
-@bottle.post("/api/v3/logout")
+@bottle.post("/api/v3/logout", authentication_required=True)
 def logout(database: Database) -> dict[str, bool]:
     """Log the user out."""
     delete_session(database)
     return dict(ok=True)
 
 
-@bottle.get("/api/v3/public_key")
+@bottle.get("/api/v3/public_key", authentication_required=False)
 def get_public_key(database: Database) -> dict:
     """Return a serialized version of the public key."""
     public_key = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})

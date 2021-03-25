@@ -16,7 +16,7 @@ from server_utilities.functions import uuid
 from server_utilities.type import URL, EditScope, MetricId, ReportId, SourceId, SubjectId
 
 
-@bottle.post("/api/v3/source/new/<metric_uuid>")
+@bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=["edit_report"])
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     data_model = latest_datamodel(database)
@@ -36,7 +36,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
+@bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>", permissions_required=["edit_report"])
 def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
     data_model = latest_datamodel(database)
@@ -55,7 +55,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     return result
 
 
-@bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>")
+@bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>", permissions_required=["edit_report"])
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
     data_model = latest_datamodel(database)
@@ -89,7 +89,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     return insert_new_report(database, delta_description, *reports_to_insert)
 
 
-@bottle.delete("/api/v3/source/<source_uuid>")
+@bottle.delete("/api/v3/source/<source_uuid>", permissions_required=["edit_report"])
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data_model = latest_datamodel(database)
@@ -104,7 +104,7 @@ def delete_source(source_uuid: SourceId, database: Database):
     return insert_new_report(database, delta_description, (data.report, uuids))
 
 
-@bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>")
+@bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>", permissions_required=["edit_report"])
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data_model = latest_datamodel(database)
@@ -129,7 +129,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     return insert_new_report(database, delta_description, (data.report, uuids))
 
 
-@bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>")
+@bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=["edit_report"])
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
