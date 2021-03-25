@@ -12,7 +12,7 @@ from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import Scale, Status
 
 
-class ScaleMeasurement(dict):
+class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement on a specific scale."""
 
     def __init__(self, *args, **kwargs):
