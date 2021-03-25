@@ -18,7 +18,7 @@ def before_all(context):
         base_api_url = context.base_api_url.format("internal-" if internal else "")
         if context.report_date:
             api += f"?report_date={context.report_date}"
-        context.response = response = requests.get(f"{base_api_url}/{api}", headers=headers)
+        context.response = response = requests.get(f"{base_api_url}/{api}", headers=headers, cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def post(api, json=None, internal=False):

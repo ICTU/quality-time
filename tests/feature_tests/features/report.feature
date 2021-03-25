@@ -53,6 +53,12 @@ Feature: report
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
+  Scenario: export json report by unauthenticated client
+    When the client creates a report
+    And the client logs out
+    And the client downloads the report as json
+    Then the server tells the client to log in
+
   Scenario: re-import report
     When the client creates a report
     And the client creates a subject
