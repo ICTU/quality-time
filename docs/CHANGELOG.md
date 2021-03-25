@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - When measuring security warnings with OWASP ZAP as source, allow for counting alert types as security warnings as opposed to alert instances. Closes [#1902](https://github.com/ICTU/quality-time/issues/1902).
+- Reports can be exported and imported via API. Partially fixes [1693](https://github.com/ICTU/quality-time/issues/1693)
 
 ## [3.19.1] - [2021-02-28]
 

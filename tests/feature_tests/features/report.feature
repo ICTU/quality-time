@@ -53,43 +53,53 @@ Feature: report
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
-  Scenario: export report as json with a faulty key
+  Scenario: export json report by unauthenticated client
+    When the client creates a report
+    And the client logs out
+    And the client downloads the report as json
+    Then the server tells the client to log in
+
+  Scenario: re-import report
     When the client creates a report
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
     And the client sets the source parameter password to "['item_1', 'item_2']"
-    And the client downloads the report with a faulty key
-    Then the client receives a json error
+    And the client creates a source
+    And the client sets the source parameter password to "test_password"
+    And the client downloads the report as json
+    And the client re-imports a report
+    Then the report title is "New report"
 
-  Scenario: import report
+  Scenario: failed import report
     When the client imports a report
       """
       {
         "title": "Imported report",
         "report_uuid": "imported_report",
-        "subjects": [
-          {
+        "subjects": {
+          "subject_uuid": {
             "name": "Imported subject",
             "type": "software",
-            "metrics": [
-              {
+            "metrics": {
+              "metric_uuid": {
                 "type": "violations",
-                "sources": [
-                  {
+                "sources": {
+                  "source_uuid": {
                     "type": "sonarqube",
                     "parameters": {
-                      "url": "https://sonarcloud.io"
+                      "url": "https://sonarcloud.io",
+                      "password": "not_properly_encrypted_password"
                     }
                   }
-                ]
+                }
               }
-            ]
+            }
           }
-        ]
+        }
       }
       """
-    Then the report title is "Imported report"
+    Then the import failed
 
   Scenario: time travel to the past, before the report existed
     When the client creates a report

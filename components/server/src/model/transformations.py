@@ -1,11 +1,13 @@
 """Model transformations."""
 
-from collections.abc import Iterator
 import json
+
+from collections.abc import Iterator
 from datetime import date
+from json.decoder import JSONDecodeError
 from typing import Optional, cast
 
-from server_utilities.functions import asymmetric_encrypt, unique
+from server_utilities.functions import DecryptionError, asymmetric_decrypt, asymmetric_encrypt, unique, uuid
 from server_utilities.type import Color, EditScope, ItemId, Status
 
 from .iterators import sources as iter_sources
@@ -29,9 +31,40 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
                 if isinstance(password, (dict, list)):
                     password = json.dumps(password)
 
-                password_bytes = password.encode()
-                encrypted_key_value = asymmetric_encrypt(public_key.encode(), password_bytes)
+                encrypted_key_value = asymmetric_encrypt(public_key, password)
                 source["parameters"][parameter_key] = encrypted_key_value
+
+
+def decrypt_credentials(data_model, private_key: str, *reports: dict):
+    """Decrypt all credentials in the reports."""
+    for source in iter_sources(reports):
+        for parameter_key, parameter_value in source.get("parameters", {}).items():
+            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
+
+                encrypted_key_value = source["parameters"][parameter_key]
+
+                try:
+                    password = asymmetric_decrypt(private_key, encrypted_key_value)
+                except ValueError as error:
+                    raise DecryptionError from error
+
+                try:
+                    password = json.loads(password)
+                except JSONDecodeError:
+                    pass
+                source["parameters"][parameter_key] = password
+
+
+def replace_report_uuids(*reports) -> None:
+    """Change all uuids in this report."""
+    for report in reports:
+        report["report_uuid"] = uuid()
+        for subject_uuid, subject in list(report.get("subjects", {}).items()):
+            report["subjects"][uuid()] = report["subjects"].pop(subject_uuid)
+            for metric_uuid, metric in list(subject.get("metrics", {}).items()):
+                subject["metrics"][uuid()] = subject["metrics"].pop(metric_uuid)
+                for source_uuid in list(metric.get("sources").keys()):
+                    metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> list[ItemId]:

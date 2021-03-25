@@ -16,6 +16,7 @@ from ldap3.core import exceptions
 from pymongo.database import Database
 
 from database import sessions
+from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 
@@ -134,3 +135,11 @@ def logout(database: Database) -> dict[str, bool]:
     """Log the user out."""
     delete_session(database)
     return dict(ok=True)
+
+
+@bottle.get("/api/v3/public_key")
+def get_public_key(database: Database) -> dict:
+    """Return a serialized version of the public key."""
+    public_key = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
+    public_key_as_dict = cast(dict, public_key)
+    return public_key_as_dict

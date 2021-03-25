@@ -26,3 +26,7 @@ Feature: authentication
     Then the reports editors is "jodoe, jadoe"
     When the client changes the reports editors to "None"
     Then the reports editors is "None"
+
+  Scenario: get public key
+    When the client requests the public key
+    Then the client receives the public key

@@ -10,7 +10,15 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
-from server_utilities.functions import asymmetric_encrypt, iso_timestamp, report_date_time, symmetric_encrypt, uuid
+from server_utilities.functions import (
+    asymmetric_decrypt,
+    asymmetric_encrypt,
+    iso_timestamp,
+    report_date_time,
+    symmetric_decrypt,
+    symmetric_encrypt,
+    uuid,
+)
 
 
 class UtilTests(unittest.TestCase):
@@ -39,8 +47,18 @@ class UtilTests(unittest.TestCase):
         decrypted_message = fernet.decrypt(encrypted_message)
         self.assertEqual(decrypted_message, test_message)
 
+    def test_symmetric_decryption(self):
+        """Test whether the message that has been encrypted using symmetric_encrypt can be decrypted."""
+        # encryption
+        test_message = b"this is a test message"
+        key, encrypted_message = symmetric_encrypt(test_message)
+
+        # decryption
+        message = symmetric_decrypt(key, encrypted_message)
+        self.assertEqual(message, test_message)
+
     def test_asymmetric_encrypt(self):
-        """Test wether message is encrypted using public/private keys."""
+        """Test whether the message is encrypted using public/private keys."""
         # get public and private keys
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         public_key = private_key.public_key()
@@ -49,8 +67,8 @@ class UtilTests(unittest.TestCase):
         )
 
         # encryption
-        test_message = b"this is a test message"
-        encrypted_key, encrypted_message = asymmetric_encrypt(pubkey, test_message)
+        test_message = "this is a test message"
+        encrypted_key, encrypted_message = asymmetric_encrypt(pubkey.decode(), test_message)
         self.assertNotEqual(test_message, encrypted_message)
 
         # decryption
@@ -59,9 +77,33 @@ class UtilTests(unittest.TestCase):
             padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
         )
         fernet = Fernet(decrypted_key)
-        decrypted_message = fernet.decrypt(encrypted_message.encode())
+        decrypted_message = fernet.decrypt(encrypted_message.encode()).decode()
 
         self.assertEqual(decrypted_message, test_message)
+
+    def test_asymmetric_decrypt(self):
+        """Test whether the message that has been encrypted using asymmetric_encrypt can be decrypted."""
+        # get public and private keys
+        private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
+        privkey = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+
+        public_key = private_key.public_key()
+        pubkey = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+        # encryption
+        test_message = "this is a test message"
+        encrypted_key, encrypted_message = asymmetric_encrypt(pubkey.decode(), test_message)
+
+        # decryption
+        message = asymmetric_decrypt(privkey.decode(), (encrypted_key, encrypted_message))
+
+        self.assertEqual(message, test_message)
 
 
 @patch("server_utilities.functions.bottle.request")

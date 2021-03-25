@@ -21,7 +21,11 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
     def apply(cls, callback, context):
         """Apply the plugin to the route."""
         path = context.rule.strip("/").split("/")
-        if context.method not in ("DELETE", "POST") or path[-1] == "login" or path[0] == "internal-api":
+
+        if path[-1] == "login" or path[0] == "internal-api":
+            return callback  # Unauthenticated access allowed
+
+        if context.method == "GET" and not (len(path) == 5 and path[2] == "report" and path[4] == "json"):
             return callback  # Unauthenticated access allowed
 
         def wrapper(*args, **kwargs):

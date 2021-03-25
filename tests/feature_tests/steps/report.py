@@ -18,7 +18,8 @@ def download_report_as_pdf(context):
 @when("the client downloads the report as json")
 def download_report_as_json(context):
     """Download the report as json."""
-    context.get(f"report/{context.uuid['report']}/json")
+    report = context.get(f"report/{context.uuid['report']}/json")
+    context.exported_report = report
 
 
 @when("the client downloads the report as json with his own public key")
@@ -28,18 +29,17 @@ def download_report_as_json_with_key(context):
     context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 
 
-@when("the client downloads the report with a faulty key")
-def download_report_with_faulty_key(context):
-    """Download the report with a faulty key."""
-    faulty_public_key = urllib.parse.quote_plus(context.faulty_public_key)
-    context.get(f"report/{context.uuid['report']}/json?public_key={faulty_public_key}")
+@when("the client re-imports a report")
+def re_import_report(context):
+    """Import a JSON report."""
+    response = context.post("report/import", json=context.exported_report)
+    context.uuid["report"] = response["new_report_uuid"]
 
 
 @when("the client imports a report")
 def import_report(context):
     """Import a JSON report."""
-    response = context.post("report/import", json=json.loads(context.text))
-    context.uuid["report"] = response["new_report_uuid"]
+    context.post("report/import", json=json.loads(context.text))
 
 
 @when("the client enters a report date that's too old")
@@ -75,15 +75,15 @@ def check_json(context):
     assert_equal("application/json", context.response.headers["Content-Type"])
 
 
-@then("the client receives a json error")
-def check_json_error(context):
-    """Check the json error."""
-    assert_equal(400, context.response.status_code)
-    assert_equal("application/json", context.response.headers["Content-Type"])
-
-
 @when("the client gets a non-existing report")
 def get_non_existing_report(context):
     """Get a non-existing report."""
     context.uuid["report"] = report_uuid = "report-does-not-exist"
     context.get(f"report/{report_uuid}")
+
+
+@then("the import failed")
+def import_failed(context):
+    """Check the json."""
+    assert_equal(400, context.response.status_code)
+    assert_equal("application/json", context.response.headers["Content-Type"])

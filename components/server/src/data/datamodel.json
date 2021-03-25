@@ -4586,6 +4586,17 @@
                         "security_warnings"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to a Safety report in a human readable format",
+                    "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Safety report in JSON format.",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
                 "username": {
                     "name": "Username for basic authentication",
                     "short_name": "username",

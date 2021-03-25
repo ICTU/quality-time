@@ -17,6 +17,7 @@ from routes.report import (
     post_report_import,
     post_report_new,
 )
+from server_utilities.functions import asymmetric_encrypt
 from server_utilities.type import ReportId
 
 from ..fixtures import JENNY, JOHN, REPORT_ID, REPORT_ID2, SUBJECT_ID, create_report
@@ -65,33 +66,31 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up a database with a report and a user session."""
+        self.private_key = """-----BEGIN PRIVATE KEY-----
+MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANdJVRdylaadsaau
+hRxNToIUIk/nSKMzfjjjP/20FEShkax1g4CYTwTdSMcuV+4blzzFSE+eDmMs1LNk
+jAPzfNAnHwJsjz2vt16JXDma+PuIPTCI5uobCbPUJty+6XlnzFyVjy36+SgeA8SM
+HHTprOxhwxU++O5cnzO7Jb4mjoOvAgMBAAECgYEAr9gMErzbE16Wroi53OYgDAua
+Ax3srLDwllK3/+fI7k3yCKVrpevCDz0XpulplOkgXNjfOXjmU4dYrLahztBgzrwt
+KzA7H8XylleIbuk7wUJ8jD+1dzxgu/ZB+iLzUla8r9/MmdhAzELmYBc9hIEWl6FW
+2BlQxmLNbOj2kh/aWoECQQD4GyLDzxEFVBPYYo+Ut3T05a0IlCnCSKU6saDSuFFG
+GhiM1HQMAnnuC3okgVpAOA7Rn2z9xMqLcdiv+Amnzh3hAkEA3iLgQUwMj6v97Jkb
+KFxQazzkOmgMKFGH2MbZGGwDDva1QlD9awjBW0aj4nUHNsUob6LVJCbCocQFSNDu
+eXgzjwJATSg7NoPFuk98YHW+SzSGZcarehiBqA7pe4hUCFQTymZBLkK/2CBJBPOC
+x6mGhKQqT5xxy7WQe68rAQZ1Ej9yYQJAbgd8aRuQRUH+HsmfyBghxVx99+g9zWLF
+FT05n30w7qKJGfYf8Hp/vAR7fNpW3mw+IT3YsXV5hsMfkvfah9RgRQJAVGysMIfp
+eX94CsogDhIWSaXreAfpcWQu1Dg5FCmpZTGRJps2x52CPq5icgBZeIODElIvkJbn
+JqqQtg8ZsTm6Pw==
+-----END PRIVATE KEY-----
+"""
+
         self.public_key = """-----BEGIN PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApLaktGOguW3bcC0xILmf
-ToucM7eYx3oXKSKKg2aX8TNwX6qendovmUw0X6ooM+vcKEqL/h8F26RdmvIxoJLa
-uK7BrqW4zDlYtLqmnsVE7rXLAFfgc+r8vxhlAvXGZIMqLd6KM/WTJu6+cxDwNJT7
-TVr9Fxy6vP7CxqYrzPFcau/iNZQxvUSp8M7vHgRRsF4Ux8uQk2WqEjJ9gFYF6y/l
-2MYGTjHSe2FzdzvpmPdwiSeZU42+zd9hqvjNdhc04rxNKu1xvpQthBY2d497Idkg
-5380siuYrFMb46VtL3hdIoOH5934/nBVU35aXDirPcoZazMN2D3BaWULeEcvmKq1
-pmUcidkMuTLeiOksl/d3GBT6dvdSVEsHG5rg9SB3XCrA3Fk3R1Dp/b9WHZko+tqx
-nivGYzlaMI/gzLCiWSiL4FuJIttiqdZM2xWFTHIdpQXO3jmogV2ouYJ/IoDIyIR9
-M9uddlTPkf3y6mSLwtl3tJ6eDk4EoWFKc8q8F0hza5PLQD5P8O7ddLZ5SAVEoeLP
-oRo4ZewdU/XOhYKw3Jgpj1GFPwO/wxpKmYmjGR7lzG4uzae4o/3pEBi2KnSlUhC9
-Fm+YDdqKwPSXu1L2DfJBISqpc2ua29O1WBQlsFo9QfSuESSRBnwvt4IbIwH5CVMJ
-hv23LX3At2kFGKAPC0jM1YUCAwEAAQ==
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDXSVUXcpWmnbGmroUcTU6CFCJP
+50ijM3444z/9tBREoZGsdYOAmE8E3UjHLlfuG5c8xUhPng5jLNSzZIwD83zQJx8C
+bI89r7deiVw5mvj7iD0wiObqGwmz1Cbcvul5Z8xclY8t+vkoHgPEjBx06azsYcMV
+PvjuXJ8zuyW+Jo6DrwIDAQAB
 -----END PUBLIC KEY-----
 """
-        self.dsa_public_key = """-----BEGIN PUBLIC KEY-----
-MIIBtjCCASsGByqGSM44BAEwggEeAoGBAN2YsbQRxa3noHUehRXbDaTmCQCsBW6D
-Gy4Yo/Rzg1O6S4gBrk9/h64V3ZcNzKgh3G73v5nReLJo545vq5ZdglRxVqRzEkvK
-ecbRrKJfSL/Ir6+utojcBte9u8mK8VBzOEzu3d9VMXhohnLc8AKJgoVz2VLYboHb
-DDqil8n5GA81AhUA1zdcpHIsos80Xr8W67v+zc1NugMCgYBO9ui2yfUJK67P3yKm
-5kcD7owtqdrgEWo3zPSU94Dyq83ZKnQCqW4jyNVvLHE8vorfrzQG05yxA27fh9y3
-13CqD3+SRs1/bh+OoHTYfOg5nQpd+wmpD1KcliwozSa4UoB6L0HGSsmdfDMnyjY6
-57A/6fvkIPfFWwiZqDw/UbvXJAOBhAACgYAClAnMuoF2cRmHIkgx7rkBtQQDUuL+
-w+tVREFni2i1NBgXEN18fFRtebuPKJvoY0ISQgR+XPoKsgfnQ7jy8bsoZvrto3CP
-pwEguMmZYw493abU3P4d66wDe/sFyNLW0rhIx+sYsQ6YhGVWF46peoFC3Aa2H439
-frfI8VlILbIxGw==
------END PUBLIC KEY-----"""
 
         self.database = Mock()
         self.database.sessions.find_one.return_value = JENNY
@@ -103,7 +102,7 @@ frfI8VlILbIxGw==
         )
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
-        self.database.secrets.find_one.return_value = {"public_key": self.public_key}
+        self.database.secrets.find_one.return_value = {"public_key": self.public_key, "private_key": self.private_key}
         self.database.measurements.find.return_value = []
         self.options = (
             "emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&"
@@ -206,21 +205,6 @@ frfI8VlILbIxGw==
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
-    @patch("routes.report.bottle.request")
-    def test_get_json_report_with_faulty_public_key(self, request):
-        """Test that a faulty public key will raise a typeerror."""
-        request.query = {"public_key": self.dsa_public_key}
-        mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
-            "password"
-        ] = [
-            "0",
-            "1",
-        ]  # use a list as password for coverage of the last line
-        self.database.reports.find_one.return_value = mocked_report
-        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
-        self.assertIn("error", exported_report)
-
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):
         """Test that a PDF version of a tag report can be retrieved."""
@@ -242,11 +226,26 @@ frfI8VlILbIxGw==
     @patch("bottle.request")
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
-        request.json = dict(_id="id", title="Title", report_uuid="report_uuid", subjects={})
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = asymmetric_encrypt(self.public_key, "test_message")
+        request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert.call_args_list[0][0][0]
-        self.assertEqual("Title", inserted["title"])
-        self.assertEqual("report_uuid", inserted["report_uuid"])
+        self.assertEqual("Report", inserted["title"])
+        self.assertNotEqual("report_uuid", inserted["report_uuid"])
+
+    @patch("bottle.request")
+    def test_post_report_import_with_failed_decryption(self, request):
+        """Test that a report is imported correctly."""
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = ("not_properly_encrypted==", "test_message")
+        request.json = mocked_report
+        response = post_report_import(self.database)
+        self.assertIn("error", response)
 
     @patch("server_utilities.functions.datetime")
     def test_get_tag_report(self, date_time):

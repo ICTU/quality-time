@@ -12,6 +12,8 @@ from ldap3.core import exceptions
 from database import sessions
 from routes import auth
 
+from routes.auth import get_public_key
+
 USERNAME = "john-doe"
 PASSWORD = "secret"
 
@@ -22,6 +24,7 @@ class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up a mock database."""
         self.database = Mock()
+        self.database.secrets.find_one.return_value = {"public_key": "this_is_a_public_key"}
 
     def tearDown(self):
         """Override to remove the cookies and reset the logging."""
@@ -33,6 +36,11 @@ class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         return cookie
+
+    def test_get_public_key(self, *_):
+        """Test that the correct public key is returned as dict."""
+        public_key = get_public_key(self.database)
+        self.assertDictEqual(public_key, {"public_key": "this_is_a_public_key"})
 
 
 @patch("bottle.request", Mock(json=dict(username=USERNAME, password=PASSWORD)))
@@ -91,9 +99,10 @@ class LoginTests(AuthTestCase):
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
         """Test successful login from forwarded authentication header."""
         connection_mock.return_value = None
-        with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
-            with patch("bottle.request.get_header", Mock(return_value=self.USER_EMAIL)):
-                self.assertEqual(self.login_ok, auth.login(self.database))
+        with patch.dict(
+            "os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}
+        ), patch("bottle.request.get_header", Mock(return_value=self.USER_EMAIL)):
+            self.assertEqual(self.login_ok, auth.login(self.database))
         self.assert_cookie_has_session_id()
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
@@ -101,9 +110,10 @@ class LoginTests(AuthTestCase):
     def test_forwardauth_login_no_header(self, connection_mock, connection_enter):
         """Test failed login if forwarded authentication is enabled but no header is present."""
         connection_mock.return_value = None
-        with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
-            with patch("bottle.request.get_header", Mock(return_value=None)):
-                self.assertEqual(self.login_nok, auth.login(self.database))
+        with patch.dict(
+            "os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}
+        ), patch("bottle.request.get_header", Mock(return_value=None)):
+            self.assertEqual(self.login_nok, auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 

@@ -1,7 +1,6 @@
 """Report routes."""
 
 import os
-import json
 from urllib import parse
 
 import bottle
@@ -11,12 +10,17 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_report, latest_report, latest_reports
-from initialization.report import import_json_report
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
-from model.transformations import encrypt_credentials, hide_credentials, summarize_report
-from server_utilities.functions import iso_timestamp, report_date_time, uuid
+from model.transformations import (
+    decrypt_credentials,
+    encrypt_credentials,
+    hide_credentials,
+    replace_report_uuids,
+    summarize_report,
+)
+from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -40,7 +44,25 @@ def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
     report["delta"] = dict(uuids=[report["report_uuid"]])
-    result = import_json_report(database, report)
+
+    date_time = report_date_time()
+    data_model = latest_datamodel(database, date_time)
+
+    secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
+    private_key = secret["private_key"]
+
+    try:
+        decrypt_credentials(data_model, private_key, report)
+    except DecryptionError:
+        bottle.response.status = 400
+        bottle.response.content_type = "application/json"
+        return {
+            "error": "Decryption of source credentials failed. \
+                Did you use the public key of this Quality-time instance to encrypt this report?"
+        }
+
+    replace_report_uuids(report)
+    result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))
     result["new_report_uuid"] = report["report_uuid"]
     return result
 
@@ -103,12 +125,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         public_key = document["public_key"]
 
-    try:
-        encrypt_credentials(data_model, public_key, report)
-    except TypeError:
-        bottle.response.status = 400
-        bottle.response.content_type = "application/json"
-        return json.dumps({"error": "Invalid public key."})
+    encrypt_credentials(data_model, public_key, report)
     return report
 
 
