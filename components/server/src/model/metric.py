@@ -10,13 +10,13 @@ from model.source import Source
 from server_utilities.type import Direction, MetricId, Scale, TargetType
 
 
-class Metric:
+class Metric(dict):
     """Class representing a metric."""
 
     def __init__(self, data_model, metric_data, metric_uuid: MetricId) -> None:
         self.__data_model = data_model
-        self.__data = metric_data
         self.uuid = metric_uuid
+        super().__init__(metric_data)
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
@@ -24,19 +24,19 @@ class Metric:
 
     def type(self) -> str:
         """Return the type of the metric."""
-        return str(self.__data["type"])
+        return str(self["type"])
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
-        return dict(max=max, min=min, sum=sum)[self.__data["addition"]]
+        return dict(max=max, min=min, sum=sum)[self["addition"]]
 
     def direction(self) -> Direction:
         """Return the direction of the metric: < or >."""
-        return cast(Direction, self.__data.get("direction") or self.__data_model["metrics"][self.type()]["direction"])
+        return cast(Direction, self.get("direction") or self.__data_model["metrics"][self.type()]["direction"])
 
     def scale(self) -> Scale:
         """Return the current metric scale."""
-        return cast(Scale, self.__data.get("scale", "count"))
+        return cast(Scale, self.get("scale", "count"))
 
     def scales(self) -> Sequence[Scale]:
         """Return the scales supported by the metric."""
@@ -44,7 +44,7 @@ class Metric:
 
     def accept_debt(self) -> bool:
         """Return whether the metric has its technical debt accepted."""
-        return bool(self.__data.get("accept_debt", False))
+        return bool(self.get("accept_debt", False))
 
     def accept_debt_expired(self) -> bool:
         """Return whether the accepted debt has expired."""
@@ -52,16 +52,16 @@ class Metric:
 
     def debt_end_date(self) -> str:
         """Return the end date of the accepted technical debt."""
-        return str(self.__data.get("debt_end_date")) or date.max.isoformat()
+        return str(self.get("debt_end_date")) or date.max.isoformat()
 
     def get_target(self, target_type: TargetType) -> Optional[str]:
         """Return the target."""
-        target = self.__data.get(target_type)
+        target = self.get(target_type)
         return str(target) if target else None
 
     def sources(self) -> dict:
         """Return the metric sources."""
-        return cast(dict, self.__data.get("sources", {}))
+        return cast(dict, self.get("sources", {}))
 
     def get_measured_attribute(self, source: Source) -> tuple[Optional[str], str]:
         """Return the attribute of the source entities that is used to measure the value, and its type.
