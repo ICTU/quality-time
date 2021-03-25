@@ -6,11 +6,12 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.reports import insert_new_report, latest_reports
 from model.data import ReportData
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, NotificationDestinationId
 
 
-@bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=["edit_report"])
+@bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
     data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
@@ -28,7 +29,7 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
 
 @bottle.delete(
     "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>",
-    permissions_required=["edit_report"],
+    permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def delete_notification_destination(
     report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database
@@ -44,7 +45,7 @@ def delete_notification_destination(
 
 @bottle.post(
     "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes",
-    permissions_required=["edit_report"],
+    permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def post_notification_destination_attributes(
     report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database

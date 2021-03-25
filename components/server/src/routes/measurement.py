@@ -20,8 +20,10 @@ from database.measurements import (
 )
 from database.reports import latest_metric, latest_reports
 from model.data import SourceData
+
 from model.measurement import Measurement
 from model.metric import Metric
+from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
@@ -46,7 +48,7 @@ def post_measurement(database: Database) -> None:
 
 @bottle.post(
     "/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>",
-    permissions_required=["edit_entity"],
+    permissions_required=[EDIT_ENTITY_PERMISSION],
 )
 def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database

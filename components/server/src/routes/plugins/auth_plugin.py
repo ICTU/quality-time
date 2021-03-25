@@ -8,6 +8,9 @@ from database import sessions
 from database.reports import latest_reports_overview
 from model.session import Session
 
+EDIT_REPORT_PERMISSION = "edit_report"
+EDIT_ENTITY_PERMISSION = "edit_entity"
+
 
 class AuthPlugin:  # pylint: disable=too-few-public-methods
     """This plugin checks authentication and authorization for post and delete routes."""
