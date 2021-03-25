@@ -7,7 +7,6 @@ from datetime import date
 from typing import Optional, cast
 
 from model.source import Source
-from server_utilities.functions import find_one
 from server_utilities.type import Direction, MetricId, Scale, TargetType
 
 
@@ -80,5 +79,5 @@ class Metric:
     @staticmethod
     def _get_measured_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
         """Look up the type of an entity attribute."""
-        attribute = find_one(entity.get("attributes", []), attribute_key, lambda attr: attr["key"]) or {}
+        attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))

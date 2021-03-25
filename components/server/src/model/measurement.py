@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from abc import abstractmethod
 from collections.abc import Sequence
 from typing import Optional, cast
 
 from model.metric import Metric
 from model.source import Source
-from server_utilities.functions import find_one, iso_timestamp, percentage
-from server_utilities.type import Scale, SourceId, Status
+from server_utilities.functions import iso_timestamp, percentage
+from server_utilities.type import Scale, Status
 
 
 class ScaleMeasurement(dict):
@@ -19,13 +20,6 @@ class ScaleMeasurement(dict):
         self._measurement: Measurement = kwargs.pop("measurement")
         self._metric: Metric = self._measurement.metric
         super().__init__(*args, **kwargs)
-
-    def __set_status_start(self, status: Optional[str]) -> None:
-        """Set the status start date."""
-        if (previous := self.__previous_scale_measurement) is None:
-            return
-        if status_start := previous.status_start() if status == previous.status() else self._measurement["start"]:
-            self["status_start"] = status_start
 
     def status(self) -> Optional[Status]:
         """Return the measurement status."""
@@ -39,8 +33,15 @@ class ScaleMeasurement(dict):
         """Update the measurement value and status."""
         self["direction"] = self._metric.direction()
         self["value"] = value = self._calculate_value() if self._measurement.sources_ok() else None
-        self["status"] = status = self._calculate_status(value)
+        self["status"] = status = self.__calculate_status(value)
         self.__set_status_start(status)
+
+    def __set_status_start(self, status: Optional[str]) -> None:
+        """Set the status start date."""
+        if (previous := self.__previous_scale_measurement) is None:
+            return
+        if status_start := previous.status_start() if status == previous.status() else self._measurement["start"]:
+            self["status_start"] = status_start
 
     def update_targets(self) -> None:
         """Update the measurement targets."""
@@ -48,36 +49,35 @@ class ScaleMeasurement(dict):
         self["near_target"] = self._metric.get_target("near_target")
         self["debt_target"] = None if self._metric.accept_debt_expired() else self._metric.get_target("debt_target")
 
+    @abstractmethod
     def _calculate_value(self) -> str:
         """Calculate the value of the measurement."""
-        raise NotImplementedError
 
-    def _calculate_status(self, measurement_value: Optional[str]) -> Optional[Status]:
-        """Determined the status of the measurement."""
-        if measurement_value is None:
-            # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
-            # source can be accepted as technical debt
-            return None if self._metric.accept_debt_expired() or self._metric.sources() else "debt_target_met"
-        value = float(measurement_value)
-        better_or_equal = {">": float.__ge__, "<": float.__le__}[self["direction"]]
-        if better_or_equal(value, self._target()):
-            status: Status = "target_met"
-        elif better_or_equal(value, self._debt_target()) and not self._metric.accept_debt_expired():
+    def __calculate_status(self, value: Optional[str]) -> Optional[Status]:
+        """Determine the status of the measurement."""
+        if value is None:
+            status = self.__calculate_status_without_measurement()
+        elif self._better_or_equal(value, self.get("target")):
+            status = "target_met"
+        elif self._better_or_equal(value, self.get("debt_target")) and not self._metric.accept_debt_expired():
             status = "debt_target_met"
-        elif better_or_equal(self._target(), self._near_target()) and better_or_equal(value, self._near_target()):
+        elif self._better_or_equal(self.get("target"), self.get("near_target")) and self._better_or_equal(
+            value, self.get("near_target")
+        ):
             status = "near_target_met"
         else:
             status = "target_not_met"
         return status
 
-    def _target(self) -> float:
-        return float(self.get("target") or 0)
+    def __calculate_status_without_measurement(self) -> Optional[Status]:
+        """Determine the status of the measurement if there is no measurement value."""
+        # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
+        # source can be accepted as technical debt
+        return None if self._metric.accept_debt_expired() or self._metric.sources() else "debt_target_met"
 
-    def _near_target(self) -> float:
-        return float(self.get("near_target") or 0)
-
-    def _debt_target(self) -> float:
-        return float(self.get("debt_target") or 0)
+    @abstractmethod
+    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+        """Return whether value 1 is better or equal than value 2."""
 
 
 class CountScaleMeasurement(ScaleMeasurement):
@@ -89,6 +89,11 @@ class CountScaleMeasurement(ScaleMeasurement):
         add = self._metric.addition()
         return str(add(values))
 
+    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+        """Override to convert the values to integers before comparing."""
+        better_or_equal = {">": int.__ge__, "<": int.__le__}[self["direction"]]
+        return better_or_equal(int(value1 or 0), int(value2 or 0))
+
 
 class PercentageScaleMeasurement(ScaleMeasurement):
     """Measurement with a percentage scale."""
@@ -97,12 +102,15 @@ class PercentageScaleMeasurement(ScaleMeasurement):
         """Override to calculate the percentage."""
         values = [source.value() for source in self._measurement.sources()]
         totals = [source.total() for source in self._measurement.sources()]
-        add = self._metric.addition()
-        direction = self._metric.direction()
-        if add is sum:
+        if (add := self._metric.addition()) is sum:
             values, totals = [sum(values)], [sum(totals)]
-        values = [percentage(value, total, direction) for value, total in zip(values, totals)]
+        values = [percentage(value, total, self._metric.direction()) for value, total in zip(values, totals)]
         return str(add(values))
+
+    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+        """Override to convert the values to floats before comparing."""
+        better_or_equal = {">": float.__ge__, "<": float.__le__}[self["direction"]]
+        return better_or_equal(float(value1 or 0), float(value2 or 0))
 
 
 class Measurement(dict):  # lgtm [py/missing-equals]
@@ -147,11 +155,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def copy_entity_user_data(self, measurement: Measurement) -> None:
         """Copy the entity user data from the measurement to this measurement."""
+        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
         for new_source in self.sources():
-            old_source = find_one(
-                measurement.sources(), new_source["source_uuid"], lambda source: SourceId(source["source_uuid"])
-            )
-            if old_source:
+            if old_source := old_sources.get(new_source["source_uuid"]):
                 new_source.copy_entity_user_data(old_source)
 
     def update_measurement(self) -> None:
