@@ -55,15 +55,14 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
 
     def __calculate_status(self, value: Optional[str]) -> Optional[Status]:
         """Determine the status of the measurement."""
+        target, near_target, debt_target = self.get("target"), self.get("near_target"), self.get("debt_target")
         if value is None:
             status = self.__calculate_status_without_measurement()
-        elif self._better_or_equal(value, self.get("target")):
+        elif self._better_or_equal(value, target):
             status = "target_met"
-        elif self._better_or_equal(value, self.get("debt_target")) and not self._metric.accept_debt_expired():
+        elif self._better_or_equal(value, debt_target) and not self._metric.accept_debt_expired():
             status = "debt_target_met"
-        elif self._better_or_equal(self.get("target"), self.get("near_target")) and self._better_or_equal(
-            value, self.get("near_target")
-        ):
+        elif self._better_or_equal(target, near_target) and self._better_or_equal(value, near_target):
             status = "near_target_met"
         else:
             status = "target_not_met"
@@ -100,12 +99,19 @@ class PercentageScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the percentage."""
-        values = [source.value() for source in self._measurement.sources()]
-        totals = [source.total() for source in self._measurement.sources()]
+        values = [source.value() for source in self._measurement.sources()]  # nominators
+        totals = [source.total() for source in self._measurement.sources()]  # denominators
+        direction = self._metric.direction()
         if (add := self._metric.addition()) is sum:
-            values, totals = [sum(values)], [sum(totals)]
-        values = [percentage(value, total, self._metric.direction()) for value, total in zip(values, totals)]
-        return str(add(values))
+            # The metric specific to sum the percentages of each source. Directly summing percentages isn't possible
+            # mathematically, so we first sum the nominators and denominators and then divide the sums
+            value = percentage(add(values), add(totals), direction)
+        else:
+            # The metric specifies to take the minimum or maximum of the percentage of each source, so we first divide
+            # the nominators and denominators per source to calculate the percentage per source, and then take the
+            # minimum or maximum value
+            value = add([percentage(value, total, direction) for value, total in zip(values, totals)])
+        return str(value)
 
     def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
         """Override to convert the values to floats before comparing."""
