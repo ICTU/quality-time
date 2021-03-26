@@ -5,4 +5,4 @@ lxml==4.6.3
 pymongo==3.11.3
 ldap3==2.9
 requests==2.25.1
-cryptography==3.4.6
+cryptography==3.4.7
