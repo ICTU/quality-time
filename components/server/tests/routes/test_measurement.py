@@ -165,6 +165,21 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertDictEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
+    def test_first_measurement_version_number_scale(self, request):
+        """Post the first measurement on the version number scale."""
+        self.database.measurements.find_one.return_value = None
+        self.data_model["metrics"]["metric_type"]["scales"] = ["version_number"]
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
+        del self.new_measurement["count"]
+        self.posted_measurement["sources"] = self.new_measurement["sources"] = [self.source(value="1.1.3")]
+        request.json = self.posted_measurement
+        self.new_measurement["version_number"] = dict(
+            direction="<", status="near_target_met", near_target="10", target="0", debt_target=None, value="1.1.3"
+        )
+        self.assertDictEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
     def test_unchanged_measurement(self, request):
         """Post an unchanged measurement for a metric."""
         self.posted_measurement["sources"] = self.old_measurement["sources"]

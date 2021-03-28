@@ -6,6 +6,8 @@ from abc import abstractmethod
 from collections.abc import Sequence
 from typing import Optional, cast
 
+from packaging.version import Version
+
 from model.metric import Metric
 from model.source import Source
 from server_utilities.functions import iso_timestamp, percentage
@@ -84,7 +86,9 @@ class CountScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the value of the count scale measurement."""
-        values = [source.value() for source in self._measurement.sources()]
+        values = [
+            int(str(source.value())) - source.value_of_entities_to_ignore() for source in self._measurement.sources()
+        ]
         add = self._metric.addition()
         return str(add(values))
 
@@ -99,8 +103,10 @@ class PercentageScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the percentage."""
-        values = [source.value() for source in self._measurement.sources()]  # nominators
-        totals = [source.total() for source in self._measurement.sources()]  # denominators
+        values = [
+            int(str(source.value())) - source.value_of_entities_to_ignore() for source in self._measurement.sources()
+        ]
+        totals = [int(source.total() or 100) for source in self._measurement.sources()]
         direction = self._metric.direction()
         if (add := self._metric.addition()) is sum:
             # The metric specific to sum the percentages of each source. Directly summing percentages isn't possible
@@ -119,12 +125,31 @@ class PercentageScaleMeasurement(ScaleMeasurement):
         return better_or_equal(float(value1 or 0), float(value2 or 0))
 
 
+class VersionNumberScaleMeasurement(ScaleMeasurement):
+    """Measurement with a version number scale."""
+
+    def _calculate_value(self) -> str:
+        """Override to calculate the version number."""
+        values = [Version(str(source.value())) for source in self._measurement.sources()]
+        add = self._metric.addition()  # Returns either min or max
+        return str(add(values))
+
+    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+        """Override to convert the values to version numbers before comparing."""
+        better_or_equal = {">": Version.__ge__, "<": Version.__le__}[self["direction"]]
+        return better_or_equal(Version(value1 or "0"), Version(value2 or "0"))
+
+
 class Measurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement."""
 
     # LGTM wants us to implement __eq__ because this class has extra instance attributes. However, the measurement
     # dictionary contains the metric UUID and thus we don't need to compare the instance attributes to know whether
     # two measurements are the same.
+
+    SCALE_CLASSES = dict(
+        count=CountScaleMeasurement, percentage=PercentageScaleMeasurement, version_number=VersionNumberScaleMeasurement
+    )
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         self.__previous_measurement: Optional[Measurement] = kwargs.pop("previous_measurement", None)
@@ -135,9 +160,11 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def scale_measurement(self, scale: Scale) -> ScaleMeasurement:
         """Create a measurement with a specific scale."""
-        measurement_class = CountScaleMeasurement if scale == "count" else PercentageScaleMeasurement
+        measurement_class = self.SCALE_CLASSES[scale]
         previous = None if self.__previous_measurement is None else self.__previous_measurement[scale]
-        return measurement_class(self.get(scale, {}), measurement=self, previous_scale_measurement=previous)
+        # Mypy thinks the SCALE_CLASSES dict lookup results in a class of type ScaleMeasurement and complains that
+        # ScaleMeasurement, being abstract, can't be instantiated. Suppress the error.
+        return measurement_class(self.get(scale, {}), measurement=self, previous_scale_measurement=previous)  # type: ignore[abstract]
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
