@@ -85,6 +85,7 @@ from .openvas.source_up_to_dateness import OpenVASSourceUpToDateness
 from .owasp_dependency_check.dependencies import OWASPDependencyCheckDependencies
 from .owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
 from .owasp_dependency_check.source_up_to_dateness import OWASPDependencyCheckSourceUpToDateness
+from .owasp_dependency_check.source_version import OWASPDependencyCheckSourceVersion
 
 from .owasp_zap.security_warnings import OWASPZAPSecurityWarnings
 from .owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness

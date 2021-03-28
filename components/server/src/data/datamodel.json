@@ -7,6 +7,10 @@
         "percentage": {
             "name": "Percentage",
             "description": "Percentage of objects (for example, percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
+        },
+        "version_number": {
+            "name": "Version number",
+            "description": "Version numbers of sources (for example, GitLab 10.2, SonarQube 7.4.1, Quality-time 3.27.1rc-1)."
         }
     },
     "metrics": {
@@ -484,6 +488,26 @@
                 "testng",
                 "trello",
                 "wekan"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
+        "source_version": {
+            "name": "Source version",
+            "description": "The version number of the source.",
+            "scales": [
+                "version_number"
+            ],
+            "default_scale": "version_number",
+            "unit": "",
+            "addition": "min",
+            "direction": ">",
+            "target": "1.0",
+            "near_target": "0.9",
+            "default_source": "owasp_dependency_check",
+            "sources": [
+                "owasp_dependency_check"
             ],
             "tags": [
                 "ci"
@@ -4057,7 +4081,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -4070,7 +4095,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -4082,7 +4108,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -4094,7 +4121,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -4106,7 +4134,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "severities": {
@@ -4738,6 +4767,7 @@
                         "Size (LOC)",
                         "Slow transactions",
                         "Source up-to-dateness",
+                        "Source version",
                         "Suppressed violations",
                         "Test branch coverage",
                         "Test line coverage",
@@ -4770,6 +4800,7 @@
                         "Size (LOC)": "loc",
                         "Slow transactions": "slow_transactions",
                         "Source up-to-dateness": "source_up_to_dateness",
+                        "Source version": "source_version",
                         "Suppressed violations": "suppressed_violations",
                         "Test branch coverage": "uncovered_branches",
                         "Test line coverage": "uncovered_lines",
@@ -6277,6 +6308,7 @@
                 "merge_requests",
                 "performancetest_duration",
                 "source_up_to_dateness",
+                "source_version",
                 "unmerged_branches",
                 "unused_jobs"
             ]
@@ -6325,6 +6357,7 @@
                 "security_warnings",
                 "slow_transactions",
                 "source_up_to_dateness",
+                "source_version",
                 "suppressed_violations",
                 "tests",
                 "uncovered_branches",
