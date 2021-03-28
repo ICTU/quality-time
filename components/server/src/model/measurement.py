@@ -86,9 +86,8 @@ class CountScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the value of the count scale measurement."""
-        values = [
-            int(str(source.value())) - source.value_of_entities_to_ignore() for source in self._measurement.sources()
-        ]
+        sources = self._measurement.sources()
+        values = [int(str(source.value())) - source.value_of_entities_to_ignore() for source in sources]
         add = self._metric.addition()
         return str(add(values))
 
@@ -103,10 +102,9 @@ class PercentageScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the percentage."""
-        values = [
-            int(str(source.value())) - source.value_of_entities_to_ignore() for source in self._measurement.sources()
-        ]
-        totals = [int(source.total() or 100) for source in self._measurement.sources()]
+        sources = self._measurement.sources()
+        values = [int(str(source.value())) - source.value_of_entities_to_ignore() for source in sources]
+        totals = [int(source.total() or 100) for source in sources]
         direction = self._metric.direction()
         if (add := self._metric.addition()) is sum:
             # The metric specific to sum the percentages of each source. Directly summing percentages isn't possible
