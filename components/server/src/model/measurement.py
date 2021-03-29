@@ -6,7 +6,7 @@ from abc import abstractmethod
 from collections.abc import Sequence
 from typing import Optional, cast
 
-from packaging.version import Version
+from packaging.version import InvalidVersion, Version
 
 from model.metric import Metric
 from model.source import Source
@@ -128,14 +128,24 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the version number."""
-        values = [Version(str(source.value())) for source in self._measurement.sources()]
+        values = [self.parse_version(source.value()) for source in self._measurement.sources()]
         add = self._metric.addition()  # Returns either min or max
         return str(add(values))
 
     def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
         """Override to convert the values to version numbers before comparing."""
         better_or_equal = {">": Version.__ge__, "<": Version.__le__}[self["direction"]]
-        return better_or_equal(Version(value1 or "0"), Version(value2 or "0"))
+        return better_or_equal(self.parse_version(value1), self.parse_version(value2))
+
+    @staticmethod
+    def parse_version(value: Optional[str]) -> Version:
+        """Parse the version."""
+        if value is not None:
+            try:
+                return Version(value)
+            except InvalidVersion:
+                pass
+        return Version("0")
 
 
 class Measurement(dict):  # lgtm [py/missing-equals]
