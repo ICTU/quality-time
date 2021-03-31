@@ -699,10 +699,10 @@
                             }
                         },
                         "25b357bd-0318-4d61-a092-475fd2b2dc35": {
-                            "type": "axe_selenium_python",
+                            "type": "axe_core",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
-                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json",
+                                "url": "http://testdata:8000/reports/axe/axe-core.json",
+                                "landing_url": "http://localhost:8000/reports/axe/axe-core.json",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -729,17 +729,17 @@
                     "type": "source_up_to_dateness",
                     "sources": {
                         "36724d22-baf6-4830-a277-b72c8c1fadb7": {
-                            "type": "axe_selenium_python",
+                            "type": "axe_core",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
-                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json",
+                                "url": "http://testdata:8000/reports/axe/axe-core.json",
+                                "landing_url": "http://localhost:8000/reports/axe/axe-core.json",
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
                             }
                         }
                     },
-                    "name": "Time since last axe-selenium-python report",
+                    "name": "Time since last Axe-core report",
                     "scale": "count",
                     "unit": null,
                     "addition": "max",
