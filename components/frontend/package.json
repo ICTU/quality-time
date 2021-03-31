@@ -39,7 +39,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@testing-library/react": "^11.2.5",
+    "@testing-library/react": "^11.2.6",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "jest-environment-jsdom-sixteen": "^1.0.3",
