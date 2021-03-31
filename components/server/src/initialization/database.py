@@ -104,7 +104,7 @@ def current_reports(database: Database):
     return list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
 
 
-def replace_report(database: Database, report) -> None:
+def replace_report(database: Database, report) -> None:  # pragma: no cover-behave
     """Replace the report in the database with the new version."""
     report_id = report["_id"]
     del report["_id"]
