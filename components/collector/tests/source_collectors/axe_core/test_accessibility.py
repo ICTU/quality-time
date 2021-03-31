@@ -56,6 +56,10 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 "tags": "",
             },
         ]
+        self.set_expected_entity_keys()
+
+    def set_expected_entity_keys(self):
+        """Update the keys of the expected entities."""
         for entity in self.expected_entities:
             entity["key"] = md5_hash(",".join(str(value) for key, value in entity.items() if key != "tags"))
 
@@ -94,3 +98,13 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         zipfile = self.zipped_report(*[(f"axe{index}.json", json.dumps(self.json)) for index in range(2)])
         response = await self.collect(get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
+
+    async def test_json_with_only_violations(self):
+        """Test that a JSON file with just a list of violation works."""
+        for entity in self.expected_entities:
+            del entity["key"]
+            entity["page"] = ""
+            entity["url"] = ""
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=self.json["violations"])
+        self.assert_measurement(response, value="2", entities=self.expected_entities)

@@ -1,6 +1,7 @@
 """Axe-core accessibility analysis collectors."""
 
 from collections.abc import Collection
+from typing import Any
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression
@@ -15,25 +16,34 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
         entity_attributes = []
         for response in responses:
             json = await response.json(content_type=None)
-            url = json["url"]
-            for violation in json.get("violations", []):
-                for node in violation.get("nodes", []):
-                    tags = violation.get("tags", [])
-                    impact = node.get("impact")
-                    if self.__include_violation(impact, tags):
-                        entity_attributes.append(
-                            dict(
-                                description=violation.get("description"),
-                                element=node.get("html"),
-                                help=violation.get("helpUrl"),
-                                impact=impact,
-                                page=url,
-                                url=url,
-                                tags=", ".join(sorted(tags)),
-                                violation_type=violation.get("id"),
-                            )
-                        )
+            if isinstance(json, list):
+                violations, url = json, ""
+            else:
+                violations, url = json.get("violations", []), json.get("url", "")
+            entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
+
+    def __parse_violations(self, violations: list[dict[str, list]], url: str) -> list[dict[str, Any]]:
+        """Parse the list of violations."""
+        entity_attributes = []
+        for violation in violations:
+            for node in violation.get("nodes", []):
+                tags = violation.get("tags", [])
+                impact = node.get("impact")
+                if self.__include_violation(impact, tags):
+                    entity_attributes.append(
+                        dict(
+                            description=violation.get("description"),
+                            element=node.get("html"),
+                            help=violation.get("helpUrl"),
+                            impact=impact,
+                            page=url,
+                            url=url,
+                            tags=", ".join(sorted(tags)),
+                            violation_type=violation.get("id"),
+                        )
+                    )
+        return entity_attributes
 
     def __include_violation(self, impact: str, tags: Collection[str]) -> bool:
         """Return whether to include the violation."""
