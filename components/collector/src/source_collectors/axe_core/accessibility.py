@@ -1,4 +1,4 @@
-"""axe-selenium-python accessibility analysis collectors."""
+"""Axe-core accessibility analysis collectors."""
 
 from collections.abc import Collection
 
@@ -7,7 +7,7 @@ from collector_utilities.functions import md5_hash, match_string_or_regular_expr
 from source_model import Entities, Entity, SourceResponses
 
 
-class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
+class AxeCoreAccessibility(JSONFileSourceCollector):
     """Collector class to get accessibility violations."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

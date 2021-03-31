@@ -1,0 +1,1355 @@
+{
+    "testEngine": {
+        "name": "axe-core",
+        "version": "4.1.3"
+    },
+    "testRunner": {
+        "name": "axe"
+    },
+    "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+        "windowWidth": 2560,
+        "windowHeight": 898
+    },
+    "timestamp": "2021-03-10T10:44:05.026Z",
+    "url": "file:///Users/fniessink/Downloads/Test-Axe/index.html",
+    "toolOptions": {
+        "runOnly": {
+            "type": "tag",
+            "values": [
+                "wcag2a",
+                "wcag2aa",
+                "wcag21aa"
+            ]
+        },
+        "reporter": "v1"
+    },
+    "violations": [
+        {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+                "cat.color",
+                "wcag2aa",
+                "wcag143"
+            ],
+            "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+            "help": "Elements must have sufficient color contrast",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/color-contrast?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#eeeeee",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 1.16,
+                                "fontSize": "12.0pt (16px)",
+                                "fontWeight": "normal",
+                                "expectedContrastRatio": "4.5:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has insufficient color contrast of 1.16 (foreground color: #eeeeee, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": "serious",
+                    "html": "<div style=\"color:#EEE\">Contrast niet goed</div>",
+                    "target": [
+                        "div"
+                    ],
+                    "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.16 (foreground color: #eeeeee, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+            ]
+        },
+        {
+            "id": "document-title",
+            "impact": "serious",
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag242",
+                "ACT"
+            ],
+            "description": "Ensures each HTML document contains a non-empty <title> element",
+            "help": "Documents must have <title> element to aid in navigation",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/document-title?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "doc-has-title",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Document does not have a non-empty <title> element"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": "serious",
+                    "html": "<html>",
+                    "target": [
+                        "html"
+                    ],
+                    "failureSummary": "Fix any of the following:\n  Document does not have a non-empty <title> element"
+                }
+            ]
+        },
+        {
+            "id": "html-has-lang",
+            "impact": "serious",
+            "tags": [
+                "cat.language",
+                "wcag2a",
+                "wcag311",
+                "ACT"
+            ],
+            "description": "Ensures every HTML document has a lang attribute",
+            "help": "<html> element must have a lang attribute",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/html-has-lang?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "has-lang",
+                            "data": {
+                                "messageKey": "noLang"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "The <html> element does not have a lang attribute"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": "serious",
+                    "html": "<html>",
+                    "target": [
+                        "html"
+                    ],
+                    "failureSummary": "Fix any of the following:\n  The <html> element does not have a lang attribute"
+                }
+            ]
+        },
+        {
+            "id": "label",
+            "impact": "critical",
+            "tags": [
+                "cat.forms",
+                "wcag2a",
+                "wcag412",
+                "wcag131",
+                "section508",
+                "section508.22.n",
+                "ACT"
+            ],
+            "description": "Ensures every form element has a label",
+            "help": "Form elements must have labels",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/label?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "aria-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "aria-label attribute does not exist or is empty"
+                        },
+                        {
+                            "id": "aria-labelledby",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty"
+                        },
+                        {
+                            "id": "implicit-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "Form element does not have an implicit (wrapped) <label>"
+                        },
+                        {
+                            "id": "explicit-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "Form element does not have an explicit <label>"
+                        },
+                        {
+                            "id": "non-empty-title",
+                            "data": {
+                                "messageKey": "noAttr"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has no title attribute"
+                        },
+                        {
+                            "id": "non-empty-placeholder",
+                            "data": {
+                                "messageKey": "noAttr"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has no placeholder attribute"
+                        },
+                        {
+                            "id": "presentational-role",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "minor",
+                            "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": "critical",
+                    "html": "<textarea id=\"axeresult--violations\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult--violations"
+                    ],
+                    "failureSummary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Form element does not have an implicit (wrapped) <label>\n  Form element does not have an explicit <label>\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+                },
+                {
+                    "any": [
+                        {
+                            "id": "aria-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "aria-label attribute does not exist or is empty"
+                        },
+                        {
+                            "id": "aria-labelledby",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty"
+                        },
+                        {
+                            "id": "implicit-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "Form element does not have an implicit (wrapped) <label>"
+                        },
+                        {
+                            "id": "explicit-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "Form element does not have an explicit <label>"
+                        },
+                        {
+                            "id": "non-empty-title",
+                            "data": {
+                                "messageKey": "noAttr"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has no title attribute"
+                        },
+                        {
+                            "id": "non-empty-placeholder",
+                            "data": {
+                                "messageKey": "noAttr"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has no placeholder attribute"
+                        },
+                        {
+                            "id": "presentational-role",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "minor",
+                            "message": "Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": "critical",
+                    "html": "<textarea id=\"axeresult\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult"
+                    ],
+                    "failureSummary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Form element does not have an implicit (wrapped) <label>\n  Form element does not have an explicit <label>\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+                }
+            ]
+        }
+    ],
+    "passes": [
+        {
+            "id": "aria-hidden-body",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures aria-hidden='true' is not present on the document body.",
+            "help": "aria-hidden='true' must not be present on the document body",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "aria-hidden-body",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "No aria-hidden attribute is present on document body"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<body>",
+                    "target": [
+                        "body"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "avoid-inline-spacing",
+            "impact": null,
+            "tags": [
+                "cat.structure",
+                "wcag21aa",
+                "wcag1412"
+            ],
+            "description": "Ensure that text spacing set through style attributes can be adjusted with custom stylesheets",
+            "help": "Inline text spacing must be adjustable with custom stylesheets",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/avoid-inline-spacing?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [],
+                    "all": [
+                        {
+                            "id": "avoid-inline-spacing",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "No inline styles with '!important' that affect text spacing has been specified"
+                        }
+                    ],
+                    "none": [],
+                    "impact": null,
+                    "html": "<div style=\"color:#EEE\">Contrast niet goed</div>",
+                    "target": [
+                        "div"
+                    ]
+                },
+                {
+                    "any": [],
+                    "all": [
+                        {
+                            "id": "avoid-inline-spacing",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "No inline styles with '!important' that affect text spacing has been specified"
+                        }
+                    ],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult--violations\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult--violations"
+                    ]
+                },
+                {
+                    "any": [],
+                    "all": [
+                        {
+                            "id": "avoid-inline-spacing",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "No inline styles with '!important' that affect text spacing has been specified"
+                        }
+                    ],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "button-name",
+            "impact": null,
+            "tags": [
+                "cat.name-role-value",
+                "wcag2a",
+                "wcag412",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures buttons have discernible text",
+            "help": "Buttons must have discernible text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/button-name?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "button-has-visible-text",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "critical",
+                            "message": "Element has inner text that is visible to screen readers"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<button onclick=\"analyze()\">Run axe</button>",
+                    "target": [
+                        "button"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+                "cat.color",
+                "wcag2aa",
+                "wcag143"
+            ],
+            "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+            "help": "Elements must have sufficient color contrast",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/color-contrast?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "18.0pt (24px)",
+                                "fontWeight": "bold",
+                                "expectedContrastRatio": "3:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<h1>Landmark 1</h1>",
+                    "target": [
+                        "main:nth-child(1) > section > h1"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "18.0pt (24px)",
+                                "fontWeight": "bold",
+                                "expectedContrastRatio": "3:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<h1>Landmark 2 - dit mag niet</h1>",
+                    "target": [
+                        "main:nth-child(2) > section > h1"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#1d1d1d",
+                                "bgColor": "#c0c0c0",
+                                "contrastRatio": 9.22,
+                                "fontSize": "8.3pt (11px)",
+                                "fontWeight": "normal",
+                                "expectedContrastRatio": "4.5:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 9.22"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<button onclick=\"analyze()\">Run axe</button>",
+                    "target": [
+                        "button"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "18.0pt (24px)",
+                                "fontWeight": "bold",
+                                "expectedContrastRatio": "3:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<h2>Axe violations from result</h2>",
+                    "target": [
+                        "section:nth-child(2) > h2"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "8.3pt (11px)",
+                                "fontWeight": "normal",
+                                "expectedContrastRatio": "4.5:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult--violations\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult--violations"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "18.0pt (24px)",
+                                "fontWeight": "bold",
+                                "expectedContrastRatio": "3:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<h2>Axe raw result (see console output)</h2>",
+                    "target": [
+                        "section:nth-child(3) > h2"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "color-contrast",
+                            "data": {
+                                "fgColor": "#000000",
+                                "bgColor": "#ffffff",
+                                "contrastRatio": 21,
+                                "fontSize": "8.3pt (11px)",
+                                "fontWeight": "normal",
+                                "expectedContrastRatio": "4.5:1"
+                            },
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Element has sufficient color contrast of 21"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "duplicate-id-active",
+            "impact": null,
+            "tags": [
+                "cat.parsing",
+                "wcag2a",
+                "wcag411"
+            ],
+            "description": "Ensures every id attribute value of active elements is unique",
+            "help": "IDs of active elements must be unique",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/duplicate-id-active?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [
+                        {
+                            "id": "duplicate-id-active",
+                            "data": "axeresult--violations",
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Document has no active elements that share the same id attribute"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult--violations\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult--violations"
+                    ]
+                },
+                {
+                    "any": [
+                        {
+                            "id": "duplicate-id-active",
+                            "data": "axeresult",
+                            "relatedNodes": [],
+                            "impact": "serious",
+                            "message": "Document has no active elements that share the same id attribute"
+                        }
+                    ],
+                    "all": [],
+                    "none": [],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "form-field-multiple-labels",
+            "impact": null,
+            "tags": [
+                "cat.forms",
+                "wcag2a",
+                "wcag332"
+            ],
+            "description": "Ensures form field does not have multiple label elements",
+            "help": "Form field should not have multiple label elements",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/form-field-multiple-labels?application=axeAPI",
+            "nodes": [
+                {
+                    "any": [],
+                    "all": [],
+                    "none": [
+                        {
+                            "id": "multiple-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "moderate",
+                            "message": "Form field does not have multiple label elements"
+                        }
+                    ],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult--violations\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult--violations"
+                    ]
+                },
+                {
+                    "any": [],
+                    "all": [],
+                    "none": [
+                        {
+                            "id": "multiple-label",
+                            "data": null,
+                            "relatedNodes": [],
+                            "impact": "moderate",
+                            "message": "Form field does not have multiple label elements"
+                        }
+                    ],
+                    "impact": null,
+                    "html": "<textarea id=\"axeresult\" style=\"width: 100%; height: 300px;\">\n                </textarea>",
+                    "target": [
+                        "#axeresult"
+                    ]
+                }
+            ]
+        }
+    ],
+    "incomplete": [],
+    "inapplicable": [
+        {
+            "id": "area-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "wcag244",
+                "wcag412",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures <area> elements of image maps have alternate text",
+            "help": "Active <area> elements must have alternate text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/area-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-allowed-attr",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures ARIA attributes are allowed for an element's role",
+            "help": "Elements must only use allowed ARIA attributes",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-command-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures every ARIA button, link and menuitem has an accessible name",
+            "help": "ARIA commands must have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-command-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-hidden-focus",
+            "impact": null,
+            "tags": [
+                "cat.name-role-value",
+                "wcag2a",
+                "wcag412",
+                "wcag131"
+            ],
+            "description": "Ensures aria-hidden elements do not contain focusable elements",
+            "help": "ARIA hidden element must not contain focusable elements",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-hidden-focus?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-input-field-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412",
+                "ACT"
+            ],
+            "description": "Ensures every ARIA input field has an accessible name",
+            "help": "ARIA input fields must have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-input-field-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-meter-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag111"
+            ],
+            "description": "Ensures every ARIA meter node has an accessible name",
+            "help": "ARIA meter nodes must have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-meter-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-progressbar-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag111"
+            ],
+            "description": "Ensures every ARIA progressbar node has an accessible name",
+            "help": "ARIA progressbar nodes must have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-progressbar-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-required-attr",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures elements with ARIA roles have all required ARIA attributes",
+            "help": "Required ARIA attributes must be provided",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-required-attr?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-required-children",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures elements with an ARIA role that require child roles contain them",
+            "help": "Certain ARIA roles must contain particular children",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-required-children?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-required-parent",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures elements with an ARIA role that require parent roles are contained by them",
+            "help": "Certain ARIA roles must be contained by particular parents",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-required-parent?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-roledescription",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensure aria-roledescription is only used on elements with an implicit or explicit role",
+            "help": "Use aria-roledescription on elements with a semantic role",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-roledescription?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-roles",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures all elements with a role attribute use a valid value",
+            "help": "ARIA roles used must conform to valid values",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-roles?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-toggle-field-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412",
+                "ACT"
+            ],
+            "description": "Ensures every ARIA toggle field has an accessible name",
+            "help": "ARIA toggle fields have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-toggle-field-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-tooltip-name",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures every ARIA tooltip node has an accessible name",
+            "help": "ARIA tooltip nodes must have an accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-tooltip-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-valid-attr-value",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures all ARIA attributes have valid values",
+            "help": "ARIA attributes must conform to valid values",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-valid-attr-value?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "aria-valid-attr",
+            "impact": null,
+            "tags": [
+                "cat.aria",
+                "wcag2a",
+                "wcag412"
+            ],
+            "description": "Ensures attributes that begin with aria- are valid ARIA attributes",
+            "help": "ARIA attributes must conform to valid names",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-valid-attr?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "audio-caption",
+            "impact": null,
+            "tags": [
+                "cat.time-and-media",
+                "wcag2a",
+                "wcag121",
+                "section508",
+                "section508.22.a"
+            ],
+            "description": "Ensures <audio> elements have captions",
+            "help": "<audio> elements must have a captions track",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/audio-caption?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "autocomplete-valid",
+            "impact": null,
+            "tags": [
+                "cat.forms",
+                "wcag21aa",
+                "wcag135"
+            ],
+            "description": "Ensure the autocomplete attribute is correct and suitable for the form field",
+            "help": "autocomplete attribute must be used correctly",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/autocomplete-valid?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "blink",
+            "impact": null,
+            "tags": [
+                "cat.time-and-media",
+                "wcag2a",
+                "wcag222",
+                "section508",
+                "section508.22.j"
+            ],
+            "description": "Ensures <blink> elements are not used",
+            "help": "<blink> elements are deprecated and must not be used",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/blink?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "bypass",
+            "impact": null,
+            "tags": [
+                "cat.keyboard",
+                "wcag2a",
+                "wcag241",
+                "section508",
+                "section508.22.o"
+            ],
+            "description": "Ensures each page has at least one mechanism for a user to bypass navigation and jump straight to the content",
+            "help": "Page must have means to bypass repeated blocks",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/bypass?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "definition-list",
+            "impact": null,
+            "tags": [
+                "cat.structure",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures <dl> elements are structured correctly",
+            "help": "<dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script>, <template> or <div> elements",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/definition-list?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "dlitem",
+            "impact": null,
+            "tags": [
+                "cat.structure",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures <dt> and <dd> elements are contained by a <dl>",
+            "help": "<dt> and <dd> elements must be contained by a <dl>",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/dlitem?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "duplicate-id-aria",
+            "impact": null,
+            "tags": [
+                "cat.parsing",
+                "wcag2a",
+                "wcag411"
+            ],
+            "description": "Ensures every id attribute value used in ARIA and in labels is unique",
+            "help": "IDs used in ARIA and labels must be unique",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/duplicate-id-aria?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "duplicate-id",
+            "impact": null,
+            "tags": [
+                "cat.parsing",
+                "wcag2a",
+                "wcag411"
+            ],
+            "description": "Ensures every id attribute value is unique",
+            "help": "id attribute value must be unique",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/duplicate-id?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "frame-title",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag241",
+                "wcag412",
+                "section508",
+                "section508.22.i"
+            ],
+            "description": "Ensures <iframe> and <frame> elements contain a non-empty title attribute",
+            "help": "Frames must have title attribute",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/frame-title?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "html-lang-valid",
+            "impact": null,
+            "tags": [
+                "cat.language",
+                "wcag2a",
+                "wcag311",
+                "ACT"
+            ],
+            "description": "Ensures the lang attribute of the <html> element has a valid value",
+            "help": "<html> element must have a valid value for the lang attribute",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/html-lang-valid?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "html-xml-lang-mismatch",
+            "impact": null,
+            "tags": [
+                "cat.language",
+                "wcag2a",
+                "wcag311",
+                "ACT"
+            ],
+            "description": "Ensure that HTML elements with both valid lang and xml:lang attributes agree on the base language of the page",
+            "help": "HTML elements with lang and xml:lang must have the same base language",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/html-xml-lang-mismatch?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "image-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures <img> elements have alternate text or a role of none or presentation",
+            "help": "Images must have alternate text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/image-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "input-button-name",
+            "impact": null,
+            "tags": [
+                "cat.name-role-value",
+                "wcag2a",
+                "wcag412",
+                "section508",
+                "section508.22.a"
+            ],
+            "description": "Ensures input buttons have discernible text",
+            "help": "Input buttons must have discernible text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/input-button-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "input-image-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures <input type=\"image\"> elements have alternate text",
+            "help": "Image buttons must have alternate text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/input-image-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "link-name",
+            "impact": null,
+            "tags": [
+                "cat.name-role-value",
+                "wcag2a",
+                "wcag412",
+                "wcag244",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures links have discernible text",
+            "help": "Links must have discernible text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/link-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "list",
+            "impact": null,
+            "tags": [
+                "cat.structure",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures that lists are structured correctly",
+            "help": "<ul> and <ol> must only directly contain <li>, <script> or <template> elements",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/list?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "listitem",
+            "impact": null,
+            "tags": [
+                "cat.structure",
+                "wcag2a",
+                "wcag131"
+            ],
+            "description": "Ensures <li> elements are used semantically",
+            "help": "<li> elements must be contained in a <ul> or <ol>",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/listitem?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "marquee",
+            "impact": null,
+            "tags": [
+                "cat.parsing",
+                "wcag2a",
+                "wcag222"
+            ],
+            "description": "Ensures <marquee> elements are not used",
+            "help": "<marquee> elements are deprecated and must not be used",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/marquee?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "meta-refresh",
+            "impact": null,
+            "tags": [
+                "cat.time-and-media",
+                "wcag2a",
+                "wcag2aaa",
+                "wcag221",
+                "wcag224",
+                "wcag325"
+            ],
+            "description": "Ensures <meta http-equiv=\"refresh\"> is not used",
+            "help": "Timed refresh must not exist",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/meta-refresh?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "object-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "section508",
+                "section508.22.a"
+            ],
+            "description": "Ensures <object> elements have alternate text",
+            "help": "<object> elements must have alternate text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/object-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "role-img-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures [role='img'] elements have alternate text",
+            "help": "[role='img'] elements have an alternative text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/role-img-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "scrollable-region-focusable",
+            "impact": null,
+            "tags": [
+                "cat.keyboard",
+                "wcag2a",
+                "wcag211"
+            ],
+            "description": "Elements that have scrollable content should be accessible by keyboard",
+            "help": "Ensure that scrollable region has keyboard access",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/scrollable-region-focusable?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "select-name",
+            "impact": null,
+            "tags": [
+                "cat.forms",
+                "wcag2a",
+                "wcag412",
+                "wcag131",
+                "section508",
+                "section508.22.n",
+                "ACT"
+            ],
+            "description": "Ensures select element has an accessible name",
+            "help": "Select element must have and accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/select-name?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "server-side-image-map",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag211",
+                "section508",
+                "section508.22.f"
+            ],
+            "description": "Ensures that server-side image maps are not used",
+            "help": "Server-side image maps must not be used",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/server-side-image-map?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "svg-img-alt",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag111",
+                "section508",
+                "section508.22.a",
+                "ACT"
+            ],
+            "description": "Ensures svg elements with an img, graphics-document or graphics-symbol role have an accessible text",
+            "help": "svg elements with an img role have an alternative text",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/svg-img-alt?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "td-headers-attr",
+            "impact": null,
+            "tags": [
+                "cat.tables",
+                "wcag2a",
+                "wcag131",
+                "section508",
+                "section508.22.g"
+            ],
+            "description": "Ensure that each cell in a table using the headers refers to another cell in that table",
+            "help": "All cells in a table element that use the headers attribute must only refer to other cells of that same table",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/td-headers-attr?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "th-has-data-cells",
+            "impact": null,
+            "tags": [
+                "cat.tables",
+                "wcag2a",
+                "wcag131",
+                "section508",
+                "section508.22.g"
+            ],
+            "description": "Ensure that each table header in a data table refers to data cells",
+            "help": "All th elements and elements with role=columnheader/rowheader must have data cells they describe",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/th-has-data-cells?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "valid-lang",
+            "impact": null,
+            "tags": [
+                "cat.language",
+                "wcag2aa",
+                "wcag312"
+            ],
+            "description": "Ensures lang attributes have valid values",
+            "help": "lang attribute must have a valid value",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/valid-lang?application=axeAPI",
+            "nodes": []
+        },
+        {
+            "id": "video-caption",
+            "impact": null,
+            "tags": [
+                "cat.text-alternatives",
+                "wcag2a",
+                "wcag122",
+                "section508",
+                "section508.22.a"
+            ],
+            "description": "Ensures <video> elements have captions",
+            "help": "<video> elements must have captions",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/video-caption?application=axeAPI",
+            "nodes": []
+        }
+    ]
+}

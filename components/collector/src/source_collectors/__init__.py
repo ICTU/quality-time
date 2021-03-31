@@ -3,10 +3,10 @@
 from .anchore.security_warnings import AnchoreSecurityWarnings
 from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 
-from .axe_csv.accessibility import AxeCSVAccessibility
+from .axe_core.accessibility import AxeCoreAccessibility
+from .axe_core.source_up_to_dateness import AxeCoreSourceUpToDateness
 
-from .axe_selenium_python.accessibility import AxeSeleniumPythonAccessibility
-from .axe_selenium_python.source_up_to_dateness import AxeSeleniumPythonSourceUpToDateness
+from .axe_csv.accessibility import AxeCSVAccessibility
 
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
 from .azure_devops.issues import AzureDevopsIssues

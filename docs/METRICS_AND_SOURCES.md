@@ -6,7 +6,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Name | Description | Default target | Scale(s) | Default tags | Sources¹ |
 | :--- | :---------- | :------------- | :------- | :----------- | :------- |
-| Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | count | accessibility | [Axe CSV](#accessibility-violations-from-axe-csv), [axe-selenium-python](#accessibility-violations-from-axe-selenium-python) |
+| Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | count | accessibility | [Axe CSV](#accessibility-violations-from-axe-csv), [Axe-core](#accessibility-violations-from-axe-core) |
 | Commented out code | The number of blocks of commented out lines of code. | ≦ 0 blocks | count | maintainability | [SonarQube](#commented-out-code-from-sonarqube) |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | count (default), percentage | maintainability, testability | [SonarQube](#complex-units-from-sonarqube) |
 | Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | count (default), percentage | maintainability | [Composer](#dependencies-from-composer), [OWASP Dependency Check](#dependencies-from-owasp-dependency-check), [npm](#dependencies-from-npm), [pip](#dependencies-from-pip) |
@@ -25,7 +25,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | count | security | [Anchore](#security-warnings-from-anchore), [Bandit](#security-warnings-from-bandit), [Checkmarx CxSAST](#security-warnings-from-checkmarx-cxsast), [JSON file with security warnings](#security-warnings-from-json-file-with-security-warnings), [OWASP Dependency Check](#security-warnings-from-owasp-dependency-check), [OWASP ZAP](#security-warnings-from-owasp-zap), [OpenVAS](#security-warnings-from-openvas), [Pyupio Safety](#security-warnings-from-pyupio-safety), [Snyk](#security-warnings-from-snyk), [SonarQube](#security-warnings-from-sonarqube) |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | count | maintainability | [SonarQube](#size-(loc)-from-sonarqube), [cloc](#size-(loc)-from-cloc) |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | count | performance | [Performancetest-runner](#slow-transactions-from-performancetest-runner) |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [Jenkins](#source-up-to-dateness-from-jenkins), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework Jenkins plugin](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan), [axe-selenium-python](#source-up-to-dateness-from-axe-selenium-python) |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Axe-core](#source-up-to-dateness-from-axe-core), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [Jenkins](#source-up-to-dateness-from-jenkins), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework Jenkins plugin](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
@@ -43,6 +43,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :--- | :---------- | :------ |
 | [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/) | Anchore image scan analysis report in JSON format. | [Source up-to-dateness](#source-up-to-dateness-from-anchore), [Security warnings](#security-warnings-from-anchore) |
 | [Axe CSV](https://github.com/ICTU/axe-reports) | An Axe accessibility report in CSV format. | [Accessibility violations](#accessibility-violations-from-axe-csv) |
+| [Axe-core](https://github.com/dequelabs/axe-core) | Axe is an accessibility testing engine for websites and other HTML-based user interfaces. | [Accessibility violations](#accessibility-violations-from-axe-core), [Source up-to-dateness](#source-up-to-dateness-from-axe-core) |
 | [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | [Failed CI-jobs](#failed-ci-jobs-from-azure-devops-server), [Issues](#issues-from-azure-devops-server), [Merge requests](#merge-requests-from-azure-devops-server), [Source up-to-dateness](#source-up-to-dateness-from-azure-devops-server), [Tests](#tests-from-azure-devops-server), [Unmerged branches](#unmerged-branches-from-azure-devops-server), [Unused CI-jobs](#unused-ci-jobs-from-azure-devops-server), [User story points](#user-story-points-from-azure-devops-server) |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | [Source up-to-dateness](#source-up-to-dateness-from-bandit), [Security warnings](#security-warnings-from-bandit) |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | [Source up-to-dateness](#source-up-to-dateness-from-calendar-date) |
@@ -75,7 +76,6 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [TestNG](https://testng.org) | Test reports in the TestNG XML format. | [Source up-to-dateness](#source-up-to-dateness-from-testng), [Tests](#tests-from-testng) |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | [Issues](#issues-from-trello), [Source up-to-dateness](#source-up-to-dateness-from-trello) |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | [Issues](#issues-from-wekan), [Source up-to-dateness](#source-up-to-dateness-from-wekan) |
-| [axe-selenium-python](https://github.com/mozilla-services/axe-selenium-python) | axe-selenium-python integrates aXe and selenium to enable automated web accessibility testing. | [Accessibility violations](#accessibility-violations-from-axe-selenium-python), [Source up-to-dateness](#source-up-to-dateness-from-axe-selenium-python) |
 | [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages. | [Size (LOC)](#size-(loc)-from-cloc) |
 | [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | [Dependencies](#dependencies-from-npm) |
 | [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | [Dependencies](#dependencies-from-pip) |
@@ -95,7 +95,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Username for basic authentication | String |  |  | No |  |
 | Violation types | Multiple choice | accesskeys, area-alt, aria-allowed-attr, aria-allowed-role, aria-dpub-role-fallback, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-required-attr, aria-required-children, aria-required-parent, aria-roledescription, aria-roles, aria-toggle-field-name, aria-valid-attr, aria-valid-attr-value, audio-caption, autocomplete-valid, avoid-inline-spacing, blink, button-name, bypass, checkboxgroup, color-contrast, css-orientation-lock, definition-list, dlitem, document-title, duplicate-id, duplicate-id-active, duplicate-id-aria, empty-heading, focus-order-semantics, form-field-multiple-labels, frame-tested, frame-title, frame-title-unique, heading-order, hidden-content, html-has-lang, html-lang-valid, html-xml-lang-mismatch, image-alt, image-redundant-alt, input-button-name, input-image-alt, label, label-content-name-mismatch, label-title-only, landmark-banner-is-top-level, landmark-complementary-is-top-level, landmark-contentinfo-is-top-level, landmark-main-is-top-level, landmark-no-duplicate-banner, landmark-no-duplicate-contentinfo, landmark-one-main, landmark-unique, layout-table, link-in-text-block, link-name, list, listitem, marquee, meta-refresh, meta-viewport, meta-viewport-large, object-alt, p-as-heading, page-has-heading-one, radiogroup, region, role-img-alt, scope-attr-valid, scrollable-region-focusable, server-side-image-map, skip-link, tabindex, table-duplicate-name, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells, valid-lang, video-caption, video-description | _all violation types_ | No | [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) |
 
-### Accessibility violations from axe-selenium-python
+### Accessibility violations from Axe-core
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
@@ -104,8 +104,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Private token | Password |  |  | No |  |
 | Tags to ignore (regular expressions or tags) | Multiple choice with addition |  |  | No | Tags to ignore can be specified by tag or by regular expression. |
 | Tags to include (regular expressions or tags) | Multiple choice with addition |  |  | No | Tags to include can be specified by tag or by regular expression. |
-| URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format | URL |  |  | Yes |  |
-| URL to an axe-selenium-python report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format. |
+| URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format | URL |  |  | Yes |  |
+| URL to an Axe-core report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Commented out code from SonarQube
@@ -213,7 +213,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Failure types | Multiple choice | canceled, failed, skipped | _all failure types_ | No | Limit which failure types to count as failed. |
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition |  |  | No | Jobs to ignore can be specified by job name or by regular expression. |
-| Private token | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Private token (with read_api scope) | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String |  |  | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Issues from Azure DevOps Server
@@ -344,7 +344,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Merge request states | Multiple choice | closed, locked, merged, opened | _all states_ | No | Limit which merge request states to count. |
 | Minimum number of upvotes | Integer |  | 0 | No | Only count merge requests with fewer than the minimum number of upvotes. |
-| Private token | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Private token (with read_api scope) | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String |  |  | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Target branches to include (regular expressions or branch names) | Multiple choice with addition |  |  | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 
@@ -356,7 +356,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Metric types | Multiple choice | Accessibility violations, Commented out code, Complex units, Dependencies, Duplicated lines, Failed CI-jobs, Issues, Long units, Manual test duration, Manual test execution, Many parameters, Merge requests, Metrics, Performancetest duration, Performancetest stability, Ready user story points, Scalability, Security warnings, Size (LOC), Slow transactions, Source up-to-dateness, Suppressed violations, Test branch coverage, Test line coverage, Tests, Unmerged branches, Unused CI-jobs, User story points, Velocity, Violation remediation effort, Violations | _all metric types_ | No | If provided, only count metrics with the selected metric types. |
 | Quality-time URL | URL |  |  | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
 | Report names or identifiers | Multiple choice with addition |  |  | No |  |
-| Source types | Multiple choice | Anchore, Axe CSV, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, Cobertura Jenkins plugin, Composer, GitLab, JSON file with security warnings, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins, Jenkins test report, Jira, Manual number, NCover, OJAudit, OWASP Dependency Check, OWASP ZAP, OpenVAS, Performancetest-runner, Pyupio Safety, Quality-time, Random, Robot Framework, Robot Framework Jenkins plugin, Snyk, SonarQube, TestNG, Trello, Wekan, axe-selenium-python, cloc, npm, pip | _all source types_ | No | If provided, only count metrics with one or more sources of the selected source types. |
+| Source types | Multiple choice | Anchore, Axe CSV, Axe-core, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, Cobertura Jenkins plugin, Composer, GitLab, JSON file with security warnings, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins, Jenkins test report, Jira, Manual number, NCover, OJAudit, OWASP Dependency Check, OWASP ZAP, OpenVAS, Performancetest-runner, Pyupio Safety, Quality-time, Random, Robot Framework, Robot Framework Jenkins plugin, Snyk, SonarQube, TestNG, Trello, Wekan, cloc, npm, pip | _all source types_ | No | If provided, only count metrics with one or more sources of the selected source types. |
 | Tags | Multiple choice with addition |  |  | No | If provided, only count metrics with one ore more of the given tags. |
 
 ### Performancetest duration from Performancetest-runner
@@ -418,14 +418,14 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
-### Source up-to-dateness from axe-selenium-python
+### Source up-to-dateness from Axe-core
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format | URL |  |  | Yes |  |
-| URL to an axe-selenium-python report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format. |
+| URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format | URL |  |  | Yes |  |
+| URL to an Axe-core report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Azure DevOps Server
@@ -490,7 +490,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch | String |  | master | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | File or folder path | String |  |  | Yes | [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html) |
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Private token | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Private token (with read_api scope) | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String |  |  | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Source up-to-dateness from JaCoCo
@@ -727,6 +727,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL |  |  | Yes |  |
+| URL to a Safety report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Safety report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from Snyk
@@ -986,7 +987,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branches to ignore (regular expressions or branch names) | Multiple choice with addition |  |  | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Number of days since last commit after which to consider branches inactive | Integer |  | 7 | No |  |
-| Private token | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Private token (with read_api scope) | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String |  |  | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Unused CI-jobs from Azure DevOps Server
@@ -1007,7 +1008,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition |  |  | No | Jobs to ignore can be specified by job name or by regular expression. |
 | Number of days without builds after which to consider CI-jobs unused. | Integer |  | 90 | No |  |
-| Private token | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Private token (with read_api scope) | Password |  |  | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String |  |  | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Unused CI-jobs from Jenkins
