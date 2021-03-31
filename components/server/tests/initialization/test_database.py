@@ -144,7 +144,7 @@ class DatabaseInitTest(unittest.TestCase):
                             "metric3": {
                                 "type": "accessibility",
                                 "sources": {
-                                    "source2": {"type": "axe_selenium_python", "name": "Don't change the name"}
+                                    "source2": {"type": "axe_selenium_python", "name": "Don't change the source name"}
                                 },
                             },
                         }
@@ -166,7 +166,7 @@ class DatabaseInitTest(unittest.TestCase):
                             },
                             "metric3": {
                                 "type": "accessibility",
-                                "sources": {"source2": {"type": "axe_core", "name": "Don't change the name"}},
+                                "sources": {"source2": {"type": "axe_core", "name": "Don't change the source name"}},
                             },
                         }
                     }

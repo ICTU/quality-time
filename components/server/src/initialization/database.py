@@ -59,8 +59,7 @@ def add_last_flag_to_reports(database: Database) -> None:
 def rename_ready_user_story_points_metric(database: Database) -> None:  # pragma: no cover-behave
     """Rename the ready_user_story_points metric to user_story_points."""
     # Introduced when the most recent version of Quality-time was 3.3.0.
-    reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
-    for report in reports:
+    for report in current_reports(database):
         changed = False
         for metric in metrics(report):
             if metric["type"] == "ready_user_story_points":
@@ -75,8 +74,7 @@ def rename_ready_user_story_points_metric(database: Database) -> None:  # pragma
 def rename_teams_webhook_notification_destination(database: Database) -> None:  # pragma: no cover-behave
     """Rename the teams_webhook of notification_destination to webhook."""
     # Introduced when the most recent version of Quality-time was 3.16.0.
-    reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
-    for report in reports:
+    for report in current_reports(database):
         changed = False
         for notification_destination in report.get("notification_destinations", {}).values():
             if "teams_webhook" in notification_destination:
@@ -89,8 +87,7 @@ def rename_teams_webhook_notification_destination(database: Database) -> None:  
 def rename_axe_selenium_python_to_axe_core(database: Database) -> None:  # pragma: no cover-behave
     """Rename the axe-selenium-python source to Axe-core."""
     # Introduced when the most recent version of Quality-time was 3.19.1.
-    reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
-    for report in reports:
+    for report in current_reports(database):
         changed = False
         for source in sources(report):
             if source["type"] == "axe_selenium_python":
@@ -100,6 +97,11 @@ def rename_axe_selenium_python_to_axe_core(database: Database) -> None:  # pragm
                 changed = True
         if changed:
             replace_report(database, report)
+
+
+def current_reports(database: Database):
+    """Return the latest versions of all undeleted reports."""
+    return list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
 
 
 def replace_report(database: Database, report) -> None:
