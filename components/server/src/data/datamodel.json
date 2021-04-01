@@ -510,7 +510,8 @@
                 "cloc",
                 "cobertura",
                 "owasp_dependency_check",
-                "owasp_zap"
+                "owasp_zap",
+                "robot_framework"
             ],
             "tags": [
                 "ci"
@@ -5009,6 +5010,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5021,6 +5023,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5032,6 +5035,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5043,6 +5047,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5054,6 +5059,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
