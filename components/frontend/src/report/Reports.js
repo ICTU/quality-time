@@ -5,7 +5,7 @@ import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 
@@ -54,7 +54,7 @@ export function Reports(props) {
         title={props.reports_overview.title}
       />
       <ReportsDashboard layout={props.reports_overview.layout} {...props} />
-      <ReadOnlyOrEditable editableComponent={
+      <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
         <Segment basic>
           <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />
           <CopyButton item_type={"report"} onClick={() => add_report(props.reload)}

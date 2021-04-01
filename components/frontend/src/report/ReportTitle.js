@@ -5,7 +5,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 
 function ReportAttributesRow(props) {
@@ -56,7 +56,7 @@ function ButtonRow(props) {
         <Grid.Row>
             <Grid.Column>
                 <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
-                <ReadOnlyOrEditable editableComponent={
+                <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                     <DeleteButton
                         item_type='report'
                         onClick={() => delete_report(props.report_uuid, props.go_home)}

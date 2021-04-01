@@ -1,7 +1,7 @@
 import React from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
@@ -41,7 +41,7 @@ export function Subjects(props) {
             visibleDetailsTabs={visibleDetailsTabs}
           /> : null
       )}
-      <ReadOnlyOrEditable editableComponent={
+      <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
         <Segment basic>
           <AddButton item_type="subject" onClick={() => add_subject(props.report.report_uuid, props.reload)} />
           <CopyButton

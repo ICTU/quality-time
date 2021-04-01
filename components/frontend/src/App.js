@@ -12,12 +12,12 @@ import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { parse, stringify } from 'query-string';
 
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from './context/ReadOnly';
+import { ReadOnlyContext } from './context/ReadOnly';
 import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
-import { isValidDate_YYYYMMDD, show_message } from './utils'
+import { getUserPermissions, isValidDate_YYYYMMDD, show_message } from './utils'
 
 class App extends Component {
   constructor(props) {
@@ -237,9 +237,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const permissions = this.state.reports_overview.permissions || {};
-    const editors = permissions[EDIT_REPORT_PERMISSION] || [];
-    const editor = editors.length === 0 || editors.includes(this.state.user) || editors.includes(this.state.email);
-    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-" || !editor;
+    const user_permissions = getUserPermissions(this.state.user, this.state.email, permissions)
     const props = {
       reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };
@@ -257,7 +255,7 @@ class App extends Component {
           user={this.state.user}
         />
         <SemanticToastContainer />
-        <ReadOnlyContext.Provider value={readOnly}>
+        <ReadOnlyContext.Provider value={user_permissions}>
           <Container fluid className="MainContainer">
             {this.state.loading ?
               <Segment basic placeholder loading size="massive" />

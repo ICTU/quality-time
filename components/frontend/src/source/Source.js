@@ -5,7 +5,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';
@@ -87,7 +87,7 @@ function ChangeLogRow(props) {
 
 function ButtonGridRow(props) {
     return (
-        <ReadOnlyOrEditable editableComponent={
+        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Grid.Row>
                 <Grid.Column>
                     <ReorderButtonGroup first={props.first_source} last={props.last_source} moveable="source"

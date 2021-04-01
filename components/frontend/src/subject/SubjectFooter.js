@@ -1,12 +1,12 @@
 import { Table } from "semantic-ui-react";
 import { add_metric, copy_metric, move_metric } from "../api/metric";
-import { ReadOnlyOrEditable } from "../context/ReadOnly";
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/ReadOnly";
 import { AddButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
 
 export function SubjectFooter({datamodel, subject, subjectUuid, reload, reports, resetSortColumn}) {
     return (
-        <ReadOnlyOrEditable editableComponent={
+        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
           <Table.Footer>
             <Table.Row>
               <Table.HeaderCell colSpan='10'>
