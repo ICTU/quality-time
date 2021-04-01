@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- Since the JSON format produced by axe-selenium-python is basically the same as the format produced by Axe-core, sources of type axe-selenium-python in existing reports are automatically changed into Axe-core. No user action is needed. It is no longer possible to select axe-selenium-python as source type for accessibility violations.
+- The axe-selenium-python source type has been removed. To read JSON files produced by axe-selenium-python, use the new Axe-core source type. This works, as the JSON format produced by axe-selenium-python is basically the same as the format produced by Axe-core. Sources of type axe-selenium-python in existing reports are automatically changed into Axe-core. No user action is needed.
 
 ## [3.19.1] - [2021-02-28]
 
