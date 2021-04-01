@@ -507,6 +507,7 @@
             "near_target": "0.9",
             "default_source": "owasp_dependency_check",
             "sources": [
+                "cloc",
                 "owasp_dependency_check"
             ],
             "tags": [
@@ -1933,7 +1934,8 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -1944,7 +1946,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -1954,7 +1957,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -1964,7 +1968,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -1974,7 +1979,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "languages_to_ignore": {

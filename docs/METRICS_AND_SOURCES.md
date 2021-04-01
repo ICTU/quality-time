@@ -26,7 +26,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | count | maintainability | [SonarQube](#size-(loc)-from-sonarqube), [cloc](#size-(loc)-from-cloc) |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | count | performance | [Performancetest-runner](#slow-transactions-from-performancetest-runner) |
 | Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Axe-core](#source-up-to-dateness-from-axe-core), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [Jenkins](#source-up-to-dateness-from-jenkins), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework Jenkins plugin](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan) |
-| Source version | The version number of the source. | ≧ 1.0  | version_number | ci | [OWASP Dependency Check](#source-version-from-owasp-dependency-check) |
+| Source version | The version number of the source. | ≧ 1.0  | version_number | ci | [OWASP Dependency Check](#source-version-from-owasp-dependency-check), [cloc](#source-version-from-cloc) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
@@ -77,7 +77,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [TestNG](https://testng.org) | Test reports in the TestNG XML format. | [Source up-to-dateness](#source-up-to-dateness-from-testng), [Tests](#tests-from-testng) |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | [Issues](#issues-from-trello), [Source up-to-dateness](#source-up-to-dateness-from-trello) |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | [Issues](#issues-from-wekan), [Source up-to-dateness](#source-up-to-dateness-from-wekan) |
-| [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages. | [Size (LOC)](#size-(loc)-from-cloc) |
+| [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages. | [Size (LOC)](#size-(loc)-from-cloc), [Source version](#source-version-from-cloc) |
 | [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | [Dependencies](#dependencies-from-npm) |
 | [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | [Dependencies](#dependencies-from-pip) |
 
@@ -652,6 +652,16 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password | Password |  |  | No |  |
 | URL | URL |  |  | Yes |  |
 | Username | String |  |  | No |  |
+
+### Source version from cloc
+
+| Parameter | Type | Values | Default value | Mandatory | Help |
+| :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Password for basic authentication | Password |  |  | No |  |
+| Private token | Password |  |  | No |  |
+| URL to a cloc report in JSON format or to a zip with cloc reports in JSON format | URL |  |  | Yes |  |
+| URL to a cloc report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format. |
+| Username for basic authentication | String |  |  | No |  |
 
 ### Source version from OWASP Dependency Check
 

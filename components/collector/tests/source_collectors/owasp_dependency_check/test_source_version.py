@@ -4,7 +4,7 @@ from .base import OWASPDependencyCheckTestCase
 
 
 class OWASPDependencyCheckVersionTest(OWASPDependencyCheckTestCase):
-    """Unit tests for the OWASP Dependency Check source up-to-dateness collector."""
+    """Unit tests for the OWASP Dependency Check source version collector."""
 
     METRIC_TYPE = "source_version"
 

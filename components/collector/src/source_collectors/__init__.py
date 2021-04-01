@@ -23,6 +23,7 @@ from .bandit.source_up_to_dateness import BanditSourceUpToDateness
 from .calendar.source_up_to_dateness import CalendarSourceUpToDateness
 
 from .cloc.loc import ClocLOC
+from .cloc.source_version import ClocSourceVersion
 
 from .cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
 from .cobertura.uncovered_branches import CoberturaUncoveredBranches
