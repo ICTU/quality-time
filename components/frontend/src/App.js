@@ -12,7 +12,7 @@ import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { parse, stringify } from 'query-string';
 
-import { ReadOnlyContext } from './context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from './context/ReadOnly';
 import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
@@ -237,7 +237,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const permissions = this.state.reports_overview.permissions || {};
-    const editors = permissions.edit_reports || [];
+    const editors = permissions[EDIT_REPORT_PERMISSION] || [];
     const editor = editors.length === 0 || editors.includes(this.state.user) || editors.includes(this.state.email);
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-" || !editor;
     const props = {

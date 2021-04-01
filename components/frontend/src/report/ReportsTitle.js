@@ -5,9 +5,16 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
+import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 
 export function ReportsTitle(props) {
-    console.log(props.permissions)
+
+    function setPermissions(permission, value){
+        const permissions = props.permissions
+        permissions[permission] = value
+        set_reports_attribute("permissions", permissions, props.reload)
+    }
+
     return (
         <HeaderWithDetails level="h1" header={props.title} subheader={props.subtitle}>
             <Grid stackable>
@@ -32,9 +39,9 @@ export function ReportsTitle(props) {
                         <MultipleChoiceInput
                             allowAdditions
                             label="Users allowed to edit reports (user name or email address)"
-                            options={props.permissions.edit_reports || []}
+                            options={props.permissions[EDIT_REPORT_PERMISSION] || []}
                             placeholder="All authenticated users"
-                            set_value={(value) => set_reports_attribute("permissions", {edit_reports: value}, props.reload)}
+                            set_value={(value) => setPermissions(EDIT_REPORT_PERMISSION, value)}
                             value={props.permissions.edit_reports || []}
                         />
                     </Grid.Column>
@@ -44,9 +51,9 @@ export function ReportsTitle(props) {
                         <MultipleChoiceInput
                             allowAdditions
                             label="Users allowed to edit measured entities (user name or email address)"
-                            options={props.permissions.edit_entities || []}
+                            options={props.permissions[EDIT_ENTITY_PERMISSION] || []}
                             placeholder="All authenticated users"
-                            set_value={(value) => set_reports_attribute("permissions", {edit_entities: value}, props.reload)}
+                            set_value={(value) => setPermissions(EDIT_ENTITY_PERMISSION, value)}
                             value={props.permissions.edit_entities || []}
                         />
                     </Grid.Column>
