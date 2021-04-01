@@ -5,6 +5,7 @@ from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 
 from .axe_core.accessibility import AxeCoreAccessibility
 from .axe_core.source_up_to_dateness import AxeCoreSourceUpToDateness
+from .axe_core.source_version import AxeCoreSourceVersion
 
 from .axe_csv.accessibility import AxeCSVAccessibility
 

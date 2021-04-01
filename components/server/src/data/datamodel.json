@@ -507,6 +507,7 @@
             "near_target": "0.9",
             "default_source": "owasp_dependency_check",
             "sources": [
+                "axe_core",
                 "cloc",
                 "cobertura",
                 "owasp_dependency_check",
@@ -929,7 +930,8 @@
                     ],
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -941,7 +943,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -952,7 +955,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -963,7 +967,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -974,7 +979,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "tags_to_include": {
