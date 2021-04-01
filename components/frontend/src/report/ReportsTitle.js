@@ -42,7 +42,7 @@ export function ReportsTitle(props) {
                             options={props.permissions[EDIT_REPORT_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_REPORT_PERMISSION, value)}
-                            value={props.permissions.edit_reports || []}
+                            value={props.permissions.edit_reports.join(", ") || []}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -54,7 +54,7 @@ export function ReportsTitle(props) {
                             options={props.permissions[EDIT_ENTITY_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_ENTITY_PERMISSION, value)}
-                            value={props.permissions.edit_entities || []}
+                            value={props.permissions.edit_entities.join(", ") || []}
                         />
                     </Grid.Column>
                 </Grid.Row>

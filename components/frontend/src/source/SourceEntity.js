@@ -1,11 +1,12 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table, TableRow } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 import { source_entity_status_name } from './source_entity_status';
 import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
+import { EDIT_ENTITY_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SourceEntity(props) {
   const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(props.status);
@@ -30,15 +31,30 @@ export function SourceEntity(props) {
     source_uuid={props.source_uuid}
     status={props.status}
   />;
+  const entityCells = <>
+    <Table.Cell>{source_entity_status_name[props.status]}</Table.Cell>
+    {props.entity_attributes.map((entity_attribute, col_index) =>
+      <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)}>
+        <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
+      </Table.Cell>)}
+  </>;
   return (
-    <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
-      <>
-        <Table.Cell>{source_entity_status_name[props.status]}</Table.Cell>
-        {props.entity_attributes.map((entity_attribute, col_index) =>
-          <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)}>
-            <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
-          </Table.Cell>)}
-      </>
-    </TableRowWithDetails>
+    <ReadOnlyOrEditable
+      requiredPermissions={[EDIT_ENTITY_PERMISSION]}
+      editableComponent={
+        <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
+          {entityCells}
+        </TableRowWithDetails>
+      }
+      readOnlyComponent={
+        <TableRow className={status} details={details} key={props.entity.key} style={style}>
+          <>
+            <Table.Cell></Table.Cell>
+            {entityCells}
+          </>
+        </TableRow>
+      }
+      >
+    </ReadOnlyOrEditable>
   );
 }
