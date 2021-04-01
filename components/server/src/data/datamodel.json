@@ -509,7 +509,8 @@
             "sources": [
                 "cloc",
                 "cobertura",
-                "owasp_dependency_check"
+                "owasp_dependency_check",
+                "owasp_zap"
             ],
             "tags": [
                 "ci"
@@ -4234,7 +4235,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -4246,7 +4248,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -4257,7 +4260,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -4268,7 +4272,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -4279,7 +4284,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "alerts": {

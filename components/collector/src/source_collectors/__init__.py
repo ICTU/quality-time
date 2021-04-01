@@ -91,6 +91,7 @@ from .owasp_dependency_check.source_version import OWASPDependencyCheckSourceVer
 
 from .owasp_zap.security_warnings import OWASPZAPSecurityWarnings
 from .owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness
+from .owasp_zap.source_version import OWASPZAPSourceVersion
 
 from .performancetest_runner.performancetest_duration import PerformanceTestRunnerPerformanceTestDuration
 from .performancetest_runner.performancetest_scalability import PerformanceTestRunnerScalability
