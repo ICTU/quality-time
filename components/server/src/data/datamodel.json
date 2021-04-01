@@ -508,6 +508,7 @@
             "default_source": "owasp_dependency_check",
             "sources": [
                 "cloc",
+                "cobertura",
                 "owasp_dependency_check"
             ],
             "tags": [
@@ -2048,6 +2049,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2061,6 +2063,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2073,6 +2076,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2085,6 +2089,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2097,6 +2102,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]

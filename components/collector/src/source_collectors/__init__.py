@@ -26,6 +26,7 @@ from .cloc.loc import ClocLOC
 from .cloc.source_version import ClocSourceVersion
 
 from .cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
+from .cobertura.source_version import CoberturaSourceVersion
 from .cobertura.uncovered_branches import CoberturaUncoveredBranches
 from .cobertura.uncovered_lines import CoberturaUncoveredLines
 
