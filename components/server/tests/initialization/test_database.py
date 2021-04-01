@@ -25,10 +25,10 @@ class DatabaseInitTest(unittest.TestCase):
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
-        with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock:
-            with patch.object(pathlib.Path, "open", mock_open(read_data=data_model_json)):
-                with patch("pymongo.MongoClient", self.mongo_client):
-                    init_database()
+        with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock, patch.object(
+            pathlib.Path, "open", mock_open(read_data=data_model_json)
+        ), patch("pymongo.MongoClient", self.mongo_client):
+            init_database()
         if assert_glob_called:
             glob_mock.assert_called()
         else:
@@ -123,5 +123,53 @@ class DatabaseInitTest(unittest.TestCase):
                     "notification_destination2": {"webhook": "https://www.url1.com"},
                     "notification_destination3": {"webhook": "https://www.url2.com"},
                 },
+            },
+        )
+
+    def test_rename_axe_selenium_python(self):
+        """Test that the axe-selenium-python source type is renamed to axe_core."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}},
+            {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
+            {
+                "_id": "3",
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {
+                                "type": "accessibility",
+                                "sources": {"source1": {"type": "axe_selenium_python"}},
+                            },
+                            "metric3": {
+                                "type": "accessibility",
+                                "sources": {
+                                    "source2": {"type": "axe_selenium_python", "name": "Don't change the source name"}
+                                },
+                            },
+                        }
+                    }
+                },
+            },
+        ]
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "3"},
+            {
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {
+                                "type": "accessibility",
+                                "sources": {"source1": {"type": "axe_core", "name": "axe-selenium-python"}},
+                            },
+                            "metric3": {
+                                "type": "accessibility",
+                                "sources": {"source2": {"type": "axe_core", "name": "Don't change the source name"}},
+                            },
+                        }
+                    }
+                }
             },
         )

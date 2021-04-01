@@ -25,7 +25,7 @@
             "default_source": "axecsv",
             "sources": [
                 "axecsv",
-                "axe_selenium_python",
+                "axe_core",
                 "manual_number",
                 "random"
             ],
@@ -458,7 +458,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "anchore",
-                "axe_selenium_python",
+                "axe_core",
                 "azure_devops",
                 "bandit",
                 "calendar",
@@ -883,13 +883,13 @@
                 }
             }
         },
-        "axe_selenium_python": {
-            "name": "axe-selenium-python",
-            "description": "axe-selenium-python integrates aXe and selenium to enable automated web accessibility testing.",
-            "url": "https://github.com/mozilla-services/axe-selenium-python",
+        "axe_core": {
+            "name": "Axe-core",
+            "description": "Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
+            "url": "https://github.com/dequelabs/axe-core",
             "parameters": {
                 "url": {
-                    "name": "URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format",
+                    "name": "URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -905,9 +905,9 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to an axe-selenium-python report in a human readable format",
+                    "name": "URL to an Axe-core report in a human readable format",
                     "short_name": "URL",
-                    "help": "If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format.",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -4796,7 +4796,7 @@
                     "values": [
                         "Anchore",
                         "Axe CSV",
-                        "axe-selenium-python",
+                        "Axe-core",
                         "Azure DevOps Server",
                         "Bandit",
                         "Calendar date",
@@ -4834,11 +4834,9 @@
                         "Wekan"
                     ],
                     "api_values": {
-                        "Snyk": "snyk",
-                        "JSON file with security warnings": "generic_json",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
-                        "axe-selenium-python": "axe_selenium_python",
+                        "Axe-core": "axe_core",
                         "Azure DevOps Server": "azure_devops",
                         "Bandit": "bandit",
                         "Calendar date": "calendar",
@@ -4853,6 +4851,7 @@
                         "Jenkins": "jenkins",
                         "Jenkins test report": "jenkins_test_report",
                         "Jira": "jira",
+                        "JSON file with security warnings": "generic_json",
                         "JUnit XML report": "junit",
                         "Manual number": "manual_number",
                         "NCover": "ncover",
@@ -4864,10 +4863,11 @@
                         "Performancetest-runner": "performancetest_runner",
                         "pip": "pip",
                         "Pyupio Safety": "pyupio_safety",
+                        "Quality-time": "quality_time",
                         "Random": "random",
                         "Robot Framework": "robot_framework",
                         "Robot Framework Jenkins plugin": "robot_framework_jenkins_plugin",
-                        "Quality-time": "quality_time",
+                        "Snyk": "snyk",
                         "SonarQube": "sonarqube",
                         "TestNG": "testng",
                         "Trello": "trello",

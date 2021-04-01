@@ -16,7 +16,7 @@ from .queries import is_password_parameter
 
 def hide_credentials(data_model, *reports) -> None:
     """Hide the credentials in the reports."""
-    for source in iter_sources(reports):
+    for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 source["parameters"][parameter_key] = "this string replaces credentials"
@@ -24,7 +24,7 @@ def hide_credentials(data_model, *reports) -> None:
 
 def encrypt_credentials(data_model, public_key: str, *reports: dict):
     """Encrypt all credentials in the reports."""
-    for source in iter_sources(reports):
+    for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 password = source["parameters"][parameter_key]
@@ -37,7 +37,7 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
 
 def decrypt_credentials(data_model, private_key: str, *reports: dict):
     """Decrypt all credentials in the reports."""
-    for source in iter_sources(reports):
+    for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
 
