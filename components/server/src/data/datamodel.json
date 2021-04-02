@@ -514,7 +514,8 @@
                 "gitlab",
                 "owasp_dependency_check",
                 "owasp_zap",
-                "robot_framework"
+                "robot_framework",
+                "sonarqube"
             ],
             "tags": [
                 "ci"
@@ -5463,6 +5464,7 @@
                         "long_units",
                         "security_warnings",
                         "source_up_to_dateness",
+                        "source_version",
                         "suppressed_violations",
                         "remediation_effort",
                         "tests",
@@ -5487,6 +5489,7 @@
                         "long_units",
                         "security_warnings",
                         "source_up_to_dateness",
+                        "source_version",
                         "suppressed_violations",
                         "remediation_effort",
                         "tests",

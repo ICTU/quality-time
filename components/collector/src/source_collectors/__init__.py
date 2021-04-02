@@ -130,6 +130,7 @@ from .sonarqube.many_parameters import SonarQubeManyParameters
 from .sonarqube.remediation_effort import SonarQubeRemediationEffort
 from .sonarqube.security_warnings import SonarQubeSecurityWarnings
 from .sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
+from .sonarqube.source_version import SonarQubeSourceVersion
 from .sonarqube.suppressed_violations import SonarQubeSuppressedViolations
 from .sonarqube.tests import SonarQubeTests
 from .sonarqube.uncovered_branches import SonarQubeUncoveredBranches
