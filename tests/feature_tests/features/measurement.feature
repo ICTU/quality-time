@@ -54,6 +54,14 @@ Feature: measurement
     When the collector measures "0"
     Then the metric status is "target_met"
 
+  Scenario: the metric has a version number scale, and an error happens while measuring
+    Given an existing metric with type "source_version"
+    And an existing source with type "owasp_dependency_check"
+    When the collector encounters a parse error
+    Then the metric status is "None"
+    And the collector measures "1.2.3"
+    Then the metric status is "target_met"
+
   Scenario: the metric is measured but deleted while being measured
     Given an existing source
     When the client deletes the metric
