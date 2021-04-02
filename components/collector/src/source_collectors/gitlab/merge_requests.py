@@ -6,10 +6,10 @@ from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from source_model import Entities, Entity, SourceResponses
 
-from .base import GitLabBase
+from .base import GitLabProjectBase
 
 
-class GitLabMergeRequests(GitLabBase):
+class GitLabMergeRequests(GitLabProjectBase):
     """Collector class to measure the number of merge requests."""
 
     async def _api_url(self) -> URL:

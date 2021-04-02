@@ -15,15 +15,6 @@ from source_model import Entities, Entity, SourceResponses
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for GitLab collectors."""
 
-    async def _gitlab_api_url(self, api: str) -> URL:
-        """Return a GitLab API url with private token, if present in the parameters."""
-        url = await super()._api_url()
-        project = self._parameter("project", quote=True)
-        api_url = f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else "")
-        sep = "&" if "?" in api_url else "?"
-        api_url += f"{sep}per_page=100"
-        return URL(api_url)
-
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
         all_responses = responses = await super()._get_source_responses(*urls)
@@ -48,7 +39,20 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
-class GitLabJobsBase(GitLabBase):
+class GitLabProjectBase(GitLabBase, ABC):  # pylint: disable=abstract-method
+    """Base class for GitLab collectors for a specific project."""
+
+    async def _gitlab_api_url(self, api: str) -> URL:
+        """Return a GitLab API url for a project, if present in the parameters."""
+        url = await super()._api_url()
+        project = self._parameter("project", quote=True)
+        api_url = f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else "")
+        sep = "&" if "?" in api_url else "?"
+        api_url += f"{sep}per_page=100"
+        return URL(api_url)
+
+
+class GitLabJobsBase(GitLabProjectBase):
     """Base class for GitLab job collectors."""
 
     async def _api_url(self) -> URL:

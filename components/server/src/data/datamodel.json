@@ -511,6 +511,7 @@
                 "cloc",
                 "cobertura",
                 "cxsast",
+                "gitlab",
                 "owasp_dependency_check",
                 "owasp_zap",
                 "robot_framework"
@@ -2496,6 +2497,7 @@
                         "failed_jobs",
                         "merge_requests",
                         "source_up_to_dateness",
+                        "source_version",
                         "unmerged_branches",
                         "unused_jobs"
                     ]
@@ -2526,6 +2528,7 @@
                         "failed_jobs",
                         "merge_requests",
                         "source_up_to_dateness",
+                        "source_version",
                         "unmerged_branches",
                         "unused_jobs"
                     ]

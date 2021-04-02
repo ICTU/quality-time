@@ -46,6 +46,7 @@ from .generic_json.security_warnings import GenericJSONSecurityWarnings
 from .gitlab.failed_jobs import GitLabFailedJobs
 from .gitlab.merge_requests import GitLabMergeRequests
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
+from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unmerged_branches import GitLabUnmergedBranches
 from .gitlab.unused_jobs import GitLabUnusedJobs
 
