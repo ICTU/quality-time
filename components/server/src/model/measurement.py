@@ -140,7 +140,7 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
     @staticmethod
     def parse_version(value: Optional[str]) -> Version:
         """Parse the version."""
-        if value is not None:
+        if value is not None:  # pragma: no cover-behave
             try:
                 return Version(value)
             except InvalidVersion:
