@@ -172,7 +172,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         previous = None if self.__previous_measurement is None else self.__previous_measurement[scale]
         # Mypy thinks the SCALE_CLASSES dict lookup results in a class of type ScaleMeasurement and complains that
         # ScaleMeasurement, being abstract, can't be instantiated. Suppress the error.
-        return measurement_class(self.get(scale, {}), measurement=self, previous_scale_measurement=previous)  # type: ignore[abstract]
+        return measurement_class(
+            self.get(scale, {}), measurement=self, previous_scale_measurement=previous
+        )  # type: ignore[abstract]
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
