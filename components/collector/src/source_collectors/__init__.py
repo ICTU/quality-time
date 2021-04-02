@@ -39,6 +39,7 @@ from .composer.dependencies import ComposerDependencies
 
 from .cxsast.security_warnings import CxSASTSecurityWarnings
 from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
+from .cxsast.source_version import CxSASTSourceVersion
 
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
 

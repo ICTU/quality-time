@@ -15,8 +15,6 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     def __init__(self, *args, **kwargs) -> None:
         self.__token: Optional[str] = None
-        self.__project_id: Optional[str] = None
-        self._scan_id: Optional[str] = None
         super().__init__(*args, **kwargs)
 
     def _headers(self) -> dict[str, str]:
@@ -31,15 +29,10 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to create the landing url."""
-        api_url = await self._api_url()
-        return (
-            URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}")
-            if responses
-            else api_url
-        )
+        return URL(f"{await self._api_url()}/CxWebClient")
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Override because we need to do multiple requests to get all the data we need."""
+    async def _get_token(self) -> None:
+        """Retrieve the token."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
             username=cast(str, self._parameter("username")),
@@ -51,6 +44,32 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         )
         token_response = await self.__api_post("auth/identity/connect/token", credentials)
         self.__token = (await token_response.json())["access_token"]
+
+    async def __api_post(self, api: str, data) -> aiohttp.ClientResponse:
+        """Post to the API and return the response."""
+        return await self._session.post(f"{await self._api_url()}/cxrestapi/{api}", data=data)
+
+
+class CxSASTScanBase(CxSASTBase):
+    """Base class for Checkmarx collectors that need scans."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        self.__project_id: Optional[str] = None
+        self._scan_id: Optional[str] = None
+        super().__init__(*args, **kwargs)
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to create the landing url."""
+        landing_url = await super()._landing_url(responses)
+        return (
+            URL(f"{landing_url}/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}")
+            if responses
+            else landing_url
+        )
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Override because we need to do multiple requests to get all the data we need."""
+        await self._get_token()
         project_api = URL(f"{await self._api_url()}/cxrestapi/projects")
         project_response = (await super()._get_source_responses(project_api))[0]
         self.__project_id = await self.__get_project_id(project_response)
@@ -66,7 +85,3 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         project_name_or_id = self._parameter("project")
         projects = await project_response.json()
         return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
-
-    async def __api_post(self, api: str, data) -> aiohttp.ClientResponse:
-        """Post to the API and return the response."""
-        return await self._session.post(f"{await self._api_url()}/cxrestapi/{api}", data=data)
