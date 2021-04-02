@@ -60,6 +60,7 @@ from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredL
 
 from .jenkins.failed_jobs import JenkinsFailedJobs
 from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
+from .jenkins.source_version import JenkinsSourceVersion
 from .jenkins.unused_jobs import JenkinsUnusedJobs
 
 from .jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
