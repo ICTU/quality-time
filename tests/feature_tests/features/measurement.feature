@@ -59,7 +59,7 @@ Feature: measurement
     And an existing source with type "owasp_dependency_check"
     When the collector encounters a parse error
     Then the metric status is "None"
-    And the collector measures "1.2.3"
+    When the collector measures "1.2.3"
     Then the metric status is "target_met"
 
   Scenario: the metric is measured but deleted while being measured
