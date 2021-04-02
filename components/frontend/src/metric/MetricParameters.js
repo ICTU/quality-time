@@ -31,7 +31,6 @@ export function MetricParameters(props) {
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
     const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
-    //const fewer = metric_scale === "percentage" ? `A lower percentage of ${metric_unit_without_percentage}` : `Fewer ${metric_unit}`;
     const fewer = {count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number"}[metric_scale];
     const more = {count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number"}[metric_scale];
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:

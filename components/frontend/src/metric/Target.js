@@ -10,7 +10,7 @@ export function Target(props) {
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
     const default_target = metric_type[props.target_type];
-    const value = props.metric[props.target_type];
+    const measurement_value = props.metric[props.target_type];
     const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const label = props.label + (metric_type[props.target_type] === props.metric[props.target_type] || default_target === undefined ? '' : ` (default: ${default_target} ${metric_unit})`);
@@ -20,7 +20,7 @@ export function Target(props) {
                 label={label}
                 prefix={metric_direction_prefix}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
-                value={value}
+                value={measurement_value}
             />
         )
     } else {
@@ -33,7 +33,7 @@ export function Target(props) {
                 prefix={metric_direction_prefix}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
                 unit={metric_unit}
-                value={value}
+                value={measurement_value}
             />
         );
     }
