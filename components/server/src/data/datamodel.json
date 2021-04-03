@@ -517,6 +517,7 @@
                 "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
+                "quality_time",
                 "robot_framework",
                 "sonarqube"
             ],
@@ -4743,7 +4744,8 @@
                     "default_value": "",
                     "metrics": [
                         "metrics",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "status": {
