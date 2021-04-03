@@ -87,6 +87,7 @@ from .ojaudit.violations import OJAuditViolations
 
 from .openvas.security_warnings import OpenVASSecurityWarnings
 from .openvas.source_up_to_dateness import OpenVASSourceUpToDateness
+from .openvas.source_version import OpenVASSourceVersion
 
 from .owasp_dependency_check.dependencies import OWASPDependencyCheckDependencies
 from .owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
