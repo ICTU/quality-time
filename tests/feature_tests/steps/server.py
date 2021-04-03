@@ -7,7 +7,7 @@ from behave import then, when
 @when("the client gets the server information")
 def get_server_info(context):
     """Get the server info."""
-    context.server_info = context.get(f"server")
+    context.server_info = context.get("server")
 
 
 @then("the server information is returned")
