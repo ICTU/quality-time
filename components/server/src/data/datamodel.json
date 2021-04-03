@@ -513,6 +513,7 @@
                 "cxsast",
                 "gitlab",
                 "jenkins",
+                "jira",
                 "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
@@ -3261,6 +3262,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]
@@ -3289,6 +3291,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]
@@ -3303,6 +3306,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]

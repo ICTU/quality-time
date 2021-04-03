@@ -69,6 +69,7 @@ from .jenkins_test_report.tests import JenkinsTestReportTests
 from .jira.issues import JiraIssues
 from .jira.manual_test_duration import JiraManualTestDuration
 from .jira.manual_test_execution import JiraManualTestExecution
+from .jira.source_version import JiraSourceVersion
 from .jira.user_story_points import JiraUserStoryPoints
 from .jira.velocity import JiraVelocity
 
