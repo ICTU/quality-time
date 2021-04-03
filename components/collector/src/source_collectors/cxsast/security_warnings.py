@@ -4,15 +4,15 @@ from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
 from source_model import SourceResponses
 
-from .base import CxSASTBase
+from .base import CxSASTScanBase
 
 
-class CxSASTSecurityWarnings(CxSASTBase):
+class CxSASTSecurityWarnings(CxSASTScanBase):
     """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get the scan results."""
-        await super()._get_source_responses(*urls)  # Get token
+        await super()._get_source_responses(*urls)  # Get scan id
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 

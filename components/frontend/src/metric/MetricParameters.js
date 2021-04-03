@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Header, Icon } from 'semantic-ui-react';
 import { MetricType } from './MetricType';
-import { IntegerInput } from '../fields/IntegerInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -9,6 +8,7 @@ import { Comment } from '../fields/Comment';
 import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
+import { Target } from './Target';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -31,12 +31,10 @@ export function MetricParameters(props) {
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
     const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
-    const fewer = metric_scale === "percentage" ? `A lower percentage of ${metric_unit_without_percentage}` : `Fewer ${metric_unit}`;
-    const more = metric_scale === "percentage" ? `A higher percentage of ${metric_unit_without_percentage}` : `More ${metric_unit}`;
+    const fewer = {count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number"}[metric_scale];
+    const more = {count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number"}[metric_scale];
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
-    const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
-    const max = metric_scale === "percentage" ? "100" : null;
     const tags = Object.keys(props.report.summary_by_tag || {});
     const scale_options = metric_scale_options(metric_type.scales || ["count"], props.datamodel);
     return (
@@ -97,37 +95,30 @@ export function MetricParameters(props) {
                             value={metric_direction || "<"}
                         />
                     </Grid.Column>
-                    <Grid.Column>
-                        <StringInput
-                            label="Metric unit"
-                            placeholder={metric_type.unit}
-                            prefix={metric_scale === "percentage" ? "%" : ""}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "unit", value, props.reload)}
-                            value={props.metric.unit}
-                        />
-                    </Grid.Column>
+                    {metric_scale !== "version_number" &&
+                        <Grid.Column>
+                            <StringInput
+                                label="Metric unit"
+                                placeholder={metric_type.unit}
+                                prefix={metric_scale === "percentage" ? "%" : ""}
+                                set_value={(value) => set_metric_attribute(props.metric_uuid, "unit", value, props.reload)}
+                                value={props.metric.unit}
+                            />
+                        </Grid.Column>}
                 </Grid.Row>
                 <Grid.Row columns={3}>
                     <Grid.Column>
-                        <IntegerInput
-                            label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
-                            max={max}
-                            min="0"
-                            prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "target", value, props.reload)}
-                            unit={metric_unit}
-                            value={props.metric.target}
+                        <Target
+                            label="Metric target"
+                            target_type="target"
+                            {...props}
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <IntegerInput
-                            label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
-                            max={max}
-                            min="0"
-                            prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "near_target", value, props.reload)}
-                            unit={metric_unit}
-                            value={props.metric.near_target}
+                        <Target
+                            label="Metric near target"
+                            target_type="near_target"
+                            {...props}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -143,14 +134,10 @@ export function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <IntegerInput
+                        <Target
                             label="Accepted technical debt"
-                            max={max}
-                            min="0"
-                            prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_target", value, props.reload)}
-                            unit={metric_unit}
-                            value={props.metric.debt_target}
+                            target_type="debt_target"
+                            {...props}
                         />
                     </Grid.Column>
                     <Grid.Column>

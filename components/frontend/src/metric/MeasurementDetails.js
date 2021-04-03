@@ -49,11 +49,15 @@ export function MeasurementDetails(props) {
     }
   );
   if (measurements.length > 0) {
+    if (metric.scale !== "version_number") {
+      panes.push(
+        {
+          menuItem: <Menu.Item key='trend_graph'><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
+          render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+        }
+      )
+    }
     panes.push(
-      {
-        menuItem: <Menu.Item key='trend_graph'><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
-      },
       {
         menuItem: <Menu.Item key='trend_table'><FocusableTab>{'Trend table'}</FocusableTab></Menu.Item>,
         render: () => (
@@ -61,14 +65,14 @@ export function MeasurementDetails(props) {
             <TrendTable
               datamodel={props.datamodel}
               reportDate={props.report_date}
-              metrics={{[props.metric_uuid]: metric}}
+              metrics={{ [props.metric_uuid]: metric }}
               showTargets={true}
               measurements={measurements}
               trendTableInterval={props.trendTableInterval}
               setTrendTableInterval={props.setTrendTableInterval}
               trendTableNrDates={props.trendTableNrDates}
               setTrendTableNrDates={props.setTrendTableNrDates}
-          />
+            />
           </Tab.Pane>
         )
       }

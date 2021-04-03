@@ -14,7 +14,10 @@ class OWASPDependencyCheckTestCase(SourceCollectorTestCase):  # skipcq: PTC-W004
         self.file_name = "jquery.min.js"
         self.file_path = f"/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/{self.file_name}"
         self.xml = f"""<?xml version="1.0"?>
-            <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
+            <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.2.xsd">
+                <scanInfo>
+                    <engineVersion>5.2.1</engineVersion>
+                </scanInfo>
                 <projectInfo>
                     <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
                 </projectInfo>

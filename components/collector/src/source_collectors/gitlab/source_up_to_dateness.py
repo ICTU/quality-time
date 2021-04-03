@@ -10,10 +10,10 @@ from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Value
 from source_model import SourceResponses
 
-from .base import GitLabBase
+from .base import GitLabProjectBase
 
 
-class GitLabSourceUpToDateness(GitLabBase):
+class GitLabSourceUpToDateness(GitLabProjectBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     async def _api_url(self) -> URL:

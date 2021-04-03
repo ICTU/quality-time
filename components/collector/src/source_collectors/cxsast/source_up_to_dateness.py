@@ -6,10 +6,10 @@ from collector_utilities.functions import days_ago
 from collector_utilities.type import Value
 from source_model import SourceResponses
 
-from .base import CxSASTBase
+from .base import CxSASTScanBase
 
 
-class CxSASTSourceUpToDateness(CxSASTBase):
+class CxSASTSourceUpToDateness(CxSASTScanBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
     async def _parse_value(self, responses: SourceResponses) -> Value:

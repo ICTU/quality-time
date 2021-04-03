@@ -18,6 +18,7 @@ from routes import (  # lgtm [py/unused-import]
     notification,
     report,
     reports,
+    server,
     source,
     subject,
 )

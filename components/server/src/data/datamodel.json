@@ -7,6 +7,10 @@
         "percentage": {
             "name": "Percentage",
             "description": "Percentage of objects (for example, percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
+        },
+        "version_number": {
+            "name": "Version number",
+            "description": "Version numbers of sources (for example, GitLab 10.2, SonarQube 7.4.1, Quality-time 3.27.1rc-1)."
         }
     },
     "metrics": {
@@ -489,6 +493,38 @@
                 "ci"
             ]
         },
+        "source_version": {
+            "name": "Source version",
+            "description": "The version number of the source.",
+            "scales": [
+                "version_number"
+            ],
+            "default_scale": "version_number",
+            "unit": "",
+            "addition": "min",
+            "direction": ">",
+            "target": "1.0",
+            "near_target": "0.9",
+            "default_source": "owasp_dependency_check",
+            "sources": [
+                "axe_core",
+                "cloc",
+                "cobertura",
+                "cxsast",
+                "gitlab",
+                "jenkins",
+                "jira",
+                "openvas",
+                "owasp_dependency_check",
+                "owasp_zap",
+                "quality_time",
+                "robot_framework",
+                "sonarqube"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "security_warnings": {
             "name": "Security warnings",
             "description": "The number of security warnings about the software.",
@@ -901,7 +937,8 @@
                     ],
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -913,7 +950,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -924,7 +962,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -935,7 +974,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -946,7 +986,8 @@
                     "default_value": "",
                     "metrics": [
                         "accessibility",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "tags_to_include": {
@@ -1909,7 +1950,8 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -1920,7 +1962,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -1930,7 +1973,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -1940,7 +1984,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -1950,7 +1995,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "loc"
+                        "loc",
+                        "source_version"
                     ]
                 },
                 "languages_to_ignore": {
@@ -2018,6 +2064,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2031,6 +2078,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2043,6 +2091,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2055,6 +2104,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2067,6 +2117,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "uncovered_branches",
                         "uncovered_lines"
                     ]
@@ -2268,7 +2319,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "project": {
@@ -2290,7 +2342,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -2301,7 +2354,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "severities": {
@@ -2448,6 +2502,7 @@
                         "failed_jobs",
                         "merge_requests",
                         "source_up_to_dateness",
+                        "source_version",
                         "unmerged_branches",
                         "unused_jobs"
                     ]
@@ -2478,6 +2533,7 @@
                         "failed_jobs",
                         "merge_requests",
                         "source_up_to_dateness",
+                        "source_version",
                         "unmerged_branches",
                         "unused_jobs"
                     ]
@@ -2854,6 +2910,7 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
+                        "source_version",
                         "unused_jobs"
                     ]
                 },
@@ -2866,6 +2923,7 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
+                        "source_version",
                         "unused_jobs"
                     ]
                 },
@@ -2879,6 +2937,7 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
+                        "source_version",
                         "unused_jobs"
                     ]
                 },
@@ -3204,6 +3263,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]
@@ -3232,6 +3292,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]
@@ -3246,6 +3307,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
+                        "source_version",
                         "user_story_points",
                         "velocity"
                     ]
@@ -3937,7 +3999,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -3949,7 +4012,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -3960,7 +4024,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -3971,7 +4036,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -3982,7 +4048,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "severities": {
@@ -4057,7 +4124,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -4070,7 +4138,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -4082,7 +4151,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -4094,7 +4164,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -4106,7 +4177,8 @@
                     "metrics": [
                         "dependencies",
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "severities": {
@@ -4193,7 +4265,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "landing_url": {
@@ -4205,7 +4278,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "username": {
@@ -4216,7 +4290,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "password": {
@@ -4227,7 +4302,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "private_token": {
@@ -4238,7 +4314,8 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "alerts": {
@@ -4667,7 +4744,8 @@
                     "default_value": "",
                     "metrics": [
                         "metrics",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "source_version"
                     ]
                 },
                 "status": {
@@ -4738,6 +4816,7 @@
                         "Size (LOC)",
                         "Slow transactions",
                         "Source up-to-dateness",
+                        "Source version",
                         "Suppressed violations",
                         "Test branch coverage",
                         "Test line coverage",
@@ -4770,6 +4849,7 @@
                         "Size (LOC)": "loc",
                         "Slow transactions": "slow_transactions",
                         "Source up-to-dateness": "source_up_to_dateness",
+                        "Source version": "source_version",
                         "Suppressed violations": "suppressed_violations",
                         "Test branch coverage": "uncovered_branches",
                         "Test line coverage": "uncovered_lines",
@@ -4960,6 +5040,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -4972,6 +5053,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -4983,6 +5065,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -4994,6 +5077,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5005,6 +5089,7 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
+                        "source_version",
                         "tests"
                     ]
                 },
@@ -5395,6 +5480,7 @@
                         "long_units",
                         "security_warnings",
                         "source_up_to_dateness",
+                        "source_version",
                         "suppressed_violations",
                         "remediation_effort",
                         "tests",
@@ -5419,6 +5505,7 @@
                         "long_units",
                         "security_warnings",
                         "source_up_to_dateness",
+                        "source_version",
                         "suppressed_violations",
                         "remediation_effort",
                         "tests",
@@ -6277,6 +6364,7 @@
                 "merge_requests",
                 "performancetest_duration",
                 "source_up_to_dateness",
+                "source_version",
                 "unmerged_branches",
                 "unused_jobs"
             ]
@@ -6325,6 +6413,7 @@
                 "security_warnings",
                 "slow_transactions",
                 "source_up_to_dateness",
+                "source_version",
                 "suppressed_violations",
                 "tests",
                 "uncovered_branches",

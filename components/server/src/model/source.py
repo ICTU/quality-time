@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import cast, Optional, TYPE_CHECKING
 
 from server_utilities.functions import days_ago, iso_timestamp
 
@@ -24,13 +24,13 @@ class Source(dict):  # lgtm [py/missing-equals]
         self.__metric = metric
         super().__init__(*args, **kwargs)
 
-    def total(self) -> int:
+    def total(self) -> Optional[str]:
         """Return the measurement total of the source."""
-        return int(self["total"] or "100")
+        return cast(Optional[str], self["total"])
 
-    def value(self) -> int:
+    def value(self) -> Optional[str]:
         """Return the measurement value of the source."""
-        return int(self["value"]) - self._value_of_entities_to_ignore()
+        return cast(Optional[str], self["value"])
 
     def copy_entity_user_data(self, source: Source) -> None:
         """Copy the user entity data of the source to this source."""
@@ -59,7 +59,7 @@ class Source(dict):  # lgtm [py/missing-equals]
                     attributes["orphaned_since"] = iso_timestamp()
             self.setdefault("entity_user_data", {})[entity_key] = attributes
 
-    def _value_of_entities_to_ignore(self) -> int:
+    def value_of_entities_to_ignore(self) -> int:
         """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
 
         If the entities have a measured attribute, return the sum of the measured attributes of the ignored

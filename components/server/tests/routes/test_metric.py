@@ -63,12 +63,12 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
-        self.database.datamodels.find_one.return_value = dict(
+        self.data_model = dict(
             _id="id",
             metrics=dict(
                 old_type=dict(name="Old type", scales=["count"]),
                 new_type=dict(
-                    scales=["count"],
+                    scales=["count", "version_number"],
                     default_scale="count",
                     addition="sum",
                     direction="<",
@@ -79,6 +79,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                 ),
             ),
         )
+        self.database.datamodels.find_one.return_value = self.data_model
 
     @staticmethod
     def set_measurement_id(measurement):
@@ -111,6 +112,55 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(target="10")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
         self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'")
+
+    def test_post_metric_target_invalid_version_number(self, request):
+        """Test that changing the target to an invalid version works."""
+        self.data_model["metrics"]["old_type"]["scales"].append("version_number")
+        self.database.measurements.find_one.return_value = None
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
+        request.json = dict(target="invalid")
+        self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
+        self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to 'invalid'")
+
+    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_post_metric_target_invalid_version_number_with_measurements(self, request):
+        """Test that changing the target to an invalid version adds a new measurement if one or more exist."""
+        sources = [dict(parse_error=None, connection_error=None, value="1.0")]
+        self.data_model["metrics"]["old_type"]["scales"] = ["version_number"]
+        self.database.measurements.find_one.return_value = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            sources=sources,
+            version_number=dict(
+                status="target_met", value="1.0", target="1.2", near_target="1.4", debt_target=None, direction="<"
+            ),
+        )
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["target"] = "1.2"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["near_target"] = "1.4"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["status"] = "target_met"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
+        request.json = dict(target="invalid")
+        self.assertDictEqual(
+            dict(
+                end="2019-01-01",
+                sources=sources,
+                start="2019-01-01",
+                metric_uuid=METRIC_ID,
+                version_number=dict(
+                    status="near_target_met",
+                    value="1.0",
+                    target="invalid",
+                    near_target="1.4",
+                    debt_target=None,
+                    direction="<",
+                    status_start="2019-01-01",
+                ),
+            ),
+            post_metric_attribute(METRIC_ID, "target", self.database),
+        )
+        self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '1.2' to 'invalid'")
 
     @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):

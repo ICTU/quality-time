@@ -10,10 +10,10 @@ from collector_utilities.functions import days_ago, match_string_or_regular_expr
 from collector_utilities.type import URL
 from source_model import SourceResponses
 
-from .base import GitLabBase
+from .base import GitLabProjectBase
 
 
-class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
+class GitLabUnmergedBranches(GitLabProjectBase, UnmergedBranchesSourceCollector):
     """Collector class to measure the number of unmerged branches."""
 
     async def _api_url(self) -> URL:

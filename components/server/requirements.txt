@@ -2,6 +2,7 @@ bottle==0.12.19
 bottle-mongo==0.3.0
 gevent==21.1.2
 lxml==4.6.3
+packaging==20.8
 pymongo==3.11.3
 ldap3==2.9
 requests==2.25.1

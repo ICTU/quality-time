@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Reports can be exported and imported via API. Partially fixes [1693](https://github.com/ICTU/quality-time/issues/1693).
 - When measuring security warnings with OWASP ZAP as source, allow for counting alert types as security warnings as opposed to alert instances. Closes [#1902](https://github.com/ICTU/quality-time/issues/1902).
+- Added a new metric 'source version' that can be used to measure the version of a source and compare it with a minimum or maximum version number. See the [metrics and sources overview](METRICS_AND_SOURCES.md) for a list of sources that support this metric. Closes [#1904](https://github.com/ICTU/quality-time/issues/1904).
 - Added support for Axe-core JSON files (or zips with Axe-core JSON files) as source for measuring accessibility violations. Closes [#1981](https://github.com/ICTU/quality-time/issues/1981).
 
 ### Removed

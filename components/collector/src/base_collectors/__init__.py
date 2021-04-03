@@ -13,5 +13,6 @@ from .source_collector import (
     SourceCollectorException,
     SourceMeasurement,
     SourceUpToDatenessCollector,
+    SourceVersionCollector,
     UnmergedBranchesSourceCollector,
 )

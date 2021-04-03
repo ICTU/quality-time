@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Any, Final, Optional, Union, cast
 
 import aiohttp
+from packaging.version import Version
 
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
 from collector_utilities.type import URL, Response, Value
@@ -256,4 +257,21 @@ class SourceUpToDatenessCollector(SourceCollector):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the datetime from the source."""
+        raise NotImplementedError  # pragma: no cover
+
+
+class SourceVersionCollector(SourceCollector):
+    """Base class for source version collectors."""
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the version from the parse version method that subclasses should implement."""
+        versions = await self._parse_source_response_versions(responses)
+        return SourceMeasurement(value=str(min(versions)))
+
+    async def _parse_source_response_versions(self, responses: SourceResponses) -> Sequence[Version]:
+        """Parse the source versions from the responses and return the versions."""
+        return await asyncio.gather(*[self._parse_source_response_version(response) for response in responses])
+
+    async def _parse_source_response_version(self, response: Response) -> Version:
+        """Parse the version from the source."""
         raise NotImplementedError  # pragma: no cover
