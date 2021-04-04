@@ -462,6 +462,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "anchore",
+                "anchore_jenkins_plugin",
                 "axe_core",
                 "azure_devops",
                 "bandit",
@@ -937,7 +938,8 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_up_to_dateness"
                     ]
                 },
                 "username": {
@@ -947,7 +949,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_up_to_dateness"
                     ]
                 },
                 "password": {
@@ -958,7 +961,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_up_to_dateness"
                     ]
                 },
                 "severities": {
