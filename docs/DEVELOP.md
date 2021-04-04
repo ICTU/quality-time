@@ -5,6 +5,7 @@
 - [Develop](#develop)
 - [Test](#test)
 - [Release](#release)
+- [Maintain](#maintain)
 - [Software components](#software-components)
 - [Adding metrics and sources](#adding-metrics-and-sources)
 
@@ -165,6 +166,22 @@ docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 cir
 ## Release
 
 See [release README](../release/README.md).
+
+## Maintain
+
+Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](../.github/dependabot.yml). 
+
+Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
+
+- [Database](../components/database/Dockerfile): the MongoDB base image.
+- [Collector](../components/collector/Dockerfile): the Python base image.
+- [Frontend](../components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
+- [LDAP](../components/ldap/Dockerfile): the OpenLDAP base image.
+- [Notifier](../components/notifier/Dockerfile): the Python base image.
+- [Proxy](../components/proxy/Dockerfile): the Caddy base image.
+- [Renderer](../components/renderer/Dockerfile): the url-to-pdf-api image.
+- [Server](../components/server/Dockerfile): the Python base image.
+- [Testdata](../components/testdata/Dockerfile): the Python base image.
 
 ## Software components
 
