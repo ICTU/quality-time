@@ -4,6 +4,7 @@ from typing import Any, NewType, Optional
 
 import aiohttp
 
+
 ErrorMessage = Optional[str]
 Job = dict[str, Any]
 Jobs = list[Job]

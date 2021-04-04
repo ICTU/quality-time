@@ -3,6 +3,8 @@
 from .anchore.security_warnings import AnchoreSecurityWarnings
 from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 
+from .anchore_jenkins_plugin.security_warnings import AnchoreJenkinsPluginSecurityWarnings
+
 from .axe_core.accessibility import AxeCoreAccessibility
 from .axe_core.source_up_to_dateness import AxeCoreSourceUpToDateness
 from .axe_core.source_version import AxeCoreSourceVersion

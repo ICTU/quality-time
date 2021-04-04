@@ -988,6 +988,10 @@
                     "name_plural": "security warnings",
                     "attributes": [
                         {
+                            "name": "Tag",
+                            "key": "tag"
+                        },
+                        {
                             "name": "CVE",
                             "key": "cve",
                             "url": "url"
