@@ -28,7 +28,7 @@ class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
         return await super()._get_source_responses(anchore_security_json_url)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the Anchore security warnings."""
+        """Override to parse the Anchore Jenkins plugin security warnings."""
         severities = self._parameter("severities")
         entities = Entities()
         for response in responses:
@@ -45,9 +45,6 @@ class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
     def _create_entity(self, vulnerability: list[str]) -> Entity:
         """Create an entity from the vulnerability."""
         return Entity(
-            # Include the filename in the hash so that it is unique even when multiple images contain the
-            # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
-            # if the source is not a zipped report (filename is an empty string in that case).
             key=md5_hash(f"{vulnerability[self.TAG]}:{vulnerability[self.CVE]}:{vulnerability[self.PACKAGE]}"),
             tag=vulnerability[self.TAG],
             cve=vulnerability[self.CVE],
