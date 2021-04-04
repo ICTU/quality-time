@@ -49,6 +49,7 @@ class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
             # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
             # if the source is not a zipped report (filename is an empty string in that case).
             key=md5_hash(f"{vulnerability[self.TAG]}:{vulnerability[self.CVE]}:{vulnerability[self.PACKAGE]}"),
+            tag=vulnerability[self.TAG],
             cve=vulnerability[self.CVE],
             package=vulnerability[self.PACKAGE],
             severity=vulnerability[self.SEVERITY],
