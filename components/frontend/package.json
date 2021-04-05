@@ -1,6 +1,6 @@
 {
   "name": "quality-time-app",
-  "version": "3.21.0-rc.2",
+  "version": "3.20.0-rc.1",
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
