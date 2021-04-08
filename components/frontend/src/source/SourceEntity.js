@@ -1,12 +1,11 @@
 import React from 'react';
-import { Table, TableRow } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 import { source_entity_status_name } from './source_entity_status';
 import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
-import { EDIT_ENTITY_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SourceEntity(props) {
   const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(props.status);
