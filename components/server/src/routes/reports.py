@@ -8,7 +8,7 @@ from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
 from model.transformations import hide_credentials, summarize_report
-from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import report_date_time
 
 

@@ -79,7 +79,10 @@ class ReportsTest(unittest.TestCase):
         request.json = dict(permissions={})
         self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
 
-        old_string = f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}'], '{EDIT_ENTITY_PERMISSION}': ['{self.email}']}}"
+        old_string = (
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}'], "
+            + f"'{EDIT_ENTITY_PERMISSION}': ['{self.email}']}}"
+        )
         self.assert_change_description("permissions", old_string, "{}")
 
     @patch("bottle.request")
