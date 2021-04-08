@@ -73,6 +73,17 @@ class AuthPluginTest(unittest.TestCase):
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertRaises(bottle.HTTPError, route.call)
 
+    def test_no_authorized_users_means_everybody_is_authorized(self):
+        """Test that an unauthorized cannot post."""
+        self.mock_database.reports_overviews.find_one.return_value = dict(_id="id", permissions={})
+        self.mock_database.sessions.find_one.return_value = dict(
+            user="jadoe",
+            email="jadoe@example.org",
+            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc),
+        )
+        route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
+        self.assertEqual(self.success, route.call())
+
     def test_authorized_session(self):
         """Test that an authorized can post."""
         self.mock_database.reports_overviews.find_one.return_value = dict(

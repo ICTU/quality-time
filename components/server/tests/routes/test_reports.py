@@ -2,7 +2,7 @@
 
 import unittest
 from unittest.mock import Mock, patch
-from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from routes.reports import get_reports, post_reports_attribute
 
@@ -61,33 +61,68 @@ class ReportsTest(unittest.TestCase):
         self.assert_change_description("layout")
 
     @patch("bottle.request")
-    def test_post_reports_attribute_editors(self, request):
+    def test_post_reports_report_permission(self, request):
         """Test that the reports (overview) editors can be changed."""
-        request.json = dict(permissions={EDIT_REPORT_PERMISSION: [self.other_mail]})
+        request.json = dict(permissions={EDIT_ENTITY_PERMISSION: [self.other_mail]})
         self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
-        self.assert_change_description(
-            "permissions", "None", f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', 'jenny']}}"
-        )
+        self.assert_change_description("permissions", "None", f"{{'{EDIT_ENTITY_PERMISSION}': ['{self.other_mail}']}}")
 
     @patch("bottle.request")
-    def test_post_reports_attribute_editors_clear(self, request):
+    def test_post_reports_attribute_permissions_clear(self, request):
         """Test that the reports (overview) editors can be cleared."""
         self.database.reports_overviews.find_one.return_value = dict(
-            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+            _id="id",
+            title="Reports",
+            subtitle="",
+            permissions={EDIT_REPORT_PERMISSION: [self.other_mail, self.email], EDIT_ENTITY_PERMISSION: [self.email]},
         )
-        request.json = dict(editors=[])
-        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", "[]")
+        request.json = dict(permissions={})
+        self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
+
+        old_string = f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}'], '{EDIT_ENTITY_PERMISSION}': ['{self.email}']}}"
+        self.assert_change_description("permissions", old_string, "{}")
 
     @patch("bottle.request")
     def test_post_reports_attribute_editors_remove_others(self, request):
         """Test that other editors can be removed from the reports (overview) editors."""
         self.database.reports_overviews.find_one.return_value = dict(
-            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+            _id="id", title="Reports", subtitle="", permissions={EDIT_REPORT_PERMISSION: [self.other_mail, self.email]}
         )
-        request.json = dict(editors=[self.email])
-        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", f"['{self.email}']")
+        request.json = dict(permissions={EDIT_REPORT_PERMISSION: [self.email]})
+        self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
+        self.assert_change_description(
+            "permissions",
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.email}']}}",
+        )
+
+    @patch("bottle.request")
+    def test_post_reports_report_permission_editors_cannot_remove_self(self, request):
+        """Test that other editors can be removed from the reports (overview) editors."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", permissions={EDIT_REPORT_PERMISSION: [self.other_mail, self.email]}
+        )
+        request.json = dict(permissions={EDIT_REPORT_PERMISSION: [self.other_mail]})
+        self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
+        self.assert_change_description(
+            "permissions",
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
+        )
+
+    @patch("bottle.request")
+    def test_post_reports_entity_permission_can_remove_self(self, request):
+        """Test that the reports (overview) editors can be changed."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", permissions={EDIT_ENTITY_PERMISSION: [self.other_mail, self.email]}
+        )
+        request.json = dict(permissions={EDIT_ENTITY_PERMISSION: [self.other_mail]})
+        self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
+        self.assert_change_description(
+            "permissions",
+            f"{{'{EDIT_ENTITY_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
+            f"{{'{EDIT_ENTITY_PERMISSION}': ['{self.other_mail}']}}",
+        )
 
     def test_get_report(self):
         """Test that a report can be retrieved and credentials are hidden."""
