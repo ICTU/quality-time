@@ -9,6 +9,7 @@ import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { Target } from './Target';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -59,6 +60,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Metric name"
                             placeholder={metric_type.name}
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "name", value, props.reload)}
@@ -67,6 +69,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <MultipleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Tags"
                             options={[...tags]}
@@ -78,6 +81,7 @@ export function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <SingleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Metric scale"
                             options={scale_options}
                             placeholder={metric_type.default_scale || "Count"}
@@ -87,6 +91,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <SingleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Metric direction"
                             options={[
                                 { key: "0", text: `${fewer} is better`, value: "<" },
@@ -101,6 +106,7 @@ export function MetricParameters(props) {
                                 label="Metric unit"
                                 placeholder={metric_type.unit}
                                 prefix={metric_scale === "percentage" ? "%" : ""}
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => set_metric_attribute(props.metric_uuid, "unit", value, props.reload)}
                                 value={props.metric.unit}
                             />
@@ -125,6 +131,7 @@ export function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <SingleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
                             value={props.metric.accept_debt || false}
                             options={[
@@ -142,6 +149,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <DateInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Technical debt end date"
                             placeholder="no end date"
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_end_date", value, props.reload)}
@@ -152,6 +160,7 @@ export function MetricParameters(props) {
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <Comment
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "comment", value, props.reload)}
                             value={props.metric.comment}
                         />

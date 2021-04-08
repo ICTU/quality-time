@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
 
 export function TextInput(props) {
   let { editableLabel, required, set_value, ...otherProps } = props;
   const [text, setText] = useState(props.value || '');
+  function readOnly(permissions) {
+    return props.requiredPermissions ? !accessGranted(permissions, props.requiredPermissions) : false
+  }
   function onChange(event) {
     setText(event.target.value)
   }
@@ -26,16 +29,16 @@ export function TextInput(props) {
   }
   return (
     <Form onSubmit={submit}>
-      <ReadOnlyContext.Consumer>{(readOnly) => (
+      <ReadOnlyContext.Consumer>{(permissions) => (
         <Form.TextArea
           {...otherProps}
           error={required && text === ""}
-          label={readOnly ? props.label : editableLabel || props.label}
+          label={readOnly(permissions) ? editableLabel || props.label : props.label}
           onBlur={submit}
           onChange={onChange}
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
-          readOnly={readOnly}
+          readOnly={readOnly(permissions)}
           style={{marginBottom: "20pt"}}
           value={text}
         />)}

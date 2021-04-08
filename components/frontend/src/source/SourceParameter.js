@@ -56,6 +56,7 @@ export function SourceParameter(props) {
     label = <label>{props.parameter_name} <Popup on={['hover', 'focus']} content={props.help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>
   }
   let parameter_props = {
+    requiredPermissions: props.requiredPermissions,
     editableLabel: <SourceParameterLabel edit_scope={edit_scope} label={label} setEditScope={setEditScope} {...props} />,
     label: label,
     placeholder: props.placeholder,

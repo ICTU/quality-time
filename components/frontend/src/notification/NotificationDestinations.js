@@ -26,6 +26,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                 <Grid.Row columns={2}>
                     <Grid.Column width={6}>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             id={destination_uuid}
                             label='Name'
                             set_value={(value) => {
@@ -36,6 +37,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     </Grid.Column>
                     <Grid.Column width={10}>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             placeholder="url"
                             label={label}
                             set_value={(value) => {

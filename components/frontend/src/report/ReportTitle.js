@@ -13,6 +13,7 @@ function ReportAttributesRow(props) {
         <Grid.Row columns={2}>
             <Grid.Column>
                 <StringInput
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     id="report-title"
                     label="Report title"
                     set_value={(value) => set_report_attribute(props.report_uuid, "title", value, props.reload)}
@@ -21,6 +22,7 @@ function ReportAttributesRow(props) {
             </Grid.Column>
             <Grid.Column>
                 <StringInput
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     id="report-subtitle"
                     label="Report subtitle"
                     set_value={(value) => set_report_attribute(props.report_uuid, "subtitle", value, props.reload)}

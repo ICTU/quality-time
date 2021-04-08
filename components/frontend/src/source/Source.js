@@ -43,6 +43,7 @@ function AttributesRow(props) {
             </Grid.Column>
             <Grid.Column>
                 <StringInput
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     id="source-name"
                     label="Source name"
                     placeholder={props.source_type.name}

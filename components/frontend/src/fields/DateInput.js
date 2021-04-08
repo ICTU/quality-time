@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Input } from './Input';
 
 function EditableDateInput(props) {
@@ -27,7 +27,7 @@ function EditableDateInput(props) {
 export function DateInput(props) {
     return (
         <ReadOnlyOrEditable
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            requiredPermissions={props.requiredPermissions}
             readOnlyComponent={<Input {...props} />}
             editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />}
         />

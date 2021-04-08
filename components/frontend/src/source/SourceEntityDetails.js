@@ -5,6 +5,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_source_entity_attribute } from '../api/source';
 import { capitalize } from '../utils';
 import { source_entity_status_name as status_name } from './source_entity_status';
+import { EDIT_ENTITY_PERMISSION } from '../context/ReadOnly';
 
 function entity_status_option(status, text, content, subheader) {
   return {
@@ -28,6 +29,7 @@ export function SourceEntityDetails(props) {
       <Grid.Row columns={4}>
         <Grid.Column width={4}>
           <SingleChoiceInput
+            requiredPermissions={[EDIT_ENTITY_PERMISSION]}
             label={`${capitalize(props.name)} status`}
             options={entity_status_options(props.name)}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
@@ -37,6 +39,7 @@ export function SourceEntityDetails(props) {
         </Grid.Column>
         <Grid.Column width={12}>
           <TextInput
+            requiredPermissions={[EDIT_ENTITY_PERMISSION]}
             label="Rationale"
             placeholder={`Rationale for ${props.name} status...`}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.reload)}

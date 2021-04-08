@@ -21,6 +21,7 @@ export function ReportsTitle(props) {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview title"
                             set_value={(value) => set_reports_attribute("title", value, props.reload)}
                             value={props.title}
@@ -28,6 +29,7 @@ export function ReportsTitle(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview subtitle"
                             set_value={(value) => set_reports_attribute("subtitle", value, props.reload)}
                             value={props.subtitle}
@@ -37,24 +39,26 @@ export function ReportsTitle(props) {
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <MultipleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit reports (user name or email address)"
                             options={props.permissions[EDIT_REPORT_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_REPORT_PERMISSION, value)}
-                            value={props.permissions.edit_reports.join(", ") || []}
+                            value={props.permissions[EDIT_REPORT_PERMISSION]}
                         />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <MultipleChoiceInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit measured entities (user name or email address)"
                             options={props.permissions[EDIT_ENTITY_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_ENTITY_PERMISSION, value)}
-                            value={props.permissions.edit_entities.join(", ") || []}
+                            value={props.permissions[EDIT_ENTITY_PERMISSION]}
                         />
                     </Grid.Column>
                 </Grid.Row>

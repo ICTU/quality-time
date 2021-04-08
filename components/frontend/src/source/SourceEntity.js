@@ -39,22 +39,8 @@ export function SourceEntity(props) {
       </Table.Cell>)}
   </>;
   return (
-    <ReadOnlyOrEditable
-      requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-      editableComponent={
-        <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
-          {entityCells}
-        </TableRowWithDetails>
-      }
-      readOnlyComponent={
-        <TableRow className={status} details={details} key={props.entity.key} style={style}>
-          <>
-            <Table.Cell></Table.Cell>
-            {entityCells}
-          </>
-        </TableRow>
-      }
-      >
-    </ReadOnlyOrEditable>
+    <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
+      {entityCells}
+    </TableRowWithDetails>
   );
 }

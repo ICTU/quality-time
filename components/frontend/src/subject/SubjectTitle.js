@@ -48,6 +48,7 @@ export function SubjectTitle(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Subject name"
                             placeholder={current_subject_type.name}
                             set_value={(value) => set_subject_attribute(subject_uuid, "name", value, props.reload)}

@@ -19,6 +19,7 @@ export function Target(props) {
             <StringInput
                 label={label}
                 prefix={metric_direction_prefix}
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
                 value={measurement_value}
             />
@@ -31,6 +32,7 @@ export function Target(props) {
                 max={max}
                 min="0"
                 prefix={metric_direction_prefix}
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
                 unit={metric_unit}
                 value={measurement_value}

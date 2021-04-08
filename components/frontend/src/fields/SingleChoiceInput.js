@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;
@@ -30,7 +30,7 @@ export function SingleChoiceInput(props) {
   return (
     <Form>
       <ReadOnlyOrEditable
-        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+        requiredPermissions={props.requiredPermissions}
         readOnlyComponent={<Form.Input {...otherProps} value={value_text} />}
         editableComponent={<Dropdown />} />
     </Form>
