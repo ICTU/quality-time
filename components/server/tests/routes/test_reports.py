@@ -2,6 +2,7 @@
 
 import unittest
 from unittest.mock import Mock, patch
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 from routes.reports import get_reports, post_reports_attribute
 
@@ -62,9 +63,11 @@ class ReportsTest(unittest.TestCase):
     @patch("bottle.request")
     def test_post_reports_attribute_editors(self, request):
         """Test that the reports (overview) editors can be changed."""
-        request.json = dict(editors=[self.other_mail])
-        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        self.assert_change_description("editors", "None", f"['{self.other_mail}', 'jenny']")
+        request.json = dict(permissions={EDIT_REPORT_PERMISSION: [self.other_mail]})
+        self.assertEqual(dict(ok=True), post_reports_attribute("permissions", self.database))
+        self.assert_change_description(
+            "permissions", "None", f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', 'jenny']}}"
+        )
 
     @patch("bottle.request")
     def test_post_reports_attribute_editors_clear(self, request):
