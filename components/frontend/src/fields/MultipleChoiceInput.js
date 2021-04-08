@@ -11,7 +11,7 @@ function sort_options(option_list) {
 }
 
 export function MultipleChoiceInput(props) {
-  let { allowAdditions, editableLabel, required, set_value, value, ...otherProps } = props;
+  let { allowAdditions, editableLabel, required, set_value, value, requiredPermissions, ...otherProps } = props;
   const choices = props.value || [];
   const [options, setOptions] = useState(props.options);
   function onChange(event, { value }) { set_value(value) }
@@ -37,8 +37,8 @@ export function MultipleChoiceInput(props) {
   return (
     <Form>
       <ReadOnlyOrEditable 
-            requiredPermissions={props.requiredPermissions}
-            readOnlyComponent={<Form.Input value={value.join(', ')} {...otherProps} />}
+            requiredPermissions={requiredPermissions}
+            readOnlyComponent={<Form.Input value={value ? value.join(', ') : ''} {...otherProps} />}
             editableComponent={<Dropdown />} />
     </Form>
   )

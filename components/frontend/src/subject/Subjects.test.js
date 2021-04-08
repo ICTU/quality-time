@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
 import { Subjects } from './Subjects';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metrics: { metric_type: { tags: [] } } }
@@ -33,7 +33,7 @@ describe("<Subjects />", () => {
         expect(wrapper.find("Subject").length).toBe(1);
     });
     it('shows the add subject button when editable', () => {
-        const wrapper = shallow(<ReadOnlyContext.Provider value={false}>
+        const wrapper = shallow(<ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} history={mockHistory} hidden_columns={[]} hide_metrics_not_requiring_action={false} />
         </ReadOnlyContext.Provider>);
         expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddButton").prop("item_type")).toStrictEqual("subject");

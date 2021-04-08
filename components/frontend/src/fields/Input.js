@@ -3,12 +3,12 @@ import { Form, Label } from 'semantic-ui-react';
 import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
 
 export function Input(props) {
-  let { editableLabel, prefix, required, set_value, warning, ...otherProps } = props;
+  let { editableLabel, prefix, required, set_value, warning, requiredPermissions, ...otherProps } = props;
   const initialValue = props.value || "";
   const [value, setValue] = useState(initialValue);
 
   function readOnly(permissions) {
-    return props.requiredPermissions ? !accessGranted(permissions, props.requiredPermissions) : false
+    return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
   }
   function submit_if_changed() {
     if (value !== initialValue) { set_value(value) }

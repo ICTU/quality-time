@@ -3,12 +3,12 @@ import { Form, Label } from 'semantic-ui-react';
 import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
 
 export function IntegerInput(props) {
-    let { editableLabel, prefix, set_value, unit, ...otherProps } = props;
+    let { editableLabel, prefix, set_value, unit, requiredPermissions, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
 
     function readOnly(permissions) {
-      return props.requiredPermissions ? !accessGranted(permissions, props.requiredPermissions) : false
+      return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
     }
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {

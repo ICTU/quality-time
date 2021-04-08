@@ -7,7 +7,13 @@ export const EDIT_ENTITY_PERMISSION = "edit_entities"
 export const ReadOnlyContext = React.createContext(null);
 
 export function accessGranted(permissions, requiredPermissions) {
-  return requiredPermissions ? requiredPermissions.every(permission => permissions.includes(permission)) : true
+  if (!requiredPermissions) {
+    return true
+  }
+  if (!permissions) {
+    return false
+  }
+  return requiredPermissions.every(permission => permissions.includes(permission))
 };
 
 export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {

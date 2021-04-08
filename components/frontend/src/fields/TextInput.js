@@ -3,10 +3,10 @@ import { Form } from 'semantic-ui-react';
 import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
 
 export function TextInput(props) {
-  let { editableLabel, required, set_value, ...otherProps } = props;
+  let { editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
   const [text, setText] = useState(props.value || '');
   function readOnly(permissions) {
-    return props.requiredPermissions ? !accessGranted(permissions, props.requiredPermissions) : false
+    return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
   }
   function onChange(event) {
     setText(event.target.value)

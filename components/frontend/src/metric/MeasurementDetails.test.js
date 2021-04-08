@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
 import { MeasurementDetails } from './MeasurementDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
@@ -48,7 +48,7 @@ const data_model = {
 describe("<MeasurementDetails />", () => {
     function mount_wrapper() {
         return mount(
-            <ReadOnlyContext.Provider value={false}>
+            <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <MeasurementDetails
                     datamodel={data_model}
                     metric_uuid="metric_uuid"
@@ -84,7 +84,7 @@ describe("<MeasurementDetails />", () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
+                <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <MeasurementDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"
@@ -106,7 +106,7 @@ describe("<MeasurementDetails />", () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
+                <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <MeasurementDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"

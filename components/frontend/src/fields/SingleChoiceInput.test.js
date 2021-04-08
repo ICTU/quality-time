@@ -16,7 +16,7 @@ describe("<SingleChoiceInput />", () => {
   beforeEach(() => { mock_set_value = jest.fn(); });
 
   it('renders the value read only', () => {
-    const wrapper = mount(<SingleChoiceInput value="hello" options={[{text: "hello", value: "hello"}]} />);
+    const wrapper = mount(<SingleChoiceInput requiredPermissions={['testPermission']} value="hello" options={[{text: "hello", value: "hello"}]} />);
     expect(wrapper.find("FormInput").prop("value")).toStrictEqual("hello");
   });
   it('renders the editable value', () => {

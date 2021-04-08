@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
 import { NotificationDestinations } from './NotificationDestinations';
 import * as fetch_server_api from '../api/fetch_server_api';
 
@@ -17,7 +17,7 @@ const notification_destinations= {
 
 function render_notification_destinations(destinations) {
   render(
-    <ReadOnlyContext.Provider value={false}>
+    <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
       <NotificationDestinations destinations={destinations} report_uuid={"report_uuid"} reload={() => {}}/>
     </ReadOnlyContext.Provider>
   )

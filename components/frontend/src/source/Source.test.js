@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
 import { Source } from './Source';
 import * as fetch_server_api from '../api/fetch_server_api';
 
@@ -19,7 +19,7 @@ const report = { report_uuid: "report_uuid", subjects: {} };
 
 function render_source(props) {
     render(
-        <ReadOnlyContext.Provider value={false}>
+        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Source 
                 datamodel={datamodel} 
                 metric_type="metric_type" 

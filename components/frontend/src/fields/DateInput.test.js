@@ -16,7 +16,7 @@ describe("<DateInput />", () => {
   beforeEach(() => { mock_set_value = jest.fn(); });
 
   it('renders the value read only', () => {
-      const wrapper = mount(<DateInput value="2019-09-30" />);
+      const wrapper = mount(<DateInput requiredPermissions={['test']} value="2019-09-30" />);
       expect(wrapper.find("FormInput").prop("value")).toStrictEqual("2019-09-30");
   });
   it('renders the editable value', () => {
