@@ -2,6 +2,7 @@ import React from 'react';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { set_metric_attribute } from '../api/metric';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 
 export function Target(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
