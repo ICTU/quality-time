@@ -70,7 +70,7 @@ class GitLabJobsBase(GitLabProjectBase):
                     build_status=job["status"],
                     branch=job["ref"],
                     stage=job["stage"],
-                    build_date=str(parse(job["created_at"]).date()),
+                    build_date=str(parse(job.get("finished_at") or job["created_at"]).date()),
                 )
                 for job in await self.__jobs(responses)
             ]
@@ -78,17 +78,17 @@ class GitLabJobsBase(GitLabProjectBase):
 
     async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""
-        jobs: list[Job] = []
-        jobs_seen: set[tuple[str, str, str]] = set()
+
+        def newer(job1: Job, job2: Job) -> Job:
+            """Return the newer of the two jobs."""
+            return job1 if job1["created_at"] > job2["created_at"] else job2
+
+        jobs: dict[tuple[str, str, str], Job] = {}
         for response in responses:
             for job in await response.json():
-                job_fingerprint = job["name"], job["stage"], job["ref"]
-                if job_fingerprint in jobs_seen:
-                    continue
-                jobs_seen.add(job_fingerprint)
-                if self._count_job(job):
-                    jobs.append(job)
-        return jobs
+                key = job["name"], job["stage"], job["ref"]
+                jobs[key] = newer(job, jobs.get(key, job))
+        return [job for job in jobs.values() if self._count_job(job)]
 
     def _count_job(self, job: Job) -> bool:
         """Return whether to count the job."""

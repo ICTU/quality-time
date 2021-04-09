@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Don't assume that because GitLab returns jobs sorted by ID, they are also sorted by date. Fixes [#2036](https://github.com/ICTU/quality-time/issues/2036). 
+
 ## [3.20.0] - [2021-04-07]
 
 ### Fixed
