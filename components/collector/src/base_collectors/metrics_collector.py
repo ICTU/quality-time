@@ -71,8 +71,12 @@ class MetricsCollector:
         while True:
             self.record_health()
             logging.info("Collecting...")
+            # The TCPConnector has limit 0, meaning unlimited, because aiohttp only closes connections when the response
+            # is closed. But due to the architecture of the collector (first collect all the responses, then parse them)
+            # the responses are kept around relatively long, and hence the connections too. To prevent time-outs while
+            # aiohttp waits for connections to become available we don't limit the connection pool size.
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit_per_host=20, ssl=False),
+                connector=aiohttp.TCPConnector(limit=0, ssl=False),
                 raise_for_status=True,
                 timeout=timeout,
                 trust_env=True,
