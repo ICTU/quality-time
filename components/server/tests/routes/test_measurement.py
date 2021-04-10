@@ -132,27 +132,34 @@ class PostMeasurementTests(unittest.TestCase):
             entity_user_data=entity_user_data or {},
         )
 
+    @staticmethod
+    def measurement(*, metric_uuid=METRIC_ID, sources=None, start="2019-01-01", end="2019-01-01", **scales):
+        """Return a measurement."""
+        return dict(metric_uuid=metric_uuid, sources=sources or [], start=start, end=end, **scales)
+
+    @staticmethod
+    def scale_measurement(
+        *, target="0", near_target="10", debt_target=None, direction="<", value=None, status=None, status_start=None
+    ):
+        """Return a count measurement."""
+        measurement = dict(
+            target=target,
+            near_target=near_target,
+            debt_target=debt_target,
+            direction=direction,
+            value=value,
+            status=status,
+        )
+        if status_start:
+            measurement["status_start"] = status_start
+        return measurement
+
     def test_first_measurement(self, request):
         """Post the first measurement for a metric."""
         self.database.measurements.find_one.return_value = None
         request.json = self.posted_measurement
         post_measurement(self.database)
-        self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": None,
-                    "status": None,
-                },
-            }
-        )
+        self.database.measurements.insert_one.assert_called_once_with(self.measurement(count=self.scale_measurement()))
 
     def test_first_measurement_two_scales(self, request):
         """Post the first measurement for a metric with two scales."""
@@ -161,21 +168,7 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": None,
-                    "status": None,
-                },
-                "percentage": {"direction": "<", "value": None, "status": None},
-            }
+            self.measurement(count=self.scale_measurement(), percentage=dict(direction="<", value=None, status=None))
         )
 
     def test_first_measurement_version_number_scale(self, request):
@@ -188,30 +181,10 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1.1.3",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "version_number": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1.1.3",
-                    "status": "near_target_met",
-                },
-            }
+            self.measurement(
+                sources=[self.source(value="1.1.3")],
+                version_number=self.scale_measurement(value="1.1.3", status="near_target_met"),
+            )
         )
 
     def test_unchanged_measurement(self, request):
@@ -229,31 +202,10 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1",
-                    "status": "near_target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+            self.measurement(
+                sources=[self.source()],
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
         )
 
     @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
@@ -283,8 +235,7 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            dict(
-                metric_uuid=METRIC_ID,
+            self.measurement(
                 sources=[
                     self.source(
                         entities=[dict(key="b")],
@@ -295,17 +246,7 @@ class PostMeasurementTests(unittest.TestCase):
                         ),
                     )
                 ],
-                count=dict(
-                    value="1",
-                    status="near_target_met",
-                    status_start="2018-01-01",
-                    direction="<",
-                    target="0",
-                    near_target="10",
-                    debt_target=None,
-                ),
-                start="2019-01-01",
-                end="2019-01-01",
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2018-01-01"),
             )
         )
 
@@ -318,24 +259,13 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            dict(
-                metric_uuid=METRIC_ID,
+            self.measurement(
                 sources=[
                     self.source(
                         entities=[dict(key="b", old_key="a")], entity_user_data=dict(b=dict(status="confirmed"))
                     )
                 ],
-                count=dict(
-                    value="1",
-                    status="near_target_met",
-                    status_start="2019-01-01",
-                    direction="<",
-                    target="0",
-                    near_target="10",
-                    debt_target=None,
-                ),
-                start="2019-01-01",
-                end="2019-01-01",
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
             )
         )
 
@@ -377,31 +307,15 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [{"key": "entity1"}],
-                        "entity_user_data": {"entity1": {"status": "false_positive", "rationale": "Rationale"}},
-                    }
+            self.measurement(
+                sources=[
+                    self.source(
+                        entities=[{"key": "entity1"}],
+                        entity_user_data={"entity1": {"status": "false_positive", "rationale": "Rationale"}},
+                    )
                 ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "0",
-                    "status": "target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+                count=self.scale_measurement(value="0", status="target_met", status_start="2019-01-01"),
+            )
         )
 
     def test_all_previous_measurements_were_failed_measurements(self, request):
@@ -414,31 +328,10 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [{"key": "entity1"}],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1",
-                    "status": "near_target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+            self.measurement(
+                sources=[self.source(entities=[{"key": "entity1"}], entity_user_data={})],
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
         )
 
     def test_deleted_metric(self, request):
@@ -456,74 +349,29 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [{"key": "entity1"}],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1",
-                    "status": "near_target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+            self.measurement(
+                sources=[self.source(entities=[{"key": "entity1"}], entity_user_data={})],
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
         )
 
     def test_accepted_technical_debt(self, request):
         """Test that a new measurement is not added when technical debt has not expired yet."""
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = True
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
-        self.old_measurement["count"] = dict(
-            value="1",
-            status="debt_target_met",
-            target="0",
-            near_target="10",
-            debt_target="100",
-            status_start="once upon a time",
+        self.old_measurement["count"] = self.scale_measurement(
+            value="1", status="debt_target_met", debt_target="100", status_start="once upon a time"
         )
         self.posted_measurement["sources"].append(self.source())
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": "100",
-                    "direction": "<",
-                    "value": "1",
-                    "status": "debt_target_met",
-                    "status_start": "once upon a time",
-                },
-            }
+            self.measurement(
+                sources=[self.source()],
+                count=self.scale_measurement(
+                    debt_target="100", value="1", status="debt_target_met", status_start="once upon a time"
+                ),
+            )
         )
 
     def test_expired_technical_debt(self, request):
@@ -532,37 +380,14 @@ class PostMeasurementTests(unittest.TestCase):
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"] = debt_end_date.isoformat()
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
         self.posted_measurement["sources"].append(self.source())
-        self.old_measurement["count"] = dict(
-            value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
-        )
+        self.old_measurement["count"] = self.scale_measurement(value="1", status="debt_target_met", debt_target="100")
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1",
-                    "status": "near_target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+            self.measurement(
+                sources=[self.source()],
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
         )
 
     def test_technical_debt_off(self, request):
@@ -570,37 +395,14 @@ class PostMeasurementTests(unittest.TestCase):
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = False
         self.posted_measurement["sources"].append(self.source())
-        self.old_measurement["count"] = dict(
-            value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
-        )
+        self.old_measurement["count"] = self.scale_measurement(value="1", status="debt_target_met", debt_target="100")
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            {
-                "metric_uuid": "metric_uuid",
-                "sources": [
-                    {
-                        "source_uuid": "source_uuid",
-                        "value": "1",
-                        "total": None,
-                        "parse_error": None,
-                        "connection_error": None,
-                        "entities": [],
-                        "entity_user_data": {},
-                    }
-                ],
-                "start": "2019-01-01",
-                "end": "2019-01-01",
-                "count": {
-                    "target": "0",
-                    "near_target": "10",
-                    "debt_target": None,
-                    "direction": "<",
-                    "value": "1",
-                    "status": "near_target_met",
-                    "status_start": "2019-01-01",
-                },
-            }
+            self.measurement(
+                sources=[self.source()],
+                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
         )
 
 
