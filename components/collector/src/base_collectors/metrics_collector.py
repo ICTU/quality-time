@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import os
+import random
 import traceback
 from datetime import datetime, timedelta
 from typing import Any, Final, NoReturn, cast
@@ -51,6 +52,7 @@ class MetricsCollector:
         self.data_model: JSON = {}
         self.last_parameters: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
+        self.__random_generator = random.SystemRandom()
 
     @staticmethod
     def record_health(filename: str = "/home/collector/health_check.txt") -> None:
@@ -159,7 +161,10 @@ class MetricsCollector:
         """Return whether the metric should be collected.
 
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
+        Each minute, metrics also have a small chance of being selected even when they are not due to be measured. This
+        ensures that collection gets spread out over each run of the collector instead of all metrics being measured
+        simultaneously every 15 minutes.
         """
         metric_changed = self.last_parameters.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
-        return metric_changed or metric_due
+        return metric_changed or metric_due or self.__random_generator.random() < 0.01
