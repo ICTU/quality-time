@@ -173,3 +173,28 @@ class DatabaseInitTest(unittest.TestCase):
                 }
             },
         )
+
+    def test_remove_notification_frequency(self):
+        """Test that the notification frequency field is removed."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}, "notification_destinations": {}},
+            {
+                "_id": "2",
+                "subjects": {},
+                "notification_destinations": {
+                    "notification_destination1": {"frequency": 10},
+                    "notification_destination2": {"webhook": "https://www.url.com"},
+                },
+            },
+        ]
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "2"},
+            {
+                "subjects": {},
+                "notification_destinations": {
+                    "notification_destination1": {},
+                    "notification_destination2": {"webhook": "https://www.url.com"},
+                },
+            },
+        )
