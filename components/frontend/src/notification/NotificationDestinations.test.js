@@ -55,16 +55,6 @@ it('edits notification destination name attribute when it is changed in the inpu
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {name: "new changed"});
 });
 
-it('edits the notification destination frequency attribute when it is changed in the input field', async () => {
-  fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-  await act(async () => {
-    render_notification_destinations(notification_destinations)
-  });
-  userEvent.type(screen.getByLabelText(/Time to wait for more notifications/), '30{enter}');
-
-  expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {frequency: "030"});
-});
-
 it('edits multiple notification destination attributes when they are changed in the input fields', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {

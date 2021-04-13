@@ -345,4 +345,4 @@ On import, all UUID's contained in the report (UUID's of the report, subjects, m
 
 If a webhook has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
 
-To prevent too many notifications, it's possible to make *Quality-time* wait before sending a notification. If more notifications occur during the wait period, they will be bundled with the first notification and sent together at the end of the wait period. Note that if you change the notification configuration, e.g. change a Microsoft Teams web hook, earlier notifications that haven't been sent yet, will still be sent using the old configuration.
+*Quality-time* sends a notification when the status of a metric changes as well as when the status of a metric has been the same for three weeks.
