@@ -110,7 +110,7 @@ class MetricsCollector:
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks = [
             self.collect_metric(session, metric_uuid, metric, next_fetch)
-            for index, (metric_uuid, metric) in enumerate(metrics.items())
+            for metric_uuid, metric in metrics.items()
             if self.__can_and_should_collect(metric_uuid, metric)
         ]
         await asyncio.gather(*tasks)
