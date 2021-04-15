@@ -186,6 +186,14 @@ To delete a metric's source, expand the metric in the metric table, select the "
 
 > Be careful, there's no way to undo your action via the user interface.
 
+### Configuring entities
+
+An entity is a measured entity like for example one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
+
+To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all it's details.
+
+When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive of as fixed. Every action can be enriched with a comment for explanation.
+
 ## Notes on specific metrics
 
 ### Metrics
