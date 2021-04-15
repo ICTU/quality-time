@@ -61,7 +61,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         with self.patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
-                    await self.metrics_collector.collect_metrics(session, 60)
+                    await self.metrics_collector.collect_metrics(session)
 
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_without_sources(self, mocked_post):
@@ -279,7 +279,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
         with self.patched_get(mock_async_get_request):
             async with aiohttp.ClientSession() as session:
-                data_model = await self.metrics_collector.fetch_data_model(session, 0)
+                self.metrics_collector.MAX_SLEEP_DURATION = 0
+                data_model = await self.metrics_collector.fetch_data_model(session)
         self.assertEqual(self.data_model, data_model)
 
     @patch("builtins.open", new_callable=mock_open)
