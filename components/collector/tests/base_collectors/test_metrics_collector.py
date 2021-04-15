@@ -183,10 +183,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [self.data_model, self.metrics]
         mocked_post = AsyncMock()
         mocked_post.return_value.close = Mock()
-        with self.patched_get(mock_async_get_request):
-            with patch("aiohttp.ClientSession.post", mocked_post):
-                with self.assertRaises(RuntimeError):
-                    await quality_time_collector.collect()
+        with self.patched_get(mock_async_get_request), patch(
+            "aiohttp.ClientSession.post", mocked_post
+        ), self.assertRaises(RuntimeError):
+            await quality_time_collector.collect()
         mocked_post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
