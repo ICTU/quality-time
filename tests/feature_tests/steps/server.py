@@ -8,6 +8,7 @@ from behave import then, when
 def get_server_info(context):
     """Get the server info."""
     context.server_info = context.get("server")
+    print(context.server_info)
 
 
 @then("the server information is returned")
