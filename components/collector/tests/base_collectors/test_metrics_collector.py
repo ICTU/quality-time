@@ -56,24 +56,30 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             mock_async_get_request.close = Mock()
         return patch("aiohttp.ClientSession.get", mock)
 
+    @staticmethod
+    def patched_post(side_effect=None):
+        """Return a patched version of aiohttp.ClientSession.post()."""
+        post = AsyncMock(side_effect=side_effect)
+        post.return_value.close = Mock()
+        return patch("aiohttp.ClientSession.post", post)
+
     async def fetch_measurements(self, mock_async_get_request, number=1, side_effect=None):
         """Fetch the measurements with patched get method."""
         with self.patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
-                    await self.metrics_collector.collect_metrics(session, 60)
+                    await self.metrics_collector.collect_metrics(session)
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_without_sources(self, mocked_post):
+    async def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
         metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
-        await self.fetch_measurements(mock_async_get_request)
-        mocked_post.assert_not_called()
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request)
+        post.assert_not_called()
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_with_unsupported_collector(self, mocked_post):
+    async def test_fetch_with_unsupported_collector(self):
         """Test fetching measurement for a metric with an unsupported source."""
         metrics = dict(
             metric_uuid=dict(
@@ -84,25 +90,26 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         )
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
-        await self.fetch_measurements(mock_async_get_request)
-        mocked_post.assert_not_called()
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request)
+        post.assert_not_called()
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_with_get_error(self, mocked_post):
+    async def test_fetch_with_get_error(self):
         """Test fetching measurement when getting the metrics fails."""
-        await self.fetch_measurements(Mock(side_effect=RuntimeError))
-        mocked_post.assert_not_called()
+        with self.patched_post() as post:
+            await self.fetch_measurements(Mock(side_effect=RuntimeError))
+        post.assert_not_called()
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_with_client_error(self, mocked_post):
+    async def test_fetch_with_client_error(self):
         """Test fetching measurement when getting measurements fails."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.close = Mock()
         mock_async_get_request.json.return_value = self.metrics
-        await self.fetch_measurements(
-            None, side_effect=[mock_async_get_request, aiohttp.ClientConnectionError("error")]
-        )
-        mocked_post.assert_called_once_with(
+        with self.patched_post() as post:
+            await self.fetch_measurements(
+                None, side_effect=[mock_async_get_request, aiohttp.ClientConnectionError("error")]
+            )
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -121,8 +128,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             ),
         )
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_with_empty_client_error(self, mocked_post):
+    async def test_fetch_with_empty_client_error(self):
         """Test fetching measurement when getting measurements fails with an 'empty' exception.
 
         This can happen when an exception returns an empty string when converted to string.
@@ -130,8 +136,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.close = Mock()
         mock_async_get_request.json.return_value = self.metrics
-        await self.fetch_measurements(None, side_effect=[mock_async_get_request, aiohttp.ClientPayloadError()])
-        mocked_post.assert_called_once_with(
+        with self.patched_post() as post:
+            await self.fetch_measurements(None, side_effect=[mock_async_get_request, aiohttp.ClientPayloadError()])
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -150,13 +157,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             ),
         )
 
-    @patch("aiohttp.ClientSession.post", side_effect=RuntimeError)
-    async def test_fetch_with_post_error(self, mocked_post):
+    async def test_fetch_with_post_error(self):
         """Test fetching measurement when posting fails."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = self.metrics
-        await self.fetch_measurements(mock_async_get_request)
-        mocked_post.assert_called_once_with(
+        with self.patched_post(side_effect=RuntimeError) as post:
+            await self.fetch_measurements(mock_async_get_request)
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -181,13 +188,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.data_model, self.metrics]
-        mocked_post = AsyncMock()
-        mocked_post.return_value.close = Mock()
-        with self.patched_get(mock_async_get_request):
-            with patch("aiohttp.ClientSession.post", mocked_post):
-                with self.assertRaises(RuntimeError):
-                    await quality_time_collector.collect()
-        mocked_post.assert_called_once_with(
+        with self.patched_get(mock_async_get_request), self.patched_post() as post, self.assertRaises(RuntimeError):
+            await quality_time_collector.collect()
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -206,13 +209,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             ),
         )
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_fetch_twice(self, mocked_post):
+    async def test_fetch_twice(self):
         """Test that the metric is skipped on the second fetch."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.metrics, self.metrics]
-        await self.fetch_measurements(mock_async_get_request, number=2)
-        mocked_post.assert_called_once_with(
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request, number=2)
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -231,8 +234,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             ),
         )
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_missing_mandatory_parameter(self, mocked_post):
+    async def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
         metrics = dict(
             metric_uuid=dict(
@@ -241,19 +243,20 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         )
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
-        await self.fetch_measurements(mock_async_get_request)
-        mocked_post.assert_not_called()
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request)
+        post.assert_not_called()
 
-    @patch("aiohttp.ClientSession.post")
-    async def test_missing_mandatory_parameter_with_default_value(self, mocked_post):
+    async def test_missing_mandatory_parameter_with_default_value(self):
         """Test that a metric with sources and a missing mandatory parameter that has a default value is not skipped."""
         self.data_model["sources"]["source"]["parameters"]["token"] = dict(
             default_value="xxx", mandatory=True, metrics=["metric"]
         )
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = self.metrics
-        await self.fetch_measurements(mock_async_get_request)
-        mocked_post.assert_called_once_with(
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request)
+        post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
                 sources=[
@@ -279,7 +282,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
         with self.patched_get(mock_async_get_request):
             async with aiohttp.ClientSession() as session:
-                data_model = await self.metrics_collector.fetch_data_model(session, 0)
+                self.metrics_collector.MAX_SLEEP_DURATION = 0
+                data_model = await self.metrics_collector.fetch_data_model(session)
         self.assertEqual(self.data_model, data_model)
 
     @patch("builtins.open", new_callable=mock_open)

@@ -54,5 +54,5 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         self.assert_measurement(
             response,
             value="2",
-            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&scope=failed",
+            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100",
         )

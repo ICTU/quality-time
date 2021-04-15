@@ -43,6 +43,8 @@ class MetricsCollector:
     """Collect measurements for all metrics."""
 
     API_VERSION = "v3"
+    MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
+    MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
         self.server_url: Final[URL] = URL(
@@ -63,29 +65,31 @@ class MetricsCollector:
 
     async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
-        max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
-        measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         timeout = aiohttp.ClientTimeout(total=120)
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, trust_env=True) as session:
-            self.data_model = await self.fetch_data_model(session, max_sleep_duration)
+            self.data_model = await self.fetch_data_model(session)
         while True:
             self.record_health()
             logging.info("Collecting...")
+            # The TCPConnector has limit 0, meaning unlimited, because aiohttp only closes connections when the response
+            # is closed. But due to the architecture of the collector (first collect all the responses, then parse them)
+            # the responses are kept around relatively long, and hence the connections too. To prevent time-outs while
+            # aiohttp waits for connections to become available we don't limit the connection pool size.
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit_per_host=20, ssl=False),
+                connector=aiohttp.TCPConnector(limit=0, ssl=False),
                 raise_for_status=True,
                 timeout=timeout,
                 trust_env=True,
             ) as session:
                 with timer() as collection_timer:
-                    await self.collect_metrics(session, measurement_frequency)
-            sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
+                    await self.collect_metrics(session)
+            sleep_duration = max(0, self.MAX_SLEEP_DURATION - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration
             )
             await asyncio.sleep(sleep_duration)
 
-    async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
+    async def fetch_data_model(self, session: aiohttp.ClientSession) -> JSON:
         """Fetch the data model."""
         # The first attempt is likely to fail because the collector starts up faster than the server,
         # so don't log tracebacks on the first attempt
@@ -97,13 +101,13 @@ class MetricsCollector:
             if data_model := await get(session, data_model_url, log=not first_attempt):
                 return data_model
             first_attempt = False
-            logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
-            await asyncio.sleep(sleep_duration)
+            logging.warning("Loading data model failed, trying again in %ss...", self.MAX_SLEEP_DURATION)
+            await asyncio.sleep(self.MAX_SLEEP_DURATION)
 
-    async def collect_metrics(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
+    async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for all metrics."""
         metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
-        next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
+        next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks = [
             self.collect_metric(session, metric_uuid, metric, next_fetch)
             for metric_uuid, metric in metrics.items()

@@ -27,11 +27,11 @@ from server_utilities.type import MetricId, SourceId
 
 
 @bottle.post("/internal-api/v3/measurements")
-def post_measurement(database: Database) -> dict:
+def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
     if (metric := latest_metric(database, measurement_data["metric_uuid"])) is None:
-        return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
+        return  # Metric does not exist, must've been deleted while being measured
     latest = latest_measurement(database, metric)
     measurement = Measurement(metric, measurement_data, previous_measurement=latest)
     if latest:
@@ -40,8 +40,8 @@ def post_measurement(database: Database) -> dict:
         if not latest.debt_target_expired() and latest.sources() == measurement.sources():
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
-            return dict(ok=True)
-    return insert_new_measurement(database, measurement)
+            return
+    insert_new_measurement(database, measurement)
 
 
 @bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
