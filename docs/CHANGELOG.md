@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Don't assume that because GitLab returns jobs sorted by ID, they are also sorted by date. Fixes [#2036](https://github.com/ICTU/quality-time/issues/2036). 
-- Try to prevent timeouts when collecting failed CI-jobs or unused CI-jobs from GitLab by removing the limit on open connections. Also introduce a small amount of randomness in deciding when to measure a metric so that the collector, though still collecting data for each metric at least every 15 minutes, does not collect data for all metrics at the same time. Fixes [#2037](https://github.com/ICTU/quality-time/issues/2037). 
+- Prevent timeouts when collecting failed CI-jobs or unused CI-jobs from GitLab by removing the limit on open connections. Fixes [#2037](https://github.com/ICTU/quality-time/issues/2037). 
 
 ### Removed
 
