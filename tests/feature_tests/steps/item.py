@@ -91,8 +91,6 @@ def get_item(context, item):
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
     """Check that the item attribute equals value."""
-    if item == "reports" and attribute == "editors":  # convert comma separated values to lists
-        value = [] if value == "None" else value.split(", ")
     if item == "reports" and attribute == "permissions":  # parse json data
         value = {} if value == "None" else json.loads(value)
     else:
