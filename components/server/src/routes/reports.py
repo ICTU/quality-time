@@ -41,7 +41,7 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     if reports_attribute == "permissions" and EDIT_REPORT_PERMISSION in value:
         report_editors = value[EDIT_REPORT_PERMISSION]
         if len(report_editors) > 0 and user["user"] not in report_editors and user["email"] not in report_editors:
-            value[EDIT_REPORT_PERMISSION].append(user["email"])
+            value[EDIT_REPORT_PERMISSION].append(user["user"])
 
     overview[reports_attribute] = value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"

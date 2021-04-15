@@ -110,7 +110,7 @@ class ReportsTest(unittest.TestCase):
         self.assert_change_description(
             "permissions",
             f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
-            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', '{self.email}']}}",
+            f"{{'{EDIT_REPORT_PERMISSION}': ['{self.other_mail}', 'jenny']}}",
         )
 
     @patch("bottle.request")
