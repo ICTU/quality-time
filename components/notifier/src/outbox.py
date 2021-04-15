@@ -28,7 +28,7 @@ class Outbox:
         """Send the notifications that are ready to be sent, remove them from the outbox."""
         nr_sent = 0
         for notification in self.notifications[:]:
-            if notification.ready() and notification.destination["webhook"]:
+            if notification.destination["webhook"]:
                 send_notification(str(notification.destination["webhook"]), build_notification_text(notification))
                 nr_sent += 1
                 self.notifications.remove(notification)

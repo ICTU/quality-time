@@ -108,30 +108,18 @@ class OutboxTestCase(unittest.TestCase):
             ],
         )
 
-    @patch("models.notification.Notification.ready")
     @patch("outbox.send_notification")
-    def test_send_notifications(self, mocked_send, mocked_ready):
+    def test_send_notifications(self, mocked_send):
         """Test that notifications can be sent."""
-        mocked_ready.side_effect = [True, False]
         outbox = Outbox(self.notifications)
-        outbox.send_notifications()
-        mocked_send.assert_called_once()
+        self.assertEqual(2, outbox.send_notifications())
+        self.assertEqual([], outbox.notifications)
+        mocked_send.assert_called()
 
-    @patch("models.notification.Notification.ready")
-    def test_notifications_without_destination(self, mocked_ready):
+    def test_notifications_without_destination(self):
         """Test that notifications without a destination aren't sent."""
-        mocked_ready.side_effect = [True, True]
         notifications = self.notifications
         notifications[0].destination["webhook"] = None
         notifications[1].destination["webhook"] = None
         outbox = Outbox(notifications)
         self.assertEqual(0, outbox.send_notifications())
-
-    @patch("models.notification.Notification.ready")
-    @patch("outbox.send_notification")
-    def test_deletion_of_notifications(self, mocked_send, mocked_ready):
-        """Test that notifications are deleted after sending."""
-        mocked_ready.side_effect = [True, True]
-        mocked_send.side_effect = [None, None]
-        outbox = Outbox(self.notifications)
-        self.assertEqual(2, outbox.send_notifications())

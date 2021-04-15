@@ -34,6 +34,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     rename_ready_user_story_points_metric(database)
     rename_teams_webhook_notification_destination(database)
     rename_axe_selenium_python_to_axe_core(database)
+    remove_notification_frequency(database)
     return database
 
 
@@ -94,6 +95,19 @@ def rename_axe_selenium_python_to_axe_core(database: Database) -> None:  # pragm
                 source["type"] = "axe_core"
                 if not source.get("name"):
                     source["name"] = "axe-selenium-python"
+                changed = True
+        if changed:
+            replace_report(database, report)
+
+
+def remove_notification_frequency(database: Database) -> None:  # pragma: no cover-behave
+    """Remove the notification frequency from all reports."""
+    # Introduced when the most recent version of Quality-time was 3.20.0.
+    for report in current_reports(database):
+        changed = False
+        for notification_destination in report.get("notification_destinations", {}).values():
+            if "frequency" in notification_destination:
+                del notification_destination["frequency"]
                 changed = True
         if changed:
             replace_report(database, report)
