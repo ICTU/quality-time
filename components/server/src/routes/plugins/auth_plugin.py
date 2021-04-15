@@ -25,8 +25,8 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
         """Apply the plugin to the route."""
         config = context.config
 
-        if "authentication_required" not in config and "permissions_required" not in config:
-            raise AttributeError(
+        if "authentication_required" not in config and "permissions_required" not in config:  # pragma: no cover
+            raise AttributeError(  # pragma: no cover
                 f"Neither authentication_required nor permission_required set for endpoint {context.rule}"
             )
 
