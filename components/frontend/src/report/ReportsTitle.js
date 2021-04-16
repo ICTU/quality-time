@@ -21,6 +21,7 @@ export function ReportsTitle(props) {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <StringInput
+                            id="report_overview_title"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview title"
                             set_value={(value) => set_reports_attribute("title", value, props.reload)}
@@ -29,6 +30,7 @@ export function ReportsTitle(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringInput
+                            id="report_overview_subtitle"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview subtitle"
                             set_value={(value) => set_reports_attribute("subtitle", value, props.reload)}
@@ -39,6 +41,7 @@ export function ReportsTitle(props) {
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <MultipleChoiceInput
+                            id="report_overview_edit_report_permission"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit reports (user name or email address)"
@@ -52,6 +55,7 @@ export function ReportsTitle(props) {
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <MultipleChoiceInput
+                            id="report_overview_edit_entity_permission"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit measured entities (user name or email address)"
