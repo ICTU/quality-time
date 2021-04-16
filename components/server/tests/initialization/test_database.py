@@ -4,6 +4,7 @@ import pathlib
 import unittest
 from unittest.mock import Mock, mock_open, patch
 
+from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 from initialization.database import init_database
 
 
@@ -18,6 +19,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = None
         self.database.reports_overviews.find_one.return_value = None
+        self.database.reports_overviews.find.return_value = []
         self.database.reports.count_documents.return_value = 0
         self.database.sessions.find_one.return_value = dict(user="jodoe")
         self.database.measurements.count_documents.return_value = 0
@@ -233,5 +235,24 @@ class DatabaseInitTest(unittest.TestCase):
                         }
                     }
                 }
+            }
+        )
+
+    def test_migrate_edit_permissions(self):
+        self.database.reports_overviews.find.return_value = [
+            {"_id": "1"},
+            {"_id": "2", "editors": ["admin", "jadoe"]},
+            {"_id": "3", "permissions": {}},
+        ]
+        self.init_database("{}")
+
+        self.assertEqual(self.database.reports_overviews.find.call_count, 1)
+        self.database.reports_overviews.update_one.assert_called_once_with(
+            {"_id": "2"},
+            {
+                "$set": {
+                    "permissions": {EDIT_REPORT_PERMISSION: ["admin", "jadoe"], EDIT_ENTITY_PERMISSION: []},
+                },
+                "$unset": {"editors": ""},
             },
         )
