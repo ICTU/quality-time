@@ -2,7 +2,7 @@
 
 import pathlib
 import unittest
-from unittest.mock import Mock, mock_open, patch
+from unittest.mock import Mock, call, mock_open, patch
 
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 from initialization.database import init_database
@@ -241,19 +241,37 @@ class DatabaseInitTest(unittest.TestCase):
     def test_migrate_edit_permissions(self):
         """Make sure that permissions are migrated correctly."""
         self.database.reports_overviews.find.return_value = [
-            {"_id": "1"},
+            {"_id": "0"},
+            {"_id": "1", "editors": []},
             {"_id": "2", "editors": ["admin", "jadoe"]},
-            {"_id": "3", "permissions": {}},
         ]
         self.init_database("{}")
 
         self.assertEqual(self.database.reports_overviews.find.call_count, 1)
-        self.database.reports_overviews.update_one.assert_called_once_with(
-            {"_id": "2"},
-            {
-                "$set": {
-                    "permissions": {EDIT_REPORT_PERMISSION: ["admin", "jadoe"], EDIT_ENTITY_PERMISSION: []},
-                },
-                "$unset": {"editors": ""},
-            },
+        self.database.reports_overviews.update_one.assert_has_calls(
+            [
+                call(
+                    {"_id": "0"},
+                    {
+                        "$set": {"permissions": {EDIT_REPORT_PERMISSION: [], EDIT_ENTITY_PERMISSION: []}},
+                        "$unset": {"editors": ""},
+                    },
+                ),
+                call(
+                    {"_id": "1"},
+                    {
+                        "$set": {"permissions": {EDIT_REPORT_PERMISSION: [], EDIT_ENTITY_PERMISSION: []}},
+                        "$unset": {"editors": ""},
+                    },
+                ),
+                call(
+                    {"_id": "2"},
+                    {
+                        "$set": {
+                            "permissions": {EDIT_REPORT_PERMISSION: ["admin", "jadoe"], EDIT_ENTITY_PERMISSION: []}
+                        },
+                        "$unset": {"editors": ""},
+                    },
+                ),
+            ]
         )

@@ -130,19 +130,13 @@ def remove_random_number_source(database: Database) -> None:  # pragma: no cover
             replace_report(database, report)
 
 
-def migrate_edit_permissions(database: Database) -> None:
+def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-behave
     """Move report edit rights from editors to permissions: edit_reports."""
-    reports_overviews = database.reports_overviews.find()
-    for reports_overview in reports_overviews:
-        document_id = reports_overview["_id"]
-        if "editors" in reports_overview and "permissions" not in reports_overview:
-
-            editors = reports_overview["editors"]
-            permissions = {EDIT_REPORT_PERMISSION: editors, EDIT_ENTITY_PERMISSION: []}
-
-            query = {"_id": document_id}
-            values = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
-            database.reports_overviews.update_one(query, values)
+    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": {"$exists": False}})
+    for reports_overview in reports_overviews_to_migrate:
+        permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}
+        updates = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
+        database.reports_overviews.update_one({"_id": reports_overview["_id"]}, updates)
 
 
 def current_reports(database: Database):
