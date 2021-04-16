@@ -248,22 +248,14 @@ class DatabaseInitTest(unittest.TestCase):
         self.init_database("{}")
 
         self.assertEqual(self.database.reports_overviews.find.call_count, 1)
+        set_default_permissions = {
+            "$set": {"permissions": {EDIT_REPORT_PERMISSION: [], EDIT_ENTITY_PERMISSION: []}},
+            "$unset": {"editors": ""},
+        }
         self.database.reports_overviews.update_one.assert_has_calls(
             [
-                call(
-                    {"_id": "0"},
-                    {
-                        "$set": {"permissions": {EDIT_REPORT_PERMISSION: [], EDIT_ENTITY_PERMISSION: []}},
-                        "$unset": {"editors": ""},
-                    },
-                ),
-                call(
-                    {"_id": "1"},
-                    {
-                        "$set": {"permissions": {EDIT_REPORT_PERMISSION: [], EDIT_ENTITY_PERMISSION: []}},
-                        "$unset": {"editors": ""},
-                    },
-                ),
+                call({"_id": "0"}, set_default_permissions),
+                call({"_id": "1"}, set_default_permissions),
                 call(
                     {"_id": "2"},
                     {

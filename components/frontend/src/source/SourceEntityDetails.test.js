@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_ENTITY_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
 import * as source from '../api/source';
 import { SourceEntityDetails } from './SourceEntityDetails';
 

@@ -14,7 +14,7 @@ export function accessGranted(permissions, requiredPermissions) {
     return false
   }
   return requiredPermissions.every(permission => permissions.includes(permission))
-};
+}
 
 export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {
     return (

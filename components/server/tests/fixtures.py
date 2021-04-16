@@ -4,6 +4,7 @@ from typing import cast
 
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId, NotificationDestinationId
 
+
 METRIC_ID = cast(MetricId, "metric_uuid")
 METRIC_ID2 = cast(MetricId, "metric_uuid2")
 METRIC_ID3 = cast(MetricId, "metric_uuid3")
@@ -48,11 +49,16 @@ def create_report():
                             SOURCE_ID: dict(
                                 type="source_type",
                                 name="Source",
-                                parameters=dict(
-                                    url="https://url",
-                                    password="password"))})})},
+                                parameters=dict(url="https://url", password="password"),
+                            )
+                        },
+                    )
+                },
+            )
+        },
         notification_destinations={
             NOTIFICATION_DESTINATION_ID: dict(
-                teams_webhook="",
-                name="notification_destination",
-                url="https://reporturl")})
+                teams_webhook="", name="notification_destination", url="https://reporturl"
+            )
+        },
+    )
