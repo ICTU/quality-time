@@ -12,7 +12,7 @@ jest.mock("../api/changelog.js");
 function render_reports_title() {
     render(
         <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsTitle permissions={[]} get_changelog={() => {}} />
+            <ReportsTitle permissions={[]} get_changelog={() => { /* Do nothing */ }} />
         </ReadOnlyContext.Provider>
     ) 
 }
