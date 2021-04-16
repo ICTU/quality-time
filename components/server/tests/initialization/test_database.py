@@ -239,6 +239,7 @@ class DatabaseInitTest(unittest.TestCase):
         )
 
     def test_migrate_edit_permissions(self):
+        """Make sure that permissions are migrated correctly."""
         self.database.reports_overviews.find.return_value = [
             {"_id": "1"},
             {"_id": "2", "editors": ["admin", "jadoe"]},
