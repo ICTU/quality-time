@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
+- Remove the 'random number' source. Closes [#2038](https://github.com/ICTU/quality-time/issues/2038).
 - It's no longer possible to make *Quality-time* wait before sending a notification. Closes [#2039](https://github.com/ICTU/quality-time/issues/2039). 
 
 ## [3.20.0] - [2021-04-07]

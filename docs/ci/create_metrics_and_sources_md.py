@@ -163,10 +163,10 @@ def data_model_as_table(dm) -> str:
         "parameters that can be used to configure the source.\n\n"
     )
     markdown += markdown_header("Metrics", 2)
-    markdown += metrics_table(dm, universal_sources := ["manual_number", "random"])
+    markdown += metrics_table(dm, universal_sources := ["manual_number"])
     markdown += markdown_header("Sources", 2)
     markdown += sources_table(dm, universal_sources)
-    markdown += "¹) All metrics can be measured using the 'Manual number' and the 'Random number' source.\n"
+    markdown += "¹) All metrics with the count or percentage scale can be measured using the 'Manual number' source.\n"
     markdown += markdown_header("Supported metric-source combinations", 2)
     for metric_key, metric in dm["metrics"].items():
         for source_key in metric["sources"]:
