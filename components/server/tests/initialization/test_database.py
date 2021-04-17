@@ -198,3 +198,40 @@ class DatabaseInitTest(unittest.TestCase):
                 },
             },
         )
+
+    def test_remove_random_number_source(self):
+        """Test that the random number source type is removed."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}},
+            {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
+            {
+                "_id": "3",
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {"type": "accessibility", "sources": {"source1": {"type": "random"}}},
+                            "metric3": {
+                                "type": "accessibility",
+                                "sources": {"source2": {"type": "random"}, "source3": {"type": "leave me alone"}},
+                            },
+                        }
+                    }
+                },
+            },
+        ]
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "3"},
+            {
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {"type": "accessibility", "sources": {}},
+                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": "leave me alone"}}},
+                        }
+                    }
+                }
+            },
+        )

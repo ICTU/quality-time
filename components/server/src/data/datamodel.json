@@ -30,8 +30,7 @@
             "sources": [
                 "axecsv",
                 "axe_core",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "accessibility"
@@ -52,8 +51,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "sonarqube",
-                "random"
+                "sonarqube"
             ],
             "tags": [
                 "maintainability"
@@ -75,8 +73,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "sonarqube",
-                "random"
+                "sonarqube"
             ],
             "tags": [
                 "maintainability",
@@ -102,8 +99,7 @@
                 "manual_number",
                 "npm",
                 "owasp_dependency_check",
-                "pip",
-                "random"
+                "pip"
             ],
             "tags": [
                 "maintainability"
@@ -125,8 +121,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "sonarqube",
-                "random"
+                "sonarqube"
             ],
             "tags": [
                 "maintainability"
@@ -149,8 +144,7 @@
                 "azure_devops",
                 "jenkins",
                 "gitlab",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "ci"
@@ -173,7 +167,6 @@
                 "azure_devops",
                 "jira",
                 "manual_number",
-                "random",
                 "trello",
                 "wekan"
             ],
@@ -195,7 +188,6 @@
             "sources": [
                 "cloc",
                 "manual_number",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -218,7 +210,6 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -240,8 +231,7 @@
             "default_source": "jira",
             "sources": [
                 "jira",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "test quality"
@@ -262,8 +252,7 @@
             "default_source": "jira",
             "sources": [
                 "jira",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "test quality"
@@ -285,7 +274,6 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -309,8 +297,7 @@
             "sources": [
                 "azure_devops",
                 "gitlab",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "ci"
@@ -332,8 +319,7 @@
             "default_source": "quality_time",
             "sources": [
                 "manual_number",
-                "quality_time",
-                "random"
+                "quality_time"
             ],
             "tags": []
         },
@@ -352,8 +338,7 @@
             "default_source": "performancetest_runner",
             "sources": [
                 "manual_number",
-                "performancetest_runner",
-                "random"
+                "performancetest_runner"
             ],
             "tags": [
                 "performance"
@@ -374,8 +359,7 @@
             "default_source": "performancetest_runner",
             "sources": [
                 "manual_number",
-                "performancetest_runner",
-                "random"
+                "performancetest_runner"
             ],
             "tags": [
                 "performance"
@@ -396,7 +380,6 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -418,8 +401,7 @@
             "default_source": "performancetest_runner",
             "sources": [
                 "manual_number",
-                "performancetest_runner",
-                "random"
+                "performancetest_runner"
             ],
             "tags": [
                 "performance"
@@ -440,8 +422,7 @@
             "default_source": "performancetest_runner",
             "sources": [
                 "manual_number",
-                "performancetest_runner",
-                "random"
+                "performancetest_runner"
             ],
             "tags": [
                 "performance"
@@ -477,7 +458,6 @@
                 "jenkins_test_report",
                 "junit",
                 "ncover",
-                "random",
                 "robot_framework",
                 "openvas",
                 "owasp_dependency_check",
@@ -549,7 +529,6 @@
                 "owasp_dependency_check",
                 "owasp_zap",
                 "pyupio_safety",
-                "random",
                 "snyk",
                 "generic_json",
                 "sonarqube"
@@ -574,7 +553,6 @@
             "default_source": "sonarqube",
             "sources": [
                 "manual_number",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -601,7 +579,6 @@
                 "junit",
                 "manual_number",
                 "performancetest_runner",
-                "random",
                 "robot_framework",
                 "robot_framework_jenkins_plugin",
                 "sonarqube",
@@ -632,8 +609,7 @@
                 "jacoco_jenkins_plugin",
                 "manual_number",
                 "ncover",
-                "sonarqube",
-                "random"
+                "sonarqube"
             ],
             "tags": [
                 "test quality"
@@ -660,8 +636,7 @@
                 "jacoco_jenkins_plugin",
                 "manual_number",
                 "ncover",
-                "sonarqube",
-                "random"
+                "sonarqube"
             ],
             "tags": [
                 "test quality"
@@ -683,8 +658,7 @@
             "sources": [
                 "azure_devops",
                 "gitlab",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "ci"
@@ -707,8 +681,7 @@
                 "azure_devops",
                 "gitlab",
                 "jenkins",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "ci"
@@ -730,8 +703,7 @@
             "sources": [
                 "azure_devops",
                 "jira",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "process efficiency"
@@ -752,8 +724,7 @@
             "default_source": "jira",
             "sources": [
                 "jira",
-                "manual_number",
-                "random"
+                "manual_number"
             ],
             "tags": [
                 "process efficiency"
@@ -775,7 +746,6 @@
             "sources": [
                 "manual_number",
                 "ojaudit",
-                "random",
                 "sonarqube"
             ],
             "tags": [
@@ -5007,7 +4977,6 @@
                         "pip",
                         "Pyupio Safety",
                         "Quality-time",
-                        "Random",
                         "Robot Framework",
                         "Robot Framework Jenkins plugin",
                         "Snyk",
@@ -5049,7 +5018,6 @@
                         "pip": "pip",
                         "Pyupio Safety": "pyupio_safety",
                         "Quality-time": "quality_time",
-                        "Random": "random",
                         "Robot Framework": "robot_framework",
                         "Robot Framework Jenkins plugin": "robot_framework_jenkins_plugin",
                         "Snyk": "snyk",
@@ -5119,13 +5087,6 @@
                     ]
                 }
             }
-        },
-        "random": {
-            "name": "Random",
-            "description": "A source that generates random numbers, for testing purposes.",
-            "url": "https://en.wikipedia.org/wiki/Special:Random",
-            "parameters": {},
-            "entities": {}
         },
         "robot_framework": {
             "name": "Robot Framework",

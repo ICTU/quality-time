@@ -35,6 +35,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     rename_teams_webhook_notification_destination(database)
     rename_axe_selenium_python_to_axe_core(database)
     remove_notification_frequency(database)
+    remove_random_number_source(database)
     return database
 
 
@@ -109,6 +110,20 @@ def remove_notification_frequency(database: Database) -> None:  # pragma: no cov
             if "frequency" in notification_destination:
                 del notification_destination["frequency"]
                 changed = True
+        if changed:
+            replace_report(database, report)
+
+
+def remove_random_number_source(database: Database) -> None:  # pragma: no cover-behave
+    """Remove the random number source from recent reports."""
+    # Introduced when the most recent version of Quality-time was 3.20.0.
+    for report in current_reports(database):
+        changed = False
+        for metric in metrics(report):
+            for source_uuid, source in list(metric.get("sources", {}).items()):
+                if source["type"] == "random":
+                    del metric["sources"][source_uuid]
+                    changed = True
         if changed:
             replace_report(database, report)
 
