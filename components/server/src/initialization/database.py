@@ -113,6 +113,20 @@ def remove_notification_frequency(database: Database) -> None:  # pragma: no cov
             replace_report(database, report)
 
 
+def remove_random_number_source(database: Database) -> None:  # pragma: no cover-behave
+    """Remove the random number source from recent reports."""
+    # Introduced when the most recent version of Quality-time was 3.20.0.
+    for report in current_reports(database):
+        changed = False
+        for metric in metrics(report):
+            for source_uuid, source in metric.get("sources", {}).items():
+                if source["type"] == "random":
+                    del metric["sources"][source_uuid]
+                    changed = True
+        if changed:
+            replace_report(database, report)
+
+
 def current_reports(database: Database):
     """Return the latest versions of all undeleted reports."""
     return list(database.reports.find({"last": True, "deleted": {"$exists": False}}))

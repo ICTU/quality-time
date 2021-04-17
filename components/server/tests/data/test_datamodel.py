@@ -33,9 +33,7 @@ class DataModelTest(DataModelTestCase):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.data_model["metrics"].items():
             for source in metric["sources"]:
-                # pylint: disable=superfluous-parens
-                if not (parameters := self.data_model["sources"][source]["parameters"]):
-                    continue
+                parameters = self.data_model["sources"][source]["parameters"]
                 parameter_metrics = []
                 for parameter in parameters.values():
                     parameter_metrics.extend(parameter["metrics"])
