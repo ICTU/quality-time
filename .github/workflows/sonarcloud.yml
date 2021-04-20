@@ -10,6 +10,7 @@ on:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
+    if: ${{ secrets.SONAR_TOKEN != null && secrets.SONAR_TOKEN != ''}}
     steps:
     - uses: actions/checkout@v2
       with:
