@@ -20,11 +20,12 @@ from model.transformations import (
     replace_report_uuids,
     summarize_report,
 )
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
-@bottle.get("/api/v3/report/<report_uuid>")
+@bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
 def get_report(database: Database, report_uuid: ReportId):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
@@ -39,7 +40,7 @@ def get_report(database: Database, report_uuid: ReportId):
     return dict(reports=reports)
 
 
-@bottle.post("/api/v3/report/import")
+@bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
@@ -67,7 +68,7 @@ def post_report_import(database: Database):
     return result
 
 
-@bottle.post("/api/v3/report/new")
+@bottle.post("/api/v3/report/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
@@ -78,7 +79,7 @@ def post_report_new(database: Database):
     return result
 
 
-@bottle.post("/api/v3/report/<report_uuid>/copy")
+@bottle.post("/api/v3/report/<report_uuid>/copy", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data_model = latest_datamodel(database)
@@ -92,7 +93,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     return result
 
 
-@bottle.get("/api/v3/report/<report_uuid>/pdf")
+@bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as pdf."""
     renderer_host = os.environ.get("RENDERER_HOST", "renderer")
@@ -111,9 +112,9 @@ def export_report_as_pdf(report_uuid: ReportId):
     return response.content
 
 
-@bottle.get("/api/v3/report/<report_uuid>/json")
+@bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
 def export_report_as_json(database: Database, report_uuid: ReportId):
-    """Return the quality-time report, including iencrypted credentials for api access to the sources."""
+    """Return the quality-time report, including encrypted credentials for api access to the sources."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     report = latest_report(database, report_uuid)
@@ -129,7 +130,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     return report
 
 
-@bottle.delete("/api/v3/report/<report_uuid>")
+@bottle.delete("/api/v3/report/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     data_model = latest_datamodel(database)
@@ -140,7 +141,7 @@ def delete_report(report_uuid: ReportId, database: Database):
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
-@bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>")
+@bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
     data_model = latest_datamodel(database)
@@ -156,7 +157,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
-@bottle.get("/api/v3/tagreport/<tag>")
+@bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()

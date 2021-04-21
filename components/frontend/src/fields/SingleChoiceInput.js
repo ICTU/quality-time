@@ -4,7 +4,7 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;
-  let { editableLabel, set_value, options, sort, ...otherProps } = props;
+  let { editableLabel, set_value, options, sort, requiredPermissions, ...otherProps } = props;
 
   // default should be sorted
   if (sort || sort === undefined) {
@@ -30,7 +30,9 @@ export function SingleChoiceInput(props) {
   return (
     <Form>
       <ReadOnlyOrEditable
-        readOnlyComponent={<Form.Input {...otherProps} value={value_text} />} editableComponent={<Dropdown />} />
+        requiredPermissions={requiredPermissions}
+        readOnlyComponent={<Form.Input {...otherProps} value={value_text} />}
+        editableComponent={<Dropdown />} />
     </Form>
   )
 }

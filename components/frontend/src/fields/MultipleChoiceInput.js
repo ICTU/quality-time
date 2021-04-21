@@ -11,11 +11,11 @@ function sort_options(option_list) {
 }
 
 export function MultipleChoiceInput(props) {
-  let { allowAdditions, editableLabel, required, set_value, ...otherProps } = props;
+  let { allowAdditions, editableLabel, required, set_value, value, requiredPermissions, ...otherProps } = props;
   const choices = props.value || [];
   const [options, setOptions] = useState(props.options);
-  function onChange(event, { value }) { set_value(value) }
-  function onAddItem(event, { value }) { setOptions(prev_options => ([value, ...prev_options])) }
+  function onChange(event, { changed_value }) { set_value(changed_value) }
+  function onAddItem(event, { added_option }) { setOptions(prev_options => ([added_option, ...prev_options])) }
   function Dropdown() {
     return (
       <Form.Dropdown
@@ -36,7 +36,10 @@ export function MultipleChoiceInput(props) {
   }
   return (
     <Form>
-      <ReadOnlyOrEditable readOnlyComponent={<Form.Input {...otherProps} />} editableComponent={<Dropdown />} />
+      <ReadOnlyOrEditable
+            requiredPermissions={requiredPermissions}
+            readOnlyComponent={<Form.Input value={value ? value.join(', ') : ''} {...otherProps} />}
+            editableComponent={<Dropdown />} />
     </Form>
   )
 }

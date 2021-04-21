@@ -9,11 +9,12 @@ from database.measurements import measurements_by_metric
 from database.reports import insert_new_report, latest_reports, metrics_of_subject
 from model.actions import copy_subject, move_item
 from model.data import ReportData, SubjectData
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import MetricId, ReportId, SubjectId
 
 
-@bottle.post("/api/v3/subject/new/<report_uuid>")
+@bottle.post("/api/v3/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data_model = latest_datamodel(database)
@@ -27,7 +28,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>")
+@bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
     data_model = latest_datamodel(database)
@@ -45,7 +46,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     return result
 
 
-@bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>")
+@bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
     data_model = latest_datamodel(database)
@@ -63,7 +64,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     return insert_new_report(database, delta_description, (source.report, source_uuids), (target.report, target_uuids))
 
 
-@bottle.delete("/api/v3/subject/<subject_uuid>")
+@bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data_model = latest_datamodel(database)
@@ -75,7 +76,9 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
     return insert_new_report(database, delta_description, (data.report, uuids))
 
 
-@bottle.post("/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>")
+@bottle.post(
+    "/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     data_model = latest_datamodel(database)
@@ -97,7 +100,7 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
     return insert_new_report(database, delta_description, (data.report, uuids))
 
 
-@bottle.get("/api/v3/subject/<subject_uuid>/measurements")
+@bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)
 def get_subject_measurements(subject_uuid: SubjectId, database: Database):
     """Return all measurements for the subjects within the last 28 weeks."""
     metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid)

@@ -3,7 +3,7 @@ import { Grid, Icon, Popup, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { HyperLink } from '../widgets/HyperLink';
 
 function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {
@@ -26,6 +26,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                 <Grid.Row columns={2}>
                     <Grid.Column width={6}>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             id={destination_uuid}
                             label='Name'
                             set_value={(value) => {
@@ -36,6 +37,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     </Grid.Column>
                     <Grid.Column width={10}>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             placeholder="url"
                             label={label}
                             set_value={(value) => {
@@ -45,7 +47,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <ReadOnlyOrEditable editableComponent={
+                <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                     <Grid.Row>
                         <Grid.Column>
                             <DeleteButton
@@ -70,7 +72,7 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
     return (
         <>
             {notification_destinations}
-            <ReadOnlyOrEditable key="1" editableComponent={
+            <ReadOnlyOrEditable key="1" requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment vertical>
                     <AddButton
                         item_type="notification destination"

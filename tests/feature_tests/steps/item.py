@@ -1,5 +1,6 @@
 """Generic step implementations for reports, subjects, metrics, and sources."""
 
+import json
 from asserts import assert_equal, assert_false, assert_true
 from behave import given, when, then
 
@@ -55,10 +56,12 @@ def delete_item(context, item):
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
     item_fragment = "reports" if item == "reports" else f"{item}/{context.uuid[item]}"
-    if attribute in ("tags", "editors"):
+    if attribute in ("tags",):  # convert comma separated values to lists
         value = value.split(", ")
-        if value == ["None"]:
-            value = []
+    elif attribute in ("permissions",):  # convert comma separated values to lists
+        if value == "None":
+            value = "{}"
+        value = json.loads(value)
     else:
         value = dict(true=True, false=False, none=None).get(value.lower(), value)
     if item == "notification_destination":
@@ -88,10 +91,11 @@ def get_item(context, item):
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
     """Check that the item attribute equals value."""
-    if item == "reports" and attribute == "editors":
-        value = [] if value == "None" else value.split(", ")
+    if item == "reports" and attribute == "permissions":  # parse json data
+        value = {} if value == "None" else json.loads(value)
     else:
         value = None if value == "None" else value
+
     assert_equal(value, get_item(context, item)[attribute])
 
 

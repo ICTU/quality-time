@@ -11,11 +11,12 @@ from database.reports import insert_new_report, latest_reports
 from model.actions import copy_metric, move_item
 from model.data import MetricData, SubjectData
 from model.metric import Metric
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
 
 
-@bottle.get("/internal-api/v3/metrics")
+@bottle.get("/internal-api/v3/metrics", authentication_required=False)
 def get_metrics(database: Database):
     """Get all metrics."""
     metrics: dict[str, Any] = {}
@@ -27,7 +28,7 @@ def get_metrics(database: Database):
     return metrics
 
 
-@bottle.post("/api/v3/metric/new/<subject_uuid>")
+@bottle.post("/api/v3/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data = SubjectData(latest_datamodel(database), latest_reports(database), subject_uuid)
@@ -39,7 +40,7 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
+@bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
     data_model, reports = latest_datamodel(database), latest_reports(database)
@@ -56,7 +57,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     return result
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
+@bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
     data_model, reports = latest_datamodel(database), latest_reports(database)
@@ -81,7 +82,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     return insert_new_report(database, delta_description, *reports_to_insert)
 
 
-@bottle.delete("/api/v3/metric/<metric_uuid>")
+@bottle.delete("/api/v3/metric/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data = MetricData(latest_datamodel(database), latest_reports(database), metric_uuid)
@@ -97,7 +98,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
 ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>")
+@bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]

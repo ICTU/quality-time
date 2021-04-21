@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function SubjectType(props) {
@@ -13,6 +14,7 @@ export function SubjectType(props) {
     });
     return (
         <SingleChoiceInput
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label="Subject type"
             options={options}
             set_value={(value) => props.set_value(value)}

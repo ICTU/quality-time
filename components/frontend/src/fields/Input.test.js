@@ -16,7 +16,7 @@ describe("<Input />", () => {
   beforeEach(() => { mock_set_value = jest.fn(); });
 
   it('renders the value read only', () => {
-    const wrapper = mount(<Input value="Hello" />);
+    const wrapper = mount(<Input requiredPermissions={['test']} value="Hello" />);
     expect(wrapper.find("FormInput").prop("value")).toStrictEqual("Hello");
     expect(wrapper.find("FormInput").prop("readOnly")).toBe(true);
   });

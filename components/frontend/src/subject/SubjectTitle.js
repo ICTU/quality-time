@@ -6,7 +6,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
@@ -15,7 +15,7 @@ export function SubjectTitle(props) {
 
     function ButtonGridRow() {
         return (
-            <ReadOnlyOrEditable editableComponent={
+            <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Grid.Row>
                     <Grid.Column>
                         <ReorderButtonGroup
@@ -48,6 +48,7 @@ export function SubjectTitle(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringInput
+                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Subject name"
                             placeholder={current_subject_type.name}
                             set_value={(value) => set_subject_attribute(subject_uuid, "name", value, props.reload)}

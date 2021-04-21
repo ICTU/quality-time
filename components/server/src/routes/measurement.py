@@ -20,13 +20,15 @@ from database.measurements import (
 )
 from database.reports import latest_metric, latest_reports
 from model.data import SourceData
+
 from model.measurement import Measurement
 from model.metric import Metric
+from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
 
-@bottle.post("/internal-api/v3/measurements")
+@bottle.post("/internal-api/v3/measurements", authentication_required=False)
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
@@ -44,7 +46,10 @@ def post_measurement(database: Database) -> None:
     insert_new_measurement(database, measurement)
 
 
-@bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
+@bottle.post(
+    "/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>",
+    permissions_required=[EDIT_ENTITY_PERMISSION],
+)
 def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
 ) -> dict:
@@ -74,7 +79,7 @@ def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
 
-@bottle.get("/api/v3/nr_measurements")
+@bottle.get("/api/v3/nr_measurements", authentication_required=False)
 def stream_nr_measurements(database: Database) -> Iterator[str]:
     """Return the number of measurements as server sent events."""
     # Keep event IDs consistent
@@ -104,7 +109,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
             skipped += 1
 
 
-@bottle.get("/api/v3/measurements/<metric_uuid>")
+@bottle.get("/api/v3/measurements/<metric_uuid>", authentication_required=False)
 def get_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])

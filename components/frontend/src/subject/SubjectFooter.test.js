@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Table } from "semantic-ui-react";
-import { ReadOnlyContext } from "../context/ReadOnly";
+import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from "../context/ReadOnly";
 import { SubjectFooter } from "./SubjectFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
@@ -13,7 +13,7 @@ fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 it('shows the add metric button and adds a metric when clicked', async () => {
     
     const { queryAllByText, getByText } = render(
-      <ReadOnlyContext.Provider value={false}>
+      <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
         <Table>
             <SubjectFooter 
                 subjectUuid="subject_uuid" 
@@ -35,7 +35,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
   it('copies a metric when the copy button is clicked and a metric is selected', async () => {
     await act(async () => {
       render(
-        <ReadOnlyContext.Provider value={false}>
+        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Table>
                 <SubjectFooter 
                     subjectUuid="subject_uuid" 
@@ -56,7 +56,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
   it('moves a metric when the move button is clicked and a metric is selected', async () => {
     await act(async () => {
       render(
-        <ReadOnlyContext.Provider value={false}>
+        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Table>
                 <SubjectFooter 
                     subjectUuid="subject_uuid" 

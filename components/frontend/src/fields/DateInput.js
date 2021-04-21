@@ -27,6 +27,7 @@ function EditableDateInput(props) {
 export function DateInput(props) {
     return (
         <ReadOnlyOrEditable
+            requiredPermissions={props.requiredPermissions}
             readOnlyComponent={<Input {...props} />}
             editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />}
         />

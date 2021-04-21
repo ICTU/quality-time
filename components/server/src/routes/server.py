@@ -6,7 +6,7 @@ import bottle
 QUALITY_TIME_VERSION = "3.20.0"
 
 
-@bottle.get("/api/v3/server")
+@bottle.get("/api/v3/server", authentication_required=False)
 def get_server():
     """Return the server info."""
     return dict(version=QUALITY_TIME_VERSION)

@@ -8,6 +8,7 @@ from pymongo.database import Database
 
 from initialization.secrets import initialize_secrets
 from model.iterators import metrics, sources
+from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
@@ -36,6 +37,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     rename_axe_selenium_python_to_axe_core(database)
     remove_notification_frequency(database)
     remove_random_number_source(database)
+    migrate_edit_permissions(database)
     return database
 
 
@@ -126,6 +128,15 @@ def remove_random_number_source(database: Database) -> None:  # pragma: no cover
                     changed = True
         if changed:
             replace_report(database, report)
+
+
+def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-behave
+    """Move report edit rights from editors to permissions: edit_reports."""
+    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": {"$exists": False}})
+    for reports_overview in reports_overviews_to_migrate:
+        permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}
+        updates = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
+        database.reports_overviews.update_one({"_id": reports_overview["_id"]}, updates)
 
 
 def current_reports(database: Database):

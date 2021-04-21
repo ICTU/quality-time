@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 import { SourceParameter } from './SourceParameter';
 
 export function SourceParameters(props) {
@@ -11,6 +12,7 @@ export function SourceParameters(props) {
         (
             <Grid.Column key={parameter_key} style={{paddingTop: '10px'}}>
                 <SourceParameter
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     help={all_parameters[parameter_key].help}
                     help_url={all_parameters[parameter_key].help_url}
                     index={index}

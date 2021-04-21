@@ -1,12 +1,25 @@
 
 import React from 'react';
 
-export const ReadOnlyContext = React.createContext(true);
+export const EDIT_REPORT_PERMISSION = "edit_reports"
+export const EDIT_ENTITY_PERMISSION = "edit_entities"
 
-export function ReadOnlyOrEditable({ readOnlyComponent, editableComponent }) {
+export const ReadOnlyContext = React.createContext(null);
+
+export function accessGranted(permissions, requiredPermissions) {
+  if (!requiredPermissions) {
+    return true
+  }
+  if (!permissions) {
+    return false
+  }
+  return requiredPermissions.every(permission => permissions.includes(permission))
+}
+
+export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {
     return (
       <ReadOnlyContext.Consumer>
-        {(readOnly) => (readOnly ? readOnlyComponent : editableComponent)}
+        {(permissions) => (accessGranted(permissions, requiredPermissions) ? editableComponent : readOnlyComponent)}
       </ReadOnlyContext.Consumer>
     )
 }

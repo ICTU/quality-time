@@ -2,6 +2,7 @@ import React from 'react';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { set_metric_attribute } from '../api/metric';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 
 export function Target(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -19,6 +20,7 @@ export function Target(props) {
             <StringInput
                 label={label}
                 prefix={metric_direction_prefix}
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
                 value={measurement_value}
             />
@@ -31,6 +33,7 @@ export function Target(props) {
                 max={max}
                 min="0"
                 prefix={metric_direction_prefix}
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 set_value={(value) => set_metric_attribute(props.metric_uuid, props.target_type, value, props.reload)}
                 unit={metric_unit}
                 value={measurement_value}

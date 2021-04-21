@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
@@ -93,7 +93,7 @@ export function MeasurementDetails(props) {
 
   function Buttons() {
     return (
-      <ReadOnlyOrEditable editableComponent={
+      <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
         <div style={{ marginTop: "20px" }}>
           <ReorderButtonGroup
             first={props.first_metric} last={props.last_metric} moveable="metric" slot="row"

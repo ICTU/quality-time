@@ -1,5 +1,6 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
+import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Logo } from './Logo';
 
@@ -23,6 +24,7 @@ export function SourceType(props) {
     });
   return (
     <SingleChoiceInput
+      requiredPermissions={[EDIT_REPORT_PERMISSION]}
       label="Source type"
       options={options}
       set_value={(value) => props.set_source_attribute("type", value)}

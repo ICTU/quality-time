@@ -30,7 +30,8 @@ function StringInputWithSuggestions(props) {
 
 export function StringInput(props) {
   const options = [...(props.options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
+  
   const input = <Input {...props} />;
   const input_with_suggestions = <StringInputWithSuggestions {...props} options={options} />;
-  return options.length === 0 ? input : <ReadOnlyOrEditable readOnlyComponent={input} editableComponent={input_with_suggestions} />
+  return options.length === 0 ? input : <ReadOnlyOrEditable requiredPermissions={props.requiredPermissions} readOnlyComponent={input} editableComponent={input_with_suggestions} />
 }
