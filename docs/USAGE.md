@@ -3,7 +3,9 @@
 ## Table of contents
 
 - [Logging in and out](#logging-in-and-out)
-- [Limiting editing rights](#limiting-editing-rights)
+- [Configuring permissions](#configuring-permissions)
+  - [Report edit permission](#report-edit-permission)
+  - [Entity edit permission](#entity-edit-permission)
 - [Configuring quality reports](#configuring-quality-reports)
   - [Configuring reports](#configuring-reports)
   - [Configuring subjects](#configuring-subjects)
@@ -50,25 +52,25 @@ After hitting "Submit" you should be logged in. The menu bar shows your username
 
 Clicking "Logout" logs you out from *Quality-time*. Your user session expires after 24 hours and you need to log in again to be able to edit reports.
 
-## Permissions
+## Configuring permissions
 
-*Quality-time* implements a simple permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit the reports, subjects, metrics, sources and entities that are used. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights. Here you can add the usernames or email addresses to grant permissions.
+*Quality-time* implements a simple permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit reports, subjects, metrics, sources and measured entities. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights.
 
 ### Report edit permission
 
-Report edit permission will allow a user edit the "structure" of this *Quality-time* instance. That means to edit the configuration of all reports, subjects, metrics and sources.
+Report edit permission allows a user to edit the reports in this *Quality-time* instance. That means to edit the add, edit, and delete reports, subjects, metrics, and sources.
 
-If you forget to add yourself, your username will be added automatically. This means that you can't retract your own editing rights: add another user and ask them to remove your username or email address.
+If you forget to add yourself, your username will be added automatically. This means that you can't retract your own report editing rights: add another user and ask them to remove your username or email address.
 
-To restore the default situation where every logged in user can edit reports and metrics, simply remove all usernames and email addresses.
+To restore the default situation where every logged-in user can edit reports, subjects, metrics, and sources, simply remove all usernames and email addresses.
 
 ### Entity edit permission
 
-Entity edit permission will allow a user to update the status of measured entities. A user with this permission can for example mark measured violations as false positives. 
+Entity edit permission will allow a user to update the status of measured entities. A user with this permission can for example mark violations as false positives. 
 
 Unlike for the report edit permission, it is possible to retract yourself from the list of entity editors.
 
-To restore the default situation where every logged in user can edit reports and metrics, simply remove all usernames and email addresses.
+To restore the default situation where every logged-in user can edit entities, simply remove all usernames and email addresses.
 
 ## Configuring quality reports
 
