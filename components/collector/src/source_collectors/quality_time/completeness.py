@@ -66,13 +66,3 @@ class QualityTimeCompleteness(QualityTimeCollector):
                     metrics.add(metric)
 
         return metrics
-
-    @staticmethod
-    def __metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:
-        """Return whether the metric has been selected by the user by means of metric type, source type or tag."""
-        if tags and (tags & set(metric.get("tags", {}))) == set():
-            return False
-        if metric_types and metric["type"] not in metric_types:
-            return False
-        metric_source_types = {source["type"] for source in metric.get("sources", {}).values()}
-        return not (source_types and (source_types & metric_source_types) == set())
