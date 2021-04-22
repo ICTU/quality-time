@@ -25,12 +25,17 @@ additional-dependency-files:
   - type: pip-requirements-txt
     path: release/requirements.txt
 
+additional-deps:
+  python:
+    - name: bandit
+      repo: https://github.com/PyCQA/bandit
+
 ignore-failures:
-    javascript:
-      - semantic-ui-calendar-react
-      - semantic-ui-css
-    python:
-      - aiodns
-      - behave
-      - bottle-mongo
-      - selenium
+  javascript:
+    - semantic-ui-calendar-react
+    - semantic-ui-css
+  python:
+    - aiodns
+    - behave
+    - bottle-mongo
+    - selenium
