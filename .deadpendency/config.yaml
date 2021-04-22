@@ -29,6 +29,12 @@ additional-deps:
   python:
     - name: bandit
       repo: PyCQA/bandit
+    - name: bottle
+      repo: bottlepy/bottle
+    - name: mypy
+      repo: python/mypy
+    - name: nose
+      repo: nose-devs/nose
 
 ignore-failures:
   javascript:
