@@ -323,6 +323,25 @@
             ],
             "tags": []
         },
+        "completeness": {
+            "name": "Metric completeness",
+            "description": "For each subject, count number of metrics that can be added to this subject type, but have not been added yet",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
+            "unit": "metrics",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "quality_time",
+            "sources": [
+                "quality_time"
+            ],
+            "tags": []
+        },
         "performancetest_duration": {
             "name": "Performancetest duration",
             "description": "The duration of the performancetest in minutes",
@@ -4846,7 +4865,8 @@
                     "metrics": [
                         "metrics",
                         "source_up_to_dateness",
-                        "source_version"
+                        "source_version",
+                        "completeness"
                     ]
                 },
                 "status": {
@@ -4883,7 +4903,8 @@
                     "default_value": [],
                     "metrics": [
                         "metrics",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "completeness"
                     ]
                 },
                 "metric_type": {
