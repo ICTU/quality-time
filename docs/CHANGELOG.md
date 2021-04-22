@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.21.0-rc.1] - [2021-04-22]
+## [Unreleased]
 
 ### Fixed
 
 - Prevent (rare) crashes of the UI when switching tabs in the metric details. Fixes [#1873](https://github.com/ICTU/quality-time/issues/1873).
 - Don't assume that because GitLab returns jobs sorted by ID, they are also sorted by date. Fixes [#2036](https://github.com/ICTU/quality-time/issues/2036). 
 - Prevent timeouts when collecting failed CI-jobs or unused CI-jobs from GitLab by removing the limit on open connections. Fixes [#2037](https://github.com/ICTU/quality-time/issues/2037). 
+- *Quality-time* wouldn't recognize zip files in URLs with query strings (e.g. https://git.example.org/foo.zip?job=bar). Fixes [#2057](https://github.com/ICTU/quality-time/issues/2057). 
 
 ### Added
 
