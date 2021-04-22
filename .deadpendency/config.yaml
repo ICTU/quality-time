@@ -1,0 +1,48 @@
+additional-dependency-files:
+  - type: pip-requirements-txt
+    path: components/collector/requirements.txt
+  - type: pip-requirements-txt
+    path: components/collector/requirements-dev.txt
+
+  - type: npm-package-json
+    path: components/frontend/package.json
+
+  - type: pip-requirements-txt
+    path: components/notifier/requirements.txt
+  - type: pip-requirements-txt
+    path: components/notifier/requirements-dev.txt
+
+  - type: pip-requirements-txt
+    path: components/server/requirements.txt
+  - type: pip-requirements-txt
+    path: components/server/requirements-dev.txt
+
+  - type: pip-requirements-txt
+    path: tests/application_tests/requirements.txt
+  - type: pip-requirements-txt
+    path: tests/feature_tests/requirements.txt
+
+  - type: pip-requirements-txt
+    path: release/requirements.txt
+
+additional-deps:
+  python:
+    - name: bandit
+      repo: PyCQA/bandit
+    - name: bottle
+      repo: bottlepy/bottle
+    - name: mypy
+      repo: python/mypy
+    - name: nose
+      repo: nose-devs/nose
+
+ignore-failures:
+  javascript:
+    - semantic-ui-calendar-react
+    - semantic-ui-css
+  python:
+    - aiodns
+    - behave
+    - bottle-mongo
+    - nose
+    - selenium
