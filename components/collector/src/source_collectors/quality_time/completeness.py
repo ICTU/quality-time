@@ -1,4 +1,4 @@
-"""Quality-time metrics collector."""
+"""Quality-time completeness collector."""
 
 from typing import cast
 
@@ -45,21 +45,27 @@ class QualityTimeCompleteness(QualityTimeCollector):
         scale_data = measurement.get(scale, {})
         return scale_data.get("status") or "unknown", scale_data.get("value")
 
-    async def __get_possible_metrics(self, response: Response) -> list[tuple[dict[str, Measurements], Entity]]:
+    async def __get_possible_metrics(self, datamodel_response: Response, reports_response: Response) -> list[str]:
         """Get the relevant metrics from the reports response."""
-        tags = set(self._parameter("tags"))
-        metric_types = self._parameter("metric_type")
-        source_types = set(self._parameter("source_type"))
-        possible_sources
-        for report in await self._get_reports(response):
-            for subject_uuid, subject in report.get("subjects", {}).items():
-                for metric_uuid, metric in subject.get("metrics", {}).items():
-                    if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
-                        metric["report_uuid"] = report["report_uuid"]
-                        metric["subject_uuid"] = subject_uuid
-                        entity = Entity(key=metric_uuid, report=report["title"], subject=subject["name"])
-                        metrics_and_entities.append((metric, entity))
-        return metrics_and_entities
+        subject_types = set()
+        for report in await self._get_reports(reports_response):
+            for subject in report.get("subjects", {}).values():
+                subject_types.add(subject["type"])
+
+        possible_metrics = set()
+        for subject_type in subject_types:
+            possible_metrics += datamodel_response["subjects"][subject_type]["metrics"]
+        return possible_metrics
+
+    async def __get_actual_metrics(self, datamodel_response: Response, reports_response: Response) -> list[str]:
+        """Get the relevant metrics from the reports response."""
+        metrics = set()
+        for report in await self._get_reports(reports_response):
+            for subject in report.get("subjects", {}).values():
+                for metric in subject.get("metrics", {}).values():
+                    metrics.add(metric)
+
+        return metrics
 
     @staticmethod
     def __metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:
