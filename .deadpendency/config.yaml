@@ -24,3 +24,13 @@ additional-dependency-files:
 
   - type: pip-requirements-txt
     path: release/requirements.txt
+
+ignore-failures:
+    javascript:
+      - semantic-ui-calendar-react
+      - semantic-ui-css
+    python:
+      - aiodns
+      - behave
+      - bottle-mongo
+      - selenium
