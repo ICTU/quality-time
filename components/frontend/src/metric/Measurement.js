@@ -51,7 +51,7 @@ export function Measurement(props) {
   const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
   const metric_name = get_metric_name(metric, props.datamodel);
   const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={formatMetricScaleAndUnit(metric_type, metric, false)} {...props} />
-  const expanded = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid)).length > 0;
+  const expanded = props.visibleDetailsTabs.filter((tab) => tab?.startsWith(props.metric_uuid)).length > 0;
   function onExpand(expand) {
     if (expand) {
       props.toggleVisibleDetailsTab(`${props.metric_uuid}:0`)
