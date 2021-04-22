@@ -27,8 +27,7 @@ additional-dependency-files:
 
 additional-deps:
   python:
-    - name: bandit
-      repo: https://github.com/PyCQA/bandit
+    - repo: PyCQA/bandit
 
 ignore-failures:
   javascript:
