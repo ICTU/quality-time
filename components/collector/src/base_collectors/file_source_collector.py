@@ -8,6 +8,7 @@ import zipfile
 from abc import ABC
 from http import HTTPStatus
 from typing import cast
+from urllib.parse import urlparse
 
 from collector_utilities.type import JSON, URL, Response, Responses
 from source_model import SourceResponses
@@ -42,7 +43,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to unzip any zipped responses."""
         responses = await super()._get_source_responses(*urls)
-        if urls[0].endswith(".zip"):
+        if urlparse(str(urls[0])).path.endswith(".zip"):
             unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
             responses[:] = list(itertools.chain(*unzipped_responses))
         return responses

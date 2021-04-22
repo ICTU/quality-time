@@ -65,7 +65,7 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
 
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
-        self.set_source_parameter("url", "https://axecsv.zip")
+        self.set_source_parameter("url", "https://example.org/axecsv.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.csv", self.csv) for index in range(2)])
         response = await self.collect(get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
