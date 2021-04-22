@@ -103,6 +103,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Impact levels | Multiple choice | critical, minor, moderate, serious | _all impact levels_ | No | If provided, only count accessibility violations with the impact levels. |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
+| Result types | Multiple choice | inapplicable, incomplete, passes, violations | violations | No | Limit which result types to count. |
 | Tags to ignore (regular expressions or tags) | Multiple choice with addition |  |  | No | Tags to ignore can be specified by tag or by regular expression. |
 | Tags to include (regular expressions or tags) | Multiple choice with addition |  |  | No | Tags to include can be specified by tag or by regular expression. |
 | URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format | URL |  |  | Yes |  |
