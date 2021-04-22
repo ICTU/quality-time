@@ -1,0 +1,8 @@
+additional-dependency-files:
+  - type: pip-requirements-txt
+    path: tests/application_tests/requirements.txt
+  - type: pip-requirements-txt
+    path: tests/feature_tests/requirements.txt
+  - type: pip-requirements-txt
+    path: releaase/requirements.txt
+
