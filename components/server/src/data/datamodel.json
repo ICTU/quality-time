@@ -1104,6 +1104,24 @@
                     "metrics": [
                         "accessibility"
                     ]
+                },
+                "result_types": {
+                    "name": "Result types",
+                    "short_name": "result types",
+                    "type": "multiple_choice",
+                    "help": "Limit which result types to count.",
+                    "mandatory": false,
+                    "default_value": ["violations"],
+                    "placeholder": "all result types",
+                    "values": [
+                        "inapplicable",
+                        "incomplete",
+                        "passes",
+                        "violations"
+                    ],
+                    "metrics": [
+                        "accessibility"
+                    ]
                 }
             },
             "entities": {
