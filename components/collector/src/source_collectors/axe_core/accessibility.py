@@ -1,7 +1,6 @@
 """Axe-core accessibility analysis collectors."""
 
 from collections.abc import Collection
-from itertools import chain
 from typing import Any
 
 from base_collectors import JSONFileSourceCollector
@@ -29,8 +28,8 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
     def __parse_violations(self, violations: dict[str, list[dict[str, list]]], url: str) -> list[dict[str, Any]]:
         """Parse the list of violations."""
         entity_attributes = []
-        for result_type, violations in violations.items():
-            for violation in violations:
+        for result_type, violations_by_result_type in violations.items():
+            for violation in violations_by_result_type:
                 entity_attributes.extend(self.__parse_violation(violation, result_type, url))
         return entity_attributes
 
