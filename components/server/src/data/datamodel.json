@@ -1135,6 +1135,16 @@
                             "url": "help"
                         },
                         {
+                            "name": "Result type",
+                            "key": "result_type",
+                            "color": {
+                                "passes": "positive",
+                                "violations": "negative",
+                                "inapplicable": "active",
+                                "incomplete": "warning"
+                            }
+                        },
+                        {
                             "name": "Impact",
                             "key": "impact"
                         },

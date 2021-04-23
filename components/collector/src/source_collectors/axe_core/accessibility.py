@@ -18,20 +18,23 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
         for response in responses:
             json = await response.json(content_type=None)
             if isinstance(json, list):
-                violations, url = json, ""
+                violations = dict(violations=json)
+                url = ""
             else:
-                violations = chain.from_iterable(
-                    json.get(result_type) for result_type in self._parameter("result_types")
-                )
+                violations = {result_type: json.get(result_type) for result_type in self._parameter("result_types")}
                 url = json.get("url", "")
             entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 
-    def __parse_violations(self, violations: list[dict[str, list]], url: str) -> list[dict[str, Any]]:
+    def __parse_violations(self, violations: dict[str, list[dict[str, list]]], url: str) -> list[dict[str, Any]]:
         """Parse the list of violations."""
-        return chain.from_iterable(self.__parse_violation(violation, url) for violation in violations)
+        entity_attributes = []
+        for result_type, violations in violations.items():
+            for violation in violations:
+                entity_attributes.extend(self.__parse_violation(violation, result_type, url))
+        return entity_attributes
 
-    def __parse_violation(self, violation: dict[str, list], url: str) -> list[dict[str, Any]]:
+    def __parse_violation(self, violation: dict[str, list], result_type: str, url: str) -> list[dict[str, Any]]:
         """Parse a violation."""
         entity_attributes = []
         tags = violation.get("tags", [])
@@ -46,6 +49,7 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
                         impact=impact,
                         page=url,
                         url=url,
+                        result_type=result_type,
                         tags=", ".join(sorted(tags)),
                         violation_type=violation.get("id"),
                     )
@@ -72,5 +76,6 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
     def __create_key(attributes) -> str:
         """Create a key for the entity based on the attributes."""
         # We ignore tags for two reasons: 1) If the violation is the same, so should the tags be. 2) Tags were added to
-        # the entities later and including them in the key would change the key for existing entities.
-        return md5_hash(",".join(str(value) for key, value in attributes.items() if key != "tags"))
+        # the entities later and including them in the key would change the key for existing entities. Nr 2) also
+        # applies to the result type.
+        return md5_hash(",".join(str(value) for key, value in attributes.items() if key not in {"tags", "result_type"}))

@@ -65,6 +65,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 "page": self.tested_url,
                 "url": self.tested_url,
                 "violation_type": "aria-input-field-name",
+                "result_type": "violations",
                 "tags": "cat.color, wcag143, wcag2aa",
             },
             {
@@ -75,6 +76,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 "page": self.tested_url,
                 "url": self.tested_url,
                 "violation_type": "aria-hidden-focus",
+                "result_type": "violations",
                 "tags": "",
             },
         ]
@@ -83,7 +85,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
     def set_expected_entity_keys(self):
         """Update the keys of the expected entities."""
         for entity in self.expected_entities:
-            values = [str(value) for key, value in entity.items() if key not in {"key", "tags"}]
+            values = [str(value) for key, value in entity.items() if key not in {"key", "result_type", "tags"}]
             entity["key"] = md5_hash(",".join(values))
 
     async def test_nr_of_issues(self):
@@ -142,8 +144,9 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 impact=None,
                 page=self.tested_url,
                 url=self.tested_url,
-                violation_type="aria-hidden-body",
+                result_type="passes",
                 tags="cat.aria, wcag2a, wcag412",
+                violation_type="aria-hidden-body",
             )
         )
         self.set_expected_entity_keys()
@@ -152,7 +155,6 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
 
     async def test_result_type_without_nodes(self):
         """Test that result types without nodes can be counted as well."""
-        self.maxDiff = None
         self.set_source_parameter("result_types", ["violations", "inapplicable"])
         self.expected_entities.append(
             dict(
@@ -162,8 +164,9 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 impact=None,
                 page=self.tested_url,
                 url=self.tested_url,
-                violation_type="aria-allowed-attr",
+                result_type="inapplicable",
                 tags="cat.aria, wcag2a, wcag412",
+                violation_type="aria-allowed-attr",
             )
         )
         self.set_expected_entity_keys()
