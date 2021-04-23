@@ -26,7 +26,7 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 
     def __parse_violations(self, violations: dict[str, list[dict[str, list]]], url: str) -> list[dict[str, Any]]:
-        """Parse the list of violations."""
+        """Parse the violations."""
         entity_attributes = []
         for result_type, violations_by_result_type in violations.items():
             for violation in violations_by_result_type:
