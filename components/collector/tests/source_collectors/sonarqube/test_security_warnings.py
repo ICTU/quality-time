@@ -88,8 +88,9 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             ),
         ]
 
-    async def test_security_warnings(self):
+    async def test_all_security_warnings(self):
         """Test that all security warnings are returned."""
+        self.set_source_parameter("security_types", ["vulnerability", "security_hotspot"])
         show_component_json = {}
         response = await self.collect(
             get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json]
@@ -115,8 +116,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         )
 
     async def test_security_warnings_vulnerabilities_only(self):
-        """Test that only the vulnerabilities are returned."""
-        self.set_source_parameter("security_types", ["vulnerability"])
+        """Test that by default only the vulnerabilities are returned."""
         response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(
             response, value="2", total="100", entities=self.vulnerability_entities, landing_url=self.issues_landing_url
