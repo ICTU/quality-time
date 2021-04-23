@@ -1104,6 +1104,24 @@
                     "metrics": [
                         "accessibility"
                     ]
+                },
+                "result_types": {
+                    "name": "Result types",
+                    "short_name": "result types",
+                    "type": "multiple_choice",
+                    "help": "Limit which result types to count.",
+                    "mandatory": false,
+                    "default_value": ["violations"],
+                    "placeholder": "all result types",
+                    "values": [
+                        "inapplicable",
+                        "incomplete",
+                        "passes",
+                        "violations"
+                    ],
+                    "metrics": [
+                        "accessibility"
+                    ]
                 }
             },
             "entities": {
@@ -1115,6 +1133,16 @@
                             "name": "Violation type",
                             "key": "violation_type",
                             "url": "help"
+                        },
+                        {
+                            "name": "Result type",
+                            "key": "result_type",
+                            "color": {
+                                "passes": "positive",
+                                "violations": "negative",
+                                "inapplicable": "active",
+                                "incomplete": "warning"
+                            }
                         },
                         {
                             "name": "Impact",

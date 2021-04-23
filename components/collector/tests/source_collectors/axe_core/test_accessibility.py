@@ -33,6 +33,28 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                     nodes=[dict(impact="moderate", html="html2")],
                 ),
             ],
+            passes=[
+                dict(
+                    id="aria-hidden-body",
+                    impact=None,
+                    tags=["cat.aria", "wcag2a", "wcag412"],
+                    description="Ensures aria-hidden='true' is not present on the document body.",
+                    help="aria-hidden='true' must not be present on the document body",
+                    helpUrl="https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
+                    nodes=[dict(impact=None, html="<body>")],
+                ),
+            ],
+            inapplicable=[
+                dict(
+                    id="aria-allowed-attr",
+                    impact=None,
+                    tags=["cat.aria", "wcag2a", "wcag412"],
+                    description="Ensures ARIA attributes are allowed for an element's role",
+                    help="Elements must only use allowed ARIA attributes",
+                    helpUrl="https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
+                    nodes=[],
+                ),
+            ],
         )
         self.expected_entities = [
             {
@@ -43,6 +65,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 "page": self.tested_url,
                 "url": self.tested_url,
                 "violation_type": "aria-input-field-name",
+                "result_type": "violations",
                 "tags": "cat.color, wcag143, wcag2aa",
             },
             {
@@ -53,6 +76,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
                 "page": self.tested_url,
                 "url": self.tested_url,
                 "violation_type": "aria-hidden-focus",
+                "result_type": "violations",
                 "tags": "",
             },
         ]
@@ -61,7 +85,8 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
     def set_expected_entity_keys(self):
         """Update the keys of the expected entities."""
         for entity in self.expected_entities:
-            entity["key"] = md5_hash(",".join(str(value) for key, value in entity.items() if key != "tags"))
+            values = [str(value) for key, value in entity.items() if key not in {"key", "result_type", "tags"}]
+            entity["key"] = md5_hash(",".join(values))
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
@@ -102,9 +127,48 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
     async def test_json_with_only_violations(self):
         """Test that a JSON file with just a list of violation works."""
         for entity in self.expected_entities:
-            del entity["key"]
             entity["page"] = ""
             entity["url"] = ""
         self.set_expected_entity_keys()
         response = await self.collect(get_request_json_return_value=self.json["violations"])
         self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_result_type_parameter(self):
+        """Test that other result types besides violations can be counted as well."""
+        self.set_source_parameter("result_types", ["violations", "passes"])
+        self.expected_entities.append(
+            dict(
+                description="Ensures aria-hidden='true' is not present on the document body.",
+                element="<body>",
+                help="https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
+                impact=None,
+                page=self.tested_url,
+                url=self.tested_url,
+                result_type="passes",
+                tags="cat.aria, wcag2a, wcag412",
+                violation_type="aria-hidden-body",
+            )
+        )
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="3", entities=self.expected_entities)
+
+    async def test_result_type_without_nodes(self):
+        """Test that result types without nodes can be counted as well."""
+        self.set_source_parameter("result_types", ["violations", "inapplicable"])
+        self.expected_entities.append(
+            dict(
+                description="Ensures ARIA attributes are allowed for an element's role",
+                element=None,
+                help="https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
+                impact=None,
+                page=self.tested_url,
+                url=self.tested_url,
+                result_type="inapplicable",
+                tags="cat.aria, wcag2a, wcag412",
+                violation_type="aria-allowed-attr",
+            )
+        )
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="3", entities=self.expected_entities)
