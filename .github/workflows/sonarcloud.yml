@@ -8,24 +8,13 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  check_token:
+  sonarcloud:
     runs-on: ubuntu-latest
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    outputs:
-      status: ${{ steps.check.conclusion }}
-    steps:
-      - name: Check token
-        id: check
-        if: env.SONAR_TOKEN == null
-        run: exit 1
-
-  sonarcloud:
-    runs-on: ubuntu-latest
-    needs: check_token
-    if: needs.check_token.outputs.status == 'success'
     steps:
     - uses: actions/checkout@v2
+      if: env.SONAR_TOKEN != null
       with:
         fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
     - name: Set up Python
