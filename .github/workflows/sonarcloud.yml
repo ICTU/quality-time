@@ -10,9 +10,11 @@ on:
 jobs:
   sonarcloud:
     runs-on: ubuntu-latest
-    if: ${{ secrets.SONAR_TOKEN != null && secrets.SONAR_TOKEN != ''}}
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
     - uses: actions/checkout@v2
+      if: env.SONAR_TOKEN != null
       with:
         fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
     - name: Set up Python
