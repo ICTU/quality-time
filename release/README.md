@@ -11,15 +11,15 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-Run the release script with `--help` to show help information.
+Run the release script with `--help` to show help information, including the current release.
 
 ```console
 python release.py --help
 ```
 
-## Pick the release type 
+## Decide the release type 
 
-*Quality-time* adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html), so first you need to determine the release type:
+*Quality-time* adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html), so first you need to decide on the type of release you want to create:
 
 - Create a **major** release if the next release contains backwards incompatible changes, and optionally other changes and bug fixes.
 - Create a **minor** release if the next release contains non-breaking changes, and optionally bug fixes.
@@ -27,15 +27,16 @@ python release.py --help
 
 If you want to test the release (for example, deploy it to a test environment, or roll out a release to early adopters), it's possible to create a **release candidate** for a major, minor, or patch release.
 
-Note: to determine whether a release is major, minor, or patch, compare the changes to the previous most recent release, excluding release candidates.
+Note: to determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](../docs/CHANGELOG.md), excluding release candidates.
 
 ## Determine the version bump
 
-This leads to the following possibilities for the version bump argument that you will be passing to the release script:
+Having decided on the release type, there are the following possibilities for the version bump argument that you will be passing to the release script:
 
 - If the current release is a release candidate,
   - and you want to create another release candidate, use: `rc`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1-rc.1.
   - and the next release will not be, use: `drop-rc`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1.
+  - and changes have been made since the previous release candidate that impact the release type, use: `rc-major`, `rc-minor`, or `rc-patch`. If the current release is e.g. v3.6.1-rc.0, using `rc-minor` will bump the version to v3.7.0-rc.0.
 - If the current release is not a release candidate:
   - and you want to create a release candidate, use: `rc-major`, `rc-minor`, or `rc-patch`. If the current release is e.g. v3.6.1, using `rc-minor` will bump the version to v3.7.0-rc.0.
   - and you don't want to create a release candidate, use: `major`, `minor`, or `patch`. If the current release is e.g. v3.6.1, using `minor` will bump the version to v3.7.0.
