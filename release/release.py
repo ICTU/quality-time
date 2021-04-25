@@ -66,8 +66,8 @@ def check_preconditions(bump: str):
     if repo.is_dirty(path=metrics_and_sources):
         messages.append(f"The generated data model documentation is out of date, please commit {metrics_and_sources}.")
     changelog = docs / "CHANGELOG.md"
-    with pathlib.Path(changelog).open() as changelog:
-        changelog_text = changelog.read()
+    with changelog.open() as changelog_file:
+        changelog_text = changelog_file.read()
     if "[Unreleased]" not in changelog_text:
         messages.append(f"The change log ({changelog}) has no '[Unreleased]' header.")
     if bump == "drop-rc" and "-rc." in changelog_text:
