@@ -2,13 +2,12 @@
 
 """Release the application."""
 
-import argparse
 import datetime
 import os
 import pathlib
 import subprocess  # skipcq: BAN-B404
 import sys
-from typing import Tuple
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 import git
 
@@ -25,10 +24,18 @@ def get_version() -> str:
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
 
 
-def parse_arguments() -> Tuple[str, str, bool]:
+def parse_arguments() -> tuple[str, str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
-    parser = argparse.ArgumentParser(description=f"Release Quality-time. Current version is {current_version}.")
+    description = f"Release Quality-time. Current version is {current_version}."
+    epilog = """preconditions for release:
+  - the current folder is the release folder
+  - the current branch is master
+  - the workspace has no uncommitted changes
+  - the generated data model documentation is up-to-date
+  - the change log has an '[Unreleased]' header
+  - the change log contains no release candidates"""
+    parser = ArgumentParser(description=description, epilog=epilog, formatter_class=RawDescriptionHelpFormatter)
     allowed_bumps_in_rc_mode = ["rc", "rc-major", "rc-minor", "rc-patch", "drop-rc"]  # rc = release candidate
     allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
     bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
