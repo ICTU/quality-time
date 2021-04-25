@@ -44,29 +44,28 @@ def check_preconditions(bump: str):
     """Check preconditions for version bump."""
     messages = []
     release_folder = pathlib.Path(__file__).resolve().parent
-    root = release_folder.parent
-    docs = root / "docs"
     if pathlib.Path.cwd() != release_folder:
-        messages.append("The current folder is not the release folder. Please change directory to the release folder.")
+        messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
+    root = release_folder.parent
     repo = git.Repo(root)
     if repo.active_branch.name != "master":
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
-    subprocess.run(
-        ["python3", docs / "ci" / "create_metrics_and_sources_md.py"], check=True
-    )  # skipcq: BAN-B603,BAN-B607
-    if repo.is_dirty(path=docs / "METRICS_AND_SOURCES.md"):
-        messages.append(
-            "The generated data model documentation is not up-to-date, please commit ../docs/METRICS_AND_SOURCES.md."
-        )
-    with pathlib.Path(docs / "CHANGELOG.md").open() as changelog:
+    docs = root / "docs"
+    create_metrics_and_sources = docs / "ci" / "create_metrics_and_sources_md.py"
+    subprocess.run(["python3", create_metrics_and_sources], check=True)  # skipcq: BAN-B603,BAN-B607
+    metrics_and_sources = docs / "METRICS_AND_SOURCES.md"
+    if repo.is_dirty(path=metrics_and_sources):
+        messages.append(f"The generated data model documentation is out of date, please commit {metrics_and_sources}.")
+    changelog = docs / "CHANGELOG.md"
+    with pathlib.Path(changelog).open() as changelog:
         changelog_text = changelog.read()
     if "[Unreleased]" not in changelog_text:
-        messages.append("The change log (../docs/CHANGELOG.md) has no '[Unreleased]' header.")
+        messages.append(f"The change log ({changelog}) has no '[Unreleased]' header.")
     if bump == "drop-rc" and "-rc." in changelog_text:
         messages.append(
-            "The change log (../docs/CHANGELOG.md) still contains release candidates; remove "
+            f"The change log ({changelog}) still contains release candidates; remove "
             "the release candidates and move their changes under the '[Unreleased]' header."
         )
     if messages:
