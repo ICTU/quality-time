@@ -1,7 +1,6 @@
+-r ../../requirements-dev.txt
 asserts==0.11.1
 behave==1.2.6
-black==21.4b0
 coverage==5.5
-pip==21.1
 requests==2.25.1
 sseclient==0.0.27

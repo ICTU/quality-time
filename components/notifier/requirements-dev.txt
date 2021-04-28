@@ -1,5 +1,5 @@
+-r ../../requirements-dev.txt
 bandit==1.7.0
-black==21.4b0
 coverage==5.5
 dlint==0.11.0
 isort==5.8.0
@@ -7,6 +7,5 @@ mypy==0.812
 lxml==4.6.3
 nose==1.3.7
 pylint==2.8.2
-pip==21.1
 safety==1.10.3
 vulture==2.3

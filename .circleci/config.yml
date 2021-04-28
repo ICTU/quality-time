@@ -102,7 +102,7 @@ jobs:
             cd tests/feature_tests
             python3 -m venv venv
             . venv/bin/activate
-            pip --quiet install --progress-bar off -r requirements.txt
+            pip --quiet install --progress-bar off -r requirements-dev.txt
             cd ../..
             export COVERAGE_RCFILE=tests/feature_tests/.coveragerc
             coverage run -m behave --format progress tests/feature_tests
