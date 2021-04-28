@@ -8,7 +8,7 @@ Make sure the release folder is the current directory, and you have the dependen
 cd release
 python3 -m venv venv
 . venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 Run the release script with `--help` to show help information, including the current release.

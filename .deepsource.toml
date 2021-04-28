@@ -13,9 +13,9 @@ exclude_patterns = [
 name = "python"
 enabled = true
 dependency_file_paths = [
-  "release/requirements.txt",
-  "tests/application_tests/requirements.txt",
-  "tests/feature_tests/requirements.txt",
+  "release/requirements-dev.txt",
+  "tests/application_tests/requirements-dev.txt",
+  "tests/feature_tests/requirements-dev.txt",
   "components/collector/requirements.txt",
   "components/collector/requirements-dev.txt",
   "components/notifier/requirements.txt",
