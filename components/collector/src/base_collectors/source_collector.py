@@ -49,10 +49,11 @@ class SourceCollector(ABC):
         collector for the source type.
         """
         for class_name in (f"{source_type}{metric_type}", source_type):
-            matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == class_name.replace("_", "")]
-            if matching_subclasses:
-                matching_subclasses[0].source_type = source_type
-                return matching_subclasses[0]
+            for subclass in cls.subclasses:
+                if subclass.__name__.lower() == class_name.replace("_", ""):
+                    subclass.source_type = source_type
+                    return subclass
+
         logging.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
         return None
 
