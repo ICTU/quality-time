@@ -6503,7 +6503,8 @@
             "name": "Quality report",
             "description": "A software quality report.",
             "metrics": [
-                "metrics"
+                "metrics",
+                "completeness"
             ]
         },
         "software": {

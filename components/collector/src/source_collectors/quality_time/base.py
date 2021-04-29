@@ -11,12 +11,6 @@ from collector_utilities.type import URL, Response
 class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base collector for Quality-time metrics."""
 
-    async def _api_url(self) -> URL:
-        """Extend to add the reports API path."""
-        parts = parse.urlsplit(await super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
-
     async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))

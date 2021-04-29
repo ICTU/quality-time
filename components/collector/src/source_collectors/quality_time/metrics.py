@@ -1,8 +1,9 @@
 """Quality-time metrics collector."""
 
 from typing import cast
+from urllib import parse
 
-from collector_utilities.type import Response, Value
+from collector_utilities.type import Response, URL, Value
 from source_model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import QualityTimeCollector
@@ -13,6 +14,12 @@ Measurements = list[dict[str, dict[str, str]]]
 
 class QualityTimeMetrics(QualityTimeCollector):
     """Collector to get the "metrics" metric from Quality-time."""
+
+    async def _api_url(self) -> URL:
+        """Extend to add the reports API path."""
+        parts = parse.urlsplit(await super()._api_url())
+        netloc = f"{parts.netloc.split(':')[0]}"
+        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
