@@ -2,10 +2,9 @@
 
 from abc import ABC
 from typing import Any
-from urllib import parse
 
 from base_collectors import SourceCollector, SourceCollectorException
-from collector_utilities.type import URL, Response
+from collector_utilities.type import Response
 
 
 class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
