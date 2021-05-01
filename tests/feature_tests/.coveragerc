@@ -3,9 +3,9 @@ omit =
     */venv/*
     */.venv/*
 branch = True
-parallel = True
 concurrency =
     gevent
+parallel = True
 
 [report]
 # Regexes for lines to exclude from consideration
