@@ -2,5 +2,6 @@
 asserts==0.11.1
 behave==1.2.6
 coverage==5.5
+gevent==21.1.2
 requests==2.25.1
 sseclient==0.0.27
