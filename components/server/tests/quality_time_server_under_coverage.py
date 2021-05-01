@@ -8,6 +8,7 @@ import sys
 # isort: off
 
 import coverage
+
 cov = coverage.process_startup()
 
 sys.path.insert(0, "src")
@@ -25,4 +26,4 @@ def signal_handler(*args):  # pylint: disable=unused-argument
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
-    serve()
+    serve("wsgiref")
