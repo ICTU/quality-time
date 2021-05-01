@@ -26,4 +26,4 @@ def signal_handler(*args):  # pylint: disable=unused-argument
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
-    serve(reloader=False)
+    serve("waitress")
