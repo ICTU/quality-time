@@ -5,4 +5,4 @@ cchardet==2.1.7
 defusedxml==0.7.1
 packaging==20.9
 python-dateutil==2.8.1
-typing_extensions==3.7.4.3
+typing_extensions==3.10.0.0
