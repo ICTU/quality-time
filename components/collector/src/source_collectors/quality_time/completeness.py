@@ -18,8 +18,8 @@ class QualityTimeCompleteness(QualityTimeCollector):
         datamodel_response = responses[0]
         reports_response = responses[1]
         possible_metrics = await self.__get_possible_metrics(datamodel_response, reports_response)
-        actual_metrics = await self.__get_actual_metrics(reports_response)
-        entities = [Entity(i, metric_type=mt) for i, mt in enumerate(possible_metrics - actual_metrics)]
+        actual_metrics = await self.__get_actual_metrics(datamodel_response, reports_response)
+        entities = [entity for key, entity in possible_metrics.items() if key not in actual_metrics]
         return SourceMeasurement(total=str(len(possible_metrics)), entities=entities)
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -36,17 +36,25 @@ class QualityTimeCompleteness(QualityTimeCollector):
                 subject_types.add(subject["type"])
 
         datamodel = await datamodel_response.json()
-        possible_metrics = set()
+        possible_metrics = {}
         for subject_type in subject_types:
-            possible_metrics.update(datamodel["subjects"][subject_type]["metrics"])
+            nice_subject_name = datamodel["subjects"][subject_type]["name"]
+            for metric_name in datamodel["subjects"][subject_type]["metrics"]:
+                nice_metric_name = datamodel["metrics"][metric_name]["name"]
+                entity = Entity(key=metric_name, metric_type=nice_metric_name, subject_type=nice_subject_name, status="target_not_met")
+                possible_metrics[metric_name] = entity
         return possible_metrics
 
-    async def __get_actual_metrics(self, reports_response: Response) -> list[str]:
+    async def __get_actual_metrics(self, datamodel_response: Response, reports_response: Response) -> list[str]:
         """Get the relevant metrics from the reports response."""
-        metrics = set()
+        datamodel = await datamodel_response.json()
+        entities = {}
         for report in await self._get_reports(reports_response):
             for subject in report.get("subjects", {}).values():
                 for metric in subject.get("metrics", {}).values():
-                    metrics.add(metric["type"])
+                    nice_metric_name = datamodel["metrics"][metric["type"]]["name"]
+                    nice_subject_name = datamodel["subjects"][subject["type"]]["name"]
+                    entity = Entity(key=metric["type"], metric_type=nice_metric_name, subject_type=nice_subject_name, status="target_met")
+                    entities[metric["type"]] = entity
 
-        return metrics
+        return entities

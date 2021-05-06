@@ -325,7 +325,7 @@
         },
         "completeness": {
             "name": "Metric completeness",
-            "description": "For each subject, count number of metrics that can be added to this subject type, but have not been added yet",
+            "description": "Count the number of metrics that can be added to each report, but have not been added yet",
             "scales": [
                 "count",
                 "percentage"
@@ -5132,6 +5132,36 @@
                             "name": "Target",
                             "key": "target",
                             "type": "integer"
+                        }
+                    ]
+                },
+                "completeness": {
+                    "name": "Metric type",
+                    "name_plural": "Metric types",
+                    "attributes": [
+                        {
+                            "name": "Subject type",
+                            "key": "subject_type"
+                        },
+                        {
+                            "name": "Metric type",
+                            "key": "metric_type"
+                        },
+                        {
+                            "name": "Report",
+                            "key": "report",
+                            "url": "report_url"
+                        },
+                        {
+                            "name": "Status",
+                            "key": "status",
+                            "type": "status",
+                            "color": {
+                                "target_met": "positive",
+                                "near_target_met": "warning",
+                                "target_not_met": "negative",
+                                "technical_debt_target_met": "active"
+                            }
                         }
                     ]
                 }
