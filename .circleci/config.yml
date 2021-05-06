@@ -92,10 +92,10 @@ jobs:
           working_directory: components/server
           command: |
             . venv/bin/activate
-            export COVERAGE_PROCESS_START=../../tests/feature_tests/.coveragerc
             export RENDERER_HOST=localhost
             export PROXY_HOST=localhost
             export PROXY_PORT=5000
+            export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
