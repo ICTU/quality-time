@@ -30,7 +30,7 @@ class QualityTimeCompleteness(QualityTimeCollector):
 
             for metric_type, entity in possible_metrics.items():
                 if metric_type not in actual_metrics_types:
-                    if not metric_type in entity_dict:
+                    if metric_type not in entity_dict:
                         entity["reports"] = report_title
                         entity_dict[metric_type] = entity
                     else:
@@ -40,6 +40,7 @@ class QualityTimeCompleteness(QualityTimeCollector):
         return SourceMeasurement(total=str(len(possible_metrics)), entities=entities)
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Get responses for reports and the datamodel."""
         api_url = urls[0]
         datamodel_url = URL(f"{api_url}/api/v3/datamodel")
         reports_url = URL(f"{api_url}/api/v3/reports")
