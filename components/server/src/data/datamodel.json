@@ -324,14 +324,14 @@
             "tags": []
         },
         "completeness": {
-            "name": "Metric completeness",
+            "name": "Report completeness",
             "description": "Count the number of metrics that can be added to each report, but have not been added yet",
             "scales": [
                 "count",
                 "percentage"
             ],
             "default_scale": "count",
-            "unit": "metrics",
+            "unit": "missing metrics",
             "addition": "sum",
             "direction": "<",
             "target": "0",
@@ -5148,8 +5148,8 @@
                             "key": "metric_type"
                         },
                         {
-                            "name": "Report",
-                            "key": "report",
+                            "name": "Missing from reports",
+                            "key": "reports",
                             "url": "report_url"
                         },
                         {
