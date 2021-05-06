@@ -14,7 +14,7 @@ from .base import QualityTimeCollector
 class QualityTimeSourceUpToDateness(QualityTimeCollector, SourceUpToDatenessCollector):
     """Collector to get the "source up-to-dateness" metric from Quality-time."""
 
-    async def _reports_url(self) -> URL:
+    async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
