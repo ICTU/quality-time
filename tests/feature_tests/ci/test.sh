@@ -14,7 +14,6 @@ python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
 coverage erase
-export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
 export RENDERER_HOST=localhost
 python tests/quality_time_server_under_coverage.py &> /tmp/quality_time_server.log &
 sleep 3  # Give server time to start up
