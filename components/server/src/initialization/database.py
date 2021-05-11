@@ -45,7 +45,7 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    database.measurements.create_index("start")
+    database.measurements.create_index([("start", pymongo.DESCENDING), ("metric_uuid", pymongo.ASCENDING)])
 
 
 def add_last_flag_to_reports(database: Database) -> None:
