@@ -45,7 +45,10 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    database.measurements.create_index([("start", pymongo.DESCENDING), ("metric_uuid", pymongo.ASCENDING)])
+    if "start_1" in database.measurements.index_information():
+        # Drop the index on start, it doesn't work and is replaced by the index on metric_uuid and sources.value
+        database.measurements.drop_index("start_1")  # pragma: no cover-behave
+    database.measurements.create_index([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
 
 
 def add_last_flag_to_reports(database: Database) -> None:
