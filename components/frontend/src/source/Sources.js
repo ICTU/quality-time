@@ -9,14 +9,7 @@ import { source_options } from '../widgets/menu_options';
 export function Sources(props) {
     const measurement_sources = props.measurement ? props.measurement.sources : [];
     function source_error(source_uuid, error_type) {
-        let message = '';
-        for (let source of measurement_sources) {
-            if (source.source_uuid === source_uuid) {
-                message = source[error_type] || '';
-                return;
-            }
-        }
-        return message;
+        return measurement_sources.find((source) => source.source_uuid === source_uuid)?.[error_type] || '';
     }
     function ButtonSegment() {
         return (
