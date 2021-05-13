@@ -30,8 +30,8 @@ it('Calculates column dates correctly', () => {
       metrics={{1: metric}}
       trendTableInterval={1} 
       trendTableNrDates={3}
-      setTrendTableInterval = {() => {}}
-      setTrendTableNrDates = {() => {}}
+      setTrendTableInterval = {() => {/*Dummy implementation*/}}
+      setTrendTableNrDates = {() => {/*Dummy implementation*/}}
     />
   );
   
@@ -55,8 +55,8 @@ it('Displays all the metrics', () => {
       metrics={{1: metric, 2: metric2}}
       trendTableInterval={1} 
       trendTableNrDates={3}
-      setTrendTableInterval = {() => {}}
-      setTrendTableNrDates = {() => {}}
+      setTrendTableInterval = {() => {/*Dummy implementation*/}}
+      setTrendTableNrDates = {() => {/*Dummy implementation*/}}
     />
   );
 

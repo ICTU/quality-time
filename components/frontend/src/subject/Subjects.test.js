@@ -12,7 +12,7 @@ function subjects() {
     return (
         shallow(
             <Subjects
-                clearHiddenColumns={() => {}}
+                clearHiddenColumns={() => {/*Dummy implementation*/}}
                 datamodel={datamodel}
                 hiddenColumns={[]}
                 history={mockHistory}
@@ -20,7 +20,7 @@ function subjects() {
                 report={report}
                 subject_uuid="subject_uuid"
                 tags={[]}
-                toggleHiddenColumn={() => {}}
+                toggleHiddenColumn={() => {/*Dummy implementation*/}}
             />
         )
     )

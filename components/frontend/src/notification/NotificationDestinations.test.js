@@ -18,7 +18,7 @@ const notification_destinations= {
 function render_notification_destinations(destinations) {
   render(
     <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
-      <NotificationDestinations destinations={destinations} report_uuid={"report_uuid"} reload={() => {}}/>
+      <NotificationDestinations destinations={destinations} report_uuid={"report_uuid"} reload={() => {/* No need to reload during tests */}}/>
     </ReadOnlyContext.Provider>
   )
 }
