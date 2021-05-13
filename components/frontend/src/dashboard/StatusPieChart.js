@@ -1,12 +1,13 @@
 import React from 'react';
 import { VictoryLabel, VictoryPie, VictoryTooltip } from 'victory';
+import { pluralize } from '../utils';
 
 function nr_metrics_text(nr_metrics) {
-    return [nr_metrics === 0 ? "No" : nr_metrics, "metric" + (nr_metrics === 1 ? "" : "s")]
+    return [nr_metrics === 0 ? "No" : nr_metrics, pluralize("metric", nr_metrics)]
 }
 
 function nr_metrics_label(nr_metrics) {
-    return nr_metrics === 0 ? "no" : nr_metrics + " metric" + (nr_metrics === 1 ? "" : "s")
+    return nr_metrics === 0 ? "no" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
 export function StatusPieChart(props) {

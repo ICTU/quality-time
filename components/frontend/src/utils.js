@@ -42,6 +42,11 @@ export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function pluralize(word, count) {
+    // Pluralize (naively; it doesn't work for words like sheep) the word if count > 1
+    return word + (count <= 1 ? "" : "s");
+}
+
 export function nice_number(number) {
     let rounded_numbers = [20, 50, 100];
     do {

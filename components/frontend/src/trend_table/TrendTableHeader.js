@@ -1,5 +1,6 @@
 import { Dropdown, Table } from "semantic-ui-react";
 import { HamburgerMenu } from "../widgets/HamburgerMenu";
+import { pluralize } from  "../utils";
 
 export function TrendTableHeader({extraHamburgerItems, columnDates, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval}) {
     return (
@@ -14,7 +15,7 @@ export function TrendTableHeader({extraHamburgerItems, columnDates, trendTableNr
                         )}
                         <Dropdown.Header>Time between dates</Dropdown.Header>
                         {[1, 2, 3, 4].map((nr) =>
-                            <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr} week${nr === 1 ? '' : 's'}`}</Dropdown.Item>
+                            <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr} ${pluralize("week", nr)}`}</Dropdown.Item>
                         )}
                     </HamburgerMenu>
                 </Table.HeaderCell>
