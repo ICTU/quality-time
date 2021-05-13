@@ -58,7 +58,7 @@ describe("<MeasurementDetails />", () => {
                     subject_uuid="subject_uuid"
                     unit="unit"
                     visibleDetailsTabs={[]}
-                    toggleVisibleDetailsTab={() => {}}
+                    toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
                 />
             </ReadOnlyContext.Provider>
         );
@@ -93,7 +93,7 @@ describe("<MeasurementDetails />", () => {
                         stop_sort={mockCallBack}
                         subject_uuid="subject_uuid"
                         visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {}}
+                        toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
                     />
                 </ReadOnlyContext.Provider>
             );

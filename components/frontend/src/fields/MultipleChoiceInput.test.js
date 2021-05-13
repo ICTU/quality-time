@@ -28,14 +28,14 @@ describe("<MultipleChoiceInput />", () => {
     expect(wrapper.find('FormDropdown').prop("value")).toStrictEqual([]);
   });
   it('invokes the callback with correct parameters on adding a new choice', () => {
-    const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {} } }
+    const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {/*Dummy implementation*/} } }
     const wrapper = input_wrapper({ allowAdditions: true, value: ["hello"], options: ["hello", "hi", "ho"], set_value: mock_set_value });
     wrapper.find("input").simulate("change", {target: {value: "ciao"}});
     wrapper.find("DropdownItem").simulate("click", nativeEvent);
     expect(mock_set_value).toHaveBeenCalledWith(["hello", "ciao"]);
   });
   it('invokes the callback with correct parameters on adding an existing choice', () => {
-    const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {} } }
+    const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {/*Dummy implementation*/} } }
     const wrapper = input_wrapper({ allowAdditions: true, value: ["hello"], options: ["hello", "hi", "ho"], set_value: mock_set_value });
     wrapper.find("DropdownItem").at(0).simulate("click", nativeEvent);
     expect(mock_set_value).toHaveBeenCalledWith(["hello", "hi"]);
