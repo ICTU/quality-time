@@ -10,69 +10,65 @@ jobs:
     name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2.3.4
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Prepare
+        id: prep
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo ::set-output name=version::${VERSION}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push Database to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_database
-          tag_with_ref: true
-          path: components/database
+          context: components/database
+          tags: ictu/quality-time_database:${{ steps.prep.output.version }}
+          push: true
       - name: Push Renderer to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_renderer
-          tag_with_ref: true
-          path: components/renderer
+          context: components/renderer
+          tags: ictu/quality-time_renderer:${{ steps.prep.output.version }}
+          push: true
       - name: Push Proxy to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_proxy
-          tag_with_ref: true
-          path: components/proxy
+          context: components/proxy
+          tags: ictu/quality-time_proxy:${{ steps.prep.output.version }}
+          push: true
       - name: Push Collector to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_collector
-          tag_with_ref: true
-          path: components/collector
+          context: components/collector
+          tags: ictu/quality-time_collector:${{ steps.prep.output.version }}
+          push: true
       - name: Push Notifier to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_notifier
-          tag_with_ref: true
-          path: components/notifier
+          context: components/notifier
+          tags: ictu/quality-time_notifier:${{ steps.prep.output.version }}
+          push: true
       - name: Push Server to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_server
-          tag_with_ref: true
-          path: components/server
+          context: components/server
+          tags: ictu/quality-time_server:${{ steps.prep.output.version }}
+          push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_frontend
-          tag_with_ref: true
-          path: components/frontend
+          context: components/frontend
+          tags: ictu/quality-time_frontend:${{ steps.prep.output.version }}
+          push: true
       - name: Push test LDAP to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ictu/quality-time_testldap
-          tag_with_ref: true
-          path: components/ldap
+          context: components/ldap
+          tags: ictu/quality-time_testldap:${{ steps.prep.output.version }}
+          push: true
