@@ -14,13 +14,13 @@ export function SourceEntity(props) {
   }
   const style = ignored_entity ? { textDecoration: "line-through" } : {};
   var status = "unknown_status";
-  props.entity_attributes.forEach((entity_attribute) => {
+  for (let entity_attribute of props.entity_attributes) {
     let cell_contents = props.entity[entity_attribute.key];
     if (entity_attribute.color && entity_attribute.color[cell_contents]) {
       status = entity_attribute.color[cell_contents] + '_status';
-      return;
+      break
     }
-  });
+  }
   const details = <SourceEntityDetails
     entity={props.entity}
     metric_uuid={props.metric_uuid}

@@ -24,9 +24,8 @@ it('displays one row per metric', () => {
 
 it('changes the sort column when clicked', () => {
   function table_header_cell(index) {
-      const sortableHeader = wrapper.find("SortableHeader").at(index)
-      const headerCell = sortableHeader.find("TableHeaderCell")
-    return headerCell;
+    const sortableHeader = wrapper.find("SortableHeader").at(index);
+    return sortableHeader.find("TableHeaderCell");
   }
   const wrapper = mount(
     <Table>
