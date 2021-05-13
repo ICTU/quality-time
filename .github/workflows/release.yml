@@ -23,47 +23,47 @@ jobs:
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/database
-          tags: ictu/quality-time_database:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_database:${{ github.event.ref }}
           push: true
       - name: Push Renderer to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/renderer
-          tags: ictu/quality-time_renderer:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_renderer:${{ github.event.ref }}
           push: true
       - name: Push Proxy to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/proxy
-          tags: ictu/quality-time_proxy:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_proxy:${{ github.event.ref }}
           push: true
       - name: Push Collector to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/collector
-          tags: ictu/quality-time_collector:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_collector:${{ github.event.ref }}
           push: true
       - name: Push Notifier to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/notifier
-          tags: ictu/quality-time_notifier:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_notifier:${{ github.event.ref }}
           push: true
       - name: Push Server to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/server
-          tags: ictu/quality-time_server:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_server:${{ github.event.ref }}
           push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/frontend
-          tags: ictu/quality-time_frontend:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_frontend:${{ github.event.ref }}
           push: true
       - name: Push test LDAP to Docker Hub
         uses: docker/build-push-action@v2.4.0
         with:
           context: components/ldap
-          tags: ictu/quality-time_testldap:${GITHUB_REF#refs/tags/}
+          tags: ictu/quality-time_testldap:${{ github.event.ref }}
           push: true
