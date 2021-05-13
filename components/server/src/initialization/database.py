@@ -45,7 +45,12 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    database.measurements.create_index("start")
+    if "start_1" in database.measurements.index_information():
+        # Drop the index on start, it doesn't work and is replaced by the index on metric_uuid and sources.value.
+        # This if-statement was introduced when the most recent version of Quality-time was v3.21.0 and can be removed
+        # in Quality-time v4.
+        database.measurements.drop_index("start_1")  # pragma: no cover-behave
+    database.measurements.create_index([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
 
 
 def add_last_flag_to_reports(database: Database) -> None:
@@ -132,6 +137,7 @@ def remove_random_number_source(database: Database) -> None:  # pragma: no cover
 
 def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-behave
     """Move report edit rights from editors to permissions: edit_reports."""
+    # Introduced when the most recent version of Quality-time was 3.20.0.
     reports_overviews_to_migrate = database.reports_overviews.find({"permissions": {"$exists": False}})
     for reports_overview in reports_overviews_to_migrate:
         permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}

@@ -23,6 +23,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.count_documents.return_value = 0
         self.database.sessions.find_one.return_value = dict(user="jodoe")
         self.database.measurements.count_documents.return_value = 0
+        self.database.measurements.index_information.return_value = {}
         self.mongo_client().quality_time_db = self.database
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
@@ -235,7 +236,7 @@ class DatabaseInitTest(unittest.TestCase):
                         }
                     }
                 }
-            }
+            },
         )
 
     def test_migrate_edit_permissions(self):
@@ -267,3 +268,9 @@ class DatabaseInitTest(unittest.TestCase):
                 ),
             ]
         )
+
+    def test_drop_measurements_start_index(self):
+        """Test that the index on measurements.start is dropped."""
+        self.database.measurements.index_information.return_value = dict(start_1="info")
+        self.init_database("{}")
+        self.database.measurements.drop_index.assert_called_once_with("start_1")
