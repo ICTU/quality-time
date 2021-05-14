@@ -52,9 +52,22 @@
                         },
                         "2f32b0fe-4bb7-4485-ad11-6215a5777754": {
                             "type": "robot_framework",
+                            "name": "Robot Framework v3",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/robot-framework/output.xml",
-                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html",
+                                "url": "http://testdata:8000/reports/robot-framework/output-3.2.2.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-3.2.2.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
+                            }
+                        },
+                        "2f32b0fe-4bb7-4485-ad11-6215a5757754": {
+                            "type": "robot_framework",
+                            "name": "Robot Framework v4",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/robot-framework/output-4.0.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-4.0.xml",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -101,9 +114,21 @@
                         },
                         "cd3bb542-1aa1-4eb6-89a0-ecbaec2da760": {
                             "type": "robot_framework",
+                            "name": "Robot Framework v3",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/robot-framework/output.xml",
-                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html",
+                                "url": "http://testdata:8000/reports/robot-framework/output-3.2.2.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-3.2.2.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
+                            }
+                        },
+                        "cd3bb542-1aa1-4eb6-89a1-ecbaec2da760": {
+                            "type": "robot_framework",
+                            "name": "Robot Framework v4",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/robot-framework/output-4.0.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-4.0.xml",
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
