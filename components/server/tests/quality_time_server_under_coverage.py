@@ -1,28 +1,35 @@
-"""Quality-time server."""
-
-# pylint: disable=wrong-import-order,wrong-import-position
+"""Quality-time server, with coverage measurement."""
 
 import signal
 import sys
 
-# isort: off
-
 import coverage
-cov = coverage.process_startup()
+
 
 sys.path.insert(0, "src")
-from quality_time_server import serve
 
-# isort: on
+cov = coverage.Coverage()
+
+
+def stop_coverage():
+    """Stop and save the coverage."""
+    if cov:
+        cov.stop()
+        cov.save()
 
 
 def signal_handler(*args):  # pylint: disable=unused-argument
     """Save the coverage data on receiving a SIGTERM."""
-    if cov:
-        cov.save()
+    stop_coverage()
     sys.exit()
 
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
-    serve()
+    cov.start()
+    from quality_time_server import serve
+
+    try:
+        serve()
+    finally:
+        stop_coverage()
