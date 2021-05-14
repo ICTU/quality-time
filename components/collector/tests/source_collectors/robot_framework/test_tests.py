@@ -31,3 +31,12 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
                 self.assert_measurement(
                     response, value="1", total="2", entities=expected_entities, landing_url="https://robot_framework"
                 )
+
+    async def test_skipped_tests(self):
+        """Test that the number of skipped tests is returned."""
+        self.set_source_parameter("test_result", ["skip"])
+        response = await self.collect(get_request_text=self.ROBOT_FRAMEWORK_XML_V4_WITH_SKIPPED_TESTS)
+        expected_entities = [dict(key="s1-t3", name="Test 3", test_result="skip")]
+        self.assert_measurement(
+            response, value="1", total="3", entities=expected_entities, landing_url="https://robot_framework"
+        )

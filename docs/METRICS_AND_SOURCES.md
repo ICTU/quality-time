@@ -960,7 +960,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| Test results | Multiple choice | fail, pass | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test results | Multiple choice | fail, pass, skip | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 | URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
 | URL to a Robot Framework report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
