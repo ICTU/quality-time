@@ -14,4 +14,6 @@ class RobotFrameworkSourceVersion(RobotFrameworkBaseClass, SourceVersionCollecto
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the Robot Framework XML."""
-        return self._parse_version(await parse_source_response_xml(response))
+        generator = (await parse_source_response_xml(response)).get("generator") or "Robot 0"
+        # The generator field looks like: 'Robot 3.1.1 (Python 3.7.0 on darwin)'
+        return Version(generator.split(" ")[1])
