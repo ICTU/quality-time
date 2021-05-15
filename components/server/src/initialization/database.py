@@ -45,12 +45,9 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    if "start_1" in database.measurements.index_information():
-        # Drop the index on start, it doesn't work and is replaced by the index on metric_uuid and sources.value.
-        # This if-statement was introduced when the most recent version of Quality-time was v3.21.0 and can be removed
-        # in Quality-time v4.
-        database.measurements.drop_index("start_1")  # pragma: no cover-behave
-    database.measurements.create_index([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
+    start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
+    metric_uuid_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
+    database.measurements.create_indexes([start_index, metric_uuid_index])
 
 
 def add_last_flag_to_reports(database: Database) -> None:
