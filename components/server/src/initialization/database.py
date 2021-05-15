@@ -45,7 +45,7 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    start_index = pymongo.IndexModel(["start", pymongo.ASCENDING])
+    start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
     metric_uuid_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
     database.measurements.create_indexes([start_index, metric_uuid_index])
 

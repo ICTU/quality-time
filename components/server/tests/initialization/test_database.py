@@ -268,9 +268,3 @@ class DatabaseInitTest(unittest.TestCase):
                 ),
             ]
         )
-
-    def test_drop_measurements_start_index(self):
-        """Test that the index on measurements.start is dropped."""
-        self.database.measurements.index_information.return_value = dict(start_1="info")
-        self.init_database("{}")
-        self.database.measurements.drop_index.assert_called_once_with("start_1")
