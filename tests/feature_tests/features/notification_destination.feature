@@ -19,17 +19,12 @@ Feature: notification destinations
     When the client changes the notification_destination name to "Microsoft Teams webhook"
     Then the notification_destination name is "Microsoft Teams webhook"
 
-  Scenario: change notification destination frequency
-    Given a notification destination
-    When the client changes the notification_destination frequency to "10"
-    Then the notification_destination frequency is "10"
-
-  Scenario: Delete notification destination
+  Scenario: delete notification destination
     Given a notification destination
     When the client deletes the notification_destination
     Then the notification_destination does not exist
 
-  Scenario: Add two notification destinations
+  Scenario: add two notification destinations
     Given a notification destination
     When the client changes the notification_destination name to "New name"
     And the client adds a new notification destination
