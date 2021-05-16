@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Measuring security warnings with Anchore as source would throw a parse error if the source was an unzipped Anchore JSON file. Fixes [#2177](https://github.com/ICTU/quality-time/issues/2177).
 - When all users are allowed to edit reports, no users would be able to edit measurement entities to mark them as false positive, fixed, etc. Fixes [#2179](https://github.com/ICTU/quality-time/issues/2179).
 
+### Removed
+
+- Since subjects have a trend table view, there is little added value in also having a trend table per metric. Remove the trend table view for individual metrics. Closes [#2174](https://github.com/ICTU/quality-time/issues/2174).
+
 ## [3.21.0] - [2021-04-25]
 
 ### Fixed

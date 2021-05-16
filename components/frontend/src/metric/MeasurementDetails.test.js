@@ -76,8 +76,6 @@ describe("<MeasurementDetails />", () => {
         expect(wrapper.find("a.active").text()).toBe("Sources");
         await act(async () => { switch_tab(2) });
         expect(wrapper.find("a.active").text()).toBe("Trend graph");
-        await act(async () => { switch_tab(3) });
-        expect(wrapper.find("a.active").text()).toBe("Trend table");
     });
     it('calls the callback on click', async () => {
         const mockCallBack = jest.fn();

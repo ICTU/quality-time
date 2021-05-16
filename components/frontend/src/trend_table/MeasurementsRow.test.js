@@ -49,20 +49,6 @@ describe("MeasurementRow", () => {
         expect(queryAllByText("testUnit").length).toBe(1)
       });
 
-    it('Renders two rows, one with values and one with targets', () => {
-    
-        const { queryAllByText } = render(
-        <table><tbody><MeasurementsRow metricType={{}} metricName="testName" metric={metric} measurements={measurements} dates={dates} showTargetRow/></tbody></table>
-        );
-        
-        expect(queryAllByText("Measurement").length).toBe(1) // measurement name cell
-        expect(queryAllByText("Target").length).toBe(1) // target name cell
-        expect(queryAllByText("?").length).toBe(2) // first date before first measurement
-        expect(queryAllByText("0").length).toBe(2) // two cells with measurements
-        expect(queryAllByText("1").length).toBe(2) // two cells with measurements
-        expect(queryAllByText("testUnit").length).toBe(2) // measurement and target tow both have the unit
-    });
-
      it('Renders one single row with metric name, measurement values and minutes unit', () => {
     
         metric["unit"] = ""
