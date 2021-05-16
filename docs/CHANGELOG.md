@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.21.1-rc.8] - [2021-05-15]
+## [Unreleased]
 
 ### Fixed
 
 - When the collector posts new measurements to the server, the server looks up previous measurements in the database to see if the measurement value has changed. This lookup was slow due to a missing index on the measurements collection. Fixes [#2155](https://github.com/ICTU/quality-time/issues/2155).
+- Measuring security warnings with Anchore as source would throw a parse error if the source was an unzipped Anchore JSON file. Fixes [#2177](https://github.com/ICTU/quality-time/issues/2177).
 
 ## [3.21.0] - [2021-04-25]
 

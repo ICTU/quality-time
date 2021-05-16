@@ -15,9 +15,10 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
         for response in responses:
             json = await response.json(content_type=None)
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
+            filename = response.filename if hasattr(response, "filename") else ""  # Zipped responses have a filename
             entities.extend(
                 [
-                    self._create_entity(vulnerability, response.filename)
+                    self._create_entity(vulnerability, filename)
                     for vulnerability in vulnerabilities
                     if vulnerability["severity"] in severities
                 ]
