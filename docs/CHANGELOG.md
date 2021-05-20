@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - When the collector posts new measurements to the server, the server looks up previous measurements in the database to see if the measurement value has changed. This lookup was slow due to a missing index on the measurements collection. Fixes [#2155](https://github.com/ICTU/quality-time/issues/2155).
+- Edit controls were not hidden or made read-only in the UI when time traveling and after logout. Fixes [#2170](https://github.com/ICTU/quality-time/issues/2170).
 - Measuring security warnings with Anchore as source would throw a parse error if the source was an unzipped Anchore JSON file. Fixes [#2177](https://github.com/ICTU/quality-time/issues/2177).
 - When all users are allowed to edit reports, no users would be able to edit measurement entities to mark them as false positive, fixed, etc. Fixes [#2179](https://github.com/ICTU/quality-time/issues/2179).
 
