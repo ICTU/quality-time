@@ -1,7 +1,7 @@
 import { parse, stringify } from 'query-string';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-semantic-toasts';
-import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/ReadOnly';
+import { PERMISSIONS } from './context/ReadOnly';
 
 export function get_metric_direction(metric, data_model) {
     return format_metric_direction(metric.direction || data_model.metrics[metric.type].direction);
@@ -151,13 +151,10 @@ export function isValidDate_YYYYMMDD(string) {
     return false
 }
 
-export function getUserPermissions(username, email, permissions) {
-    const allPermissions = [EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION];
-    if ((permissions?.[EDIT_REPORT_PERMISSION] ?? []).length === 0) {
-        return allPermissions  // Edit report permisions are not limited, so every user gets all permissions
-    }
-    return allPermissions.filter((permission) => {
+export function getUserPermissions(username, email, current_report_is_tag_report, report_date, permissions) {
+    if (username === null || report_date !== null || current_report_is_tag_report) { return [] }
+    return PERMISSIONS.filter((permission) => {
         const permittedUsers = permissions?.[permission] ?? [];
-        return permittedUsers.includes(username) || permittedUsers.includes(email)
+        return permittedUsers.length === 0 ? true : permittedUsers.includes(username) || permittedUsers.includes(email)
     });
 }

@@ -45,16 +45,31 @@ it('formats minutes', () => {
 });
 
 it('gives users all permissions if permissions have not been limited', () => {
-  const permissions = getUserPermissions("jodoe", "john.doe@example.org", {});
+  const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, {});
   expect(permissions).toStrictEqual([EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION]);
 });
 
 it('gives users edit report permissions if edit report permissions have been granted', () => {
-  const permissions = getUserPermissions("jodoe", "john.doe@example.org", {[EDIT_REPORT_PERMISSION]: ["jodoe"]});
+  const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, {[EDIT_REPORT_PERMISSION]: ["jodoe"], [EDIT_ENTITY_PERMISSION]: ["jadoe"]});
   expect(permissions).toStrictEqual([EDIT_REPORT_PERMISSION]);
 });
 
 it('gives users edit entity permissions if edit entity permissions have been granted', () => {
-  const permissions = getUserPermissions("jodoe", "john.doe@example.org", {[EDIT_REPORT_PERMISSION]: ["jadoe"], [EDIT_ENTITY_PERMISSION]: ["jodoe"]});
+  const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, {[EDIT_REPORT_PERMISSION]: ["jadoe"], [EDIT_ENTITY_PERMISSION]: ["jodoe"]});
   expect(permissions).toStrictEqual([EDIT_ENTITY_PERMISSION]);
+});
+
+it('gives users no permissions if they have not logged in', () => {
+  const permissions = getUserPermissions(null, null, false, null, {});
+  expect(permissions).toStrictEqual([]);
+});
+
+it('gives users no permissions if the report date is in the past', () => {
+  const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, new Date(), {});
+  expect(permissions).toStrictEqual([]);
+});
+
+it('gives users no permissions if the report is a tag report', () => {
+  const permissions = getUserPermissions("jodoe", "john.doe@example.org", true, null, {});
+  expect(permissions).toStrictEqual([]);
 });
