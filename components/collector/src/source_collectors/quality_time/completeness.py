@@ -42,8 +42,8 @@ class QualityTimeCompleteness(QualityTimeCollector):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
-        datamodel_url = URL(f"{api_url}/api/v3/datamodel")
-        reports_url = URL(f"{api_url}/api/v3/reports")
+        datamodel_url = URL(f"{api_url}/datamodel")
+        reports_url = URL(f"{api_url}/reports")
         return await super()._get_source_responses(datamodel_url, reports_url)
 
     @staticmethod

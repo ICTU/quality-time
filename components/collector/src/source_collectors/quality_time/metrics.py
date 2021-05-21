@@ -19,7 +19,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         """Extend to add the reports API path."""
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
+        return URL(parse.urlunsplit((parts.scheme, netloc, f"{parts.path}/reports", "", "")))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
