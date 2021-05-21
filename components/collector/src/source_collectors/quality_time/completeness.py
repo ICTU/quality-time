@@ -16,15 +16,14 @@ class QualityTimeCompleteness(QualityTimeCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
-        datamodel_response = responses[0]
-        reports_response = responses[1]
+        datamodel_response, reports_response = responses
         reports = await self._get_reports(reports_response)
         datamodel = await datamodel_response.json()
 
         entity_dict = {}
         for report in reports:
             report_title = report["title"]
-            subject_types = self.__get_subject_types(report)
+            subject_types = {subject["type"] for subject in report.get("subjects", {}).values()}
             possible_metrics = self.__get_possible_metrics(datamodel, subject_types)
             actual_metrics_types = self.__get_actual_metric_types(report)
 
@@ -47,29 +46,21 @@ class QualityTimeCompleteness(QualityTimeCollector):
         return await super()._get_source_responses(datamodel_url, reports_url)
 
     @staticmethod
-    def __get_subject_types(report):
-        """Get all subject_types that are present in one report."""
-        subject_types = set()
-        for subject in report.get("subjects", {}).values():
-            subject_types.add(subject["type"])
-        return subject_types
-
-    @staticmethod
     def __get_possible_metrics(datamodel: Dict, subject_types: Set) -> Dict:
         """Get the relevant metrics from the reports response."""
         possible_metrics = {}
         for subject_type in subject_types:
-            nice_subject_name = datamodel["subjects"][subject_type]["name"]
-            for metric_name in datamodel["subjects"][subject_type]["metrics"]:
-                nice_metric_name = datamodel["metrics"][metric_name]["name"]
+            subject_name = datamodel["subjects"][subject_type]["name"]
+            for metric_type in datamodel["subjects"][subject_type]["metrics"]:
+                metric_name = datamodel["metrics"][metric_type]["name"]
                 entity = Entity(
-                    key=metric_name,
-                    metric_type=nice_metric_name,
-                    subject_type=nice_subject_name,
+                    key=metric_type,
+                    metric_type=metric_name,
+                    subject_type=subject_name,
                     reports=[],
                     status="target_not_met",
                 )
-                possible_metrics[metric_name] = entity
+                possible_metrics[metric_type] = entity
 
         return possible_metrics
 
