@@ -6,6 +6,7 @@ import os
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
 
+from database.filters import DOES_NOT_EXIST
 from initialization.secrets import initialize_secrets
 from model.iterators import metrics, sources
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
@@ -139,7 +140,7 @@ def remove_random_number_source(database: Database) -> None:  # pragma: no cover
 def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-behave
     """Move report edit rights from editors to permissions: edit_reports."""
     # Introduced when the most recent version of Quality-time was 3.20.0.
-    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": {"$exists": False}})
+    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": DOES_NOT_EXIST})
     for reports_overview in reports_overviews_to_migrate:
         permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}
         updates = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
@@ -151,17 +152,17 @@ def add_error_flag_to_measurements(database: Database) -> None:
     # Introduced when the most recent version of Quality-time was 3.21.0.
     database.measurements.update_many(
         {
-            "has_error": {"$exists": False},
+            "has_error": DOES_NOT_EXIST,
             "$or": [{"sources.connection_error": {"$gte": " "}}, {"sources.parse_error": {"$gte": " "}}],
         },
         {"$set": {"has_error": True}},
     )
-    database.measurements.update_many({"has_error": {"$exists": False}}, {"$set": {"has_error": False}})
+    database.measurements.update_many({"has_error": DOES_NOT_EXIST}, {"$set": {"has_error": False}})
 
 
 def current_reports(database: Database):
     """Return the latest versions of all undeleted reports."""
-    return list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
+    return list(database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
 
 
 def replace_report(database: Database, report) -> None:  # pragma: no cover-behave

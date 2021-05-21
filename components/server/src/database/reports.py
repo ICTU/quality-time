@@ -8,14 +8,12 @@ from pymongo.database import Database
 from model.metric import Metric
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from .filters import DOES_EXIST, DOES_NOT_EXIST
 from . import datamodels, sessions
 
 
 # Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
-# Filters:
-DOES_EXIST = {"$exists": True}
-DOES_NOT_EXIST = {"$exists": False}
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
