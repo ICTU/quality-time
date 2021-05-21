@@ -5153,17 +5153,6 @@
                             "name": "Missing from reports",
                             "key": "reports",
                             "url": "report_url"
-                        },
-                        {
-                            "name": "Status",
-                            "key": "status",
-                            "type": "status",
-                            "color": {
-                                "target_met": "positive",
-                                "near_target_met": "warning",
-                                "target_not_met": "negative",
-                                "technical_debt_target_met": "active"
-                            }
                         }
                     ]
                 }

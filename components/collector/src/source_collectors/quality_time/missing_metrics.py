@@ -58,7 +58,6 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                     metric_type=metric_name,
                     subject_type=subject_name,
                     reports=[],
-                    status="target_not_met",
                 )
                 possible_metrics[metric_type] = entity
 
