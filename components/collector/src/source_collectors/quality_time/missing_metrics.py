@@ -17,8 +17,8 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
         datamodel_response, reports_response = responses
-        reports = await self._get_reports(reports_response)
         datamodel = await datamodel_response.json()
+        reports = await self._get_reports(reports_response)
 
         entity_dict = {}
         for report in reports:

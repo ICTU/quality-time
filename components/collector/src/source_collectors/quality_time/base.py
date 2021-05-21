@@ -20,7 +20,8 @@ class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
-        reports = list((await response.json())["reports"])
+        response_json = await response.json()
+        reports = list((response_json)["reports"])
         reports = (
             [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})]
             if report_titles_or_ids
