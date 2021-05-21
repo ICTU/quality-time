@@ -149,7 +149,6 @@ def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-be
 def add_error_flag_to_measurements(database: Database) -> None:
     """Add an error flag to measurements, so measurements can be indexed on it."""
     # Introduced when the most recent version of Quality-time was 3.21.0.
-    database.measurements.update_many({}, {"$unset": {"has_error": ""}})  # REMOVE ME
     database.measurements.update_many(
         {
             "has_error": {"$exists": False},
