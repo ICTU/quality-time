@@ -25,6 +25,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
     logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
+    add_error_flag_to_measurements(database)  # Needed before indexing
     create_indexes(database)
     import_datamodel(database)
     initialize_secrets(database)
@@ -46,9 +47,9 @@ def create_indexes(database: Database) -> None:
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
     start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
-    latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.ASCENDING)])
+    latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.DESCENDING)])
     latest_successful_measurement_index = pymongo.IndexModel(
-        [("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING), ("start", pymongo.ASCENDING)]
+        [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)]
     )
     database.measurements.create_indexes([start_index, latest_measurement_index, latest_successful_measurement_index])
 
@@ -143,6 +144,20 @@ def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-be
         permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}
         updates = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
         database.reports_overviews.update_one({"_id": reports_overview["_id"]}, updates)
+
+
+def add_error_flag_to_measurements(database: Database) -> None:
+    """Add an error flag to measurements, so measurements can be indexed on it."""
+    # Introduced when the most recent version of Quality-time was 3.21.0.
+    database.measurements.update_many({}, {"$unset": {"has_error": ""}})  # REMOVE ME
+    database.measurements.update_many(
+        {
+            "has_error": {"$exists": False},
+            "$or": [{"sources.connection_error": {"$gte": " "}}, {"sources.parse_error": {"$gte": " "}}],
+        },
+        {"$set": {"has_error": True}},
+    )
+    database.measurements.update_many({"has_error": {"$exists": False}}, {"$set": {"has_error": False}})
 
 
 def current_reports(database: Database):

@@ -132,9 +132,11 @@ class MetricsCollector:
         if not collectors:
             return
         measurements = await asyncio.gather(*collectors)
+        has_error = False
         for measurement, source_uuid in zip(measurements, metric["sources"]):
             measurement["source_uuid"] = source_uuid
-        return dict(sources=measurements)
+            has_error = True if bool(measurement["connection_error"] or measurement["parse_error"]) else has_error
+        return dict(has_error=has_error, sources=measurements)
 
     def __can_and_should_collect(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric can and needs to be measured."""

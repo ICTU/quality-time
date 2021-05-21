@@ -112,6 +112,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=True,
                 sources=[
                     dict(
                         api_url=self.url,
@@ -141,6 +142,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=True,
                 sources=[
                     dict(
                         api_url=self.url,
@@ -166,6 +168,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=False,
                 sources=[
                     dict(
                         api_url=self.url,
@@ -193,6 +196,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=False,
                 sources=[
                     dict(
                         api_url=self.url,
@@ -218,6 +222,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=False,
                 sources=[
                     dict(
                         api_url=self.url,
@@ -259,6 +264,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
+                has_error=False,
                 sources=[
                     dict(
                         api_url=self.url,
