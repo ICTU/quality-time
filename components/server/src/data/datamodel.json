@@ -323,8 +323,8 @@
             ],
             "tags": []
         },
-        "completeness": {
-            "name": "Report completeness",
+        "missing_metrics": {
+            "name": "Missing metrics",
             "description": "Count the number of metrics that can be added to each report, but have not been added yet",
             "scales": [
                 "count",
@@ -4866,7 +4866,7 @@
                         "metrics",
                         "source_up_to_dateness",
                         "source_version",
-                        "completeness"
+                        "missing_metrics"
                     ]
                 },
                 "status": {
@@ -4904,7 +4904,7 @@
                     "metrics": [
                         "metrics",
                         "source_up_to_dateness",
-                        "completeness"
+                        "missing_metrics"
                     ]
                 },
                 "metric_type": {
@@ -4930,7 +4930,7 @@
                         "Many parameters",
                         "Merge requests",
                         "Metrics",
-                        "Report completeness",
+                        "Missing metrics",
                         "Performancetest duration",
                         "Performancetest stability",
                         "Ready user story points",
@@ -4964,7 +4964,7 @@
                         "Many parameters": "many_parameters",
                         "Merge requests": "merge_requests",
                         "Metrics": "metrics",
-                        "Report completeness": "completeness",
+                        "Missing metrics": "missing_metrics",
                         "Performancetest duration": "performancetest_duration",
                         "Performancetest stability": "performancetest_stability",
                         "Ready user story points": "ready_user_story_points",
@@ -5137,7 +5137,7 @@
                         }
                     ]
                 },
-                "completeness": {
+                "missing_metrics": {
                     "name": "Metric type",
                     "name_plural": "Metric types",
                     "attributes": [
@@ -6536,7 +6536,7 @@
             "description": "A software quality report.",
             "metrics": [
                 "metrics",
-                "completeness"
+                "missing_metrics"
             ]
         },
         "software": {

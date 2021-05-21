@@ -11,7 +11,7 @@ from .base import QualityTimeCollector
 Measurements = list[dict[str, dict[str, str]]]
 
 
-class QualityTimeCompleteness(QualityTimeCollector):
+class QualityTimeMissingMetrics(QualityTimeCollector):
     """Collector to get the "completeness" metric from Quality-time."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
