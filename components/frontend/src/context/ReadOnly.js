@@ -3,6 +3,7 @@ import React from 'react';
 
 export const EDIT_REPORT_PERMISSION = "edit_reports"
 export const EDIT_ENTITY_PERMISSION = "edit_entities"
+export const PERMISSIONS = [EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION]
 
 export const ReadOnlyContext = React.createContext(null);
 

@@ -69,7 +69,7 @@ class App extends Component {
     const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
     if (this.state.report_uuid === "") {
       this.reload_reports(report_date, show_error)
-    } else if (this.state.report_uuid.slice(0, 4) === "tag-") {
+    } else if (this.current_report_is_tag_report()) {
       this.reload_tag_report(report_date, show_error);
     } else {
       this.reload_report(report_date, show_error)
@@ -207,6 +207,10 @@ class App extends Component {
     return report_date;
   }
 
+  current_report_is_tag_report() {
+    return this.state.report_uuid.slice(0, 4) === "tag-"
+  }
+
   login_forwardauth() {
     let self = this;
     login("", "")
@@ -237,7 +241,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const permissions = this.state.reports_overview.permissions || {};
-    const user_permissions = getUserPermissions(this.state.user, this.state.email, permissions)
+    const user_permissions = getUserPermissions(this.state.user, this.state.email, this.current_report_is_tag_report(), report_date, permissions)
     const props = {
       reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };
