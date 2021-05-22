@@ -66,7 +66,7 @@ def measurements_by_metric(
 
 def count_measurements(database: Database) -> int:
     """Return the number of measurements."""
-    return int(database.measurements.count_documents(filter={}))
+    return int(database.measurements.estimated_document_count())
 
 
 def update_measurement_end(database: Database, measurement_id: MeasurementId):

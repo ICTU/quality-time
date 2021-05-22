@@ -468,7 +468,7 @@ class StreamNrMeasurementsTest(unittest.TestCase):
             return seconds
 
         database = Mock()
-        database.measurements.count_documents.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
+        database.measurements.estimated_document_count.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements(database)
             try:
