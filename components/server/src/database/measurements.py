@@ -21,7 +21,7 @@ def latest_measurement(database: Database, metric: Metric) -> Optional[Measureme
 def latest_successful_measurement(database: Database, metric: Metric) -> Optional[Measurement]:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        filter={"metric_uuid": metric.uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
+        filter={"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 

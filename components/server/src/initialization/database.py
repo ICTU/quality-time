@@ -6,6 +6,7 @@ import os
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
 
+from database.filters import DOES_NOT_EXIST
 from initialization.secrets import initialize_secrets
 from model.iterators import metrics, sources
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
@@ -25,6 +26,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
     logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
+    add_error_flag_to_measurements(database)  # Needed before indexing
     create_indexes(database)
     import_datamodel(database)
     initialize_secrets(database)
@@ -46,8 +48,11 @@ def create_indexes(database: Database) -> None:
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
     start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
-    metric_uuid_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("sources.value", pymongo.ASCENDING)])
-    database.measurements.create_indexes([start_index, metric_uuid_index])
+    latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.DESCENDING)])
+    latest_successful_measurement_index = pymongo.IndexModel(
+        [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)]
+    )
+    database.measurements.create_indexes([start_index, latest_measurement_index, latest_successful_measurement_index])
 
 
 def add_last_flag_to_reports(database: Database) -> None:
@@ -135,16 +140,29 @@ def remove_random_number_source(database: Database) -> None:  # pragma: no cover
 def migrate_edit_permissions(database: Database) -> None:  # pragma: no cover-behave
     """Move report edit rights from editors to permissions: edit_reports."""
     # Introduced when the most recent version of Quality-time was 3.20.0.
-    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": {"$exists": False}})
+    reports_overviews_to_migrate = database.reports_overviews.find({"permissions": DOES_NOT_EXIST})
     for reports_overview in reports_overviews_to_migrate:
         permissions = {EDIT_REPORT_PERMISSION: reports_overview.get("editors", []), EDIT_ENTITY_PERMISSION: []}
         updates = {"$set": {"permissions": permissions}, "$unset": {"editors": ""}}
         database.reports_overviews.update_one({"_id": reports_overview["_id"]}, updates)
 
 
+def add_error_flag_to_measurements(database: Database) -> None:
+    """Add an error flag to measurements, so measurements can be indexed on it."""
+    # Introduced when the most recent version of Quality-time was 3.21.0.
+    database.measurements.update_many(
+        {
+            "has_error": DOES_NOT_EXIST,
+            "$or": [{"sources.connection_error": {"$gte": " "}}, {"sources.parse_error": {"$gte": " "}}],
+        },
+        {"$set": {"has_error": True}},
+    )
+    database.measurements.update_many({"has_error": DOES_NOT_EXIST}, {"$set": {"has_error": False}})
+
+
 def current_reports(database: Database):
     """Return the latest versions of all undeleted reports."""
-    return list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
+    return list(database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
 
 
 def replace_report(database: Database, report) -> None:  # pragma: no cover-behave
