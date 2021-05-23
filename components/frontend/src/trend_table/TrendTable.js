@@ -24,7 +24,6 @@ export function TrendTable({
   metrics,
   measurements,
   extraHamburgerItems,
-  showTargets,
   trendTableInterval,
   setTrendTableInterval,
   trendTableNrDates,
@@ -54,7 +53,6 @@ export function TrendTable({
               metric={metric}
               dates={dates}
               measurements={measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)}
-              showTargetRow={showTargets}
             />
           )
         })

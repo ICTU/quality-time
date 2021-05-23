@@ -11,7 +11,6 @@ import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { capitalize, get_source_name } from '../utils';
-import { TrendTable } from '../trend_table/TrendTable';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
   get_measurements(metric_uuid, report_date)
@@ -57,26 +56,6 @@ export function MeasurementDetails(props) {
         }
       )
     }
-    panes.push(
-      {
-        menuItem: <Menu.Item key='trend_table'><FocusableTab>{'Trend table'}</FocusableTab></Menu.Item>,
-        render: () => (
-          <Tab.Pane>
-            <TrendTable
-              datamodel={props.datamodel}
-              reportDate={props.report_date}
-              metrics={{ [props.metric_uuid]: metric }}
-              showTargets={true}
-              measurements={measurements}
-              trendTableInterval={props.trendTableInterval}
-              setTrendTableInterval={props.setTrendTableInterval}
-              trendTableNrDates={props.trendTableNrDates}
-              setTrendTableNrDates={props.setTrendTableNrDates}
-            />
-          </Tab.Pane>
-        )
-      }
-    );
     const last_measurement = measurements[measurements.length - 1];
     last_measurement.sources.forEach((source) => {
       const report_source = metric.sources[source.source_uuid];
