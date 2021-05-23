@@ -5197,7 +5197,8 @@
                     "default_value": [],
                     "values": [
                         "fail",
-                        "pass"
+                        "pass",
+                        "skip"
                     ],
                     "metrics": [
                         "tests"

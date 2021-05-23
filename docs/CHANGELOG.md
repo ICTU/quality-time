@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.21.1-rc.10] - [2021-05-22]
+## [Unreleased]
 
 ### Fixed
 
@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - Since subjects have a trend table view, there is little added value in also having a trend table per metric. Remove the trend table view for individual metrics. Closes [#2174](https://github.com/ICTU/quality-time/issues/2174).
+
+### Added
+
+- Add support for Robot Framework v4 XML files. Closes [#2136](https://github.com/ICTU/quality-time/issues/2136).
 
 ## [3.21.0] - [2021-04-25]
 
