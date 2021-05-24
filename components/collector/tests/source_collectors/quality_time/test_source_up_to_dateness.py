@@ -16,6 +16,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
     METRIC_ADDITION = "max"
 
     def setUp(self):
+        """Set up test data."""
         super().setUp()
         self.api_url = f"{self.url}/api/v3/reports"
 

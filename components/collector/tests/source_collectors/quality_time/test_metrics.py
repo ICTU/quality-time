@@ -9,6 +9,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
     METRIC_TYPE = "metrics"
 
     def setUp(self):
+        """Set up test data."""
         super().setUp()
         self.api_url = f"{self.url}/api/v3/reports"
 

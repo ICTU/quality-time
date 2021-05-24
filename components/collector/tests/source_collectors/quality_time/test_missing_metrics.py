@@ -9,6 +9,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
     METRIC_TYPE = "missing_metrics"
 
     def setUp(self):
+        """Set up test data."""
         super().setUp()
         self.set_source_parameter("reports", ["r1", "r2"])
         self.reports["reports"].append(
