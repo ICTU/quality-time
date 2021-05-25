@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-python@v2.2.2
       if: env.SONAR_TOKEN != null
       with:
-        python-version: '3.9.4'
+        python-version: '3.9.5'
     - name: Set up Node
       uses: actions/setup-node@v2.1.5
       if: env.SONAR_TOKEN != null

@@ -1,4 +1,4 @@
-FROM python:3.9.4-buster
+FROM python:3.9.5-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time collector"

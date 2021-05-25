@@ -1,4 +1,4 @@
-image: python:3.9.4-buster
+image: python:3.9.5-buster
 
 stages:
   - test
