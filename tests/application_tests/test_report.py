@@ -52,11 +52,11 @@ class OpenReportTest(unittest.TestCase):
         self.driver.close()
 
     def login(self):
-        """Login the default admin user."""
+        """Login a user."""
         self.driver.find_element_by_xpath('//button[text()="Login"]').click()
         login_form = self.driver.find_element_by_class_name("form")
-        login_form.find_element_by_name("username").send_keys("admin")
-        login_form.find_element_by_name("password").send_keys("admin")
+        login_form.find_element_by_name("username").send_keys("jadoe")
+        login_form.find_element_by_name("password").send_keys("secret")
         login_form.find_element_by_class_name("button").click()
         self.wait.until(element_has_no_css_class((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
@@ -74,7 +74,7 @@ class OpenReportTest(unittest.TestCase):
         )
 
     def test_login_and_logout(self):
-        """Test that the admin user can login and logout."""
+        """Test that a user can login and logout."""
         self.login()
         logout_dropdown = self.driver.find_element_by_class_name("dropdown")
         logout_dropdown.click()
