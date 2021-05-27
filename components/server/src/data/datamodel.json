@@ -325,7 +325,7 @@
         },
         "missing_metrics": {
             "name": "Missing metrics",
-            "description": "Count the number of metrics that can be added to each report, but have not been added yet",
+            "description": "Count the number of metrics that can be added to each report, but have not been added yet.",
             "scales": [
                 "count",
                 "percentage"
@@ -5151,8 +5151,7 @@
                         },
                         {
                             "name": "Missing from reports",
-                            "key": "reports",
-                            "url": "report_url"
+                            "key": "reports"
                         }
                     ]
                 }

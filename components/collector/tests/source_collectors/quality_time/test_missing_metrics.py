@@ -12,6 +12,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Set up test data."""
         super().setUp()
         self.set_source_parameter("reports", ["r1", "r2"])
+        self.expected_software_metrics = str(len(self.data_model["subjects"]["software"]["metrics"]))
         self.reports["reports"].append(
             dict(
                 title="R2",
@@ -65,7 +66,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.assert_measurement(
             response,
             value=str(len(self.entities)),
-            total="27",
+            total=self.expected_software_metrics,
             entities=self.entities,
         )
 
@@ -73,7 +74,9 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Test that no reports in the parameter equals all reports."""
         self.set_source_parameter("reports", [])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(response, value=str(len(self.entities)), total="27", entities=self.entities)
+        self.assert_measurement(
+            response, value=str(len(self.entities)), total=self.expected_software_metrics, entities=self.entities
+        )
 
     async def test_nr_of_missing_metrics_without_correct_report(self):
         """Test that an error is thrown for reports that don't exist."""
