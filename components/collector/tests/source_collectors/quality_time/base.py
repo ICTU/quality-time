@@ -12,7 +12,6 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to set up fixtures for Quality-time metrics unit tests."""
         super().setUp()
         self.url = "https://quality_time"
-        self.api_url = f"{self.url}/api/v3/reports"
         self.set_source_parameter("reports", ["r1"])
         self.set_source_parameter("status", ["target not met (red)"])
         self.set_source_parameter("tags", ["security"])
@@ -25,6 +24,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                     report_uuid="r1",
                     subjects=dict(
                         s1=dict(
+                            type="software",
                             name="S1",
                             metrics=dict(
                                 m1=dict(
@@ -74,7 +74,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                                 m5=dict(
                                     tags=["performance"],
                                     scale="count",
-                                    type="violations",
+                                    type="accessibility",
                                     target="5",
                                     sources=dict(s5=dict(type="sonarqube")),
                                 ),
@@ -95,6 +95,5 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Override to pass the api and landing URLs."""
-        attributes["api_url"] = self.api_url
         attributes["landing_url"] = self.url
         super().assert_measurement(measurement, source_index=source_index, **attributes)

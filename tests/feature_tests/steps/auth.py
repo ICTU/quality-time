@@ -6,9 +6,9 @@ from behave import given, then, when
 
 @given("a logged-in client")
 @when("{username} logs in")
-def logged_in_client(context, username="admin"):
+def logged_in_client(context, username="jadoe"):
     """Log in the client."""
-    password = "admin" if username == "admin" else "secret"
+    password = "secret"
     context.post("login", dict(username=username, password=password))
 
 
@@ -22,7 +22,7 @@ def logged_out_client(context):
 @when("the client tries to log in with incorrect credentials")
 def log_in_with_incorrect_credentials(context):
     """Try to log in with incorrect credentials."""
-    context.post("login", dict(username="admin", password="wrong"))
+    context.post("login", dict(username="jadoe", password="wrong"))
 
 
 @then("the server tells the client the credentials are incorrect")

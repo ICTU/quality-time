@@ -2,25 +2,26 @@
 
 from abc import ABC
 from typing import Any
-from urllib import parse
 
 from base_collectors import SourceCollector, SourceCollectorException
-from collector_utilities.type import URL, Response
+from collector_utilities.type import Response, URL
 
 
 class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base collector for Quality-time metrics."""
 
+    API_VERSION = "v3"
+
     async def _api_url(self) -> URL:
-        """Extend to add the reports API path."""
-        parts = parse.urlsplit(await super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
+        """Get the api url for this api version"""
+        api_url = await super()._api_url()
+        return URL(f"{api_url}/api/{self.API_VERSION}")
 
     async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
-        reports = list((await response.json())["reports"])
+        response_json = await response.json()
+        reports = list((response_json)["reports"])
         reports = (
             [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})]
             if report_titles_or_ids

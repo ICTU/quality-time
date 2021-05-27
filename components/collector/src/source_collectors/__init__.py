@@ -114,6 +114,7 @@ from .pip.dependencies import PipDependencies
 from .pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
 
 from .quality_time.metrics import QualityTimeMetrics
+from .quality_time.missing_metrics import QualityTimeMissingMetrics
 from .quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
 from .quality_time.source_version import QualityTimeSourceVersion
 

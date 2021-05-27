@@ -323,6 +323,25 @@
             ],
             "tags": []
         },
+        "missing_metrics": {
+            "name": "Missing metrics",
+            "description": "Count the number of metrics that can be added to each report, but have not been added yet.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
+            "unit": "missing metrics",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "quality_time",
+            "sources": [
+                "quality_time"
+            ],
+            "tags": []
+        },
         "performancetest_duration": {
             "name": "Performancetest duration",
             "description": "The duration of the performancetest in minutes",
@@ -4846,7 +4865,8 @@
                     "metrics": [
                         "metrics",
                         "source_up_to_dateness",
-                        "source_version"
+                        "source_version",
+                        "missing_metrics"
                     ]
                 },
                 "status": {
@@ -4883,7 +4903,8 @@
                     "default_value": [],
                     "metrics": [
                         "metrics",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "missing_metrics"
                     ]
                 },
                 "metric_type": {
@@ -4909,6 +4930,7 @@
                         "Many parameters",
                         "Merge requests",
                         "Metrics",
+                        "Missing metrics",
                         "Performancetest duration",
                         "Performancetest stability",
                         "Ready user story points",
@@ -4942,6 +4964,7 @@
                         "Many parameters": "many_parameters",
                         "Merge requests": "merge_requests",
                         "Metrics": "metrics",
+                        "Missing metrics": "missing_metrics",
                         "Performancetest duration": "performancetest_duration",
                         "Performancetest stability": "performancetest_stability",
                         "Ready user story points": "ready_user_story_points",
@@ -5111,6 +5134,24 @@
                             "name": "Target",
                             "key": "target",
                             "type": "integer"
+                        }
+                    ]
+                },
+                "missing_metrics": {
+                    "name": "Metric type",
+                    "name_plural": "Metric types",
+                    "attributes": [
+                        {
+                            "name": "Subject type",
+                            "key": "subject_type"
+                        },
+                        {
+                            "name": "Metric type",
+                            "key": "metric_type"
+                        },
+                        {
+                            "name": "Missing from reports",
+                            "key": "reports"
                         }
                     ]
                 }
@@ -6482,7 +6523,8 @@
             "name": "Quality report",
             "description": "A software quality report.",
             "metrics": [
-                "metrics"
+                "metrics",
+                "missing_metrics"
             ]
         },
         "software": {

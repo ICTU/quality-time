@@ -13,8 +13,8 @@ Feature: authentication
 
   Scenario: change editors
     When jadoe logs in
-    And the client changes the reports permissions to "{"edit_reports": ["jadoe", "admin"], "edit_entities": []}"
-    Then the reports permissions is "{"edit_reports": ["jadoe", "admin"], "edit_entities": []}"
+    And the client changes the reports permissions to "{"edit_reports": ["jadoe", "other_user"], "edit_entities": []}"
+    Then the reports permissions is "{"edit_reports": ["jadoe", "other_user"], "edit_entities": []}"
     When the client logs out
     And jodoe logs in
     And the client changes the reports permissions to "{"edit_report": ["jodoe", "admin"]}"

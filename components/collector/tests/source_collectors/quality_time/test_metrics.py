@@ -8,6 +8,11 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     METRIC_TYPE = "metrics"
 
+    def setUp(self):
+        """Set up test data."""
+        super().setUp()
+        self.api_url = f"{self.url}/api/v3/reports"
+
     async def test_nr_of_metrics(self):
         """Test that the number of metrics is returned."""
         response = await self.collect(get_request_json_return_value=self.reports)
@@ -47,3 +52,8 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         self.assert_measurement(
             response, value=None, total="100", parse_error="No reports found with title or id", entities=[]
         )
+
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
+        """Override to pass the api and landing URLs."""
+        attributes["api_url"] = self.api_url
+        super().assert_measurement(measurement, source_index=source_index, **attributes)
