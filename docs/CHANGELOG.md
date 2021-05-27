@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - Add support for Robot Framework v4 XML files. Closes [#2136](https://github.com/ICTU/quality-time/issues/2136).
+- Add 'Missing metrics' metric. Closes [#1477](https://github.com/ICTU/quality-time/issues/1477).
 
 ## [3.21.0] - [2021-04-25]
 
