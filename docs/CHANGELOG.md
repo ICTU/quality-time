@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Add 'Missing metrics' metric. Closes [#1477](https://github.com/ICTU/quality-time/issues/1477).
 
+### Changed
+
+- Update MongoDB version to 4.4.6. ATTENTION: updating directly only possible from Quality-time >=v3.16. In order to update from older Quality-time versions, please first update to 3.16 and then to the newest version. Closes [#2027](https://github.com/ICTU/quality-time/issues/2027).
+
 ## [3.22.0] - [2021-05-26]
 
 ### Fixed
