@@ -167,8 +167,7 @@
                 "azure_devops",
                 "jira",
                 "manual_number",
-                "trello",
-                "wekan"
+                "trello"
             ],
             "tags": []
         },
@@ -487,8 +486,7 @@
                 "robot_framework_jenkins_plugin",
                 "sonarqube",
                 "testng",
-                "trello",
-                "wekan"
+                "trello"
             ],
             "tags": [
                 "ci"
@@ -5037,8 +5035,7 @@
                         "JSON file with security warnings",
                         "SonarQube",
                         "TestNG",
-                        "Trello",
-                        "Wekan"
+                        "Trello"
                     ],
                     "api_values": {
                         "Anchore": "anchore",
@@ -5077,8 +5074,7 @@
                         "Snyk": "snyk",
                         "SonarQube": "sonarqube",
                         "TestNG": "testng",
-                        "Trello": "trello",
-                        "Wekan": "wekan"
+                        "Trello": "trello"
                     },
                     "metrics": [
                         "metrics"
@@ -6298,127 +6294,6 @@
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
-                    "default_value": "",
-                    "metrics": [
-                        "issues",
-                        "source_up_to_dateness"
-                    ]
-                },
-                "lists_to_ignore": {
-                    "name": "Lists to ignore (title or id)",
-                    "short_name": "lists to ignore",
-                    "type": "multiple_choice_with_addition",
-                    "mandatory": false,
-                    "default_value": [],
-                    "placeholder": "none",
-                    "metrics": [
-                        "issues",
-                        "source_up_to_dateness"
-                    ]
-                },
-                "cards_to_count": {
-                    "name": "Cards to count",
-                    "short_name": "cards",
-                    "type": "multiple_choice",
-                    "mandatory": false,
-                    "default_value": [],
-                    "placeholder": "all cards",
-                    "values": [
-                        "inactive",
-                        "overdue"
-                    ],
-                    "metrics": [
-                        "issues"
-                    ]
-                },
-                "inactive_days": {
-                    "name": "Number of days without activity after which to consider cards inactive",
-                    "short_name": "number of days without activity",
-                    "type": "integer",
-                    "mandatory": false,
-                    "unit": "days",
-                    "min_value": "1",
-                    "default_value": "30",
-                    "metrics": [
-                        "issues"
-                    ]
-                }
-            },
-            "entities": {
-                "issues": {
-                    "name": "issue",
-                    "name_plural": "issues",
-                    "attributes": [
-                        {
-                            "name": "Title",
-                            "key": "title",
-                            "url": "url"
-                        },
-                        {
-                            "name": "List",
-                            "key": "list"
-                        },
-                        {
-                            "name": "Due date",
-                            "key": "due_date",
-                            "type": "datetime"
-                        },
-                        {
-                            "name": "Date of last activity",
-                            "key": "date_last_activity",
-                            "type": "datetime"
-                        }
-                    ]
-                }
-            }
-        },
-        "wekan": {
-            "name": "Wekan",
-            "description": "Open-source kanban.",
-            "url": "https://wekan.github.io",
-            "parameters": {
-                "url": {
-                    "name": "URL",
-                    "short_name": "URL",
-                    "type": "url",
-                    "validate_on": [
-                        "username",
-                        "password"
-                    ],
-                    "mandatory": true,
-                    "default_value": "",
-                    "metrics": [
-                        "issues",
-                        "source_up_to_dateness"
-                    ]
-                },
-                "board": {
-                    "name": "Board (title or id)",
-                    "short_name": "board",
-                    "type": "string",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "issues",
-                        "source_up_to_dateness"
-                    ]
-                },
-                "username": {
-                    "name": "Username for basic authentication",
-                    "short_name": "username",
-                    "type": "string",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "issues",
-                        "source_up_to_dateness"
-                    ]
-                },
-                "password": {
-                    "name": "Password for basic authentication",
-                    "short_name": "password",
-                    "type": "password",
-                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues",
