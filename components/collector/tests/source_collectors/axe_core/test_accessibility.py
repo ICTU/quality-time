@@ -122,7 +122,7 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         self.set_source_parameter("url", "axe.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.json", json.dumps(self.json)) for index in range(2)])
         response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
+        self.assert_measurement(response, value="2", entities=self.expected_entities)  # Duplicates are discarded
 
     async def test_json_with_only_violations(self):
         """Test that a JSON file with just a list of violation works."""

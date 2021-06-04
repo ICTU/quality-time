@@ -15,7 +15,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             total="2",
             issues=[
                 dict(
-                    key="a",
+                    key="vulnerability1",
                     message="a",
                     component="a",
                     severity="INFO",
@@ -24,7 +24,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     updateDate="2020-09-30T22:48:52+0200",
                 ),
                 dict(
-                    key="b",
+                    key="vulnerability2",
                     message="b",
                     component="b",
                     severity="MAJOR",
@@ -38,7 +38,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             paging=dict(total="2"),
             hotspots=[
                 dict(
-                    key="a",
+                    key="hotspot1",
                     message="a",
                     component="a",
                     vulnerabilityProbability="MEDIUM",
@@ -46,7 +46,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     updateDate="2019-08-26T09:02:49+0000",
                 ),
                 dict(
-                    key="b",
+                    key="hotspot2",
                     message="b",
                     component="b",
                     vulnerabilityProbability="LOW",
@@ -57,14 +57,14 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         )
         self.hotspot_entities = [
             self.entity(
-                "a",
+                "hotspot1",
                 "security_hotspot",
                 review_priority="medium",
                 creation_date="2010-12-13T10:37:07+0000",
                 update_date="2019-08-26T09:02:49+0000",
             ),
             self.entity(
-                "b",
+                "hotspot2",
                 "security_hotspot",
                 review_priority="low",
                 creation_date="2011-10-26T13:34:12+0000",
@@ -73,14 +73,14 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         ]
         self.vulnerability_entities = [
             self.entity(
-                "a",
+                "vulnerability1",
                 "vulnerability",
                 "info",
                 creation_date="2020-08-30T22:48:52+0200",
                 update_date="2020-09-30T22:48:52+0200",
             ),
             self.entity(
-                "b",
+                "vulnerability2",
                 "vulnerability",
                 "major",
                 creation_date="2019-08-30T22:48:52+0200",

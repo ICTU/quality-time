@@ -16,8 +16,10 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         super().setUp()
         self.header_row = "URL,Violation Type,Impact,Help,HTML Element,Messages,DOM Element\n"
         self.serious_violation = "url1,aria-input-field-name,serious,help1,html1\n"
+        self.serious_violation2 = "url2,aria-input-field-name,serious,help1,html2\n"
         self.moderate_violation = "url2,aria-hidden-focus,moderate,help2,html2,messages2,dom2\n"
         self.csv = self.header_row + self.serious_violation + self.moderate_violation
+        self.csv2 = self.header_row + self.serious_violation2 + self.moderate_violation
         self.expected_entities = [
             {
                 "url": "url1",
@@ -39,15 +41,26 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             },
         ]
         for entity in self.expected_entities:
-            entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
+            entity["key"] = self.entity_key(entity)
 
-    async def test_nr_of_issues(self):
-        """Test that the number of issues is returned."""
+    @staticmethod
+    def entity_key(entity):
+        """Create the entity hash."""
+        return md5_hash(",".join(str(value) for value in entity.values()))
+
+    async def test_nr_of_violations(self):
+        """Test that the number of violations is returned."""
         response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
-    async def test_no_issues(self):
-        """Test zero issues."""
+    async def test_duplicate_violations(self):
+        """Test that duplicate violations are ignored."""
+        self.csv += self.serious_violation
+        response = await self.collect(get_request_text=self.csv)
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_no_violations(self):
+        """Test zero violations."""
         response = await self.collect(get_request_text="")
         self.assert_measurement(response, value="0", entities=[])
 
@@ -66,9 +79,19 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.set_source_parameter("url", "https://example.org/axecsv.zip")
-        zipfile = self.zipped_report(*[(f"axe{index}.csv", self.csv) for index in range(2)])
+        zipfile = self.zipped_report(*[("axe1.csv", self.csv), ("axe2.csv", self.csv2)])
         response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
+        expected_entity = {
+            "url": "url2",
+            "violation_type": "aria-input-field-name",
+            "impact": "serious",
+            "element": None,
+            "page": "url2",
+            "description": None,
+            "help": "help1",
+        }
+        expected_entity["key"] = self.entity_key(expected_entity)
+        self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])
 
     async def test_empty_line(self):
         """Test that empty lines are ignored."""
@@ -87,6 +110,6 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             "description": "messages3\nsecond line",
             "help": "help3",
         }
-        expected_entity["key"] = md5_hash(",".join(str(value) for value in expected_entity.values()))
+        expected_entity["key"] = self.entity_key(expected_entity)
         response = await self.collect(get_request_text=self.csv + violation_with_newline)
         self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])

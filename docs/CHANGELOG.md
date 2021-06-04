@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - Allow for importing reports with unencrypted credentials. Fixes [#2238](https://github.com/ICTU/quality-time/issues2238).
+- Axe CSV files may contain duplicate accessibility violations. These duplicated violations couldn't be marked as false positive, won't fix, etc. Fixed by ignoring duplicate violations. Fixes [#2232](https://github.com/ICTU/quality-time/issues/2232).
 
 ### Added
 
