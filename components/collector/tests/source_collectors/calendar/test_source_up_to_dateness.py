@@ -20,4 +20,4 @@ class CalendarSourceUpToDatenessTest(SourceCollectorTestCase):
     async def test_source_up_to_dateness_with_default(self):
         """Test the number of days without user-specified date."""
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime.now() - datetime(2020, 1, 1)).days))
+        self.assert_measurement(response, value=str((datetime.now() - datetime(2021, 1, 1)).days))
