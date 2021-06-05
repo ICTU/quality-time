@@ -78,4 +78,4 @@ class CollectorTest(SourceCollectorTestCase):
         sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
         self.metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime.today() - datetime(2020, 1, 1)).days))
+        self.assert_measurement(response, value=str((datetime.today() - datetime(2021, 1, 1)).days))
