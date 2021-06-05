@@ -82,7 +82,7 @@
         },
         "dependencies": {
             "name": "Dependencies",
-            "description": "The amount of (outdated) dependencies",
+            "description": "The amount of (outdated) dependencies.",
             "scales": [
                 "count",
                 "percentage"
@@ -218,7 +218,7 @@
         },
         "manual_test_duration": {
             "name": "Manual test duration",
-            "description": "The duration of the manual test in minutes",
+            "description": "The duration of the manual test in minutes.",
             "scales": [
                 "count"
             ],
@@ -338,13 +338,14 @@
             "near_target": "5",
             "default_source": "quality_time",
             "sources": [
+                "manual_number",
                 "quality_time"
             ],
             "tags": []
         },
         "performancetest_duration": {
             "name": "Performancetest duration",
-            "description": "The duration of the performancetest in minutes",
+            "description": "The duration of the performancetest in minutes.",
             "scales": [
                 "count"
             ],
@@ -779,7 +780,7 @@
             "url": "https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/",
             "parameters": {
                 "url": {
-                    "name": "URL to an Anchore vulnerability report in JSON format or to a zip with Anchore reports in JSON format",
+                    "name": "URL to an Anchore vulnerability report in JSON format or to a zip with Anchore vulnerability reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -794,7 +795,7 @@
                     ]
                 },
                 "details_url": {
-                    "name": "URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format",
+                    "name": "URL to an Anchore details report in JSON format or to a zip with Anchore details reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -809,9 +810,9 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Anchore report in a human readable format",
+                    "name": "URL to an Anchore vulnerability report in a human readable format",
                     "short_name": "URL",
-                    "help": "If provided, users clicking the source URL will visit this URL instead of the Anchore report in JSON format.",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1109,7 +1110,7 @@
                 "impact": {
                     "name": "Impact levels",
                     "short_name": "impact levels",
-                    "help": "If provided, only count accessibility violations with the impact levels.",
+                    "help": "If provided, only count accessibility violations with the selected impact levels.",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -1405,7 +1406,7 @@
             "parameters": {
                 "url": {
                     "name": "URL including organization and project",
-                    "short_name": "url",
+                    "short_name": "URL",
                     "help": "URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.",
                     "type": "url",
                     "validate_on": [
@@ -1911,7 +1912,7 @@
             "url": "https://github.com/PyCQA/bandit",
             "parameters": {
                 "url": {
-                    "name": "URL to a Bandit JSON-report or to a zip with Bandit JSON-reports",
+                    "name": "URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "validate_on": [
@@ -1927,7 +1928,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Bandit report in a human readable format",
+                    "name": "URL to a Bandit report in a human readable format",
                     "short_name": "URL",
                     "help": "If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.",
                     "type": "string",
@@ -2045,7 +2046,7 @@
                     "short_name": "date",
                     "type": "date",
                     "mandatory": true,
-                    "default_value": "2020-01-01",
+                    "default_value": "2021-01-01",
                     "metrics": [
                         "source_up_to_dateness"
                     ]
@@ -2301,7 +2302,7 @@
             "url": "https://getcomposer.org/",
             "parameters": {
                 "url": {
-                    "name": "URL to a Composer 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports",
+                    "name": "URL to a Composer 'outdated' report in JSON format or to a zip with Composer 'outdated' reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
@@ -2505,7 +2506,7 @@
             "url": "https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings",
             "parameters": {
                 "url": {
-                    "name": "URL to a generic vulnerability report in JSON format",
+                    "name": "URL to a generic vulnerability report in JSON format or to a zip with generic vulnerability reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -2955,8 +2956,8 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
-                        "uncovered_lines",
-                        "uncovered_branches"
+                        "uncovered_branches",
+                        "uncovered_lines"
                     ]
                 },
                 "landing_url": {
@@ -2968,8 +2969,8 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
-                        "uncovered_lines",
-                        "uncovered_branches"
+                        "uncovered_branches",
+                        "uncovered_lines"
                     ]
                 },
                 "username": {
@@ -2980,8 +2981,8 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
-                        "uncovered_lines",
-                        "uncovered_branches"
+                        "uncovered_branches",
+                        "uncovered_lines"
                     ]
                 },
                 "password": {
@@ -2992,8 +2993,8 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
-                        "uncovered_lines",
-                        "uncovered_branches"
+                        "uncovered_branches",
+                        "uncovered_lines"
                     ]
                 },
                 "private_token": {
@@ -3004,8 +3005,8 @@
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
-                        "uncovered_lines",
-                        "uncovered_branches"
+                        "uncovered_branches",
+                        "uncovered_lines"
                     ]
                 }
             },
@@ -3276,7 +3277,7 @@
             "url": "https://plugins.jenkins.io/junit",
             "parameters": {
                 "url": {
-                    "name": "URL to job",
+                    "name": "URL to Jenkins job",
                     "short_name": "URL",
                     "type": "url",
                     "help": "URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job.",
@@ -3821,6 +3822,7 @@
                         "many_parameters",
                         "merge_requests",
                         "metrics",
+                        "missing_metrics",
                         "performancetest_duration",
                         "performancetest_stability",
                         "user_story_points",
@@ -3857,9 +3859,9 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
+                        "source_up_to_dateness",
                         "uncovered_branches",
-                        "source_up_to_dateness"
+                        "uncovered_lines"
                     ]
                 },
                 "username": {
@@ -3869,9 +3871,9 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
+                        "source_up_to_dateness",
                         "uncovered_branches",
-                        "source_up_to_dateness"
+                        "uncovered_lines"
                     ]
                 },
                 "password": {
@@ -3881,9 +3883,9 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
+                        "source_up_to_dateness",
                         "uncovered_branches",
-                        "source_up_to_dateness"
+                        "uncovered_lines"
                     ]
                 },
                 "private_token": {
@@ -3893,9 +3895,9 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
+                        "source_up_to_dateness",
                         "uncovered_branches",
-                        "source_up_to_dateness"
+                        "uncovered_lines"
                     ]
                 }
             },
@@ -3907,7 +3909,7 @@
             "url": "https://docs.npmjs.com/",
             "parameters": {
                 "url": {
-                    "name": "URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format.",
+                    "name": "URL to a npm 'outdated' report in JSON format or to a zip with npm 'outdated' reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "help_url": "https://docs.npmjs.com/cli-commands/outdated.html",
@@ -3923,7 +3925,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to npm 'outdated' report in a human readable format",
+                    "name": "URL to a npm 'outdated' report in a human readable format",
                     "short_name": "URL",
                     "help": "If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format.",
                     "type": "string",
@@ -4126,7 +4128,7 @@
                 "landing_url": {
                     "name": "URL to an OpenVAS report in a human readable format",
                     "short_name": "URL",
-                    "help": "If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XMLj format.",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -4249,7 +4251,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to OWASP Dependency Check report in a human readable format",
+                    "name": "URL to an OWASP Dependency Check report in a human readable format",
                     "short_name": "URL",
                     "help": "If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.",
                     "type": "string",
@@ -4530,7 +4532,7 @@
             "url": "https://github.com/ICTU/performancetest-runner",
             "parameters": {
                 "url": {
-                    "name": "URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports",
+                    "name": "URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format",
                     "short_name": "URL",
                     "type": "url",
                     "validate_on": [
@@ -4684,7 +4686,7 @@
             "url": "https://pip.pypa.io/en/stable/",
             "parameters": {
                 "url": {
-                    "name": "URL to a pip 'outdated' report in JSON format ('pip list --outdated --format json') or a zip with pip 'outdated' reports in JSON format.",
+                    "name": "URL to a pip 'outdated' report in JSON format or to a zip with pip 'outdated' reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "help_url": "https://pip.pypa.io/en/stable/reference/pip_list/",
@@ -4700,7 +4702,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to pip 'outdated' report in a human readable format",
+                    "name": "URL to a pip 'outdated' report in a human readable format",
                     "short_name": "URL",
                     "help": "If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format.",
                     "type": "string",
@@ -4769,7 +4771,7 @@
             "url": "https://github.com/pyupio/safety",
             "parameters": {
                 "url": {
-                    "name": "URL to a Safety report in JSON format or a zip with Safety reports in JSON format.",
+                    "name": "URL to a Safety report in JSON format or to a zip with Safety reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "validate_on": [
@@ -4862,11 +4864,12 @@
                     "help": "URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.",
                     "mandatory": true,
                     "default_value": "",
+                    "validate_on": [],
                     "metrics": [
                         "metrics",
+                        "missing_metrics",
                         "source_up_to_dateness",
-                        "source_version",
-                        "missing_metrics"
+                        "source_version"
                     ]
                 },
                 "status": {
@@ -5138,8 +5141,8 @@
                     ]
                 },
                 "missing_metrics": {
-                    "name": "Metric type",
-                    "name_plural": "Metric types",
+                    "name": "metric type",
+                    "name_plural": "metric types",
                     "attributes": [
                         {
                             "name": "Subject type",
@@ -5163,7 +5166,7 @@
             "url": "https://robotframework.org",
             "parameters": {
                 "url": {
-                    "name": "URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format",
+                    "name": "URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format",
                     "short_name": "URL",
                     "type": "url",
                     "validate_on": [
@@ -5340,7 +5343,7 @@
             "url": "https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI",
             "parameters": {
                 "url": {
-                    "name": "URL to a Snyk vulnerability report in JSON format",
+                    "name": "URL to a Snyk vulnerability report in JSON format or to a zip with Snyk vulnerability reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -5611,14 +5614,14 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "many_parameters",
                         "loc",
                         "long_units",
+                        "many_parameters",
+                        "remediation_effort",
                         "security_warnings",
                         "source_up_to_dateness",
                         "source_version",
                         "suppressed_violations",
-                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -5636,14 +5639,14 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "many_parameters",
                         "loc",
                         "long_units",
+                        "many_parameters",
+                        "remediation_effort",
                         "security_warnings",
                         "source_up_to_dateness",
                         "source_version",
                         "suppressed_violations",
-                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -5661,13 +5664,13 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "many_parameters",
                         "loc",
                         "long_units",
+                        "many_parameters",
+                        "remediation_effort",
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
-                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -5685,13 +5688,13 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "many_parameters",
                         "loc",
                         "long_units",
+                        "many_parameters",
+                        "remediation_effort",
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
-                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -6401,7 +6404,7 @@
                     ]
                 },
                 "username": {
-                    "name": "Username",
+                    "name": "Username for basic authentication",
                     "short_name": "username",
                     "type": "string",
                     "mandatory": false,
@@ -6412,7 +6415,7 @@
                     ]
                 },
                 "password": {
-                    "name": "Password",
+                    "name": "Password for basic authentication",
                     "short_name": "password",
                     "type": "password",
                     "mandatory": false,
@@ -6455,7 +6458,7 @@
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
-                    "min_value": "0",
+                    "min_value": "1",
                     "default_value": "30",
                     "metrics": [
                         "issues"
