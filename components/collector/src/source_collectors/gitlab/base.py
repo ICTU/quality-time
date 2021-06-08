@@ -1,5 +1,6 @@
 """GitLab collector base classes."""
 
+import logging
 from abc import ABC
 from collections.abc import Sequence
 from typing import Optional
@@ -17,9 +18,20 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
+        logging.info("GitLabBase._get_source_responses(%s)", urls)
         all_responses = responses = await super()._get_source_responses(*urls)
+        logging.info("GitLabBase._get_source_responses(%s): received %d response(s)", urls, len(responses))
         while next_urls := self.__next_urls(responses):
+            for next_url in next_urls:
+                logging.info("GitLabBase._get_source_responses(%s): get next_url: %s", urls, next_url)
             all_responses.extend(responses := await super()._get_source_responses(*next_urls))
+            logging.info(
+                "GitLabBase._get_source_responses(%s): received %d response(s) from next_urls: %s ",
+                urls,
+                len(responses),
+                next_urls,
+            )
+        logging.info("GitLabBase._get_source_responses(%s): received %d responses in total", urls, len(all_responses))
         return all_responses
 
     def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
