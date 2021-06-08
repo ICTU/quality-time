@@ -237,6 +237,21 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertNotEqual("report_uuid", inserted["report_uuid"])
 
     @patch("bottle.request")
+    def test_post_report_import_without_encrypted_credentials(self, request):
+        """Test that a report is imported correctly."""
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = "unencrypted_password"
+        request.json = mocked_report
+        post_report_import(self.database)
+        inserted_report = self.database.reports.insert.call_args_list[0][0][0]
+        inserted_subject = list(inserted_report["subjects"].items())[0][1]
+        inserted_metric = list(inserted_subject["metrics"].items())[0][1]
+        inserted_source = list(inserted_metric["sources"].items())[0][1]
+        self.assertEqual("unencrypted_password", inserted_source["parameters"]["password"])
+
+    @patch("bottle.request")
     def test_post_report_import_with_failed_decryption(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)

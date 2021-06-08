@@ -39,7 +39,9 @@ def re_import_report(context):
 @when("the client imports a report")
 def import_report(context):
     """Import a JSON report."""
-    context.post("report/import", json=json.loads(context.text))
+    response = context.post("report/import", json=json.loads(context.text))
+    if "new_report_uuid" in response:
+        context.uuid["report"] = response["new_report_uuid"]
 
 
 @when("the client enters a report date that's too old")

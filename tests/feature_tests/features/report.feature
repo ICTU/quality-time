@@ -71,7 +71,7 @@ Feature: report
     And the client re-imports a report
     Then the report title is "New report"
 
-  Scenario: failed import report
+  Scenario: import report with unencrypted credentials
     When the client imports a report
       """
       {
@@ -89,7 +89,37 @@ Feature: report
                     "type": "sonarqube",
                     "parameters": {
                       "url": "https://sonarcloud.io",
-                      "password": "not_properly_encrypted_password"
+                      "password": "unencrypted password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      """
+    Then the report title is "Imported report"
+
+  Scenario: failed import report
+    When the client imports a report
+      """
+      {
+        "title": "Failed report",
+        "report_uuid": "failed_report",
+        "subjects": {
+          "subject_uuid": {
+            "name": "Imported subject",
+            "type": "software",
+            "metrics": {
+              "metric_uuid": {
+                "type": "violations",
+                "sources": {
+                  "source_uuid": {
+                    "type": "sonarqube",
+                    "parameters": {
+                      "url": "https://sonarcloud.io",
+                      "password": ["message", "not_properly_encrypted_password"]
                     }
                   }
                 }
