@@ -9,18 +9,18 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | count | accessibility | [Axe CSV](#accessibility-violations-from-axe-csv), [Axe-core](#accessibility-violations-from-axe-core) |
 | Commented out code | The number of blocks of commented out lines of code. | ≦ 0 blocks | count | maintainability | [SonarQube](#commented-out-code-from-sonarqube) |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | count (default), percentage | maintainability, testability | [SonarQube](#complex-units-from-sonarqube) |
-| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | count (default), percentage | maintainability | [Composer](#dependencies-from-composer), [OWASP Dependency Check](#dependencies-from-owasp-dependency-check), [npm](#dependencies-from-npm), [pip](#dependencies-from-pip) |
+| Dependencies | The amount of (outdated) dependencies. | ≦ 0 dependencies | count (default), percentage | maintainability | [Composer](#dependencies-from-composer), [OWASP Dependency Check](#dependencies-from-owasp-dependency-check), [npm](#dependencies-from-npm), [pip](#dependencies-from-pip) |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | count (default), percentage | maintainability | [SonarQube](#duplicated-lines-from-sonarqube) |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | count | ci | [Azure DevOps Server](#failed-ci-jobs-from-azure-devops-server), [GitLab](#failed-ci-jobs-from-gitlab), [Jenkins](#failed-ci-jobs-from-jenkins) |
 | Issues | The number of issues. | ≦ 0 issues | count |  | [Azure DevOps Server](#issues-from-azure-devops-server), [Jira](#issues-from-jira), [Trello](#issues-from-trello), [Wekan](#issues-from-wekan) |
 | Long units | The amount of units (functions, methods, files) that are too long. | ≦ 0 long units | count (default), percentage | maintainability | [SonarQube](#long-units-from-sonarqube) |
-| Manual test duration | The duration of the manual test in minutes | ≦ 0 minutes | count | test quality | [Jira](#manual-test-duration-from-jira) |
+| Manual test duration | The duration of the manual test in minutes. | ≦ 0 minutes | count | test quality | [Jira](#manual-test-duration-from-jira) |
 | Manual test execution | Measure the number of manual test cases that have not been tested on time. | ≦ 0 manual test cases | count | test quality | [Jira](#manual-test-execution-from-jira) |
 | Many parameters | The amount of units (functions, methods, procedures) that have too many parameters. | ≦ 0 units with too many parameters | count (default), percentage | maintainability | [SonarQube](#many-parameters-from-sonarqube) |
 | Merge requests | The amount of merge requests. | ≦ 0 merge requests | count (default), percentage | ci | [Azure DevOps Server](#merge-requests-from-azure-devops-server), [GitLab](#merge-requests-from-gitlab) |
 | Metrics | The amount of metrics from one more quality reports, with specific states and/or tags. | ≦ 0 metrics | count (default), percentage |  | [Quality-time](#metrics-from-quality-time) |
-| Missing metrics | The amount of metrics that could be present in the subjects of one more quality reports, but are not. | ≦ 0 metrics | count (default), percentage |  | [Quality-time](#missing-metrics-from-quality-time) |
-| Performancetest duration | The duration of the performancetest in minutes | ≧ 30 minutes | count | performance | [Performancetest-runner](#performancetest-duration-from-performancetest-runner) |
+| Missing metrics | Count the number of metrics that can be added to each report, but have not been added yet. | ≦ 0 missing metrics | count (default), percentage |  | [Quality-time](#missing-metrics-from-quality-time) |
+| Performancetest duration | The duration of the performancetest in minutes. | ≧ 30 minutes | count | performance | [Performancetest-runner](#performancetest-duration-from-performancetest-runner) |
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | percentage | performance | [Performancetest-runner](#performancetest-stability-from-performancetest-runner) |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | percentage | performance | [Performancetest-runner](#scalability-from-performancetest-runner) |
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | count | security | [Anchore Jenkins plugin](#security-warnings-from-anchore-jenkins-plugin), [Anchore](#security-warnings-from-anchore), [Bandit](#security-warnings-from-bandit), [Checkmarx CxSAST](#security-warnings-from-checkmarx-cxsast), [JSON file with security warnings](#security-warnings-from-json-file-with-security-warnings), [OWASP Dependency Check](#security-warnings-from-owasp-dependency-check), [OWASP ZAP](#security-warnings-from-owasp-zap), [OpenVAS](#security-warnings-from-openvas), [Pyupio Safety](#security-warnings-from-pyupio-safety), [Snyk](#security-warnings-from-snyk), [SonarQube](#security-warnings-from-sonarqube) |
@@ -101,7 +101,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
-| Impact levels | Multiple choice | critical, minor, moderate, serious | _all impact levels_ | No | If provided, only count accessibility violations with the impact levels. |
+| Impact levels | Multiple choice | critical, minor, moderate, serious | _all impact levels_ | No | If provided, only count accessibility violations with the selected impact levels. |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Result types | Multiple choice | inapplicable, incomplete, passes, violations | violations | No | Limit which result types to count. |
@@ -144,7 +144,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Latest version statuses | Multiple choice | safe update possible, unknown, up-to-date, update possible | _all statuses_ | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Composer 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports | URL |  |  | Yes | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
+| URL to a Composer 'outdated' report in JSON format or to a zip with Composer 'outdated' reports in JSON format | URL |  |  | Yes | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | URL to a Composer 'outdated' report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Composer 'outdated' report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -154,8 +154,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format. | URL |  |  | Yes | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
-| URL to npm 'outdated' report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format. |
+| URL to a npm 'outdated' report in JSON format or to a zip with npm 'outdated' reports in JSON format | URL |  |  | Yes | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
+| URL to a npm 'outdated' report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Dependencies from OWASP Dependency Check
@@ -164,8 +164,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL |  |  | Yes |  |
+| URL to an OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Dependencies from pip
@@ -174,8 +174,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a pip 'outdated' report in JSON format ('pip list --outdated --format json') or a zip with pip 'outdated' reports in JSON format. | URL |  |  | Yes | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
-| URL to pip 'outdated' report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format. |
+| URL to a pip 'outdated' report in JSON format or to a zip with pip 'outdated' reports in JSON format | URL |  |  | Yes | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
+| URL to a pip 'outdated' report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Duplicated lines from SonarQube
@@ -256,9 +256,9 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Cards to count | Multiple choice | inactive, overdue | _all cards_ | No |  |
 | Lists to ignore (title or id) | Multiple choice with addition |  |  | No |  |
 | Number of days without activity after which to consider cards inactive | Integer |  | 30 | No |  |
-| Password | Password |  |  | No |  |
+| Password for basic authentication | Password |  |  | No |  |
 | URL | URL |  |  | Yes |  |
-| Username | String |  |  | No |  |
+| Username for basic authentication | String |  |  | No |  |
 
 ### Size (LOC) from cloc
 
@@ -367,7 +367,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Quality-time URL | URL |  |  | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
-| Report names or identifiers | Multiple choice with addition |  |  | No | If provided, only the specified reports will be taken into account. |
+| Report names or identifiers | Multiple choice with addition |  |  | No |  |
 
 ### Performancetest duration from Performancetest-runner
 
@@ -375,7 +375,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Performancetest stability from Performancetest-runner
@@ -384,7 +384,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Violation remediation effort from SonarQube
@@ -403,7 +403,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Slow transactions from Performancetest-runner
@@ -415,7 +415,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Thresholds | Multiple choice | high, warning | _all thresholds_ | No | If provided, only count transactions that surpass the selected thresholds. |
 | Transactions to ignore (regular expressions or transaction names) | Multiple choice with addition |  |  | No | Transactions to ignore can be specified by transaction name or by regular expression. |
 | Transactions to include (regular expressions or transaction names) | Multiple choice with addition |  |  | No | Transactions to include can be specified by transaction name or by regular expression. |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Anchore
@@ -424,8 +424,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to Anchore report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Anchore report in JSON format. |
-| URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format | URL |  |  | Yes |  |
+| URL to an Anchore details report in JSON format or to a zip with Anchore details reports in JSON format | URL |  |  | Yes |  |
+| URL to an Anchore vulnerability report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Anchore Jenkins plugin
@@ -464,15 +464,15 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to Bandit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format. |
-| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL |  |  | Yes |  |
+| URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format | URL |  |  | Yes |  |
+| URL to a Bandit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Calendar date
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
-| Date | Date |  | 2020-01-01 | Yes |  |
+| Date | Date |  | 2021-01-01 | Yes |  |
 
 ### Source up-to-dateness from Cobertura
 
@@ -545,7 +545,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from JUnit XML report
@@ -573,7 +573,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
+| URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
 | URL to a Robot Framework report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -584,7 +584,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL |  |  | Yes |  |
-| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XMLj format. |
+| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from OWASP Dependency Check
@@ -593,8 +593,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL |  |  | Yes |  |
+| URL to an OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from OWASP ZAP
@@ -613,7 +613,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Quality-time
@@ -666,9 +666,9 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Board (title or id) | String |  |  | No |  |
 | Lists to ignore (title or id) | Multiple choice with addition |  |  | No |  |
-| Password | Password |  |  | No |  |
+| Password for basic authentication | Password |  |  | No |  |
 | URL | URL |  |  | Yes |  |
-| Username | String |  |  | No |  |
+| Username for basic authentication | String |  |  | No |  |
 
 ### Source version from Axe-core
 
@@ -738,7 +738,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL |  |  | Yes |  |
-| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XMLj format. |
+| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source version from OWASP Dependency Check
@@ -747,8 +747,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL |  |  | Yes |  |
+| URL to an OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source version from OWASP ZAP
@@ -773,7 +773,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
+| URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
 | URL to a Robot Framework report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -791,8 +791,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | Critical, High, Low, Medium, Negligible, Unknown | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to Anchore report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Anchore report in JSON format. |
-| URL to an Anchore vulnerability report in JSON format or to a zip with Anchore reports in JSON format | URL |  |  | Yes |  |
+| URL to an Anchore vulnerability report in JSON format or to a zip with Anchore vulnerability reports in JSON format | URL |  |  | Yes |  |
+| URL to an Anchore vulnerability report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from Anchore Jenkins plugin
@@ -812,8 +812,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | high, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to Bandit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format. |
-| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL |  |  | Yes |  |
+| URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format | URL |  |  | Yes |  |
+| URL to a Bandit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from Checkmarx CxSAST
@@ -834,7 +834,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | high, log, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
 | URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL |  |  | Yes |  |
-| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XMLj format. |
+| URL to an OpenVAS report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from OWASP Dependency Check
@@ -844,8 +844,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | critical, high, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL |  |  | Yes |  |
+| URL to an OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from OWASP ZAP
@@ -867,7 +867,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL |  |  | Yes |  |
+| URL to a Safety report in JSON format or to a zip with Safety reports in JSON format | URL |  |  | Yes |  |
 | URL to a Safety report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Safety report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -878,7 +878,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | high, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to a Snyk vulnerability report in JSON format | URL |  |  | Yes |  |
+| URL to a Snyk vulnerability report in JSON format or to a zip with Snyk vulnerability reports in JSON format | URL |  |  | Yes |  |
 | URL to a Snyk vulnerability report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Snyk vulnerability report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -889,7 +889,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Severities | Multiple choice | high, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to a generic vulnerability report in JSON format | URL |  |  | Yes |  |
+| URL to a generic vulnerability report in JSON format or to a zip with generic vulnerability reports in JSON format | URL |  |  | Yes |  |
 | URL to a generic vulnerability report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format. |
 | Username for basic authentication | String |  |  | No |  |
 
@@ -936,7 +936,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Test results | Multiple choice | failed, passed, skipped | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
-| URL to job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Tests from JUnit XML report
@@ -959,7 +959,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Test results | Multiple choice | failed, success | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 | Transactions to ignore (regular expressions or transaction names) | Multiple choice with addition |  |  | No | Transactions to ignore can be specified by transaction name or by regular expression. |
 | Transactions to include (regular expressions or transaction names) | Multiple choice with addition |  |  | No | Transactions to include can be specified by transaction name or by regular expression. |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL |  |  | Yes |  |
+| URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format | URL |  |  | Yes |  |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Tests from Robot Framework
@@ -969,7 +969,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
 | Test results | Multiple choice | fail, pass, skip | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
-| URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
+| URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format | URL |  |  | Yes |  |
 | URL to a Robot Framework report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
