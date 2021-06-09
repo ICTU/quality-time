@@ -148,6 +148,3 @@ from .testng.tests import TestNGTests
 
 from .trello.issues import TrelloIssues
 from .trello.source_up_to_dateness import TrelloSourceUpToDateness
-
-from .wekan.issues import WekanIssues
-from .wekan.source_up_to_dateness import WekanSourceUpToDateness

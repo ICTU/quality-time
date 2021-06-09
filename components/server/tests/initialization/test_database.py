@@ -11,6 +11,8 @@ from initialization.database import init_database
 class DatabaseInitTest(unittest.TestCase):
     """Unit tests for database initialization."""
 
+    IGNORE_ME = "ignore me"
+
     def setUp(self):
         """Override to set up the database fixture."""
         self.mongo_client = Mock()
@@ -202,8 +204,8 @@ class DatabaseInitTest(unittest.TestCase):
             },
         )
 
-    def test_remove_random_number_source(self):
-        """Test that the random number source type is removed."""
+    def test_remove_wekan_source(self):
+        """Test that the wekan source type is removed."""
         self.database.reports.find.return_value = [
             {"_id": "1", "subjects": {}},
             {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
@@ -213,10 +215,10 @@ class DatabaseInitTest(unittest.TestCase):
                     "subject2": {
                         "metrics": {
                             "metric1": {"type": "accessibility", "sources": {}},
-                            "metric2": {"type": "accessibility", "sources": {"source1": {"type": "random"}}},
+                            "metric2": {"type": "accessibility", "sources": {"source1": {"type": "wekan"}}},
                             "metric3": {
                                 "type": "accessibility",
-                                "sources": {"source2": {"type": "random"}, "source3": {"type": "leave me alone"}},
+                                "sources": {"source2": {"type": "wekan"}, "source3": {"type": self.IGNORE_ME}},
                             },
                         }
                     }
@@ -232,7 +234,44 @@ class DatabaseInitTest(unittest.TestCase):
                         "metrics": {
                             "metric1": {"type": "accessibility", "sources": {}},
                             "metric2": {"type": "accessibility", "sources": {}},
-                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": "leave me alone"}}},
+                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": self.IGNORE_ME}}},
+                        }
+                    }
+                }
+            },
+        )
+
+    def test_remove_random_number_source(self):
+        """Test that the random number source type is removed."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}},
+            {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
+            {
+                "_id": "3",
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {"type": "accessibility", "sources": {"source1": {"type": "random"}}},
+                            "metric3": {
+                                "type": "accessibility",
+                                "sources": {"source2": {"type": "random"}, "source3": {"type": self.IGNORE_ME}},
+                            },
+                        }
+                    }
+                },
+            },
+        ]
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "3"},
+            {
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "accessibility", "sources": {}},
+                            "metric2": {"type": "accessibility", "sources": {}},
+                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": self.IGNORE_ME}}},
                         }
                     }
                 }
