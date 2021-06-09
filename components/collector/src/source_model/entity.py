@@ -24,6 +24,11 @@ class Entity(dict):
 class Entities(list[Entity]):
     """Class to hold a list of unique entities."""
 
+    def __init__(self, entities: Iterable[Entity] = ()):
+        """Extend to filter duplicate entities."""
+        super().__init__()
+        self.extend(entities)
+
     def __add__(self, other) -> "Entities":
         """Return the concatenation of the entities."""
         return self.__class__(super().__add__(other))
@@ -34,8 +39,10 @@ class Entities(list[Entity]):
 
     def append(self, entity: Entity) -> None:
         """Extend to only append the entity if it's not already in the list."""
-        self.extend([entity])
+        if entity not in self:
+            super().append(entity)
 
     def extend(self, entities: Iterable[Entity]) -> None:
         """Extend to only add entities that aren't already in the list."""
-        super().extend([entity for entity in entities if entity not in self])
+        for entity in entities:
+            self.append(entity)

@@ -60,7 +60,7 @@ def set_entity_attribute(
     new_measurement = old_measurement.copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
-    entity_description = "/".join([entity[key] for key in entity.keys() if key not in ("key", "url")])
+    entity_description = "/".join([str(entity[key]) for key in entity.keys() if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value

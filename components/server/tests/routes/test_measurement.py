@@ -424,7 +424,7 @@ class SetEntityAttributeTest(unittest.TestCase):
                     connection_error=None,
                     value="42",
                     total=None,
-                    entities=[dict(key="entity_key", title="entity title")],
+                    entities=[dict(key="entity_key", title="entity title", other="foo", missing=None)],
                 )
             ],
         )
@@ -449,7 +449,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         self.assertEqual(dict(attribute="value"), entity)
         self.assertEqual(
             dict(
-                description="John changed the attribute of 'entity title' from '' to 'value'.",
+                description="John changed the attribute of 'entity title/foo/None' from '' to 'value'.",
                 email=JOHN["email"],
                 uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
             ),
