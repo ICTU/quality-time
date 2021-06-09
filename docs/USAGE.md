@@ -345,21 +345,23 @@ To export an older version of a report, add the `report_date` parameter with a d
 
 ## Export and import reports as JSON 
 
-*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
+*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
 
 A *Quality-time* report in JSON-format contains the latest configuration of the report, with all its subjects, metrics and sources. It does not contain any actual measurements. The credentials of configured sources are encrypted on export to protect sensitive data.
 
 ### Export API
 
-The exporting endpoint is available under `http://www.quality-time.example.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The public key argument is optional, if no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials, if the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `www.quality-time.example.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
+The exporting endpoint is available under `http://www.quality-time.example.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The public key argument is optional. If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `www.quality-time.example.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
 
 ### Import API
 
-Exported reports can be imported back into *Quality-time*. The endpoint for this is `http://www.quality-time.example.org/api/v3/report/import`. The import accepts JSON content only.
-
-Only exports that have been exported using the public key of the destination *Quality-time* instance can be imported. The source credentials will be decrypted on import and the sources should be ready to collect measurements automatically.
+Reports can be imported into *Quality-time*. The endpoint for this is `http://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](../components/server/src/data/example-reports) for the format.
 
 On import, all UUID's contained in the report (UUID's of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
+
+If the report contains encrypted credentials, the importing *Quality-time* instance will decrypt the credentials using its public key. Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, an error will occur, and the import will fail. 
+
+To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials. These unencrypted credentials will be imported unchanged.
 
 ## Notifications
 

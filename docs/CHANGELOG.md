@@ -8,7 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [3.23.0-rc.1] - [2021-06-08]
+## [Unreleased]
+
+### Fixed
+
+- Allow for importing reports with unencrypted credentials. Fixes [#2238](https://github.com/ICTU/quality-time/issues2238).
 
 ### Added
 

@@ -5,7 +5,7 @@ import json
 from collections.abc import Iterator
 from datetime import date
 from json.decoder import JSONDecodeError
-from typing import Optional, cast
+from typing import Optional, Union, cast
 
 from server_utilities.functions import DecryptionError, asymmetric_decrypt, asymmetric_encrypt, unique, uuid
 from server_utilities.type import Color, EditScope, ItemId, Status
@@ -40,19 +40,24 @@ def decrypt_credentials(data_model, private_key: str, *reports: dict):
     for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
+                source["parameters"][parameter_key] = decrypt_credential(
+                    private_key, source["parameters"][parameter_key]
+                )
 
-                encrypted_key_value = source["parameters"][parameter_key]
 
-                try:
-                    password = asymmetric_decrypt(private_key, encrypted_key_value)
-                except ValueError as error:
-                    raise DecryptionError from error
-
-                try:
-                    password = json.loads(password)
-                except JSONDecodeError:
-                    pass
-                source["parameters"][parameter_key] = password
+def decrypt_credential(private_key: str, credential: Union[str, tuple[str, str]]) -> str:
+    """Decrypt the credential if it's encrypted, otherwise return it unchanged."""
+    if isinstance(credential, str):
+        return credential
+    try:
+        decrypted_credential = asymmetric_decrypt(private_key, credential)
+    except ValueError as error:
+        raise DecryptionError from error
+    try:
+        decrypted_credential = json.loads(decrypted_credential)
+    except JSONDecodeError:
+        pass
+    return decrypted_credential
 
 
 def replace_report_uuids(*reports) -> None:
