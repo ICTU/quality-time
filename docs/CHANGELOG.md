@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [3.23.0-rc.2] - [2021-06-09]
+## [Unreleased]
 
 ### Fixed
 
@@ -22,10 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Removed
 
 - Drop support for Wekan source for Issue and Source-up-to-dateness metrics. Closes [#2229](https://github.com/ICTU/quality-time/issues/2229).
-
-### Changed
-
-- Update MongoDB version to 4.4.6. ATTENTION: updating directly only possible from Quality-time >=v3.16. In order to update from older Quality-time versions, please first update to 3.16 and then to the newest version. Closes [#2027](https://github.com/ICTU/quality-time/issues/2027).
 
 ## [3.22.0] - [2021-05-26]
 
