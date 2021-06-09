@@ -11,6 +11,8 @@ from initialization.database import init_database
 class DatabaseInitTest(unittest.TestCase):
     """Unit tests for database initialization."""
 
+    IGNORE_ME = "ignore me"
+
     def setUp(self):
         """Override to set up the database fixture."""
         self.mongo_client = Mock()
@@ -216,7 +218,7 @@ class DatabaseInitTest(unittest.TestCase):
                             "metric2": {"type": "accessibility", "sources": {"source1": {"type": "wekan"}}},
                             "metric3": {
                                 "type": "accessibility",
-                                "sources": {"source2": {"type": "wekan"}, "source3": {"type": "leave me alone"}},
+                                "sources": {"source2": {"type": "wekan"}, "source3": {"type": self.IGNORE_ME}},
                             },
                         }
                     }
@@ -232,7 +234,7 @@ class DatabaseInitTest(unittest.TestCase):
                         "metrics": {
                             "metric1": {"type": "accessibility", "sources": {}},
                             "metric2": {"type": "accessibility", "sources": {}},
-                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": "leave me alone"}}},
+                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": self.IGNORE_ME}}},
                         }
                     }
                 }
@@ -253,7 +255,7 @@ class DatabaseInitTest(unittest.TestCase):
                             "metric2": {"type": "accessibility", "sources": {"source1": {"type": "random"}}},
                             "metric3": {
                                 "type": "accessibility",
-                                "sources": {"source2": {"type": "random"}, "source3": {"type": "leave me alone"}},
+                                "sources": {"source2": {"type": "random"}, "source3": {"type": self.IGNORE_ME}},
                             },
                         }
                     }
@@ -269,7 +271,7 @@ class DatabaseInitTest(unittest.TestCase):
                         "metrics": {
                             "metric1": {"type": "accessibility", "sources": {}},
                             "metric2": {"type": "accessibility", "sources": {}},
-                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": "leave me alone"}}},
+                            "metric3": {"type": "accessibility", "sources": {"source3": {"type": self.IGNORE_ME}}},
                         }
                     }
                 }
