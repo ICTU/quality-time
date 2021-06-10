@@ -40,7 +40,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     file_extensions: list[str] = []  # Subclass responsibility
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to unzip any zipped responses."""
         responses = await super()._get_source_responses(*urls)
         if urlparse(str(urls[0])).path.endswith(".zip"):

@@ -90,7 +90,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 
     total_metric = ""  # Subclass responsibility
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to, next to the violations, get the total number of violations as basis for the percentage scale."""
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -99,7 +99,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}"
         )
-        return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
+        return await super()._get_source_responses(*(urls + (total_metric_api_url,)), **kwargs)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Extend to parse the total number of violations."""

@@ -38,12 +38,12 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         entities = Entities(list(entity_dict.values()))
         return SourceMeasurement(total=str(len(possible_metrics)), entities=entities)
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
         datamodel_url = URL(f"{api_url}/datamodel")
         reports_url = URL(f"{api_url}/reports")
-        return await super()._get_source_responses(datamodel_url, reports_url)
+        return await super()._get_source_responses(datamodel_url, reports_url, **kwargs)
 
     @staticmethod
     def __get_possible_metrics(datamodel: Dict, subject_types: Set) -> Dict:

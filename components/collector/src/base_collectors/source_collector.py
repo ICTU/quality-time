@@ -125,9 +125,8 @@ class SourceCollector(ABC):
         """Return a log-safe version of the exception."""
         return tokenless(str(exception)) if str(exception) else exception.__class__.__name__
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
-        kwargs: dict[str, Any] = {}
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])

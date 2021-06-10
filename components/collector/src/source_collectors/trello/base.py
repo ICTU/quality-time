@@ -14,13 +14,13 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         """Override to get the landing URL from the response."""
         return URL((await responses[0].json())["url"] if responses else "https://trello.com")
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to add authentication and field parameters to the URL."""
         api = (
             f"1/boards/{await self.__board_id()}?fields=id,url,dateLastActivity&lists=open&"
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
         )
-        return await super()._get_source_responses(await self.__url_with_auth(api))
+        return await super()._get_source_responses(await self.__url_with_auth(api), **kwargs)
 
     async def __board_id(self) -> str:
         """Return the id of the board specified by the user."""

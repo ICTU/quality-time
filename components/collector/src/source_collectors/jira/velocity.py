@@ -17,11 +17,11 @@ class JiraVelocity(SourceCollector):
     Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
     SprintPoints = dict[str, Points]
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to pass the Greenhopper velocity chart API."""
         board_id = await self.__board_id(urls[0])
         api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
-        return await super()._get_source_responses(api_url)
+        return await super()._get_source_responses(api_url, **kwargs)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the sprint values from the responses."""

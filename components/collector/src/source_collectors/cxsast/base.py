@@ -67,16 +67,16 @@ class CxSASTScanBase(CxSASTBase):
             else landing_url
         )
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override because we need to do multiple requests to get all the data we need."""
         await self._get_token()
         project_api = URL(f"{await self._api_url()}/cxrestapi/projects")
-        project_response = (await super()._get_source_responses(project_api))[0]
+        project_response = (await super()._get_source_responses(project_api, **kwargs))[0]
         self.__project_id = await self.__get_project_id(project_response)
         scan_api = URL(
             f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1"
         )
-        scan_responses = await super()._get_source_responses(scan_api)
+        scan_responses = await super()._get_source_responses(scan_api, **kwargs)
         self._scan_id = (await scan_responses[0].json())[0]["id"]
         return scan_responses
 

@@ -19,7 +19,7 @@ class AzureDevopsIssues(SourceCollector):
         """Extend to add the WIQL API path."""
         return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
         api_url = urls[0]
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
@@ -29,7 +29,7 @@ class AzureDevopsIssues(SourceCollector):
             return SourceResponses(responses=[response], api_url=api_url)
         ids_string = ",".join(ids[: min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)])
         work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
-        work_items = await super()._get_source_responses(work_items_url)
+        work_items = await super()._get_source_responses(work_items_url, **kwargs)
         work_items.insert(0, response)
         return work_items
 

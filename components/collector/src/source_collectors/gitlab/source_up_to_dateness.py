@@ -29,10 +29,10 @@ class GitLabSourceUpToDateness(GitLabProjectBase):
         file_path = self._parameter("file_path", quote=True)
         return URL(f"{web_url}/blob/{branch}/{file_path}")
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Get the last commit metadata of the file or, in case of a folder, of the files in the folder, recursively."""
         # First, get the project info so we can use the web url as landing url
-        responses = await super()._get_source_responses(*urls)
+        responses = await super()._get_source_responses(*urls, **kwargs)
         # Then, collect the commits
         responses.extend(await self.__get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses

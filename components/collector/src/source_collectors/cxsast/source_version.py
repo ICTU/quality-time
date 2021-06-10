@@ -12,11 +12,11 @@ from .base import CxSASTBase
 class CxSASTSourceVersion(CxSASTBase, SourceVersionCollector):
     """Collector class to measure the version of a Checkmarx CxSAST source."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to get the engine servers."""
         await self._get_token()
         engine_servers_api = URL(f"{await self._api_url()}/cxrestapi/sast/engineServers")
-        return await super()._get_source_responses(engine_servers_api)
+        return await super()._get_source_responses(engine_servers_api, **kwargs)
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the date and time of the most recent scan."""
