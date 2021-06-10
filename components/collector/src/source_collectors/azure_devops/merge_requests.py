@@ -24,10 +24,10 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
         landing_url = str(await super()._landing_url(responses))
         return URL(f"{landing_url}/pullrequests")
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to use Azure Devops pagination, if necessary."""
         nr_merge_requests_to_skip = 0
-        responses = await super()._get_source_responses(*urls)
+        responses = await super()._get_source_responses(*urls, **kwargs)
         while len((await responses[-1].json())["value"]) == self.PAGE_SIZE:
             nr_merge_requests_to_skip += self.PAGE_SIZE
             responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&$skip={nr_merge_requests_to_skip}")))

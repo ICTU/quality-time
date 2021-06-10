@@ -13,11 +13,11 @@ from source_model import SourceResponses
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to get both the test report and the job that created it, so we can use either one to get a date."""
         test_report_url = URL(f"{urls[0]}/lastSuccessfulBuild/testReport/api/json")
         job_url = URL(f"{urls[0]}/lastSuccessfulBuild/api/json")
-        return await super()._get_source_responses(test_report_url, job_url)
+        return await super()._get_source_responses(test_report_url, job_url, **kwargs)
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the timestamp from either the job or the test report."""

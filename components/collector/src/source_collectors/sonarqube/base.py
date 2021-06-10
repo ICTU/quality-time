@@ -10,18 +10,18 @@ from source_model import Entities, SourceMeasurement, SourceResponses
 class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base class for SonarQube collectors."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to check the component exists before getting data about it."""
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
         url = await SourceCollector._api_url(self)
         component = self._parameter("component")
         show_component_url = URL(f"{url}/api/components/show?component={component}")
-        response = (await super()._get_source_responses(show_component_url))[0]
+        response = (await super()._get_source_responses(show_component_url, **kwargs))[0]
         json = await response.json()
         if "errors" in json:
             raise SourceCollectorException(json["errors"][0]["msg"])
-        return await super()._get_source_responses(*urls)
+        return await super()._get_source_responses(*urls, **kwargs)
 
 
 class SonarQubeMetricsBaseClass(SonarQubeCollector):

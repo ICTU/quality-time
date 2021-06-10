@@ -31,7 +31,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         """Override to return the violation types this collector collects."""
         return "VULNERABILITY"
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to add urls for the selected security types."""
         api_urls = []
         security_types = self._parameter(self.types_parameter)
@@ -49,7 +49,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             api_urls.append(
                 URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}")
             )
-        return await super()._get_source_responses(*api_urls)
+        return await super()._get_source_responses(*api_urls, **kwargs)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the selected security types."""

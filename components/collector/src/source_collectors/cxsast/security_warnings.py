@@ -10,9 +10,9 @@ from .base import CxSASTScanBase
 class CxSASTSecurityWarnings(CxSASTScanBase):
     """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to get the scan results."""
-        await super()._get_source_responses(*urls)  # Get scan id
+        await super()._get_source_responses(*urls, **kwargs)  # Get scan id
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 
