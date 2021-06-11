@@ -74,7 +74,7 @@ export function MetricParameters(props) {
                             label="Tags"
                             options={[...tags]}
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "tags", value, props.reload)}
-                            value={props.metric.tags}
+                            value={props.metric.tags ?? []}
                         />
                     </Grid.Column>
                 </Grid.Row>

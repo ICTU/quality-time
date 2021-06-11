@@ -11,7 +11,7 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
   const metrics = {}
   Object.entries(allMetrics).forEach(([metric_uuid, metric]) => {
     if (hideMetricsNotRequiringAction && (metric.status === "target_met" || metric.status === "debt_target_met")) { return }
-    if (tags.length > 0 && tags.filter(value => metric.tags.includes(value)).length === 0) { return }
+    if (tags.length > 0 && tags.filter(value => metric.tags?.includes(value)).length === 0) { return }
     metrics[metric_uuid] = metric
   })
   return metrics

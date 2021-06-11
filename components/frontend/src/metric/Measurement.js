@@ -71,7 +71,7 @@ export function Measurement(props) {
       {!props.hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!props.hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
       {!props.hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-      {!props.hiddenColumns.includes("tags") && <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
+      {!props.hiddenColumns.includes("tags") && <Table.Cell>{metric.tags?.sort().map((tag) => <Tag key={tag} tag={tag} />) ?? null}</Table.Cell>}
     </TableRowWithDetails>
   )
 }

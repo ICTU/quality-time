@@ -8,11 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Allow for importing reports with metrics that have no tags. Fixes [#2262](https://github.com/ICTU/quality-time/issues/2262).
+
 ## [3.23.0] - [2021-06-09]
 
 ### Fixed
 
-- Allow for importing reports with unencrypted credentials. Fixes [#2238](https://github.com/ICTU/quality-time/issues2238).
+- Allow for importing reports with unencrypted credentials. Fixes [#2238](https://github.com/ICTU/quality-time/issues/2238).
 - Axe CSV files may contain duplicate accessibility violations. These duplicated violations couldn't be marked as false positive, won't fix, etc. Fixed by ignoring duplicate violations. Fixes [#2232](https://github.com/ICTU/quality-time/issues/2232).
 
 ### Added

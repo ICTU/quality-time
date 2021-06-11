@@ -65,9 +65,9 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
       return attribute1.localeCompare(attribute2)
     },
     tags: (m1, m2) => {
-      let m1_tags = m1.props.metric.tags;
+      let m1_tags = m1.props.metric.tags ?? [];
       m1_tags.sort();
-      let m2_tags = m2.props.metric.tags;
+      let m2_tags = m2.props.metric.tags ?? [];
       m2_tags.sort();
       const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
       const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
