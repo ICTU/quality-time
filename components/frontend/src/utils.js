@@ -27,6 +27,24 @@ export function get_metric_target(metric) {
     return (metric.accept_debt ? metric.debt_target : metric.target) || "0";
 }
 
+export function get_metric_value(metric) {
+    return metric.value ?? '';
+}
+
+export function get_metric_comment(metric) {
+    return metric.comment ?? '';
+}
+
+export function get_metric_status(metric) {
+    return metric.status ?? '';
+}
+
+export function get_metric_tags(metric) {
+    let tags = metric.tags ?? [];
+    tags.sort();
+    return tags
+}
+
 export function show_message(type, title, description, icon) {
     toast({
         title: title,

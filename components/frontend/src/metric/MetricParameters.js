@@ -10,6 +10,7 @@ import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { Target } from './Target';
 import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { get_metric_tags } from '../utils';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -74,7 +75,7 @@ export function MetricParameters(props) {
                             label="Tags"
                             options={[...tags]}
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "tags", value, props.reload)}
-                            value={props.metric.tags ?? []}
+                            value={get_metric_tags(props.metric)}
                         />
                     </Grid.Column>
                 </Grid.Row>

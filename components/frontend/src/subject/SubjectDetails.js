@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
-import { get_metric_name, get_metric_target, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectFooter } from './SubjectFooter';
 
@@ -36,8 +36,8 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
       return attribute1.localeCompare(attribute2)
     },
     measurement: (m1, m2) => {
-      const attribute1 = m1.props.metric.value || "";
-      const attribute2 = m2.props.metric.value || "";
+      const attribute1 = get_metric_value(m1.props.metric);
+      const attribute2 = get_metric_value(m2.props.metric);
       return attribute1.localeCompare(attribute2)
     },
     target: (m1, m2) => {
@@ -46,13 +46,13 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
       return attribute1.localeCompare(attribute2)
     },
     comment: (m1, m2) => {
-      const attribute1 = m1.props.metric.comment || '';
-      const attribute2 = m2.props.metric.comment || '';
+      const attribute1 = get_metric_comment(m1.props.metric);
+      const attribute2 = get_metric_comment(m2.props.metric);
       return attribute1.localeCompare(attribute2)
     },
     status: (m1, m2) => {
-      const attribute1 = status_order[m1.props.metric.status || ""];
-      const attribute2 = status_order[m2.props.metric.status || ""];
+      const attribute1 = status_order[get_metric_status(m1.props.metric)];
+      const attribute2 = status_order[get_metric_status(m2.props.metric)];
       return attribute1.localeCompare(attribute2)
     },
     source: (m1, m2) => {
@@ -65,10 +65,8 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
       return attribute1.localeCompare(attribute2)
     },
     tags: (m1, m2) => {
-      let m1_tags = m1.props.metric.tags ?? [];
-      m1_tags.sort();
-      let m2_tags = m2.props.metric.tags ?? [];
-      m2_tags.sort();
+      let m1_tags = get_metric_tags(m1.props.metric);
+      let m2_tags = get_metric_tags(m2.props.metric);
       const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
       const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
       return attribute1.localeCompare(attribute2)
