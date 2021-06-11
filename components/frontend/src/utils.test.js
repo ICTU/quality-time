@@ -1,5 +1,5 @@
 import * as react_semantic_toast from 'react-semantic-toasts';
-import { getUserPermissions, nice_number, scaled_number, show_message, format_minutes } from './utils';
+import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, show_message, format_minutes } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/ReadOnly';
 
 jest.mock("react-semantic-toasts");
@@ -72,4 +72,40 @@ it('gives users no permissions if the report date is in the past', () => {
 it('gives users no permissions if the report is a tag report', () => {
   const permissions = getUserPermissions("jodoe", "john.doe@example.org", true, null, {});
   expect(permissions).toStrictEqual([]);
+});
+
+it('gets the metric tags sorted', () => {
+  expect(get_metric_tags({tags: ["foo", "bar"]})).toStrictEqual(["bar", "foo"]);
+});
+
+it('gets the metric tags even if there are none', () => {
+  expect(get_metric_tags({})).toStrictEqual([]);
+});
+
+it('gets the metric target, even if the target is missing', () => {
+  expect(get_metric_target({})).toStrictEqual("0");
+});
+
+it('gets the metric debt target, if technical debt has been accepted', () => {
+  expect(get_metric_target({accept_debt: true, debt_target: "1"})).toStrictEqual("1");
+});
+
+it('gets the metric target, if technical debt has not been accepted', () => {
+  expect(get_metric_target({accept_debt: false, target: "2"})).toStrictEqual("2");
+});
+
+it('gets the source name', () => {
+  expect(get_source_name({name: "source"}, {})).toStrictEqual("source")
+});
+
+it('gets the source name from the data model if the source has no name', () => {
+  expect(get_source_name({type: "source_type"}, {sources: {"source_type": {name: "source"}}})).toStrictEqual("source")
+});
+
+it('gets the subject name', () => {
+  expect(get_subject_name({name: "subject"}, {})).toStrictEqual("subject")
+});
+
+it('gets the subject name from the data model if the subject has no name', () => {
+  expect(get_subject_name({type: "subject_type"}, {subjects: {"subject_type": {name: "subject"}}})).toStrictEqual("subject")
 });
