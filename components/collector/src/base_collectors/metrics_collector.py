@@ -15,6 +15,23 @@ from collector_utilities.type import JSON, URL
 from .source_collector import SourceCollector
 
 
+async def on_request_start(_, trace_config_ctx, params):  # pragma: no cover
+    """Log the request start."""
+    if trace_config_ctx.trace:
+        logging.info("Starting request %s %s", trace_config_ctx, params)
+
+
+async def on_request_end(_, trace_config_ctx, params):  # pragma: no cover
+    """Log the request end."""
+    if trace_config_ctx.trace:
+        logging.info("Ending request %s %s", trace_config_ctx, params)
+
+
+TRACE_CONFIG = aiohttp.TraceConfig()
+TRACE_CONFIG.on_request_start.append(on_request_start)
+TRACE_CONFIG.on_request_end.append(on_request_end)
+
+
 async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSON:
     """Get data from the API url."""
     try:
@@ -79,6 +96,7 @@ class MetricsCollector:
                 connector=aiohttp.TCPConnector(limit=0, ssl=False),
                 raise_for_status=True,
                 timeout=timeout,
+                trace_configs=[TRACE_CONFIG],
                 trust_env=True,
             ) as session:
                 with timer() as collection_timer:

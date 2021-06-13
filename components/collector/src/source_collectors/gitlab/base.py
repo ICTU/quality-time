@@ -1,11 +1,9 @@
 """GitLab collector base classes."""
 
-import logging
 from abc import ABC
 from collections.abc import Sequence
 from typing import Optional
 
-import aiohttp
 from dateutil.parser import parse
 
 from base_collectors import SourceCollector
@@ -14,28 +12,13 @@ from collector_utilities.type import URL, Job
 from source_model import Entities, Entity, SourceResponses
 
 
-async def on_request_start(_, trace_config_ctx, params):
-    """Log the request start."""
-    logging.info("Starting request %s %s", trace_config_ctx, params)  # pragma: no cover
-
-
-async def on_request_end(_, trace_config_ctx, params):
-    """Log the request end."""
-    logging.info("Ending request %s %s", trace_config_ctx, params)  # pragma: no cover
-
-
-TRACE_CONFIG = aiohttp.TraceConfig()
-TRACE_CONFIG.on_request_start.append(on_request_start)
-TRACE_CONFIG.on_request_end.append(on_request_end)
-
-
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for GitLab collectors."""
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
         all_responses = responses = await super()._get_source_responses(*urls, **kwargs)
-        kwargs["trace_configs"] = [TRACE_CONFIG]
+        kwargs["trace_request_ctx"] = dict(trace=True)
         while next_urls := self.__next_urls(responses):
             all_responses.extend(responses := await super()._get_source_responses(*next_urls, **kwargs))
         return all_responses
