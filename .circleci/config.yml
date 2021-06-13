@@ -56,22 +56,22 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_testldap:v3.23.1-rc.2
+      - image: ictu/quality-time_testldap:v3.23.1-rc.3
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_renderer:v3.23.1-rc.2
+      - image: ictu/quality-time_renderer:v3.23.1-rc.3
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
         environment:
           ALLOW_HTTP: true
           LC_ALL: en_GB.UTF-8
-      - image: ictu/quality-time_frontend:v3.23.1-rc.2
+      - image: ictu/quality-time_frontend:v3.23.1-rc.3
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_database:v3.23.1-rc.2
+      - image: ictu/quality-time_database:v3.23.1-rc.3
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
