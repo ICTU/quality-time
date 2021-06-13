@@ -3,7 +3,7 @@
 import bottle
 
 
-QUALITY_TIME_VERSION = "3.23.1-rc.3"
+QUALITY_TIME_VERSION = "3.23.1"
 
 
 @bottle.get("/api/v3/server", authentication_required=False)
