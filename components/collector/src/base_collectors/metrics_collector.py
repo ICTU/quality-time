@@ -17,14 +17,20 @@ from .source_collector import SourceCollector
 
 async def on_request_start(_, trace_config_ctx, params):  # pragma: no cover
     """Log the request start."""
-    if trace_config_ctx.trace:
-        logging.info("Starting request %s %s", trace_config_ctx, params)
+    try:
+        if trace_config_ctx.trace:
+            logging.info("Starting request %s %s", trace_config_ctx, params)
+    except AttributeError:
+        pass
 
 
 async def on_request_end(_, trace_config_ctx, params):  # pragma: no cover
     """Log the request end."""
-    if trace_config_ctx.trace:
-        logging.info("Ending request %s %s", trace_config_ctx, params)
+    try:
+        if trace_config_ctx.trace:
+            logging.info("Ending request %s %s", trace_config_ctx, params)
+    except AttributeError:
+        pass
 
 
 TRACE_CONFIG = aiohttp.TraceConfig()
