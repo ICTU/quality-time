@@ -43,7 +43,9 @@ def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     times = [time.time()]
     measurement_data = dict(bottle.request.json)
+    times.append(time.time())
     metric_uuid = measurement_data["metric_uuid"]
+    times.append(time.time())
     if (metric := latest_metric(database, metric_uuid)) is None:
         return  # Metric does not exist, must've been deleted while being measured
     times.append(time.time())
