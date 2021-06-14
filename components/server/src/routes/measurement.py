@@ -28,45 +28,29 @@ from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
 
-def log_times(message, metric_uuid, times):  # pragma: no cover
-    """Log the post measurement endpoint duration."""
-    duration = times[-1] - times[0]
-    if duration > 5:
-        deltas = []
-        for index, timestamp in list(enumerate(times))[1:]:
-            deltas.append(round(timestamp - times[index - 1], 2))
-        logging.info("%s for %s took %ss: %s", message, metric_uuid, round(duration, 1), deltas)
-
-
 @bottle.post("/internal-api/v3/measurements", authentication_required=False)
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
-    times = [time.time()]
+    start = time.time()
     measurement_data = dict(bottle.request.json)
-    times.append(time.time())
     metric_uuid = measurement_data["metric_uuid"]
-    times.append(time.time())
+    if time.time() - start > 10:  # pragma: no cover
+        data = str(measurement_data)
+        logging.info(
+            "Received measurement data for %s. Length = %d. First 1000 chars = %s", metric_uuid, len(data), data[:1000]
+        )
     if (metric := latest_metric(database, metric_uuid)) is None:
         return  # Metric does not exist, must've been deleted while being measured
-    times.append(time.time())
     latest = latest_measurement(database, metric)
-    times.append(time.time())
     measurement = Measurement(metric, measurement_data, previous_measurement=latest)
-    times.append(time.time())
     if latest:
         latest_successful = latest_successful_measurement(database, metric)
-        times.append(time.time())
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
-        times.append(time.time())
         if not latest.debt_target_expired() and latest.sources() == measurement.sources():
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
-            times.append(time.time())
-            log_times("Updating latest measurement", metric_uuid, times)
             return
     insert_new_measurement(database, measurement)
-    times.append(time.time())
-    log_times("Inserting new measurement", metric_uuid, times)
 
 
 @bottle.post(
