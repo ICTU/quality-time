@@ -28,6 +28,16 @@ from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
 
+def log_times(message, metric_uuid, times):  # pragma: no cover
+    """Log the post measurement endpoint duration."""
+    duration = times[-1] - times[0]
+    if duration > 5:
+        deltas = []
+        for index, timestamp in list(enumerate(times))[1:]:
+            deltas.append(round(timestamp - times[index - 1], 2))
+        logging.info("%s for %s took %ss: %s", message, metric_uuid, round(duration, 1), deltas)
+
+
 @bottle.post("/internal-api/v3/measurements", authentication_required=False)
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
@@ -50,15 +60,11 @@ def post_measurement(database: Database) -> None:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             times.append(time.time())
-            if times[-1] - times[0] > 5:  # pragma: no cover
-                times = [round(t - times[index - 1], 1) for index, t in list(enumerate(times))[1:]]
-                logging.info("Updating latest measurement for %s took %ss: %s", metric_uuid, sum(times), times)
+            log_times("Updating latest measurement", metric_uuid, times)
             return
     insert_new_measurement(database, measurement)
     times.append(time.time())
-    if times[-1] - times[0] > 5:  # pragma: no cover
-        times = [round(t - times[index - 1], 1) for index, t in list(enumerate(times))[1:]]
-        logging.info("Inserting new measurement for %s took %ss: %s", metric_uuid, sum(times), times)
+    log_times("Inserting new measurement", metric_uuid, times)
 
 
 @bottle.post(
