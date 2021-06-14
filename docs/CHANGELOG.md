@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Added more logging to the server measurements endpoint to investigate why storing measurements is sometimes very slow.
+
 ## [3.23.1] - [2021-06-13]
 
 ### Fixed
