@@ -27,6 +27,7 @@ def measure(context, number, total="100"):
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
+            has_error=False,
             sources=[
                 dict(
                     source_uuid=context.uuid["source"],
@@ -49,6 +50,7 @@ def parse_error(context):
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
+            has_error=True,
             sources=[
                 dict(
                     source_uuid=context.uuid["source"],
