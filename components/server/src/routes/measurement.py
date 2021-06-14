@@ -44,15 +44,15 @@ def post_measurement(database: Database) -> None:
     if latest:
         logging.info("Metric %s has measurements, so will try to find latest successful measurement", metric_uuid)
         latest_successful = latest_successful_measurement(database, metric)
-        if latest_successful:
-            logging.info("Retrieved latest successful measurement for metric %s", metric_uuid)
-        else:
+        if latest_successful is None:
             logging.info("Metric %s has no successful measurements", metric_uuid)
-        measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
-        if latest_successful:
-            logging.info("Copied entity user data from latest successful measurement for metric %s", metric_uuid)
         else:
+            logging.info("Retrieved latest successful measurement for metric %s", metric_uuid)
+        measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
+        if latest_successful is None:
             logging.info("Copied entity user data from latest measurement for metric %s", metric_uuid)
+        else:
+            logging.info("Copied entity user data from latest successful measurement for metric %s", metric_uuid)
         if not latest.debt_target_expired() and latest.sources() == measurement.sources():
             logging.info("Updating latest measurement of metric %s because value didn't change", metric_uuid)
             # If the new measurement is equal to the previous one, merge them together
