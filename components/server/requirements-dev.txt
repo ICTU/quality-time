@@ -1,2 +1,2 @@
 -r ../requirements-dev.txt
-types-requests==0.1.9
+types-requests==0.1.11
