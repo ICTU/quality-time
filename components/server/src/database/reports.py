@@ -1,7 +1,5 @@
 """Reports collection."""
 
-import logging
-import time
 from typing import Any, Optional, Union, cast
 
 import pymongo
@@ -57,11 +55,7 @@ def report_exists(database: Database, report_uuid: ReportId):
 
 def latest_metric(database: Database, metric_uuid: MetricId) -> Optional[Metric]:
     """Return the latest metric with the specified metric uuid."""
-    start = time.time()
-    reports = latest_reports(database)
-    duration = time.time() - start
-    logging.info("Getting latest reports for %s took %ss", metric_uuid, round(duration, 2))
-    for report in reports:
+    for report in latest_reports(database):
         for subject in report.get("subjects", {}).values():
             metrics = subject.get("metrics", {})
             if metric_uuid in metrics:
