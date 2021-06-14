@@ -32,18 +32,35 @@ from server_utilities.type import MetricId, SourceId
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
-    if (metric := latest_metric(database, measurement_data["metric_uuid"])) is None:
+    metric_uuid = measurement_data["metric_uuid"]
+    logging.info("Received a measurement for metric %s", metric_uuid)
+    if (metric := latest_metric(database, metric_uuid)) is None:
+        logging.info("Metric %s does not exist, not storing the measurement", metric_uuid)
         return  # Metric does not exist, must've been deleted while being measured
+    logging.info("Retrieved metric %s", metric_uuid)
     latest = latest_measurement(database, metric)
+    logging.info("Retrieved latest measurement for metric %s", metric_uuid)
     measurement = Measurement(metric, measurement_data, previous_measurement=latest)
     if latest:
+        logging.info("Metric %s has measurements, so will try to find latest successful measurement", metric_uuid)
         latest_successful = latest_successful_measurement(database, metric)
+        if latest_successful:
+            logging.info("Retrieved latest successful measurement for metric %s", metric_uuid)
+        else:
+            logging.info("Metric %s has no successful measurements", metric_uuid)
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
+        if latest_successful:
+            logging.info("Copied entity user data from latest successful measurement for metric %s", metric_uuid)
+        else:
+            logging.info("Copied entity user data from latest measurement for metric %s", metric_uuid)
         if not latest.debt_target_expired() and latest.sources() == measurement.sources():
+            logging.info("Updating latest measurement of metric %s because value didn't change", metric_uuid)
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return
+    logging.info("Inserting a new measurement for metric %s", metric_uuid)
     insert_new_measurement(database, measurement)
+    logging.info("Done processing the measurement received for metric %s", metric_uuid)
 
 
 @bottle.post(
