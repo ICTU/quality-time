@@ -1,2 +1,2 @@
 -r ../requirements-dev.txt
-types-python-dateutil==0.1.2
+types-python-dateutil==0.1.3
