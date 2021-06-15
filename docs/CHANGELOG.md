@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [3.23.2-rc.8] - [2021-06-15]
+## [Unreleased]
 
 ### Changed
 
-- Added more logging to the server measurements endpoint to investigate why storing measurements is sometimes very slow.
+- To prevent overloading *Quality-time*, the collector now measures at most 30 metrics each time it wakes up. To compensate, it by default wakes up every 20 seconds (was 60 seconds) to see whether metrics need measuring.
 
 ## [3.23.1] - [2021-06-13]
 
