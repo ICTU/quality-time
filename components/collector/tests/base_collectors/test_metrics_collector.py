@@ -3,7 +3,7 @@
 import logging
 import unittest
 from datetime import datetime
-from unittest.mock import AsyncMock, Mock, mock_open, patch
+from unittest.mock import AsyncMock, Mock, call, mock_open, patch
 
 import aiohttp
 
@@ -238,6 +238,36 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
                 metric_uuid="metric_uuid",
             ),
         )
+
+    async def test_fetch_in_batches(self):
+        """Test that metrics are fetched in batches."""
+        self.metrics_collector.MEASUREMENT_LIMIT = 1
+        self.metrics["metric_uuid2"] = dict(
+            addition="sum", type="metric", sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))
+        )
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.json.side_effect = [self.metrics, self.metrics]
+        with self.patched_post() as post:
+            await self.fetch_measurements(mock_async_get_request, number=2)
+        expected_sources = [
+            dict(
+                api_url=self.url,
+                landing_url=self.url,
+                value="42",
+                total="84",
+                entities=[],
+                connection_error=None,
+                parse_error=None,
+                source_uuid="source_id",
+            )
+        ]
+        expected_call1 = call(
+            self.measurement_api_url, json=dict(has_error=False, sources=expected_sources, metric_uuid="metric_uuid")
+        )
+        expected_call2 = call(
+            self.measurement_api_url, json=dict(has_error=False, sources=expected_sources, metric_uuid="metric_uuid2")
+        )
+        post.assert_has_calls(calls=[expected_call1, call().close(), expected_call2, call().close()])
 
     async def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
