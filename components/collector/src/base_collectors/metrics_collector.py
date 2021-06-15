@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import os
+import time
 import traceback
 from datetime import datetime, timedelta
 from typing import Any, Final, NoReturn, cast
@@ -31,12 +32,16 @@ async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSO
 
 async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
     """Post the JSON data to the api url."""
+    start = time.time()
     try:
         response = await session.post(api, json=data)
         response.close()
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Posting %s to %s failed: %s", data, api, reason)
         logging.error(traceback.format_exc())
+    finally:
+        if time.time() - start > 10:  # pragma: no cover
+            logging.info("Posted to %s. Length = %d. First 1000 chars = %s", api, len(data), data[:1000])
 
 
 class MetricsCollector:
