@@ -6,7 +6,7 @@ import os
 import time
 import traceback
 from datetime import datetime, timedelta
-from typing import Any, Final, NoReturn, cast
+from typing import Any, Coroutine, Final, NoReturn, cast
 
 import aiohttp
 
@@ -50,7 +50,7 @@ class MetricsCollector:
 
     API_VERSION = "v3"
     MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 20))
-    MAX_METRICS_PER_WAKEUP = 30
+    MEASUREMENT_LIMIT = int(os.environ.get("COLLECTOR_MEASUREMENT_LIMIT", 30))
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
@@ -77,7 +77,6 @@ class MetricsCollector:
             self.data_model = await self.fetch_data_model(session)
         while True:
             self.record_health()
-            logging.info("Collecting...")
             # The TCPConnector has limit 0, meaning unlimited, because aiohttp only closes connections when the response
             # is closed. But due to the architecture of the collector (first collect all the responses, then parse them)
             # the responses are kept around relatively long, and hence the connections too. To prevent time-outs while
@@ -115,11 +114,12 @@ class MetricsCollector:
         """Collect measurements for all metrics."""
         metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
-        tasks = [
-            self.collect_metric(session, metric_uuid, metric, next_fetch)
-            for metric_uuid, metric in metrics.items()
-            if self.__can_and_should_collect(metric_uuid, metric)
-        ][: self.MAX_METRICS_PER_WAKEUP]
+        tasks: list[Coroutine] = []
+        for metric_uuid, metric in metrics.items():
+            if len(tasks) >= self.MEASUREMENT_LIMIT:
+                break
+            if self.__can_and_should_collect(metric_uuid, metric):
+                tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
         await asyncio.gather(*tasks)
 
     async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
