@@ -49,7 +49,8 @@ class MetricsCollector:
     """Collect measurements for all metrics."""
 
     API_VERSION = "v3"
-    MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
+    MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 20))
+    MAX_METRICS_PER_WAKEUP = 30
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
@@ -118,7 +119,7 @@ class MetricsCollector:
             self.collect_metric(session, metric_uuid, metric, next_fetch)
             for metric_uuid, metric in metrics.items()
             if self.__can_and_should_collect(metric_uuid, metric)
-        ]
+        ][: self.MAX_METRICS_PER_WAKEUP]
         await asyncio.gather(*tasks)
 
     async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
