@@ -16,4 +16,4 @@ async def collect(log_level: int = None) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(collect(logging.INFO))  # pragma: no cover
+    asyncio.run(collect(logging.INFO), debug=True)  # pragma: no cover
