@@ -33,6 +33,7 @@ async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSO
 async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
     """Post the JSON data to the api url."""
     start = time.time()
+    text_data = str(data)
     try:
         response = await session.post(api, json=data)
         response.close()
@@ -41,7 +42,7 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
         logging.error(traceback.format_exc())
     finally:
         if time.time() - start > 10:  # pragma: no cover
-            logging.info("Posted to %s. Length = %d. First 1000 chars = %s", api, len(data), data[:1000])
+            logging.info("Posting to %s. Length = %d. First 1000 chars = %s", api, len(text_data), text_data[:1000])
 
 
 class MetricsCollector:
