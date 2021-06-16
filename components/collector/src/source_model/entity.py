@@ -27,6 +27,7 @@ class Entities(list[Entity]):
     def __init__(self, entities: Iterable[Entity] = ()):
         """Extend to filter duplicate entities."""
         super().__init__()
+        self.__keys: set[str] = set()  # Keep track of the keys in a set to make adding entities faster
         self.extend(entities)
 
     def __add__(self, other) -> "Entities":
@@ -39,7 +40,8 @@ class Entities(list[Entity]):
 
     def append(self, entity: Entity) -> None:
         """Extend to only append the entity if it's not already in the list."""
-        if entity not in self:
+        if (key := entity["key"]) not in self.__keys:
+            self.__keys.add(key)
             super().append(entity)
 
     def extend(self, entities: Iterable[Entity]) -> None:
