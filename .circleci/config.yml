@@ -38,6 +38,20 @@ jobs:
             npm install
             npm test
 
+  unittest_docs:
+    docker:
+      - image: circleci/python:3.9.5-buster
+    steps:
+      - checkout
+      - run: |
+          cd docs
+          python -m venv venv
+          . venv/bin/activate
+          pip install wheel
+          pip install --progress-bar off -r requirements-dev.txt
+          ci/unittest.sh
+          ci/quality.sh
+
   application_tests:
     machine: true
     parallelism: 1
