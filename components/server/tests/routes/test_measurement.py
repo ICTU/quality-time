@@ -440,7 +440,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         database.datamodels = Mock()
         database.datamodels.find_one.return_value = dict(
             _id=123,
-            metrics=dict(metric_type=dict(direction="<", scales=["count"])),
+            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count"])),
             sources=dict(source_type=dict(entities={})),
         )
         with patch("bottle.request", Mock(json=dict(attribute="value"))):

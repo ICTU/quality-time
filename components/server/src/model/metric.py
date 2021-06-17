@@ -28,7 +28,8 @@ class Metric(dict):
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
-        return dict(max=max, min=min, sum=sum)[self["addition"]]
+        addition = self.get("addition") or self.__data_model["metrics"][self.type()]["addition"]
+        return dict(max=max, min=min, sum=sum)[addition]
 
     def direction(self) -> Direction:
         """Return the direction of the metric: < or >."""
@@ -36,7 +37,7 @@ class Metric(dict):
 
     def scale(self) -> Scale:
         """Return the current metric scale."""
-        return cast(Scale, self.get("scale", "count"))
+        return cast(Scale, self.get("scale") or self.__data_model["metrics"][self.type()]["default_scale"])
 
     def scales(self) -> Sequence[Scale]:
         """Return the scales supported by the metric."""

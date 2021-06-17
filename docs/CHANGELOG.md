@@ -8,12 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [3.23.2-rc.13] - [2021-06-17]
+## [Unreleased]
 
 ### Fixed
 
 - To prevent overloading *Quality-time*, the collector now measures a limited number (30 by default) of metrics each time it wakes up. If there are more than 30 metrics to measure, these get postponed to the next wakeup. To compensate, the collector wakes up more often (every 20 seconds instead of every 60 seconds) to see whether metrics need measuring. Metrics recently edited by users get priority.
 - Fix a performance regression in the collector component, introduced in v3.23.0.
+- Allow for importing reports with metrics that have no scale or addition attribute. Fixes [#2262](https://github.com/ICTU/quality-time/issues/2262).
 
 ## [3.23.1] - [2021-06-13]
 

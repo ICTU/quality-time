@@ -15,7 +15,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
     def setUp(self):
         """Override to set up a metric fixture."""
         self.data_model = dict(
-            metrics=dict(metric_type=dict(direction="<", scales=["count", "percentage"])),
+            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
             sources=dict(
                 source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
             ),
