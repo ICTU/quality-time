@@ -111,15 +111,17 @@ class MetricsCollector:
             await asyncio.sleep(self.MAX_SLEEP_DURATION)
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
-        """Collect measurements for all metrics."""
+        """Collect measurements for metrics, prioritizing edited metrics."""
         metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
-        for metric_uuid, metric in metrics.items():
-            if len(tasks) >= self.MEASUREMENT_LIMIT:
-                break
-            if self.__can_and_should_collect(metric_uuid, metric):
-                tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
+        # First get the edited metrics to collect, then the unedited, with a maximum of self.MEASUREMENT_LIMIT:
+        for edited in (True, False):
+            for metric_uuid, metric in metrics.items():
+                if len(tasks) >= self.MEASUREMENT_LIMIT:
+                    break  # This only breaks the inner loop, but the outer has only two iterations, so don't bother
+                if self.__can_and_should_collect(metric_uuid, metric, edited):
+                    tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
         await asyncio.gather(*tasks)
 
     async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
@@ -145,9 +147,9 @@ class MetricsCollector:
             has_error = True if bool(measurement["connection_error"] or measurement["parse_error"]) else has_error
         return dict(has_error=has_error, sources=measurements)
 
-    def __can_and_should_collect(self, metric_uuid: str, metric) -> bool:
-        """Return whether the metric can and needs to be measured."""
-        return self.__should_collect(metric_uuid, metric) if self.__can_collect(metric) else False
+    def __can_and_should_collect(self, metric_uuid: str, metric, edited: bool) -> bool:
+        """Return whether the metric can and needs to be measured. Limit to edited or unedited metrics"""
+        return self.__should_collect(metric_uuid, metric, edited) if self.__can_collect(metric) else False
 
     def __can_collect(self, metric) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
@@ -164,11 +166,15 @@ class MetricsCollector:
                     return False
         return bool(sources)
 
-    def __should_collect(self, metric_uuid: str, metric) -> bool:
+    def __should_collect(self, metric_uuid: str, metric, edited: bool) -> bool:
         """Return whether the metric should be collected.
 
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
+        If edited is true, return true only if the metric was edited. If edited is false, return true only if the
+        metric was not edited.
         """
-        metric_changed = self.last_parameters.get(metric_uuid) != metric
+        metric_edited = self.last_parameters.get(metric_uuid) != metric
+        if edited != metric_edited:
+            return False
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
-        return metric_changed or metric_due
+        return metric_edited or metric_due
