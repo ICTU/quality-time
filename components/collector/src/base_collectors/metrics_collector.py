@@ -58,7 +58,7 @@ class MetricsCollector:
             f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
         )
         self.data_model: JSON = {}
-        self.last_parameters: dict[str, Any] = {}
+        self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
 
     @staticmethod
@@ -124,7 +124,7 @@ class MetricsCollector:
 
     async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
         """Collect measurements for the metric and post it to the server."""
-        self.last_parameters[metric_uuid] = metric
+        self.__previous_metrics[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
         if measurement := await self.collect_sources(session, metric):
             measurement["metric_uuid"] = metric_uuid
@@ -145,9 +145,9 @@ class MetricsCollector:
             has_error = True if bool(measurement["connection_error"] or measurement["parse_error"]) else has_error
         return dict(has_error=has_error, sources=measurements)
 
-    def __sorted_by_edit_status(self, metrics) -> list[tuple[str, Any]]:
+    def __sorted_by_edit_status(self, metrics: dict[str, Any]) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""
-        return sorted(metrics.items(), key=lambda item: bool(self.last_parameters.get(item[0]) == item[1]))
+        return sorted(metrics.items(), key=lambda item: bool(self.__previous_metrics.get(item[0]) == item[1]))
 
     def __can_and_should_collect(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric can and needs to be measured."""
@@ -173,6 +173,6 @@ class MetricsCollector:
 
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
         """
-        metric_edited = self.last_parameters.get(metric_uuid) != metric
+        metric_edited = self.__previous_metrics.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
         return metric_edited or metric_due
