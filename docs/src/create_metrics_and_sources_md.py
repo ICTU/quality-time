@@ -3,7 +3,6 @@
 import json
 import pathlib
 
-
 TYPE_DESCRIPTION = dict(
     url="URL",
     string="String",
