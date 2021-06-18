@@ -43,7 +43,7 @@ docs:
   stage: test
   script:
     - cd docs
-    - pip install -r requirements.txt -r requirements-dev.txt
+    - pip install -r requirements-dev.txt
     - npm install
     - ci/unittest.sh
     - ci/quality.sh
