@@ -18,6 +18,7 @@ jobs:
         cd docs
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
+        npm install
     - name: Test
       run: |
         cd docs

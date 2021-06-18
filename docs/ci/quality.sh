@@ -2,7 +2,7 @@
 
 set -e
 
-markdownlint CHANGELOG.md  # TODO: add all markdown files
+./node_modules/markdownlint-cli/markdownlint.js CHANGELOG.md  # TODO: add all markdown files
 mypy src
 pylint src tests
 python -m flake8 --select=DUO src
