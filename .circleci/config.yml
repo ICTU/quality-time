@@ -40,7 +40,7 @@ jobs:
 
   unittest_docs:
     docker:
-      - image: circleci/python:3.9.5-buster
+      - image: circleci/python:3.9.5-node
     steps:
       - checkout
       - run: |
@@ -49,6 +49,7 @@ jobs:
           . venv/bin/activate
           pip install wheel
           pip install --progress-bar off -r requirements-dev.txt
+          npm install
           ci/unittest.sh
           ci/quality.sh
 
@@ -141,4 +142,6 @@ workflows:
       - unittest_backend:
           context: QualityTime
       - unittest_frontend:
+          context: QualityTime
+      - unittest_docs:
           context: QualityTime
