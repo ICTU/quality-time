@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import re
 
 TYPE_DESCRIPTION = dict(
     url="URL",
@@ -49,12 +50,12 @@ def markdown_table_header(*column_headers: str) -> str:
     """Return a Markdown table header."""
     headers = markdown_table_row(*column_headers)
     separator = markdown_table_row(*[":" + "-" * (len(column_header) - 1) for column_header in column_headers])
-    return headers + separator
+    return "\n" + headers + separator
 
 
 def markdown_header(header: str, level: int = 1) -> str:
     """Return a Markdown header."""
-    return "#" * level + f" {header}\n\n"
+    return ("\n" if level > 1 else "") + "#" * level + f" {header}\n"
 
 
 def metrics_table(data_model, universal_sources: list[str]) -> str:
@@ -157,10 +158,10 @@ def data_model_as_table(data_model) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_header("Quality-time metrics and sources")
     markdown += (
-        "This document lists all [metrics](#metrics) that *Quality-time* can measure and all "
+        "\nThis document lists all [metrics](#metrics) that *Quality-time* can measure and all "
         "[sources](#sources) that *Quality-time* can use to measure the metrics. For each "
         "[supported combination of metric and source](#supported-metric-source-combinations), it lists the "
-        "parameters that can be used to configure the source.\n\n"
+        "parameters that can be used to configure the source.\n"
     )
     markdown += markdown_header("Metrics", 2)
     markdown += metrics_table(data_model, universal_sources := ["manual_number"])
@@ -174,7 +175,8 @@ def data_model_as_table(data_model) -> str:
                 markdown += markdown_header(f"{metric['name']} from {data_model['sources'][source_key]['name']}", 3)
                 markdown += metric_source_table(data_model, metric_key, source_key)
                 markdown += metric_source_configuration_table(data_model, metric_key, source_key)
-    return markdown
+    markdown = re.sub(r"\n{3,}", "\n\n", markdown)  # Replace multiple consecutive empty lines with one empty line
+    return re.sub(r"\n\n$", "\n", markdown)  # Remove final empty line
 
 
 if __name__ == "__main__":

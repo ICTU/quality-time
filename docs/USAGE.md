@@ -66,7 +66,7 @@ To restore the default situation where every logged-in user can edit reports, su
 
 ### Entity edit permission
 
-Entity edit permission will allow a user to update the status of measured entities. A user with this permission can for example mark violations as false positives. 
+Entity edit permission will allow a user to update the status of measured entities. A user with this permission can for example mark violations as false positives.
 
 Unlike for the report edit permission, it is possible to retract yourself from the list of entity editors.
 
@@ -234,7 +234,9 @@ There are two scenarios: the source is a build artifact of a GitLab CI pipeline,
 
 When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch):
 
-    https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>
+```http
+https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>
+```
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
@@ -244,7 +246,9 @@ If the repository is private, you also need to enter an [personal access token](
 
 When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
 
-    https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>
+```http
+https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>
+```
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
@@ -343,7 +347,7 @@ To change the number of dates and the time between dates shown in the trend tabl
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
-## Export and import reports as JSON 
+## Export and import reports as JSON
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
 
@@ -352,7 +356,7 @@ A *Quality-time* report in JSON-format contains the latest configuration of the 
 To use the import and export endpoints you need to be authenticated. For example, using curl:
 
 ```console
-$ curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' http://quality-time.example.org/api/v3/login
+curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' http://quality-time.example.org/api/v3/login
 ```
 
 ### Export API
@@ -362,7 +366,7 @@ The exporting endpoint is available via `http://www.quality-time.example.org/api
 For example, using curl, and assuming you have logged in as shown above:
 
 ```console
-$ curl --cookie cookie.txt --output export.json http://quality-time.example.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json 
+curl --cookie cookie.txt --output export.json http://quality-time.example.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json 
 ```
 
 The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.

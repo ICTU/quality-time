@@ -169,7 +169,7 @@ See [release README](../release/README.md).
 
 ## Maintain
 
-Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](../.github/dependabot.yml). 
+Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](../.github/dependabot.yml).
 
 Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
 
