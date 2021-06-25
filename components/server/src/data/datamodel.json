@@ -16,7 +16,7 @@
     "metrics": {
         "accessibility": {
             "name": "Accessibility violations",
-            "description": "TEST The number of accessibility violations in the web user interface of the software.",
+            "description": "The number of accessibility violations in the web user interface of the software.",
             "scales": [
                 "count"
             ],
