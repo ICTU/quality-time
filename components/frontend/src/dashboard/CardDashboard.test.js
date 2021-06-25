@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { CardDashboard } from './CardDashboard';
 import { MetricSummaryCard } from './MetricSummaryCard';
 
@@ -18,13 +18,13 @@ describe("<CardDashboard />", () => {
         mockCallback = jest.fn();
         await act(async () => {
             wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <CardDashboard
                         cards={[<MetricSummaryCard red={1} green={2} yellow={1} white={0} grey={0} />]}
                         initial_layout={[{ h: 6, w: 4, x: 0, y: 0 }]}
                         save_layout={mockCallback}
                     />
-                </ReadOnlyContext.Provider>
+                </Permissions.Provider>
             );
             wrapper.find("ReactGridLayout").at(0).prop("onDragStart")({}, {}, {}, {}, { clientX: 0, clientY: 0 });
             wrapper.setProps({})  // rerender

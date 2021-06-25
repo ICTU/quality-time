@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
-import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
+import { accessGranted, Permissions } from '../context/Permissions';
 
 export function IntegerInput(props) {
     let { editableLabel, prefix, set_value, unit, requiredPermissions, ...otherProps } = props;
@@ -30,7 +30,7 @@ export function IntegerInput(props) {
     const fixedProps = { fluid: true, focus: true, labelPosition: "right", type: "number", width: 16 }
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
-            <ReadOnlyContext.Consumer>{(permissions) =>
+            <Permissions.Consumer>{(permissions) =>
                 <Form.Input
                     {...otherProps}
                     error={!is_valid(value)}
@@ -47,7 +47,7 @@ export function IntegerInput(props) {
                     <input />
                     <Label basic>{unit}</Label>
                 </Form.Input>}
-            </ReadOnlyContext.Consumer>
+            </Permissions.Consumer>
         </Form>
     )
 }

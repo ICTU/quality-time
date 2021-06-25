@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 
 function StringInputWithSuggestions(props) {

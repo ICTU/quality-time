@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { Permissions } from '../context/Permissions';
 import { Input } from './Input';
 
 function input_wrapper(props) {
   return mount(
-    <ReadOnlyContext.Provider value={false}>
+    <Permissions.Provider value={false}>
       <Input {...props} />
-    </ReadOnlyContext.Provider>
+    </Permissions.Provider>
   )
 }
 let mock_set_value;

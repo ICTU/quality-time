@@ -6,7 +6,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };

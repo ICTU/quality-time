@@ -12,7 +12,7 @@ import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { parse, stringify } from 'query-string';
 
-import { ReadOnlyContext } from './context/ReadOnly';
+import { Permissions } from './context/Permissions';
 import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
@@ -259,7 +259,7 @@ class App extends Component {
           user={this.state.user}
         />
         <SemanticToastContainer />
-        <ReadOnlyContext.Provider value={user_permissions}>
+        <Permissions.Provider value={user_permissions}>
           <Container fluid className="MainContainer">
             {this.state.loading ?
               <Segment basic placeholder loading size="massive" />
@@ -282,7 +282,7 @@ class App extends Component {
                 />
             }
           </Container>
-        </ReadOnlyContext.Provider>
+        </Permissions.Provider>
         <Footer last_update={this.state.last_update} report={current_report} />
       </div>
     );

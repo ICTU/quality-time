@@ -3,7 +3,7 @@ import { Grid, Icon, Popup, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { HyperLink } from '../widgets/HyperLink';
 
 function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {

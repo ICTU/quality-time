@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';

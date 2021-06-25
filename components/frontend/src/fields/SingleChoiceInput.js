@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { ReadOnlyOrEditable } from '../context/Permissions';
 
 export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;

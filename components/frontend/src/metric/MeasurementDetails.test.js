@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { MeasurementDetails } from './MeasurementDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
@@ -48,7 +48,7 @@ const data_model = {
 describe("<MeasurementDetails />", () => {
     function mount_wrapper() {
         return mount(
-            <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <MeasurementDetails
                     datamodel={data_model}
                     metric_uuid="metric_uuid"
@@ -60,7 +60,7 @@ describe("<MeasurementDetails />", () => {
                     visibleDetailsTabs={[]}
                     toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
                 />
-            </ReadOnlyContext.Provider>
+            </Permissions.Provider>
         );
     }
     it('switches tabs', async () => {
@@ -82,7 +82,7 @@ describe("<MeasurementDetails />", () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
-                <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <MeasurementDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"
@@ -93,7 +93,7 @@ describe("<MeasurementDetails />", () => {
                         visibleDetailsTabs={[]}
                         toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
                     />
-                </ReadOnlyContext.Provider>
+                </Permissions.Provider>
             );
             wrapper.find({ icon: "angle double down" }).at(0).simulate("click");
         });
@@ -104,7 +104,7 @@ describe("<MeasurementDetails />", () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
-                <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <MeasurementDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"
@@ -113,7 +113,7 @@ describe("<MeasurementDetails />", () => {
                         subject_uuid="subject_uuid"
                         visibleDetailsTabs={[]}
                     />
-                </ReadOnlyContext.Provider>
+                </Permissions.Provider>
             );
             wrapper.find("DeleteButton").simulate("click");
         });

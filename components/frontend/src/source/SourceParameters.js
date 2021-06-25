@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
-import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
 
 export function SourceParameters(props) {

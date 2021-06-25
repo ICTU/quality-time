@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -29,7 +29,7 @@ function card_divs(cards, cols, isDragging, card_width = 4, card_height = 6) {
     return divs;
 }
 
-export function CardDashboard({ cards, initial_layout, save_layout }) {
+export function CardDashboard({ cards, initial_layout, save_layout, requiredPermissions }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
@@ -60,11 +60,11 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
     const divs = card_divs(cards, cols, isDragging);
     return (
         <Segment>
-            <ReadOnlyContext.Consumer>{(readOnly) => (
+            <Permissions.Consumer>{(permissions) => (
                 <ReactGridLayout
                     cols={cols}
                     compactType={null}
-                    isDraggable={!readOnly}
+                    isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
                     layout={layout}
                     onDragStart={onDragStart}
                     onDragStop={onDragStop}
@@ -74,7 +74,7 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
                 >
                     {divs}
                 </ReactGridLayout>)}
-            </ReadOnlyContext.Consumer>
+            </Permissions.Consumer>
         </Segment>
     )
 }

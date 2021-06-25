@@ -5,7 +5,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_source_entity_attribute } from '../api/source';
 import { capitalize } from '../utils';
 import { source_entity_status_name as status_name } from './source_entity_status';
-import { EDIT_ENTITY_PERMISSION } from '../context/ReadOnly';
+import { EDIT_ENTITY_PERMISSION } from '../context/Permissions';
 
 function entity_status_option(status, text, content, subheader) {
   return {

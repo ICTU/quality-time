@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ReadOnlyContext } from '../context/ReadOnly';
+import { Permissions } from '../context/Permissions';
 import { IntegerInput } from './IntegerInput';
 
 function integerinput_wrapper(props) {
   return mount(
-    <ReadOnlyContext.Provider value={false}>
+    <Permissions.Provider value={false}>
       <IntegerInput {...props} />
-    </ReadOnlyContext.Provider>
+    </Permissions.Provider>
   )
 }
 
