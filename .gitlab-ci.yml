@@ -1,4 +1,4 @@
-image: python:3.9.5-buster
+image: cimg/python:3.9.5-node
 
 stages:
   - test
@@ -38,3 +38,16 @@ server:
   artifacts:
     paths:
       - components/server/build/unittest-coverage
+
+docs:
+  stage: test
+  script:
+    - cd docs
+    - pip install -r requirements-dev.txt
+    - npm install
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - docs/build/unittest-coverage

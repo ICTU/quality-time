@@ -82,6 +82,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | [Dependencies](#dependencies-from-pip) |
 
 ¹) All metrics with the count or percentage scale can be measured using the 'Manual number' source.
+
 ## Supported metric-source combinations
 
 ### Accessibility violations from Axe CSV
@@ -1190,4 +1191,3 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Severities | Multiple choice | blocker, critical, info, major, minor | _all severities_ | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Types | Multiple choice | bug, code_smell, vulnerability | _all types_ | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
 | URL | URL |  |  | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
-

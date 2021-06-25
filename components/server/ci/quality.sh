@@ -3,7 +3,7 @@
 set -e
 
 mypy src
-pylint src tests
+pylint --rcfile=../../.pylintrc src tests
 python -m flake8 --select=DUO src
 safety check --bare -r requirements.txt -r requirements-dev.txt
 bandit --quiet --recursive src/

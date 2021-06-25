@@ -59,9 +59,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - Prevent (rare) crashes of the UI when switching tabs in the metric details. Fixes [#1873](https://github.com/ICTU/quality-time/issues/1873).
-- Don't assume that because GitLab returns jobs sorted by ID, they are also sorted by date. Fixes [#2036](https://github.com/ICTU/quality-time/issues/2036). 
-- Prevent timeouts when collecting failed CI-jobs or unused CI-jobs from GitLab by removing the limit on open connections. Fixes [#2037](https://github.com/ICTU/quality-time/issues/2037). 
-- *Quality-time* wouldn't recognize zip files in URLs with query strings (e.g. https://git.example.org/foo.zip?job=bar). Fixes [#2057](https://github.com/ICTU/quality-time/issues/2057). 
+- Don't assume that because GitLab returns jobs sorted by ID, they are also sorted by date. Fixes [#2036](https://github.com/ICTU/quality-time/issues/2036).
+- Prevent timeouts when collecting failed CI-jobs or unused CI-jobs from GitLab by removing the limit on open connections. Fixes [#2037](https://github.com/ICTU/quality-time/issues/2037).
+- *Quality-time* wouldn't recognize zip files in URLs with query strings (e.g. `https://git.example.org/foo.zip?job=bar`). Fixes [#2057](https://github.com/ICTU/quality-time/issues/2057).
 
 ### Added
 
@@ -71,13 +71,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Removed
 
 - Remove the 'random number' source. Closes [#2038](https://github.com/ICTU/quality-time/issues/2038).
-- It's no longer possible to make *Quality-time* wait before sending a notification. Closes [#2039](https://github.com/ICTU/quality-time/issues/2039). 
+- It's no longer possible to make *Quality-time* wait before sending a notification. Closes [#2039](https://github.com/ICTU/quality-time/issues/2039).
 
 ## [3.20.0] - [2021-04-07]
 
 ### Fixed
 
-- When a measurement detail, such as a violation or failed CI-job, is no longer reported by the source, remember its status (confirmed, false positive, won't fix, etc.) for three weeks so that if the detail reappears, its status is reapplied as well. Fixes [#1867](https://github.com/ICTU/quality-time/issues/1867). 
+- When a measurement detail, such as a violation or failed CI-job, is no longer reported by the source, remember its status (confirmed, false positive, won't fix, etc.) for three weeks so that if the detail reappears, its status is reapplied as well. Fixes [#1867](https://github.com/ICTU/quality-time/issues/1867).
 
 ### Added
 
