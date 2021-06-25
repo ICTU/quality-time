@@ -1,9 +1,11 @@
 #!/bin/sh
 
 # Update the generated documentation
+echo "Updating generated docs"
 python3 docs/src/create_metrics_and_sources_md.py
 
 # Add the updated documentation to staging
+echo "Adding generated docs"
 git add docs/METRICS_AND_SOURCES.md
 
 FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.py" | sed 's| |\\ |g')
