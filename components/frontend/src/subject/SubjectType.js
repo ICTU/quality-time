@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
-import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function SubjectType(props) {

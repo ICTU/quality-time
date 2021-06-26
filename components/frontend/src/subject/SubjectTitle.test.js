@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { SubjectTitle } from './SubjectTitle';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
@@ -9,9 +9,9 @@ const report = { report_uuid: "report_uuid", subjects: { subject_uuid: { type: "
 describe("<SubjectTitle />", () => {
   it('renders the buttons when editable', () => {
       const wrapper = mount(
-          <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+          <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
               <SubjectTitle datamodel={datamodel} report={report} reports={[report]} subject={{type: "subject_type"}} />
-          </ReadOnlyContext.Provider>
+          </Permissions.Provider>
       );
       wrapper.find("Header").simulate("click");
       expect(wrapper.find("DeleteButton").length).toBe(1);

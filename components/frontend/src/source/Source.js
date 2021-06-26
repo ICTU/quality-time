@@ -5,7 +5,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';

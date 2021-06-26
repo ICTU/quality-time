@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportsTitle } from './ReportsTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as changelog_api from '../api/changelog';
@@ -11,9 +11,9 @@ jest.mock("../api/changelog.js");
 
 function render_reports_title() {
     render(
-        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <ReportsTitle permissions={[]} get_changelog={() => { /* Do nothing */ }} />
-        </ReadOnlyContext.Provider>
+        </Permissions.Provider>
     ) 
 }
 

@@ -9,7 +9,7 @@ import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { Target } from './Target';
-import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { get_metric_tags } from '../utils';
 
 function metric_scale_options(metric_scales, datamodel) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
-import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
+import { accessGranted, Permissions } from '../context/Permissions';
 
 export function Input(props) {
   let { editableLabel, prefix, required, set_value, warning, requiredPermissions, ...otherProps } = props;
@@ -20,7 +20,7 @@ export function Input(props) {
   const fixedProps = {...otherProps, error: (required && value === "") || (warning !== undefined && props.warning), fluid: true, focus: true, labelPosition: "left", value: value}
   return (
     <Form>
-      <ReadOnlyContext.Consumer>{(permissions) => (
+      <Permissions.Consumer>{(permissions) => (
         <Form.Input
           {...fixedProps}
           label={readOnly(permissions) ? props.label : editableLabel || props.label}
@@ -32,7 +32,7 @@ export function Input(props) {
           {prefix ? <Label basic>{prefix}</Label> : null}
           <input />
         </Form.Input>)}
-      </ReadOnlyContext.Consumer>
+      </Permissions.Consumer>
     </Form>
   )
 }

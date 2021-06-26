@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Table } from "semantic-ui-react";
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from "../context/ReadOnly";
+import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
 import { SubjectFooter } from "./SubjectFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
@@ -13,7 +13,7 @@ fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 it('shows the add metric button and adds a metric when clicked', async () => {
     
     const { queryAllByText, getByText } = render(
-      <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+      <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
         <Table>
             <SubjectFooter 
                 subjectUuid="subject_uuid" 
@@ -21,7 +21,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
                 datamodel={datamodel} 
                 resetSortColumn={resetSort} />
         </Table>
-      </ReadOnlyContext.Provider>
+      </Permissions.Provider>
     );
     expect(queryAllByText("Add metric").length).toBe(1);
 
@@ -35,7 +35,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
   it('copies a metric when the copy button is clicked and a metric is selected', async () => {
     await act(async () => {
       render(
-        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Table>
                 <SubjectFooter 
                     subjectUuid="subject_uuid" 
@@ -44,7 +44,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
                     reports={[report]}
                     resetSortColumn={resetSort} />
             </Table>
-       </ReadOnlyContext.Provider>);
+       </Permissions.Provider>);
       fireEvent.click(screen.getByText(/Copy metric/));
     });
     await act(async () => {
@@ -56,7 +56,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
   it('moves a metric when the move button is clicked and a metric is selected', async () => {
     await act(async () => {
       render(
-        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <Table>
                 <SubjectFooter 
                     subjectUuid="subject_uuid" 
@@ -65,7 +65,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
                     reports={[report]}
                     resetSortColumn={resetSort} />
             </Table>
-        </ReadOnlyContext.Provider>)
+        </Permissions.Provider>)
       fireEvent.click(screen.getByText(/Move metric/));
     });
     await act(async () => {

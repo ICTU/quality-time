@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { EDIT_REPORT_PERMISSION, ReadOnlyContext } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportTitle } from './ReportTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
 
@@ -9,12 +9,12 @@ jest.mock("../api/fetch_server_api.js")
 
 function render_report_title() {
     render(
-        <ReadOnlyContext.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <ReportTitle
                 history={{location: {}}}
                 report={{ report_uuid: "report_uuid", title: "Report" }}
             />
-        </ReadOnlyContext.Provider>
+        </Permissions.Provider>
     ) 
 }
 

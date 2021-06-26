@@ -5,7 +5,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 
 function ReportAttributesRow(props) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
-import { accessGranted, ReadOnlyContext } from '../context/ReadOnly';
+import { accessGranted, Permissions } from '../context/Permissions';
 
 export function TextInput(props) {
   let { editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
@@ -29,7 +29,7 @@ export function TextInput(props) {
   }
   return (
     <Form onSubmit={submit}>
-      <ReadOnlyContext.Consumer>{(permissions) => (
+      <Permissions.Consumer>{(permissions) => (
         <Form.TextArea
           {...otherProps}
           error={required && text === ""}
@@ -42,7 +42,7 @@ export function TextInput(props) {
           style={{marginBottom: "20pt"}}
           value={text}
         />)}
-      </ReadOnlyContext.Consumer>
+      </Permissions.Consumer>
     </Form>
   )
 }

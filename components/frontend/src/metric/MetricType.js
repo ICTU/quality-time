@@ -2,7 +2,7 @@ import React from 'react';
 import { Header } from 'semantic-ui-react';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
-import { EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 
 export function MetricType(props) {
   let options = [];

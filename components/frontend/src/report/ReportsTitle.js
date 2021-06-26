@@ -5,7 +5,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
-import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/ReadOnly';
+import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
 
 export function ReportsTitle(props) {
 

@@ -1,7 +1,7 @@
 import { parse, stringify } from 'query-string';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-semantic-toasts';
-import { PERMISSIONS } from './context/ReadOnly';
+import { PERMISSIONS } from './context/Permissions';
 
 export function get_metric_direction(metric, data_model) {
     return format_metric_direction(metric.direction || data_model.metrics[metric.type].direction);
