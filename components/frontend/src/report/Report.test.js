@@ -1,10 +1,11 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 
 let mockHistory = { location: {}, replace: () => { } };
 const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
 const report = {
+  report_uuid: "report_uuid",
   summary_by_subject: {
     subject_uuid: {
       red: 0,
@@ -32,53 +33,50 @@ const report = {
   }
 };
 
-function create_report(report_json) {
-  return (
-    mount(
-      <Report
-        history={mockHistory}
-        datamodel={datamodel}
-        reports={[report_json]}
-        report={report_json}
-      />
-    )
-  )
-}
+it('shows the report', () => {
+  render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />);
+  expect(screen.getAllByText(/Subject title/).length).toBe(2)  // Once as dashboard card and once as subject header
+});
 
-describe("<Report />", () => {
-  it('shows the report', () => {
-    const wrapper = create_report(report);
-    expect(wrapper.find("ReportTitle").prop("report")).toBe(report)
-  });
-  it('shows an error message if there is no report', () => {
-    const wrapper = create_report();
-    expect(wrapper.find("MessageHeader").childAt(0).text()).toBe("Sorry, this report doesn't exist")
-  });
-  it('hides columns', () => {
-    const wrapper = create_report(report);
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-    wrapper.find("Subject").find("SubjectTableHeader").find("HamburgerHeader").find("ColumnMenuItem").at(0).find("DropdownItem").simulate("click");
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-    wrapper.find("Subject").find("SubjectTableHeader").find("HamburgerHeader").find("ColumnMenuItem").at(0).find("DropdownItem").simulate("click");
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-  });
-  it('hides columns on load', () => {
-    mockHistory.location.search = "?hidden_columns=trend"
-    const wrapper = create_report(report);
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-    wrapper.find("Subject").find("SubjectTableHeader").find("HamburgerHeader").find("ColumnMenuItem").at(0).find("DropdownItem").simulate("click");
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-  });
-  it('hides multiple columns on load', () => {
-    mockHistory.location.search = "?hidden_columns=trend,tags"
-    const wrapper = create_report(report);
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend', 'tags'])
-    wrapper.find("Subject").find("SubjectTableHeader").find("HamburgerHeader").find("ColumnMenuItem").at(0).find("DropdownItem").simulate("click");
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['tags']);
-  });
-  it('can handle missing columns', () => {
-    mockHistory.location.search = "?hidden_columns="
-    const wrapper = create_report(report);
-    expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([])
-  });
+it('shows an error message if there is no report', () => {
+  render(<Report history={mockHistory} />);
+  expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
+});
+
+it('shows an error message if there was no report', () => {
+  render(<Report history={mockHistory} report_date={new Date("2020-01-01")} />);
+  expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
+});
+
+it('hides columns', () => {
+  render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />);
+  expect(screen.getAllByText(/Status/).length).toBe(1)
+  fireEvent.click(screen.getByRole(/listbox/));
+  fireEvent.click(screen.getByText(/Hide status column/));
+  expect(screen.queryByText(/Status/)).toBe(null)
+});
+
+it('hides columns on load', () => {
+  mockHistory.location.search = "?hidden_columns=status"
+  render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+  expect(screen.queryByText(/Status/)).toBe(null)
+  fireEvent.click(screen.getByRole(/listbox/));
+  fireEvent.click(screen.getByText(/Show status column/));
+  expect(screen.getAllByText(/Status/).length).toBe(1)
+});
+
+it('hides multiple columns on load', () => {
+  mockHistory.location.search = "?hidden_columns=status,tags"
+  render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+  expect(screen.queryByText(/Status/)).toBe(null)
+  expect(screen.queryByText(/Tags/)).toBe(null)
+  fireEvent.click(screen.getByRole(/listbox/));
+  fireEvent.click(screen.getByText(/Show status column/));
+  expect(screen.getAllByText(/Status/).length).toBe(1)
+});
+
+it('can handle missing columns', () => {
+  mockHistory.location.search = "?hidden_columns="
+  render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+  expect(screen.getAllByText(/Status/).length).toBe(1)
 });

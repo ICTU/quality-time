@@ -29,7 +29,7 @@ function card_divs(cards, cols, isDragging, card_width = 4, card_height = 6) {
     return divs;
 }
 
-export function CardDashboard({ cards, initial_layout, save_layout, requiredPermissions }) {
+export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
