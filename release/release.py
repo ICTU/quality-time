@@ -60,7 +60,7 @@ def check_preconditions(bump: str):
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
     docs = root / "docs"
-    create_metrics_and_sources = docs / "ci" / "create_metrics_and_sources_md.py"
+    create_metrics_and_sources = docs / "src" / "create_metrics_and_sources_md.py"
     subprocess.run(["python3", create_metrics_and_sources], check=True)  # skipcq: BAN-B603,BAN-B607
     metrics_and_sources = docs / "METRICS_AND_SOURCES.md"
     if repo.is_dirty(path=metrics_and_sources):
