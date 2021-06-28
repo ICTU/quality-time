@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
+- Work around a [bug in aiohttp](https://github.com/aio-libs/aiohttp/issues/2217) that causes GitLab connections to hang and timeout when the GitLab data is paginated. Fixes [#2231](https://github.com/ICTU/quality-time/issues/2231).
 - The report dashboard layout couldn't be changed. Fixes [#2305](https://github.com/ICTU/quality-time/issues/2305).
 
 ## [3.23.2] - [2021-06-17]
