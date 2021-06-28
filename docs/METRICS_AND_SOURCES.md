@@ -67,7 +67,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | [Violations](#violations-from-ojaudit) |
 | [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | [Dependencies](#dependencies-from-owasp-dependency-check), [Source up-to-dateness](#source-up-to-dateness-from-owasp-dependency-check), [Source version](#source-version-from-owasp-dependency-check), [Security warnings](#security-warnings-from-owasp-dependency-check) |
 | [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project) | The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested. | [Source up-to-dateness](#source-up-to-dateness-from-owasp-zap), [Source version](#source-version-from-owasp-zap), [Security warnings](#security-warnings-from-owasp-zap) |
-| [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | [Source up-to-dateness](#source-up-to-dateness-from-openvas), [Source version](#source-version-from-openvas), [Security warnings](#security-warnings-from-openvas) |
+| [OpenVAS](https://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | [Source up-to-dateness](#source-up-to-dateness-from-openvas), [Source version](#source-version-from-openvas), [Security warnings](#security-warnings-from-openvas) |
 | [Performancetest-runner](https://github.com/ICTU/performancetest-runner) | An open source tool to run performancetests and create performancetest reports. | [Performancetest duration](#performancetest-duration-from-performancetest-runner), [Performancetest stability](#performancetest-stability-from-performancetest-runner), [Scalability](#scalability-from-performancetest-runner), [Slow transactions](#slow-transactions-from-performancetest-runner), [Source up-to-dateness](#source-up-to-dateness-from-performancetest-runner), [Tests](#tests-from-performancetest-runner) |
 | [Pyupio Safety](https://github.com/pyupio/safety) | Safety checks Python dependencies for known security vulnerabilities. | [Security warnings](#security-warnings-from-pyupio-safety) |
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | [Metrics](#metrics-from-quality-time), [Missing metrics](#missing-metrics-from-quality-time), [Source up-to-dateness](#source-up-to-dateness-from-quality-time), [Source version](#source-version-from-quality-time) |
@@ -231,7 +231,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
-| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Password for basic authentication | Password |  |  | No |  |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String |  |  | No |  |
@@ -287,7 +287,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
-| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Manual test duration field (name or id) | String |  |  | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
 | Password for basic authentication | Password |  |  | No |  |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
@@ -298,7 +298,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Default expected manual test execution frequency (days) | Integer |  | 21 | Yes | Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days. |
-| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Manual test execution frequency field (name or id) | String |  |  | No | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
 | Password for basic authentication | Password |  |  | No |  |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
@@ -421,7 +421,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'http://jenkins.example.org/job/anchore' or http://jenkins.example.org/job/anchore/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Axe-core
@@ -477,7 +477,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Checkmarx CxSAST
@@ -514,7 +514,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from Jenkins
@@ -533,7 +533,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from JUnit XML report
@@ -616,7 +616,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'http://jenkins.example.org/job/robot' or http://jenkins.example.org/job/robot/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Source up-to-dateness from SonarQube
@@ -779,7 +779,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Severities | Multiple choice | Critical, High, Low, Medium, Negligible, Unknown | _all severities_ | No | If provided, only count security warnings with the selected severities. |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'http://jenkins.example.org/job/anchore' or http://jenkins.example.org/job/anchore/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Security warnings from Bandit
@@ -914,7 +914,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Test results | Multiple choice | failed, passed, skipped | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Tests from JUnit XML report
@@ -957,7 +957,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Test results | Multiple choice | fail, pass | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'http://jenkins.example.org/job/robot' or http://jenkins.example.org/job/robot/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Tests from SonarQube
@@ -996,7 +996,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Test branch coverage from JaCoCo
@@ -1014,7 +1014,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Test branch coverage from NCover
@@ -1050,7 +1050,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Test line coverage from JaCoCo
@@ -1068,7 +1068,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password or API token for basic authentication | Password |  |  | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL |  |  | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Test line coverage from NCover
@@ -1153,7 +1153,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
-| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Password for basic authentication | Password |  |  | No |  |
 | Story points field (name or id) | String |  | Story Points | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |

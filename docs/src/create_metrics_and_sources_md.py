@@ -3,6 +3,7 @@
 import json
 import pathlib
 import re
+import sys
 
 TYPE_DESCRIPTION = dict(
     url="URL",
@@ -23,16 +24,12 @@ def html_escape(text: str) -> str:
 
 def get_data_model():
     """Return the data model."""
-    data_model_path = (
-        pathlib.Path(__file__).resolve().parent.parent.parent
-        / "components"
-        / "server"
-        / "src"
-        / "data"
-        / "datamodel.json"
-    )
-    with data_model_path.open() as json_data_model:
-        return json.load(json_data_model)
+    module_dir = pathlib.Path(__file__).resolve().parent
+    server_src_path = module_dir.parent.parent / "components" / "server" / "src"
+    sys.path.insert(0, str(server_src_path))
+    from data.data_model import DATA_MODEL_JSON  # pylint: disable=import-error,import-outside-toplevel
+
+    return json.loads(DATA_MODEL_JSON)
 
 
 def markdown_link(url: str, anchor: str = None) -> str:

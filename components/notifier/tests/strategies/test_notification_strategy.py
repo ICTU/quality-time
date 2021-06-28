@@ -1,11 +1,11 @@
 """"Unit tests for the notification strategies."""
 
 from datetime import datetime, timedelta, timezone
-import json
-import pathlib
 import unittest
 
 from strategies.notification_strategy import NotificationFinder
+
+from ..data_model import DATA_MODEL
 
 
 class Base(unittest.TestCase):  # skipcq: PTC-W0046
@@ -14,10 +14,7 @@ class Base(unittest.TestCase):  # skipcq: PTC-W0046
     @classmethod
     def setUpClass(cls) -> None:
         """Provide the data_model to the class."""
-        module_dir = pathlib.Path(__file__).resolve().parent
-        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
-        with data_model_path.open() as json_data_model:
-            cls.data_model = json.load(json_data_model)
+        cls.data_model = DATA_MODEL
 
     @staticmethod
     def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
