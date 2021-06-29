@@ -42,3 +42,4 @@ help  # unused variable (/Users/fniessink/Developer/quality-time/components/serv
 help  # unused variable (/Users/fniessink/Developer/quality-time/components/server/src/data/parameters.py:138)
 help  # unused variable (/Users/fniessink/Developer/quality-time/components/server/src/data/parameters.py:173)
 help  # unused variable (/Users/fniessink/Developer/quality-time/components/server/src/data/parameters.py:182)
+set_description  # unused function (/Users/fniessink/Developer/quality-time/components/server/src/data/meta/base.py:17)
