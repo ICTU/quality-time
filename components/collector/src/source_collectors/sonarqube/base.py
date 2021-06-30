@@ -41,7 +41,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
 
     def _landing_url_metric_key(self) -> str:
         """Return the metric key to use for the landing url. This can be one key or an empty string."""
-        return self._metric_keys().split(",")[0]
+        return self._metric_keys().split(",", maxsplit=1)[0]
 
     async def _api_url(self) -> URL:
         """Extend to add the component path and parameters."""

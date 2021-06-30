@@ -32,7 +32,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                 example_vulnerability[dependency] = (vulnerability["id"], path)
 
         entities = Entities()
-        for dependency in severities:
+        for dependency, severity_set in severities.items():
             entities.append(
                 Entity(
                     key=dependency,
@@ -41,7 +41,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                     example_vulnerability=example_vulnerability[dependency][0],
                     url=f"https://snyk.io/vuln/{example_vulnerability[dependency][0]}",
                     example_path=example_vulnerability[dependency][1],
-                    highest_severity=self.__highest_severity(severities[dependency]),
+                    highest_severity=self.__highest_severity(severity_set),
                 )
             )
         return entities
