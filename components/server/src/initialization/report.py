@@ -39,6 +39,6 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
-    example_reports_path = pathlib.Path(__file__).resolve().parent.parent / "data" / "example-reports"
+    example_reports_path = pathlib.Path(__file__).resolve().parent.parent / "example-reports"
     for filename in example_reports_path.glob("example-report*.json"):
         import_report(database, filename)
