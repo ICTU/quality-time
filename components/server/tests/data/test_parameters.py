@@ -1,6 +1,6 @@
 """Unit tests for the parameter model."""
 
-from data.parameters import IntegerParameter
+from data_model.parameters import IntegerParameter
 
 from .meta.base import MetaModelTestCase
 

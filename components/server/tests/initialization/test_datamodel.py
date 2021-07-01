@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import Mock
 
 from initialization.datamodel import import_datamodel
-from data.data_model import DATA_MODEL_JSON
+from data_model import DATA_MODEL_JSON
 
 
 class DataModelImportTest(unittest.TestCase):

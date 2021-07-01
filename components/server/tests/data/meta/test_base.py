@@ -1,6 +1,6 @@
 """Unit tests for the base models."""
 
-from data.meta.base import DescribedModel
+from data_model.meta.base import DescribedModel
 
 from .base import MetaModelTestCase
 

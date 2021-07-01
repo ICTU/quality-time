@@ -5,7 +5,7 @@ import pathlib
 import unittest
 from unittest.mock import Mock, call, mock_open, patch
 
-from data.data_model import DATA_MODEL_JSON
+from data_model import DATA_MODEL_JSON
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 from initialization.database import init_database
 

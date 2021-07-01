@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from data.meta.source import Sources
+from data_model.meta.source import Sources
 
 from .base import MetaModelTestCase
 
