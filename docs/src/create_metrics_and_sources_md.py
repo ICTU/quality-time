@@ -27,7 +27,7 @@ def get_data_model():
     module_dir = pathlib.Path(__file__).resolve().parent
     server_src_path = module_dir.parent.parent / "components" / "server" / "src"
     sys.path.insert(0, str(server_src_path))
-    from data.data_model import DATA_MODEL_JSON  # pylint: disable=import-error,import-outside-toplevel
+    from data_model import DATA_MODEL_JSON  # pylint: disable=import-error,import-outside-toplevel
 
     return json.loads(DATA_MODEL_JSON)
 
