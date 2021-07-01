@@ -13,6 +13,7 @@ exclude_lines =
     pragma: no cover
     pragma: no cover-behave
     raise NotImplementedError
+    raise ValueError
     if TYPE_CHECKING:
 omit =
     components/server/tests/quality_time_server_under_coverage.py

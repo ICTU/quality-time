@@ -1,9 +1,11 @@
 """Unit tests for the database initialization."""
 
+import json
 import pathlib
 import unittest
 from unittest.mock import Mock, call, mock_open, patch
 
+from data_model import DATA_MODEL_JSON
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 from initialization.database import init_database
 
@@ -47,7 +49,10 @@ class DatabaseInitTest(unittest.TestCase):
 
     def test_init_initialized_database(self):
         """Test the initialization of an initialized database."""
-        self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="now")
+        data_model = json.loads(DATA_MODEL_JSON)
+        data_model["_id"] = "id"
+        data_model["timestamp"] = "now"
+        self.database.datamodels.find_one.return_value = data_model
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.reports.count_documents.return_value = 10
         self.database.measurements.count_documents.return_value = 20

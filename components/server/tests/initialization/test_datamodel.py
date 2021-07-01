@@ -1,10 +1,11 @@
 """Unit tests for importing the data model."""
 
-import pathlib
+import json
 import unittest
-from unittest.mock import Mock, mock_open, patch
+from unittest.mock import Mock
 
 from initialization.datamodel import import_datamodel
+from data_model import DATA_MODEL_JSON
 
 
 class DataModelImportTest(unittest.TestCase):
@@ -15,23 +16,22 @@ class DataModelImportTest(unittest.TestCase):
         self.database = Mock()
         self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="timestamp")
 
-    def import_data_model(self, data_model_json: str) -> None:
-        """Import the data model."""
-        with patch.object(pathlib.Path, "open", mock_open(read_data=data_model_json)):
-            import_datamodel(self.database)
-
     def test_first_import(self):
         """Test that a data model can be imported if there are no data models in the database."""
         self.database.datamodels.find_one.return_value = None
-        self.import_data_model('{"subjects": []}')
+        import_datamodel(self.database)
         self.database.datamodels.insert_one.assert_called_once()
 
     def test_import(self):
         """Test that a data model can be imported."""
-        self.import_data_model('{"subjects": []}')
+        import_datamodel(self.database)
         self.database.datamodels.insert_one.assert_called_once()
 
     def test_skip_import(self):
         """Test that a data model is not imported if it's unchanged."""
-        self.import_data_model("{}")
+        data_model = json.loads(DATA_MODEL_JSON)
+        data_model["_id"] = "id"
+        data_model["timestamp"] = "timestamp"
+        self.database.datamodels.find_one.return_value = data_model
+        import_datamodel(self.database)
         self.database.datamodels.insert_one.assert_not_called()

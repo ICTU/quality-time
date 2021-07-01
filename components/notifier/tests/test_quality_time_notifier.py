@@ -1,13 +1,13 @@
 """Unit tests for the Quality-time notifier."""
 
-import json
-import pathlib
 import unittest
 from copy import deepcopy
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, mock_open, patch
 
 from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
+
+from .data_model import DATA_MODEL
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -95,17 +95,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         )
 
     @classmethod
-    def setUpClass(cls) -> None:  # pylint: disable=invalid-name
-        """Provide the data_model to the class."""
-        module_dir = pathlib.Path(__file__).resolve().parent
-        data_model_path = module_dir.parent.parent / "server" / "src" / "data" / "datamodel.json"
-        with data_model_path.open() as json_data_model:
-            cls.data_model = json.load(json_data_model)
-
-    @classmethod
     async def return_data_model(cls):
         """Retrieve data_model from class variable."""
-        return FakeResponse(json_data=cls.data_model)
+        return FakeResponse(json_data=DATA_MODEL)
 
     @staticmethod
     async def return_report(report=None):
@@ -206,7 +198,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("logging.warning")
     @patch("aiohttp.ClientSession.get")
     async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_warning, mocked_sleep):
-        """"Test being unable to retrieve data from api."""
+        """Test being unable to retrieve data from the API."""
         mocked_get.side_effect = [Exception]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
@@ -219,7 +211,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_no_webhook_in_notification_destination(self, mocked_get, mocked_sleep, mocked_send):
-        """Test that the notifier continues if a destination doesnt have a webhook configured."""
+        """Test that the notifier continues if a destination does not have a webhook configured."""
         report = dict(
             report_uuid="report1",
             title=self.title,

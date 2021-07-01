@@ -101,7 +101,7 @@ This section contains some notes on coding style used in this project. It's far 
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
-To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repo.
+To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repo. This pre-commit hook also updates the generated documentation in the `docs` folder.
 
 Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
 
@@ -206,44 +206,36 @@ For testing purposes there are also [test data](../components/testdata/README.md
 
 ## Adding metrics and sources
 
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](../components/server/src/data/datamodel.json) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, besides changing the data model, no coding is needed to add a new metric, besides augmenting the [collector](../components/collector/README.md) component to parse the source data and optionally adding a logo to the [frontend](../components/frontend/README.md) component.
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](../components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](../components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](../components/server/README.md) component.
 
 ### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the [data model](../components/server/src/data/datamodel.json). See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, they check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 ### Adding new sources
 
 #### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the [data model](../components/server/src/data/datamodel.json). See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, they check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
 
-Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc` source to the data model (see the [data model](../components/server/src/data/datamodel.json) for the complete specification):
+Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
 
-```json
-{
-    "sources": {
-        ...
-        "cloc": {
-            "name": "cloc",
-            "description": "cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages",
-            "url": "https://github.com/AlDanial/cloc",
-            "parameters": {
-                "url": {
-                    "name": "URL to a cloc report in JSON format or to a zip with cloc reports in JSON format",
-                    "short_name": "URL",
-                    "type": "url",
-                    "mandatory": true,
-                    "default_value": "",
-                    "metrics": [
-                        "loc"
-                    ]
-                },
-                <...more parameters>
-            }
-        }
-    }
-}
+```python
+"""Cloc source."""
+
+from ..meta.source import Source
+from ..parameters import access_parameters
+
+
+CLOC = Source(
+    name="cloc",
+    description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
+    "code in many programming languages.",
+    url="https://github.com/AlDanial/cloc",
+    parameters=dict(
+        **access_parameters(["loc"], source_type="cloc report", source_type_format="JSON")
+    ),
+)
 ```
 
 #### Adding the new source to the collector
@@ -287,7 +279,7 @@ class ClocLOC(JSONFileSourceCollector):
         return SourceMeasurement(value=str(loc))
 ```
 
-Most collector classes are bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
+Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
 
 ##### Writing and running unit tests
 
@@ -301,7 +293,7 @@ from ...source_collector_test_case import SourceCollectorTestCase
 
 class ClocLOCTest(SourceCollectorTestCase):
     """Unit tests for the cloc loc collector."""
-    
+
     SOURCE_TYPE = "cloc"
     METRIC_TYPE = "loc"
 
