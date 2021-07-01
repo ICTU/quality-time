@@ -23,13 +23,13 @@ The meta model uses Pydantic to specify the components and attributes of the dat
 
 ### Scales
 
-The `scales` part of the data model defines the scales uses. At the time of writing these include an absolute count scale, a percentage scale, and a version number scale.
+The `scales` part of the data model defines the scales that can be used to measure metrics. At the time of writing these include an absolute count scale, a percentage scale, and a version number scale.
 
 Each metric defines the scales it supports.
 
 ### Metrics
 
-The `metrics` part of the data model is an object where the keys are the metric types and the values are objects describing the metric type. Metrics have the following meta model:
+The `metrics` part of the data model is a dictionary with all supported metric types. The keys are the metric type names. The values are objects describing the metric type. All metric types have the following meta model:
 
 ```python
 class Metric(DescribedModel):
@@ -67,7 +67,7 @@ Users with sufficient rights can override the default name, unit, and target of 
 
 ### Sources
 
-The `sources` part of the data model is an object where the keys are the source types and the values are objects describing the source. Sources have the following meta model:
+The `sources` part of the data model is a dictionary that describes all supported source types. The keys are the source type names. The values are objects describing the source type. All source types have the following meta model:
 
 ```python
 class Source(DescribedModel):
