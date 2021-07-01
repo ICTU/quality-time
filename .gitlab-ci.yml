@@ -1,4 +1,4 @@
-image: cimg/python:3.9.5-node
+image: cimg/python:3.9.6-node
 
 stages:
   - test
