@@ -8,7 +8,7 @@ import unittest
 import sys
 import zipfile
 from typing import Union
-from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
 
 import aiohttp
 
@@ -66,9 +66,9 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             get_request_links,
         )
         post_request = self.__mock_post_request(post_request_json_return_value)
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=get_request)), patch(
-            "aiohttp.ClientSession.post", AsyncMock(return_value=post_request, side_effect=post_request_side_effect)
-        ):
+        mocked_get = AsyncMock(return_value=get_request)
+        mocked_post = AsyncMock(return_value=post_request, side_effect=post_request_side_effect)
+        with patch("aiohttp.ClientSession.get", mocked_get), patch("aiohttp.ClientSession.post", mocked_post):
             async with aiohttp.ClientSession() as session:
                 collector = MetricsCollector()
                 collector.data_model = self.data_model

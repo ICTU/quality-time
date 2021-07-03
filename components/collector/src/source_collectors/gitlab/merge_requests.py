@@ -1,7 +1,12 @@
 """GitLab merge requests collector."""
 
+import logging
 from typing import cast
 
+import aiohttp
+import aiogqlc
+
+from base_collectors import SourceCollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from source_model import Entities, Entity, SourceResponses
@@ -19,6 +24,26 @@ class GitLabMergeRequests(GitLabProjectBase):
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
+
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+        """Override to determine whether the configured GitLab is premium and thus has the 'approved' field."""
+        # We need to create a new session because the GraphQLClient expects the session to have the headers.
+        async with aiohttp.ClientSession(headers=self._headers()) as session:
+            logging.info("Getting GraphQL response from: %s", urls[0])
+            client = aiogqlc.GraphQLClient(f"{urls[0]}/api/graphql", session=session)
+            query = """{
+  __type(name: "MergeRequest") {
+    fields {
+      name
+    }
+  }
+}
+"""
+            response = await client.execute(query)
+            if response.get("error") == "insufficient_scope":
+                raise SourceCollectorException(response["error_description"])
+            logging.info("GraphQL response: %s", await response.json())
+        return await super()._get_source_responses(*urls, **kwargs)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests."""
