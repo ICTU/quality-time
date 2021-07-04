@@ -6,12 +6,48 @@ from typing import cast
 import aiohttp
 import aiogqlc
 
-from base_collectors import SourceCollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from source_model import Entities, Entity, SourceResponses
 
 from .base import GitLabProjectBase
+
+MERGE_REQUEST_FIELDS_QUERY = """
+{
+  __type(name: "MergeRequest") {
+    fields {
+      name
+    }
+  }
+}
+"""
+
+MERGE_REQUEST_QUERY = """
+query MRs($projectId: ID!) {{
+  project(fullPath: $projectId) {{
+    mergeRequests{pagination} {{
+      count
+      pageInfo {{
+        endCursor
+        hasNextPage
+      }}
+      nodes {{
+        id
+        state
+        title
+        targetBranch
+        webUrl
+        upvotes
+        downvotes
+        createdAt
+        updatedAt
+        mergedAt
+        {approved}
+      }}
+    }}
+  }}
+}}
+"""
 
 
 class GitLabMergeRequests(GitLabProjectBase):
@@ -27,22 +63,31 @@ class GitLabMergeRequests(GitLabProjectBase):
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override to determine whether the configured GitLab is premium and thus has the 'approved' field."""
+        api_url = await super()._api_url()
         # We need to create a new session because the GraphQLClient expects the session to have the headers.
         async with aiohttp.ClientSession(headers=self._headers()) as session:
-            logging.info("Getting GraphQL response from: %s", urls[0])
-            client = aiogqlc.GraphQLClient(f"{urls[0]}/api/graphql", session=session)
-            query = """{
-  __type(name: "MergeRequest") {
-    fields {
-      name
-    }
-  }
-}
-"""
-            response = await client.execute(query)
-            if response.get("error") == "insufficient_scope":
-                raise SourceCollectorException(response["error_description"])
-            logging.info("GraphQL response: %s", await response.json())
+            client = aiogqlc.GraphQLClient(f"{api_url}/api/graphql", session=session)
+            response = await client.execute(MERGE_REQUEST_FIELDS_QUERY)
+            json = await response.json()
+            fields = [field["name"] for field in json["data"]["__type"]["fields"]]
+            has_approved_field = "approved" in fields
+            merge_request_query = MERGE_REQUEST_QUERY.format(
+                pagination="", approved="approved" if has_approved_field else ""
+            )
+            response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
+            responses = [response]
+            json = await response.json()
+            while json["data"]["project"]["mergeRequests"]["pageInfo"]["hasNextPage"]:
+                cursor = json["data"]["project"]["mergeRequests"]["pageInfo"]["endCursor"]
+                merge_request_query = MERGE_REQUEST_QUERY.format(
+                    pagination=f'(after: "{cursor}")', approved="approved" if has_approved_field else ""
+                )
+                response = await client.execute(
+                    merge_request_query, variables=dict(projectId=self._parameter("project"))
+                )
+                json = await response.json()
+                responses.append(response)
+            logging.info("Retrieved %d responses", len(responses))
         return await super()._get_source_responses(*urls, **kwargs)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
@@ -68,7 +113,7 @@ class GitLabMergeRequests(GitLabProjectBase):
             created=merge_request.get("created_at"),
             updated=merge_request.get("updated_at"),
             merged=merge_request.get("merged_at"),
-            closed=merge_request.get("closed_at"),
+            # closed=merge_request.get("closed_at"),
             downvotes=str(merge_request.get("downvotes", 0)),
             upvotes=str(merge_request.get("upvotes", 0)),
         )
