@@ -110,8 +110,12 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
                 self.assertIsNone(measurement["sources"][source_index][attribute_key])
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
-                assert_equal = self.assertSequenceEqual if isinstance(attribute_value, list) else self.assertEqual
-                assert_equal(attribute_value, measurement["sources"][source_index][attribute_key])
+                if isinstance(attribute_value, list):
+                    for pair in zip(attribute_value, measurement["sources"][source_index][attribute_key]):
+                        assert_equal = self.assertDictEqual if isinstance(pair[0], dict) else self.assertEqual
+                        assert_equal(pair[0], pair[1])
+                else:
+                    self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
 
     @staticmethod
     def zipped_report(*filenames_and_contents: tuple[str, str]) -> bytes:

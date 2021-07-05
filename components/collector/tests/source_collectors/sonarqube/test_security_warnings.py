@@ -16,8 +16,8 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             issues=[
                 dict(
                     key="vulnerability1",
-                    message="a",
-                    component="a",
+                    message="message1",
+                    component="component1",
                     severity="INFO",
                     type="VULNERABILITY",
                     creationDate="2020-08-30T22:48:52+0200",
@@ -25,8 +25,8 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 ),
                 dict(
                     key="vulnerability2",
-                    message="b",
-                    component="b",
+                    message="message2",
+                    component="component2",
                     severity="MAJOR",
                     type="VULNERABILITY",
                     creationDate="2019-08-30T22:48:52+0200",
@@ -39,16 +39,16 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             hotspots=[
                 dict(
                     key="hotspot1",
-                    message="a",
-                    component="a",
+                    message="message1",
+                    component="component1",
                     vulnerabilityProbability="MEDIUM",
                     creationDate="2010-12-13T10:37:07+0000",
                     updateDate="2019-08-26T09:02:49+0000",
                 ),
                 dict(
                     key="hotspot2",
-                    message="b",
-                    component="b",
+                    message="message2",
+                    component="component2",
                     vulnerabilityProbability="LOW",
                     creationDate="2011-10-26T13:34:12+0000",
                     updateDate="2020-08-31T08:19:00+0000",
@@ -57,15 +57,19 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         )
         self.hotspot_entities = [
             self.entity(
-                "hotspot1",
-                "security_hotspot",
+                key="hotspot1",
+                component="component1",
+                entity_type="security_hotspot",
+                message="message1",
                 review_priority="medium",
                 creation_date="2010-12-13T10:37:07+0000",
                 update_date="2019-08-26T09:02:49+0000",
             ),
             self.entity(
-                "hotspot2",
-                "security_hotspot",
+                key="hotspot2",
+                component="component2",
+                entity_type="security_hotspot",
+                message="message2",
                 review_priority="low",
                 creation_date="2011-10-26T13:34:12+0000",
                 update_date="2020-08-31T08:19:00+0000",
@@ -73,18 +77,22 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         ]
         self.vulnerability_entities = [
             self.entity(
-                "vulnerability1",
-                "vulnerability",
-                "info",
+                key="vulnerability1",
+                component="component1",
+                entity_type="vulnerability",
+                message="message1",
+                severity="info",
                 creation_date="2020-08-30T22:48:52+0200",
                 update_date="2020-09-30T22:48:52+0200",
             ),
             self.entity(
-                "vulnerability2",
-                "vulnerability",
-                "major",
+                key="vulnerability2",
+                component="component2",
+                entity_type="vulnerability",
+                severity="major",
                 creation_date="2019-08-30T22:48:52+0200",
                 update_date="2019-09-30T22:48:52+0200",
+                message="message2",
             ),
         ]
 

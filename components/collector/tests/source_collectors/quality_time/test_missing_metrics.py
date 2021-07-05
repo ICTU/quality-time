@@ -52,9 +52,9 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.entities = [
             dict(
                 key=metric_type,
-                metric_type=metric_type,
-                reports=["R1", "R2"],
-                subject_type="S1",
+                metric_type=self.data_model["metrics"][metric_type]["name"],
+                reports="R1, R2",
+                subject_type="Software",
             )
             for metric_type in self.data_model["subjects"]["software"]["metrics"]
             if metric_type not in ["violations", "accessibility", "loc"]

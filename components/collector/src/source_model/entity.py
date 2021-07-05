@@ -11,10 +11,6 @@ class Entity(dict):
         kwargs.update(**attributes)
         super().__init__(**kwargs)
 
-    def __eq__(self, other):
-        """Return whether the entities have the same key."""
-        return self["key"] == other["key"]
-
     @staticmethod
     def safe_entity_key(key: str) -> str:
         """Return a escaped version of the key that is safe in URLs and as Mongo document key."""

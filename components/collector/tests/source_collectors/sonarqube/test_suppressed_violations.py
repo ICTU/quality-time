@@ -14,9 +14,9 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             total="1",
             issues=[
                 dict(
-                    key="a",
-                    message="a",
-                    component="a",
+                    key="violation1",
+                    message="message1",
+                    component="component1",
                     severity="INFO",
                     type="BUG",
                     creationDate="2020-07-30T22:48:52+0200",
@@ -28,9 +28,9 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             total="1",
             issues=[
                 dict(
-                    key="b",
-                    message="b",
-                    component="b",
+                    key="violation2",
+                    message="message2",
+                    component="component2",
                     severity="MAJOR",
                     type="CODE_SMELL",
                     resolution="WONTFIX",
@@ -45,13 +45,22 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
         )
         expected_entities = [
             self.entity(
-                "a", "bug", "info", "", creation_date="2020-07-30T22:48:52+0200", update_date="2020-09-30T21:48:52+0200"
+                key="violation1",
+                component="component1",
+                entity_type="bug",
+                message="message1",
+                severity="info",
+                resolution="",
+                creation_date="2020-07-30T22:48:52+0200",
+                update_date="2020-09-30T21:48:52+0200",
             ),
             self.entity(
-                "b",
-                "code_smell",
-                "major",
-                "won't fix",
+                key="violation2",
+                component="component2",
+                entity_type="code_smell",
+                message="message2",
+                severity="major",
+                resolution="won't fix",
                 creation_date="2019-08-15:48:52+0200",
                 update_date="2019-09-30T20:48:52+0200",
             ),
