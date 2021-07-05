@@ -19,8 +19,10 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
 
     @staticmethod
     def entity(  # pylint: disable=too-many-arguments
+        key: str,
         component: str,
         entity_type: str,
+        message: str,
         severity: str = None,
         resolution: str = None,
         review_priority: str = None,
@@ -29,15 +31,15 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     ) -> Entity:
         """Create an entity."""
         url = (
-            f"https://sonarqube/security_hotspots?id=id&hotspots={component}&branch=master"
+            f"https://sonarqube/security_hotspots?id=id&hotspots={key}&branch=master"
             if entity_type == "security_hotspot"
-            else f"https://sonarqube/project/issues?id=id&issues={component}&open={component}&branch=master"
+            else f"https://sonarqube/project/issues?id=id&issues={key}&open={key}&branch=master"
         )
         entity = Entity(
-            key=component,
+            key=key,
             component=component,
-            message=component,
             type=entity_type,
+            message=message,
             url=url,
             creation_date=creation_date,
             update_date=update_date,
