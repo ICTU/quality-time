@@ -120,12 +120,12 @@ GITLAB = Source(
                 dict(name="Merge request", key="title", url="url"),
                 dict(name="Target branch"),
                 dict(name="State"),
+                dict(name="Approved"),
                 dict(name="Upvotes", type=EntityAttributeType.INTEGER),
                 dict(name="Downvotes", type=EntityAttributeType.INTEGER),
                 dict(name="Created", type=EntityAttributeType.DATETIME),
                 dict(name="Updated", type=EntityAttributeType.DATETIME),
                 dict(name="Merged", type=EntityAttributeType.DATETIME),
-                dict(name="Closed", type=EntityAttributeType.DATETIME),
             ],
         ),
         unmerged_branches=dict(

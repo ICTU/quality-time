@@ -1,6 +1,5 @@
 """GitLab merge requests collector."""
 
-import logging
 from typing import cast
 
 import aiohttp
@@ -64,16 +63,16 @@ class GitLabMergeRequests(GitLabProjectBase):
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override to determine whether the configured GitLab is premium and thus has the 'approved' field."""
         api_url = await super()._api_url()
+        timeout = aiohttp.ClientTimeout(total=120)
         # We need to create a new session because the GraphQLClient expects the session to have the headers.
-        async with aiohttp.ClientSession(headers=self._headers()) as session:
+        async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/api/graphql", session=session)
             approved_field = await self._approved_field(client)
-            responses, has_next_page, cursor = [], True, ""
+            responses, has_next_page, cursor = SourceResponses(), True, ""
             while has_next_page:
                 response, has_next_page, cursor = await self._get_merge_request_response(client, approved_field, cursor)
                 responses.append(response)
-            logging.info("Retrieved %d GraphQL merge request responses", len(responses))
-        return await super()._get_source_responses(*urls, **kwargs)
+        return responses
 
     @staticmethod
     async def _approved_field(client: GraphQLClient) -> str:
@@ -98,12 +97,13 @@ class GitLabMergeRequests(GitLabProjectBase):
         """Override to parse the merge requests."""
         merge_requests = []
         for response in responses:
-            merge_requests.extend(await response.json())
+            json = await response.json()
+            merge_requests.extend(json["data"]["project"]["mergeRequests"]["nodes"])
         return Entities(self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr))
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of merge requests."""
-        return str(sum([len(await response.json()) for response in responses]))
+        return str((await responses[0].json())["data"]["project"]["mergeRequests"]["count"])
 
     @staticmethod
     def _create_entity(merge_request) -> Entity:
@@ -111,22 +111,22 @@ class GitLabMergeRequests(GitLabProjectBase):
         return Entity(
             key=merge_request["id"],
             title=merge_request["title"],
-            target_branch=merge_request["target_branch"],
-            url=merge_request["web_url"],
+            target_branch=merge_request["targetBranch"],
+            url=merge_request["webUrl"],
             state=merge_request["state"],
-            created=merge_request.get("created_at"),
-            updated=merge_request.get("updated_at"),
-            merged=merge_request.get("merged_at"),
-            # closed=merge_request.get("closed_at"),
-            downvotes=str(merge_request.get("downvotes", 0)),
-            upvotes=str(merge_request.get("upvotes", 0)),
+            approved={True: "yes", False: "no", None: "?"}[merge_request.get("approved")],
+            created=merge_request["createdAt"],
+            updated=merge_request["updatedAt"],
+            merged=merge_request["mergedAt"],
+            downvotes=str(merge_request["downvotes"]),
+            upvotes=str(merge_request["upvotes"]),
         )
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
         request_matches_state = merge_request["state"] in self._parameter("merge_request_state")
         branches = self._parameter("target_branches_to_include")
-        target_branch = merge_request["target_branch"]
+        target_branch = merge_request["targetBranch"]
         request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
         # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
         # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer

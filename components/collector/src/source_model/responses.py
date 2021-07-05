@@ -7,7 +7,8 @@ class SourceResponses:
     """Class the hold the source responses, and associated information such as api_url and connection error, if any."""
 
     def __init__(
-            self, *, responses: Responses = None, api_url: URL = None, connection_error: ErrorMessage = None) -> None:
+        self, *, responses: Responses = None, api_url: URL = None, connection_error: ErrorMessage = None
+    ) -> None:
         self.__responses: Responses = responses or []
         self.api_url = api_url
         self.connection_error = connection_error
@@ -23,6 +24,10 @@ class SourceResponses:
 
     def __setitem__(self, key, value):
         self.__responses[key] = value
+
+    def append(self, response: Response) -> None:
+        """Append a response."""
+        self.__responses.append(response)
 
     def insert(self, index, response: Response) -> None:
         """Insert a response."""
