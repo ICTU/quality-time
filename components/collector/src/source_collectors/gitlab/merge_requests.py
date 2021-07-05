@@ -4,7 +4,7 @@ import logging
 from typing import cast
 
 import aiohttp
-import aiogqlc
+from aiogqlc import GraphQLClient
 
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
@@ -66,29 +66,33 @@ class GitLabMergeRequests(GitLabProjectBase):
         api_url = await super()._api_url()
         # We need to create a new session because the GraphQLClient expects the session to have the headers.
         async with aiohttp.ClientSession(headers=self._headers()) as session:
-            client = aiogqlc.GraphQLClient(f"{api_url}/api/graphql", session=session)
-            response = await client.execute(MERGE_REQUEST_FIELDS_QUERY)
-            json = await response.json()
-            fields = [field["name"] for field in json["data"]["__type"]["fields"]]
-            has_approved_field = "approved" in fields
-            merge_request_query = MERGE_REQUEST_QUERY.format(
-                pagination="", approved="approved" if has_approved_field else ""
-            )
-            response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
-            responses = [response]
-            json = await response.json()
-            while json["data"]["project"]["mergeRequests"]["pageInfo"]["hasNextPage"]:
-                cursor = json["data"]["project"]["mergeRequests"]["pageInfo"]["endCursor"]
-                merge_request_query = MERGE_REQUEST_QUERY.format(
-                    pagination=f'(after: "{cursor}")', approved="approved" if has_approved_field else ""
-                )
-                response = await client.execute(
-                    merge_request_query, variables=dict(projectId=self._parameter("project"))
-                )
-                json = await response.json()
+            client = GraphQLClient(f"{api_url}/api/graphql", session=session)
+            approved_field = await self._approved_field(client)
+            responses, has_next_page, cursor = [], True, ""
+            while has_next_page:
+                response, has_next_page, cursor = await self._get_merge_request_response(client, approved_field, cursor)
                 responses.append(response)
-            logging.info("Retrieved %d responses", len(responses))
+            logging.info("Retrieved %d GraphQL merge request responses", len(responses))
         return await super()._get_source_responses(*urls, **kwargs)
+
+    @staticmethod
+    async def _approved_field(client: GraphQLClient) -> str:
+        """Determine whether the GitLab instance has the approved field for merge requests."""
+        response = await client.execute(MERGE_REQUEST_FIELDS_QUERY)
+        json = await response.json()
+        fields = [field["name"] for field in json["data"]["__type"]["fields"]]
+        return "approved" if "approved" in fields else ""
+
+    async def _get_merge_request_response(
+        self, client: GraphQLClient, approved_field: str, cursor: str = ""
+    ) -> tuple[SourceResponses, bool, str]:
+        """Return the merge request response, and a cursor to the next page with merge requests, if available."""
+        pagination = f'(after: "{cursor}")' if cursor else ""
+        merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
+        response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
+        json = await response.json()
+        page_info = json["data"]["project"]["mergeRequests"]["pageInfo"]
+        return response, page_info["hasNextPage"], page_info.get("endCursor", "")
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests."""
