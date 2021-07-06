@@ -47,7 +47,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             title=f"Merge request {number}",
             target_branch="default",
             state=state,
-            approved="no",
+            approved="?",
             url=f"https://gitlab/mr{number}",
             created="2017-04-29T08:46:00Z",
             updated="2017-04-29T09:40:00Z",
@@ -155,7 +155,5 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
         with patch("aiogqlc.GraphQLClient.execute", execute):
             response = await self.collector.collect_sources(None, self.metric)
+        self.entity1["approved"] = "yes"
         self.assert_measurement(response, value="1", total="1", entities=[self.entity1], landing_url=self.landing_url)
-        print(response["sources"][0]["entities"][0])
-        print(self.entity1)
-        self.assertDictEqual(response["sources"][0]["entities"][0], self.entity1)
