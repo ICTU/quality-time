@@ -14,7 +14,6 @@ class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.set_source_parameter("project", "namespace/project")
         self.set_source_parameter("file_path", "file")
         self.set_source_parameter("branch", "branch")
-        self.set_source_parameter("branches_to_ignore", ["ignored_.*"])
         self.gitlab_jobs_json = [
             dict(
                 id="1",

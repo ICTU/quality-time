@@ -84,7 +84,7 @@ class GitLabMergeRequests(GitLabProjectBase):
 
     async def _get_merge_request_response(
         self, client: GraphQLClient, approved_field: str, cursor: str = ""
-    ) -> tuple[SourceResponses, bool, str]:
+    ) -> tuple[aiohttp.ClientResponse, bool, str]:
         """Return the merge request response, and a cursor to the next page with merge requests, if available."""
         pagination = f'(after: "{cursor}")' if cursor else ""
         merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
