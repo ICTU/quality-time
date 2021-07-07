@@ -9,7 +9,7 @@ from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from source_model import Entities, Entity, SourceResponses
 
-from .base import GitLabProjectBase
+from .base import GitLabBase
 
 # GraphQL query to find out which fields merge requests have in a GitLab instance. GitLab instances on the free plan
 # don't have the approved field, GitLab instances on the premium plan and up do.
@@ -55,7 +55,7 @@ query MRs($projectId: ID!) {{
 """
 
 
-class GitLabMergeRequests(GitLabProjectBase):
+class GitLabMergeRequests(GitLabBase):
     """Collector class to measure the number of merge requests."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -63,8 +63,13 @@ class GitLabMergeRequests(GitLabProjectBase):
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
-        """Override to determine whether the configured GitLab is premium and thus has the 'approved' field."""
-        api_url = await super()._api_url()
+        """Override to use the GitLab GraphQL API to retrieve the merge requests.
+
+        We can't use the GitLab REST API because that API doesn't support the approved field of merge requests.
+        Unfortunately, the free version of GitLab also doesn't support the approved field, even when using the GraphQL
+        API, so before we query for merge requests, we first have to find out whether the approved field is supported.
+        """
+        api_url = await self._api_url()
         timeout = aiohttp.ClientTimeout(total=120)
         # We need to create a new session because the GraphQLClient expects the session to provide the headers:
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
@@ -87,7 +92,7 @@ class GitLabMergeRequests(GitLabProjectBase):
     async def _get_merge_request_response(
         self, client: GraphQLClient, approved_field: str, cursor: str = ""
     ) -> tuple[aiohttp.ClientResponse, bool, str]:
-        """Return the merge request response, and a cursor to the next page with merge requests, if available."""
+        """Return the merge request response, whether there are more pages, and a cursor to the next page, if any."""
         pagination = f'(after: "{cursor}")' if cursor else ""
         merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
         response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
@@ -108,7 +113,7 @@ class GitLabMergeRequests(GitLabProjectBase):
         return str((await responses[0].json())["data"]["project"]["mergeRequests"]["count"])
 
     def _create_entity(self, merge_request) -> Entity:
-        """Create an entity from a GitLab JSON result."""
+        """Create an entity from a GitLab JSON merge request."""
         return Entity(
             key=merge_request["id"],
             title=merge_request["title"],
