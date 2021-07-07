@@ -1,6 +1,5 @@
 """GitLab merge requests collector."""
 
-import logging
 from typing import cast
 
 import aiohttp
@@ -12,6 +11,8 @@ from source_model import Entities, Entity, SourceResponses
 
 from .base import GitLabProjectBase
 
+# GraphQL query to find out which fields merge requests have in a GitLab instance. GitLab instances on the free plan
+# don't have the approved field, GitLab instances on the premium plan and up do.
 MERGE_REQUEST_FIELDS_QUERY = """
 {
   __type(name: "MergeRequest") {
@@ -22,6 +23,10 @@ MERGE_REQUEST_FIELDS_QUERY = """
 }
 """
 
+# GraphQL query to retrieve the merge requests for a specific project. The project id is passed as a variable. This
+# string needs to be formatted with or without the approved field name, depending on whether the GitLab instance has
+# the approved field (queried with the query above), and with the pagination arguments, depending on whether the
+# query is used for the first page or for consecutive pages.
 MERGE_REQUEST_QUERY = """
 query MRs($projectId: ID!) {{
   project(fullPath: $projectId) {{
@@ -53,10 +58,6 @@ query MRs($projectId: ID!) {{
 class GitLabMergeRequests(GitLabProjectBase):
     """Collector class to measure the number of merge requests."""
 
-    async def _api_url(self) -> URL:
-        """Override to return the merge requests API."""
-        return await self._gitlab_api_url("merge_requests")
-
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
@@ -65,7 +66,7 @@ class GitLabMergeRequests(GitLabProjectBase):
         """Override to determine whether the configured GitLab is premium and thus has the 'approved' field."""
         api_url = await super()._api_url()
         timeout = aiohttp.ClientTimeout(total=120)
-        # We need to create a new session because the GraphQLClient expects the session to have the headers.
+        # We need to create a new session because the GraphQLClient expects the session to provide the headers:
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/api/graphql", session=session)
             approved_field = await self._approved_field(client)
@@ -126,7 +127,6 @@ class GitLabMergeRequests(GitLabProjectBase):
         """Return whether the merge request should be counted."""
         mr_matches_state = merge_request["state"] in self._parameter("merge_request_state")
         mr_matches_approval = self.__approval_state(merge_request) in self._parameter("approval_state")
-        logging.info("%s - %s", self.__approval_state(merge_request), self._parameter("approval_state"))
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["targetBranch"]
         mr_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
