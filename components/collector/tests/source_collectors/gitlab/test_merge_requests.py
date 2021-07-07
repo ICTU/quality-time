@@ -115,9 +115,12 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         entities = [self.create_entity(1), self.create_entity(2)]
         self.assert_measurement(response, value="2", total="2", entities=entities, landing_url=self.landing_url)
 
-    async def test_approved_field(self):
-        """Test that the entities contain the approved field if GitLab supports it."""
-        merge_requests_json = self.create_merge_requests([self.create_merge_request(1, approved=True)])
+    async def test_approval(self):
+        """Test that merge requests can be filtered by approval state."""
+        self.set_source_parameter("approval_state", ["approved"])
+        merge_requests_json = self.create_merge_requests(
+            [self.create_merge_request(1, approved=True), self.create_merge_request(2)]
+        )
         merge_request_fields_response = AsyncMock()
         merge_requests_response = AsyncMock()
         execute = AsyncMock(side_effect=[merge_request_fields_response, merge_requests_response])
@@ -126,4 +129,4 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         with patch("aiogqlc.GraphQLClient.execute", execute):
             response = await self.collector.collect_sources(None, self.metric)
         entities = [self.create_entity(1, approved="yes")]
-        self.assert_measurement(response, value="1", total="1", entities=entities, landing_url=self.landing_url)
+        self.assert_measurement(response, value="1", total="2", entities=entities, landing_url=self.landing_url)

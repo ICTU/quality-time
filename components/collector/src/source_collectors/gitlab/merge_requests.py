@@ -1,5 +1,6 @@
 """GitLab merge requests collector."""
 
+import logging
 from typing import cast
 
 import aiohttp
@@ -105,8 +106,7 @@ class GitLabMergeRequests(GitLabProjectBase):
         """Override to parse the total number of merge requests."""
         return str((await responses[0].json())["data"]["project"]["mergeRequests"]["count"])
 
-    @staticmethod
-    def _create_entity(merge_request) -> Entity:
+    def _create_entity(self, merge_request) -> Entity:
         """Create an entity from a GitLab JSON result."""
         return Entity(
             key=merge_request["id"],
@@ -114,7 +114,7 @@ class GitLabMergeRequests(GitLabProjectBase):
             target_branch=merge_request["targetBranch"],
             url=merge_request["webUrl"],
             state=merge_request["state"],
-            approved={True: "yes", False: "no", None: "?"}[merge_request.get("approved")],
+            approved=self.__approval_state(merge_request),
             created=merge_request["createdAt"],
             updated=merge_request["updatedAt"],
             merged=merge_request["mergedAt"],
@@ -124,13 +124,20 @@ class GitLabMergeRequests(GitLabProjectBase):
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        request_matches_state = merge_request["state"] in self._parameter("merge_request_state")
+        mr_matches_state = merge_request["state"] in self._parameter("merge_request_state")
+        mr_matches_approval = self.__approval_state(merge_request) in self._parameter("approval_state")
+        logging.info("%s - %s", self.__approval_state(merge_request), self._parameter("approval_state"))
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["targetBranch"]
-        request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
+        mr_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
         # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
         # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
         # than the minimum number of upvotes are included in the count:
         required_upvotes = int(cast(str, self._parameter("upvotes")))
-        request_has_fewer_than_min_upvotes = required_upvotes == 0 or int(merge_request["upvotes"]) < required_upvotes
-        return request_matches_state and request_matches_branches and request_has_fewer_than_min_upvotes
+        mr_has_fewer_than_min_upvotes = required_upvotes == 0 or int(merge_request["upvotes"]) < required_upvotes
+        return mr_matches_state and mr_matches_approval and mr_matches_branches and mr_has_fewer_than_min_upvotes
+
+    @staticmethod
+    def __approval_state(merge_request) -> str:
+        """Return the merge request approval state."""
+        return {True: "yes", False: "no", None: "?"}[merge_request.get("approved")]
