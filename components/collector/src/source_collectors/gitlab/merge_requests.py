@@ -58,6 +58,8 @@ query MRs($projectId: ID!) {{
 class GitLabMergeRequests(GitLabBase):
     """Collector class to measure the number of merge requests."""
 
+    APPROVED_FIELD = "approved"  # Name of the merge request approved field in the GitLab GraphQL API
+
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
@@ -81,13 +83,13 @@ class GitLabMergeRequests(GitLabBase):
                 responses.append(response)
         return responses
 
-    @staticmethod
-    async def _approved_field(client: GraphQLClient) -> str:
+    @classmethod
+    async def _approved_field(cls, client: GraphQLClient) -> str:
         """Determine whether the GitLab instance has the approved field for merge requests."""
         response = await client.execute(MERGE_REQUEST_FIELDS_QUERY)
         json = await response.json()
         fields = [field["name"] for field in json["data"]["__type"]["fields"]]
-        return "approved" if "approved" in fields else ""
+        return cls.APPROVED_FIELD if cls.APPROVED_FIELD in fields else ""
 
     async def _get_merge_request_response(
         self, client: GraphQLClient, approved_field: str, cursor: str = ""
@@ -142,7 +144,7 @@ class GitLabMergeRequests(GitLabBase):
         mr_has_fewer_than_min_upvotes = required_upvotes == 0 or int(merge_request["upvotes"]) < required_upvotes
         return mr_matches_state and mr_matches_approval and mr_matches_branches and mr_has_fewer_than_min_upvotes
 
-    @staticmethod
-    def __approval_state(merge_request) -> str:
+    @classmethod
+    def __approval_state(cls, merge_request) -> str:
         """Return the merge request approval state."""
-        return {True: "yes", False: "no", None: "?"}[merge_request.get("approved")]
+        return {True: "yes", False: "no", None: "?"}[merge_request.get(cls.APPROVED_FIELD)]
