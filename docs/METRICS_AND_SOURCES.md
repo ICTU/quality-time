@@ -332,6 +332,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Approval states to include (requires GitLab Premium) | Multiple choice | approved, not approved, unknown | _all approval states_ | No | [https://docs.gitlab.com/ee/user/project/merge_requests/approvals/](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/) |
 | GitLab instance URL | URL |  |  | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Merge request states | Multiple choice | closed, locked, merged, opened | _all states_ | No | Limit which merge request states to count. |
 | Minimum number of upvotes | Integer |  | 0 | No | Only count merge requests with fewer than the minimum number of upvotes. |
