@@ -8,7 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [3.24.0-rc.1] - [2021-07-08]
+## [Unreleased]
+
+### Fixed
+
+- In addition to "low", "medium", "high", and "critical", the OWASP Dependency Check may report vulnerabilities with severity "moderate". Allow for using this severity for filtering vulnerabilities. Fixes [#2337](https://github.com/ICTU/quality-time/issues/2337).
 
 ### Added
 

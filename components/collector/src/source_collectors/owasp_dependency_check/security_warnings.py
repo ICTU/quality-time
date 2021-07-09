@@ -30,7 +30,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
             for vulnerability in vulnerabilities
         }
         highest_severity = "low"
-        for severity in ("critical", "high", "medium"):
+        for severity in ("critical", "high", "medium", "moderate"):
             if severity in severities:
                 highest_severity = severity
                 break
