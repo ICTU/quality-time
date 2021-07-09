@@ -25,7 +25,7 @@ docker-compose up -d server
 cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
-pip --quiet install --progress-bar off -r requirements.txt
+pip --quiet install --progress-bar off -r requirements-dev.txt
 cd ../..
 coverage erase
 coverage run -m behave "${1:-tests/feature_tests/features}"

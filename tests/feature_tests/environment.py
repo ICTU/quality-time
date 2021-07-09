@@ -29,13 +29,11 @@ def before_all(context):
             return response
         if "session_id" in response.cookies:
             context.session_id = response.cookies["session_id"]
-        time.sleep(1)  # Give server and database time to process the previous request
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def delete(api):
         """Delete the resource."""
         context.response = response = requests.delete(f"{context.base_api_url.format('')}/{api}", cookies=cookies())
-        time.sleep(1)  # Give server and database time to process the previous request
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     context.base_api_url = "http://localhost:5001/{0}api/v3"
