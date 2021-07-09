@@ -822,7 +822,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Password for basic authentication | Password |  |  | No |  |
 | Private token | Password |  |  | No |  |
-| Severities | Multiple choice | critical, high, low, medium | _all severities_ | No | If provided, only count security warnings with the selected severities. |
+| Severities | Multiple choice | critical, high, low, medium, moderate | _all severities_ | No | If provided, only count security warnings with the selected severities. |
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL |  |  | Yes |  |
 | URL to an OWASP Dependency Check report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format. |
 | Username for basic authentication | String |  |  | No |  |

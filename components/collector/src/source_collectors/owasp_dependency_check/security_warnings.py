@@ -12,7 +12,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
     """Collector to get security warnings from the OWASP Dependency Check XML report."""
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:
-        """Return the vulnerable dependencies."""
+        """Override to return vulnerable dependencies only."""
         return [
             dependency
             for dependency in tree.findall(".//ns:dependency", namespaces)
@@ -30,7 +30,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
             for vulnerability in vulnerabilities
         }
         highest_severity = "low"
-        for severity in ("critical", "high", "medium"):
+        for severity in ("critical", "high", "medium", "moderate"):
             if severity in severities:
                 highest_severity = severity
                 break

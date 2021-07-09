@@ -24,7 +24,7 @@ OWASP_DEPENDENCY_CHECK = Source(
     "publicly disclosed, vulnerabilities.",
     url="https://www.owasp.org/index.php/OWASP_Dependency_Check",
     parameters=dict(
-        severities=Severities(values=["low", "medium", "high", "critical"]),
+        severities=Severities(values=["low", "moderate", "medium", "high", "critical"]),
         **access_parameters(
             ALL_OWASP_DEPENDENCY_CHECK_METRICS, source_type="an OWASP Dependency Check report", source_type_format="XML"
         )
