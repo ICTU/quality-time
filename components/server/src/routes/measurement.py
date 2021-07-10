@@ -31,18 +31,14 @@ from server_utilities.type import MetricId, SourceId
 @bottle.post("/internal-api/v3/measurements", authentication_required=False)
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
-    start = time.time()
     measurement_data = dict(bottle.request.json)
     metric_uuid = measurement_data["metric_uuid"]
-    if time.time() - start > 10:  # pragma: no cover
-        data = str(measurement_data)
-        logging.info(
-            "Received measurement data for %s. Length = %d. First 1000 chars = %s", metric_uuid, len(data), data[:1000]
-        )
     if (metric := latest_metric(database, metric_uuid)) is None:
         return  # Metric does not exist, must've been deleted while being measured
     latest = latest_measurement(database, metric)
     measurement = Measurement(metric, measurement_data, previous_measurement=latest)
+    if not measurement.sources_exist():
+        return  # Measurement has sources that the metric does not have, must've been deleted while being measured
     if latest:
         latest_successful = latest_successful_measurement(database, metric)
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
