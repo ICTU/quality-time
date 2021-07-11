@@ -89,7 +89,7 @@ Feature: measurement
     When the client changes the metric accept_debt to "False"
     Then the metric has four measurements
     When the collector measures "100"
-    Then the metric has five measurements
+    Then the metric has four measurements
 
   Scenario: a measurement that's unchanged is updated
     Given an existing source
