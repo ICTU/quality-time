@@ -125,7 +125,7 @@ class PostMetricAttributeTest(unittest.TestCase):
     @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_invalid_version_number_with_measurements(self, request):
         """Test that changing the target to an invalid version adds a new measurement if one or more exist."""
-        sources = [dict(parse_error=None, connection_error=None, value="1.0")]
+        sources = [dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="1.0")]
         self.data_model["metrics"]["old_type"]["scales"] = ["version_number"]
         self.database.measurements.find_one.return_value = dict(
             _id="id",

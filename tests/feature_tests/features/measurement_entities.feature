@@ -35,8 +35,10 @@ Feature: measurement entities
       | 1   | 100          |
       | 2   | 20           |
     Then the metric status is "target_met"
+    When the client waits a second
     When the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_not_met"
+    When the client waits a second
     When the collector measures "120"
       | key | old_key | story_points |
       | a   | 1       | 100          |
@@ -46,21 +48,27 @@ Feature: measurement entities
   Scenario: when an entity key disappears, it's marked as orphaned so that when it reappears, its status is still there
     Given an existing metric with type "user_story_points"
     And an existing source with type "azure_devops"
-    When the collector measures "120"
+    When the collector measures "122"
       | key | story_points |
-      | 1   | 100          |
-      | 2   | 20           |
-    And the client sets the status of entity 1 to "false_positive"
-    And the collector measures "20"
+      | 1   | 101          |
+      | 2   | 21           |
+    Then the metric status is "target_met"
+    When the client waits a second
+    When the client sets the status of entity 1 to "false_positive"
+    Then the metric status is "target_not_met"
+    When the client waits a second
+    When the collector measures "21"
       | key | story_points |
-      | 2   | 20           |
-    And the collector measures "20"
+      | 2   | 21           |
+    Then the metric status is "target_not_met"
+    When the collector measures "21"
       | key | story_points |
-      | 2   | 20           |
-    And the collector measures "120"
+      | 2   | 21           |
+    Then the metric status is "target_not_met"
+    When the collector measures "122"
       | key | story_points |
-      | 1   | 100          |
-      | 2   | 20           |
+      | 1   | 101          |
+      | 2   | 21           |
     Then the metric status is "target_not_met"
 
   Scenario: when an entity's source is deleted, the entity status is not kept

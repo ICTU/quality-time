@@ -90,7 +90,7 @@ def connect_to_nr_of_measurements_stream(context, stream):
 @then("the server skips the next update because nothing changed")
 def skip_update(context):
     """Sleep > 10 seconds to give server a chance to skip the next update."""
-    time.sleep(11)
+    time.sleep(10.1)
 
 
 @then("the metric needs to be measured")
@@ -105,7 +105,7 @@ def check_nr_of_measurements(context, has_or_had, count="one"):
     """Check that the metric has the expected number of measurements."""
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
-    expected_number = dict(no=0, one=1, two=2, three=3).get(count, count)
+    expected_number = dict(no=0, one=1, two=2).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 
 

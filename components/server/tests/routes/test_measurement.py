@@ -91,7 +91,7 @@ class PostMeasurementTests(unittest.TestCase):
                             debt_target=None,
                             accept_debt=False,
                             tags=[],
-                            sources={SOURCE_ID: dict(type="junit")},
+                            sources={SOURCE_ID: dict(type="junit"), SOURCE_ID2: dict(type="junit")},
                         )
                     }
                 ),
@@ -114,7 +114,7 @@ class PostMeasurementTests(unittest.TestCase):
             _id="id",
             metric_uuid=METRIC_ID,
             count=dict(status="target_met"),
-            sources=[self.source(value="0"), dict(source_uuid=SOURCE_ID2)],
+            sources=[self.source(value="0"), self.source(source_uuid=SOURCE_ID2)],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
         self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
@@ -157,18 +157,26 @@ class PostMeasurementTests(unittest.TestCase):
     def test_first_measurement(self, request):
         """Post the first measurement for a metric."""
         self.database.measurements.find_one.return_value = None
+        sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         request.json = self.posted_measurement
         post_measurement(self.database)
-        self.database.measurements.insert_one.assert_called_once_with(self.measurement(count=self.scale_measurement()))
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(count=self.scale_measurement(value="2", status="near_target_met"), sources=sources)
+        )
 
     def test_first_measurement_two_scales(self, request):
         """Post the first measurement for a metric with two scales."""
         self.database.measurements.find_one.return_value = None
         self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
+        sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            self.measurement(count=self.scale_measurement(), percentage=dict(direction="<", value=None, status=None))
+            self.measurement(
+                sources=sources,
+                count=self.scale_measurement(value="2", status="near_target_met"),
+                percentage=dict(direction="<", value="1", status="target_not_met"),
+            )
         )
 
     def test_first_measurement_version_number_scale(self, request):
@@ -337,6 +345,16 @@ class PostMeasurementTests(unittest.TestCase):
     def test_deleted_metric(self, request):
         """Post a measurement for a deleted metric."""
         self.report["subjects"][SUBJECT_ID]["metrics"] = {}
+        self.posted_measurement["sources"] = self.old_measurement["sources"]
+        request.json = self.posted_measurement
+        post_measurement(self.database)
+        self.database.measurements.update_one.assert_not_called()
+        self.database.measurements.insert_one.assert_not_called()
+
+    def test_deleted_source(self, request):
+        """Post a measurement for a deleted source."""
+        del self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID2]
+        self.posted_measurement["sources"] = self.old_measurement["sources"]
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.update_one.assert_not_called()
