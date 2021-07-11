@@ -192,9 +192,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         Technical debt can expire because it was turned off or because the end date passed.
         """
         any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
-        if not any_debt_target:
-            return False
-        return self.metric.accept_debt_expired()
+        return self.metric.accept_debt_expired() if any_debt_target else False
 
     def copy_entity_user_data(self, measurement: Measurement) -> None:
         """Copy the entity user data from the measurement to this measurement."""

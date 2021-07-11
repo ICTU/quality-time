@@ -84,12 +84,10 @@ Feature: measurement
     When the collector measures "100"
     And the client changes the metric accept_debt to "True"
     And the client changes the metric debt_target to "100"
-    When the collector measures "100"
-    Then the metric has three measurements
-    When the client changes the metric accept_debt to "False"
-    Then the metric has four measurements
-    When the collector measures "100"
-    Then the metric has four measurements
+    Then the metric status is "debt_target_met"
+    When the client changes the metric debt_end_date to "2020-01-01"
+    And the collector measures "100"
+    Then the metric status is "target_not_met"
 
   Scenario: a measurement that's unchanged is updated
     Given an existing source
