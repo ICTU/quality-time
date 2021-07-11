@@ -105,7 +105,7 @@ def check_nr_of_measurements(context, has_or_had, count="one"):
     """Check that the metric has the expected number of measurements."""
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
-    expected_number = dict(no=0, one=1, two=2, three=3).get(count, count)
+    expected_number = dict(no=0, one=1, two=2, three=3, four=4, five=5).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 
 

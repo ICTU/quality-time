@@ -26,7 +26,7 @@ python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements-dev.txt
 cd ../..
-sleep 5  # Give server time to start up
+sleep 10  # Give server time to start up
 coverage erase
 coverage run -m behave "${1:-tests/feature_tests/features}"
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
