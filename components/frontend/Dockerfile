@@ -1,4 +1,4 @@
-FROM node:14.17.0-alpine3.13
+FROM node:14.17.3-alpine3.13
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time frontend"
@@ -8,7 +8,7 @@ RUN apk --no-cache add curl=~7.77
 WORKDIR /work
 COPY . /work
 RUN npm install
-RUN npm install -g serve@11.3.2
+RUN npm install -g serve@12.0.0
 RUN npm run build
 
 HEALTHCHECK CMD curl -f http://localhost:${FRONTEND_PORT:-5000}/favicon.ico || exit 1
