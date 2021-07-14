@@ -45,7 +45,7 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
             logging.info("Posting to %s. Length = %d. First 1000 chars = %s", api, len(text_data), text_data[:1000])
 
 
-class MetricsCollector:
+class Collector:
     """Collect measurements for all metrics."""
 
     API_VERSION = "v3"

@@ -2,7 +2,7 @@
 
 from unittest.mock import patch, AsyncMock
 
-from base_collectors import MetricsCollector
+from base_collectors import Collector
 
 from .base import GitLabTestCase
 
@@ -72,7 +72,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     async def collect_merge_requests(self, execute_mock):
         """Return the source responses."""
-        collector = MetricsCollector()
+        collector = Collector()
         collector.data_model = self.data_model
         with patch("aiogqlc.GraphQLClient.execute", execute_mock):
             return await collector.collect_sources(None, self.metric)

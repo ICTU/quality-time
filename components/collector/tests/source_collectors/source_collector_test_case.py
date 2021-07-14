@@ -12,7 +12,7 @@ from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
 
-from base_collectors import MetricsCollector
+from base_collectors import Collector
 
 
 MODULE_DIR = pathlib.Path(__file__).resolve().parent
@@ -70,7 +70,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         mocked_post = AsyncMock(return_value=post_request, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", mocked_get), patch("aiohttp.ClientSession.post", mocked_post):
             async with aiohttp.ClientSession() as session:
-                collector = MetricsCollector()
+                collector = Collector()
                 collector.data_model = self.data_model
                 return await collector.collect_sources(session, self.metric)
 
