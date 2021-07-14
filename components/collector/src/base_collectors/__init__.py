@@ -8,6 +8,7 @@ from .file_source_collector import (
     JSONFileSourceCollector,
     XMLFileSourceCollector,
 )
+from .metric_collector import MetricCollector
 from .source_collector import (
     SourceCollector,
     SourceCollectorException,

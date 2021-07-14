@@ -13,7 +13,7 @@ import aiohttp
 from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
 
-from .source_collector import SourceCollector
+from .metric_collector import MetricCollector
 
 
 async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSON:
@@ -126,24 +126,11 @@ class Collector:
         """Collect measurements for the metric and post it to the server."""
         self.__previous_metrics[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
-        if measurement := await self.collect_sources(session, metric):
+        metric_collector_class = MetricCollector.get_subclass(metric["type"])
+        metric_collector = metric_collector_class(session, metric, self.data_model)
+        if measurement := await metric_collector.get():
             measurement["metric_uuid"] = metric_uuid
             await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
-
-    async def collect_sources(self, session: aiohttp.ClientSession, metric):
-        """Collect the measurements from the metric's sources."""
-        collectors = []
-        for source in metric["sources"].values():
-            if collector_class := SourceCollector.get_subclass(source["type"], metric["type"]):
-                collectors.append(collector_class(session, source, self.data_model).get())
-        if not collectors:
-            return
-        measurements = await asyncio.gather(*collectors)
-        has_error = False
-        for measurement, source_uuid in zip(measurements, metric["sources"]):
-            measurement["source_uuid"] = source_uuid
-            has_error = True if bool(measurement["connection_error"] or measurement["parse_error"]) else has_error
-        return dict(has_error=has_error, sources=measurements)
 
     def __sorted_by_edit_status(self, metrics: dict[str, Any]) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""

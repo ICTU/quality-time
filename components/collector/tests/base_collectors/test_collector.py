@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock, call, mock_open, patch
 import aiohttp
 
 import quality_time_collector
-from base_collectors import Collector, SourceCollector
+from base_collectors import Collector, MetricCollector, SourceCollector
 from source_model import SourceMeasurement, SourceResponses
 
 
@@ -83,6 +83,35 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             connection_error=connection_error,
             parse_error=None,
             source_uuid="source_id",
+        )
+
+    async def test_fetch_successful(self):
+        """Test fetching a test metric."""
+
+        class TestMetric(MetricCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
+            """Register a fake metric collector automatically."""
+
+        class SourceTestMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
+            """Register a fake source collector for the test metric automatically."""
+
+            async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+                """Override to return a source measurement fixture."""
+                return SourceMeasurement(value="42", total="84")
+
+        metrics = dict(
+            metric_uuid=dict(
+                type="test_metric",
+                addition="sum",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
+            )
+        )
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.json.return_value = metrics
+        with self._patched_post() as post:
+            await self._fetch_measurements(mock_async_get_request)
+        post.assert_called_once_with(
+            self.measurement_api_url,
+            json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid"),
         )
 
     async def test_fetch_without_sources(self):

@@ -2,7 +2,7 @@
 
 from unittest.mock import patch, AsyncMock
 
-from base_collectors import Collector
+from base_collectors import MetricCollector
 
 from .base import GitLabTestCase
 
@@ -72,10 +72,9 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     async def collect_merge_requests(self, execute_mock):
         """Return the source responses."""
-        collector = Collector()
-        collector.data_model = self.data_model
         with patch("aiogqlc.GraphQLClient.execute", execute_mock):
-            return await collector.collect_sources(None, self.metric)
+            collector = MetricCollector(None, self.metric, self.data_model)
+            return await collector.get()
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
