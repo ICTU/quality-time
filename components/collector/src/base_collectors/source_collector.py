@@ -57,7 +57,7 @@ class SourceCollector(ABC):
         logging.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
         return None
 
-    async def get(self) -> SourceMeasurement:
+    async def collect(self) -> SourceMeasurement:
         """Return the measurement from this source."""
         responses = await self.__safely_get_source_responses()
         measurement = await self.__safely_parse_source_responses(responses)

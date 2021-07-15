@@ -71,7 +71,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         with patch("aiohttp.ClientSession.get", mocked_get), patch("aiohttp.ClientSession.post", mocked_post):
             async with aiohttp.ClientSession() as session:
                 collector = MetricCollector(session, self.metric, self.data_model)
-                return await collector.get()
+                return await collector.collect()
 
     @staticmethod
     def __mock_get_request(get_request_json, content, text, headers, links) -> AsyncMock:

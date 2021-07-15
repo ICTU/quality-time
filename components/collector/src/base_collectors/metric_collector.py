@@ -33,12 +33,12 @@ class MetricCollector:
                 return subclass
         return cls
 
-    async def get(self) -> Optional[MetricMeasurement]:
+    async def collect(self) -> Optional[MetricMeasurement]:
         """Collect the measurements from the metric's sources."""
         collectors = []
         for source in self.__metric["sources"].values():
             if collector_class := SourceCollector.get_subclass(source["type"], self.__metric["type"]):
-                collectors.append(collector_class(self.__session, source, self.__data_model).get())
+                collectors.append(collector_class(self.__session, source, self.__data_model).collect())
         if not collectors:
             return None
         measurements = await asyncio.gather(*collectors)

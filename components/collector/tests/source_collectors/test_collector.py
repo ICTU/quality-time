@@ -70,7 +70,7 @@ class CollectorTest(SourceCollectorTestCase):
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):  # skipcq: PTC-W0062
             async with aiohttp.ClientSession() as session:
-                response = await FailingLandingUrl(session, self.metric, {}).get()
+                response = await FailingLandingUrl(session, self.metric, {}).collect()
         self.assertEqual("https://api_url", response.landing_url)
 
     async def test_default_parameter_value_supersedes_empty_string(self):
