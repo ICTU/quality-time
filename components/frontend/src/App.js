@@ -77,8 +77,8 @@ class App extends Component {
   }
 
   reload_report(report_date, show_error) {
-    Promise.all([get_datamodel(report_date), get_report(this.state.report_uuid, report_date)]).then(
-      ([data_model, reports]) => {
+    Promise.all([get_datamodel(report_date), get_reports(report_date), get_report(this.state.report_uuid, report_date)]).then(
+      ([data_model, reports_overview, reports]) => {
         if (data_model.ok === false || reports.ok === false) {
           show_error();
         } else {
@@ -86,6 +86,12 @@ class App extends Component {
           this.setState({
             loading: false,
             datamodel: data_model,
+            reports_overview: {
+              layout: reports_overview.layout,
+              subtitle: reports_overview.subtitle,
+              title: reports_overview.title,
+              permissions: reports_overview.permissions
+            },
             reports: reports.reports || [],
             last_update: now
           });
@@ -95,8 +101,8 @@ class App extends Component {
 
   reload_tag_report(report_date, show_error) {
     const tag = this.state.report_uuid.slice(4);
-    Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
-      ([data_model, report]) => {
+    Promise.all([get_datamodel(report_date), get_reports(report_date), get_tag_report(tag, report_date)]).then(
+      ([data_model, reports_overview, report]) => {
         if (data_model.ok === false || report.ok === false) {
           show_error();
         } else {
@@ -104,6 +110,12 @@ class App extends Component {
           this.setState({
             loading: false,
             datamodel: data_model,
+            reports_overview: {
+              layout: reports_overview.layout,
+              subtitle: reports_overview.subtitle,
+              title: reports_overview.title,
+              permissions: reports_overview.permissions
+            },
             reports: Object.keys(report.subjects).length > 0 ? [report] : [],
             last_update: now
           });
@@ -123,7 +135,8 @@ class App extends Component {
             datamodel: data_model,
             reports: reports.reports || [],
             reports_overview: {
-              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, permissions: reports.permissions },
+              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, permissions: reports.permissions
+            },
             last_update: now
           })
         }
