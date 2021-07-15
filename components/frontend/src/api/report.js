@@ -12,16 +12,12 @@ function delete_report(report_uuid, go_home) {
   return fetch_server_api('delete', `report/${report_uuid}`, {}).then(go_home)
 }
 
-function get_reports(date) {
-  return fetch_server_api('get', api_with_report_date('reports', date))
+function get_reports_overview(date) {
+  return fetch_server_api('get', api_with_report_date('reports_overview', date))
 }
 
-function get_report(report_uuid, date) {
+function get_reports(report_uuid, date) {
   return fetch_server_api('get', api_with_report_date(`report/${report_uuid}`, date))
-}
-
-function get_tag_report(tag, date) {
-  return fetch_server_api('get', api_with_report_date(`tagreport/${tag}`, date))
 }
 
 function set_report_attribute(report_uuid, attribute, value, reload) {
@@ -37,5 +33,5 @@ function get_report_pdf(report_uuid, query_string) {
 }
 
 export {
-  add_report, copy_report, delete_report, get_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute,
+  add_report, copy_report, delete_report, get_reports, get_reports_overview, get_report_pdf, set_report_attribute,
   set_reports_attribute }

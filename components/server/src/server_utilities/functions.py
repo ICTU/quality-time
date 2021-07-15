@@ -42,6 +42,11 @@ def report_date_time() -> str:
     return ""
 
 
+def report_id_is_tag(report_uuid):
+    """Returns wether a report_uuid is in fact a tag."""
+    return report_uuid and report_uuid[0:4] == "tag-"
+
+
 def days_ago(date_time: datetime) -> int:
     """Return the days since the date/time."""
     return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
