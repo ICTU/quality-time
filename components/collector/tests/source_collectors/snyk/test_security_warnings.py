@@ -1,6 +1,6 @@
 """Unit tests for the Snyk security warnings collector."""
 
-from source_model import Entity
+from model import Entity
 
 from ..source_collector_test_case import SourceCollectorTestCase
 

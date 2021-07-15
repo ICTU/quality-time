@@ -1,10 +1,12 @@
 """Metric collector base classes."""
 
 import asyncio
+from typing import Optional
 
 import aiohttp
 
 from collector_utilities.type import JSON
+from model import MetricMeasurement
 
 from .source_collector import SourceCollector
 
@@ -31,17 +33,15 @@ class MetricCollector:
                 return subclass
         return cls
 
-    async def get(self):
+    async def get(self) -> Optional[MetricMeasurement]:
         """Collect the measurements from the metric's sources."""
         collectors = []
         for source in self.__metric["sources"].values():
             if collector_class := SourceCollector.get_subclass(source["type"], self.__metric["type"]):
                 collectors.append(collector_class(self.__session, source, self.__data_model).get())
         if not collectors:
-            return
+            return None
         measurements = await asyncio.gather(*collectors)
-        has_error = False
         for measurement, source_uuid in zip(measurements, self.__metric["sources"]):
-            measurement["source_uuid"] = source_uuid
-            has_error = True if bool(measurement["connection_error"] or measurement["parse_error"]) else has_error
-        return dict(has_error=has_error, sources=measurements)
+            measurement.source_uuid = source_uuid
+        return MetricMeasurement(measurements)

@@ -5,7 +5,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class OpenVASSecurityWarnings(XMLFileSourceCollector):

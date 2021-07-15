@@ -10,7 +10,7 @@ import aiohttp
 
 import quality_time_collector
 from base_collectors import Collector, MetricCollector, SourceCollector
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):

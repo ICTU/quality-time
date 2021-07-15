@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from base_collectors import HTMLFileSourceCollector
 from collector_utilities.type import Response
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

@@ -3,7 +3,7 @@
 from abc import ABC
 
 from base_collectors import JenkinsPluginCollector
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 
 class CoberturaJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223

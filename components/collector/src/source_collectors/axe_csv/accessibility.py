@@ -6,7 +6,7 @@ from io import StringIO
 
 from base_collectors import CSVFileSourceCollector
 from collector_utilities.functions import md5_hash
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class AxeCSVAccessibility(CSVFileSourceCollector):

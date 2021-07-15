@@ -104,9 +104,9 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:
-                self.assertIn(attribute_value, measurement["sources"][source_index][attribute_key])
+                self.assertIn(attribute_value, getattr(measurement.sources[source_index], attribute_key))
             else:
-                self.assertIsNone(measurement["sources"][source_index][attribute_key])
+                self.assertIsNone(getattr(measurement.sources[source_index], attribute_key))
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
@@ -114,11 +114,11 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
     def __assert_measurement_source_attribute(self, attribute_key, attribute_value, measurement, source_index):
         """Assert that the measurement source attribute has the expected value."""
         if isinstance(attribute_value, list):
-            for pair in zip(attribute_value, measurement["sources"][source_index][attribute_key]):
+            for pair in zip(attribute_value, getattr(measurement.sources[source_index], attribute_key)):
                 assert_equal = self.assertDictEqual if isinstance(pair[0], dict) else self.assertEqual
                 assert_equal(pair[0], pair[1])
         else:
-            self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
+            self.assertEqual(attribute_value, getattr(measurement.sources[source_index], attribute_key))
 
     @staticmethod
     def zipped_report(*filenames_and_contents: tuple[str, str]) -> bytes:

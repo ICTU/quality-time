@@ -1,6 +1,6 @@
 """Base classes for SonarQube collector unit tests."""
 
-from source_model import Entity
+from model import Entity
 
 from ..source_collector_test_case import SourceCollectorTestCase
 

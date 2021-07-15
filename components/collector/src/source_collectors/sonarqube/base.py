@@ -4,7 +4,7 @@ from abc import ABC
 
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL
-from source_model import Entities, SourceMeasurement, SourceResponses
+from model import Entities, SourceMeasurement, SourceResponses
 
 
 class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223

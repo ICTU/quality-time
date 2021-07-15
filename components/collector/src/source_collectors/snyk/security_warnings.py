@@ -4,7 +4,7 @@ from collections.abc import Collection
 from typing import Literal
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 Severity = Literal["low", "medium", "high"]

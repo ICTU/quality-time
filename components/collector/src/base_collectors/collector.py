@@ -129,8 +129,9 @@ class Collector:
         metric_collector_class = MetricCollector.get_subclass(metric["type"])
         metric_collector = metric_collector_class(session, metric, self.data_model)
         if measurement := await metric_collector.get():
-            measurement["metric_uuid"] = metric_uuid
-            await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
+            measurement.metric_uuid = metric_uuid
+            api_url = URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements")
+            await post(session, api_url, measurement.as_dict())
 
     def __sorted_by_edit_status(self, metrics: dict[str, Any]) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""

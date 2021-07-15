@@ -4,7 +4,7 @@ from typing import cast
 
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import RobotFrameworkBaseClass
 

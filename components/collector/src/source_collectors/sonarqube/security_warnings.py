@@ -2,7 +2,7 @@
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import Entity, SourceMeasurement, SourceResponses
+from model import Entity, SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
 from .violations import SonarQubeViolations

@@ -1,7 +1,7 @@
 """SonarQube tests collector."""
 
 from collector_utilities.type import URL
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
 

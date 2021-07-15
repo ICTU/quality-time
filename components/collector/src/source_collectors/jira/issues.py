@@ -5,7 +5,7 @@ from typing import Union
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class JiraIssues(SourceCollector):

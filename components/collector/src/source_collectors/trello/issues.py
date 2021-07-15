@@ -6,7 +6,7 @@ from typing import cast
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import TrelloBase
 

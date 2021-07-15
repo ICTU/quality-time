@@ -2,7 +2,7 @@
 
 from base_collectors import SourceCollectorException
 from collector_utilities.type import Value
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 

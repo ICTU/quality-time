@@ -3,7 +3,7 @@
 from bs4 import Tag
 
 from collector_utilities.functions import match_string_or_regular_expression
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 

@@ -1,7 +1,7 @@
 """SonarQube violations collector."""
 
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
 

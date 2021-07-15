@@ -1,7 +1,7 @@
 """Composer dependencies collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class ComposerDependencies(JSONFileSourceCollector):

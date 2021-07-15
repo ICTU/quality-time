@@ -3,7 +3,7 @@
 from typing import Final
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):

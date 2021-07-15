@@ -4,7 +4,7 @@ from typing import cast
 from urllib import parse
 
 from collector_utilities.type import Response, URL, Value
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import QualityTimeCollector
 

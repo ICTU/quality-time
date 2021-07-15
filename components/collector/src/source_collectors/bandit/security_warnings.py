@@ -1,7 +1,7 @@
 """Bandit security warnings collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class BanditSecurityWarnings(JSONFileSourceCollector):

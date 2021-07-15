@@ -4,7 +4,7 @@ from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
 from collector_utilities.type import Value
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .base import CxSASTScanBase
 

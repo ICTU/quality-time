@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import OWASPDependencyCheckBase
 

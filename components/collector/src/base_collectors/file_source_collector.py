@@ -11,7 +11,7 @@ from typing import cast
 from urllib.parse import urlparse
 
 from collector_utilities.type import JSON, URL, Response, Responses
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .source_collector import SourceCollector
 

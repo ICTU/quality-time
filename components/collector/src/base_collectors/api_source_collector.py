@@ -5,7 +5,7 @@ from datetime import datetime
 
 from collector_utilities.type import URL, Response
 
-from source_model import SourceResponses
+from model import SourceResponses
 from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
@@ -34,4 +34,4 @@ class JenkinsPluginSourceUpToDatenessCollector(SourceUpToDatenessCollector):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the job's timestamp."""
-        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.)
+        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.0)

@@ -6,7 +6,7 @@ from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL
-from source_model import Entity
+from model import Entity
 
 from .issues import JiraIssues
 

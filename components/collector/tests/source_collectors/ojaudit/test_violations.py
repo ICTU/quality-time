@@ -104,7 +104,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
   </construct>
 </audit>"""
         response = await self.collect(get_request_text=ojaudit_xml)
-        self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
+        self.assertTrue("has no location element" in response.sources[0].parse_error)
 
     async def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""

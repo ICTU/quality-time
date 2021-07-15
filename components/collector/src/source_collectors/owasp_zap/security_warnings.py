@@ -7,7 +7,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):

@@ -14,7 +14,7 @@ from packaging.version import Version
 
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
 from collector_utilities.type import URL, Response, Value
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class SourceCollectorException(Exception):
@@ -57,20 +57,14 @@ class SourceCollector(ABC):
         logging.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
         return None
 
-    async def get(self):
+    async def get(self) -> SourceMeasurement:
         """Return the measurement from this source."""
         responses = await self.__safely_get_source_responses()
         measurement = await self.__safely_parse_source_responses(responses)
-        landing_url = await self.__safely_parse_landing_url(responses)
-        return dict(
-            api_url=responses.api_url,
-            landing_url=landing_url,
-            value=measurement.value,
-            total=measurement.total,
-            entities=measurement.entities,
-            connection_error=responses.connection_error,
-            parse_error=measurement.parse_error,
-        )
+        measurement.api_url = responses.api_url
+        measurement.connection_error = responses.connection_error
+        measurement.landing_url = await self.__safely_parse_landing_url(responses)
+        return measurement
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""

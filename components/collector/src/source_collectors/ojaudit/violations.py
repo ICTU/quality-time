@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from base_collectors import SourceCollectorException, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 ModelFilePaths = dict[str, str]  # Model id to model file path mapping

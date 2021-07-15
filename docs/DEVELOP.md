@@ -264,7 +264,7 @@ To support [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size)
 """cloc lines of code collector."""
 
 from base_collectors import JSONFileSourceCollector
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 
 class ClocLOC(JSONFileSourceCollector):
