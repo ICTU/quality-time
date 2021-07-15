@@ -25,7 +25,7 @@ function set_report_attribute(report_uuid, attribute, value, reload) {
 }
 
 function set_reports_attribute(attribute, value, reload) {
-  return fetch_server_api('post', `reports/attribute/${attribute}`, { [attribute]: value }).then(reload)
+  return fetch_server_api('post', `reports_overview/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
 function get_report_pdf(report_uuid, query_string) {

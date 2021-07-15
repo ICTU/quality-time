@@ -55,7 +55,7 @@ def delete_item(context, item):
 @when('the client changes the {item} {attribute} to "{value}"')
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
-    item_fragment = "reports" if item == "reports" else f"{item}/{context.uuid[item]}"
+    item_fragment = "reports_overview" if item == "reports_overview" else f"{item}/{context.uuid[item]}"
     if attribute in ("tags",):  # convert comma separated values to lists
         value = value.split(", ")
     elif attribute in ("permissions",):  # convert comma separated values to lists
@@ -72,8 +72,12 @@ def change_item_attribute(context, item, attribute, value):
 
 def get_item(context, item):
     """Return the item instance of type item."""
-    item_instance = context.get("reports") if item == "reports" else context.get(f"report/{context.uuid['report']}")
-    if item != "reports":
+    item_instance = (
+        context.get("reports_overview")
+        if item == "reports_overview"
+        else context.get(f"report/{context.uuid['report']}")
+    )
+    if item != "reports_overview":
         item_instance = [
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
         ][0]
@@ -91,7 +95,7 @@ def get_item(context, item):
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
     """Check that the item attribute equals value."""
-    if item == "reports" and attribute == "permissions":  # parse json data
+    if item == "reports_overview" and attribute == "permissions":  # parse json data
         value = {} if value == "None" else json.loads(value)
     else:
         value = None if value == "None" else value
@@ -103,7 +107,7 @@ def check_item_attribute(context, item, attribute, value):
 def check_item_does_not_exist(context, item):
     """Check that the item does not exist."""
     uuids = []
-    reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("reports")
+    reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("report/")
     for report in reports["reports"]:
         uuids.append(report["report_uuid"])
         uuids.extend(report["subjects"].keys())
@@ -116,7 +120,7 @@ def check_item_does_not_exist(context, item):
 
 def get_container(context, container):
     """Return the container."""
-    reports = context.get("reports")
+    reports = context.get("report/")
     container_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     if container != "report":
         container_instance = container_instance["subjects"][context.uuid["subject"]]

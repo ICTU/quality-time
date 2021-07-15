@@ -17,7 +17,7 @@ def get_reports(database: Database):
     return overview
 
 
-@bottle.post("/api/v3/reports/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_reports_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]

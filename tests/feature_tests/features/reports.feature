@@ -5,5 +5,5 @@ Feature: reports
     Given a logged-in client
 
   Scenario: edit title
-    When the client changes the reports title to "Reports overview"
-    Then the reports title is "Reports overview"
+    When the client changes the reports_overview title to "Reports overview"
+    Then the reports_overview title is "Reports overview"
