@@ -6,7 +6,7 @@ from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMI
 
 from routes.reports import get_reports, post_reports_attribute
 
-from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from ..fixtures import METRIC_ID, SOURCE_ID
 
 
 class ReportsTest(unittest.TestCase):
@@ -127,33 +127,6 @@ class ReportsTest(unittest.TestCase):
             f"{{'{EDIT_ENTITY_PERMISSION}': ['{self.other_mail}']}}",
         )
 
-    def test_get_report(self):
+    def test_get_reports_overview(self):
         """Test that a report can be retrieved and credentials are hidden."""
-        report = create_report()
-        self.database.reports.find.return_value = [report]
-        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
-        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
-        report["summary_by_tag"] = {}
-        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
-
-    @patch("bottle.request")
-    def test_get_old_report(self, request):
-        """Test that an old report can be retrieved and credentials are hidden."""
-        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
-        report = create_report()
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = report
-        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
-        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
-        report["summary_by_tag"] = {}
-        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
-
-    def test_status_start(self):
-        """Test that the status start is part of the reports summary."""
-        self.measurement["count"]["status_start"] = "2020-12-03:22:28:00+00:00"
-        report = create_report()
-        self.database.reports.find.return_value = [report]
-        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
-        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
-        report["summary_by_tag"] = {}
-        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
+        self.assertEqual(dict(_id="id", title="Reports", subtitle=""), get_reports(self.database))

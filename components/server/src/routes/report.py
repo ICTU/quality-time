@@ -33,11 +33,12 @@ def get_report(database: Database, report_uuid: ReportId = None):
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, date_time)
 
-    if report_id_is_tag(report_uuid):
+    if report_uuid and report_id_is_tag(report_uuid):
         tag_report = get_tag_report(data_model, reports, report_uuid[4::])
         reports = []
         if tag_report is not None:
-            summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
+            recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
+            summarize_report(tag_report, recent_measurements, data_model)
             reports.append(tag_report)
     else:
         for report in reports:
@@ -177,6 +178,7 @@ def get_tag_report(data_model, reports, tag):
             subjects=subjects,
         )
         return tag_report
+    return None
 
 
 def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):
