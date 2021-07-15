@@ -5,5 +5,5 @@ beautifulsoup4==4.9.3
 cchardet==2.1.7
 defusedxml==0.7.1
 packaging==21.0
-python-dateutil==2.8.1
+python-dateutil==2.8.2
 typing_extensions==3.10.0.0
