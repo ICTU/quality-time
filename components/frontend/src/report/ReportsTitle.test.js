@@ -25,7 +25,7 @@ it('sets the title', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report overview title/), '{selectall}{del}New title{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports/attribute/title", {title: "New title"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", {title: "New title"});
 });
 
 it('sets the subtitle', async () => {
@@ -36,5 +36,5 @@ it('sets the subtitle', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{selectall}{del}New subtitle{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports/attribute/subtitle", {subtitle: "New subtitle"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {subtitle: "New subtitle"});
 });
