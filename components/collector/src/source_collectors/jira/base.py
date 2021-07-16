@@ -3,7 +3,7 @@
 from typing import Optional, cast
 
 from collector_utilities.type import URL, Value
-from source_model import Entities, Entity
+from model import Entities, Entity
 
 from .issues import JiraIssues
 

@@ -8,7 +8,7 @@ from dateutil.parser import parse
 
 from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.type import URL, Response
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
 

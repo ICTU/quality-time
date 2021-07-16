@@ -4,7 +4,7 @@ from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import AzureDevopsRepositoryBase
 

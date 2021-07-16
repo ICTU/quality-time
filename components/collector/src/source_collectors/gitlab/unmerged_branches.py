@@ -8,7 +8,7 @@ from dateutil.parser import parse
 from base_collectors import UnmergedBranchesSourceCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .base import GitLabProjectBase
 

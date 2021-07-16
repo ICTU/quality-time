@@ -3,7 +3,7 @@
 from typing import Optional
 
 from collector_utilities.type import Value
-from source_model import Entities, SourceResponses
+from model import Entities, SourceResponses
 
 from .issues import AzureDevopsIssues
 

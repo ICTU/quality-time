@@ -2,7 +2,7 @@
 
 import unittest
 
-from source_model.entity import Entity, Entities
+from model.entity import Entity, Entities
 
 
 class EntityTest(unittest.TestCase):

@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, Mock, call, mock_open, patch
 import aiohttp
 
 import quality_time_collector
-from base_collectors import MetricsCollector, SourceCollector
-from source_model import SourceMeasurement, SourceResponses
+from base_collectors import Collector, MetricCollector, SourceCollector
+from model import SourceMeasurement, SourceResponses
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
@@ -29,7 +29,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):  # pylint: disable=invalid-name
         """Override to set up common test data."""
 
-        class SourceMetric(SourceCollector):  # pylint: disable=unused-variable
+        class SourceMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
             """Register a fake collector automatically."""
 
             async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -37,8 +37,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
                 return SourceMeasurement(value="42", total="84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
-        self.metrics_collector = MetricsCollector()
-        self.metrics_collector.data_model = self.data_model
+        self.collector = Collector()
+        self.collector.data_model = self.data_model
         self.url = "https://url"
         self.measurement_api_url = "http://localhost:5001/internal-api/v3/measurements"
         self.metrics = dict(
@@ -69,7 +69,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         with self._patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
-                    await self.metrics_collector.collect_metrics(session)
+                    await self.collector.collect_metrics(session)
 
     def _source(self, **kwargs):
         """Create a source."""
@@ -83,6 +83,35 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             connection_error=connection_error,
             parse_error=None,
             source_uuid="source_id",
+        )
+
+    async def test_fetch_successful(self):
+        """Test fetching a test metric."""
+
+        class TestMetric(MetricCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
+            """Register a fake metric collector automatically."""
+
+        class SourceTestMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
+            """Register a fake source collector for the test metric automatically."""
+
+            async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+                """Override to return a source measurement fixture."""
+                return SourceMeasurement(value="42", total="84")
+
+        metrics = dict(
+            metric_uuid=dict(
+                type="test_metric",
+                addition="sum",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
+            )
+        )
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.json.return_value = metrics
+        with self._patched_post() as post:
+            await self._fetch_measurements(mock_async_get_request)
+        post.assert_called_once_with(
+            self.measurement_api_url,
+            json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid"),
         )
 
     async def test_fetch_without_sources(self):
@@ -182,7 +211,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_in_batches(self):
         """Test that metrics are fetched in batches."""
-        self.metrics_collector.MEASUREMENT_LIMIT = 1
+        self.collector.MEASUREMENT_LIMIT = 1
         self.metrics["metric_uuid2"] = dict(
             addition="sum", type="metric", sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))
         )
@@ -200,7 +229,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_prioritize_edited_metrics(self):
         """Test that edited metrics get priority."""
-        self.metrics_collector.MEASUREMENT_LIMIT = 1
+        self.collector.MEASUREMENT_LIMIT = 1
         self.metrics["metric_uuid2"] = dict(
             addition="sum", type="metric", sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))
         )
@@ -257,16 +286,16 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
         with self._patched_get(mock_async_get_request):
             async with aiohttp.ClientSession() as session:
-                self.metrics_collector.MAX_SLEEP_DURATION = 0
-                data_model = await self.metrics_collector.fetch_data_model(session)
+                self.collector.MAX_SLEEP_DURATION = 0
+                data_model = await self.collector.fetch_data_model(session)
         self.assertEqual(self.data_model, data_model)
 
     @patch("builtins.open", new_callable=mock_open)
-    @patch("base_collectors.metrics_collector.datetime")
+    @patch("base_collectors.collector.datetime")
     def test_writing_health_check(self, mocked_datetime, mocked_open):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
-        self.metrics_collector.record_health()
+        self.collector.record_health()
         mocked_open.assert_called_once_with("/home/collector/health_check.txt", "w")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
@@ -275,7 +304,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def test_fail_writing_health_check(self, mocked_log, mocked_open):
         """Test that a failure to open the health check file is logged, but otherwise ignored."""
         mocked_open.side_effect = io_error = OSError("Some error")
-        self.metrics_collector.record_health()
+        self.collector.record_health()
         mocked_log.assert_called_once_with(
             "Could not write health check time stamp to %s: %s", "/home/collector/health_check.txt", io_error
         )

@@ -7,7 +7,7 @@ import aiohttp
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Response
-from source_model import SourceResponses
+from model import SourceResponses
 
 
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method

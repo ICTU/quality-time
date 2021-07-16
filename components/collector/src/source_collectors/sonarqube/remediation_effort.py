@@ -1,7 +1,7 @@
 """SonarQube remediation effort collector."""
 
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import SonarQubeMetricsBaseClass
 

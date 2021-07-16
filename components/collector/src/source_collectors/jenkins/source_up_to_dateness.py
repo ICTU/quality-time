@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 from .base import JenkinsJobs
 

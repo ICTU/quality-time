@@ -7,7 +7,7 @@ import aiohttp
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -70,8 +70,8 @@ class CollectorTest(SourceCollectorTestCase):
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):  # skipcq: PTC-W0062
             async with aiohttp.ClientSession() as session:
-                response = await FailingLandingUrl(session, self.metric, {}).get()
-        self.assertEqual("https://api_url", response["landing_url"])
+                response = await FailingLandingUrl(session, self.metric, {}).collect()
+        self.assertEqual("https://api_url", response.landing_url)
 
     async def test_default_parameter_value_supersedes_empty_string(self):
         """Test that a parameter default value takes precedence over an empty string."""

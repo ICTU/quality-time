@@ -9,7 +9,7 @@ from dateutil.parser import parse
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method

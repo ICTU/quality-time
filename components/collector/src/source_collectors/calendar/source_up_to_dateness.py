@@ -6,7 +6,7 @@ from typing import cast
 
 from base_collectors import SourceUpToDatenessCollector
 from collector_utilities.type import Response
-from source_model import SourceResponses
+from model import SourceResponses
 
 
 class CalendarSourceUpToDateness(SourceUpToDatenessCollector):

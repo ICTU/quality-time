@@ -4,7 +4,7 @@ from abc import ABC
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import SourceResponses
+from model import SourceResponses
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method

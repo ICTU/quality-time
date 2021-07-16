@@ -7,7 +7,7 @@ from dateutil.parser import parse
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Value
-from source_model import SourceResponses
+from model import SourceResponses
 
 
 class JenkinsTestReportSourceUpToDateness(SourceCollector):

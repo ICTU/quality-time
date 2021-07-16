@@ -4,7 +4,7 @@ from typing import Final, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 TestCase = dict[str, str]

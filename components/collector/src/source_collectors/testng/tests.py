@@ -4,7 +4,7 @@ from typing import cast
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 
 class TestNGTests(XMLFileSourceCollector):

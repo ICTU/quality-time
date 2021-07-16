@@ -3,7 +3,7 @@
 from base_collectors import SourceCollector
 from collector_utilities.functions import md5_hash
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):

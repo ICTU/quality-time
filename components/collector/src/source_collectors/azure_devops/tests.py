@@ -8,7 +8,7 @@ from typing import cast
 from base_collectors import SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods

@@ -2,7 +2,7 @@
 
 from base_collectors import SourceCollector
 from collector_utilities.type import Value
-from source_model import SourceResponses
+from model import SourceResponses
 
 
 class ManualNumber(SourceCollector):

@@ -4,7 +4,7 @@ from packaging.version import Version
 
 from base_collectors import SourceVersionCollector
 from collector_utilities.type import Response, URL
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .base import CxSASTBase
 

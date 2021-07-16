@@ -6,7 +6,7 @@ from typing_extensions import TypedDict
 
 from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL
-from source_model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 class JiraVelocity(SourceCollector):

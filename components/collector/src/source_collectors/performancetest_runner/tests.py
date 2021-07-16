@@ -4,7 +4,7 @@ from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import Response
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 

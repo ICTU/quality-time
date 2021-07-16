@@ -3,7 +3,7 @@
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces
-from source_model import Entity
+from model import Entity
 
 from .dependencies import OWASPDependencyCheckDependencies
 

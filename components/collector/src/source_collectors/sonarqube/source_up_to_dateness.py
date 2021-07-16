@@ -6,7 +6,7 @@ from dateutil.parser import isoparse
 
 from base_collectors import SourceUpToDatenessCollector
 from collector_utilities.type import URL, Response
-from source_model import SourceResponses
+from model import SourceResponses
 
 from .base import SonarQubeCollector
 

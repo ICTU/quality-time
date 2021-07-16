@@ -2,8 +2,8 @@
 
 from typing import Dict, Set
 from collector_utilities.type import URL
-from source_model import SourceMeasurement, SourceResponses
-from source_model.entity import Entities, Entity
+from model import SourceMeasurement, SourceResponses
+from model.entity import Entities, Entity
 
 from .base import QualityTimeCollector
 

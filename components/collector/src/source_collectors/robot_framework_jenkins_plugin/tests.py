@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from source_model import SourceMeasurement, SourceResponses
+from model import SourceMeasurement, SourceResponses
 
 from .base import RobotFrameworkJenkinsPluginBaseClass
 
