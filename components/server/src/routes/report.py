@@ -25,6 +25,7 @@ from server_utilities.functions import DecryptionError, iso_timestamp, report_da
 from server_utilities.type import ReportId
 
 
+@bottle.get("/api/v3/report", authentication_required=False)
 @bottle.get("/api/v3/report/", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
 def get_report(database: Database, report_uuid: ReportId = None):
