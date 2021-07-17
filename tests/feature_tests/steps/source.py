@@ -64,7 +64,7 @@ def check_sources_parameter(context, parameter, container, value):
 @then('the parameter {parameter} of all sources does not equal "{value}"')
 def check_all_sources_parameter(context, parameter, value):
     """Check that all sources have a parameter with the specified value."""
-    for report in context.get("reports")["reports"]:
+    for report in context.get("report/")["reports"]:
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
                 for source in metric["sources"].values():

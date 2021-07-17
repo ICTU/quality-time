@@ -11,7 +11,6 @@ from routes.report import (
     export_report_as_json,
     export_report_as_pdf,
     get_report,
-    get_tag_report,
     post_report_attribute,
     post_report_copy,
     post_report_import,
@@ -20,7 +19,7 @@ from routes.report import (
 from server_utilities.functions import asymmetric_encrypt
 from server_utilities.type import ReportId
 
-from ..fixtures import JENNY, JOHN, REPORT_ID, REPORT_ID2, SUBJECT_ID, create_report
+from ..fixtures import JENNY, JOHN, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -119,9 +118,119 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertEqual(2, len(get_report(self.database, REPORT_ID)["reports"]))
 
     def test_get_report_missing(self):
-        """Test that a report can be retrieved."""
+        """Test that a non-existant report can not be retrieved."""
         self.database.reports.find.return_value = []
         self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
+
+    @patch("bottle.request")
+    def test_get_old_report(self, request):
+        """Test that an old report can be retrieved and credentials are hidden."""
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
+        report = create_report()
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = report
+        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
+        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
+        report["summary_by_tag"] = {}
+        self.assertEqual(dict(reports=[report]), get_report(self.database, REPORT_ID))
+
+    def test_status_start(self):
+        """Test that the status start is part of the reports summary."""
+        measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(status="target_not_met", status_start="2020-12-03:22:28:00+00:00"),
+            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+        )
+        self.database.measurements.find.return_value = [measurement]
+        report = create_report()
+        self.database.reports.find.return_value = [report]
+        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
+        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
+        report["summary_by_tag"] = {}
+        self.assertEqual(dict(reports=[report]), get_report(self.database, REPORT_ID))
+
+    @patch("server_utilities.functions.datetime")
+    def test_get_tag_report(self, date_time):
+        """Test that a tag report can be retrieved."""
+        date_time.now.return_value = now = datetime.now()
+        self.database.reports.find.return_value = [
+            dict(
+                _id="id",
+                report_uuid=REPORT_ID,
+                title="Report",
+                subjects={
+                    "subject_without_metrics": dict(metrics={}),
+                    SUBJECT_ID: dict(
+                        name="Subject",
+                        type="subject_type",
+                        metrics=dict(
+                            metric_with_tag=dict(type="metric_type", tags=["tag"]),
+                            metric_without_tag=dict(type="metric_type", tags=["other tag"]),
+                        ),
+                    ),
+                },
+            )
+        ]
+        self.assertDictEqual(
+            dict(
+                reports=[
+                    dict(
+                        summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
+                        summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
+                        summary_by_subject={SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)},
+                        title='Report for tag "tag"',
+                        subtitle="Note: tag reports are read-only",
+                        report_uuid="tag-tag",
+                        timestamp=now.replace(microsecond=0).isoformat(),
+                        subjects={
+                            SUBJECT_ID: dict(
+                                name="Report / Subject",
+                                type="subject_type",
+                                metrics=dict(
+                                    metric_with_tag=dict(
+                                        status=None,
+                                        value=None,
+                                        scale="count",
+                                        recent_measurements=[],
+                                        type="metric_type",
+                                        tags=["tag"],
+                                    )
+                                ),
+                            )
+                        },
+                    ),
+                ]
+            ),
+            get_report(self.database, "tag-tag"),
+        )
+
+    @patch("server_utilities.functions.datetime")
+    def test_no_empty_tag_report(self, date_time):
+        """Test that empty tag reports are omitted."""
+        date_time.now.return_value = datetime.now()
+        self.database.reports.find.return_value = [
+            dict(
+                _id="id",
+                report_uuid=REPORT_ID,
+                title="Report",
+                subjects={
+                    "subject_without_metrics": dict(metrics={}),
+                    SUBJECT_ID: dict(
+                        name="Subject",
+                        type="subject_type",
+                        metrics=dict(
+                            metric_with_tag=dict(type="metric_type", tags=["tag"]),
+                            metric_without_tag=dict(type="metric_type", tags=["other tag"]),
+                        ),
+                    ),
+                },
+            )
+        ]
+        self.assertDictEqual(
+            dict(reports=[]),
+            get_report(self.database, "tag-non-existing-tag"),
+        )
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -261,54 +370,3 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)
-
-    @patch("server_utilities.functions.datetime")
-    def test_get_tag_report(self, date_time):
-        """Test that a tag report can be retrieved."""
-        date_time.now.return_value = now = datetime.now()
-        self.database.reports.find.return_value = [
-            dict(
-                _id="id",
-                report_uuid=REPORT_ID,
-                title="Report",
-                subjects={
-                    "subject_without_metrics": dict(metrics={}),
-                    SUBJECT_ID: dict(
-                        name="Subject",
-                        type="subject_type",
-                        metrics=dict(
-                            metric_with_tag=dict(type="metric_type", tags=["tag"]),
-                            metric_without_tag=dict(type="metric_type", tags=["other tag"]),
-                        ),
-                    ),
-                },
-            )
-        ]
-        self.assertDictEqual(
-            dict(
-                summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
-                summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
-                summary_by_subject={SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)},
-                title='Report for tag "tag"',
-                subtitle="Note: tag reports are read-only",
-                report_uuid="tag-tag",
-                timestamp=now.replace(microsecond=0).isoformat(),
-                subjects={
-                    SUBJECT_ID: dict(
-                        name="Report / Subject",
-                        type="subject_type",
-                        metrics=dict(
-                            metric_with_tag=dict(
-                                status=None,
-                                value=None,
-                                scale="count",
-                                recent_measurements=[],
-                                type="metric_type",
-                                tags=["tag"],
-                            )
-                        ),
-                    )
-                },
-            ),
-            get_tag_report("tag", self.database),
-        )

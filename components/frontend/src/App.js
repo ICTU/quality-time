@@ -14,7 +14,7 @@ import { parse, stringify } from 'query-string';
 
 import { Permissions } from './context/Permissions';
 import { get_datamodel } from './api/datamodel';
-import { get_report, get_reports, get_tag_report } from './api/report';
+import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { getUserPermissions, isValidDate_YYYYMMDD, show_message } from './utils'
@@ -67,18 +67,12 @@ class App extends Component {
     }
     const report_date = this.report_date();
     const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
-    if (this.state.report_uuid === "") {
-      this.reload_reports(report_date, show_error)
-    } else if (this.current_report_is_tag_report()) {
-      this.reload_tag_report(report_date, show_error);
-    } else {
-      this.reload_report(report_date, show_error)
-    }
+    this.loadAndSetState(report_date, show_error)
   }
 
-  reload_report(report_date, show_error) {
-    Promise.all([get_datamodel(report_date), get_report(this.state.report_uuid, report_date)]).then(
-      ([data_model, reports]) => {
+  loadAndSetState(report_date, show_error) {
+    Promise.all([get_datamodel(report_date), get_reports_overview(report_date), get_reports(this.state.report_uuid, report_date)]).then(
+      ([data_model, reports_overview, reports]) => {
         if (data_model.ok === false || reports.ok === false) {
           show_error();
         } else {
@@ -86,46 +80,15 @@ class App extends Component {
           this.setState({
             loading: false,
             datamodel: data_model,
-            reports: reports.reports || [],
-            last_update: now
-          });
-        }
-      }).catch(show_error);
-  }
-
-  reload_tag_report(report_date, show_error) {
-    const tag = this.state.report_uuid.slice(4);
-    Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
-      ([data_model, report]) => {
-        if (data_model.ok === false || report.ok === false) {
-          show_error();
-        } else {
-          const now = new Date();
-          this.setState({
-            loading: false,
-            datamodel: data_model,
-            reports: Object.keys(report.subjects).length > 0 ? [report] : [],
-            last_update: now
-          });
-        }
-      }).catch(show_error);
-  }
-
-  reload_reports(report_date, show_error) {
-    Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
-      ([data_model, reports]) => {
-        if (data_model.ok === false || reports.ok === false) {
-          show_error();
-        } else {
-          const now = new Date();
-          this.setState({
-            loading: false,
-            datamodel: data_model,
-            reports: reports.reports || [],
             reports_overview: {
-              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, permissions: reports.permissions },
+              layout: reports_overview.layout,
+              subtitle: reports_overview.subtitle,
+              title: reports_overview.title,
+              permissions: reports_overview.permissions
+            },
+            reports: reports.reports || [],
             last_update: now
-          })
+          });
         }
       }).catch(show_error);
   }

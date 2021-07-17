@@ -25,17 +25,27 @@ from server_utilities.functions import DecryptionError, iso_timestamp, report_da
 from server_utilities.type import ReportId
 
 
+@bottle.get("/api/v3/report", authentication_required=False)
+@bottle.get("/api/v3/report/", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
-def get_report(database: Database, report_uuid: ReportId):
+def get_report(database: Database, report_uuid: ReportId = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, date_time)
-    for report in reports:
-        if report["report_uuid"] == report_uuid:
+
+    if report_uuid and report_uuid.startswith("tag-"):
+        tag_report = get_tag_report(data_model, reports, report_uuid[4:])
+        reports = []
+        if tag_report is not None:
             recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
-            summarize_report(report, recent_measurements, data_model)
-            break
+            summarize_report(tag_report, recent_measurements, data_model)
+            reports.append(tag_report)
+    else:
+        recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
+        for report in reports:
+            if not report_uuid or report["report_uuid"] == report_uuid:
+                summarize_report(report, recent_measurements, data_model)
     hide_credentials(data_model, *reports)
     return dict(reports=reports)
 
@@ -157,23 +167,19 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
-@bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
-def get_tag_report(tag: str, database: Database):
+def get_tag_report(data_model, reports, tag):
     """Get a report with all metrics that have the specified tag."""
-    date_time = report_date_time()
-    reports = latest_reports(database, date_time)
-    data_model = latest_datamodel(database, date_time)
     subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
-    tag_report = dict(
-        title=f'Report for tag "{tag}"',
-        subtitle="Note: tag reports are read-only",
-        report_uuid=f"tag-{tag}",
-        timestamp=iso_timestamp(),
-        subjects=subjects,
-    )
-    hide_credentials(data_model, tag_report)
-    summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
-    return tag_report
+    if len(subjects) > 0:
+        tag_report = dict(
+            title=f'Report for tag "{tag}"',
+            subtitle="Note: tag reports are read-only",
+            report_uuid=f"tag-{tag}",
+            timestamp=iso_timestamp(),
+            subjects=subjects,
+        )
+        return tag_report
+    return None
 
 
 def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):

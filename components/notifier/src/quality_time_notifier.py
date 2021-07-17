@@ -21,7 +21,7 @@ async def notify(log_level: int = None) -> NoReturn:
     api_version = "v3"
     reports_url = (
         f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
-        f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
+        f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/report"
     )
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)

@@ -4,9 +4,9 @@ Feature: changelog
   Background:
     Given a logged-in client
     When the client waits a second
-    And the client changes the reports title to "Reports"
+    And the client changes the reports_overview title to "Reports"
     And the client waits a second
-    And the client changes the reports title to "Reports overview"
+    And the client changes the reports_overview title to "Reports overview"
     And the client waits a second
 
   Scenario: create a report

@@ -4,31 +4,19 @@ import bottle
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import latest_datamodel
-from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
-from model.transformations import hide_credentials, summarize_report
+from database.reports import insert_new_reports_overview, latest_reports_overview
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import report_date_time
 
 
-@bottle.get("/api/v3/reports", authentication_required=False)
-def get_reports(database: Database):
+@bottle.get("/api/v3/reports_overview", authentication_required=False)
+def get_reports_overview(database: Database):
     """Return all the quality reports."""
-    date_time = report_date_time()
-    data_model = latest_datamodel(database, date_time)
-    overview = latest_reports_overview(database, date_time)
-    overview["reports"] = []
-    recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
-    for report in latest_reports(database, date_time):
-        summarize_report(report, recent_measurements, data_model)
-        overview["reports"].append(report)
-    hide_credentials(data_model, *overview["reports"])
-    return overview
+    return latest_reports_overview(database, report_date_time())
 
 
-@bottle.post("/api/v3/reports/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
-def post_reports_attribute(reports_attribute: str, database: Database):
+@bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+def post_reports_overview_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]
     overview = latest_reports_overview(database)
