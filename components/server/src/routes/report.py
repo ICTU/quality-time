@@ -21,7 +21,7 @@ from model.transformations import (
     summarize_report,
 )
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, report_id_is_tag, uuid
+from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -34,17 +34,17 @@ def get_report(database: Database, report_uuid: ReportId = None):
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, date_time)
 
-    if report_uuid and report_id_is_tag(report_uuid):
-        tag_report = get_tag_report(data_model, reports, report_uuid[4::])
+    if report_uuid and report_uuid.startswith("tag-"):
+        tag_report = get_tag_report(data_model, reports, report_uuid[4:])
         reports = []
         if tag_report is not None:
             recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
             summarize_report(tag_report, recent_measurements, data_model)
             reports.append(tag_report)
     else:
+        recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-                recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
                 summarize_report(report, recent_measurements, data_model)
     hide_credentials(data_model, *reports)
     return dict(reports=reports)

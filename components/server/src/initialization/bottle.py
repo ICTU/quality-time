@@ -17,7 +17,7 @@ from routes import (  # lgtm [py/unused-import]
     metric,
     notification,
     report,
-    reports,
+    reports_overview,
     server,
     source,
     subject,

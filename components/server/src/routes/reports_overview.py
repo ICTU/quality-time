@@ -10,15 +10,13 @@ from server_utilities.functions import report_date_time
 
 
 @bottle.get("/api/v3/reports_overview", authentication_required=False)
-def get_reports(database: Database):
+def get_reports_overview(database: Database):
     """Return all the quality reports."""
-    date_time = report_date_time()
-    overview = latest_reports_overview(database, date_time)
-    return overview
+    return latest_reports_overview(database, report_date_time())
 
 
 @bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
-def post_reports_attribute(reports_attribute: str, database: Database):
+def post_reports_overview_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]
     overview = latest_reports_overview(database)
