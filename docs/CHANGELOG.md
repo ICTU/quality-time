@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - When measuring merge requests with GitLab Premium as source, the merge requests can be filtered by approval state. Closes [#1979](https://github.com/ICTU/quality-time/issues/1979).
+- Include the tests from TestNG XML reports in the measurement details of the 'tests' metric. Closes [#2388](https://github.com/ICTU/quality-time/issues/2388).
 
 ## [3.23.3] - [2021-06-29]
 

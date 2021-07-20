@@ -10,16 +10,17 @@ from model import Entities, Entity, SourceMeasurement, SourceResponses
 class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
+    JUNIT_STATUS_NODES = dict(errored="error", failed="failure", skipped="skipped")
+
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the tests from the JUnit XML."""
         entities = Entities()
         test_statuses_to_count = cast(list[str], self._parameter("test_result"))
-        junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
         total = 0
         for response in responses:
             tree = await parse_source_response_xml(response)
             for test_case in tree.findall(".//testcase"):
-                for test_result, junit_status_node in junit_status_nodes.items():
+                for test_result, junit_status_node in self.JUNIT_STATUS_NODES.items():
                     if test_case.find(junit_status_node) is not None:
                         break
                 else:

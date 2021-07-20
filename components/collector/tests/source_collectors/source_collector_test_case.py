@@ -111,14 +111,15 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
 
-    def __assert_measurement_source_attribute(self, attribute_key, attribute_value, measurement, source_index):
+    def __assert_measurement_source_attribute(self, attribute_key, expected_attribute_value, measurement, source_index):
         """Assert that the measurement source attribute has the expected value."""
-        if isinstance(attribute_value, list):
-            for pair in zip(attribute_value, getattr(measurement.sources[source_index], attribute_key)):
-                assert_equal = self.assertDictEqual if isinstance(pair[0], dict) else self.assertEqual
-                assert_equal(pair[0], pair[1])
+        attribute_value = getattr(measurement.sources[source_index], attribute_key)
+        if isinstance(expected_attribute_value, list):
+            for pair in zip(expected_attribute_value, attribute_value):
+                self.assertEqual(pair[0], pair[1])
+            self.assertEqual(len(expected_attribute_value), len(attribute_value))
         else:
-            self.assertEqual(attribute_value, getattr(measurement.sources[source_index], attribute_key))
+            self.assertEqual(expected_attribute_value, attribute_value)
 
     @staticmethod
     def zipped_report(*filenames_and_contents: tuple[str, str]) -> bytes:
