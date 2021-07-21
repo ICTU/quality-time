@@ -40,9 +40,9 @@ class TestNGTests(XMLFileSourceCollector):
         return entities
 
     @staticmethod
-    def __entity(
+    def __entity(  # pylint: disable=unused-private-member
         test_method: Element, class_name: str, test_result: str
-    ) -> Entity:  # pylint: disable=unused-private-member
+    ) -> Entity:
         """Transform a test method into an entity."""
         name = test_method.get("name")
         key = f"{class_name}_{name}"
