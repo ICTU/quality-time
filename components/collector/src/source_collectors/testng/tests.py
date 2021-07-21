@@ -35,15 +35,12 @@ class TestNGTests(XMLFileSourceCollector):
             class_name = test_class.get("name", "")
             for test_method in test_class.findall(".//test-method"):
                 test_result = cls.TEST_RESULT.get(test_method.get("status", ""))
-                if test_result in test_results_to_count:
-                    entities.append(cls.__entity(test_method, class_name, test_result))
+                if test_method.get("is-config", "false") == "true" or test_result not in test_results_to_count:
+                    continue  # Skip config (beforeClass/afterClass) methods and test results the user wants to ignore
+                name = test_method.get("name", "")
+                description = test_method.get("description", "")
+                key = f"{class_name}_{name}"
+                entities.append(
+                    Entity(key=key, name=name, description=description, class_name=class_name, test_result=test_result)
+                )
         return entities
-
-    @staticmethod
-    def __entity(  # pylint: disable=unused-private-member
-        test_method: Element, class_name: str, test_result: str
-    ) -> Entity:
-        """Transform a test method into an entity."""
-        name = test_method.get("name")
-        key = f"{class_name}_{name}"
-        return Entity(key=key, name=name, class_name=class_name, test_result=test_result)

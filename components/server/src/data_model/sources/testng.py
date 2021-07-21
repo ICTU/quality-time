@@ -21,6 +21,7 @@ TESTNG = Source(
             attributes=[
                 dict(name="Class name"),
                 dict(name="Test method", key="name"),
+                dict(name="Description"),
                 dict(
                     name="Test result",
                     color=dict(failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING),
