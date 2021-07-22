@@ -43,3 +43,5 @@ help  # unused variable (/Users/fniessink/Developer/quality-time/components/serv
 help  # unused variable (/Users/fniessink/Developer/quality-time/components/server/src/data/parameters.py:173)
 help  # unused variable (/Users/fniessink/Developer/quality-time/components/server/src/data/parameters.py:182)
 set_description  # unused function (/Users/fniessink/Developer/quality-time/components/server/src/data/meta/base.py:17)
+get_tag_report_api  # unused function(/Users/werk/Projects/ictu/quality-time/components/server/src/routes/report.py:53)
+get_reports  # unused function (/Users/werk/Projects/ictu/quality-time/components/server/src/routes/reports_overview.py:21)
