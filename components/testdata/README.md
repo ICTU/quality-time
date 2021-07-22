@@ -19,3 +19,4 @@ Add the example file(s) to the [test data reports](reports) and update one or mo
 ## Acknowledgements
 
 - `cobertura.xml` was copied from [https://github.com/Bachmann1234/diff_cover/blob/master/diff_cover/tests/fixtures/dotnet_coverage.xml](https://github.com/Bachmann1234/diff_cover/blob/master/diff_cover/tests/fixtures/dotnet_coverage.xml).
+- `testng-results.xml` was copied from [https://github.com/richie-b/AtnApiTest/blob/master/test-output/testng-results.xml](https://github.com/richie-b/AtnApiTest/blob/master/test-output/testng-results.xml).
