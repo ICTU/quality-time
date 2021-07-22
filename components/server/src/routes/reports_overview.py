@@ -20,7 +20,7 @@ def get_reports_overview(database: Database):
 
 @bottle.get("/api/v3/reports", authentication_required=False)
 def get_reports(database: Database):
-    """Return all the quality reports."""
+    """DEPRICATED use /api/v3/reports_overview and /api/v3/report instead. Return all the quality reports."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)
