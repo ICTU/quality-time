@@ -19,7 +19,7 @@ def get_reports_overview(database: Database):
 
 
 @bottle.get("/api/v3/reports", authentication_required=False)
-def get_reports(database: Database):
+def get_reports(database: Database):  # pragma: no cover
     """DEPRICATED use /api/v3/reports_overview and /api/v3/report instead. Return all the quality reports."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
