@@ -52,7 +52,8 @@ def get_report(database: Database, report_uuid: ReportId = None):
 
 @bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
 def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
-    """DEPRICATED use /api/v3/report/<report_uuid> instead. Get a report with all metrics that have the specified tag."""
+    """DEPRICATED use /api/v3/report/<report_uuid> instead.
+    Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
     reports = latest_reports(database, date_time)
     data_model = latest_datamodel(database, date_time)
