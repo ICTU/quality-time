@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - When measuring merge requests with GitLab Premium as source, the merge requests can be filtered by approval state. Closes [#1979](https://github.com/ICTU/quality-time/issues/1979).
+- Include the key of Jira issues in the measurement details of the 'issues', 'manual test duration', 'manual test execution', and 'user story points' metrics. Prepares for [#2139](https://github.com/ICTU/quality-time/issues/2139).
 - Include the tests from TestNG XML reports in the measurement details of the 'tests' metric. Closes [#2388](https://github.com/ICTU/quality-time/issues/2388).
 - The API has a new endpoint in REST style, `/api/v3/report`, to retrieve all reports.
 
@@ -28,7 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Deprecated
 
 - The API endpoint `/api/v3/reports` is deprecated. Use `/api/v3/reports_overview` and `/api/v3/report` instead.
-- The API endpoint `/api/v3/tag_report` is deprecated. use `/api/v3/report/{report_uuid}` instead.
+- The API endpoint `/api/v3/tag_report` is deprecated. Use `/api/v3/report/{report_uuid}` instead.
 
 ## [3.23.3] - [2021-06-29]
 

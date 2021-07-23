@@ -17,7 +17,8 @@ class VelocityType(str, Enum):
 
 
 ISSUE_ATTRIBUTES = [
-    dict(name="Summary", url="url"),
+    dict(name="Key", key="issue_key", url="url"),
+    dict(name="Summary"),
     dict(name="Issue type", key="type"),
     dict(name="Status"),
     dict(name="Priority"),
@@ -133,14 +134,16 @@ JIRA = Source(
             name="test case",
             measured_attribute="duration",
             attributes=[
-                dict(name="Summary", url="url"),
+                dict(name="Key", key="issue_key", url="url"),
+                dict(name="Summary"),
                 dict(name="Duration (minutes)", key="duration", type=EntityAttributeType.INTEGER),
             ],
         ),
         manual_test_execution=dict(
             name="test case",
             attributes=[
-                dict(name="Summary", url="url"),
+                dict(name="Key", key="issue_key", url="url"),
+                dict(name="Summary"),
                 dict(name="Date of last test", key="last_test_date", type=EntityAttributeType.DATE),
                 dict(
                     name="Desired test frequency (days)", key="desired_test_frequency", type=EntityAttributeType.INTEGER
