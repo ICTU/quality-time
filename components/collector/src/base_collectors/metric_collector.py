@@ -42,6 +42,7 @@ class MetricCollector:
         if not collectors:
             return None
         measurements = await asyncio.gather(*collectors)
-        for measurement, source_uuid in zip(measurements, self.__metric["sources"]):
-            measurement.source_uuid = source_uuid
+        for source_measurement, (source_uuid, source) in zip(measurements, self.__metric["sources"].items()):
+            source_measurement.source_uuid = source_uuid
+            source_measurement.type = source["type"]
         return MetricMeasurement(measurements)

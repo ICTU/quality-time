@@ -23,6 +23,7 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
         self.api_url: Optional[URL] = None
         self.landing_url: Optional[URL] = None
         self.source_uuid: Optional[str] = None
+        self.type: Optional[str] = None
 
     def has_error(self) -> bool:
         """Return whether the measurement had a connection or parse error."""

@@ -73,6 +73,7 @@ from .jira.issues import JiraIssues
 from .jira.manual_test_duration import JiraManualTestDuration
 from .jira.manual_test_execution import JiraManualTestExecution
 from .jira.source_version import JiraSourceVersion
+from .jira.test_cases import JiraTestCases
 from .jira.user_story_points import JiraUserStoryPoints
 from .jira.velocity import JiraVelocity
 
@@ -144,6 +145,7 @@ from .sonarqube.uncovered_lines import SonarQubeUncoveredLines
 from .sonarqube.violations import SonarQubeViolations
 
 from .testng.source_up_to_dateness import TestNGSourceUpToDateness
+from .testng.test_cases import TestNGTestCases
 from .testng.tests import TestNGTests
 
 from .trello.issues import TrelloIssues

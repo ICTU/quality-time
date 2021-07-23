@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from ..meta.entity import EntityAttributeType
+from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
 from ..meta.unit import Unit
 from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter
@@ -32,6 +32,7 @@ ALL_JIRA_METRICS = [
     "manual_test_duration",
     "manual_test_execution",
     "source_version",
+    "test_cases",
     "user_story_points",
     "velocity",
 ]
@@ -54,6 +55,7 @@ JIRA = Source(
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
+                "test_cases",
                 "user_story_points",
             ],
         ),
@@ -148,6 +150,21 @@ JIRA = Source(
                 dict(
                     name="Desired test frequency (days)", key="desired_test_frequency", type=EntityAttributeType.INTEGER
                 ),
+            ],
+        ),
+        test_cases=dict(
+            name="test cases",
+            attributes=[
+                dict(name="Key", key="issue_key", url="url"),
+                dict(name="Summary"),
+                dict(name="Issue type", key="type"),
+                dict(name="Status"),
+                dict(name="Priority"),
+                dict(
+                    name="Test result", color=dict(failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING)
+                ),
+                dict(name="Created", type=EntityAttributeType.DATETIME),
+                dict(name="Updated", type=EntityAttributeType.DATETIME),
             ],
         ),
         user_story_points=dict(

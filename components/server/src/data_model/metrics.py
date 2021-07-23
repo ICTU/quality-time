@@ -275,6 +275,17 @@ METRICS = Metrics.parse_obj(
             sources=["manual_number", "sonarqube"],
             tags=[Tag.MAINTAINABILITY],
         ),
+        test_cases=dict(
+            name="Test cases",
+            description="The amount of test cases.",
+            scales=["count", "percentage"],
+            unit=Unit.TEST_CASES,
+            direction=Direction.MORE_IS_BETTER,
+            near_target="0",
+            default_source="jira",
+            sources=["jira", "manual_number", "testng"],
+            tags=[Tag.TEST_QUALITY],
+        ),
         tests=dict(
             name="Tests",
             description="The amount of tests.",

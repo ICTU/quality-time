@@ -6,6 +6,7 @@ import logging
 from base_collectors import Collector
 
 # Make sure subclasses are registered
+from metric_collectors import *  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
 from source_collectors import *  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
 
 

@@ -25,6 +25,7 @@ class Unit(str, Enum):
     SECURITY_WARNINGS = "security warnings"
     SPRINTS = "sprints"
     SUPPRESSED_VIOLATIONS = "suppressed violations"
+    TEST_CASES = "test cases"
     TESTS = "tests"
     TRANSACTIONS = "transactions"
     UNCOVERED_BRANCHES = "uncovered branches"
