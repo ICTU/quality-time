@@ -58,6 +58,7 @@ class JiraIssues(SourceCollector):
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
         entity_attributes = dict(
+            issue_key=issue["key"],
             created=fields["created"],
             priority=fields.get("priority", {}).get("name"),
             status=fields.get("status", {}).get("name"),

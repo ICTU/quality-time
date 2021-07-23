@@ -26,6 +26,7 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Create an entity."""
         return dict(
             key=key,
+            issue_key=key,
             summary=f"Summary {key}",
             url=f"{self.url}/browse/{key}",
             created=created or self.created,
