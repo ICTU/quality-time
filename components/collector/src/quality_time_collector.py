@@ -4,8 +4,8 @@ import asyncio
 import logging
 
 # Make sure subclasses are registered
-import metric_collectors  # pylint: disable=unused-import
-import source_collectors  # pylint: disable=unused-import
+import metric_collectors  # lgtm [py/unused-import], pylint: disable=unused-import
+import source_collectors  # lgtm [py/unused-import], pylint: disable=unused-import
 from base_collectors import Collector
 
 
