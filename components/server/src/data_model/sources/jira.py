@@ -39,6 +39,8 @@ ALL_JIRA_METRICS = [
 
 CUSTOM_FIELD_ID_HELP_URL = "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html"
 
+TEST_CASE = "test_case"
+
 JIRA = Source(
     name="Jira",
     description="Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project "
@@ -133,7 +135,7 @@ JIRA = Source(
     entities=dict(
         issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
         manual_test_duration=dict(
-            name="test case",
+            name=TEST_CASE,
             measured_attribute="duration",
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
@@ -142,7 +144,7 @@ JIRA = Source(
             ],
         ),
         manual_test_execution=dict(
-            name="test case",
+            name=TEST_CASE,
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
                 dict(name="Summary"),
@@ -153,7 +155,7 @@ JIRA = Source(
             ],
         ),
         test_cases=dict(
-            name="test case",
+            name=TEST_CASE,
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
                 dict(name="Summary"),
