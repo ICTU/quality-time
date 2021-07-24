@@ -1,4 +1,4 @@
-"""Metric collectors per source."""
+"""Source collectors."""
 
 from .anchore.security_warnings import AnchoreSecurityWarnings
 from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
