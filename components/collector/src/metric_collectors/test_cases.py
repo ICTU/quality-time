@@ -10,6 +10,8 @@ from model import Entity, SourceMeasurement, MetricMeasurement
 class TestCases(MetricCollector):
     """Test cases collector."""
 
+    __test__ = False  # Make sure nose knows this is not a test class
+
     # Mapping to calculate the test result of a test case. The keys are tuples of the current test result of the test
     # case and the next test result found. The value is the resulting test result. For example,
     # {("passed", "skipped"), "skipped"} means that if a test case has passed so far and we see a skipped test result,
