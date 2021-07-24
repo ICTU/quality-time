@@ -153,7 +153,7 @@ JIRA = Source(
             ],
         ),
         test_cases=dict(
-            name="test cases",
+            name="test case",
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
                 dict(name="Summary"),
