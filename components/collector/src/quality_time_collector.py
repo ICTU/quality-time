@@ -3,11 +3,10 @@
 import asyncio
 import logging
 
-from base_collectors import Collector
-
 # Make sure subclasses are registered
-import metric_collectors  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
-import source_collectors  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
+import metric_collectors  # pylint: disable=unused-import
+import source_collectors  # pylint: disable=unused-import
+from base_collectors import Collector
 
 
 async def collect(log_level: int = None) -> None:
