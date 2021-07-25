@@ -3,11 +3,10 @@
 import asyncio
 import logging
 import traceback
-import urllib
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Final, Optional, Union, cast
+from typing import Any, Final, Optional, Union
 
 import aiohttp
 from packaging.version import Version
@@ -35,7 +34,7 @@ class SourceCollector(ABC):
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
         self._data_model: Final = data_model
-        self.__parameters = SourceParameters(source, self.API_URL_PARAMETER_KEY)
+        self.__parameters = SourceParameters(source, data_model, self.API_URL_PARAMETER_KEY)
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
@@ -72,26 +71,7 @@ class SourceCollector(ABC):
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
         """Return the parameter value."""
-
-        def quote_if_needed(parameter_value: str) -> str:
-            """Quote the string if needed."""
-            return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
-
-        parameter_info = self._data_model["sources"][self.source_type]["parameters"][parameter_key]
-        if parameter_info["type"] == "multiple_choice":
-            # If the user didn't pick any values, select the default value if any, otherwise select all values:
-            default_value = parameter_info.get("default_value", [])
-            value = self.__parameters.get(parameter_key) or default_value or parameter_info["values"]
-            # Ensure all values picked by the user are still allowed. Remove any values that are no longer allowed:
-            value = [v for v in value if v in parameter_info["values"]]
-        else:
-            default_value = parameter_info.get("default_value", "")
-            value = self.__parameters.get(parameter_key) or default_value
-        if api_values := parameter_info.get("api_values"):
-            value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
-        if parameter_key.endswith("url"):
-            value = cast(str, value).rstrip("/")
-        return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
+        return self.__parameters.get(parameter_key, quote)
 
     async def __safely_get_source_responses(self) -> SourceResponses:
         """Connect to the source and get the data, without failing.
