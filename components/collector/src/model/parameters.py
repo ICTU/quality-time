@@ -10,9 +10,8 @@ class SourceParameters:
     """Source parameters."""
 
     def __init__(self, source: dict, data_model, api_url_parameter_key: str) -> None:
-        self.__source_type = source["type"]
         self.__parameters = source.get("parameters", {})
-        self.__data_model = data_model
+        self.__source_type_parameters = data_model["sources"][source["type"]]["parameters"]
         self.__api_url_parameter_key = api_url_parameter_key
 
     def api_url(self) -> URL:
@@ -42,7 +41,7 @@ class SourceParameters:
             """Quote the string if needed."""
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
-        parameter_info = self.__data_model["sources"][self.__source_type]["parameters"][parameter_key]
+        parameter_info = self.__source_type_parameters[parameter_key]
         if parameter_info["type"] == "multiple_choice":
             # If the user didn't pick any values, select the default value if any, otherwise select all values:
             default_value = parameter_info.get("default_value", [])
