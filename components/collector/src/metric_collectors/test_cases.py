@@ -1,10 +1,10 @@
 """Test cases collector."""
 
 import re
-from typing import Optional, Sequence
+from typing import cast, Optional, Sequence
 
 from base_collectors import MetricCollector
-from model import Entity, SourceMeasurement, MetricMeasurement
+from model import Entities, Entity, SourceMeasurement, MetricMeasurement
 
 
 class TestCases(MetricCollector):
@@ -17,9 +17,9 @@ class TestCases(MetricCollector):
     # {("passed", "skipped"), "skipped"} means that if a test case has passed so far and we see a skipped test result,
     # the updated test result state of the test case is skipped.
     TEST_RESULT_STATE = {
-        (None, "passed"): "passed",
-        (None, "skipped"): "skipped",
-        (None, "failed"): "failed",
+        ("untested", "passed"): "passed",
+        ("untested", "skipped"): "skipped",
+        ("untested", "failed"): "failed",
         ("passed", "passed"): "passed",
         ("passed", "skipped"): "skipped",
         ("passed", "failed"): "failed",
@@ -33,7 +33,7 @@ class TestCases(MetricCollector):
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
 
     async def collect(self) -> Optional[MetricMeasurement]:
-        """Override to combine the logical and the physical test cases."""
+        """Override to add the rest results from the test report(s) to the test cases."""
         if (measurement := await super().collect()) is None:
             return None
         test_cases = self.test_cases(measurement.sources)
@@ -45,14 +45,27 @@ class TestCases(MetricCollector):
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
         for test in self.test_sources(measurement.sources):
             test.value = "0"  # Only count test cases
+        test_results_to_count = [status.lower() for status in cast(list[str], self._parameter("test_result"))]
+        for source in self.test_case_sources(measurement.sources):
+            source.entities = Entities(
+                entity for entity in source.entities if entity["test_result"] in test_results_to_count
+            )
         return measurement
 
-    @staticmethod
-    def test_cases(sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
-        """Return the test cases, indexed by their keys."""
-        return {
-            entity["issue_key"]: entity for source in sources for entity in source.entities if source.type == "jira"
+    @classmethod
+    def test_cases(cls, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
+        """Return the test cases, indexed by their keys, with initialized to '."""
+        test_cases = {
+            entity["issue_key"]: entity for source in cls.test_case_sources(sources) for entity in source.entities
         }
+        for entity in test_cases.values():
+            entity.setdefault("test_result", "untested")
+        return test_cases
+
+    @classmethod
+    def test_case_sources(cls, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
+        """Return the test case sources."""
+        return [source for source in sources if source.type == "jira"]
 
     @classmethod
     def test_entities(cls, sources: Sequence[SourceMeasurement]) -> list[Entity]:

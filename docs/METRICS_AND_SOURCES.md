@@ -906,6 +906,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Password for basic authentication | Password |  |  | No |  |
+| Test results | Multiple choice | failed, passed, skipped, untested | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String |  |  | No |  |
 

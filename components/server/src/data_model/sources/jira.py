@@ -5,7 +5,7 @@ from enum import Enum
 from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
 from ..meta.unit import Unit
-from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter
+from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter, TestResult
 
 
 class VelocityType(str, Enum):
@@ -122,6 +122,7 @@ JIRA = Source(
             default_value="Story Points",
             metrics=["user_story_points"],
         ),
+        test_result=TestResult(metrics=["test_cases"], values=["failed", "passed", "skipped", "untested"]),
         **access_parameters(
             ALL_JIRA_METRICS,
             kwargs=dict(
@@ -163,7 +164,10 @@ JIRA = Source(
                 dict(name="Status"),
                 dict(name="Priority"),
                 dict(
-                    name="Test result", color=dict(failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING)
+                    name="Test result",
+                    color=dict(
+                        failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING, untested=Color.ACTIVE
+                    ),
                 ),
                 dict(name="Created", type=EntityAttributeType.DATETIME),
                 dict(name="Updated", type=EntityAttributeType.DATETIME),

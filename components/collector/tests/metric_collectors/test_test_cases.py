@@ -27,6 +27,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
           </suite>
         </testng-results>
         """
+    CREATED = "2020-08-06T16:36:48.000+0200"
 
     def setUp(self) -> None:  # pylint: disable=invalid-name
         """Extend to set up test fixtures."""
@@ -35,25 +36,24 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.response = self.session.get.return_value = AsyncMock()
         self.jira_url = "https://jira"
         self.testng_url = "https://testng"
-        self.created = "2020-08-06T16:36:48.000+0200"
 
     def jira_issue(self, key="key-1", **fields):
         """Create a Jira issue."""
-        return dict(id=key, key=key, fields=dict(created=self.created, summary=f"Summary {key}", **fields))
+        return dict(id=key, key=key, fields=dict(created=self.CREATED, summary=f"Summary {key}", **fields))
 
-    def jira_entity(self, key="key-1", created=None, updated=None, issuetype="Unknown issue type", **kwargs):
+    def jira_entity(self, key="key-1", test_result="untested"):
         """Create an entity."""
         return dict(
             key=key,
             issue_key=key,
             summary=f"Summary {key}",
             url=f"{self.jira_url}/browse/{key}",
-            created=created or self.created,
-            updated=updated,
+            created=self.CREATED,
+            updated=None,
             status=None,
             priority=None,
-            type=issuetype,
-            **kwargs,
+            type="Unknown issue type",
+            test_result=test_result,
         )
 
     async def collect(self, sources) -> Optional[MetricMeasurement]:
@@ -74,11 +74,13 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_matching_tests(self):
         """Test one matching test cases."""
-        test_cases_json = dict(total=1, issues=[self.jira_issue()])
+        test_cases_json = dict(total=2, issues=[self.jira_issue(), self.jira_issue("key-2")])
         self.response.json = AsyncMock(side_effect=[[], test_cases_json])
         self.response.text = AsyncMock(return_value=self.TESTNG_XML)
         jira = dict(type="jira", parameters=dict(url=self.jira_url))
         testng = dict(type="testng", parameters=dict(url=self.testng_url))
         measurement = await self.collect(dict(jira=jira, testng=testng))
-        self.assertDictEqual(self.jira_entity(test_result="failed"), measurement.sources[0].entities[0])
+        self.assertListEqual(
+            [self.jira_entity(test_result="failed"), self.jira_entity("key-2")], measurement.sources[0].entities
+        )
         self.assertEqual("0", measurement.sources[1].value)
