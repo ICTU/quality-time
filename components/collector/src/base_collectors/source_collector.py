@@ -14,7 +14,7 @@ from packaging.version import Version
 
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
 from collector_utilities.type import URL, Response, Value
-from model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceParameters, SourceMeasurement, SourceResponses
 
 
 class SourceCollectorException(Exception):
@@ -35,7 +35,7 @@ class SourceCollector(ABC):
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
         self._data_model: Final = data_model
-        self.__parameters: Final[dict[str, Union[str, list[str]]]] = source.get("parameters", {})
+        self.__parameters = SourceParameters(source, self.API_URL_PARAMETER_KEY)
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
@@ -68,7 +68,7 @@ class SourceCollector(ABC):
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
-        return URL(cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/"))
+        return self.__parameters.api_url()
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
         """Return the parameter value."""
@@ -135,11 +135,10 @@ class SourceCollector(ABC):
 
     def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
-        if token := cast(str, self.__parameters.get("private_token", "")):
+        if token := self.__parameters.private_token():
             return token, ""
-        username = cast(str, self.__parameters.get("username", ""))
-        password = cast(str, self.__parameters.get("password", ""))
-        return (username, password) if username and password else None
+        credentials = username, password = self.__parameters.username(), self.__parameters.password()
+        return credentials if username and password else None
 
     def _headers(self) -> dict[str, str]:  # pylint: disable=no-self-use
         """Return the headers for the get request."""
@@ -204,9 +203,9 @@ class SourceCollector(ABC):
         Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url.
         """
-        if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
-            return URL(landing_url)
-        url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
+        if landing_url := self.__parameters.landing_url():
+            return landing_url
+        url = str(self.__parameters.api_url())
         return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
 
 
