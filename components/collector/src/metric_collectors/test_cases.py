@@ -40,7 +40,7 @@ class TestCases(MetricCollector):
         test_case_keys = set(test_cases.keys())
         for entity in self.test_entities(measurement.sources):
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
-                test_result_so_far = test_cases[test_case_key].get("test_result")
+                test_result_so_far = test_cases[test_case_key]["test_result"]
                 test_result = entity["test_result"]
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
         # Set the value of the test sources to zero as this metric only counts test cases
