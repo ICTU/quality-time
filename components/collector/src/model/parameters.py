@@ -13,9 +13,9 @@ class SourceParameters:
         self.__parameters = source.get("parameters", {})
         self.__source_type_parameters = data_model["sources"][source["type"]]["parameters"]
 
-    def api_url(self, api_url_parameter_key: str = "url") -> URL:
+    def api_url(self) -> URL:
         """Return the API URL."""
-        return URL(cast(str, self.__parameters.get(api_url_parameter_key, "")).rstrip("/"))
+        return URL(cast(str, self.__parameters.get("url", "")).rstrip("/"))
 
     def landing_url(self) -> URL:
         """Return the human friendly landing URL."""
