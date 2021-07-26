@@ -10,7 +10,7 @@ from model import Entities, Entity, SourceMeasurement, MetricMeasurement
 class TestCases(MetricCollector):
     """Test cases collector."""
 
-    __test__ = False  # Make sure nose knows this is not a test class
+    __test__ = False  # Tell nose that this is not a test class
 
     # Mapping to calculate the test result of a test case. The keys are tuples of the current test result of the test
     # case and the next test result found. The value is the resulting test result. For example,
@@ -43,18 +43,20 @@ class TestCases(MetricCollector):
                 test_result_so_far = test_cases[test_case_key].get("test_result")
                 test_result = entity["test_result"]
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
+        # Set the value of the test sources to zero as this metric only counts test cases
         for test in self.test_sources(measurement.sources):
-            test.value = "0"  # Only count test cases
-        test_results_to_count = [status.lower() for status in cast(list[str], self._parameter("test_result"))]
+            test.value = "0"
+        # Filter the test cases by test result
         for source in self.test_case_sources(measurement.sources):
             source.entities = Entities(
-                entity for entity in source.entities if entity["test_result"] in test_results_to_count
+                entity for entity in source.entities if entity["test_result"] in self.test_results_to_count(source)
             )
+            source.value = str(len(source.entities))
         return measurement
 
     @classmethod
     def test_cases(cls, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
-        """Return the test cases, indexed by their keys, with initialized to '."""
+        """Return the test cases, indexed by their keys, with test result initialized to untested."""
         test_cases = {
             entity["issue_key"]: entity for source in cls.test_case_sources(sources) for entity in source.entities
         }
@@ -82,3 +84,7 @@ class TestCases(MetricCollector):
         """Return the keys of test cases referenced in test entity names or descriptions."""
         text_attributes = " ".join(entity.get(attribute_key, "") for attribute_key in ("name", "description"))
         return set(re.findall(cls.TEST_CASE_KEY_RE, text_attributes))
+
+    def test_results_to_count(self, source: SourceMeasurement) -> list[str]:
+        """Return the test results to count for the source."""
+        return [status.lower() for status in cast(list[str], self._parameters[source.source_uuid].get("test_result"))]

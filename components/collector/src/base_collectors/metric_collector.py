@@ -8,7 +8,7 @@ import aiohttp
 from collector_utilities.type import JSON
 from model import MetricMeasurement
 
-from .source_collector import SourceCollector
+from .source_collector import SourceCollector, SourceParameters
 
 
 class MetricCollector:
@@ -20,6 +20,10 @@ class MetricCollector:
         self.__session = session
         self.__metric = metric
         self.__data_model = data_model
+        self._parameters = {
+            source_uuid: SourceParameters(source, data_model)
+            for source_uuid, source in self.__metric["sources"].items()
+        }
 
     def __init_subclass__(cls) -> None:
         MetricCollector.subclasses.add(cls)
