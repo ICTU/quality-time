@@ -54,30 +54,26 @@ class TestCases(MetricCollector):
             source.value = str(len(source.entities))
         return measurement
 
-    @classmethod
-    def test_cases(cls, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
+    def test_cases(self, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
         """Return the test cases, indexed by their keys, with test result initialized to untested."""
         test_cases = {
-            entity["issue_key"]: entity for source in cls.test_case_sources(sources) for entity in source.entities
+            entity["issue_key"]: entity for source in self.test_case_sources(sources) for entity in source.entities
         }
         for entity in test_cases.values():
             entity.setdefault("test_result", "untested")
         return test_cases
 
-    @classmethod
-    def test_case_sources(cls, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
+    def test_case_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test case sources."""
-        return [source for source in sources if source.type == "jira"]
+        return [source for source in sources if self._metric["sources"][source.source_uuid]["type"] == "jira"]
 
-    @classmethod
-    def test_entities(cls, sources: Sequence[SourceMeasurement]) -> list[Entity]:
+    def test_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
         """Return the test entities."""
-        return [entity for source in cls.test_sources(sources) for entity in source.entities]
+        return [entity for source in self.test_sources(sources) for entity in source.entities]
 
-    @staticmethod
-    def test_sources(sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
+    def test_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test sources."""
-        return [source for source in sources if source.type == "testng"]
+        return [source for source in sources if self._metric["sources"][source.source_uuid]["type"] == "testng"]
 
     @classmethod
     def referenced_test_cases(cls, entity: Entity) -> set[str]:
