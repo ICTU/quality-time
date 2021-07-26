@@ -5,13 +5,15 @@ from datetime import datetime, timezone
 from dateutil.parser import parse
 
 from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
-from collector_utilities.type import Response
+from collector_utilities.type import Response, URL
 
 
 class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):
     """Anchore collector for source up-to-dateness."""
 
-    API_URL_PARAMETER_KEY = "details_url"
+    async def _api_url(self) -> URL:
+        """Override to return the details URL."""
+        return URL(str(self._parameter("details_url")))
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the analysis date and time from the report."""

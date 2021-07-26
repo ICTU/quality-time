@@ -27,14 +27,13 @@ class SourceCollector(ABC):
     measurement data for one specific metric from one specific source.
     """
 
-    API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: set[type["SourceCollector"]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
         self._data_model: Final = data_model
-        self.__parameters = SourceParameters(source, data_model, self.API_URL_PARAMETER_KEY)
+        self.__parameters = SourceParameters(source, data_model)
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
