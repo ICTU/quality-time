@@ -9,14 +9,13 @@ from collector_utilities.type import URL
 class SourceParameters:
     """Source parameters."""
 
-    def __init__(self, source: dict, data_model, api_url_parameter_key: str) -> None:
+    def __init__(self, source: dict, data_model: dict) -> None:
         self.__parameters = source.get("parameters", {})
         self.__source_type_parameters = data_model["sources"][source["type"]]["parameters"]
-        self.__api_url_parameter_key = api_url_parameter_key
 
-    def api_url(self) -> URL:
+    def api_url(self, api_url_parameter_key: str = "url") -> URL:
         """Return the API URL."""
-        return URL(cast(str, self.__parameters.get(self.__api_url_parameter_key, "")).rstrip("/"))
+        return URL(cast(str, self.__parameters.get(api_url_parameter_key, "")).rstrip("/"))
 
     def landing_url(self) -> URL:
         """Return the human friendly landing URL."""
