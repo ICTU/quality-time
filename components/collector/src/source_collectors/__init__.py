@@ -78,6 +78,7 @@ from .jira.user_story_points import JiraUserStoryPoints
 from .jira.velocity import JiraVelocity
 
 from .junit.source_up_to_dateness import JUnitSourceUpToDateness
+from .junit.test_cases import JUnitTestCases
 from .junit.tests import JUnitTests
 
 from .manual_number.all_metrics import ManualNumber

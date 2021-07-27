@@ -122,7 +122,7 @@ JIRA = Source(
             default_value="Story Points",
             metrics=["user_story_points"],
         ),
-        test_result=TestResult(metrics=["test_cases"], values=["failed", "passed", "skipped", "untested"]),
+        test_result=TestResult(metrics=["test_cases"], values=["errored", "failed", "passed", "skipped", "untested"]),
         **access_parameters(
             ALL_JIRA_METRICS,
             kwargs=dict(
@@ -166,7 +166,11 @@ JIRA = Source(
                 dict(
                     name="Test result",
                     color=dict(
-                        failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING, untested=Color.ACTIVE
+                        errored=Color.NEGATIVE,
+                        failed=Color.NEGATIVE,
+                        passed=Color.POSITIVE,
+                        skipped=Color.WARNING,
+                        untested=Color.ACTIVE,
                     ),
                 ),
                 dict(name="Created", type=EntityAttributeType.DATETIME),

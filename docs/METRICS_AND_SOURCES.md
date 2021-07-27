@@ -30,7 +30,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Source version | The version number of the source. | ≧ 1.0  | version_number | ci | [Axe-core](#source-version-from-axe-core), [Checkmarx CxSAST](#source-version-from-checkmarx-cxsast), [Cobertura](#source-version-from-cobertura), [GitLab](#source-version-from-gitlab), [Jenkins](#source-version-from-jenkins), [Jira](#source-version-from-jira), [OWASP Dependency Check](#source-version-from-owasp-dependency-check), [OWASP ZAP](#source-version-from-owasp-zap), [OpenVAS](#source-version-from-openvas), [Quality-time](#source-version-from-quality-time), [Robot Framework](#source-version-from-robot-framework), [SonarQube](#source-version-from-sonarqube), [cloc](#source-version-from-cloc) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
-| Test cases | The amount of test cases. | ≧ 0 test cases | count (default), percentage | test quality | [Jira](#test-cases-from-jira), [TestNG](#test-cases-from-testng) |
+| Test cases | The amount of test cases. | ≧ 0 test cases | count (default), percentage | test quality | [JUnit XML report](#test-cases-from-junit-xml-report), [Jira](#test-cases-from-jira), [TestNG](#test-cases-from-testng) |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
 | Tests | The amount of tests. | ≧ 0 tests | count (default), percentage | test quality | [Azure DevOps Server](#tests-from-azure-devops-server), [JUnit XML report](#tests-from-junit-xml-report), [Jenkins test report](#tests-from-jenkins-test-report), [Performancetest-runner](#tests-from-performancetest-runner), [Robot Framework Jenkins plugin](#tests-from-robot-framework-jenkins-plugin), [Robot Framework](#tests-from-robot-framework), [SonarQube](#tests-from-sonarqube), [TestNG](#tests-from-testng) |
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | count | ci | [Azure DevOps Server](#unmerged-branches-from-azure-devops-server), [GitLab](#unmerged-branches-from-gitlab) |
@@ -57,7 +57,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | [Dependencies](#dependencies-from-composer) |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Merge requests](#merge-requests-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Source version](#source-version-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
 | [JSON file with security warnings](https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings) | A generic vulnerability report with security warnings in JSON format. | [Security warnings](#security-warnings-from-json-file-with-security-warnings) |
-| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
+| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Test cases](#test-cases-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco), [Test branch coverage](#test-branch-coverage-from-jacoco), [Test line coverage](#test-line-coverage-from-jacoco) |
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-jacoco-jenkins-plugin), [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin) |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | [Failed CI-jobs](#failed-ci-jobs-from-jenkins), [Source up-to-dateness](#source-up-to-dateness-from-jenkins), [Source version](#source-version-from-jenkins), [Unused CI-jobs](#unused-ci-jobs-from-jenkins) |
@@ -906,8 +906,18 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
 | Password for basic authentication | Password |  |  | No |  |
-| Test results | Multiple choice | failed, passed, skipped, untested | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test results | Multiple choice | errored, failed, passed, skipped, untested | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 | URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String |  |  | No |  |
+
+### Test cases from JUnit XML report
+
+| Parameter | Type | Values | Default value | Mandatory | Help |
+| :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Password for basic authentication | Password |  |  | No |  |
+| Private token | Password |  |  | No |  |
+| URL to a JUnit report in XML format or to a zip with JUnit reports in XML format | URL |  |  | Yes |  |
+| URL to a JUnit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format. |
 | Username for basic authentication | String |  |  | No |  |
 
 ### Test cases from TestNG

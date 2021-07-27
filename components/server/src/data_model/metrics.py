@@ -283,7 +283,7 @@ METRICS = Metrics.parse_obj(
             direction=Direction.MORE_IS_BETTER,
             near_target="0",
             default_source="jira",
-            sources=["jira", "manual_number", "testng"],
+            sources=["jira", "junit", "manual_number", "testng"],
             tags=[Tag.TEST_QUALITY],
         ),
         tests=dict(

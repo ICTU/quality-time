@@ -20,17 +20,27 @@ class TestCases(MetricCollector):
         ("untested", "passed"): "passed",
         ("untested", "skipped"): "skipped",
         ("untested", "failed"): "failed",
+        ("untested", "errored"): "errored",
         ("passed", "passed"): "passed",
         ("passed", "skipped"): "skipped",
         ("passed", "failed"): "failed",
+        ("passed", "errored"): "errored",
         ("skipped", "passed"): "skipped",
         ("skipped", "skipped"): "skipped",
         ("skipped", "failed"): "failed",
+        ("skipped", "errored"): "errored",
         ("failed", "passed"): "failed",
         ("failed", "skipped"): "failed",
         ("failed", "failed"): "failed",
+        ("failed", "errored"): "errored",
+        ("errored", "passed"): "errored",
+        ("errored", "skipped"): "errored",
+        ("errored", "failed"): "errored",
+        ("errored", "errored"): "errored",
     }
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
+    TEST_CASE_SOURCES = ["jira"]
+    TEST_REPORT_SOURCES = ["junit", "testng"]
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Override to add the rest results from the test report(s) to the test cases."""
@@ -65,7 +75,7 @@ class TestCases(MetricCollector):
 
     def test_case_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test case sources."""
-        return [source for source in sources if self._metric["sources"][source.source_uuid]["type"] == "jira"]
+        return [source for source in sources if self.source_type(source) in self.TEST_CASE_SOURCES]
 
     def test_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
         """Return the test entities."""
@@ -73,7 +83,7 @@ class TestCases(MetricCollector):
 
     def test_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test sources."""
-        return [source for source in sources if self._metric["sources"][source.source_uuid]["type"] == "testng"]
+        return [source for source in sources if self.source_type(source) in self.TEST_REPORT_SOURCES]
 
     @classmethod
     def referenced_test_cases(cls, entity: Entity) -> set[str]:
@@ -84,3 +94,7 @@ class TestCases(MetricCollector):
     def test_results_to_count(self, source: SourceMeasurement) -> list[str]:
         """Return the test results to count for the source."""
         return [status.lower() for status in cast(list[str], self._parameters[source.source_uuid].get("test_result"))]
+
+    def source_type(self, source: SourceMeasurement) -> str:
+        """Return the source type."""
+        return str(self._metric["sources"][source.source_uuid]["type"])

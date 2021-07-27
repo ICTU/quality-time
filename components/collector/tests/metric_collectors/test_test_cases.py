@@ -27,6 +27,13 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
           </suite>
         </testng-results>
         """
+    JUNIT_XML = """
+        <testsuite tests="3" errors="0" failures="2" skipped="0">
+            <testcase name="key-1; step 1"/>
+            <testcase name="key-1; step 2"><failure /></testcase>
+            <testcase name="no_such_key-1"><failure /></testcase>
+        </testsuite>
+        """
     CREATED = "2020-08-06T16:36:48.000+0200"
 
     def setUp(self) -> None:  # pylint: disable=invalid-name
@@ -38,6 +45,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.response.json = AsyncMock(side_effect=[[], test_cases_json])
         self.jira_url = "https://jira"
         self.testng_url = "https://testng"
+        self.junit_url = "https://junit"
 
     def jira_issue(self, key="key-1", **fields):
         """Create a Jira issue."""
@@ -73,12 +81,24 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.assertDictEqual(self.jira_entity(), measurement.sources[0].entities[0])
         self.assertEqual("2", measurement.sources[0].value)
 
-    async def test_matching_test_case(self):
+    async def test_matching_test_case_testng(self):
         """Test one matching test case."""
         self.response.text = AsyncMock(return_value=self.TESTNG_XML)
         jira = dict(type="jira", parameters=dict(url=self.jira_url))
         testng = dict(type="testng", parameters=dict(url=self.testng_url))
         measurement = await self.collect(dict(jira=jira, testng=testng))
+        self.assertListEqual(
+            [self.jira_entity(test_result="failed"), self.jira_entity("key-2")], measurement.sources[0].entities
+        )
+        self.assertEqual("2", measurement.sources[0].value)
+        self.assertEqual("0", measurement.sources[1].value)
+
+    async def test_matching_test_case_junit(self):
+        """Test one matching test case."""
+        self.response.text = AsyncMock(return_value=self.JUNIT_XML)
+        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        junit = dict(type="junit", parameters=dict(url=self.junit_url))
+        measurement = await self.collect(dict(jira=jira, junit=junit))
         self.assertListEqual(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")], measurement.sources[0].entities
         )
