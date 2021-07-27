@@ -39,8 +39,8 @@ class TestCases(MetricCollector):
         ("errored", "errored"): "errored",
     }
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
-    TEST_CASE_SOURCES = ["jira"]
-    TEST_REPORT_SOURCES = ["junit", "testng"]
+    TEST_CASE_SOURCE_TYPES = ["jira"]
+    TEST_REPORT_SOURCE_TYPES = ["junit", "testng"]
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Override to add the rest results from the test report(s) to the test cases."""
@@ -75,7 +75,7 @@ class TestCases(MetricCollector):
 
     def test_case_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test case sources."""
-        return [source for source in sources if self.source_type(source) in self.TEST_CASE_SOURCES]
+        return [source for source in sources if self.source_type(source) in self.TEST_CASE_SOURCE_TYPES]
 
     def test_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
         """Return the test entities."""
@@ -83,7 +83,7 @@ class TestCases(MetricCollector):
 
     def test_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test sources."""
-        return [source for source in sources if self.source_type(source) in self.TEST_REPORT_SOURCES]
+        return [source for source in sources if self.source_type(source) in self.TEST_REPORT_SOURCE_TYPES]
 
     @classmethod
     def referenced_test_cases(cls, entity: Entity) -> set[str]:
