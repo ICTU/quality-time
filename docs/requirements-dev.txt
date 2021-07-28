@@ -1,2 +1,2 @@
 -r ../requirements-dev.txt
-gitpython==3.1.20
+gitpython==3.1.18
