@@ -24,7 +24,7 @@ class NotificationFinder:
                 for metric_uuid, metric in subject["metrics"].items():
                     notable = self.get_notification(metric, metric_uuid, most_recent_measurement_seen)
                     if notable:
-                        notable_metrics.append(MetricNotificationData(metric, self.data_model, notable))
+                        notable_metrics.append(MetricNotificationData(metric, subject, self.data_model, notable))
             if notable_metrics:
                 for destination_uuid, destination in report.get("notification_destinations", {}).items():
                     notifications.append(Notification(report, notable_metrics, destination_uuid, destination))

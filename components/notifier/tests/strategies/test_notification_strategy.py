@@ -60,7 +60,7 @@ class StrategiesTests(Base):
         green_metric = self.metric(
             recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)]
         )
-        subject1 = dict(metrics=dict(metric1=green_metric))
+        subject1 = dict(metrics=dict(metric1=green_metric), type="software", name="Subject 1")
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
@@ -69,7 +69,7 @@ class StrategiesTests(Base):
 
     def test_old_red_metric(self):
         """Test that there is nothing to notify if the red metric was already red."""
-        subject1 = dict(metrics=dict(metric1=self.red_metric))
+        subject1 = dict(metrics=dict(metric1=self.red_metric), type="software", name="Subject 1")
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
@@ -80,7 +80,7 @@ class StrategiesTests(Base):
         """Test that there is nothing to notify if the red metric has no recent measurements."""
         red_metric1 = self.metric(status="target_not_met")
         red_metric2 = self.metric(status="target_not_met")
-        subject1 = dict(metrics=dict(metric1=red_metric1, metric2=red_metric2))
+        subject1 = dict(metrics=dict(metric1=red_metric1, metric2=red_metric2), type="software", name="Subject 1")
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
@@ -98,7 +98,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
-        subject1 = dict(metrics=dict(metric1=red_metric))
+        subject1 = dict(metrics=dict(metric1=red_metric), type="software", name="Subject 1")
         report1 = dict(
             title="Title",
             report_uuid="report1",
@@ -125,7 +125,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, percentage=new_percentage),
             ],
         )
-        subject1 = dict(metrics=dict(metric1=red_metric))
+        subject1 = dict(metrics=dict(metric1=red_metric), type="software", name="Subject 1")
         report1 = dict(
             title="Title",
             report_uuid="report1",
@@ -186,7 +186,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
-        subject1 = dict(metrics=dict(metric1=red_metric1))
+        subject1 = dict(metrics=dict(metric1=red_metric1), type="software", name="Subject 1")
         report1 = dict(
             title="Title",
             report_uuid="report1",
@@ -203,7 +203,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
-        subject2 = dict(metrics=dict(metric1=red_metric2))
+        subject2 = dict(metrics=dict(metric1=red_metric2), type="software", name="Subject 2")
         report2 = dict(
             title="Title",
             report_uuid="report2",
@@ -229,7 +229,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
-        subject1 = dict(metrics=dict(metric1=red_metric))
+        subject1 = dict(metrics=dict(metric1=red_metric), type="software", name="Subject 1")
         report = dict(
             title="Title",
             report_uuid="report1",
@@ -252,7 +252,7 @@ class StrategiesTests(Base):
                 dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
-        subject1 = dict(metrics=dict(metric1=red_metric))
+        subject1 = dict(metrics=dict(metric1=red_metric), type="software", name="Subject 1")
         report = dict(title="Title", report_uuid="report1", webhook="webhook", subjects=dict(subject1=subject1))
         report_json = dict(reports=[report])
         self.assertEqual([], self.notification_finder.get_notifications(report_json, self.most_recent_measurement_seen))

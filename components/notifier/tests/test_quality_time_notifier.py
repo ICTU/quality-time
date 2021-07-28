@@ -79,6 +79,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         self.history = "2020-01-01T23:59:00+00:00"
         self.subjects = dict(
             subject1=dict(
+                type="software",
+                name="Subject 1",
                 metrics=dict(
                     metric1=dict(
                         type="tests",
@@ -90,7 +92,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                             dict(start=self.history, end=self.history, count=dict(status="target_met", value="5"))
                         ],
                     )
-                )
+                ),
             )
         )
 
