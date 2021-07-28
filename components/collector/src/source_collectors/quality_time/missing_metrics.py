@@ -76,7 +76,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     def __subject_missing_metric_types(self, data_model: dict, subject: dict) -> list[str]:
         """Return the subject's missing metric types."""
         possible_types = self.__subject_possible_metric_types(data_model, subject)
-        actual_types = set(metric["type"] for metric in subject.get("metrics", {}).values())
+        actual_types = {metric["type"] for metric in subject.get("metrics", {}).values()}
         return [metric_type for metric_type in possible_types if metric_type not in actual_types]
 
     @staticmethod
