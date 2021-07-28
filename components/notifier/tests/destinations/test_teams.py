@@ -87,8 +87,10 @@ class BuildNotificationTextTests(TestCase):
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that are notable:\n\n"
-            "* Metric status is red (target not met), was yellow (near target met). Value is 42 units, was 0 units.\n"
-            "* Metric status is red (target not met), was green (target met). Value is 10 units, was 5 units.\n",
+            "* Subject: Metric status is red (target not met), was yellow (near target met). "
+            "Value is 42 units, was 0 units.\n"
+            "* Subject: Metric status is red (target not met), was green (target met). "
+            "Value is 10 units, was 5 units.\n",
             text,
         )
 
@@ -127,8 +129,8 @@ class BuildNotificationTextTests(TestCase):
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that are notable:\n\n"
-            "* Metric has been yellow (near target met) for three weeks. Value: 42 units.\n"
-            "* Metric has been red (target not met) for three weeks. Value: 10 units.\n",
+            "* Subject: Metric has been yellow (near target met) for three weeks. Value: 42 units.\n"
+            "* Subject: Metric has been red (target not met) for three weeks. Value: 10 units.\n",
             text,
         )
 
@@ -149,6 +151,7 @@ class BuildNotificationTextTests(TestCase):
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that is notable:\n\n"
-            "* Metric status is white (unknown), was yellow (near target met). Value is ? units, was 0 units.\n",
+            "* Subject: Metric status is white (unknown), was yellow (near target met). "
+            "Value is ? units, was 0 units.\n",
             text,
         )
