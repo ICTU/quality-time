@@ -235,9 +235,10 @@ QUALITY_TIME = Source(
         missing_metrics=dict(
             name="metric type",
             attributes=[
+                dict(name="Report", url="report_url"),
+                dict(name="Subject", url="subject_url"),
                 dict(name="Subject type"),
                 dict(name="Metric type"),
-                dict(name="Missing from reports", key="reports"),
             ],
         ),
     ),
