@@ -9,12 +9,13 @@ from ..data_model import DATA_MODEL
 
 
 class Base(unittest.TestCase):  # skipcq: PTC-W0046
-    """Base data needed by the other test classes."""
+    """Base class for notification finder unit tests."""
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Provide the data_model to the class."""
-        cls.data_model = DATA_MODEL
+    def setUp(self) -> None:
+        """Override to set up common fixtures."""
+        self.old_timestamp = "2019-01-01T00:00:00+00:00"
+        self.new_timestamp = "2020-01-01T00:00:00+00:00"
+        self.notification_finder = NotificationFinder(DATA_MODEL)
 
     @staticmethod
     def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
@@ -34,13 +35,10 @@ class StrategiesTests(Base):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
 
     def setUp(self):
-        """Set variables for the other testcases."""
+        """Extend to create a reports JSON fixture."""
+        super().setUp()
         self.most_recent_measurement_seen = datetime.min.replace(tzinfo=timezone.utc)
-        self.old_timestamp = "2019-01-01T00:00:00+00:00"
-        self.new_timestamp = "2020-01-01T00:00:00+00:00"
-        self.report_url = "https://report1"
         self.white_metric_status = "unknown"
-        self.notification_finder = NotificationFinder(self.data_model)
         self.red_metric = self.metric(
             name="metric1",
             status="target_not_met",
@@ -58,16 +56,14 @@ class StrategiesTests(Base):
         )
         self.reports_json = dict(reports=[self.report])
 
-    def assert_no_notifications(self):
-        """Assert that the notification finder finds no notifications."""
-        self.assertEqual(
-            [], self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)
-        )
+    def get_notifications(self):
+        """Return the notifications."""
+        return self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
         self.reports_json["reports"] = []
-        self.assert_no_notifications()
+        self.assertEqual([], self.get_notifications())
 
     def test_no_red_metrics(self):
         """Test that there is nothing to notify when there are no red metrics."""
@@ -77,32 +73,29 @@ class StrategiesTests(Base):
             ]
         )
         self.subject["metrics"] = dict(metric=green_metric)
-        self.assert_no_notifications()
+        self.assertEqual([], self.get_notifications())
 
     def test_old_red_metric(self):
         """Test that there is nothing to notify if the red metric was already red."""
         self.red_metric["recent_measurements"][0]["count"]["status"] = "target_not_met"
-        self.assert_no_notifications()
+        self.assertEqual([], self.get_notifications())
 
     def test_red_metric_without_recent_measurements(self):
         """Test that there is nothing to notify if the red metric has no recent measurements."""
         self.red_metric["recent_measurements"] = []
-        self.assert_no_notifications()
+        self.assertEqual([], self.get_notifications())
 
     def test_new_red_metric(self):
         """Test that a metric that has become red is included."""
-        result = self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)
+        notifications = self.get_notifications()
         self.assertEqual(
             ["metric1", "red (target not met)"],
-            [result[0].metrics[0].metric_name, result[0].metrics[0].new_metric_status],
+            [notifications[0].metrics[0].metric_name, notifications[0].metrics[0].new_metric_status],
         )
 
     def test_new_red_metric_without_count_scale(self):
         """Test that a metric that doesn't have a count scale that became red is included."""
-        result = self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)[
-            0
-        ].metrics
-        self.assertEqual(["metric1"], [result[0].metric_name])
+        self.assertEqual(["metric1"], [self.get_notifications()[0].metrics[0].metric_name])
 
     def test_recently_changed_metric_status(self):
         """Test that a metric that turns white is added."""
@@ -152,36 +145,28 @@ class StrategiesTests(Base):
             notification_destinations=dict(uuid1=dict(url="https://report2", name="destination2")),
         )
         self.reports_json["reports"].append(report2)
-        result = []
-        for notification in self.notification_finder.get_notifications(
-            self.reports_json, self.most_recent_measurement_seen
-        ):
-            result.append(notification.metrics)
-        self.assertEqual(["metric1", "metric2"], [result[0][0].metric_name, result[1][0].metric_name])
+        metrics = []
+        for notification in self.get_notifications():
+            metrics.append(notification.metrics)
+        self.assertEqual(["metric1", "metric2"], [metrics[0][0].metric_name, metrics[1][0].metric_name])
 
     def test_no_notification_destinations_configured(self):
         """Test that no notification is to be sent if there are no configurations in notification destinations."""
         self.report["notification_destinations"] = {}
-        self.assertEqual(
-            [], self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)
-        )
+        self.assertEqual([], self.get_notifications())
 
     def test_no_notification_destinations_in_json(self):
         """Test that no notification is to be sent if notification destinations do not exist in the data."""
         del self.report["notification_destinations"]
-        self.assertEqual(
-            [], self.notification_finder.get_notifications(self.reports_json, self.most_recent_measurement_seen)
-        )
+        self.assertEqual([], self.get_notifications())
 
 
 class LongUnchangedTests(Base):
     """Unit tests for the 'status long unchanged' notification strategy."""
 
     def setUp(self):
-        """Override to set up a metric fixture."""
-        self.old_timestamp = "2019-02-01T00:00:00+00:00"
-        self.new_timestamp = "2020-02-01T00:00:00+00:00"
-        self.notification_finder = NotificationFinder(self.data_model)
+        """Extend to set up a metric fixture."""
+        super().setUp()
         self.red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp)],
@@ -220,16 +205,14 @@ class CheckIfMetricIsNotableTestCase(Base):
     """Unit tests for the check_if_metric_is_notable method."""
 
     def setUp(self):
-        """Set variables for the tests."""
-        self.old_timestamp = "2019-03-01T00:00:00+00:00"
-        self.new_timestamp = "2020-03-01T00:00:00+00:00"
+        """Extend to set up metric fixtures."""
+        super().setUp()
         self.metric_uuid = "metric_uuid"
         self.red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[],
             status_start=str(datetime.fromisoformat(datetime.min.isoformat())),
         )
-        self.notification_finder = NotificationFinder(self.data_model)
         self.metric_with_recent_measurements = self.metric(
             recent_measurements=[
                 dict(start=self.old_timestamp, end=self.old_timestamp, count=dict(status="target_not_met", value="10")),
