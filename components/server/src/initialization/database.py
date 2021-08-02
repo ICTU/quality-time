@@ -21,7 +21,9 @@ from .report import import_example_reports, initialize_reports_overview
 def init_database() -> Database:  # pragma: no cover-behave
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
-    database = pymongo.MongoClient(database_url).quality_time_db
+    client = pymongo.MongoClient(database_url)
+    set_feature_compatibility_version(client.admin)
+    database = client.quality_time_db
     logging.info("Connected to database: %s", database)
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
@@ -42,6 +44,14 @@ def init_database() -> Database:  # pragma: no cover-behave
     remove_random_number_source(database)
     migrate_edit_permissions(database)
     return database
+
+
+def set_feature_compatibility_version(database: Database) -> None:
+    """Set the feature compatibility version to the current MongoDB version to prepare for upgrade to the next version.
+
+    See https://docs.mongodb.com/manual/release-notes/4.4-upgrade-standalone/
+    """
+    database.command("setFeatureCompatibilityVersion", "4.2")
 
 
 def create_indexes(database: Database) -> None:
