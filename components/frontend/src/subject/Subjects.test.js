@@ -59,11 +59,11 @@ describe("<Subjects />", () => {
     it('toggles tabs', () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("MeasurementDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("MetricDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
     });
     it('toggles subject trend table', () => {

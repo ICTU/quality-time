@@ -21,7 +21,7 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
     })
 }
 
-export function MeasurementDetails(props) {
+export function MetricDetails(props) {
   const [measurements, setMeasurements] = useState([]);
   useEffect(() => {
     fetch_measurements(props.report_date, props.metric_uuid, setMeasurements);

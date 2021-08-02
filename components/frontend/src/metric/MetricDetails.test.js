@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
-import { MeasurementDetails } from './MeasurementDetails';
+import { MetricDetails } from './MetricDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
 import * as measurement_api from '../api/measurement';
@@ -45,11 +45,11 @@ const data_model = {
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
 }
 
-describe("<MeasurementDetails />", () => {
+describe("<MetricDetails />", () => {
     function mount_wrapper() {
         return mount(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <MeasurementDetails
+                <MetricDetails
                     datamodel={data_model}
                     metric_uuid="metric_uuid"
                     report={report}
@@ -83,7 +83,7 @@ describe("<MeasurementDetails />", () => {
         await act(async () => {
             wrapper = mount(
                 <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <MeasurementDetails
+                    <MetricDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"
                         report={report}
@@ -105,7 +105,7 @@ describe("<MeasurementDetails />", () => {
         await act(async () => {
             wrapper = mount(
                 <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <MeasurementDetails
+                    <MetricDetails
                         datamodel={data_model}
                         metric_uuid="metric_uuid"
                         report={report}
