@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from models.notification import Notification
 from strategies.notification_strategy import NotificationFinder
 
 from ..data_model import DATA_MODEL
