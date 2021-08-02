@@ -96,8 +96,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             )
         )
 
-    @classmethod
-    async def return_data_model(cls):
+    @staticmethod
+    async def return_data_model():
         """Retrieve data_model from class variable."""
         return FakeResponse(json_data=DATA_MODEL)
 
