@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
 import { login, logout } from '../api/auth';
 import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
@@ -77,11 +77,6 @@ export function Menubar(props) {
           </Menu.Item>}
         />
         <Menu.Menu position='right'>
-          {props.searchable &&
-            <Menu.Item>
-              <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
-            </Menu.Item>
-          }
           <Menu.Item>
             <DatePicker onDate={props.onDate} name="report_date_string" value={props.report_date_string} label="Report date" />
           </Menu.Item>

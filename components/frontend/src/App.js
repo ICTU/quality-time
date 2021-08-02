@@ -23,7 +23,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
+      datamodel: {}, reports: [], report_uuid: '', report_date_string: '', reports_overview: {},
       nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
     };
     this.history = createBrowserHistory();
@@ -115,10 +115,6 @@ class App extends Component {
         show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
       }
     }
-  }
-
-  handleSearchChange(event) {
-    this.setState({ search_string: event.target.value });
   }
 
   handleDateChange(event, { name, value }) {
@@ -215,9 +211,7 @@ class App extends Component {
           email={this.state.email}
           go_home={() => this.go_home()}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-          onSearch={(e) => this.handleSearchChange(e)}
           report_date_string={this.state.report_date_string}
-          searchable={current_report !== null}
           set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
           user={this.state.user}
         />
@@ -239,7 +233,6 @@ class App extends Component {
                   go_home={() => this.go_home()}
                   nr_measurements={this.state.nr_measurements}
                   report={current_report}
-                  search_string={this.state.search_string}
                   changed_fields={this.changed_fields}
                   {...props}
                 />
