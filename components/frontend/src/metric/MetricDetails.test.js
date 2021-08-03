@@ -11,9 +11,11 @@ jest.mock("../api/metric.js");
 jest.mock("../api/measurement.js");
 measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
     ok: true,
-    measurements: [{
-        count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", sources: [{}]
-    }]
+    measurements: [
+        { count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", sources: [{}] },
+        { count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", sources: [{source_uuid: "source_uuid"}] },
+        { count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", sources: [{source_uuid: "source_uuid", entities: [{}]}] }
+    ]
 }));
 changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
 
@@ -34,9 +36,7 @@ const report = {
                         }
                     }
                 },
-                metric_uuid2: {
-
-                }
+                metric_uuid2: {}
             }
         }
     }
@@ -90,7 +90,6 @@ it('calls the callback on click', async () => {
 })
 
 it('calls the callback on delete', async () => {
-    const mockCallBack = jest.fn();
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
