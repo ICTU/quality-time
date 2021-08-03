@@ -1,6 +1,5 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
-import { mount } from 'enzyme';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { MetricDetails } from './MetricDetails';
 import * as changelog_api from '../api/changelog';
@@ -34,6 +33,9 @@ const report = {
                             entities: []
                         }
                     }
+                },
+                metric_uuid2: {
+
                 }
             }
         }
@@ -45,78 +47,64 @@ const data_model = {
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
 }
 
-describe("<MetricDetails />", () => {
-    function mount_wrapper() {
-        return mount(
+it('switches tabs', async () => {
+    await act(async () => render(<Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <MetricDetails
+            datamodel={data_model}
+            metric_uuid="metric_uuid"
+            report={report}
+            reports={[report]}
+            scale="count"
+            subject_uuid="subject_uuid"
+            unit="unit"
+            visibleDetailsTabs={[]}
+            toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
+        />
+    </Permissions.Provider>))
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Sources/)))
+    expect(screen.getAllByText(/Source name/).length).toBe(1);
+})
+
+it('calls the callback on click', async () => {
+    const mockCallBack = jest.fn();
+    await act(async () => {
+        render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <MetricDetails
                     datamodel={data_model}
                     metric_uuid="metric_uuid"
                     report={report}
                     reports={[report]}
-                    scale="count"
+                    stop_sort={mockCallBack}
                     subject_uuid="subject_uuid"
-                    unit="unit"
                     visibleDetailsTabs={[]}
                     toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
                 />
             </Permissions.Provider>
         );
-    }
-    it('switches tabs', async () => {
-        let wrapper;
-        await act(async () => { wrapper = mount_wrapper() });
-        function switch_tab(index) {
-            wrapper.setProps({})  // rerender
-            wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
-            wrapper.find("MenuItem").at(index).simulate('click');
-        }
-        expect(wrapper.find("a.active").text()).toBe("Metric");
-        await act(async () => { switch_tab(1) });
-        expect(wrapper.find("a.active").text()).toBe("Sources");
-        await act(async () => { switch_tab(2) });
-        expect(wrapper.find("a.active").text()).toBe("Trend graph");
     });
-    it('calls the callback on click', async () => {
-        const mockCallBack = jest.fn();
-        let wrapper;
-        await act(async () => {
-            wrapper = mount(
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <MetricDetails
-                        datamodel={data_model}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        stop_sort={mockCallBack}
-                        subject_uuid="subject_uuid"
-                        visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
-                    />
-                </Permissions.Provider>
-            );
-            wrapper.find({ icon: "angle double down" }).at(0).simulate("click");
-        });
-        expect(mockCallBack).toHaveBeenCalled();
-        expect(measurement_api.get_measurements).toHaveBeenCalled();
+    await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)));
+    expect(mockCallBack).toHaveBeenCalled();
+    expect(measurement_api.get_measurements).toHaveBeenCalled();
+})
+
+it('calls the callback on delete', async () => {
+    const mockCallBack = jest.fn();
+    await act(async () => {
+        render(
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <MetricDetails
+                    datamodel={data_model}
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    reports={[report]}
+                    subject_uuid="subject_uuid"
+                    visibleDetailsTabs={[]}
+                />
+            </Permissions.Provider>
+        );
     });
-    it('calls the callback on delete', async () => {
-        let wrapper;
-        await act(async () => {
-            wrapper = mount(
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <MetricDetails
-                        datamodel={data_model}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        subject_uuid="subject_uuid"
-                        visibleDetailsTabs={[]}
-                    />
-                </Permissions.Provider>
-            );
-            wrapper.find("DeleteButton").simulate("click");
-        });
-        expect(metric_api.delete_metric).toHaveBeenCalled();
-    });
-});
+    await act(async () => fireEvent.click(screen.getByText(/Delete metric/)));
+    expect(metric_api.delete_metric).toHaveBeenCalled();
+})
