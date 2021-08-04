@@ -93,7 +93,6 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no cover-behave
-                username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "mail"])
             result = lookup_connection.entries[0]
