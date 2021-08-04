@@ -108,7 +108,7 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
             with Connection(ldap_server, user=username, password=password, auto_bind=True):
                 logging.info("LDAP bind for %s succeeded", user(username, email))
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for %s: %s", user(username, email), reason)
+        logging.warning("LDAP error: %s", reason)
         return False, ""
     return True, email
 
