@@ -56,7 +56,7 @@ class LoginTests(AuthTestCase):
     LDAP_ROOT_DN = "dc=example,dc=org"
     USER_DN = f"cn={USERNAME},{LDAP_ROOT_DN}"
     LOOKUP_USER_DN = f"cn=admin,{LDAP_ROOT_DN}"
-    LOG_ERROR_MESSAGE_TEMPLATE = "LDAP error for %s: %s"
+    LOG_ERROR_MESSAGE_TEMPLATE = "LDAP error: %s"
 
     def setUp(self):
         """Extend to add a mock LDAP."""
@@ -89,11 +89,10 @@ class LoginTests(AuthTestCase):
             connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind=True)
         )
 
-    def assert_log(self, logging_mock, exception, username, email="unknown email"):
+    def assert_log(self, logging_mock, exception):
         """Assert that the correct error message is logged."""
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
-        self.assertEqual(f"user {username} <{email}>", logging_mock.call_args[0][1])
-        self.assertIsInstance(logging_mock.call_args[0][2], exception)
+        self.assertIsInstance(logging_mock.call_args[0][1], exception)
 
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
@@ -148,7 +147,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
-        self.assert_log(logging_mock, exceptions.LDAPServerPoolError, USERNAME)
+        self.assert_log(logging_mock, exceptions.LDAPServerPoolError)
 
     @patch.object(logging, "warning")
     def test_login_bind_error(self, logging_mock, connection_mock, connection_enter):
@@ -159,7 +158,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
-        self.assert_log(logging_mock, exceptions.LDAPBindError, self.LOOKUP_USER_DN)
+        self.assert_log(logging_mock, exceptions.LDAPBindError)
 
     @patch.object(logging, "warning")
     def test_login_search_error(self, logging_mock, connection_mock, connection_enter):
@@ -170,7 +169,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
-        self.assert_log(logging_mock, exceptions.LDAPResponseTimeoutError, USERNAME)
+        self.assert_log(logging_mock, exceptions.LDAPResponseTimeoutError)
 
     @patch.object(logging, "warning")
     def test_login_password_hash_error(self, logging_mock, connection_mock, connection_enter):
@@ -181,7 +180,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, auth.login(self.database))
         self.assert_ldap_connection_search_called()
         self.assertEqual("Only SSHA LDAP password digest supported!", logging_mock.call_args_list[0][0][0])
-        self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult, self.USER_DN, self.USER_EMAIL)
+        self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult)
 
     @patch.object(logging, "warning")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
@@ -191,7 +190,7 @@ class LoginTests(AuthTestCase):
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, auth.login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult, self.USER_DN, self.USER_EMAIL)
+        self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult)
 
 
 class LogoutTests(AuthTestCase):
