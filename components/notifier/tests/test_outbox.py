@@ -28,15 +28,16 @@ class OutboxTestCase(unittest.TestCase):
         )
         self.report_url = "https://report1"
         self.report = dict(title="report_title", url=self.report_url)
+        subject = dict(type="software", name="Subject 1")
         metric1 = self.create_metric("default metric 1")
         metric2 = self.create_metric("default metric 2")
-        self.metric_notification_data1 = MetricNotificationData(metric1, self.data_model, self.reason1)
-        self.metric_notification_data2 = MetricNotificationData(metric2, self.data_model, self.reason1)
+        self.metric_notification_data1 = MetricNotificationData(metric1, subject, self.data_model, self.reason1)
+        self.metric_notification_data2 = MetricNotificationData(metric2, subject, self.data_model, self.reason1)
         metrics1 = [self.metric_notification_data1, self.metric_notification_data2]
         metric3 = self.create_metric("default metric 3")
         metric4 = self.create_metric("default metric 4")
-        metric_notification_data3 = MetricNotificationData(metric3, self.data_model, self.reason1)
-        metric_notification_data4 = MetricNotificationData(metric4, self.data_model, self.reason1)
+        metric_notification_data3 = MetricNotificationData(metric3, subject, self.data_model, self.reason1)
+        metric_notification_data4 = MetricNotificationData(metric4, subject, self.data_model, self.reason1)
         metrics2 = [metric_notification_data3, metric_notification_data4]
         self.notifications = [
             Notification(self.report, metrics1, "uuid1", dict(webhook="https://url/1")),

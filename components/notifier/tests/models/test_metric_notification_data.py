@@ -35,20 +35,27 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
                 dict(count=dict(value=20, status="target_not_met")),
             ],
         )
+        self.subject = dict(type="software", name="Subject")
 
     def test_new_status(self):
         """Test that the new status is set correctly."""
-        new_status = MetricNotificationData(self.metric, self.data_model, "status_changed").new_metric_status
+        new_status = MetricNotificationData(
+            self.metric, self.subject, self.data_model, "status_changed"
+        ).new_metric_status
         self.assertEqual("red (target not met)", new_status)
 
     def test_unknown_status(self):
         """Test that a recent measurement without status works."""
         self.metric["recent_measurements"][-1]["count"]["status"] = None
-        new_status = MetricNotificationData(self.metric, self.data_model, "status_changed").new_metric_status
+        new_status = MetricNotificationData(
+            self.metric, self.subject, self.data_model, "status_changed"
+        ).new_metric_status
         self.assertEqual("white (unknown)", new_status)
 
     def test_unknown_status_without_recent_measurements(self):
         """Test that a metric without recent measurements works."""
         self.metric["recent_measurements"] = []
-        new_status = MetricNotificationData(self.metric, self.data_model, "status_changed").new_metric_status
+        new_status = MetricNotificationData(
+            self.metric, self.subject, self.data_model, "status_changed"
+        ).new_metric_status
         self.assertEqual("white (unknown)", new_status)

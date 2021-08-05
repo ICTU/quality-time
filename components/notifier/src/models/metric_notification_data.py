@@ -1,13 +1,14 @@
 """Metric data needed for notifications."""
 
 
-class MetricNotificationData:  # pylint: disable=too-few-public-methods
+class MetricNotificationData:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """Handle metric data needed for notifications."""
 
-    def __init__(self, metric, data_model, reason: str) -> None:
+    def __init__(self, metric, subject, data_model, reason: str) -> None:
         """Initialise the Notification with metric data."""
         self.metric_name = metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}'
         self.metric_unit = metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}'
+        self.subject_name = subject.get("name") or data_model["subjects"][subject["type"]]["name"]
         recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
 
