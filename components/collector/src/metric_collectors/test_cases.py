@@ -43,19 +43,20 @@ class TestCases(MetricCollector):
     TEST_REPORT_SOURCE_TYPES = ["junit", "testng"]
 
     async def collect(self) -> Optional[MetricMeasurement]:
-        """Override to add the rest results from the test report(s) to the test cases."""
+        """Override to add the test results from the test report(s) to the test cases."""
         if (measurement := await super().collect()) is None:
             return None
         test_cases = self.test_cases(measurement.sources)
         test_case_keys = set(test_cases.keys())
-        for entity in self.test_entities(measurement.sources):
+        # Derive the test result of the test cases from the test results of the tests
+        for entity in self.test_report_entities(measurement.sources):
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
                 test_result_so_far = test_cases[test_case_key]["test_result"]
                 test_result = entity["test_result"]
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
-        # Set the value of the test sources to zero as this metric only counts test cases
-        for test in self.test_sources(measurement.sources):
-            test.value = "0"
+        # Set the value of the test report sources to zero as this metric only counts test cases
+        for source in self.test_report_sources(measurement.sources):
+            source.value = "0"
         # Filter the test cases by test result
         for source in self.test_case_sources(measurement.sources):
             source.entities = Entities(
@@ -77,12 +78,12 @@ class TestCases(MetricCollector):
         """Return the test case sources."""
         return [source for source in sources if self.source_type(source) in self.TEST_CASE_SOURCE_TYPES]
 
-    def test_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
+    def test_report_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
         """Return the test entities."""
-        return [entity for source in self.test_sources(sources) for entity in source.entities]
+        return [entity for source in self.test_report_sources(sources) for entity in source.entities]
 
-    def test_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
-        """Return the test sources."""
+    def test_report_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
+        """Return the test report sources."""
         return [source for source in sources if self.source_type(source) in self.TEST_REPORT_SOURCE_TYPES]
 
     @classmethod
