@@ -1,5 +1,6 @@
 """Unit tests for the source routes."""
 
+import socket
 import unittest
 from unittest.mock import Mock, patch
 
@@ -189,7 +190,19 @@ class PostSourceParameterTest(SourceTestCase):
         mock_get.side_effect = requests.exceptions.RequestException
         request.json = dict(url=self.url)
         response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assert_url_check(response, -1, "Unknown error")
+        self.assert_url_check(response, -1, "RequestException")
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assert_delta(
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+        )
+
+    @patch.object(requests, "get")
+    def test_url_socket_error(self, mock_get, request):
+        """Test that the error is reported if a request exception occurs, while checking connection of a url."""
+        mock_get.side_effect = socket.gaierror("This is some text that should be ignored ([Errno 1234] Error message)")
+        request.json = dict(url=self.url)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
+        self.assert_url_check(response, -1, "[Errno 1234] Error message")
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assert_delta(
             f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"

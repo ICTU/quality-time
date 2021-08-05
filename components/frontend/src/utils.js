@@ -1,6 +1,7 @@
+import { Icon } from 'semantic-ui-react';
 import { parse, stringify } from 'query-string';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-semantic-toasts';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { PERMISSIONS } from './context/Permissions';
 
 export function get_metric_direction(metric, data_model) {
@@ -46,14 +47,9 @@ export function get_metric_tags(metric) {
 }
 
 export function show_message(type, title, description, icon) {
-    toast({
-        title: title,
-        type: type,
-        icon: icon,
-        size: "large",
-        description: <p>{description}</p>,
-        time: 30000
-    }, () => { }, () => { }, () => { });  // Event handlers are mandatory
+    const toast_type = {"success": toast.TYPE.SUCCESS, "warning": toast.TYPE.WARNING, "error": toast.TYPE.ERROR, "info": toast.TYPE.INFO}[type];
+    const toast_icon = icon ? icon : {"success": "thumbs up", "warning": "warning circle", "error": "close", "info": "info circle"}[type];
+    toast(<><h4><Icon name={toast_icon}/>{title}</h4><p>{description}</p></>, {type: toast_type, autoClose: 20000});
 }
 
 export function capitalize(string) {

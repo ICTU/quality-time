@@ -1,5 +1,6 @@
 """Source routes."""
 
+import re
 from typing import Any, Optional, Union, cast
 
 import bottle
@@ -210,8 +211,11 @@ def _check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict
             url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False
         )
         return dict(status_code=response.status_code, reason=response.reason)
-    except Exception:  # pylint: disable=broad-except
-        return dict(status_code=-1, reason="Unknown error")
+    except Exception as reason:  # pylint: disable=broad-except
+        reason_message = str(reason) or reason.__class__.__name__
+        if match := re.search(r"\[errno \d+\] [^\)^']+", reason_message, re.IGNORECASE):
+            reason_message = match.group(0)  # Only return the errno and message, not the surrounding cruft
+        return dict(status_code=-1, reason=reason_message)
 
 
 def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:

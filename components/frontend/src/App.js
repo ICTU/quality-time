@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
-import { SemanticToastContainer } from 'react-semantic-toasts';
+import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
-import 'react-semantic-toasts/styles/react-semantic-alert.css';
-import './App.css';
 import { createBrowserHistory, Action } from 'history';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
@@ -101,7 +101,8 @@ class App extends Component {
         if (url_key.status_code === 200) {
           show_message("success", "URL connection OK")
         } else {
-          show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
+          const status_code = url_key.status_code >= 0 ? "[HTTP status code " + url_key.status_code + "] " : "";
+          show_message("warning", "URL connection error", status_code + url_key.reason)
         }
         return null
       })
@@ -215,7 +216,7 @@ class App extends Component {
           set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
           user={this.state.user}
         />
-        <SemanticToastContainer />
+        <ToastContainer />
         <Permissions.Provider value={user_permissions}>
           <Container fluid className="MainContainer">
             {this.state.loading ?
