@@ -44,9 +44,8 @@ class JiraIssues(SourceCollector):
         """Override to get the issues from the responses."""
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
-        entities = Entities(
-            self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)
-        )
+        issues = json.get("issues", [])
+        entities = Entities(self._create_entity(issue, url) for issue in issues if self._include_issue(issue))
         return SourceMeasurement(value=self._compute_value(entities), entities=entities)
 
     @classmethod
@@ -56,6 +55,11 @@ class JiraIssues(SourceCollector):
 
     def _create_entity(self, issue: dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
+        # Jira issues have a key and an id. The key consist of the project code and a number, e.g. FOO-42. This means
+        # the issue key changes when the issue is moved to another project. The id is an internal key and does not
+        # change. Hence, we display the issue key in the UI (issue_key below) but use the id as entity key. This makes
+        # sure that when users mark an issue as false positive, it remains false positive even the issue is moved to
+        # another project and the issue key changes.
         fields = issue["fields"]
         entity_attributes = dict(
             issue_key=issue["key"],

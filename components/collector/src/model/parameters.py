@@ -11,7 +11,7 @@ class SourceParameters:
 
     def __init__(self, source: dict, data_model: dict) -> None:
         self.__parameters = source.get("parameters", {})
-        self.__source_type_parameters = data_model["sources"][source["type"]]["parameters"]
+        self.__source_type_parameters = data_model["sources"].get(source["type"], {}).get("parameters", {})
 
     def api_url(self) -> URL:
         """Return the API URL."""

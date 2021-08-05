@@ -2,10 +2,10 @@
 
 from enum import Enum
 
-from ..meta.entity import EntityAttributeType
+from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
 from ..meta.unit import Unit
-from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter
+from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter, TestResult
 
 
 class VelocityType(str, Enum):
@@ -32,11 +32,14 @@ ALL_JIRA_METRICS = [
     "manual_test_duration",
     "manual_test_execution",
     "source_version",
+    "test_cases",
     "user_story_points",
     "velocity",
 ]
 
 CUSTOM_FIELD_ID_HELP_URL = "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html"
+
+TEST_CASE = "test_case"
 
 JIRA = Source(
     name="Jira",
@@ -54,6 +57,7 @@ JIRA = Source(
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
+                "test_cases",
                 "user_story_points",
             ],
         ),
@@ -118,6 +122,7 @@ JIRA = Source(
             default_value="Story Points",
             metrics=["user_story_points"],
         ),
+        test_result=TestResult(metrics=["test_cases"], values=["errored", "failed", "passed", "skipped", "untested"]),
         **access_parameters(
             ALL_JIRA_METRICS,
             kwargs=dict(
@@ -131,7 +136,7 @@ JIRA = Source(
     entities=dict(
         issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
         manual_test_duration=dict(
-            name="test case",
+            name=TEST_CASE,
             measured_attribute="duration",
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
@@ -140,7 +145,7 @@ JIRA = Source(
             ],
         ),
         manual_test_execution=dict(
-            name="test case",
+            name=TEST_CASE,
             attributes=[
                 dict(name="Key", key="issue_key", url="url"),
                 dict(name="Summary"),
@@ -148,6 +153,28 @@ JIRA = Source(
                 dict(
                     name="Desired test frequency (days)", key="desired_test_frequency", type=EntityAttributeType.INTEGER
                 ),
+            ],
+        ),
+        test_cases=dict(
+            name=TEST_CASE,
+            attributes=[
+                dict(name="Key", key="issue_key", url="url"),
+                dict(name="Summary"),
+                dict(name="Issue type", key="type"),
+                dict(name="Status"),
+                dict(name="Priority"),
+                dict(
+                    name="Test result",
+                    color=dict(
+                        errored=Color.NEGATIVE,
+                        failed=Color.NEGATIVE,
+                        passed=Color.POSITIVE,
+                        skipped=Color.WARNING,
+                        untested=Color.ACTIVE,
+                    ),
+                ),
+                dict(name="Created", type=EntityAttributeType.DATETIME),
+                dict(name="Updated", type=EntityAttributeType.DATETIME),
             ],
         ),
         user_story_points=dict(

@@ -37,6 +37,7 @@ MANUAL_NUMBER = Source(
                 "slow_transactions",
                 "security_warnings",
                 "suppressed_violations",
+                "test_cases",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",

@@ -30,6 +30,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Source version | The version number of the source. | ≧ 1.0  | version_number | ci | [Axe-core](#source-version-from-axe-core), [Checkmarx CxSAST](#source-version-from-checkmarx-cxsast), [Cobertura](#source-version-from-cobertura), [GitLab](#source-version-from-gitlab), [Jenkins](#source-version-from-jenkins), [Jira](#source-version-from-jira), [OWASP Dependency Check](#source-version-from-owasp-dependency-check), [OWASP ZAP](#source-version-from-owasp-zap), [OpenVAS](#source-version-from-openvas), [Quality-time](#source-version-from-quality-time), [Robot Framework](#source-version-from-robot-framework), [SonarQube](#source-version-from-sonarqube), [cloc](#source-version-from-cloc) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
+| Test cases | The amount of test cases. | ≧ 0 test cases | count (default), percentage | test quality | [JUnit XML report](#test-cases-from-junit-xml-report), [Jira](#test-cases-from-jira), [TestNG](#test-cases-from-testng) |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
 | Tests | The amount of tests. | ≧ 0 tests | count (default), percentage | test quality | [Azure DevOps Server](#tests-from-azure-devops-server), [JUnit XML report](#tests-from-junit-xml-report), [Jenkins test report](#tests-from-jenkins-test-report), [Performancetest-runner](#tests-from-performancetest-runner), [Robot Framework Jenkins plugin](#tests-from-robot-framework-jenkins-plugin), [Robot Framework](#tests-from-robot-framework), [SonarQube](#tests-from-sonarqube), [TestNG](#tests-from-testng) |
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | count | ci | [Azure DevOps Server](#unmerged-branches-from-azure-devops-server), [GitLab](#unmerged-branches-from-gitlab) |
@@ -56,12 +57,12 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | [Dependencies](#dependencies-from-composer) |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Merge requests](#merge-requests-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Source version](#source-version-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
 | [JSON file with security warnings](https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings) | A generic vulnerability report with security warnings in JSON format. | [Security warnings](#security-warnings-from-json-file-with-security-warnings) |
-| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
+| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Test cases](#test-cases-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco), [Test branch coverage](#test-branch-coverage-from-jacoco), [Test line coverage](#test-line-coverage-from-jacoco) |
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-jacoco-jenkins-plugin), [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin) |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | [Failed CI-jobs](#failed-ci-jobs-from-jenkins), [Source up-to-dateness](#source-up-to-dateness-from-jenkins), [Source version](#source-version-from-jenkins), [Unused CI-jobs](#unused-ci-jobs-from-jenkins) |
 | [Jenkins test report](https://plugins.jenkins.io/junit) | A Jenkins job with test results. | [Source up-to-dateness](#source-up-to-dateness-from-jenkins-test-report), [Tests](#tests-from-jenkins-test-report) |
-| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | [Issues](#issues-from-jira), [Manual test duration](#manual-test-duration-from-jira), [Manual test execution](#manual-test-execution-from-jira), [Source version](#source-version-from-jira), [User story points](#user-story-points-from-jira), [Velocity](#velocity-from-jira) |
+| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | [Issues](#issues-from-jira), [Manual test duration](#manual-test-duration-from-jira), [Manual test execution](#manual-test-execution-from-jira), [Source version](#source-version-from-jira), [Test cases](#test-cases-from-jira), [User story points](#user-story-points-from-jira), [Velocity](#velocity-from-jira) |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution. | [Source up-to-dateness](#source-up-to-dateness-from-ncover), [Test branch coverage](#test-branch-coverage-from-ncover), [Test line coverage](#test-line-coverage-from-ncover) |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | [Violations](#violations-from-ojaudit) |
@@ -75,7 +76,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Robot Framework Jenkins plugin](https://plugins.jenkins.io/robot/) | A Jenkins plugin for Robot Framework, a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | [Source up-to-dateness](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Tests](#tests-from-robot-framework-jenkins-plugin) |
 | [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI) | Snyk vulnerability report in JSON format. | [Security warnings](#security-warnings-from-snyk) |
 | [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | [Commented out code](#commented-out-code-from-sonarqube), [Complex units](#complex-units-from-sonarqube), [Duplicated lines](#duplicated-lines-from-sonarqube), [Size (LOC)](#size-(loc)-from-sonarqube), [Long units](#long-units-from-sonarqube), [Many parameters](#many-parameters-from-sonarqube), [Violation remediation effort](#violation-remediation-effort-from-sonarqube), [Source up-to-dateness](#source-up-to-dateness-from-sonarqube), [Source version](#source-version-from-sonarqube), [Security warnings](#security-warnings-from-sonarqube), [Suppressed violations](#suppressed-violations-from-sonarqube), [Tests](#tests-from-sonarqube), [Test branch coverage](#test-branch-coverage-from-sonarqube), [Test line coverage](#test-line-coverage-from-sonarqube), [Violations](#violations-from-sonarqube) |
-| [TestNG](https://testng.org) | Test reports in the TestNG XML format. | [Source up-to-dateness](#source-up-to-dateness-from-testng), [Tests](#tests-from-testng) |
+| [TestNG](https://testng.org) | Test reports in the TestNG XML format. | [Source up-to-dateness](#source-up-to-dateness-from-testng), [Test cases](#test-cases-from-testng), [Tests](#tests-from-testng) |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | [Issues](#issues-from-trello), [Source up-to-dateness](#source-up-to-dateness-from-trello) |
 | [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages. | [Size (LOC)](#size-(loc)-from-cloc), [Source version](#source-version-from-cloc) |
 | [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | [Dependencies](#dependencies-from-npm) |
@@ -345,7 +346,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Values | Default value | Mandatory | Help |
 | :-------- | :--- | :----- | :------------ | :-------- | :--- |
 | Metric statuses | Multiple choice | near target met (yellow), target met (green), target not met (red), technical debt target met (grey), unknown (white) | _all metric statuses_ | No |  |
-| Metric types | Multiple choice | Accessibility violations, Commented out code, Complex units, Dependencies, Duplicated lines, Failed CI-jobs, Issues, Long units, Manual test duration, Manual test execution, Many parameters, Merge requests, Metrics, Missing metrics, Performancetest duration, Performancetest stability, Ready user story points, Scalability, Security warnings, Size (LOC), Slow transactions, Source up-to-dateness, Source version, Suppressed violations, Test branch coverage, Test line coverage, Tests, Unmerged branches, Unused CI-jobs, User story points, Velocity, Violation remediation effort, Violations | _all metric types_ | No | If provided, only count metrics with the selected metric types. |
+| Metric types | Multiple choice | Accessibility violations, Commented out code, Complex units, Dependencies, Duplicated lines, Failed CI-jobs, Issues, Long units, Manual test duration, Manual test execution, Many parameters, Merge requests, Metrics, Missing metrics, Performancetest duration, Performancetest stability, Ready user story points, Scalability, Security warnings, Size (LOC), Slow transactions, Source up-to-dateness, Source version, Suppressed violations, Test branch coverage, Test cases, Test line coverage, Tests, Unmerged branches, Unused CI-jobs, User story points, Velocity, Violation remediation effort, Violations | _all metric types_ | No | If provided, only count metrics with the selected metric types. |
 | Quality-time URL | URL |  |  | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
 | Report names or identifiers | Multiple choice with addition |  |  | No |  |
 | Source types | Multiple choice | Anchore, Anchore Jenkins plugin, Axe CSV, Axe-core, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, Cobertura Jenkins plugin, Composer, GitLab, JSON file with security warnings, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins, Jenkins test report, Jira, Manual number, NCover, OJAudit, OWASP Dependency Check, OWASP ZAP, OpenVAS, Performancetest-runner, Pyupio Safety, Quality-time, Robot Framework, Robot Framework Jenkins plugin, Snyk, SonarQube, TestNG, Trello, cloc, npm, pip | _all source types_ | No | If provided, only count metrics with one or more sources of the selected source types. |
@@ -898,6 +899,36 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Configuration | Value |
 | :------------ | :---- |
 | Rules used to detect suppressed violations | csharpsquid:S1309, java:NoSonar, java:S1309, java:S1310, java:S1315, php:NoSonar, Pylint:I0011, Pylint:I0020, squid:NoSonar, squid:S1309, squid:S1310, squid:S1315 |
+
+### Test cases from Jira
+
+| Parameter | Type | Values | Default value | Mandatory | Help |
+| :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Issue query in JQL (Jira Query Language) | String |  |  | Yes | [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/) |
+| Password for basic authentication | Password |  |  | No |  |
+| Test results | Multiple choice | errored, failed, passed, skipped, untested | _all test results_ | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL | URL |  |  | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String |  |  | No |  |
+
+### Test cases from JUnit XML report
+
+| Parameter | Type | Values | Default value | Mandatory | Help |
+| :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Password for basic authentication | Password |  |  | No |  |
+| Private token | Password |  |  | No |  |
+| URL to a JUnit report in XML format or to a zip with JUnit reports in XML format | URL |  |  | Yes |  |
+| URL to a JUnit report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format. |
+| Username for basic authentication | String |  |  | No |  |
+
+### Test cases from TestNG
+
+| Parameter | Type | Values | Default value | Mandatory | Help |
+| :-------- | :--- | :----- | :------------ | :-------- | :--- |
+| Password for basic authentication | Password |  |  | No |  |
+| Private token | Password |  |  | No |  |
+| URL to a TestNG report in XML format or to a zip with TestNG reports in XML format | URL |  |  | Yes |  |
+| URL to a TestNG report in a human readable format | String |  |  | No | If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format. |
+| Username for basic authentication | String |  |  | No |  |
 
 ### Tests from Azure DevOps Server
 

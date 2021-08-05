@@ -62,6 +62,7 @@ SUBJECTS = Subjects.parse_obj(
                 "source_up_to_dateness",
                 "source_version",
                 "suppressed_violations",
+                "test_cases",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",

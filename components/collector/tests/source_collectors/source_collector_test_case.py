@@ -1,11 +1,8 @@
 """Base class for source collector unit tests."""
 
 import io
-import json
 import logging
-import pathlib
 import unittest
-import sys
 import zipfile
 from typing import Union
 from unittest.mock import AsyncMock, PropertyMock, patch
@@ -14,13 +11,7 @@ import aiohttp
 
 from base_collectors import MetricCollector
 
-
-MODULE_DIR = pathlib.Path(__file__).resolve().parent
-SERVER_SRC_PATH = MODULE_DIR.parent.parent.parent / "server" / "src"
-sys.path.insert(0, str(SERVER_SRC_PATH))
-from data_model import DATA_MODEL_JSON  # pylint: disable=import-error,wrong-import-order,wrong-import-position
-
-DATA_MODEL = json.loads(DATA_MODEL_JSON)
+from ..data_model_fixture import DATA_MODEL
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-W0046
