@@ -34,6 +34,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - The API endpoint `/api/v3/reports` is deprecated. Use `/api/v3/reports_overview` and `/api/v3/report` instead.
 - The API endpoint `/api/v3/tag_report` is deprecated. Use `/api/v3/report/{report_uuid}` instead.
 
+### Removed
+
+- Remove the search function as it is very limited and users indicate they don't use it. Closes [#2305](https://github.com/ICTU/quality-time/issues/2305).
+
 ## [3.23.3] - [2021-06-29]
 
 ### Fixed

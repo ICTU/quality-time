@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
-import { Measurement } from './Measurement';
+import { Metric } from './Metric';
 
 let report = {
   report_uuid: "report_uuid",
@@ -30,9 +30,9 @@ const data_model = {
   }
 };
 
-function measurement() {
+function metric() {
   return (
-    mount(<Table><Table.Body><Measurement
+    mount(<Table><Table.Body><Metric
       hiddenColumns={[]}
       report={report}
       reports={[report]}
@@ -45,7 +45,7 @@ function measurement() {
 }
 
 it('renders the metric', () => {
-  const wrapper = measurement();
+  const wrapper = metric();
   expect(wrapper.find("TableCell").at(1).text()).toBe("Metric");
   expect(wrapper.find("TableCell").at(4).text()).toBe("50 violations");
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0 violations");
@@ -54,7 +54,7 @@ it('renders the metric', () => {
 
 it('renders the minutes', () => {
   report.subjects.subject_uuid.metrics.metric_uuid.type = "stability";
-  const wrapper = measurement();
+  const wrapper = metric();
   expect(wrapper.find("TableCell").at(4).text()).toBe("0:50 hours");
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0:00 hours");
 });
@@ -62,7 +62,7 @@ it('renders the minutes', () => {
 it('renders the minutes as percentage', () => {
   report.subjects.subject_uuid.metrics.metric_uuid.type = "stability";
   report.subjects.subject_uuid.metrics.metric_uuid.scale = "percentage";
-  const wrapper = measurement();
+  const wrapper = metric();
   expect(wrapper.find("TableCell").at(4).text()).toBe("50% minutes");
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0% minutes");
 });
