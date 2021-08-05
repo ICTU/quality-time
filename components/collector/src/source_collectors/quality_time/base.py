@@ -21,12 +21,9 @@ class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         response_json = await response.json()
-        reports = list((response_json)["reports"])
-        reports = (
-            [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})]
-            if report_titles_or_ids
-            else reports
-        )
+        reports = list(response_json["reports"])
+        if report_titles_or_ids:
+            reports = [report for report in reports if report_titles_or_ids & {report["title"], report["report_uuid"]}]
         if not reports:
             message = "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else "")
             raise SourceCollectorException(message)

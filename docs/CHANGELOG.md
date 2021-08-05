@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - In addition to "low", "medium", "high", and "critical", the OWASP Dependency Check may report vulnerabilities with severity "moderate". Allow for using this severity for filtering vulnerabilities. Fixes [#2337](https://github.com/ICTU/quality-time/issues/2337).
+- When measuring 'missing metrics', count missing metric types per subject instead of per report. Fixes [#2352](https://github.com/ICTU/quality-time/issues/2352).
 - Add subject name to metrics in MS Teams notifications, so it's clear which metric changed status when different subjects have metrics with the same name. Fixes [#2353](https://github.com/ICTU/quality-time/issues/2353).
 - After reloading a report, edit controls are shown even when the user has no edit permission. Fixes [#2373](https://github.com/ICTU/quality-time/issues/2373).
 
