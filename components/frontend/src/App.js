@@ -17,7 +17,8 @@ import { get_datamodel } from './api/datamodel';
 import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
-import { getUserPermissions, isValidDate_YYYYMMDD, show_message } from './utils'
+import { show_message, show_connection_messages } from './widgets/toast';
+import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
 
 class App extends Component {
   constructor(props) {
@@ -62,7 +63,8 @@ class App extends Component {
 
   reload(json) {
     if (json) {
-      this.show_connection_messages(json);
+      show_connection_messages(json);
+      this.changed_fields = json.availability ? json.availability.filter((url_key) => url_key.status_code !== 200) : null;
       this.check_session(json)
     }
     const report_date = this.report_date();
@@ -91,22 +93,6 @@ class App extends Component {
           });
         }
       }).catch(show_error);
-  }
-
-  show_connection_messages(json) {
-    this.changed_fields = null
-    if (json.availability) {
-      this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
-      json.availability.map((url_key) => {
-        if (url_key.status_code === 200) {
-          show_message("success", "URL connection OK")
-        } else {
-          const status_code = url_key.status_code >= 0 ? "[HTTP status code " + url_key.status_code + "] " : "";
-          show_message("warning", "URL connection error", status_code + url_key.reason)
-        }
-        return null
-      })
-    }
   }
 
   check_session(json) {

@@ -1,17 +1,5 @@
-import { Icon } from 'semantic-ui-react';
-import * as react_toastify from 'react-toastify';
 import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, show_message, format_minutes } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
-
-jest.mock("react-toastify");
-
-it('shows a message', () => {
-  const toast_type = react_toastify.toast.TYPE;
-  react_toastify.toast = jest.fn();
-  react_toastify.toast.TYPE = toast_type;
-  show_message("error", "Error", "Description");
-  expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4><Icon name="close"/>Error</h4><p>Description</p></>);
-});
 
 it('rounds numbers nicely', () => {
   expect(nice_number(15)).toBe(20);
