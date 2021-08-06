@@ -23,7 +23,7 @@ jobs:
       with:
         python-version: '3.9.6'
     - name: Set up Node
-      uses: actions/setup-node@v2.3.2
+      uses: actions/setup-node@v2.4.0
       if: env.SONAR_TOKEN != null
       with:
         node-version: '14'
