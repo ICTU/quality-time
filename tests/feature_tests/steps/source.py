@@ -26,8 +26,12 @@ def change_source_parameter(context, parameter, value, scope="source"):
     )
 
 
+@then('the source parameter {parameter} equals "{value}"')
 @then('the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}"')
-def check_source_parameter_and_availability(context, parameter, value, status_code):
+@then(
+    'the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}" and the message equals "{message}"'
+)
+def check_source_parameter_and_availability(context, parameter, value, status_code="None", message=""):
     """Check that the source parameter equals value."""
     post_response = context.response.json()
     source = get_item(context, "source")
@@ -36,12 +40,8 @@ def check_source_parameter_and_availability(context, parameter, value, status_co
         assert_false("availability" in post_response)
     else:
         assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
-
-
-@then('the source parameter {parameter} equals "{value}"')
-def check_source_parameter(context, parameter, value):
-    """Check that the source parameter equals value."""
-    check_source_parameter_and_availability(context, parameter, value, "None")
+    if message:
+        assert_equal(message, str(post_response["availability"][0]["reason"]))
 
 
 @then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')
