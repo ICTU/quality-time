@@ -1,6 +1,6 @@
 bottle==0.12.19
 bottle-mongo==0.3.0
-gevent==21.1.2
+gevent==21.8.0
 lxml==4.6.3
 packaging==21.0
 pydantic==1.8.2
