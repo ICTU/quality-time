@@ -72,6 +72,11 @@ Feature: source
     When the client sets the source parameter url to "https://github.com"
     Then the source parameter url equals "https://github.com" and the availability status code equals "200"
 
+  Scenario: change source parameter to missing url
+    Given an existing source with type "axecsv"
+    When the client sets the source parameter url to "https://github.com/missing_url"
+    Then the source parameter url equals "https://github.com/missing_url" and the availability status code equals "404"
+
   Scenario: change multiple choice source parameter
     Given an existing metric with type "failed_jobs"
     And an existing source with type "gitlab"
