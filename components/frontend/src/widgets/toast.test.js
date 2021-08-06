@@ -12,6 +12,14 @@ it('shows a message', () => {
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4><Icon name="close"/>Error</h4><p>Description</p></>);
 });
 
+it('shows a custom icon', () => {
+    const toast_type = react_toastify.toast.TYPE;
+    react_toastify.toast = jest.fn();
+    react_toastify.toast.TYPE = toast_type;
+    show_message("error", "Error", "Description", "question");
+    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4><Icon name="question"/>Error</h4><p>Description</p></>);
+});
+
 it('shows no connection messages', () => {
     const toast_type = react_toastify.toast.TYPE;
     react_toastify.toast = jest.fn();
