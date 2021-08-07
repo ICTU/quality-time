@@ -80,7 +80,7 @@ Feature: source
   Scenario: change source parameter to incorrect host
     Given an existing source with type "axecsv"
     When the client sets the source parameter url to "https://i-dont-exist"
-    Then the source parameter url equals "https://i-dont-exist" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known"
+    Then the source parameter url equals "https://i-dont-exist" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
 
   Scenario: change multiple choice source parameter
     Given an existing metric with type "failed_jobs"
@@ -96,12 +96,12 @@ Feature: source
   Scenario: change source password parameter
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter password to "secret"
-    Then the source parameter password equals "this string replaces credentials" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known"
+    Then the source parameter password equals "this string replaces credentials" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
 
   Scenario: change source token parameter
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter private_token to "secret"
-    Then the source parameter private_token equals "this string replaces credentials" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known"
+    Then the source parameter private_token equals "this string replaces credentials" and the availability status code equals "-1" and the message equals "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
 
   Scenario: when the client clears the url, no availability check is done
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"

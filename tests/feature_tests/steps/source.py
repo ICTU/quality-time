@@ -1,6 +1,6 @@
 """Step implementations for sources."""
 
-from asserts import assert_equal, assert_false, assert_not_equal
+from asserts import assert_equal, assert_false, assert_not_equal, assert_in
 from behave import then, when
 
 from item import get_item
@@ -29,9 +29,10 @@ def change_source_parameter(context, parameter, value, scope="source"):
 @then('the source parameter {parameter} equals "{value}"')
 @then('the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}"')
 @then(
-    'the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}" and the message equals "{message}"'
+    'the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}" '
+    'and the message equals "{message1}" or "{message2}"'
 )
-def check_source_parameter_and_availability(context, parameter, value, status_code="None", message=""):
+def check_source_parameter_and_availability(context, parameter, value, status_code="None", message1="", message2=""):
     """Check that the source parameter equals value."""
     post_response = context.response.json()
     source = get_item(context, "source")
@@ -40,8 +41,8 @@ def check_source_parameter_and_availability(context, parameter, value, status_co
         assert_false("availability" in post_response)
     else:
         assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
-    if message:
-        assert_equal(message, str(post_response["availability"][0]["reason"]))
+    if message1:
+        assert_in(str(post_response["availability"][0]["reason"]), (message1, message2))
 
 
 @then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')
