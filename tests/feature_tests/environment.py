@@ -1,8 +1,5 @@
 """Code to run before and after certain events during testing."""
 
-import time
-from typing import Dict
-
 import requests
 
 
@@ -13,18 +10,23 @@ def before_all(context):
         """Return the cookies."""
         return dict(session_id=context.session_id) if context.session_id else {}
 
+    def api_url(api, internal=False):
+        """Return the API URL."""
+        base_api_url = context.base_api_url.format("internal-" if internal else "")
+        return f"{base_api_url}/{api}"
+
     def get(api, headers=None, internal=False):
         """Get the resource."""
-        base_api_url = context.base_api_url.format("internal-" if internal else "")
+        url = api_url(api, internal)
         if context.report_date:
-            api += f"?report_date={context.report_date}"
-        context.response = response = requests.get(f"{base_api_url}/{api}", headers=headers, cookies=cookies())
+            url += f"?report_date={context.report_date}"
+        context.response = response = requests.get(url, headers=headers, cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def post(api, json=None, internal=False):
         """Post the resource."""
-        base_api_url = context.base_api_url.format("internal-" if internal else "")
-        context.response = response = requests.post(f"{base_api_url}/{api}", json=json, cookies=cookies())
+        url = api_url(api, internal)
+        context.post_response = context.response = response = requests.post(url, json=json, cookies=cookies())
         if not response.ok:
             return response
         if "session_id" in response.cookies:
@@ -33,14 +35,15 @@ def before_all(context):
 
     def delete(api):
         """Delete the resource."""
-        context.response = response = requests.delete(f"{context.base_api_url.format('')}/{api}", cookies=cookies())
+        context.response = response = requests.delete(api_url(api), cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     context.base_api_url = "http://localhost:5001/{0}api/v3"
     context.session_id = None
     context.report_date = None
-    context.response = None
-    context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
+    context.response = None  # Most recent respone
+    context.post_response = None  # Most recent post response
+    context.uuid: dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
     context.delete = delete
