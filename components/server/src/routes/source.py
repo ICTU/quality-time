@@ -205,17 +205,17 @@ def _availability_checks(data, parameter_key: str) -> list[dict[str, Union[str, 
 
 def _check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, Union[int, str]]:
     """Check the availability of the URL."""
-    # Allow for mal-configured sources:
+    credentials = _basic_auth_credentials(source_parameters)
+    headers = _headers(source_parameters)
     try:
-        response = requests.get(  # noqa: DUO123, # nosec
-            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False
-        )
+        response = requests.get(url, auth=credentials, headers=headers, verify=False)  # noqa: DUO123, # nosec
         return dict(status_code=response.status_code, reason=response.reason)
-    except Exception as reason:  # pylint: disable=broad-except
-        reason_message = str(reason) or reason.__class__.__name__
-        if match := re.search(r"\[errno \-?\d+\] [^\)^']+", reason_message, re.IGNORECASE):
-            reason_message = match.group(0)  # Only return the errno and message, not the surrounding cruft
-        return dict(status_code=-1, reason=reason_message)
+    except Exception as exception_instance:  # pylint: disable=broad-except
+        exception_reason = str(exception_instance) or exception_instance.__class__.__name__
+        # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
+        # that led to the error:
+        exception_reason = re.sub(r".*(\[errno \-?\d+\] [^\)^']+).*", r"\1", exception_reason, flags=re.IGNORECASE)
+        return dict(status_code=-1, reason=exception_reason)
 
 
 def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:

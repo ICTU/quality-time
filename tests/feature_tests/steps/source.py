@@ -51,7 +51,7 @@ def check_source_parameter_availability_reason(context, message1, message2=""):
     reason = str(post_response["availability"][0]["reason"])
     if message1 and message2:
         assert_in(reason, (message1, message2))
-    elif message1:
+    else:
         assert_equal(message1, reason)
 
 
