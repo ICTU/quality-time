@@ -209,6 +209,18 @@ class PostSourceParameterTest(SourceTestCase):
         )
 
     @patch.object(requests, "get")
+    def test_url_socket_error_negative_errno(self, mock_get, request):
+        """Test that the error is reported if a request exception occurs, while checking connection of a url, with negative errno."""
+        mock_get.side_effect = socket.gaierror("This is some text that should be ignored ([Errno -2] Error message)")
+        request.json = dict(url=self.url)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
+        self.assert_url_check(response, -1, "[Errno -2] Error message")
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assert_delta(
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+        )
+
+    @patch.object(requests, "get")
     def test_url_with_user(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
         self.sources[SOURCE_ID]["parameters"]["username"] = "un"
