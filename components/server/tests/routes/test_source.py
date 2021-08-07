@@ -210,7 +210,7 @@ class PostSourceParameterTest(SourceTestCase):
 
     @patch.object(requests, "get")
     def test_url_socket_error_negative_errno(self, mock_get, request):
-        """Test that the error is reported if a request exception occurs, while checking connection of a url, with negative errno."""
+        """Test that the error is reported if a request exception occurs with negative errno."""
         mock_get.side_effect = socket.gaierror("This is some text that should be ignored ([Errno -2] Error message)")
         request.json = dict(url=self.url)
         response = post_source_parameter(SOURCE_ID, "url", self.database)
