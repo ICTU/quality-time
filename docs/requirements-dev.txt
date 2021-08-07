@@ -1,2 +1,4 @@
 -r ../requirements-dev.txt
 gitpython==3.1.18
+myst-parser==0.15.1
+Sphinx==4.1.2
