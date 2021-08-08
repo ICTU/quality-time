@@ -6,11 +6,11 @@ In addition, *Quality-time* assumes an LDAP service is available to authenticate
 
 ## Docker-composition
 
-This document assumes docker-compose is used to deploy the containers. The docker folder of this repo contains different compose files for running *Quality-time* in development and continuous integration mode, see the [docker folder](../docker). You can use these compose files as basis for your own deployment configuration.
+This document assumes docker-compose is used to deploy the containers. The docker folder of this repo contains different compose files for running *Quality-time* in development and continuous integration mode, see the [docker folder](https://github.com/ICTU/quality-time/tree/master/docker). You can use these compose files as basis for your own deployment configuration.
 
 ## Configuring LDAP
 
-To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the server service in the [compose file](../docker/docker-compose.yml):
+To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml):
 
 ```yaml
   server:
@@ -28,7 +28,7 @@ See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more in
 
 ## Configuring Forwarded Authentication
 
-To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Security warning: Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. Add the environment variables to the server service in the [compose file](../docker/docker-compose.yml):
+To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Security warning: Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. Add the environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml):
 
 ```yaml
   server:
@@ -41,7 +41,7 @@ To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWA
 
 ### Proxy
 
-External traffic is routed by a Caddy reverse proxy (container name: www) to either the frontend container or the server container. The proxy listens on port 80. You can override the Caddy configuration in the [compose file](../docker/docker-compose.yml) if so desired.
+External traffic is routed by a Caddy reverse proxy (container name: www) to either the frontend container or the server container. The proxy listens on port 80. You can override the Caddy configuration in the [compose file](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml) if so desired.
 
 ### Frontend
 

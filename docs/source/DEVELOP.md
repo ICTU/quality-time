@@ -1,14 +1,5 @@
 # Developing *Quality-time*
 
-## Table of contents
-
-- [Develop](#develop)
-- [Test](#test)
-- [Release](#release)
-- [Maintain](#maintain)
-- [Software components](#software-components)
-- [Adding metrics and sources](#adding-metrics-and-sources)
-
 ## Develop
 
 ### Running *Quality-time* locally
@@ -152,7 +143,7 @@ The feature tests currently test all features through the server API. They touch
 tests/feature_tests/ci/test.sh
 ```
 
-The `test.sh` shell script will start a server under coverage and then run the [feature tests](../tests/feature_tests).
+The `test.sh` shell script will start a server under coverage and then run the [feature tests](https://github.com/ICTU/quality-time/tree/master/tests/feature_tests).
 
 ### Application tests
 
@@ -165,23 +156,23 @@ docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 cir
 
 ## Release
 
-See [release README](../release/README.md).
+See [release README](https://github.com/ICTU/quality-time/tree/master/release/README.md).
 
 ## Maintain
 
-Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](../.github/dependabot.yml).
+Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/tree/master/.github/dependabot.yml).
 
 Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
 
-- [Database](../components/database/Dockerfile): the MongoDB base image.
-- [Collector](../components/collector/Dockerfile): the Python base image.
-- [Frontend](../components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
-- [LDAP](../components/ldap/Dockerfile): the OpenLDAP base image.
-- [Notifier](../components/notifier/Dockerfile): the Python base image.
-- [Proxy](../components/proxy/Dockerfile): the Caddy base image.
-- [Renderer](../components/renderer/Dockerfile): the url-to-pdf-api image.
-- [Server](../components/server/Dockerfile): the Python base image.
-- [Testdata](../components/testdata/Dockerfile): the Python base image.
+- [Database](https://github.com/ICTU/quality-time/tree/master/components/database/Dockerfile): the MongoDB base image.
+- [Collector](https://github.com/ICTU/quality-time/tree/master/components/collector/Dockerfile): the Python base image.
+- [Frontend](https://github.com/ICTU/quality-time/tree/master/components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
+- [LDAP](https://github.com/ICTU/quality-time/tree/master/components/ldap/Dockerfile): the OpenLDAP base image.
+- [Notifier](https://github.com/ICTU/quality-time/tree/master/components/notifier/Dockerfile): the Python base image.
+- [Proxy](https://github.com/ICTU/quality-time/tree/master/components/proxy/Dockerfile): the Caddy base image.
+- [Renderer](https://github.com/ICTU/quality-time/tree/master/components/renderer/Dockerfile): the url-to-pdf-api image.
+- [Server](https://github.com/ICTU/quality-time/tree/master/components/server/Dockerfile): the Python base image.
+- [Testdata](https://github.com/ICTU/quality-time/tree/master/components/testdata/Dockerfile): the Python base image.
 
 ## Software components
 
@@ -195,28 +186,28 @@ Base images used in the Docker containers, and additionally installed software, 
 
 And four bespoke components:
 
-- A [frontend](../components/frontend/README.md) serving the React UI,
-- A [server](../components/server/README.md) serving the API,
-- A [collector](../components/collector/README.md) to collect the measurements from the sources.
-- A [notifier](../components/notifier/README.md) to notify users about events such as metrics turning red.
+- A [frontend](https://github.com/ICTU/quality-time/tree/master/components/frontend/README.md) serving the React UI,
+- A [server](https://github.com/ICTU/quality-time/tree/master/components/server/README.md) serving the API,
+- A [collector](https://github.com/ICTU/quality-time/tree/master/components/collector/README.md) to collect the measurements from the sources.
+- A [notifier](https://github.com/ICTU/quality-time/tree/master/components/notifier/README.md) to notify users about events such as metrics turning red.
 
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
-For testing purposes there are also [test data](../components/testdata/README.md) and an [LDAP-server](../components/ldap/README.md).
+For testing purposes there are also [test data](https://github.com/ICTU/quality-time/tree/master/components/testdata/README.md) and an [LDAP-server](https://github.com/ICTU/quality-time/tree/master/components/ldap/README.md).
 
 ## Adding metrics and sources
 
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](../components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](../components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](../components/server/README.md) component.
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](https://github.com/ICTU/quality-time/tree/master/components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](https://github.com/ICTU/quality-time/tree/master/components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](https://github.com/ICTU/quality-time/tree/master/components/server/README.md) component.
 
 ### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/tree/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 ### Adding new sources
 
 #### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](../components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/tree/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
 
 Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
 
@@ -240,9 +231,9 @@ CLOC = Source(
 
 #### Adding the new source to the collector
 
-To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](../components/collector/src/base_collectors/source_collector.py) needs to be created.
+To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](https://github.com/ICTU/quality-time/tree/master/components/collector/src/base_collectors/source_collector.py) needs to be created.
 
-Add a new Python package to the [`source_collectors` folder](../components/collector/src/source_collectors) with the same name as the source type in the data model. For example, if the new source type is `cloc`, the folder name of the collectors is also `cloc`. Next, create a module for each metric that the new source supports. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-up-to-dateness, you would create two modules, each containing a subclass of `SourceCollector`: a `ClocLOC` class in `cloc/loc.py` and a `ClocSourceUpToDateness` class if `cloc/source_up_to_dateness.py`. If code can be shared between these classes, add a `cloc/base.py` file with a `ClocBaseClass`.
+Add a new Python package to the [`source_collectors` folder](https://github.com/ICTU/quality-time/tree/master/components/collector/src/source_collectors) with the same name as the source type in the data model. For example, if the new source type is `cloc`, the folder name of the collectors is also `cloc`. Next, create a module for each metric that the new source supports. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-up-to-dateness, you would create two modules, each containing a subclass of `SourceCollector`: a `ClocLOC` class in `cloc/loc.py` and a `ClocSourceUpToDateness` class if `cloc/source_up_to_dateness.py`. If code can be shared between these classes, add a `cloc/base.py` file with a `ClocBaseClass`.
 
 To reduce duplication, `SourceCollector` has several abstract subclasses. The class hierarchy is currently as follows:
 
@@ -283,7 +274,7 @@ Most collector classes are a bit more complex than that, because to retrieve the
 
 ##### Writing and running unit tests
 
-To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](../components/collector/tests), for example:
+To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](https://github.com/ICTU/quality-time/tree/master/components/collector/tests), for example:
 
 ```python
 """Unit tests for the cloc source."""
@@ -309,7 +300,7 @@ class ClocLOCTest(SourceCollectorTestCase):
 
 Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which creates a source and metric for us, specified using `SOURCE_TYPE` and `METRIC_TYPE`, and provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
 
-In the case of collectors that use files as source, also add an example file to the [test data component](../components/testdata/README.md).
+In the case of collectors that use files as source, also add an example file to the [test data component](https://github.com/ICTU/quality-time/tree/master/components/testdata/README.md).
 
 To run the unit tests:
 
@@ -329,17 +320,17 @@ cd components/collector
 ci/quality.sh
 ```
 
-Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](../components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
+Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](https://github.com/ICTU/quality-time/tree/master/components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
 
 ```console
 ci/quality.sh
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](../components/collector/ci/quality.sh) to suppress Vulture's warning.
+Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/tree/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
 
 #### Adding a logo for the new source to the server
 
-Add a small png file of the logo in [`components/server/src/routes/logos`](../components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small png file of the logo in [`components/server/src/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.

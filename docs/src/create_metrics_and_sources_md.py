@@ -153,7 +153,7 @@ def metric_source_configuration_table(data_model, metric_key, source_key) -> str
 
 def data_model_as_table(data_model) -> str:
     """Return the data model as Markdown table."""
-    markdown = markdown_header("Quality-time metrics and sources")
+    markdown = markdown_header("*Quality-time* metrics and sources")
     markdown += (
         "\nThis document lists all [metrics](#metrics) that *Quality-time* can measure and all "
         "[sources](#sources) that *Quality-time* can use to measure the metrics. For each "
@@ -177,6 +177,6 @@ def data_model_as_table(data_model) -> str:
 
 
 if __name__ == "__main__":
-    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "METRICS_AND_SOURCES.md"
+    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "source" / "METRICS_AND_SOURCES.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(get_data_model()))

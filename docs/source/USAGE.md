@@ -1,39 +1,5 @@
 # *Quality-time* user manual
 
-## Table of contents
-
-- [Logging in and out](#logging-in-and-out)
-- [Configuring permissions](#configuring-permissions)
-  - [Report edit permission](#report-edit-permission)
-  - [Entity edit permission](#entity-edit-permission)
-- [Configuring quality reports](#configuring-quality-reports)
-  - [Configuring reports](#configuring-reports)
-  - [Configuring subjects](#configuring-subjects)
-  - [Configuring metrics](#configuring-metrics)
-  - [Configuring sources](#configuring-sources)
-- [Notes on specific metrics](#notes-on-specific-metrics)
-  - [Metrics](#metrics)
-  - [Unmerged branches](#unmerged-branches)
-- [Notes on specific sources](#notes-on-specific-sources)
-  - [GitLab](#gitlab)
-  - [Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin](#jenkins-jenkins-test-report-jacoco-jenkins-plugin-and-owasp-dependency-check-jenkins-plugin)
-  - [Generic JSON for security warnings](#generic-json-for-security-warnings)
-- [Customizing quality reports](#customizing-quality-reports)
-  - [Customizing dashboards](#customizing-dashboards)
-  - [Sorting metrics](#sorting-metrics)
-  - [Filtering metrics by tag](#filtering-metrics-by-tag)
-  - [Filtering metrics by status](#filtering-metrics-by-status)
-  - [Hiding columns](#hiding-columns)
-- [Export reports as PDF](#export-reports-as-pdf)
-  - [Manually](#manually)
-  - [Via the API](#via-the-api)
-- [Export and import reports as JSON](#export-and-import-reports-as-json)
-  - [Export API](#export-api)
-  - [Import API](#import-api)
-- [Notifications](#notifications)
-
----
-
 ## Logging in and out
 
 Quality reports can be viewed without logging in, but to edit reports and metrics you need to be logged in. Click the "Login" button in the menu bar:
@@ -44,7 +10,9 @@ Enter your LDAP-credentials in the dialog:
 
 ![Login dialog screenshot](screenshots/login_dialog.png)
 
-> You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
+```{note}
+You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
+```
 
 After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://gravatar.com), it will be shown next to your username.
 
@@ -76,7 +44,9 @@ To restore the default situation where every logged-in user can edit entities, s
 
 Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application, or the number of ready user story points for a Scrum team. To collect the measurement data, each metric has one or more sources that *Quality-time* will use to measure the metric.
 
-> You need to be logged in to be able to edit quality reports.
+```{note}
+You need to be logged in to be able to edit quality reports.
+```
 
 ### Configuring reports
 
@@ -94,7 +64,9 @@ To change the title or subtitle of a report, expand the report header and simply
 
 To delete a report expand the report header and click the "Delete report" button. The report and all its subjects is deleted.
 
-> Be careful, there's no way to undo your action via the user interface.
+```{warning}
+Be careful, there's no way to undo your action via the user interface.
+```
 
 ### Configuring subjects
 
@@ -108,7 +80,9 @@ To change the subject type and name expand the subject header if it's not alread
 
 ![Editing subject screenshot](screenshots/editing_subject.png)
 
-> Currently, changing the type of the subject does not affect what you can do with the subject.
+```{note}
+Currently, changing the type of the subject does not affect what you can do with the subject.
+```
 
 To change the name of the subject, simply type the new name in the "Subject name" field and hit enter.
 
@@ -116,7 +90,9 @@ To change the name of the subject, simply type the new name in the "Subject name
 
 To delete a subject expand the subject header and click the "Delete subject" button. The subject and all its metrics is deleted.
 
-> Be careful, there's no way to undo your action via the user interface.
+```{warning}
+Be careful, there's no way to undo your action via the user interface.
+```
 
 ### Configuring metrics
 
@@ -158,7 +134,9 @@ To reorder metrics, expand the metric in the metric table and use the buttons on
 
 To delete a metric, expand the metric in the metric table and click the "Delete metric" button. The metric and its sources are deleted.
 
-> Be careful, there's no way to undo your action via the user interface.
+```{warning}
+Be careful, there's no way to undo your action via the user interface.
+```
 
 ### Configuring sources
 
@@ -186,7 +164,9 @@ Source parameter (URL's, usernames, passwords, etc.) changes can be applied to d
 
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
-> Be careful, there's no way to undo your action via the user interface.
+```{warning}
+Be careful, there's no way to undo your action via the user interface.
+```
 
 ### Configuring entities
 
@@ -234,7 +214,7 @@ There are two scenarios: the source is a build artifact of a GitLab CI pipeline,
 
 When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch):
 
-```http
+```
 https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>
 ```
 
@@ -246,7 +226,7 @@ If the repository is private, you also need to enter an [personal access token](
 
 When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
 
-```http
+```
 https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>
 ```
 
@@ -375,7 +355,7 @@ The public key argument is optional. If no public key is provided, the public ke
 
 ### Import API
 
-The importing endpoint is available via `http://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](../components/server/src/data/example-reports) for the format.
+The importing endpoint is available via `http://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) for the format.
 
 For example, using curl, and assuming you have logged in as shown above:
 

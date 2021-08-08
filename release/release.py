@@ -62,7 +62,7 @@ def check_preconditions(bump: str):
     docs = root / "docs"
     create_metrics_and_sources = docs / "src" / "create_metrics_and_sources_md.py"
     subprocess.run(["python3", create_metrics_and_sources], check=True)  # skipcq: BAN-B603,BAN-B607
-    metrics_and_sources = docs / "METRICS_AND_SOURCES.md"
+    metrics_and_sources = docs / "source" / "METRICS_AND_SOURCES.md"
     if repo.is_dirty(path=metrics_and_sources):
         messages.append(f"The generated data model documentation is out of date, please commit {metrics_and_sources}.")
     changelog = docs / "CHANGELOG.md"

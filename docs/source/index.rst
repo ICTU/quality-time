@@ -11,7 +11,10 @@ Welcome to Quality-time's documentation!
    :caption: Contents:
 
    USAGE.md
-
+   METRICS_AND_SOURCES.md
+   DEPLOY.md
+   DEVELOP.md
+   CHANGELOG.md
 
 Indices and tables
 ==================

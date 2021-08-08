@@ -1,4 +1,4 @@
-# Quality-time metrics and sources
+# *Quality-time* metrics and sources
 
 This document lists all [metrics](#metrics) that *Quality-time* can measure and all [sources](#sources) that *Quality-time* can use to measure the metrics. For each [supported combination of metric and source](#supported-metric-source-combinations), it lists the parameters that can be used to configure the source.
 
