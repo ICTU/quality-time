@@ -10,11 +10,11 @@ Welcome to Quality-time's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   USAGE.md
-   METRICS_AND_SOURCES.md
-   DEPLOY.md
-   DEVELOP.md
-   CHANGELOG.md
+   usage.md
+   metrics_and_sources.md
+   deployment.md
+   development.md
+   changelog.md
 
 Indices and tables
 ==================

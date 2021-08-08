@@ -110,7 +110,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Duplicated lines" in the example below, but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Duplicated lines" in the example below, but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
@@ -142,7 +142,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding sources
 
-To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported source types.
+To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported source types.
 
 ![Adding source screenshot](screenshots/adding_source.png)
 
@@ -214,9 +214,7 @@ There are two scenarios: the source is a build artifact of a GitLab CI pipeline,
 
 When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch):
 
-```
-https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>
-```
+`https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>`
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
@@ -226,9 +224,7 @@ If the repository is private, you also need to enter an [personal access token](
 
 When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
 
-```
-https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>
-```
+`https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>`
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 

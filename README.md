@@ -20,11 +20,11 @@ Users can add and configure reports, metrics, and sources (such as SonarQube and
 
 Also see:
 
-- [User manual](docs/USAGE.md)
-- [Supported metrics and sources](docs/METRICS_AND_SOURCES.md)
-- [Deployment instructions](docs/DEPLOY.md)
-- [Developer manual](docs/DEVELOP.md)
-- [Change log](docs/CHANGELOG.md)
+- [User manual](https://quality-time.readthedocs.io/en/latest/usage.html)
+- [Supported metrics and sources](https://quality-time.readthedocs.io/en/latest/metrics_and_sources.html)
+- [Deployment instructions](https://quality-time.readthedocs.io/en/latest/deployment.html)
+- [Developer manual](https://quality-time.readthedocs.io/en/latest/development.html)
+- [Change log](https://quality-time.readthedocs.io/en/latest/changelog.html)
 
 ## Screenshots
 
@@ -34,23 +34,23 @@ Some screenshots to wet your appetite.
 
 *Quality-time* shows a summary of the projects on its landing page:
 
-![Screenshot](docs/screenshots/projects_dashboard.png)
+![Screenshot](docs/source/screenshots/projects_dashboard.png)
 
 ### Metrics overview
 
 For each metric, *Quality-time* displays the key data:
 
-![Screenshot](docs/screenshots/metrics.png)
+![Screenshot](docs/source/screenshots/metrics.png)
 
 ### Metric details
 
 Users can expand the metrics to see and configure the metric details:
 
-![Screenshot](docs/screenshots/metric_details.png)
+![Screenshot](docs/source/screenshots/metric_details.png)
 
 And to manage false positives:
 
-![Screenshot](docs/screenshots/metric_entities.png)
+![Screenshot](docs/source/screenshots/metric_entities.png)
 
 ## Features
 

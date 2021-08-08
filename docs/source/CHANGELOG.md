@@ -125,7 +125,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Reports can be exported and imported via API. Partially fixes [1693](https://github.com/ICTU/quality-time/issues/1693).
 - When measuring security warnings with OWASP ZAP as source, allow for counting alert types as security warnings as opposed to alert instances. Closes [#1902](https://github.com/ICTU/quality-time/issues/1902).
-- Added a new metric 'source version' that can be used to measure the version of a source and compare it with a minimum or maximum version number. See the [metrics and sources overview](METRICS_AND_SOURCES.md) for a list of sources that support this metric. Closes [#1904](https://github.com/ICTU/quality-time/issues/1904).
+- Added a new metric 'source version' that can be used to measure the version of a source and compare it with a minimum or maximum version number. See the [metrics and sources overview](metrics_and_sources.md) for a list of sources that support this metric. Closes [#1904](https://github.com/ICTU/quality-time/issues/1904).
 - Added support for the Anchore Jenkins plugin as source for the 'security warnings' and 'source up-to-dateness' metrics. Closes [#1980](https://github.com/ICTU/quality-time/issues/1980).
 - Added support for Axe-core JSON files (or zips with Axe-core JSON files) as source for measuring accessibility violations. Closes [#1981](https://github.com/ICTU/quality-time/issues/1981).
 
@@ -202,7 +202,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - Show since when a metric has its current status via a popup over the status icon. Closes [#1091](https://github.com/ICTU/quality-time/issues/1091).
-- When adding a notification destination, it's possible to specify how long *Quality-time* should wait before sending a notification. If more notifications happen during the wait period, they will be bundled. Also see the [user manual](USAGE.md#notifications). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- When adding a notification destination, it's possible to specify how long *Quality-time* should wait before sending a notification. If more notifications happen during the wait period, they will be bundled. Also see the [user manual](usage.md#notifications). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 - Notifications will now be sent for all status changes. Previously, notifications were only sent when a metric either turned red or white. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 - Allow using Jenkins jobs as source for the 'source up-to-dateness' metric. Closes [#1680](https://github.com/ICTU/quality-time/issues/1680).
 
@@ -220,7 +220,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - When using Jira as source for the 'issues' and the 'user story points' metric, show the issue type in the metric details. Closes [#1674](https://github.com/ICTU/quality-time/issues/1674).
-- Allow for limiting editing rights to specific people. Grant editing rights to people by adding their username or email address to the editors field on the homepage. Expand the overview title to access the editors field. Also see the [user manual](USAGE.md#limiting-editing-rights). Closes [#294](https://github.com/ICTU/quality-time/issues/294).
+- Allow for limiting editing rights to specific people. Grant editing rights to people by adding their username or email address to the editors field on the homepage. Expand the overview title to access the editors field. Also see the [user manual](usage.md#limiting-editing-rights). Closes [#294](https://github.com/ICTU/quality-time/issues/294).
 
 ### Fixed
 
@@ -264,7 +264,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Removed
 
-- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](METRICS_AND_SOURCES.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
+- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](metrics_and_sources.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
 
 ### Changed
 
@@ -292,7 +292,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
-- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [user manual](USAGE.md#generic-json-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
+- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [user manual](usage.md#generic-json-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
 - In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
@@ -300,8 +300,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
-- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment documentation](DEPLOY.md#configuring-forwarded-authentication).
-- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](USAGE.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml) and the [deployment documentation](DEPLOY.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment documentation](deployment.md#configuring-forwarded-authentication).
+- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml) and the [deployment documentation](deployment.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## [3.9.0] - [2020-10-11]
 
@@ -532,7 +532,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 
 - The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between *Quality-time* and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
-- Re-enable environment variables to set a proxy to be used by the collector. See the [deployment documentation](DEPLOY.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
+- Re-enable environment variables to set a proxy to be used by the collector. See the [deployment documentation](deployment.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
 
 ## [2.3.1] - [2020-06-02]
 
@@ -867,7 +867,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [LDAP section in the deployment document](https://github.com/ICTU/quality-time/blob/master/docs/DEPLOY.md#ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774).
+- More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [LDAP section in the deployment document](https://github.com/ICTU/quality-time/blob/master/docs/deployment.md#ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774).
 - Logo for Axe. Closes [#778](https://github.com/ICTU/quality-time/issues/778).
 
 ## [0.16.1] - [2019-11-07]
