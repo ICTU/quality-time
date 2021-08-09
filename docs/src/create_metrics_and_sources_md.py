@@ -17,11 +17,6 @@ TYPE_DESCRIPTION = dict(
 )
 
 
-def html_escape(text: str) -> str:
-    """Escape < and >."""
-    return text.replace("<", "&lt;").replace(">", "&gt;")
-
-
 def get_data_model():
     """Return the data model."""
     module_dir = pathlib.Path(__file__).resolve().parent
@@ -40,8 +35,8 @@ def markdown_link(url: str, anchor: str = None) -> str:
 
 def definition_list(term: str, *definitions: str) -> str:
     """Return a Markdown definition list."""
-    definitions_markdown = "".join([f": {definition}\n" for definition in definitions])
-    return f"{term}\n{definitions_markdown}\n"
+    definitions_markdown = "".join(f": {definition}\n" for definition in definitions if definition)
+    return f"{term}\n{definitions_markdown}\n" if definitions_markdown else ""
 
 
 def markdown_header(header: str, level: int = 1) -> str:
@@ -63,8 +58,7 @@ def metric_section(data_model, metric, universal_sources: list[str], level) -> s
     markdown += f'\n{metric["description"]}\n\n'
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
-    if metric["tags"]:
-        markdown += definition_list("Default tags", *metric["tags"])
+    markdown += definition_list("Default tags", *metric["tags"])
     markdown += "```{admonition} Supporting sources\n"
     for source in metric["sources"]:
         if source not in universal_sources:
@@ -140,12 +134,10 @@ def metric_source_section(data_model, metric_key, source_key, level) -> str:
                 default_value = [f"_all {parameter['short_name']}_"]
         elif default_value:
             default_value = [default_value]
-        if default_value:
-            markdown += definition_list("Default value", *default_value)
-        markdown += f'Mandatory\n: {"Yes" if parameter["mandatory"] else "No"}\n\n'
+        markdown += definition_list("Default value", *default_value)
+        markdown += definition_list("Mandatory", "Yes" if parameter["mandatory"] else "No")
         help_markdown = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
-        if help:
-            markdown += definition_list("Help", help_markdown)
+        markdown += definition_list("Help", help_markdown)
     return markdown
 
 
