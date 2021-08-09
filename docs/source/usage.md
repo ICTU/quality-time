@@ -44,7 +44,7 @@ To restore the default situation where every logged-in user can edit entities, s
 
 Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application, or the number of ready user story points for a Scrum team. To collect the measurement data, each metric has one or more sources that *Quality-time* will use to measure the metric.
 
-```{note}
+```{attention}
 You need to be logged in to be able to edit quality reports.
 ```
 
@@ -64,7 +64,7 @@ To change the title or subtitle of a report, expand the report header and simply
 
 To delete a report expand the report header and click the "Delete report" button. The report and all its subjects is deleted.
 
-```{warning}
+```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
 
@@ -90,7 +90,7 @@ To change the name of the subject, simply type the new name in the "Subject name
 
 To delete a subject expand the subject header and click the "Delete subject" button. The subject and all its metrics is deleted.
 
-```{warning}
+```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
 
@@ -134,7 +134,7 @@ To reorder metrics, expand the metric in the metric table and use the buttons on
 
 To delete a metric, expand the metric in the metric table and click the "Delete metric" button. The metric and its sources are deleted.
 
-```{warning}
+```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
 
@@ -164,7 +164,7 @@ Source parameter (URL's, usernames, passwords, etc.) changes can be applied to d
 
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
-```{warning}
+```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
 

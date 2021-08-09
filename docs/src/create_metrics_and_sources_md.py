@@ -38,115 +38,127 @@ def markdown_link(url: str, anchor: str = None) -> str:
     return f"[{anchor}]({url})"
 
 
-def markdown_table_row(*cells: str) -> str:
-    """Return a Markdown table row."""
-    return f"| {' | '.join([html_escape(cell) for cell in cells])} |\n"
-
-
-def markdown_table_header(*column_headers: str) -> str:
-    """Return a Markdown table header."""
-    headers = markdown_table_row(*column_headers)
-    separator = markdown_table_row(*[":" + "-" * (len(column_header) - 1) for column_header in column_headers])
-    return "\n" + headers + separator
+def definition_list(term: str, *definitions: str) -> str:
+    """Return a Markdown definition list."""
+    definitions_markdown = "".join([f": {definition}\n" for definition in definitions])
+    return f"{term}\n{definitions_markdown}\n"
 
 
 def markdown_header(header: str, level: int = 1) -> str:
     """Return a Markdown header."""
-    return ("\n" if level > 1 else "") + "#" * level + f" {header}\n"
+    return ("\n" if level > 1 else "") + "#" * level + f" {header}\n\n"
 
 
-def metrics_table(data_model, universal_sources: list[str]) -> str:
-    """Return the metrics as Markdown table."""
-    markdown = markdown_table_header("Name", "Description", "Default target", "Scale(s)", "Default tags", "Sources¹")
+def metric_sections(data_model, universal_sources: list[str], level) -> str:
+    """Return the metrics as Markdown sections."""
+    markdown = ""
     for metric in sorted(data_model["metrics"].values(), key=lambda item: str(item["name"])):
-        direction = {"<": "≦", ">": "≧"}[metric["direction"]]
-        unit = "% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
-        target = f"{direction} {metric['target']}{unit}"
-        if len(metric["scales"]) == 1:
-            scales = metric["default_scale"]
-        else:
-            scales = ", ".join(
-                [
-                    f"{scale} (default)" if scale == metric["default_scale"] else scale
-                    for scale in sorted(metric["scales"])
-                ]
-            )
-        tags = ", ".join(metric["tags"])
-        sources = []
-        for source in metric["sources"]:
-            if source not in universal_sources:
-                source_name = data_model["sources"][source]["name"]
-                sources.append(f"[{source_name}]({metric_source_slug(data_model, metric, source)})")
-        markdown += markdown_table_row(
-            metric["name"], metric["description"], target, scales, tags, ", ".join(sorted(sources))
-        )
-    markdown += "\n"
+        markdown += metric_section(data_model, metric, universal_sources, level)
     return markdown
 
 
-def sources_table(data_model, universal_sources: list[str]) -> str:
-    """Return the sources as Markdown table."""
-    markdown = markdown_table_header("Name", "Description", "Metrics")
+def metric_section(data_model, metric, universal_sources: list[str], level) -> str:
+    """Return the metric as Markdown section."""
+    markdown = markdown_header(metric["name"], level=level)
+    markdown += f'\n{metric["description"]}\n\n'
+    markdown += definition_list("Default target", metric_target(metric))
+    markdown += definition_list("Scales", *metric_scales(metric))
+    if metric["tags"]:
+        markdown += definition_list("Default tags", *metric["tags"])
+    markdown += "```{admonition} Supporting sources\n"
+    for source in metric["sources"]:
+        if source not in universal_sources:
+            source_name = data_model["sources"][source]["name"]
+            markdown += f"- [{source_name}]({metric_source_slug(data_model, metric, source)})\n"
+    markdown += "```\n"
+    return markdown
+
+
+def metric_target(metric) -> str:
+    """Return the metric target."""
+    direction = {"<": "≦", ">": "≧"}[metric["direction"]]
+    if metric["default_scale"] == "percentage":
+        unit = "% of the " + metric["unit"]
+    elif metric["default_scale"] == "version_number":
+        unit = ""
+    else:
+        unit = " " + metric["unit"]
+    return f"{direction} {metric['target']}{unit}"
+
+
+def metric_scales(metric) -> list[str]:
+    """Return the scales of the metric."""
+    if len(metric["scales"]) == 1:
+        return [metric["default_scale"]]
+    return [f"{scale} (default)" if scale == metric["default_scale"] else scale for scale in sorted(metric["scales"])]
+
+
+def source_sections(data_model, universal_sources: list[str], level) -> str:
+    """Return the sources as Markdown sections."""
+    markdown = ""
     for source_key, source in sorted(data_model["sources"].items(), key=lambda item: str(item[1]["name"])):
-        source_name = f"[{source['name']}]({source['url']})" if "url" in source else source["name"]
-        if source_key in universal_sources:
-            metrics = "¹"
-        else:
-            metrics = ", ".join(
-                [
-                    f"[{metric['name']}]({metric_source_slug(data_model, metric, source_key)})"
-                    for metric in data_model["metrics"].values()
-                    if source_key in metric["sources"]
-                ]
-            )
-        markdown += markdown_table_row(source_name, source["description"], metrics)
-    markdown += "\n"
+        markdown += source_section(data_model, source, source_key, universal_sources, level)
+    return markdown
+
+
+def source_section(data_model, source, source_key, universal_sources: list[str], level) -> str:
+    """Return the source as Markdown section."""
+    source_name = f"[{source['name']}]({source['url']})" if "url" in source else source["name"]
+    markdown = markdown_header(source_name, level)
+    markdown += f'\n{source["description"]}\n\n'
+    markdown += "```{admonition} Supported metrics\n"
+    if source_key in universal_sources:
+        markdown += "All metrics with the count or percentage scale can be measured with this source).\n"
+    else:
+        metrics = [metric for metric in data_model["metrics"].values() if source_key in metric["sources"]]
+        for metric in metrics:
+            markdown += f"- [{metric['name']}]({metric_source_slug(data_model, metric, source_key)})\n"
+    markdown += "```\n"
     return markdown
 
 
 def metric_source_slug(data_model, metric, source) -> str:
     """Return a slug for the metric source combination."""
     source_name = data_model["sources"][source]["name"]
-    return f"#{metric['name']} from {source_name}".lower().replace(" ", "-")
+    return f"#{metric['name']} from {source_name}".lower().replace(" ", "-").replace("(", "").replace(")", "")
 
 
-def metric_source_table(data_model, metric_key, source_key) -> str:
-    """Return the metric source combination as Markdown table."""
-    markdown = markdown_table_header("Parameter", "Type", "Values", "Default value", "Mandatory", "Help")
-    for parameter in sorted(
-        data_model["sources"][source_key]["parameters"].values(), key=lambda parameter: str(parameter["name"])
-    ):
-        if metric_key in parameter["metrics"]:
-            name = parameter["name"]
-            parameter_type = TYPE_DESCRIPTION[parameter["type"]]
-            default_value = parameter["default_value"]
-            if isinstance(default_value, list):
-                if not default_value and parameter["type"] in ("single_choice", "multiple_choice"):
-                    default_value = f"_all {parameter['short_name']}_"
-                else:
-                    default_value = ", ".join(default_value)
-            if parameter["type"] in ("single_choice", "multiple_choice"):
-                values = ", ".join(sorted(parameter["values"]))
-            else:
-                values = ""
-            mandatory = "Yes" if parameter["mandatory"] else "No"
-            help_url = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
-            markdown += markdown_table_row(name, parameter_type, values, default_value, mandatory, help_url)
-    markdown += "\n"
+def metric_source_section(data_model, metric_key, source_key, level) -> str:
+    """Return the metric source combination as Markdown section."""
+    markdown = ""
+    parameters = data_model["sources"][source_key]["parameters"].values()
+    for parameter in sorted(parameters, key=lambda parameter: str(parameter["name"])):
+        if metric_key not in parameter["metrics"]:
+            continue
+        markdown += markdown_header(parameter["name"], level)
+        markdown += definition_list("Type", TYPE_DESCRIPTION[parameter["type"]])
+        if parameter["type"] in ("single_choice", "multiple_choice"):
+            markdown += definition_list("Values", *sorted(parameter["values"]))
+        default_value = parameter["default_value"]
+        if isinstance(default_value, list):
+            if not default_value and parameter["type"] in ("single_choice", "multiple_choice"):
+                default_value = [f"_all {parameter['short_name']}_"]
+        elif default_value:
+            default_value = [default_value]
+        if default_value:
+            markdown += definition_list("Default value", *default_value)
+        markdown += f'Mandatory\n: {"Yes" if parameter["mandatory"] else "No"}\n\n'
+        help_markdown = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
+        if help:
+            markdown += definition_list("Help", help_markdown)
     return markdown
 
 
-def metric_source_configuration_table(data_model, metric_key, source_key) -> str:
-    """Return the metric source combination's configuration as Markdown table."""
+def metric_source_configuration_section(data_model, metric_key, source_key, level) -> str:
+    """Return the metric source combination's configuration as Markdown section."""
     configurations = data_model["sources"][source_key].get("configuration", {}).values()
     relevant_configurations = [config for config in configurations if metric_key in config["metrics"]]
     if not relevant_configurations:
         return ""
-    markdown = markdown_table_header("Configuration", "Value")
+    markdown = markdown_header("Configurations", level)
     for configuration in sorted(relevant_configurations, key=lambda config: str(config["name"])):
-        name = configuration["name"]
-        values = ", ".join(sorted(configuration["value"], key=lambda value: value.lower()))
-        markdown += markdown_table_row(name, values)
+        values = sorted(configuration["value"], key=lambda value: str(value).lower())
+        markdown += definition_list(configuration["name"], *values)
     markdown += "\n"
     return markdown
 
@@ -161,17 +173,16 @@ def data_model_as_table(data_model) -> str:
         "parameters that can be used to configure the source.\n"
     )
     markdown += markdown_header("Metrics", 2)
-    markdown += metrics_table(data_model, universal_sources := ["manual_number"])
+    markdown += metric_sections(data_model, universal_sources := ["manual_number"], 3)
     markdown += markdown_header("Sources", 2)
-    markdown += sources_table(data_model, universal_sources)
-    markdown += "¹) All metrics with the count or percentage scale can be measured using the 'Manual number' source.\n"
+    markdown += source_sections(data_model, universal_sources, 3)
     markdown += markdown_header("Supported metric-source combinations", 2)
     for metric_key, metric in data_model["metrics"].items():
         for source_key in metric["sources"]:
             if source_key not in universal_sources:
                 markdown += markdown_header(f"{metric['name']} from {data_model['sources'][source_key]['name']}", 3)
-                markdown += metric_source_table(data_model, metric_key, source_key)
-                markdown += metric_source_configuration_table(data_model, metric_key, source_key)
+                markdown += metric_source_section(data_model, metric_key, source_key, 4)
+                markdown += metric_source_configuration_section(data_model, metric_key, source_key, 4)
     markdown = re.sub(r"\n{3,}", "\n\n", markdown)  # Replace multiple consecutive empty lines with one empty line
     return re.sub(r"\n\n$", "\n", markdown)  # Remove final empty line
 

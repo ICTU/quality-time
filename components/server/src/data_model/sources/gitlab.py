@@ -97,7 +97,7 @@ GITLAB = Source(
             metrics=["unmerged_branches"],
         ),
         inactive_job_days=Days(
-            name="Number of days without builds after which to consider CI-jobs unused.",
+            name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],
