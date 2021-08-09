@@ -6,7 +6,7 @@ isort==5.9.3
 lxml==4.6.3  # Needed to be able to run mypy with `--html-report`.
 mypy==0.910
 nose==1.3.7
-pep8-naming==0.12.0
+pep8-naming==0.12.1
 pip==21.2.3
 pydantic==1.8.2  # Needed for importing the data model from the server component
 pylint==2.9.6
