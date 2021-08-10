@@ -17,8 +17,8 @@ function AboutAppColumn() {
         <FooterColumn header={<><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</>} >
             <List.Item as='a' href="https://www.ictu.nl/about-us">Developed by ICTU</List.Item>
             <List.Item as='a' href='https://github.com/ICTU/quality-time/blob/master/LICENSE'>License</List.Item>
-            <List.Item as='a' href='https://github.com/ICTU/quality-time/blob/master/docs/CHANGELOG.md'>Changelog</List.Item>
-            <List.Item as='a' href="https://github.com/ICTU/quality-time">Source code</List.Item>
+            <List.Item as='a' href='https://quality-time.readthedocs.io/en/latest/changelog.html'>Changelog</List.Item>
+            <List.Item as='a' href="">Source code</List.Item>
         </FooterColumn>
     )
 }
@@ -48,7 +48,7 @@ function SupportColumn() {
     return (
         <FooterColumn header='Support'>
             <List.Item as='a' href="https://github.com/ICTU/quality-time/blob/master/README.md">Documentation</List.Item>
-            <List.Item as='a' href="https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md">User manual</List.Item>
+            <List.Item as='a' href="https://quality-time.readthedocs.io/en/latest/usage.html">User manual</List.Item>
             <List.Item as='a' href="https://github.com/ICTU/quality-time/issues">Known issues</List.Item>
             <List.Item as='a' href="https://github.com/ICTU/quality-time/issues/new">Report an issue</List.Item>
         </FooterColumn>

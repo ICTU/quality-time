@@ -773,7 +773,7 @@ GitLab provides Git-repositories, wiki's, issue-tracking and continuous integrat
 - [Unused CI-jobs](#unused-ci-jobs-from-gitlab)
 ```
 
-### [JSON file with security warnings](https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings)
+### [JSON file with security warnings](https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings)
 
 A generic vulnerability report with security warnings in JSON format.
 

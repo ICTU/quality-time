@@ -14,7 +14,7 @@ Enter your LDAP-credentials in the dialog:
 You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
 ```
 
-After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://gravatar.com), it will be shown next to your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be shown next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
@@ -212,7 +212,7 @@ There are two scenarios: the source is a build artifact of a GitLab CI pipeline,
 
 #### GitLab CI pipeline build artifact
 
-When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch):
+When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/job_artifacts.html#download-a-single-artifact-file-from-specific-tag-or-branch):
 
 `https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>`
 
@@ -232,7 +232,7 @@ If the repository is private, you also need to enter an [personal access token](
 
 ### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
 
-To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the username to which the token belongs.
+To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike other sources, when using the API token Jenkins also requires the username to which the token belongs.
 
 ### Generic JSON for security warnings
 

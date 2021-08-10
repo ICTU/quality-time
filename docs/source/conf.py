@@ -38,6 +38,10 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# -- Options for MyST parser -------------------------------------------------
+
+# See https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#auto-generated-header-anchors
+myst_heading_anchors = 3
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -53,4 +57,9 @@ html_static_path = ["_static"]
 
 # -- Options for linkcheck ---------------------------------------------------
 
-linkcheck_ignore = [r"http://localhost:\d+", r"http://quality-time.example.org"]
+linkcheck_ignore = [
+    r"http://localhost:\d+",  # Example URLs
+    "http://quality-time.example.org",  # Example URLs
+    "https://github.com/AlDanial/cloc#recognized-languages-",  # False negative: "Anchor 'recognized-languages-' not found"
+    "https://trello.com/1/members/me/boards",  # Only works when logged in
+]
