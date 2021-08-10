@@ -4,7 +4,7 @@
 
 All notable changes to *Quality-time* will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
@@ -181,9 +181,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
-- Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
+- Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to pdf. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
-- Add no-cache config for /api/v3/logo to the [Caddy config](https://github.com/ICTU/quality-time/tree/master/components/proxy/Caddyfile).
+- Add no-cache config for /api/v3/logo to the [Caddy config](https://github.com/ICTU/quality-time/blob/master/components/proxy/Caddyfile).
   
 ### Fixed
 
@@ -301,7 +301,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment documentation](deployment.md#configuring-forwarded-authentication).
-- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml) and the [deployment documentation](deployment.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment documentation](deployment.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## [3.9.0] - [2020-10-11]
 
@@ -311,7 +311,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- Show how to set the time zone of the renderer in the [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml) so that PDF exports contain the correct local time. Fixes [#1529](https://github.com/ICTU/quality-time/issues/1529).
+- Show how to set the time zone of the renderer in the [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) so that PDF exports contain the correct local time. Fixes [#1529](https://github.com/ICTU/quality-time/issues/1529).
 - The date picker for the end date of technical debt has a minimum date set to today. Apparently, if the current value of the technical debt end date is far enough in the past so that the whole month popup consists of disabled dates, the date picker will crash. Worked around by removing the minimum date. Fixes [#1534](https://github.com/ICTU/quality-time/issues/1534).
 - Running `docker-compose up` in the project root folder wouldn't work on Windows. Fixes [#1543](https://github.com/ICTU/quality-time/issues/1543).
 
@@ -510,7 +510,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
-- Moved the Copy and Move buttons next to the Add buttons, making the UI more consistent. This also allows the user to copy an existing item to the right position in one go, instead of having to copy and then move it. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
+- Moved the Copy and Move buttons next to the Add buttons, making the UI more consistent. This also allows the user to copy an existing item to the right position in one go, instead of having to copy and then move it. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
 
 ### Fixed
 
@@ -519,7 +519,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Collecting unmerged branches using Azure DevOps as source would fail if the project name contained spaces and the user did not specify a repository. *Quality-time* would fail to find the default repository because it would use the URL-quoted project name to look for it, instead of the unquoted project name. Fixes [#1224](https://github.com/ICTU/quality-time/issues/1224).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab didn't work. Fixes [#1230](https://github.com/ICTU/quality-time/issues/1230).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to won't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
-- The `git clone` URL in the [README.md](https://github.com/ICTU/quality-time/tree/master/README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
+- The `git clone` URL in the [README.md](https://github.com/ICTU/quality-time/blob/master/README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
 - When using the OWASP Dependency Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
 - The trend sparkline graphs, showing the trend over the last week, would always use the full width, even when there was less than a week of data. Fixes [#1241](https://github.com/ICTU/quality-time/issues/1241).
 
@@ -574,7 +574,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Fixed
 
-- [When requesting issues with a severity from SonarQube, SonarQube will not return security hotspots because security hotspots don't have a severity](https://community.sonarsource.com/t/23326). *Quality-time* incorrectly assumed security hotspots would always be returned regardless of the specified severities. Fixed by making a separate call to the SonarQube issues API if necessary to retrieve the security hotspots. Fixes [#1135](https://github.com/ICTU/quality-time/issues/1135).
+- [When requesting issues with a severity from SonarQube, SonarQube will not return security hotspots because security hotspots don't have a severity](https://community.sonarsource.com/t/issues-api-does-not-return-security-hotspots-when-passing-a-severity/23326). *Quality-time* incorrectly assumed security hotspots would always be returned regardless of the specified severities. Fixed by making a separate call to the SonarQube issues API if necessary to retrieve the security hotspots. Fixes [#1135](https://github.com/ICTU/quality-time/issues/1135).
 
 ## [2.2.0] - [2020-04-14]
 
@@ -636,7 +636,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Changed
 
-- Cache data model and other performance improvements. Note: the proxy settings for the data model API have been updated. See the Caddy configuration in the [docker-compose.yml](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml). The order of the metric tabs has been changed. From left to right: first tab is the metric configuration, second the source(s) configuration, third the trend graph, and finally the tab(s) with details per source, if applicable. This makes it possible to lazily load the data for the trend graph and the details per source and show the tabs as soon as the data becomes available. Fixes [#1026](https://github.com/ICTU/quality-time/issues/1026).
+- Cache data model and other performance improvements. Note: the proxy settings for the data model API have been updated. See the Caddy configuration in the [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). The order of the metric tabs has been changed. From left to right: first tab is the metric configuration, second the source(s) configuration, third the trend graph, and finally the tab(s) with details per source, if applicable. This makes it possible to lazily load the data for the trend graph and the details per source and show the tabs as soon as the data becomes available. Fixes [#1026](https://github.com/ICTU/quality-time/issues/1026).
 
 ### Added
 
@@ -672,7 +672,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Use environment variables for both proxy host and port so the renderer uses the right URL to get the report. Fixes [#1031](https://github.com/ICTU/quality-time/issues/1031).
 - OWASP ZAP warning keys were not always unique, causing trouble with marking them as false positive. Fixes [#1032](https://github.com/ICTU/quality-time/issues/1032).
-- The Jenkins test report source would not correctly get the number of passed tests from aggregated test reports. Fixes [#1033](http://github.com/ICTU/quality-time/issues/1033).
+- The Jenkins test report source would not correctly get the number of passed tests from aggregated test reports. Fixes [#1033](https://github.com/ICTU/quality-time/issues/1033).
 
 ## [1.6.1] - [2020-02-18]
 
@@ -780,7 +780,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
-- If users have a [Gravatar](https://gravatar.com), it will be shown next to their username after they log in.
+- If users have a [Gravatar](https://en.gravatar.com/), it will be shown next to their username after they log in.
 - REST API added for importing a complete report. Closes [#818](https://github.com/ICTU/quality-time/issues/818).
 - Allow GitLab as source for the unused CI-jobs metric. Closes [#851](https://github.com/ICTU/quality-time/issues/851).
 
@@ -828,7 +828,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- Allow for filtering metrics by metric type and source type in the *Quality-time* source. Closes [#808](https://github.com/ICTU/quality-time/issues/808).
+- Allow for filtering metrics by metric type and source type in the *Quality-time* source. Closes [#805](https://github.com/ICTU/quality-time/issues/805).
 
 ## [0.19.1] - [2019-11-19]
 

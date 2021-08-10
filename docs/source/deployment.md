@@ -10,7 +10,7 @@ This document assumes docker-compose is used to deploy the containers. The docke
 
 ## Configuring LDAP
 
-To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/tree/master/docker/docker-compose.yml):
+To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
   server:

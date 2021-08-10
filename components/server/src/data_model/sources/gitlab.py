@@ -48,7 +48,7 @@ GITLAB = Source(
     name="GitLab",
     description="GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous "
     "deployment pipelines.",
-    url="https://gitlab.com/",
+    url="https://about.gitlab.com/",
     parameters=dict(
         url=URL(
             name="GitLab instance URL",

@@ -15,7 +15,7 @@ OWASP_ZAP = Source(
     name="OWASP ZAP",
     description="The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web "
     "applications while the application is being developed and tested.",
-    url="https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
+    url="https://owasp.org/www-project-zap/",
     parameters=dict(
         alerts=SingleChoiceParameter(
             name="Count alert types or alert instances",

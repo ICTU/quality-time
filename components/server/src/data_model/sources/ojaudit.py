@@ -8,7 +8,7 @@ from ..parameters import access_parameters, Severities
 OJAUDIT = Source(
     name="OJAudit",
     description="An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.",
-    url="https://www.oracle.com/technetwork/developer-tools/jdev",
+    url="https://www.oracle.com/application-development/technologies/jdeveloper.html",
     parameters=dict(
         severities=Severities(
             help="If provided, only count violations with the selected severities.",

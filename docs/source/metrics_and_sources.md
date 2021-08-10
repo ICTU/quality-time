@@ -721,7 +721,7 @@ Warn when the date is too long ago. Can be used to, for example, warn when it is
 - [Source up-to-dateness](#source-up-to-dateness-from-calendar-date)
 ```
 
-### [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/)
+### [Checkmarx CxSAST](https://checkmarx.com/glossary/static-application-security-testing-sast/)
 
 Static analysis software to identify security vulnerabilities in both custom code and open source components.
 
@@ -760,7 +760,7 @@ A Dependency Manager for PHP.
 - [Dependencies](#dependencies-from-composer)
 ```
 
-### [GitLab](https://gitlab.com/)
+### [GitLab](https://about.gitlab.com/)
 
 GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.
 
@@ -781,7 +781,7 @@ A generic vulnerability report with security warnings in JSON format.
 - [Security warnings](#security-warnings-from-json-file-with-security-warnings)
 ```
 
-### [JUnit XML report](https://junit.org)
+### [JUnit XML report](https://junit.org/junit5/)
 
 Test reports in the JUnit XML format.
 
@@ -811,7 +811,7 @@ A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugi
 - [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin)
 ```
 
-### [Jenkins](https://jenkins.io/)
+### [Jenkins](https://www.jenkins.io/)
 
 Jenkins is an open source continuous integration/continuous deployment server.
 
@@ -863,7 +863,7 @@ A .NET code coverage solution.
 - [Test line coverage](#test-line-coverage-from-ncover)
 ```
 
-### [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev)
+### [OJAudit](https://www.oracle.com/application-development/technologies/jdeveloper.html)
 
 An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.
 
@@ -871,7 +871,7 @@ An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules
 - [Violations](#violations-from-ojaudit)
 ```
 
-### [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check)
+### [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/)
 
 Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.
 
@@ -882,7 +882,7 @@ Dependency-Check is a utility that identifies project dependencies and checks if
 - [Security warnings](#security-warnings-from-owasp-dependency-check)
 ```
 
-### [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project)
+### [OWASP ZAP](https://owasp.org/www-project-zap/)
 
 The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested.
 
@@ -1826,7 +1826,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL
 
@@ -3133,7 +3133,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -3389,7 +3389,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -3563,7 +3563,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -3638,7 +3638,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL
 
@@ -3670,7 +3670,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -4016,7 +4016,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -4384,7 +4384,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL
 
@@ -4729,7 +4729,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### Severities
 
@@ -5759,7 +5759,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### Test results
 
@@ -6013,7 +6013,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### Test results
 
@@ -6242,7 +6242,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -6319,7 +6319,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -6479,7 +6479,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -6556,7 +6556,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL to Jenkins job
 
@@ -6940,7 +6940,7 @@ Mandatory
 : No
 
 Help
-: [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients)
+: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
 
 #### URL
 
