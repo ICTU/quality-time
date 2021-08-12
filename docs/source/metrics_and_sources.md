@@ -1029,7 +1029,7 @@ pip is the package installer for Python. You can use pip to install packages fro
 
 ## Supported metric-source combinations
 
-### Accessibility violations from Axe CSV
+### [Accessibility violations](#accessibility-violations) from [Axe CSV](#axe-csv)
 
 #### Impact levels
 
@@ -1195,7 +1195,7 @@ Mandatory
 Help
 : [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
 
-### Accessibility violations from Axe-core
+### [Accessibility violations](#accessibility-violations) from [Axe-core](#axe-core)
 
 #### Impact levels
 
@@ -1302,7 +1302,7 @@ Type
 Mandatory
 : No
 
-### Commented out code from SonarQube
+### [Commented out code](#commented-out-code) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -1375,7 +1375,7 @@ Rules used to detect commented out code
 : Web:AvoidCommentedOutCodeCheck
 : xml:S125
 
-### Complex units from SonarQube
+### [Complex units](#complex-units) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -1449,7 +1449,7 @@ Rules used to detect complex units
 : vbnet:S1541
 : vbnet:S3776
 
-### Dependencies from Composer
+### [Dependencies](#dependencies) from [Composer](#composer)
 
 #### Latest version statuses
 
@@ -1517,7 +1517,7 @@ Type
 Mandatory
 : No
 
-### Dependencies from npm
+### [Dependencies](#dependencies) from [npm](#npm)
 
 #### Password for basic authentication
 
@@ -1565,7 +1565,7 @@ Type
 Mandatory
 : No
 
-### Dependencies from OWASP Dependency Check
+### [Dependencies](#dependencies) from [OWASP Dependency Check](#owasp-dependency-check)
 
 #### Password for basic authentication
 
@@ -1610,7 +1610,7 @@ Type
 Mandatory
 : No
 
-### Dependencies from pip
+### [Dependencies](#dependencies) from [pip](#pip)
 
 #### Password for basic authentication
 
@@ -1658,7 +1658,7 @@ Type
 Mandatory
 : No
 
-### Duplicated lines from SonarQube
+### [Duplicated lines](#duplicated-lines) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -1707,7 +1707,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Failed CI-jobs from Azure DevOps Server
+### [Failed CI-jobs](#failed-ci-jobs) from [Azure DevOps Server](#azure-devops-server)
 
 #### Failure types
 
@@ -1773,7 +1773,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Failed CI-jobs from Jenkins
+### [Failed CI-jobs](#failed-ci-jobs) from [Jenkins](#jenkins)
 
 #### Failure types
 
@@ -1847,7 +1847,7 @@ Type
 Mandatory
 : No
 
-### Failed CI-jobs from GitLab
+### [Failed CI-jobs](#failed-ci-jobs) from [GitLab](#gitlab)
 
 #### Branches and tags to ignore (regular expressions, branch names or tag names)
 
@@ -1923,7 +1923,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
 
-### Issues from Azure DevOps Server
+### [Issues](#issues) from [Azure DevOps Server](#azure-devops-server)
 
 #### Issue query in WIQL (Work Item Query Language)
 
@@ -1958,7 +1958,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Issues from Jira
+### [Issues](#issues) from [Jira](#jira)
 
 #### Issue query in JQL (Jira Query Language)
 
@@ -1998,7 +1998,7 @@ Type
 Mandatory
 : No
 
-### Issues from Trello
+### [Issues](#issues) from [Trello](#trello)
 
 #### API key
 
@@ -2078,7 +2078,7 @@ Default value
 Mandatory
 : Yes
 
-### Size (LOC) from cloc
+### [Size (LOC)](#size-loc) from [cloc](#cloc)
 
 #### Languages to ignore (regular expressions or language names)
 
@@ -2134,7 +2134,7 @@ Type
 Mandatory
 : No
 
-### Size (LOC) from SonarQube
+### [Size (LOC)](#size-loc) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -2212,7 +2212,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Long units from SonarQube
+### [Long units](#long-units) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -2299,7 +2299,7 @@ Rules used to detect long units
 : Web:FileLengthCheck
 : Web:LongJavaScriptCheck
 
-### Manual test duration from Jira
+### [Manual test duration](#manual-test-duration) from [Jira](#jira)
 
 #### Issue query in JQL (Jira Query Language)
 
@@ -2350,7 +2350,7 @@ Type
 Mandatory
 : No
 
-### Manual test execution from Jira
+### [Manual test execution](#manual-test-execution) from [Jira](#jira)
 
 #### Default expected manual test execution frequency (days)
 
@@ -2415,7 +2415,7 @@ Type
 Mandatory
 : No
 
-### Many parameters from SonarQube
+### [Many parameters](#many-parameters) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -2483,7 +2483,7 @@ Rules used to detect units with many parameters
 : tsql:S107
 : typescript:S107
 
-### Merge requests from Azure DevOps Server
+### [Merge requests](#merge-requests) from [Azure DevOps Server](#azure-devops-server)
 
 #### Merge request states
 
@@ -2560,7 +2560,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Merge requests from GitLab
+### [Merge requests](#merge-requests) from [GitLab](#gitlab)
 
 #### Approval states to include (requires GitLab Premium)
 
@@ -2659,7 +2659,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
 
-### Metrics from Quality-time
+### [Metrics](#metrics) from [Quality-time](#quality-time)
 
 #### Metric statuses
 
@@ -2812,7 +2812,7 @@ Mandatory
 Help
 : If provided, only count metrics with one ore more of the given tags.
 
-### Missing metrics from Quality-time
+### [Missing metrics](#missing-metrics) from [Quality-time](#quality-time)
 
 #### Quality-time URL
 
@@ -2833,7 +2833,7 @@ Type
 Mandatory
 : No
 
-### Performancetest duration from Performancetest-runner
+### [Performancetest duration](#performancetest-duration) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -2867,7 +2867,7 @@ Type
 Mandatory
 : No
 
-### Performancetest stability from Performancetest-runner
+### [Performancetest stability](#performancetest-stability) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -2901,7 +2901,7 @@ Type
 Mandatory
 : No
 
-### Violation remediation effort from SonarQube
+### [Violation remediation effort](#violation-remediation-effort) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -2969,7 +2969,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Scalability from Performancetest-runner
+### [Scalability](#scalability) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -3003,7 +3003,7 @@ Type
 Mandatory
 : No
 
-### Slow transactions from Performancetest-runner
+### [Slow transactions](#slow-transactions) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -3077,7 +3077,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Anchore
+### [Source up-to-dateness](#source-up-to-dateness) from [Anchore](#anchore)
 
 #### Password for basic authentication
 
@@ -3122,7 +3122,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Anchore Jenkins plugin
+### [Source up-to-dateness](#source-up-to-dateness) from [Anchore Jenkins plugin](#anchore-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -3154,7 +3154,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Axe-core
+### [Source up-to-dateness](#source-up-to-dateness) from [Axe-core](#axe-core)
 
 #### Password for basic authentication
 
@@ -3199,7 +3199,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Azure DevOps Server
+### [Source up-to-dateness](#source-up-to-dateness) from [Azure DevOps Server](#azure-devops-server)
 
 #### Branch
 
@@ -3275,7 +3275,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Source up-to-dateness from Bandit
+### [Source up-to-dateness](#source-up-to-dateness) from [Bandit](#bandit)
 
 #### Password for basic authentication
 
@@ -3320,7 +3320,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Calendar date
+### [Source up-to-dateness](#source-up-to-dateness) from [Calendar date](#calendar-date)
 
 #### Date
 
@@ -3333,7 +3333,7 @@ Default value
 Mandatory
 : Yes
 
-### Source up-to-dateness from Cobertura
+### [Source up-to-dateness](#source-up-to-dateness) from [Cobertura](#cobertura)
 
 #### Password for basic authentication
 
@@ -3378,7 +3378,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Cobertura Jenkins plugin
+### [Source up-to-dateness](#source-up-to-dateness) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -3410,7 +3410,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Checkmarx CxSAST
+### [Source up-to-dateness](#source-up-to-dateness) from [Checkmarx CxSAST](#checkmarx-cxsast)
 
 #### Password for basic authentication
 
@@ -3447,7 +3447,7 @@ Type
 Mandatory
 : Yes
 
-### Source up-to-dateness from GitLab
+### [Source up-to-dateness](#source-up-to-dateness) from [GitLab](#gitlab)
 
 #### Branch
 
@@ -3507,7 +3507,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
 
-### Source up-to-dateness from JaCoCo
+### [Source up-to-dateness](#source-up-to-dateness) from [JaCoCo](#jacoco)
 
 #### Password for basic authentication
 
@@ -3552,7 +3552,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from JaCoCo Jenkins plugin
+### [Source up-to-dateness](#source-up-to-dateness) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -3584,7 +3584,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Jenkins
+### [Source up-to-dateness](#source-up-to-dateness) from [Jenkins](#jenkins)
 
 #### Build result types
 
@@ -3659,7 +3659,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Jenkins test report
+### [Source up-to-dateness](#source-up-to-dateness) from [Jenkins test report](#jenkins-test-report)
 
 #### Password or API token for basic authentication
 
@@ -3691,7 +3691,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from JUnit XML report
+### [Source up-to-dateness](#source-up-to-dateness) from [JUnit XML report](#junit-xml-report)
 
 #### Password for basic authentication
 
@@ -3736,7 +3736,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from NCover
+### [Source up-to-dateness](#source-up-to-dateness) from [NCover](#ncover)
 
 #### Password for basic authentication
 
@@ -3770,7 +3770,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Robot Framework
+### [Source up-to-dateness](#source-up-to-dateness) from [Robot Framework](#robot-framework)
 
 #### Password for basic authentication
 
@@ -3815,7 +3815,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from OpenVAS
+### [Source up-to-dateness](#source-up-to-dateness) from [OpenVAS](#openvas)
 
 #### Password for basic authentication
 
@@ -3860,7 +3860,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from OWASP Dependency Check
+### [Source up-to-dateness](#source-up-to-dateness) from [OWASP Dependency Check](#owasp-dependency-check)
 
 #### Password for basic authentication
 
@@ -3905,7 +3905,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from OWASP ZAP
+### [Source up-to-dateness](#source-up-to-dateness) from [OWASP ZAP](#owasp-zap)
 
 #### Password for basic authentication
 
@@ -3950,7 +3950,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Performancetest-runner
+### [Source up-to-dateness](#source-up-to-dateness) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -3984,7 +3984,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Quality-time
+### [Source up-to-dateness](#source-up-to-dateness) from [Quality-time](#quality-time)
 
 #### Quality-time URL
 
@@ -4005,7 +4005,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Robot Framework Jenkins plugin
+### [Source up-to-dateness](#source-up-to-dateness) from [Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -4037,7 +4037,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from SonarQube
+### [Source up-to-dateness](#source-up-to-dateness) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -4086,7 +4086,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Source up-to-dateness from TestNG
+### [Source up-to-dateness](#source-up-to-dateness) from [TestNG](#testng)
 
 #### Password for basic authentication
 
@@ -4131,7 +4131,7 @@ Type
 Mandatory
 : No
 
-### Source up-to-dateness from Trello
+### [Source up-to-dateness](#source-up-to-dateness) from [Trello](#trello)
 
 #### API key
 
@@ -4185,7 +4185,7 @@ Default value
 Mandatory
 : Yes
 
-### Source version from Axe-core
+### [Source version](#source-version) from [Axe-core](#axe-core)
 
 #### Password for basic authentication
 
@@ -4230,7 +4230,7 @@ Type
 Mandatory
 : No
 
-### Source version from cloc
+### [Source version](#source-version) from [cloc](#cloc)
 
 #### Password for basic authentication
 
@@ -4275,7 +4275,7 @@ Type
 Mandatory
 : No
 
-### Source version from Cobertura
+### [Source version](#source-version) from [Cobertura](#cobertura)
 
 #### Password for basic authentication
 
@@ -4320,7 +4320,7 @@ Type
 Mandatory
 : No
 
-### Source version from Checkmarx CxSAST
+### [Source version](#source-version) from [Checkmarx CxSAST](#checkmarx-cxsast)
 
 #### Password for basic authentication
 
@@ -4349,7 +4349,7 @@ Type
 Mandatory
 : Yes
 
-### Source version from GitLab
+### [Source version](#source-version) from [GitLab](#gitlab)
 
 #### GitLab instance URL
 
@@ -4373,7 +4373,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
 
-### Source version from Jenkins
+### [Source version](#source-version) from [Jenkins](#jenkins)
 
 #### Password or API token for basic authentication
 
@@ -4405,7 +4405,7 @@ Type
 Mandatory
 : No
 
-### Source version from Jira
+### [Source version](#source-version) from [Jira](#jira)
 
 #### Password for basic authentication
 
@@ -4434,7 +4434,7 @@ Type
 Mandatory
 : No
 
-### Source version from OpenVAS
+### [Source version](#source-version) from [OpenVAS](#openvas)
 
 #### Password for basic authentication
 
@@ -4479,7 +4479,7 @@ Type
 Mandatory
 : No
 
-### Source version from OWASP Dependency Check
+### [Source version](#source-version) from [OWASP Dependency Check](#owasp-dependency-check)
 
 #### Password for basic authentication
 
@@ -4524,7 +4524,7 @@ Type
 Mandatory
 : No
 
-### Source version from OWASP ZAP
+### [Source version](#source-version) from [OWASP ZAP](#owasp-zap)
 
 #### Password for basic authentication
 
@@ -4569,7 +4569,7 @@ Type
 Mandatory
 : No
 
-### Source version from Quality-time
+### [Source version](#source-version) from [Quality-time](#quality-time)
 
 #### Quality-time URL
 
@@ -4582,7 +4582,7 @@ Mandatory
 Help
 : URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
 
-### Source version from Robot Framework
+### [Source version](#source-version) from [Robot Framework](#robot-framework)
 
 #### Password for basic authentication
 
@@ -4627,7 +4627,7 @@ Type
 Mandatory
 : No
 
-### Source version from SonarQube
+### [Source version](#source-version) from [SonarQube](#sonarqube)
 
 #### Private token
 
@@ -4651,7 +4651,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Security warnings from Anchore
+### [Security warnings](#security-warnings) from [Anchore](#anchore)
 
 #### Password for basic authentication
 
@@ -4718,7 +4718,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from Anchore Jenkins plugin
+### [Security warnings](#security-warnings) from [Anchore Jenkins plugin](#anchore-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -4772,7 +4772,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from Bandit
+### [Security warnings](#security-warnings) from [Bandit](#bandit)
 
 #### Confidence levels
 
@@ -4855,7 +4855,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from Checkmarx CxSAST
+### [Security warnings](#security-warnings) from [Checkmarx CxSAST](#checkmarx-cxsast)
 
 #### Password for basic authentication
 
@@ -4912,7 +4912,7 @@ Type
 Mandatory
 : Yes
 
-### Security warnings from OpenVAS
+### [Security warnings](#security-warnings) from [OpenVAS](#openvas)
 
 #### Password for basic authentication
 
@@ -4977,7 +4977,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from OWASP Dependency Check
+### [Security warnings](#security-warnings) from [OWASP Dependency Check](#owasp-dependency-check)
 
 #### Password for basic authentication
 
@@ -5043,7 +5043,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from OWASP ZAP
+### [Security warnings](#security-warnings) from [OWASP ZAP](#owasp-zap)
 
 #### Count alert types or alert instances
 
@@ -5137,7 +5137,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from Pyupio Safety
+### [Security warnings](#security-warnings) from [Pyupio Safety](#pyupio-safety)
 
 #### Password for basic authentication
 
@@ -5182,7 +5182,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from Snyk
+### [Security warnings](#security-warnings) from [Snyk](#snyk)
 
 #### Password for basic authentication
 
@@ -5246,7 +5246,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from JSON file with security warnings
+### [Security warnings](#security-warnings) from [JSON file with security warnings](#json-file-with-security-warnings)
 
 #### Password for basic authentication
 
@@ -5310,7 +5310,7 @@ Type
 Mandatory
 : No
 
-### Security warnings from SonarQube
+### [Security warnings](#security-warnings) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -5417,7 +5417,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Suppressed violations from SonarQube
+### [Suppressed violations](#suppressed-violations) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -5522,7 +5522,7 @@ Rules used to detect suppressed violations
 : squid:S1310
 : squid:S1315
 
-### Test cases from Jira
+### [Test cases](#test-cases) from [Jira](#jira)
 
 #### Issue query in JQL (Jira Query Language)
 
@@ -5583,7 +5583,7 @@ Type
 Mandatory
 : No
 
-### Test cases from JUnit XML report
+### [Test cases](#test-cases) from [JUnit XML report](#junit-xml-report)
 
 #### Password for basic authentication
 
@@ -5628,7 +5628,7 @@ Type
 Mandatory
 : No
 
-### Test cases from TestNG
+### [Test cases](#test-cases) from [TestNG](#testng)
 
 #### Password for basic authentication
 
@@ -5673,7 +5673,7 @@ Type
 Mandatory
 : No
 
-### Tests from Azure DevOps Server
+### [Tests](#tests) from [Azure DevOps Server](#azure-devops-server)
 
 #### Names of test runs to include (regular expressions or test run names)
 
@@ -5748,7 +5748,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Tests from Jenkins test report
+### [Tests](#tests) from [Jenkins test report](#jenkins-test-report)
 
 #### Password or API token for basic authentication
 
@@ -5799,7 +5799,7 @@ Type
 Mandatory
 : No
 
-### Tests from JUnit XML report
+### [Tests](#tests) from [JUnit XML report](#junit-xml-report)
 
 #### Password for basic authentication
 
@@ -5864,7 +5864,7 @@ Type
 Mandatory
 : No
 
-### Tests from Performancetest-runner
+### [Tests](#tests) from [Performancetest-runner](#performancetest-runner)
 
 #### Password for basic authentication
 
@@ -5938,7 +5938,7 @@ Type
 Mandatory
 : No
 
-### Tests from Robot Framework
+### [Tests](#tests) from [Robot Framework](#robot-framework)
 
 #### Password for basic authentication
 
@@ -6002,7 +6002,7 @@ Type
 Mandatory
 : No
 
-### Tests from Robot Framework Jenkins plugin
+### [Tests](#tests) from [Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -6052,7 +6052,7 @@ Type
 Mandatory
 : No
 
-### Tests from SonarQube
+### [Tests](#tests) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -6121,7 +6121,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Tests from TestNG
+### [Tests](#tests) from [TestNG](#testng)
 
 #### Password for basic authentication
 
@@ -6186,7 +6186,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from Cobertura
+### [Test branch coverage](#test-branch-coverage) from [Cobertura](#cobertura)
 
 #### Password for basic authentication
 
@@ -6231,7 +6231,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from Cobertura Jenkins plugin
+### [Test branch coverage](#test-branch-coverage) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -6263,7 +6263,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from JaCoCo
+### [Test branch coverage](#test-branch-coverage) from [JaCoCo](#jacoco)
 
 #### Password for basic authentication
 
@@ -6308,7 +6308,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from JaCoCo Jenkins plugin
+### [Test branch coverage](#test-branch-coverage) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -6340,7 +6340,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from NCover
+### [Test branch coverage](#test-branch-coverage) from [NCover](#ncover)
 
 #### Password for basic authentication
 
@@ -6374,7 +6374,7 @@ Type
 Mandatory
 : No
 
-### Test branch coverage from SonarQube
+### [Test branch coverage](#test-branch-coverage) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -6423,7 +6423,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Test line coverage from Cobertura
+### [Test line coverage](#test-line-coverage) from [Cobertura](#cobertura)
 
 #### Password for basic authentication
 
@@ -6468,7 +6468,7 @@ Type
 Mandatory
 : No
 
-### Test line coverage from Cobertura Jenkins plugin
+### [Test line coverage](#test-line-coverage) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -6500,7 +6500,7 @@ Type
 Mandatory
 : No
 
-### Test line coverage from JaCoCo
+### [Test line coverage](#test-line-coverage) from [JaCoCo](#jacoco)
 
 #### Password for basic authentication
 
@@ -6545,7 +6545,7 @@ Type
 Mandatory
 : No
 
-### Test line coverage from JaCoCo Jenkins plugin
+### [Test line coverage](#test-line-coverage) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
 
 #### Password or API token for basic authentication
 
@@ -6577,7 +6577,7 @@ Type
 Mandatory
 : No
 
-### Test line coverage from NCover
+### [Test line coverage](#test-line-coverage) from [NCover](#ncover)
 
 #### Password for basic authentication
 
@@ -6611,7 +6611,7 @@ Type
 Mandatory
 : No
 
-### Test line coverage from SonarQube
+### [Test line coverage](#test-line-coverage) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 
@@ -6660,7 +6660,7 @@ Mandatory
 Help
 : URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-### Unmerged branches from Azure DevOps Server
+### [Unmerged branches](#unmerged-branches) from [Azure DevOps Server](#azure-devops-server)
 
 #### Branches to ignore (regular expressions or branch names)
 
@@ -6714,7 +6714,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Unmerged branches from GitLab
+### [Unmerged branches](#unmerged-branches) from [GitLab](#gitlab)
 
 #### Branches to ignore (regular expressions or branch names)
 
@@ -6771,7 +6771,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
 
-### Unused CI-jobs from Azure DevOps Server
+### [Unused CI-jobs](#unused-ci-jobs) from [Azure DevOps Server](#azure-devops-server)
 
 #### Number of days since last build after which to consider pipelines inactive
 
@@ -6828,7 +6828,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### Unused CI-jobs from GitLab
+### [Unused CI-jobs](#unused-ci-jobs) from [GitLab](#gitlab)
 
 #### Branches and tags to ignore (regular expressions, branch names or tag names)
 
@@ -6896,7 +6896,7 @@ Mandatory
 Help
 : [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
 
-### Unused CI-jobs from Jenkins
+### [Unused CI-jobs](#unused-ci-jobs) from [Jenkins](#jenkins)
 
 #### Jobs to ignore (regular expressions or job names)
 
@@ -6961,7 +6961,7 @@ Type
 Mandatory
 : No
 
-### User story points from Azure DevOps Server
+### [User story points](#user-story-points) from [Azure DevOps Server](#azure-devops-server)
 
 #### Issue query in WIQL (Work Item Query Language)
 
@@ -6996,7 +6996,7 @@ Mandatory
 Help
 : URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-### User story points from Jira
+### [User story points](#user-story-points) from [Jira](#jira)
 
 #### Issue query in JQL (Jira Query Language)
 
@@ -7050,7 +7050,7 @@ Type
 Mandatory
 : No
 
-### Velocity from Jira
+### [Velocity](#velocity) from [Jira](#jira)
 
 #### Board (name or id)
 
@@ -7120,7 +7120,7 @@ Type
 Mandatory
 : No
 
-### Violations from OJAudit
+### [Violations](#violations) from [OJAudit](#ojaudit)
 
 #### Password for basic authentication
 
@@ -7186,7 +7186,7 @@ Type
 Mandatory
 : No
 
-### Violations from SonarQube
+### [Violations](#violations) from [SonarQube](#sonarqube)
 
 #### Branch (only supported by commercial SonarQube editions)
 

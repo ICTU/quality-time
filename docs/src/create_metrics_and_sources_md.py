@@ -111,10 +111,27 @@ def source_section(data_model, source, source_key, universal_sources: list[str],
     return markdown
 
 
+def slugify(name) -> str:
+    """Return a slugified version of the name."""
+    return name.lower().replace(" ", "-").replace("(", "").replace(")", "")
+
+
 def metric_source_slug(data_model, metric, source) -> str:
     """Return a slug for the metric source combination."""
+    metric_name, source_name = metric["name"], data_model["sources"][source]["name"]
+    return slugify(f"#{metric_name} from {source_name}")
+
+
+def metric_slug(metric) -> str:
+    """Return a slug for the metric."""
+    metric_name = metric["name"]
+    return slugify(f"#{metric_name}")
+
+
+def source_slug(data_model, source) -> str:
+    """Return a slug for the source."""
     source_name = data_model["sources"][source]["name"]
-    return f"#{metric['name']} from {source_name}".lower().replace(" ", "-").replace("(", "").replace(")", "")
+    return slugify(f"#{source_name}")
 
 
 def metric_source_section(data_model, metric_key, source_key, level) -> str:
@@ -172,7 +189,9 @@ def data_model_as_table(data_model) -> str:
     for metric_key, metric in data_model["metrics"].items():
         for source_key in metric["sources"]:
             if source_key not in universal_sources:
-                markdown += markdown_header(f"{metric['name']} from {data_model['sources'][source_key]['name']}", 3)
+                metric_link = f"[{metric['name']}]({metric_slug(metric)})"
+                source_link = f"[{data_model['sources'][source_key]['name']}]({source_slug(data_model, source_key)})"
+                markdown += markdown_header(f"{metric_link} from {source_link}", 3)
                 markdown += metric_source_section(data_model, metric_key, source_key, 4)
                 markdown += metric_source_configuration_section(data_model, metric_key, source_key, 4)
     markdown = re.sub(r"\n{3,}", "\n\n", markdown)  # Replace multiple consecutive empty lines with one empty line
