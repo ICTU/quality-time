@@ -48,16 +48,7 @@ myst_heading_anchors = 3
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_book_theme"
-html_theme_options = {
-    "repository_url": "https://github.com/ICTU/quality-time",
-    "use_repository_button": True,
-    "use_download_button": True,
-    "use_issues_button": True,
-    "use_edit_page_button": True,
-    "path_to_docs": "docs/source",
-    "repository_branch": "readthedocs",
-}
+html_theme = "furo"
 html_logo = "../../components/server/src/routes/logos/quality_time.png"
 html_title = "Quality-time"
 html_favicon = "../../components/frontend/public/favicon.ico"

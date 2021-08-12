@@ -15,10 +15,3 @@ Welcome to Quality-time's documentation!
    deployment.md
    development.md
    changelog.md
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
