@@ -1,8 +1,10 @@
 # *Quality-time* metrics and sources
 
-This document lists all [metrics](#metrics) that *Quality-time* can measure and all [sources](#sources) that *Quality-time* can use to measure the metrics. For each [supported combination of metric and source](#supported-metric-source-combinations), it lists the parameters that can be used to configure the source.
+This is an overview of all [metrics](#metrics) that *Quality-time* can measure and all [sources](#sources) that *Quality-time* can use to measure the metrics. For each [supported combination of metric and source](#metric-source-combinations), the parameters that can be used to configure the source are listed.
 
 ## Metrics
+
+This is an overview of all the metrics that *Quality-time* can measure. For each metric, the default target, the supported scales, and the default tags are given. In addition, the sources that can be used to measure the metric are listed.
 
 ### Accessibility violations
 
@@ -653,7 +655,9 @@ Default tags
 
 ## Sources
 
-### [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/)
+This is an overview of all the sources that *Quality-time* can use to measure metrics. For each source, the metrics that the source can measure are listed. Also, a link to the source's own documentation is provided.
+
+### Anchore
 
 Anchore image scan analysis report in JSON format.
 
@@ -661,8 +665,11 @@ Anchore image scan analysis report in JSON format.
 - [Source up-to-dateness](#source-up-to-dateness-from-anchore)
 - [Security warnings](#security-warnings-from-anchore)
 ```
+```{seealso}
+[https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/)
+```
 
-### [Anchore Jenkins plugin](https://plugins.jenkins.io/anchore-container-scanner/)
+### Anchore Jenkins plugin
 
 A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.
 
@@ -670,16 +677,22 @@ A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.
 - [Source up-to-dateness](#source-up-to-dateness-from-anchore-jenkins-plugin)
 - [Security warnings](#security-warnings-from-anchore-jenkins-plugin)
 ```
+```{seealso}
+[https://plugins.jenkins.io/anchore-container-scanner/](https://plugins.jenkins.io/anchore-container-scanner/)
+```
 
-### [Axe CSV](https://github.com/ICTU/axe-reports)
+### Axe CSV
 
 An Axe accessibility report in CSV format.
 
 ```{admonition} Supported metrics
 - [Accessibility violations](#accessibility-violations-from-axe-csv)
 ```
+```{seealso}
+[https://github.com/ICTU/axe-reports](https://github.com/ICTU/axe-reports)
+```
 
-### [Axe-core](https://github.com/dequelabs/axe-core)
+### Axe-core
 
 Axe is an accessibility testing engine for websites and other HTML-based user interfaces.
 
@@ -688,8 +701,11 @@ Axe is an accessibility testing engine for websites and other HTML-based user in
 - [Source up-to-dateness](#source-up-to-dateness-from-axe-core)
 - [Source version](#source-version-from-axe-core)
 ```
+```{seealso}
+[https://github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core)
+```
 
-### [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/)
+### Azure DevOps Server
 
 Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.
 
@@ -703,14 +719,20 @@ Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft prov
 - [Unused CI-jobs](#unused-ci-jobs-from-azure-devops-server)
 - [User story points](#user-story-points-from-azure-devops-server)
 ```
+```{seealso}
+[https://azure.microsoft.com/en-us/services/devops/server/](https://azure.microsoft.com/en-us/services/devops/server/)
+```
 
-### [Bandit](https://github.com/PyCQA/bandit)
+### Bandit
 
 Bandit is a tool designed to find common security issues in Python code.
 
 ```{admonition} Supported metrics
 - [Source up-to-dateness](#source-up-to-dateness-from-bandit)
 - [Security warnings](#security-warnings-from-bandit)
+```
+```{seealso}
+[https://github.com/PyCQA/bandit](https://github.com/PyCQA/bandit)
 ```
 
 ### Calendar date
@@ -721,7 +743,7 @@ Warn when the date is too long ago. Can be used to, for example, warn when it is
 - [Source up-to-dateness](#source-up-to-dateness-from-calendar-date)
 ```
 
-### [Checkmarx CxSAST](https://checkmarx.com/glossary/static-application-security-testing-sast/)
+### Checkmarx CxSAST
 
 Static analysis software to identify security vulnerabilities in both custom code and open source components.
 
@@ -730,8 +752,11 @@ Static analysis software to identify security vulnerabilities in both custom cod
 - [Source version](#source-version-from-checkmarx-cxsast)
 - [Security warnings](#security-warnings-from-checkmarx-cxsast)
 ```
+```{seealso}
+[https://checkmarx.com/glossary/static-application-security-testing-sast/](https://checkmarx.com/glossary/static-application-security-testing-sast/)
+```
 
-### [Cobertura](https://cobertura.github.io/cobertura/)
+### Cobertura
 
 Cobertura is a free Java tool that calculates the percentage of code accessed by tests.
 
@@ -741,8 +766,11 @@ Cobertura is a free Java tool that calculates the percentage of code accessed by
 - [Test branch coverage](#test-branch-coverage-from-cobertura)
 - [Test line coverage](#test-line-coverage-from-cobertura)
 ```
+```{seealso}
+[https://cobertura.github.io/cobertura/](https://cobertura.github.io/cobertura/)
+```
 
-### [Cobertura Jenkins plugin](https://plugins.jenkins.io/cobertura/)
+### Cobertura Jenkins plugin
 
 Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed by tests.
 
@@ -751,16 +779,22 @@ Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of
 - [Test branch coverage](#test-branch-coverage-from-cobertura-jenkins-plugin)
 - [Test line coverage](#test-line-coverage-from-cobertura-jenkins-plugin)
 ```
+```{seealso}
+[https://plugins.jenkins.io/cobertura/](https://plugins.jenkins.io/cobertura/)
+```
 
-### [Composer](https://getcomposer.org/)
+### Composer
 
 A Dependency Manager for PHP.
 
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-composer)
 ```
+```{seealso}
+[https://getcomposer.org/](https://getcomposer.org/)
+```
 
-### [GitLab](https://about.gitlab.com/)
+### GitLab
 
 GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.
 
@@ -772,16 +806,22 @@ GitLab provides Git-repositories, wiki's, issue-tracking and continuous integrat
 - [Unmerged branches](#unmerged-branches-from-gitlab)
 - [Unused CI-jobs](#unused-ci-jobs-from-gitlab)
 ```
+```{seealso}
+[https://about.gitlab.com/](https://about.gitlab.com/)
+```
 
-### [JSON file with security warnings](https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings)
+### JSON file with security warnings
 
 A generic vulnerability report with security warnings in JSON format.
 
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-json-file-with-security-warnings)
 ```
+```{seealso}
+[https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings](https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings)
+```
 
-### [JUnit XML report](https://junit.org/junit5/)
+### JUnit XML report
 
 Test reports in the JUnit XML format.
 
@@ -790,8 +830,11 @@ Test reports in the JUnit XML format.
 - [Test cases](#test-cases-from-junit-xml-report)
 - [Tests](#tests-from-junit-xml-report)
 ```
+```{seealso}
+[https://junit.org/junit5/](https://junit.org/junit5/)
+```
 
-### [JaCoCo](https://www.eclemma.org/jacoco/)
+### JaCoCo
 
 JaCoCo is an open-source tool for measuring and reporting Java code coverage.
 
@@ -800,8 +843,11 @@ JaCoCo is an open-source tool for measuring and reporting Java code coverage.
 - [Test branch coverage](#test-branch-coverage-from-jacoco)
 - [Test line coverage](#test-line-coverage-from-jacoco)
 ```
+```{seealso}
+[https://www.eclemma.org/jacoco/](https://www.eclemma.org/jacoco/)
+```
 
-### [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco)
+### JaCoCo Jenkins plugin
 
 A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin.
 
@@ -810,8 +856,11 @@ A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugi
 - [Test branch coverage](#test-branch-coverage-from-jacoco-jenkins-plugin)
 - [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin)
 ```
+```{seealso}
+[https://plugins.jenkins.io/jacoco](https://plugins.jenkins.io/jacoco)
+```
 
-### [Jenkins](https://www.jenkins.io/)
+### Jenkins
 
 Jenkins is an open source continuous integration/continuous deployment server.
 
@@ -821,8 +870,11 @@ Jenkins is an open source continuous integration/continuous deployment server.
 - [Source version](#source-version-from-jenkins)
 - [Unused CI-jobs](#unused-ci-jobs-from-jenkins)
 ```
+```{seealso}
+[https://www.jenkins.io/](https://www.jenkins.io/)
+```
 
-### [Jenkins test report](https://plugins.jenkins.io/junit)
+### Jenkins test report
 
 A Jenkins job with test results.
 
@@ -830,8 +882,11 @@ A Jenkins job with test results.
 - [Source up-to-dateness](#source-up-to-dateness-from-jenkins-test-report)
 - [Tests](#tests-from-jenkins-test-report)
 ```
+```{seealso}
+[https://plugins.jenkins.io/junit](https://plugins.jenkins.io/junit)
+```
 
-### [Jira](https://www.atlassian.com/software/jira)
+### Jira
 
 Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.
 
@@ -844,6 +899,9 @@ Jira is a proprietary issue tracker developed by Atlassian supporting bug tracki
 - [User story points](#user-story-points-from-jira)
 - [Velocity](#velocity-from-jira)
 ```
+```{seealso}
+[https://www.atlassian.com/software/jira](https://www.atlassian.com/software/jira)
+```
 
 ### Manual number
 
@@ -853,7 +911,7 @@ A manual number.
 All metrics with the count or percentage scale can be measured with this source).
 ```
 
-### [NCover](https://www.ncover.com/)
+### NCover
 
 A .NET code coverage solution.
 
@@ -862,16 +920,22 @@ A .NET code coverage solution.
 - [Test branch coverage](#test-branch-coverage-from-ncover)
 - [Test line coverage](#test-line-coverage-from-ncover)
 ```
+```{seealso}
+[https://www.ncover.com/](https://www.ncover.com/)
+```
 
-### [OJAudit](https://www.oracle.com/application-development/technologies/jdeveloper.html)
+### OJAudit
 
 An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.
 
 ```{admonition} Supported metrics
 - [Violations](#violations-from-ojaudit)
 ```
+```{seealso}
+[https://www.oracle.com/application-development/technologies/jdeveloper.html](https://www.oracle.com/application-development/technologies/jdeveloper.html)
+```
 
-### [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/)
+### OWASP Dependency Check
 
 Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.
 
@@ -881,8 +945,11 @@ Dependency-Check is a utility that identifies project dependencies and checks if
 - [Source version](#source-version-from-owasp-dependency-check)
 - [Security warnings](#security-warnings-from-owasp-dependency-check)
 ```
+```{seealso}
+[https://owasp.org/www-project-dependency-check/](https://owasp.org/www-project-dependency-check/)
+```
 
-### [OWASP ZAP](https://owasp.org/www-project-zap/)
+### OWASP ZAP
 
 The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested.
 
@@ -891,8 +958,11 @@ The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabil
 - [Source version](#source-version-from-owasp-zap)
 - [Security warnings](#security-warnings-from-owasp-zap)
 ```
+```{seealso}
+[https://owasp.org/www-project-zap/](https://owasp.org/www-project-zap/)
+```
 
-### [OpenVAS](https://www.openvas.org)
+### OpenVAS
 
 OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management.
 
@@ -901,8 +971,11 @@ OpenVAS (Open Vulnerability Assessment System) is a software framework of severa
 - [Source version](#source-version-from-openvas)
 - [Security warnings](#security-warnings-from-openvas)
 ```
+```{seealso}
+[https://www.openvas.org](https://www.openvas.org)
+```
 
-### [Performancetest-runner](https://github.com/ICTU/performancetest-runner)
+### Performancetest-runner
 
 An open source tool to run performancetests and create performancetest reports.
 
@@ -914,16 +987,22 @@ An open source tool to run performancetests and create performancetest reports.
 - [Source up-to-dateness](#source-up-to-dateness-from-performancetest-runner)
 - [Tests](#tests-from-performancetest-runner)
 ```
+```{seealso}
+[https://github.com/ICTU/performancetest-runner](https://github.com/ICTU/performancetest-runner)
+```
 
-### [Pyupio Safety](https://github.com/pyupio/safety)
+### Pyupio Safety
 
 Safety checks Python dependencies for known security vulnerabilities.
 
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-pyupio-safety)
 ```
+```{seealso}
+[https://github.com/pyupio/safety](https://github.com/pyupio/safety)
+```
 
-### [Quality-time](https://github.com/ICTU/quality-time)
+### Quality-time
 
 Quality report software for software development and maintenance.
 
@@ -933,8 +1012,11 @@ Quality report software for software development and maintenance.
 - [Source up-to-dateness](#source-up-to-dateness-from-quality-time)
 - [Source version](#source-version-from-quality-time)
 ```
+```{seealso}
+[https://github.com/ICTU/quality-time](https://github.com/ICTU/quality-time)
+```
 
-### [Robot Framework](https://robotframework.org)
+### Robot Framework
 
 Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation.
 
@@ -943,8 +1025,11 @@ Robot Framework is a generic open source automation framework for acceptance tes
 - [Source version](#source-version-from-robot-framework)
 - [Tests](#tests-from-robot-framework)
 ```
+```{seealso}
+[https://robotframework.org](https://robotframework.org)
+```
 
-### [Robot Framework Jenkins plugin](https://plugins.jenkins.io/robot/)
+### Robot Framework Jenkins plugin
 
 A Jenkins plugin for Robot Framework, a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation.
 
@@ -952,16 +1037,22 @@ A Jenkins plugin for Robot Framework, a generic open source automation framework
 - [Source up-to-dateness](#source-up-to-dateness-from-robot-framework-jenkins-plugin)
 - [Tests](#tests-from-robot-framework-jenkins-plugin)
 ```
+```{seealso}
+[https://plugins.jenkins.io/robot/](https://plugins.jenkins.io/robot/)
+```
 
-### [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI)
+### Snyk
 
 Snyk vulnerability report in JSON format.
 
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-snyk)
 ```
+```{seealso}
+[https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI)
+```
 
-### [SonarQube](https://www.sonarqube.org)
+### SonarQube
 
 SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages.
 
@@ -982,8 +1073,11 @@ SonarQube is an open-source platform for continuous inspection of code quality t
 - [Test line coverage](#test-line-coverage-from-sonarqube)
 - [Violations](#violations-from-sonarqube)
 ```
+```{seealso}
+[https://www.sonarqube.org](https://www.sonarqube.org)
+```
 
-### [TestNG](https://testng.org)
+### TestNG
 
 Test reports in the TestNG XML format.
 
@@ -992,8 +1086,11 @@ Test reports in the TestNG XML format.
 - [Test cases](#test-cases-from-testng)
 - [Tests](#tests-from-testng)
 ```
+```{seealso}
+[https://testng.org](https://testng.org)
+```
 
-### [Trello](https://trello.com)
+### Trello
 
 Trello is a collaboration tool that organizes projects into boards.
 
@@ -1001,8 +1098,11 @@ Trello is a collaboration tool that organizes projects into boards.
 - [Issues](#issues-from-trello)
 - [Source up-to-dateness](#source-up-to-dateness-from-trello)
 ```
+```{seealso}
+[https://trello.com](https://trello.com)
+```
 
-### [cloc](https://github.com/AlDanial/cloc)
+### cloc
 
 cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages.
 
@@ -1010,6267 +1110,2142 @@ cloc is an open-source tool for counting blank lines, comment lines, and physica
 - [Size (LOC)](#size-loc-from-cloc)
 - [Source version](#source-version-from-cloc)
 ```
+```{seealso}
+[https://github.com/AlDanial/cloc](https://github.com/AlDanial/cloc)
+```
 
-### [npm](https://docs.npmjs.com/)
+### npm
 
 npm is a package manager for the JavaScript programming language.
 
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-npm)
 ```
+```{seealso}
+[https://docs.npmjs.com/](https://docs.npmjs.com/)
+```
 
-### [pip](https://pip.pypa.io/en/stable/)
+### pip
 
 pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes.
 
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-pip)
 ```
+```{seealso}
+[https://pip.pypa.io/en/stable/](https://pip.pypa.io/en/stable/)
+```
 
-## Supported metric-source combinations
+## Metric-source combinations
 
-### [Accessibility violations](#accessibility-violations) from [Axe CSV](#axe-csv)
+This is an overview of all supported combinations of metrics and sources. For each combination of metric and source, the mandatory and optional parameters are listed that can be used to configure the source to measure the metric. If *Quality-time* needs to make certain assumptions about the source, for example which SonarQube rules to use to count long methods, then these assumptions are listed under 'configurations'.
 
-#### Impact levels
+### Accessibility violations from Axe CSV
 
-Type
-: Multiple choice
-
-Values
-: critical
-: minor
-: moderate
-: serious
-
-Default value
-: _all impact levels_
-
-Mandatory
-: No
-
-Help
-: If provided, only count accessibility violations with the selected impact levels.
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an Axe report in CSV format or to a zip with Axe reports in CSV format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an Axe report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Axe report in CSV format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-#### Violation types
-
-Type
-: Multiple choice
-
-Values
-: accesskeys
-: area-alt
-: aria-allowed-attr
-: aria-allowed-role
-: aria-dpub-role-fallback
-: aria-hidden-body
-: aria-hidden-focus
-: aria-input-field-name
-: aria-required-attr
-: aria-required-children
-: aria-required-parent
-: aria-roledescription
-: aria-roles
-: aria-toggle-field-name
-: aria-valid-attr
-: aria-valid-attr-value
-: audio-caption
-: autocomplete-valid
-: avoid-inline-spacing
-: blink
-: button-name
-: bypass
-: checkboxgroup
-: color-contrast
-: css-orientation-lock
-: definition-list
-: dlitem
-: document-title
-: duplicate-id
-: duplicate-id-active
-: duplicate-id-aria
-: empty-heading
-: focus-order-semantics
-: form-field-multiple-labels
-: frame-tested
-: frame-title
-: frame-title-unique
-: heading-order
-: hidden-content
-: html-has-lang
-: html-lang-valid
-: html-xml-lang-mismatch
-: image-alt
-: image-redundant-alt
-: input-button-name
-: input-image-alt
-: label
-: label-content-name-mismatch
-: label-title-only
-: landmark-banner-is-top-level
-: landmark-complementary-is-top-level
-: landmark-contentinfo-is-top-level
-: landmark-main-is-top-level
-: landmark-no-duplicate-banner
-: landmark-no-duplicate-contentinfo
-: landmark-one-main
-: landmark-unique
-: layout-table
-: link-in-text-block
-: link-name
-: list
-: listitem
-: marquee
-: meta-refresh
-: meta-viewport
-: meta-viewport-large
-: object-alt
-: p-as-heading
-: page-has-heading-one
-: radiogroup
-: region
-: role-img-alt
-: scope-attr-valid
-: scrollable-region-focusable
-: server-side-image-map
-: skip-link
-: tabindex
-: table-duplicate-name
-: table-fake-caption
-: td-has-header
-: td-headers-attr
-: th-has-data-cells
-: valid-lang
-: video-caption
-: video-description
-
-Default value
-: _all violation types_
-
-Mandatory
-: No
-
-Help
-: [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
-
-### [Accessibility violations](#accessibility-violations) from [Axe-core](#axe-core)
-
-#### Impact levels
-
-Type
-: Multiple choice
-
-Values
-: critical
-: minor
-: moderate
-: serious
-
-Default value
-: _all impact levels_
-
-Mandatory
-: No
-
-Help
-: If provided, only count accessibility violations with the selected impact levels.
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
+[Axe CSV](#axe-csv) can be used to measure [accessibility violations](#accessibility-violations).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to an Axe report in CSV format or to a zip with Axe reports in CSV format**.
 
-#### Result types
+Optional parameters:
 
-Type
-: Multiple choice
+- **Impact levels**. If provided, only count accessibility violations with the selected impact levels. This parameter is multiple choice. Possible impact levels are: `critical`, `minor`, `moderate`, `serious`. The default value is: _all impact levels_.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an Axe report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Axe report in CSV format.
+- **Username for basic authentication**.
+- **Violation types**. This parameter is multiple choice. Possible violation types are: `accesskeys`, `area-alt`, `aria-allowed-attr`, `aria-allowed-role`, `aria-dpub-role-fallback`, `aria-hidden-body`, `aria-hidden-focus`, `aria-input-field-name`, `aria-required-attr`, `aria-required-children`, `aria-required-parent`, `aria-roledescription`, `aria-roles`, `aria-toggle-field-name`, `aria-valid-attr-value`, `aria-valid-attr`, `audio-caption`, `autocomplete-valid`, `avoid-inline-spacing`, `blink`, `button-name`, `bypass`, `checkboxgroup`, `color-contrast`, `css-orientation-lock`, `definition-list`, `dlitem`, `document-title`, `duplicate-id-active`, `duplicate-id-aria`, `duplicate-id`, `empty-heading`, `focus-order-semantics`, `form-field-multiple-labels`, `frame-tested`, `frame-title-unique`, `frame-title`, `heading-order`, `hidden-content`, `html-has-lang`, `html-lang-valid`, `html-xml-lang-mismatch`, `image-alt`, `image-redundant-alt`, `input-button-name`, `input-image-alt`, `label-content-name-mismatch`, `label-title-only`, `label`, `landmark-banner-is-top-level`, `landmark-complementary-is-top-level`, `landmark-contentinfo-is-top-level`, `landmark-main-is-top-level`, `landmark-no-duplicate-banner`, `landmark-no-duplicate-contentinfo`, `landmark-one-main`, `landmark-unique`, `layout-table`, `link-in-text-block`, `link-name`, `list`, `listitem`, `marquee`, `meta-refresh`, `meta-viewport-large`, `meta-viewport`, `object-alt`, `p-as-heading`, `page-has-heading-one`, `radiogroup`, `region`, `role-img-alt`, `scope-attr-valid`, `scrollable-region-focusable`, `server-side-image-map`, `skip-link`, `tabindex`, `table-duplicate-name`, `table-fake-caption`, `td-has-header`, `td-headers-attr`, `th-has-data-cells`, `valid-lang`, `video-caption`, `video-description`. The default value is: _all violation types_.
+  ```{seealso}
+  [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
+  ```
+
+### Accessibility violations from Axe-core
+
+[Axe-core](#axe-core) can be used to measure [accessibility violations](#accessibility-violations).
+
+Mandatory parameters:
+
+- **URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format**.
+
+Optional parameters:
+
+- **Impact levels**. If provided, only count accessibility violations with the selected impact levels. This parameter is multiple choice. Possible impact levels are: `critical`, `minor`, `moderate`, `serious`. The default value is: _all impact levels_.
+- **Password for basic authentication**.
+- **Private token**.
+- **Result types**. Limit which result types to count. This parameter is multiple choice. Possible result types are: `inapplicable`, `incomplete`, `passes`, `violations`. The default value is: `violations`.
+- **Tags to ignore (regular expressions or tags)**. Tags to ignore can be specified by tag or by regular expression.
+- **Tags to include (regular expressions or tags)**. Tags to include can be specified by tag or by regular expression.
+- **URL to an Axe-core report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
+- **Username for basic authentication**.
+
+### Commented out code from SonarQube
+
+[SonarQube](#sonarqube) can be used to measure [commented out code](#commented-out-code).
+
+Mandatory parameters:
+
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+
+Optional parameters:
+
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+
+Configurations:
 
-Values
-: inapplicable
-: incomplete
-: passes
-: violations
+- Rules used to detect commented out code:
+   - abap:S125
+   - apex:S125
+   - c:CommentedCode
+   - cpp:CommentedCode
+   - csharpsquid:S125
+   - flex:CommentedCode
+   - java:S125
+   - javascript:CommentedCode
+   - javascript:S125
+   - kotlin:S125
+   - objc:CommentedCode
+   - php:S125
+   - plsql:S125
+   - python:S125
+   - scala:S125
+   - squid:CommentedOutCodeLine
+   - swift:S125
+   - typescript:S125
+   - Web:AvoidCommentedOutCodeCheck
+   - xml:S125
 
-Default value
-: violations
+### Complex units from SonarQube
 
-Mandatory
-: No
+[SonarQube](#sonarqube) can be used to measure [complex units](#complex-units).
 
-Help
-: Limit which result types to count.
+Mandatory parameters:
 
-#### Tags to ignore (regular expressions or tags)
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Type
-: Multiple choice with addition
+Optional parameters:
 
-Mandatory
-: No
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-Help
-: Tags to ignore can be specified by tag or by regular expression.
+Configurations:
 
-#### Tags to include (regular expressions or tags)
+- Rules used to detect complex units:
+   - csharpsquid:S1541
+   - csharpsquid:S3776
+   - flex:FunctionComplexity
+   - go:S3776
+   - java:S1541
+   - javascript:FunctionComplexity
+   - javascript:S1541
+   - javascript:S3776
+   - kotlin:S3776
+   - php:S1541
+   - php:S3776
+   - python:FunctionComplexity
+   - python:S3776
+   - ruby:S3776
+   - scala:S3776
+   - squid:MethodCyclomaticComplexity
+   - squid:S3776
+   - typescript:S1541
+   - typescript:S3776
+   - vbnet:S1541
+   - vbnet:S3776
 
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Tags to include can be specified by tag or by regular expression.
-
-#### URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
+### Dependencies from Composer
 
-#### URL to an Axe-core report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
+[Composer](#composer) can be used to measure [dependencies](#dependencies).
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
+Mandatory parameters:
 
-#### Username for basic authentication
+- **URL to a Composer 'outdated' report in JSON format or to a zip with Composer 'outdated' reports in JSON format**.
+  ```{seealso}
+  [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated)
+  ```
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Latest version statuses**. Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. This parameter is multiple choice. Possible statuses are: `safe update possible`, `unknown`, `up-to-date`, `update possible`. The default value is: _all statuses_.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Composer 'outdated' report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Composer 'outdated' report in JSON format.
+- **Username for basic authentication**.
 
-### [Commented out code](#commented-out-code) from [SonarQube](#sonarqube)
+### Dependencies from npm
 
-#### Branch (only supported by commercial SonarQube editions)
+[npm](#npm) can be used to measure [dependencies](#dependencies).
 
-Type
-: String
+Mandatory parameters:
 
-Default value
-: master
+- **URL to a npm 'outdated' report in JSON format or to a zip with npm 'outdated' reports in JSON format**.
+  ```{seealso}
+  [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html)
+  ```
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a npm 'outdated' report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format.
+- **Username for basic authentication**.
 
-#### Private token
+### Dependencies from OWASP Dependency Check
 
-Type
-: Password
+[OWASP Dependency Check](#owasp-dependency-check) can be used to measure [dependencies](#dependencies).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+- **URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format**.
 
-#### Project key
+Optional parameters:
 
-Type
-: String
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OWASP Dependency Check report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
+- **Username for basic authentication**.
 
-Mandatory
-: Yes
+### Dependencies from pip
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+[pip](#pip) can be used to measure [dependencies](#dependencies).
 
-#### URL
+Mandatory parameters:
 
-Type
-: URL
+- **URL to a pip 'outdated' report in JSON format or to a zip with pip 'outdated' reports in JSON format**.
+  ```{seealso}
+  [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/)
+  ```
 
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+Optional parameters:
 
-#### Configurations
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a pip 'outdated' report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format.
+- **Username for basic authentication**.
 
-Rules used to detect commented out code
-: abap:S125
-: apex:S125
-: c:CommentedCode
-: cpp:CommentedCode
-: csharpsquid:S125
-: flex:CommentedCode
-: java:S125
-: javascript:CommentedCode
-: javascript:S125
-: kotlin:S125
-: objc:CommentedCode
-: php:S125
-: plsql:S125
-: python:S125
-: scala:S125
-: squid:CommentedOutCodeLine
-: swift:S125
-: typescript:S125
-: Web:AvoidCommentedOutCodeCheck
-: xml:S125
+### Duplicated lines from SonarQube
 
-### [Complex units](#complex-units) from [SonarQube](#sonarqube)
+[SonarQube](#sonarqube) can be used to measure [duplicated lines](#duplicated-lines).
 
-#### Branch (only supported by commercial SonarQube editions)
+Mandatory parameters:
 
-Type
-: String
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Default value
-: master
+Optional parameters:
 
-Mandatory
-: No
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+### Failed CI-jobs from Azure DevOps Server
 
-#### Private token
+[Azure DevOps Server](#azure-devops-server) can be used to measure [failed ci-jobs](#failed-ci-jobs).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+Optional parameters:
 
-#### Project key
+- **Failure types**. Limit which failure types to count as failed. This parameter is multiple choice. Possible failure types are: `canceled`, `failed`, `no result`, `partially succeeded`. The default value is: _all failure types_.
+- **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
 
-Type
-: String
+### Failed CI-jobs from Jenkins
 
-Mandatory
-: Yes
+[Jenkins](#jenkins) can be used to measure [failed ci-jobs](#failed-ci-jobs).
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+Mandatory parameters:
 
-#### URL
+- **URL**. URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
 
-Type
-: URL
+Optional parameters:
 
-Mandatory
-: Yes
+- **Failure types**. Limit which failure types to count as failed. This parameter is multiple choice. Possible failure types are: `Aborted`, `Failure`, `Not built`, `Unstable`. The default value is: _all failure types_.
+- **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+### Failed CI-jobs from GitLab
 
-#### Configurations
+[GitLab](#gitlab) can be used to measure [failed ci-jobs](#failed-ci-jobs).
 
-Rules used to detect complex units
-: csharpsquid:S1541
-: csharpsquid:S3776
-: flex:FunctionComplexity
-: go:S3776
-: java:S1541
-: javascript:FunctionComplexity
-: javascript:S1541
-: javascript:S3776
-: kotlin:S3776
-: php:S1541
-: php:S3776
-: python:FunctionComplexity
-: python:S3776
-: ruby:S3776
-: scala:S3776
-: squid:MethodCyclomaticComplexity
-: squid:S3776
-: typescript:S1541
-: typescript:S3776
-: vbnet:S1541
-: vbnet:S3776
+Mandatory parameters:
 
-### [Dependencies](#dependencies) from [Composer](#composer)
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **Project (name with namespace or id)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+  ```
 
-#### Latest version statuses
+Optional parameters:
 
-Type
-: Multiple choice
+- **Branches and tags to ignore (regular expressions, branch names or tag names)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+  ```
+- **Failure types**. Limit which failure types to count as failed. This parameter is multiple choice. Possible failure types are: `canceled`, `failed`, `skipped`. The default value is: _all failure types_.
+- **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression.
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
 
-Values
-: safe update possible
-: unknown
-: up-to-date
-: update possible
+### Issues from Azure DevOps Server
 
-Default value
-: _all statuses_
+[Azure DevOps Server](#azure-devops-server) can be used to measure [issues](#issues).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible.
+- **Issue query in WIQL (Work Item Query Language)**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
+  ```
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-#### Password for basic authentication
+Optional parameters:
 
-Type
-: Password
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
 
-Mandatory
-: No
+### Issues from Jira
 
-#### Private token
+[Jira](#jira) can be used to measure [issues](#issues).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **Issue query in JQL (Jira Query Language)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+  ```
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-#### URL to a Composer 'outdated' report in JSON format or to a zip with Composer 'outdated' reports in JSON format
+Optional parameters:
 
-Type
-: URL
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-Mandatory
-: Yes
+### Issues from Trello
 
-Help
-: [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated)
+[Trello](#trello) can be used to measure [issues](#issues).
 
-#### URL to a Composer 'outdated' report in a human readable format
+Mandatory parameters:
 
-Type
-: String
+- **Board (title or id)**.
+  ```{seealso}
+  [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
+  ```
+- **URL**. The default value is: `https://trello.com`.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Composer 'outdated' report in JSON format.
+- **API key**.
+  ```{seealso}
+  [https://trello.com/app-key](https://trello.com/app-key)
+  ```
+- **Cards to count**. This parameter is multiple choice. Possible cards are: `inactive`, `overdue`. The default value is: _all cards_.
+- **Lists to ignore (title or id)**.
+- **Number of days without activity after which to consider cards inactive**. The default value is: `30`.
+- **Token**.
+  ```{seealso}
+  [https://trello.com/app-key](https://trello.com/app-key)
+  ```
 
-#### Username for basic authentication
+### Size (LOC) from cloc
 
-Type
-: String
+[cloc](#cloc) can be used to measure [size (loc)](#size-loc).
 
-Mandatory
-: No
+Mandatory parameters:
 
-### [Dependencies](#dependencies) from [npm](#npm)
+- **URL to a cloc report in JSON format or to a zip with cloc reports in JSON format**.
 
-#### Password for basic authentication
+Optional parameters:
 
-Type
-: Password
+- **Languages to ignore (regular expressions or language names)**.
+  ```{seealso}
+  [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-)
+  ```
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a cloc report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Size (LOC) from SonarQube
 
-#### Private token
+[SonarQube](#sonarqube) can be used to measure [size (loc)](#size-loc).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-#### URL to a npm 'outdated' report in JSON format or to a zip with npm 'outdated' reports in JSON format
+Optional parameters:
 
-Type
-: URL
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Languages to ignore (regular expressions or language names)**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/analysis/languages/overview/](https://docs.sonarqube.org/latest/analysis/languages/overview/)
+  ```
+- **Lines to count**. Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation. This parameter is single choice. Possible lines to count are: `all lines`, `lines with code`. The default value is: `lines with code`.
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-Mandatory
-: Yes
+### Long units from SonarQube
 
-Help
-: [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html)
+[SonarQube](#sonarqube) can be used to measure [long units](#long-units).
 
-#### URL to a npm 'outdated' report in a human readable format
+Mandatory parameters:
 
-Type
-: String
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format.
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-#### Username for basic authentication
+Configurations:
 
-Type
-: String
+- Rules used to detect long units:
+   - abap:S104
+   - c:FileLoc
+   - cpp:FileLoc
+   - csharpsquid:S104
+   - csharpsquid:S138
+   - flex:S138
+   - go:S104
+   - go:S138
+   - java:S138
+   - javascript:S104
+   - javascript:S138
+   - kotlin:S104
+   - kotlin:S138
+   - objc:FileLoc
+   - php:S104
+   - php:S138
+   - php:S2042
+   - Pylint:R0915
+   - python:S104
+   - ruby:S104
+   - ruby:S138
+   - scala:S104
+   - scala:S138
+   - squid:S00104
+   - squid:S1188
+   - squid:S138
+   - squid:S2972
+   - swift:S104
+   - typescript:S104
+   - typescript:S138
+   - vbnet:S104
+   - vbnet:S138
+   - Web:FileLengthCheck
+   - Web:LongJavaScriptCheck
 
-Mandatory
-: No
+### Manual test duration from Jira
 
-### [Dependencies](#dependencies) from [OWASP Dependency Check](#owasp-dependency-check)
+[Jira](#jira) can be used to measure [manual test duration](#manual-test-duration).
 
-#### Password for basic authentication
+Mandatory parameters:
 
-Type
-: Password
+- **Issue query in JQL (Jira Query Language)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+  ```
+- **Manual test duration field (name or id)**.
+  ```{seealso}
+  [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+  ```
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-Mandatory
-: No
+Optional parameters:
 
-#### Private token
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Manual test execution from Jira
 
-Mandatory
-: No
+[Jira](#jira) can be used to measure [manual test execution](#manual-test-execution).
 
-#### URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format
+Mandatory parameters:
 
-Type
-: URL
+- **Default expected manual test execution frequency (days)**. Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days. The default value is: `21`.
+- **Issue query in JQL (Jira Query Language)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+  ```
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-Mandatory
-: Yes
+Optional parameters:
 
-#### URL to an OWASP Dependency Check report in a human readable format
+- **Manual test execution frequency field (name or id)**.
+  ```{seealso}
+  [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+  ```
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-Type
-: String
+### Many parameters from SonarQube
 
-Mandatory
-: No
+[SonarQube](#sonarqube) can be used to measure [many parameters](#many-parameters).
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
+Mandatory parameters:
 
-#### Username for basic authentication
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-### [Dependencies](#dependencies) from [pip](#pip)
+Configurations:
 
-#### Password for basic authentication
+- Rules used to detect units with many parameters:
+   - c:S107
+   - cpp:S107
+   - csharpsquid:S107
+   - csharpsquid:S2436
+   - flex:S107
+   - java:S107
+   - javascript:ExcessiveParameterList
+   - javascript:S107
+   - objc:S107
+   - php:S107
+   - plsql:PlSql.FunctionAndProcedureExcessiveParameters
+   - python:S107
+   - squid:S00107
+   - tsql:S107
+   - typescript:S107
 
-Type
-: Password
+### Merge requests from Azure DevOps Server
 
-Mandatory
-: No
+[Azure DevOps Server](#azure-devops-server) can be used to measure [merge requests](#merge-requests).
 
-#### Private token
+Mandatory parameters:
 
-Type
-: Password
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-Mandatory
-: No
+Optional parameters:
 
-#### URL to a pip 'outdated' report in JSON format or to a zip with pip 'outdated' reports in JSON format
+- **Merge request states**. Limit which merge request states to count. This parameter is multiple choice. Possible states are: `abandoned`, `active`, `completed`, `not set`. The default value is: _all states_.
+- **Minimum number of upvotes**. Only count merge requests with fewer than the minimum number of upvotes. The default value is: `0`.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
+- **Repository (name or id)**.
+- **Target branches to include (regular expressions or branch names)**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
+  ```
 
-Type
-: URL
+### Merge requests from GitLab
 
-Mandatory
-: Yes
+[GitLab](#gitlab) can be used to measure [merge requests](#merge-requests).
 
-Help
-: [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/)
+Mandatory parameters:
 
-#### URL to a pip 'outdated' report in a human readable format
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **Project (name with namespace or id)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+  ```
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Approval states to include (requires GitLab Premium)**. This parameter is multiple choice. Possible approval states are: `approved`, `not approved`, `unknown`. The default value is: _all approval states_.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/merge_requests/approvals/](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+  ```
+- **Merge request states**. Limit which merge request states to count. This parameter is multiple choice. Possible states are: `closed`, `locked`, `merged`, `opened`. The default value is: _all states_.
+- **Minimum number of upvotes**. Only count merge requests with fewer than the minimum number of upvotes. The default value is: `0`.
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
+- **Target branches to include (regular expressions or branch names)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+  ```
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format.
+### Metrics from Quality-time
 
-#### Username for basic authentication
+[Quality-time](#quality-time) can be used to measure [metrics](#metrics).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: No
+- **Quality-time URL**. URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
 
-### [Duplicated lines](#duplicated-lines) from [SonarQube](#sonarqube)
+Optional parameters:
 
-#### Branch (only supported by commercial SonarQube editions)
+- **Metric statuses**. This parameter is multiple choice. Possible metric statuses are: `near target met (yellow)`, `target met (green)`, `target not met (red)`, `technical debt target met (grey)`, `unknown (white)`. The default value is: _all metric statuses_.
+- **Metric types**. If provided, only count metrics with the selected metric types. This parameter is multiple choice. Possible metric types are: `Accessibility violations`, `Commented out code`, `Complex units`, `Dependencies`, `Duplicated lines`, `Failed CI-jobs`, `Issues`, `Long units`, `Manual test duration`, `Manual test execution`, `Many parameters`, `Merge requests`, `Metrics`, `Missing metrics`, `Performancetest duration`, `Performancetest stability`, `Ready user story points`, `Scalability`, `Security warnings`, `Size (LOC)`, `Slow transactions`, `Source up-to-dateness`, `Source version`, `Suppressed violations`, `Test branch coverage`, `Test cases`, `Test line coverage`, `Tests`, `Unmerged branches`, `Unused CI-jobs`, `User story points`, `Velocity`, `Violation remediation effort`, `Violations`. The default value is: _all metric types_.
+- **Report names or identifiers**.
+- **Source types**. If provided, only count metrics with one or more sources of the selected source types. This parameter is multiple choice. Possible source types are: `Anchore Jenkins plugin`, `Anchore`, `Axe CSV`, `Axe-core`, `Azure DevOps Server`, `Bandit`, `Calendar date`, `Checkmarx CxSAST`, `Cobertura Jenkins plugin`, `Cobertura`, `Composer`, `GitLab`, `JSON file with security warnings`, `JUnit XML report`, `JaCoCo Jenkins plugin`, `JaCoCo`, `Jenkins test report`, `Jenkins`, `Jira`, `Manual number`, `NCover`, `OJAudit`, `OWASP Dependency Check`, `OWASP ZAP`, `OpenVAS`, `Performancetest-runner`, `Pyupio Safety`, `Quality-time`, `Robot Framework Jenkins plugin`, `Robot Framework`, `Snyk`, `SonarQube`, `TestNG`, `Trello`, `cloc`, `npm`, `pip`. The default value is: _all source types_.
+- **Tags**. If provided, only count metrics with one ore more of the given tags.
 
-Type
-: String
+### Missing metrics from Quality-time
 
-Default value
-: master
+[Quality-time](#quality-time) can be used to measure [missing metrics](#missing-metrics).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+- **Quality-time URL**. URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
 
-#### Private token
+Optional parameters:
 
-Type
-: Password
+- **Report names or identifiers**.
 
-Mandatory
-: No
+### Performancetest duration from Performancetest-runner
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+[Performancetest-runner](#performancetest-runner) can be used to measure [performancetest duration](#performancetest-duration).
 
-#### Project key
+Mandatory parameters:
 
-Type
-: String
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-#### URL
+### Performancetest stability from Performancetest-runner
 
-Type
-: URL
+[Performancetest-runner](#performancetest-runner) can be used to measure [performancetest stability](#performancetest-stability).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-### [Failed CI-jobs](#failed-ci-jobs) from [Azure DevOps Server](#azure-devops-server)
+Optional parameters:
 
-#### Failure types
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Type
-: Multiple choice
+### Violation remediation effort from SonarQube
 
-Values
-: canceled
-: failed
-: no result
-: partially succeeded
+[SonarQube](#sonarqube) can be used to measure [violation remediation effort](#violation-remediation-effort).
 
-Default value
-: _all failure types_
+Mandatory parameters:
 
-Mandatory
-: No
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Help
-: Limit which failure types to count as failed.
+Optional parameters:
 
-#### Pipelines to ignore (regular expressions or pipeline names)
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+- **Types of effort**. This parameter is multiple choice. Possible effort types are: `effort to fix all bug issues`, `effort to fix all code smells`, `effort to fix all vulnerabilities`. The default value is: _all effort types_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/metric-definitions/](https://docs.sonarqube.org/latest/user-guide/metric-definitions/)
+  ```
 
-Type
-: Multiple choice with addition
+### Scalability from Performancetest-runner
 
-Mandatory
-: No
+[Performancetest-runner](#performancetest-runner) can be used to measure [scalability](#scalability).
 
-Help
-: Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+Mandatory parameters:
 
-#### Pipelines to include (regular expressions or pipeline names)
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-Type
-: Multiple choice with addition
+Optional parameters:
 
-Mandatory
-: No
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Help
-: Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+### Slow transactions from Performancetest-runner
 
-#### Private token
+[Performancetest-runner](#performancetest-runner) can be used to measure [slow transactions](#slow-transactions).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+Optional parameters:
 
-#### URL including organization and project
+- **Password for basic authentication**.
+- **Private token**.
+- **Thresholds**. If provided, only count transactions that surpass the selected thresholds. This parameter is multiple choice. Possible thresholds are: `high`, `warning`. The default value is: _all thresholds_.
+- **Transactions to ignore (regular expressions or transaction names)**. Transactions to ignore can be specified by transaction name or by regular expression.
+- **Transactions to include (regular expressions or transaction names)**. Transactions to include can be specified by transaction name or by regular expression.
+- **Username for basic authentication**.
 
-Type
-: URL
+### Source up-to-dateness from Anchore
 
-Mandatory
-: Yes
+[Anchore](#anchore) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
+Mandatory parameters:
 
-### [Failed CI-jobs](#failed-ci-jobs) from [Jenkins](#jenkins)
+- **URL to an Anchore details report in JSON format or to a zip with Anchore details reports in JSON format**.
 
-#### Failure types
+Optional parameters:
 
-Type
-: Multiple choice
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an Anchore vulnerability report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format.
+- **Username for basic authentication**.
 
-Values
-: Aborted
-: Failure
-: Not built
-: Unstable
+### Source up-to-dateness from Anchore Jenkins plugin
 
-Default value
-: _all failure types_
+[Anchore Jenkins plugin](#anchore-jenkins-plugin) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: Limit which failure types to count as failed.
+- **URL to Jenkins job**. URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job.
 
-#### Jobs to ignore (regular expressions or job names)
+Optional parameters:
 
-Type
-: Multiple choice with addition
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source up-to-dateness from Axe-core
 
-Help
-: Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+[Axe-core](#axe-core) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Jobs to include (regular expressions or job names)
+Mandatory parameters:
 
-Type
-: Multiple choice with addition
+- **URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format**.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an Axe-core report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
+- **Username for basic authentication**.
 
-#### Password or API token for basic authentication
+### Source up-to-dateness from Azure DevOps Server
 
-Type
-: Password
+[Azure DevOps Server](#azure-devops-server) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-#### URL
+Optional parameters:
 
-Type
-: URL
+- **Branch**. The default value is: `master`.
+- **File or folder path**. Use the date and time the path was last changed to determine the up-to-dateness. Note that if a pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is ignored.
+- **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
+- **Repository (name or id)**.
 
-Mandatory
-: Yes
+### Source up-to-dateness from Bandit
 
-Help
-: URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
+[Bandit](#bandit) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Username for basic authentication
+Mandatory parameters:
 
-Type
-: String
+- **URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format**.
 
-Mandatory
-: No
+Optional parameters:
 
-### [Failed CI-jobs](#failed-ci-jobs) from [GitLab](#gitlab)
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Bandit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.
+- **Username for basic authentication**.
 
-#### Branches and tags to ignore (regular expressions, branch names or tag names)
+### Source up-to-dateness from Calendar date
 
-Type
-: Multiple choice with addition
+[Calendar date](#calendar-date) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+- **Date**. The default value is: `2021-01-01`.
 
-#### Failure types
+### Source up-to-dateness from Cobertura
 
-Type
-: Multiple choice
+[Cobertura](#cobertura) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Values
-: canceled
-: failed
-: skipped
+Mandatory parameters:
 
-Default value
-: _all failure types_
+- **URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: Limit which failure types to count as failed.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Cobertura report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
+- **Username for basic authentication**.
 
-#### GitLab instance URL
+### Source up-to-dateness from Cobertura Jenkins plugin
 
-Type
-: URL
+[Cobertura Jenkins plugin](#cobertura-jenkins-plugin) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
 
-#### Jobs to ignore (regular expressions or job names)
+Optional parameters:
 
-Type
-: Multiple choice with addition
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source up-to-dateness from Checkmarx CxSAST
 
-Help
-: Jobs to ignore can be specified by job name or by regular expression.
+[Checkmarx CxSAST](#checkmarx-cxsast) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Private token (with read_api scope)
+Mandatory parameters:
 
-Type
-: Password
+- **Password for basic authentication**.
+- **Project (name or id)**.
+- **URL**. URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source up-to-dateness from GitLab
 
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+[GitLab](#gitlab) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Project (name with namespace or id)
+Mandatory parameters:
 
-Type
-: String
+- **File or folder path**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html)
+  ```
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **Project (name with namespace or id)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+  ```
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+- **Branch**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+  ```
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
 
-### [Issues](#issues) from [Azure DevOps Server](#azure-devops-server)
+### Source up-to-dateness from JaCoCo
 
-#### Issue query in WIQL (Work Item Query Language)
+[JaCoCo](#jacoco) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format**.
 
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
+Optional parameters:
 
-#### Private token
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a JaCoCo report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Source up-to-dateness from JaCoCo Jenkins plugin
 
-Mandatory
-: No
+[JaCoCo Jenkins plugin](#jacoco-jenkins-plugin) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+Mandatory parameters:
 
-#### URL including organization and project
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
 
-Type
-: URL
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
+### Source up-to-dateness from Jenkins
 
-### [Issues](#issues) from [Jira](#jira)
+[Jenkins](#jenkins) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Issue query in JQL (Jira Query Language)
+Mandatory parameters:
 
-Type
-: String
+- **URL**. URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+- **Build result types**. Limit which build result types to include. This parameter is multiple choice. Possible result types are: `Aborted`, `Failure`, `Not built`, `Success`, `Unstable`. The default value is: _all result types_.
+- **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-#### Password for basic authentication
+### Source up-to-dateness from Jenkins test report
 
-Type
-: Password
+[Jenkins test report](#jenkins-test-report) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-#### URL
+- **URL to Jenkins job**. URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job.
 
-Type
-: URL
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
+### Source up-to-dateness from JUnit XML report
 
-#### Username for basic authentication
+[JUnit XML report](#junit-xml-report) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a JUnit report in XML format or to a zip with JUnit reports in XML format**.
 
-### [Issues](#issues) from [Trello](#trello)
+Optional parameters:
 
-#### API key
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a JUnit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
+- **Username for basic authentication**.
 
-Type
-: String
+### Source up-to-dateness from NCover
 
-Mandatory
-: No
+[NCover](#ncover) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Help
-: [https://trello.com/app-key](https://trello.com/app-key)
+Mandatory parameters:
 
-#### Board (title or id)
+- **URL to a NCover report in HTML format or to a zip with NCover reports in HTML format**.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Help
-: [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
+### Source up-to-dateness from Robot Framework
 
-#### Cards to count
+[Robot Framework](#robot-framework) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Type
-: Multiple choice
+Mandatory parameters:
 
-Values
-: inactive
-: overdue
+- **URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format**.
 
-Default value
-: _all cards_
+Optional parameters:
 
-Mandatory
-: No
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Robot Framework report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
+- **Username for basic authentication**.
 
-#### Lists to ignore (title or id)
+### Source up-to-dateness from OpenVAS
 
-Type
-: Multiple choice with addition
+[OpenVAS](#openvas) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-#### Number of days without activity after which to consider cards inactive
+- **URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format**.
 
-Type
-: Integer
+Optional parameters:
 
-Default value
-: 30
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OpenVAS report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source up-to-dateness from OWASP Dependency Check
 
-#### Token
+[OWASP Dependency Check](#owasp-dependency-check) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format**.
 
-Help
-: [https://trello.com/app-key](https://trello.com/app-key)
+Optional parameters:
 
-#### URL
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OWASP Dependency Check report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
+- **Username for basic authentication**.
 
-Type
-: URL
+### Source up-to-dateness from OWASP ZAP
 
-Default value
-: https://trello.com
+[OWASP ZAP](#owasp-zap) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-### [Size (LOC)](#size-loc) from [cloc](#cloc)
+- **URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format**.
 
-#### Languages to ignore (regular expressions or language names)
+Optional parameters:
 
-Type
-: Multiple choice with addition
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OWASP ZAP report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source up-to-dateness from Performancetest-runner
 
-Help
-: [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-)
+[Performancetest-runner](#performancetest-runner) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### Password for basic authentication
+Mandatory parameters:
 
-Type
-: Password
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-#### Private token
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Source up-to-dateness from Quality-time
 
-Mandatory
-: No
+[Quality-time](#quality-time) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-#### URL to a cloc report in JSON format or to a zip with cloc reports in JSON format
+Mandatory parameters:
 
-Type
-: URL
+- **Quality-time URL**. URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
 
-Mandatory
-: Yes
+Optional parameters:
 
-#### URL to a cloc report in a human readable format
+- **Report names or identifiers**.
 
-Type
-: String
+### Source up-to-dateness from Robot Framework Jenkins plugin
 
-Mandatory
-: No
+[Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.
+Mandatory parameters:
 
-#### Username for basic authentication
+- **URL to Jenkins job**. URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-### [Size (LOC)](#size-loc) from [SonarQube](#sonarqube)
+### Source up-to-dateness from SonarQube
 
-#### Branch (only supported by commercial SonarQube editions)
+[SonarQube](#sonarqube) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Type
-: String
+Mandatory parameters:
 
-Default value
-: master
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-#### Languages to ignore (regular expressions or language names)
+### Source up-to-dateness from TestNG
 
-Type
-: Multiple choice with addition
+[TestNG](#testng) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/analysis/languages/overview/](https://docs.sonarqube.org/latest/analysis/languages/overview/)
+- **URL to a TestNG report in XML format or to a zip with TestNG reports in XML format**.
 
-#### Lines to count
+Optional parameters:
 
-Type
-: Single choice
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a TestNG report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
+- **Username for basic authentication**.
 
-Values
-: all lines
-: lines with code
+### Source up-to-dateness from Trello
 
-Default value
-: lines with code
+[Trello](#trello) can be used to measure [source up-to-dateness](#source-up-to-dateness).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation.
+- **Board (title or id)**.
+  ```{seealso}
+  [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
+  ```
+- **URL**. The default value is: `https://trello.com`.
 
-#### Private token
+Optional parameters:
 
-Type
-: Password
+- **API key**.
+  ```{seealso}
+  [https://trello.com/app-key](https://trello.com/app-key)
+  ```
+- **Lists to ignore (title or id)**.
+- **Token**.
+  ```{seealso}
+  [https://trello.com/app-key](https://trello.com/app-key)
+  ```
 
-Mandatory
-: No
+### Source version from Axe-core
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+[Axe-core](#axe-core) can be used to measure [source version](#source-version).
 
-#### Project key
+Mandatory parameters:
 
-Type
-: String
+- **URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format**.
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an Axe-core report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
+- **Username for basic authentication**.
 
-#### URL
+### Source version from cloc
 
-Type
-: URL
+[cloc](#cloc) can be used to measure [source version](#source-version).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+- **URL to a cloc report in JSON format or to a zip with cloc reports in JSON format**.
 
-### [Long units](#long-units) from [SonarQube](#sonarqube)
+Optional parameters:
 
-#### Branch (only supported by commercial SonarQube editions)
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a cloc report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.
+- **Username for basic authentication**.
 
-Type
-: String
+### Source version from Cobertura
 
-Default value
-: master
+[Cobertura](#cobertura) can be used to measure [source version](#source-version).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+- **URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format**.
 
-#### Private token
+Optional parameters:
 
-Type
-: Password
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Cobertura report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Source version from Checkmarx CxSAST
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+[Checkmarx CxSAST](#checkmarx-cxsast) can be used to measure [source version](#source-version).
 
-#### Project key
+Mandatory parameters:
 
-Type
-: String
+- **Password for basic authentication**.
+- **URL**. URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
+- **Username for basic authentication**.
 
-Mandatory
-: Yes
+### Source version from GitLab
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+[GitLab](#gitlab) can be used to measure [source version](#source-version).
 
-#### URL
+Mandatory parameters:
 
-Type
-: URL
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
 
-#### Configurations
+### Source version from Jenkins
 
-Rules used to detect long units
-: abap:S104
-: c:FileLoc
-: cpp:FileLoc
-: csharpsquid:S104
-: csharpsquid:S138
-: flex:S138
-: go:S104
-: go:S138
-: java:S138
-: javascript:S104
-: javascript:S138
-: kotlin:S104
-: kotlin:S138
-: objc:FileLoc
-: php:S104
-: php:S138
-: php:S2042
-: Pylint:R0915
-: python:S104
-: ruby:S104
-: ruby:S138
-: scala:S104
-: scala:S138
-: squid:S00104
-: squid:S1188
-: squid:S138
-: squid:S2972
-: swift:S104
-: typescript:S104
-: typescript:S138
-: vbnet:S104
-: vbnet:S138
-: Web:FileLengthCheck
-: Web:LongJavaScriptCheck
+[Jenkins](#jenkins) can be used to measure [source version](#source-version).
 
-### [Manual test duration](#manual-test-duration) from [Jira](#jira)
+Mandatory parameters:
 
-#### Issue query in JQL (Jira Query Language)
+- **URL**. URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+### Source version from Jira
 
-#### Manual test duration field (name or id)
+[Jira](#jira) can be used to measure [source version](#source-version).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-Help
-: [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+Optional parameters:
 
-#### Password for basic authentication
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Source version from OpenVAS
 
-Mandatory
-: No
+[OpenVAS](#openvas) can be used to measure [source version](#source-version).
 
-#### URL
+Mandatory parameters:
 
-Type
-: URL
+- **URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format**.
 
-Mandatory
-: Yes
+Optional parameters:
 
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OpenVAS report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
+- **Username for basic authentication**.
 
-#### Username for basic authentication
+### Source version from OWASP Dependency Check
 
-Type
-: String
+[OWASP Dependency Check](#owasp-dependency-check) can be used to measure [source version](#source-version).
 
-Mandatory
-: No
+Mandatory parameters:
 
-### [Manual test execution](#manual-test-execution) from [Jira](#jira)
+- **URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format**.
 
-#### Default expected manual test execution frequency (days)
+Optional parameters:
 
-Type
-: Integer
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OWASP Dependency Check report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
+- **Username for basic authentication**.
 
-Default value
-: 21
+### Source version from OWASP ZAP
 
-Mandatory
-: Yes
+[OWASP ZAP](#owasp-zap) can be used to measure [source version](#source-version).
 
-Help
-: Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days.
+Mandatory parameters:
 
-#### Issue query in JQL (Jira Query Language)
+- **URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format**.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to an OWASP ZAP report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
+- **Username for basic authentication**.
 
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+### Source version from Quality-time
 
-#### Manual test execution frequency field (name or id)
+[Quality-time](#quality-time) can be used to measure [source version](#source-version).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: No
+- **Quality-time URL**. URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
 
-Help
-: [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+### Source version from Robot Framework
 
-#### Password for basic authentication
+[Robot Framework](#robot-framework) can be used to measure [source version](#source-version).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format**.
 
-#### URL
+Optional parameters:
 
-Type
-: URL
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Robot Framework report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
+- **Username for basic authentication**.
 
-Mandatory
-: Yes
+### Source version from SonarQube
 
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
+[SonarQube](#sonarqube) can be used to measure [source version](#source-version).
 
-#### Username for basic authentication
+Mandatory parameters:
 
-Type
-: String
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Mandatory
-: No
+Optional parameters:
 
-### [Many parameters](#many-parameters) from [SonarQube](#sonarqube)
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-#### Branch (only supported by commercial SonarQube editions)
+### Security warnings from Anchore
 
-Type
-: String
+[Anchore](#anchore) can be used to measure [security warnings](#security-warnings).
 
-Default value
-: master
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to an Anchore vulnerability report in JSON format or to a zip with Anchore vulnerability reports in JSON format**.
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+Optional parameters:
 
-#### Private token
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `Critical`, `High`, `Low`, `Medium`, `Negligible`, `Unknown`. The default value is: _all severities_.
+- **URL to an Anchore vulnerability report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Security warnings from Anchore Jenkins plugin
 
-Mandatory
-: No
+[Anchore Jenkins plugin](#anchore-jenkins-plugin) can be used to measure [security warnings](#security-warnings).
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+Mandatory parameters:
 
-#### Project key
+- **URL to Jenkins job**. URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job.
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `Critical`, `High`, `Low`, `Medium`, `Negligible`, `Unknown`. The default value is: _all severities_.
+- **Username for basic authentication**.
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+### Security warnings from Bandit
 
-#### URL
+[Bandit](#bandit) can be used to measure [security warnings](#security-warnings).
 
-Type
-: URL
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format**.
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+Optional parameters:
 
-#### Configurations
+- **Confidence levels**. If provided, only count security warnings with the selected confidence levels. This parameter is multiple choice. Possible confidence levels are: `high`, `low`, `medium`. The default value is: _all confidence levels_.
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `high`, `low`, `medium`. The default value is: _all severities_.
+- **URL to a Bandit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.
+- **Username for basic authentication**.
 
-Rules used to detect units with many parameters
-: c:S107
-: cpp:S107
-: csharpsquid:S107
-: csharpsquid:S2436
-: flex:S107
-: java:S107
-: javascript:ExcessiveParameterList
-: javascript:S107
-: objc:S107
-: php:S107
-: plsql:PlSql.FunctionAndProcedureExcessiveParameters
-: python:S107
-: squid:S00107
-: tsql:S107
-: typescript:S107
+### Security warnings from Checkmarx CxSAST
 
-### [Merge requests](#merge-requests) from [Azure DevOps Server](#azure-devops-server)
+[Checkmarx CxSAST](#checkmarx-cxsast) can be used to measure [security warnings](#security-warnings).
 
-#### Merge request states
+Mandatory parameters:
 
-Type
-: Multiple choice
+- **Password for basic authentication**.
+- **Project (name or id)**.
+- **URL**. URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
+- **Username for basic authentication**.
 
-Values
-: abandoned
-: active
-: completed
-: not set
+Optional parameters:
 
-Default value
-: _all states_
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `high`, `info`, `low`, `medium`. The default value is: _all severities_.
 
-Mandatory
-: No
+### Security warnings from OpenVAS
 
-Help
-: Limit which merge request states to count.
+[OpenVAS](#openvas) can be used to measure [security warnings](#security-warnings).
 
-#### Minimum number of upvotes
+Mandatory parameters:
 
-Type
-: Integer
+- **URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format**.
 
-Default value
-: 0
+Optional parameters:
 
-Mandatory
-: No
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `high`, `log`, `low`, `medium`. The default value is: _all severities_.
+- **URL to an OpenVAS report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
+- **Username for basic authentication**.
 
-Help
-: Only count merge requests with fewer than the minimum number of upvotes.
+### Security warnings from OWASP Dependency Check
 
-#### Private token
+[OWASP Dependency Check](#owasp-dependency-check) can be used to measure [security warnings](#security-warnings).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format**.
 
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+Optional parameters:
 
-#### Repository (name or id)
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `critical`, `high`, `low`, `medium`, `moderate`. The default value is: _all severities_.
+- **URL to an OWASP Dependency Check report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
+- **Username for basic authentication**.
 
-Type
-: String
+### Security warnings from OWASP ZAP
 
-Mandatory
-: No
+[OWASP ZAP](#owasp-zap) can be used to measure [security warnings](#security-warnings).
 
-#### Target branches to include (regular expressions or branch names)
+Mandatory parameters:
 
-Type
-: Multiple choice with addition
+- **URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
+- **Count alert types or alert instances**. Determine whether to count each alert type in the OWASP ZAP report as a security warning or to count each alert instance (URL). This parameter is single choice. Possible count alert types or instances setting are: `alert instances`, `alert types`. The default value is: `alert instances`.
+- **Parts of URLs to ignore (regular expressions)**. Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported.
+- **Password for basic authentication**.
+- **Private token**.
+- **Risks**. If provided, only count security warnings with the selected risks. This parameter is multiple choice. Possible risks are: `high`, `informational`, `low`, `medium`. The default value is: _all risks_.
+- **URL to an OWASP ZAP report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
+- **Username for basic authentication**.
 
-#### URL including organization and project
+### Security warnings from Pyupio Safety
 
-Type
-: URL
+[Pyupio Safety](#pyupio-safety) can be used to measure [security warnings](#security-warnings).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
+- **URL to a Safety report in JSON format or to a zip with Safety reports in JSON format**.
 
-### [Merge requests](#merge-requests) from [GitLab](#gitlab)
+Optional parameters:
 
-#### Approval states to include (requires GitLab Premium)
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Safety report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Safety report in JSON format.
+- **Username for basic authentication**.
 
-Type
-: Multiple choice
+### Security warnings from Snyk
 
-Values
-: approved
-: not approved
-: unknown
+[Snyk](#snyk) can be used to measure [security warnings](#security-warnings).
 
-Default value
-: _all approval states_
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a Snyk vulnerability report in JSON format or to a zip with Snyk vulnerability reports in JSON format**.
 
-Help
-: [https://docs.gitlab.com/ee/user/project/merge_requests/approvals/](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+Optional parameters:
 
-#### GitLab instance URL
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `high`, `low`, `medium`. The default value is: _all severities_.
+- **URL to a Snyk vulnerability report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Snyk vulnerability report in JSON format.
+- **Username for basic authentication**.
 
-Type
-: URL
+### Security warnings from JSON file with security warnings
 
-Mandatory
-: Yes
+[JSON file with security warnings](#json-file-with-security-warnings) can be used to measure [security warnings](#security-warnings).
 
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+Mandatory parameters:
 
-#### Merge request states
+- **URL to a generic vulnerability report in JSON format or to a zip with generic vulnerability reports in JSON format**.
 
-Type
-: Multiple choice
+Optional parameters:
 
-Values
-: closed
-: locked
-: merged
-: opened
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `high`, `low`, `medium`. The default value is: _all severities_.
+- **URL to a generic vulnerability report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.
+- **Username for basic authentication**.
 
-Default value
-: _all states_
+### Security warnings from SonarQube
 
-Mandatory
-: No
+[SonarQube](#sonarqube) can be used to measure [security warnings](#security-warnings).
 
-Help
-: Limit which merge request states to count.
+Mandatory parameters:
 
-#### Minimum number of upvotes
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Type
-: Integer
+Optional parameters:
 
-Default value
-: 0
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+- **Security hotspot review priorities**. This parameter is multiple choice. Possible review priorities are: `high`, `low`, `medium`. The default value is: _all review priorities_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/security-hotspots/](https://docs.sonarqube.org/latest/user-guide/security-hotspots/)
+  ```
+- **Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)**. This parameter is multiple choice. Possible types are: `security_hotspot`, `vulnerability`. The default value is: `vulnerability`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
+  ```
+- **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
+  ```
 
-Mandatory
-: No
+### Suppressed violations from SonarQube
 
-Help
-: Only count merge requests with fewer than the minimum number of upvotes.
+[SonarQube](#sonarqube) can be used to measure [suppressed violations](#suppressed-violations).
 
-#### Private token (with read_api scope)
+Mandatory parameters:
 
-Type
-: Password
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+- **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
+  ```
+- **Types**. This parameter is multiple choice. Possible types are: `bug`, `code_smell`, `vulnerability`. The default value is: _all types_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
+  ```
 
-#### Project (name with namespace or id)
+Configurations:
 
-Type
-: String
+- Rules used to detect suppressed violations:
+   - csharpsquid:S1309
+   - java:NoSonar
+   - java:S1309
+   - java:S1310
+   - java:S1315
+   - php:NoSonar
+   - Pylint:I0011
+   - Pylint:I0020
+   - squid:NoSonar
+   - squid:S1309
+   - squid:S1310
+   - squid:S1315
 
-Mandatory
-: Yes
+### Test cases from Jira
 
-Help
-: [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+[Jira](#jira) can be used to measure [test cases](#test-cases).
 
-#### Target branches to include (regular expressions or branch names)
+Mandatory parameters:
 
-Type
-: Multiple choice with addition
+- **Issue query in JQL (Jira Query Language)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+  ```
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+- **Password for basic authentication**.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `errored`, `failed`, `passed`, `skipped`, `untested`. The default value is: _all test results_.
+- **Username for basic authentication**.
 
-### [Metrics](#metrics) from [Quality-time](#quality-time)
+### Test cases from JUnit XML report
 
-#### Metric statuses
+[JUnit XML report](#junit-xml-report) can be used to measure [test cases](#test-cases).
 
-Type
-: Multiple choice
+Mandatory parameters:
 
-Values
-: near target met (yellow)
-: target met (green)
-: target not met (red)
-: technical debt target met (grey)
-: unknown (white)
+- **URL to a JUnit report in XML format or to a zip with JUnit reports in XML format**.
 
-Default value
-: _all metric statuses_
+Optional parameters:
 
-Mandatory
-: No
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a JUnit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
+- **Username for basic authentication**.
 
-#### Metric types
+### Test cases from TestNG
 
-Type
-: Multiple choice
+[TestNG](#testng) can be used to measure [test cases](#test-cases).
 
-Values
-: Accessibility violations
-: Commented out code
-: Complex units
-: Dependencies
-: Duplicated lines
-: Failed CI-jobs
-: Issues
-: Long units
-: Manual test duration
-: Manual test execution
-: Many parameters
-: Merge requests
-: Metrics
-: Missing metrics
-: Performancetest duration
-: Performancetest stability
-: Ready user story points
-: Scalability
-: Security warnings
-: Size (LOC)
-: Slow transactions
-: Source up-to-dateness
-: Source version
-: Suppressed violations
-: Test branch coverage
-: Test cases
-: Test line coverage
-: Tests
-: Unmerged branches
-: Unused CI-jobs
-: User story points
-: Velocity
-: Violation remediation effort
-: Violations
+Mandatory parameters:
 
-Default value
-: _all metric types_
+- **URL to a TestNG report in XML format or to a zip with TestNG reports in XML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: If provided, only count metrics with the selected metric types.
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a TestNG report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
+- **Username for basic authentication**.
 
-#### Quality-time URL
+### Tests from Azure DevOps Server
 
-Type
-: URL
+[Azure DevOps Server](#azure-devops-server) can be used to measure [tests](#tests).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-#### Report names or identifiers
+Optional parameters:
 
-Type
-: Multiple choice with addition
+- **Names of test runs to include (regular expressions or test run names)**. Limit which test runs to include by test run name.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
+- **States of the test runs to include**. Limit which test runs to include by test run state. This parameter is multiple choice. Possible test run states are: `aborted`, `completed`, `in progress`, `not started`. The default value is: _all test run states_.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `incomplete`, `not applicable`, `passed`. The default value is: _all test results_.
 
-Mandatory
-: No
+### Tests from Jenkins test report
 
-#### Source types
+[Jenkins test report](#jenkins-test-report) can be used to measure [tests](#tests).
 
-Type
-: Multiple choice
+Mandatory parameters:
 
-Values
-: Anchore
-: Anchore Jenkins plugin
-: Axe CSV
-: Axe-core
-: Azure DevOps Server
-: Bandit
-: Calendar date
-: Checkmarx CxSAST
-: Cobertura
-: Cobertura Jenkins plugin
-: Composer
-: GitLab
-: JSON file with security warnings
-: JUnit XML report
-: JaCoCo
-: JaCoCo Jenkins plugin
-: Jenkins
-: Jenkins test report
-: Jira
-: Manual number
-: NCover
-: OJAudit
-: OWASP Dependency Check
-: OWASP ZAP
-: OpenVAS
-: Performancetest-runner
-: Pyupio Safety
-: Quality-time
-: Robot Framework
-: Robot Framework Jenkins plugin
-: Snyk
-: SonarQube
-: TestNG
-: Trello
-: cloc
-: npm
-: pip
+- **URL to Jenkins job**. URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job.
 
-Default value
-: _all source types_
+Optional parameters:
 
-Mandatory
-: No
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `passed`, `skipped`. The default value is: _all test results_.
+- **Username for basic authentication**.
 
-Help
-: If provided, only count metrics with one or more sources of the selected source types.
+### Tests from JUnit XML report
 
-#### Tags
+[JUnit XML report](#junit-xml-report) can be used to measure [tests](#tests).
 
-Type
-: Multiple choice with addition
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a JUnit report in XML format or to a zip with JUnit reports in XML format**.
 
-Help
-: If provided, only count metrics with one ore more of the given tags.
+Optional parameters:
 
-### [Missing metrics](#missing-metrics) from [Quality-time](#quality-time)
+- **Password for basic authentication**.
+- **Private token**.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `errored`, `failed`, `passed`, `skipped`. The default value is: _all test results_.
+- **URL to a JUnit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
+- **Username for basic authentication**.
 
-#### Quality-time URL
+### Tests from Performancetest-runner
 
-Type
-: URL
+[Performancetest-runner](#performancetest-runner) can be used to measure [tests](#tests).
 
-Mandatory
-: Yes
+Mandatory parameters:
 
-Help
-: URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
+- **URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format**.
 
-#### Report names or identifiers
+Optional parameters:
 
-Type
-: Multiple choice with addition
+- **Password for basic authentication**.
+- **Private token**.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `success`. The default value is: _all test results_.
+- **Transactions to ignore (regular expressions or transaction names)**. Transactions to ignore can be specified by transaction name or by regular expression.
+- **Transactions to include (regular expressions or transaction names)**. Transactions to include can be specified by transaction name or by regular expression.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Tests from Robot Framework
 
-### [Performancetest duration](#performancetest-duration) from [Performancetest-runner](#performancetest-runner)
+[Robot Framework](#robot-framework) can be used to measure [tests](#tests).
 
-#### Password for basic authentication
+Mandatory parameters:
 
-Type
-: Password
+- **URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-#### Private token
+- **Password for basic authentication**.
+- **Private token**.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `fail`, `pass`, `skip`. The default value is: _all test results_.
+- **URL to a Robot Framework report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Tests from Robot Framework Jenkins plugin
 
-Mandatory
-: No
+[Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin) can be used to measure [tests](#tests).
 
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
+Mandatory parameters:
 
-Type
-: URL
+- **URL to Jenkins job**. URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job.
 
-Mandatory
-: Yes
+Optional parameters:
 
-#### Username for basic authentication
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `fail`, `pass`. The default value is: _all test results_.
+- **Username for basic authentication**.
 
-Type
-: String
+### Tests from SonarQube
 
-Mandatory
-: No
+[SonarQube](#sonarqube) can be used to measure [tests](#tests).
 
-### [Performancetest stability](#performancetest-stability) from [Performancetest-runner](#performancetest-runner)
+Mandatory parameters:
 
-#### Password for basic authentication
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Type
-: Password
+Optional parameters:
 
-Mandatory
-: No
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `errored`, `failed`, `passed`, `skipped`. The default value is: _all test results_.
 
-#### Private token
+### Tests from TestNG
 
-Type
-: Password
+[TestNG](#testng) can be used to measure [tests](#tests).
 
-Mandatory
-: No
+Mandatory parameters:
 
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
+- **URL to a TestNG report in XML format or to a zip with TestNG reports in XML format**.
 
-Type
-: URL
+Optional parameters:
 
-Mandatory
-: Yes
+- **Password for basic authentication**.
+- **Private token**.
+- **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `ignored`, `passed`, `skipped`. The default value is: _all test results_.
+- **URL to a TestNG report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
+- **Username for basic authentication**.
 
-#### Username for basic authentication
+### Test branch coverage from Cobertura
 
-Type
-: String
+[Cobertura](#cobertura) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Mandatory
-: No
+Mandatory parameters:
 
-### [Violation remediation effort](#violation-remediation-effort) from [SonarQube](#sonarqube)
+- **URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format**.
 
-#### Branch (only supported by commercial SonarQube editions)
+Optional parameters:
 
-Type
-: String
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Cobertura report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
+- **Username for basic authentication**.
 
-Default value
-: master
+### Test branch coverage from Cobertura Jenkins plugin
 
-Mandatory
-: No
+[Cobertura Jenkins plugin](#cobertura-jenkins-plugin) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+Mandatory parameters:
 
-#### Private token
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
 
-Type
-: Password
+Optional parameters:
 
-Mandatory
-: No
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+### Test branch coverage from JaCoCo
 
-#### Project key
+[JaCoCo](#jacoco) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format**.
 
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+Optional parameters:
 
-#### Types of effort
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a JaCoCo report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
+- **Username for basic authentication**.
 
-Type
-: Multiple choice
+### Test branch coverage from JaCoCo Jenkins plugin
 
-Values
-: effort to fix all bug issues
-: effort to fix all code smells
-: effort to fix all vulnerabilities
+[JaCoCo Jenkins plugin](#jacoco-jenkins-plugin) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Default value
-: _all effort types_
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
 
-Help
-: [https://docs.sonarqube.org/latest/user-guide/metric-definitions/](https://docs.sonarqube.org/latest/user-guide/metric-definitions/)
+Optional parameters:
 
-#### URL
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Type
-: URL
+### Test branch coverage from NCover
 
-Mandatory
-: Yes
+[NCover](#ncover) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+Mandatory parameters:
 
-### [Scalability](#scalability) from [Performancetest-runner](#performancetest-runner)
+- **URL to a NCover report in HTML format or to a zip with NCover reports in HTML format**.
 
-#### Password for basic authentication
+Optional parameters:
 
-Type
-: Password
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Test branch coverage from SonarQube
 
-#### Private token
+[SonarQube](#sonarqube) can be used to measure [test branch coverage](#test-branch-coverage).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
+Optional parameters:
 
-Type
-: URL
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-Mandatory
-: Yes
+### Test line coverage from Cobertura
 
-#### Username for basic authentication
+[Cobertura](#cobertura) can be used to measure [test line coverage](#test-line-coverage).
 
-Type
-: String
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format**.
 
-### [Slow transactions](#slow-transactions) from [Performancetest-runner](#performancetest-runner)
+Optional parameters:
 
-#### Password for basic authentication
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a Cobertura report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
+- **Username for basic authentication**.
 
-Type
-: Password
+### Test line coverage from Cobertura Jenkins plugin
 
-Mandatory
-: No
+[Cobertura Jenkins plugin](#cobertura-jenkins-plugin) can be used to measure [test line coverage](#test-line-coverage).
 
-#### Private token
+Mandatory parameters:
 
-Type
-: Password
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
 
-Mandatory
-: No
+Optional parameters:
 
-#### Thresholds
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Type
-: Multiple choice
+### Test line coverage from JaCoCo
 
-Values
-: high
-: warning
+[JaCoCo](#jacoco) can be used to measure [test line coverage](#test-line-coverage).
 
-Default value
-: _all thresholds_
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format**.
 
-Help
-: If provided, only count transactions that surpass the selected thresholds.
+Optional parameters:
 
-#### Transactions to ignore (regular expressions or transaction names)
+- **Password for basic authentication**.
+- **Private token**.
+- **URL to a JaCoCo report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
+- **Username for basic authentication**.
 
-Type
-: Multiple choice with addition
+### Test line coverage from JaCoCo Jenkins plugin
 
-Mandatory
-: No
+[JaCoCo Jenkins plugin](#jacoco-jenkins-plugin) can be used to measure [test line coverage](#test-line-coverage).
 
-Help
-: Transactions to ignore can be specified by transaction name or by regular expression.
+Mandatory parameters:
 
-#### Transactions to include (regular expressions or transaction names)
+- **URL to Jenkins job**. URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
 
-Type
-: Multiple choice with addition
+Optional parameters:
 
-Mandatory
-: No
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Help
-: Transactions to include can be specified by transaction name or by regular expression.
+### Test line coverage from NCover
 
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
+[NCover](#ncover) can be used to measure [test line coverage](#test-line-coverage).
 
-Type
-: URL
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **URL to a NCover report in HTML format or to a zip with NCover reports in HTML format**.
 
-#### Username for basic authentication
+Optional parameters:
 
-Type
-: String
+- **Password for basic authentication**.
+- **Private token**.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Test line coverage from SonarQube
 
-### [Source up-to-dateness](#source-up-to-dateness) from [Anchore](#anchore)
+[SonarQube](#sonarqube) can be used to measure [test line coverage](#test-line-coverage).
 
-#### Password for basic authentication
+Mandatory parameters:
 
-Type
-: Password
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-Mandatory
-: No
+Optional parameters:
 
-#### Private token
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
 
-Type
-: Password
+### Unmerged branches from Azure DevOps Server
 
-Mandatory
-: No
+[Azure DevOps Server](#azure-devops-server) can be used to measure [unmerged branches](#unmerged-branches).
 
-#### URL to an Anchore details report in JSON format or to a zip with Anchore details reports in JSON format
+Mandatory parameters:
 
-Type
-: URL
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-Mandatory
-: Yes
+Optional parameters:
 
-#### URL to an Anchore vulnerability report in a human readable format
+- **Branches to ignore (regular expressions or branch names)**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
+  ```
+- **Number of days since last commit after which to consider branches inactive**. The default value is: `7`.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
+- **Repository (name or id)**.
 
-Type
-: String
+### Unmerged branches from GitLab
 
-Mandatory
-: No
+[GitLab](#gitlab) can be used to measure [unmerged branches](#unmerged-branches).
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format.
+Mandatory parameters:
 
-#### Username for basic authentication
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **Project (name with namespace or id)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+  ```
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Branches to ignore (regular expressions or branch names)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+  ```
+- **Number of days since last commit after which to consider branches inactive**. The default value is: `7`.
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
 
-### [Source up-to-dateness](#source-up-to-dateness) from [Anchore Jenkins plugin](#anchore-jenkins-plugin)
+### Unused CI-jobs from Azure DevOps Server
 
-#### Password or API token for basic authentication
+[Azure DevOps Server](#azure-devops-server) can be used to measure [unused ci-jobs](#unused-ci-jobs).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+Optional parameters:
 
-#### URL to Jenkins job
+- **Number of days since last build after which to consider pipelines inactive**. The default value is: `21`.
+- **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
 
-Type
-: URL
+### Unused CI-jobs from GitLab
 
-Mandatory
-: Yes
+[GitLab](#gitlab) can be used to measure [unused ci-jobs](#unused-ci-jobs).
 
-Help
-: URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job.
+Mandatory parameters:
 
-#### Username for basic authentication
+- **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
+- **Project (name with namespace or id)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
+  ```
 
-Type
-: String
+Optional parameters:
 
-Mandatory
-: No
+- **Branches and tags to ignore (regular expressions, branch names or tag names)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
+  ```
+- **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression.
+- **Number of days without builds after which to consider CI-jobs unused**. The default value is: `90`.
+- **Private token (with read_api scope)**.
+  ```{seealso}
+  [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+  ```
 
-### [Source up-to-dateness](#source-up-to-dateness) from [Axe-core](#axe-core)
+### Unused CI-jobs from Jenkins
 
-#### Password for basic authentication
+[Jenkins](#jenkins) can be used to measure [unused ci-jobs](#unused-ci-jobs).
 
-Type
-: Password
+Mandatory parameters:
 
-Mandatory
-: No
+- **URL**. URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
 
-#### Private token
+Optional parameters:
 
-Type
-: Password
+- **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
+- **Number of days without builds after which to consider CI-jobs unused**. The default value is: `90`.
+- **Password or API token for basic authentication**.
+  ```{seealso}
+  [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
+  ```
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### User story points from Azure DevOps Server
 
-#### URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format
+[Azure DevOps Server](#azure-devops-server) can be used to measure [user story points](#user-story-points).
 
-Type
-: URL
+Mandatory parameters:
 
-Mandatory
-: Yes
+- **Issue query in WIQL (Work Item Query Language)**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
+  ```
+- **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
-#### URL to an Axe-core report in a human readable format
+Optional parameters:
 
-Type
-: String
+- **Private token**.
+  ```{seealso}
+  [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
+  ```
 
-Mandatory
-: No
+### User story points from Jira
 
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
+[Jira](#jira) can be used to measure [user story points](#user-story-points).
 
-#### Username for basic authentication
+Mandatory parameters:
 
-Type
-: String
+- **Issue query in JQL (Jira Query Language)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
+  ```
+- **Story points field (name or id)**. The default value is: `Story Points`.
+  ```{seealso}
+  [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
+  ```
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-Mandatory
-: No
+Optional parameters:
 
-### [Source up-to-dateness](#source-up-to-dateness) from [Azure DevOps Server](#azure-devops-server)
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-#### Branch
+### Velocity from Jira
 
-Type
-: String
+[Jira](#jira) can be used to measure [velocity](#velocity).
 
-Default value
-: master
+Mandatory parameters:
 
-Mandatory
-: No
+- **Board (name or id)**.
+  ```{seealso}
+  [https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/)
+  ```
+- **Number of sprints to base velocity on**. The default value is: `3`.
+- **Type of velocity**. Whether to report the amount of story points committed to, the amount of story points actually completed, or the difference between the two. This parameter is single choice. Possible velocity type are: `committed points`, `completed points minus committed points`, `completed points`. The default value is: `completed points`.
+- **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
-#### File or folder path
+Optional parameters:
 
-Type
-: String
+- **Password for basic authentication**.
+- **Username for basic authentication**.
 
-Mandatory
-: No
+### Violations from OJAudit
 
-Help
-: Use the date and time the path was last changed to determine the up-to-dateness. Note that if a pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is ignored.
+[OJAudit](#ojaudit) can be used to measure [violations](#violations).
 
-#### Pipelines to ignore (regular expressions or pipeline names)
+Mandatory parameters:
 
-Type
-: Multiple choice with addition
+- **URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format**.
 
-Mandatory
-: No
+Optional parameters:
 
-Help
-: Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Password for basic authentication**.
+- **Private token**.
+- **Severities**. If provided, only count violations with the selected severities. This parameter is multiple choice. Possible severities are: `advisory`, `error`, `exception`, `incomplete`, `warning`. The default value is: _all severities_.
+- **URL to an OJAudit report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the OJAudit report in XML format.
+- **Username for basic authentication**.
 
-#### Pipelines to include (regular expressions or pipeline names)
+### Violations from SonarQube
 
-Type
-: Multiple choice with addition
+[SonarQube](#sonarqube) can be used to measure [violations](#violations).
 
-Mandatory
-: No
+Mandatory parameters:
 
-Help
-: Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
+- **Project key**. The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
+- **URL**. URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
 
-#### Private token
+Optional parameters:
 
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
-
-#### Repository (name or id)
-
-Type
-: String
-
-Mandatory
-: No
-
-#### URL including organization and project
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Bandit](#bandit)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Bandit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Calendar date](#calendar-date)
-
-#### Date
-
-Type
-: Date
-
-Default value
-: 2021-01-01
-
-Mandatory
-: Yes
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Cobertura](#cobertura)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Cobertura report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Checkmarx CxSAST](#checkmarx-cxsast)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: Yes
-
-#### Project (name or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: Yes
-
-### [Source up-to-dateness](#source-up-to-dateness) from [GitLab](#gitlab)
-
-#### Branch
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
-
-#### File or folder path
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html)
-
-#### GitLab instance URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
-
-#### Private token (with read_api scope)
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
-
-#### Project (name with namespace or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
-
-### [Source up-to-dateness](#source-up-to-dateness) from [JaCoCo](#jacoco)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JaCoCo report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Jenkins](#jenkins)
-
-#### Build result types
-
-Type
-: Multiple choice
-
-Values
-: Aborted
-: Failure
-: Not built
-: Success
-: Unstable
-
-Default value
-: _all result types_
-
-Mandatory
-: No
-
-Help
-: Limit which build result types to include.
-
-#### Jobs to ignore (regular expressions or job names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
-
-#### Jobs to include (regular expressions or job names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Jenkins test report](#jenkins-test-report)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [JUnit XML report](#junit-xml-report)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a JUnit report in XML format or to a zip with JUnit reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JUnit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [NCover](#ncover)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a NCover report in HTML format or to a zip with NCover reports in HTML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Robot Framework](#robot-framework)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Robot Framework report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [OpenVAS](#openvas)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OpenVAS report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [OWASP Dependency Check](#owasp-dependency-check)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP Dependency Check report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [OWASP ZAP](#owasp-zap)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP ZAP report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Performancetest-runner](#performancetest-runner)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Quality-time](#quality-time)
-
-#### Quality-time URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
-
-#### Report names or identifiers
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Source up-to-dateness](#source-up-to-dateness) from [TestNG](#testng)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a TestNG report in XML format or to a zip with TestNG reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a TestNG report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source up-to-dateness](#source-up-to-dateness) from [Trello](#trello)
-
-#### API key
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: [https://trello.com/app-key](https://trello.com/app-key)
-
-#### Board (title or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
-
-#### Lists to ignore (title or id)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-#### Token
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: [https://trello.com/app-key](https://trello.com/app-key)
-
-#### URL
-
-Type
-: URL
-
-Default value
-: https://trello.com
-
-Mandatory
-: Yes
-
-### [Source version](#source-version) from [Axe-core](#axe-core)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an Axe-core report in JSON format or to a zip with Axe-core reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an Axe-core report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Axe-core report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [cloc](#cloc)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a cloc report in JSON format or to a zip with cloc reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a cloc report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [Cobertura](#cobertura)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Cobertura report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [Checkmarx CxSAST](#checkmarx-cxsast)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: Yes
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: Yes
-
-### [Source version](#source-version) from [GitLab](#gitlab)
-
-#### GitLab instance URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
-
-#### Private token (with read_api scope)
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
-
-### [Source version](#source-version) from [Jenkins](#jenkins)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [Jira](#jira)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [OpenVAS](#openvas)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OpenVAS report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [OWASP Dependency Check](#owasp-dependency-check)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP Dependency Check report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [OWASP ZAP](#owasp-zap)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP ZAP report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [Quality-time](#quality-time)
-
-#### Quality-time URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.
-
-### [Source version](#source-version) from [Robot Framework](#robot-framework)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Robot Framework report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Source version](#source-version) from [SonarQube](#sonarqube)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Security warnings](#security-warnings) from [Anchore](#anchore)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: Critical
-: High
-: Low
-: Medium
-: Negligible
-: Unknown
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to an Anchore vulnerability report in JSON format or to a zip with Anchore vulnerability reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an Anchore vulnerability report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Anchore vulnerability report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [Anchore Jenkins plugin](#anchore-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: Critical
-: High
-: Low
-: Medium
-: Negligible
-: Unknown
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with an Anchore report generated by the Anchore plugin. For example, 'https://jenkins.example.org/job/anchore' or https://jenkins.example.org/job/anchore/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [Bandit](#bandit)
-
-#### Confidence levels
-
-Type
-: Multiple choice
-
-Values
-: high
-: low
-: medium
-
-Default value
-: _all confidence levels_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected confidence levels.
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: high
-: low
-: medium
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to a Bandit report in JSON format or to a zip with Bandit reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Bandit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [Checkmarx CxSAST](#checkmarx-cxsast)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: Yes
-
-#### Project (name or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: high
-: info
-: low
-: medium
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: Yes
-
-### [Security warnings](#security-warnings) from [OpenVAS](#openvas)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: high
-: log
-: low
-: medium
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OpenVAS report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [OWASP Dependency Check](#owasp-dependency-check)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: critical
-: high
-: low
-: medium
-: moderate
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP Dependency Check report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [OWASP ZAP](#owasp-zap)
-
-#### Count alert types or alert instances
-
-Type
-: Single choice
-
-Values
-: alert instances
-: alert types
-
-Default value
-: alert instances
-
-Mandatory
-: No
-
-Help
-: Determine whether to count each alert type in the OWASP ZAP report as a security warning or to count each alert instance (URL).
-
-#### Parts of URLs to ignore (regular expressions)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported.
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Risks
-
-Type
-: Multiple choice
-
-Values
-: high
-: informational
-: low
-: medium
-
-Default value
-: _all risks_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected risks.
-
-#### URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OWASP ZAP report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [Pyupio Safety](#pyupio-safety)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Safety report in JSON format or to a zip with Safety reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Safety report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Safety report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [Snyk](#snyk)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: high
-: low
-: medium
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to a Snyk vulnerability report in JSON format or to a zip with Snyk vulnerability reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Snyk vulnerability report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Snyk vulnerability report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [JSON file with security warnings](#json-file-with-security-warnings)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: high
-: low
-: medium
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count security warnings with the selected severities.
-
-#### URL to a generic vulnerability report in JSON format or to a zip with generic vulnerability reports in JSON format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a generic vulnerability report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Security warnings](#security-warnings) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### Security hotspot review priorities
-
-Type
-: Multiple choice
-
-Values
-: high
-: low
-: medium
-
-Default value
-: _all review priorities_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/security-hotspots/](https://docs.sonarqube.org/latest/user-guide/security-hotspots/)
-
-#### Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)
-
-Type
-: Multiple choice
-
-Values
-: security_hotspot
-: vulnerability
-
-Default value
-: vulnerability
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: blocker
-: critical
-: info
-: major
-: minor
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Suppressed violations](#suppressed-violations) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: blocker
-: critical
-: info
-: major
-: minor
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
-
-#### Types
-
-Type
-: Multiple choice
-
-Values
-: bug
-: code_smell
-: vulnerability
-
-Default value
-: _all types_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-#### Configurations
-
-Rules used to detect suppressed violations
-: csharpsquid:S1309
-: java:NoSonar
-: java:S1309
-: java:S1310
-: java:S1315
-: php:NoSonar
-: Pylint:I0011
-: Pylint:I0020
-: squid:NoSonar
-: squid:S1309
-: squid:S1310
-: squid:S1315
-
-### [Test cases](#test-cases) from [Jira](#jira)
-
-#### Issue query in JQL (Jira Query Language)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: errored
-: failed
-: passed
-: skipped
-: untested
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test cases](#test-cases) from [JUnit XML report](#junit-xml-report)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a JUnit report in XML format or to a zip with JUnit reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JUnit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test cases](#test-cases) from [TestNG](#testng)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a TestNG report in XML format or to a zip with TestNG reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a TestNG report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [Azure DevOps Server](#azure-devops-server)
-
-#### Names of test runs to include (regular expressions or test run names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Limit which test runs to include by test run name.
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
-
-#### States of the test runs to include
-
-Type
-: Multiple choice
-
-Values
-: aborted
-: completed
-: in progress
-: not started
-
-Default value
-: _all test run states_
-
-Mandatory
-: No
-
-Help
-: Limit which test runs to include by test run state.
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: failed
-: incomplete
-: not applicable
-: passed
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL including organization and project
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
-
-### [Tests](#tests) from [Jenkins test report](#jenkins-test-report)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: failed
-: passed
-: skipped
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'https://jenkins.example.org/job/test' or https://jenkins.example.org/job/test/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [JUnit XML report](#junit-xml-report)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: errored
-: failed
-: passed
-: skipped
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL to a JUnit report in XML format or to a zip with JUnit reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JUnit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [Performancetest-runner](#performancetest-runner)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: failed
-: success
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### Transactions to ignore (regular expressions or transaction names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Transactions to ignore can be specified by transaction name or by regular expression.
-
-#### Transactions to include (regular expressions or transaction names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Transactions to include can be specified by transaction name or by regular expression.
-
-#### URL to a Performancetest-runner report in HTML format or to a zip with Performancetest-runner reports in HTML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [Robot Framework](#robot-framework)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: fail
-: pass
-: skip
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL to a Robot Framework report in XML format or to a zip with Robot Framework reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Robot Framework report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [Robot Framework Jenkins plugin](#robot-framework-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: fail
-: pass
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a test report generated by the Robot Framework plugin. For example, 'https://jenkins.example.org/job/robot' or https://jenkins.example.org/job/robot/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Tests](#tests) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: errored
-: failed
-: passed
-: skipped
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Tests](#tests) from [TestNG](#testng)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Test results
-
-Type
-: Multiple choice
-
-Values
-: failed
-: ignored
-: passed
-: skipped
-
-Default value
-: _all test results_
-
-Mandatory
-: No
-
-Help
-: Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.
-
-#### URL to a TestNG report in XML format or to a zip with TestNG reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a TestNG report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [Cobertura](#cobertura)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Cobertura report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [JaCoCo](#jacoco)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JaCoCo report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [NCover](#ncover)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a NCover report in HTML format or to a zip with NCover reports in HTML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test branch coverage](#test-branch-coverage) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Test line coverage](#test-line-coverage) from [Cobertura](#cobertura)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a Cobertura report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test line coverage](#test-line-coverage) from [Cobertura Jenkins plugin](#cobertura-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'https://jenkins.example.org/job/cobertura' or https://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test line coverage](#test-line-coverage) from [JaCoCo](#jacoco)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to a JaCoCo report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test line coverage](#test-line-coverage) from [JaCoCo Jenkins plugin](#jacoco-jenkins-plugin)
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL to Jenkins job
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'https://jenkins.example.org/job/jacoco' or https://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test line coverage](#test-line-coverage) from [NCover](#ncover)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### URL to a NCover report in HTML format or to a zip with NCover reports in HTML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Test line coverage](#test-line-coverage) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
-
-### [Unmerged branches](#unmerged-branches) from [Azure DevOps Server](#azure-devops-server)
-
-#### Branches to ignore (regular expressions or branch names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
-
-#### Number of days since last commit after which to consider branches inactive
-
-Type
-: Integer
-
-Default value
-: 7
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
-
-#### Repository (name or id)
-
-Type
-: String
-
-Mandatory
-: No
-
-#### URL including organization and project
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
-
-### [Unmerged branches](#unmerged-branches) from [GitLab](#gitlab)
-
-#### Branches to ignore (regular expressions or branch names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
-
-#### GitLab instance URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
-
-#### Number of days since last commit after which to consider branches inactive
-
-Type
-: Integer
-
-Default value
-: 7
-
-Mandatory
-: No
-
-#### Private token (with read_api scope)
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
-
-#### Project (name with namespace or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
-
-### [Unused CI-jobs](#unused-ci-jobs) from [Azure DevOps Server](#azure-devops-server)
-
-#### Number of days since last build after which to consider pipelines inactive
-
-Type
-: Integer
-
-Default value
-: 21
-
-Mandatory
-: No
-
-#### Pipelines to ignore (regular expressions or pipeline names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
-
-#### Pipelines to include (regular expressions or pipeline names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
-
-#### URL including organization and project
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
-
-### [Unused CI-jobs](#unused-ci-jobs) from [GitLab](#gitlab)
-
-#### Branches and tags to ignore (regular expressions, branch names or tag names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
-
-#### GitLab instance URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
-
-#### Jobs to ignore (regular expressions or job names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Jobs to ignore can be specified by job name or by regular expression.
-
-#### Number of days without builds after which to consider CI-jobs unused
-
-Type
-: Integer
-
-Default value
-: 90
-
-Mandatory
-: No
-
-#### Private token (with read_api scope)
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
-
-#### Project (name with namespace or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
-
-### [Unused CI-jobs](#unused-ci-jobs) from [Jenkins](#jenkins)
-
-#### Jobs to ignore (regular expressions or job names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
-
-#### Jobs to include (regular expressions or job names)
-
-Type
-: Multiple choice with addition
-
-Mandatory
-: No
-
-Help
-: Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
-
-#### Number of days without builds after which to consider CI-jobs unused
-
-Type
-: Integer
-
-Default value
-: 90
-
-Mandatory
-: No
-
-#### Password or API token for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [User story points](#user-story-points) from [Azure DevOps Server](#azure-devops-server)
-
-#### Issue query in WIQL (Work Item Query Language)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
-
-#### URL including organization and project
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
-
-### [User story points](#user-story-points) from [Jira](#jira)
-
-#### Issue query in JQL (Jira Query Language)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Story points field (name or id)
-
-Type
-: String
-
-Default value
-: Story Points
-
-Mandatory
-: Yes
-
-Help
-: [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Velocity](#velocity) from [Jira](#jira)
-
-#### Board (name or id)
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: [https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/)
-
-#### Number of sprints to base velocity on
-
-Type
-: Integer
-
-Default value
-: 3
-
-Mandatory
-: Yes
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Type of velocity
-
-Type
-: Single choice
-
-Values
-: committed points
-: completed points
-: completed points minus committed points
-
-Default value
-: completed points
-
-Mandatory
-: Yes
-
-Help
-: Whether to report the amount of story points committed to, the amount of story points actually completed, or the difference between the two.
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Violations](#violations) from [OJAudit](#ojaudit)
-
-#### Password for basic authentication
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: advisory
-: error
-: exception
-: incomplete
-: warning
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: If provided, only count violations with the selected severities.
-
-#### URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-#### URL to an OJAudit report in a human readable format
-
-Type
-: String
-
-Mandatory
-: No
-
-Help
-: If provided, users clicking the source URL will visit this URL instead of the OJAudit report in XML format.
-
-#### Username for basic authentication
-
-Type
-: String
-
-Mandatory
-: No
-
-### [Violations](#violations) from [SonarQube](#sonarqube)
-
-#### Branch (only supported by commercial SonarQube editions)
-
-Type
-: String
-
-Default value
-: master
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
-
-#### Private token
-
-Type
-: Password
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
-
-#### Project key
-
-Type
-: String
-
-Mandatory
-: Yes
-
-Help
-: The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.
-
-#### Severities
-
-Type
-: Multiple choice
-
-Values
-: blocker
-: critical
-: info
-: major
-: minor
-
-Default value
-: _all severities_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
-
-#### Types
-
-Type
-: Multiple choice
-
-Values
-: bug
-: code_smell
-: vulnerability
-
-Default value
-: _all types_
-
-Mandatory
-: No
-
-Help
-: [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
-
-#### URL
-
-Type
-: URL
-
-Mandatory
-: Yes
-
-Help
-: URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.
+- **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
+  ```
+- **Private token**.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
+  ```
+- **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
+  ```
+- **Types**. This parameter is multiple choice. Possible types are: `bug`, `code_smell`, `vulnerability`. The default value is: _all types_.
+  ```{seealso}
+  [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
+  ```
