@@ -14,7 +14,10 @@ help:
 
 .PHONY: help Makefile
 
+metrics_and_sources:
+	python $(SOURCEDIR)/create_metrics_and_sources_md.py
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
+%: Makefile metrics_and_sources
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

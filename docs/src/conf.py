@@ -1,5 +1,7 @@
-# Configuration file for the Sphinx documentation builder.
-#
+"""Configuration file for the Sphinx documentation builder."""
+
+# pylint: disable=invalid-name
+
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -18,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "Quality-time"
-copyright = "2021, ICTU"
+copyright = "2021, ICTU"  # pylint: disable=redefined-builtin
 author = "ICTU"
 
 
@@ -36,7 +38,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+# exclude_patterns = []
 
 # -- Options for MyST parser -------------------------------------------------
 
@@ -63,6 +65,7 @@ html_static_path = ["_static"]
 linkcheck_ignore = [
     r"http://localhost:\d+",  # Example URLs
     "http://quality-time.example.org",  # Example URLs
-    "https://github.com/AlDanial/cloc#recognized-languages-",  # False negative: "Anchor 'recognized-languages-' not found"
+    # False negative: Anchor 'recognized-languages-' not found:
+    "https://github.com/AlDanial/cloc#recognized-languages-",
     "https://trello.com/1/members/me/boards",  # Only works when logged in
 ]

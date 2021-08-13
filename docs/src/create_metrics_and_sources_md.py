@@ -112,9 +112,9 @@ def source_section(data_model, source, source_key, universal_sources: list[str],
         for metric in metrics:
             source_name = data_model["sources"][source_key]["name"]
             markdown += f"- [{metric['name']}]({metric_source_slug(metric['name'], source_name)})\n"
-    markdown += "```\n"
+    markdown += "```\n\n"
     if "url" in source:
-        markdown += f"```{{seealso}}\n{markdown_link(source['url'])}\n```\n"
+        markdown += f"```{{seealso}}\n{markdown_link(source['url'])}\n```\n\n"
     return markdown
 
 
@@ -171,7 +171,7 @@ def parameter_description(parameter) -> str:
         default_value = [f"`{default_value}`"]
     default_value_text = f" The default value is: {', '.join(sorted(default_value))}." if default_value else ""
     if help_url := parameter.get("help_url", ""):
-        help_url = f"  ```{{seealso}}\n  {markdown_link(help_url)}\n  ```\n"
+        help_url = f"\n\n  ```{{seealso}}\n  {markdown_link(help_url)}\n  ```\n\n"
     return f"- **{parameter['name']}**.{help_text}{values_text}{default_value_text}\n{help_url}"
 
 
@@ -183,10 +183,9 @@ def metric_source_configuration_section(data_model, metric_key, source_key) -> s
         return ""
     markdown = markdown_paragraph("Configurations:")
     for configuration in sorted(relevant_configurations, key=lambda config: str(config["name"])):
-        values = sorted(configuration["value"], key=lambda value: str(value).lower())
         markdown += f"- {configuration['name']}:\n"
         for value in sorted(configuration["value"], key=lambda value: str(value).lower()):
-            markdown += f"   - {value}\n"
+            markdown += f"  - {value}\n"
     markdown += "\n"
     return markdown
 
@@ -233,6 +232,6 @@ def data_model_as_table(data_model) -> str:
 
 
 if __name__ == "__main__":
-    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "source" / "metrics_and_sources.md"
+    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "src" / "metrics_and_sources.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(get_data_model()))

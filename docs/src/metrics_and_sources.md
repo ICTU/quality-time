@@ -665,6 +665,7 @@ Anchore image scan analysis report in JSON format.
 - [Source up-to-dateness](#source-up-to-dateness-from-anchore)
 - [Security warnings](#security-warnings-from-anchore)
 ```
+
 ```{seealso}
 [https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/)
 ```
@@ -677,6 +678,7 @@ A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.
 - [Source up-to-dateness](#source-up-to-dateness-from-anchore-jenkins-plugin)
 - [Security warnings](#security-warnings-from-anchore-jenkins-plugin)
 ```
+
 ```{seealso}
 [https://plugins.jenkins.io/anchore-container-scanner/](https://plugins.jenkins.io/anchore-container-scanner/)
 ```
@@ -688,6 +690,7 @@ An Axe accessibility report in CSV format.
 ```{admonition} Supported metrics
 - [Accessibility violations](#accessibility-violations-from-axe-csv)
 ```
+
 ```{seealso}
 [https://github.com/ICTU/axe-reports](https://github.com/ICTU/axe-reports)
 ```
@@ -701,6 +704,7 @@ Axe is an accessibility testing engine for websites and other HTML-based user in
 - [Source up-to-dateness](#source-up-to-dateness-from-axe-core)
 - [Source version](#source-version-from-axe-core)
 ```
+
 ```{seealso}
 [https://github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core)
 ```
@@ -719,6 +723,7 @@ Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft prov
 - [Unused CI-jobs](#unused-ci-jobs-from-azure-devops-server)
 - [User story points](#user-story-points-from-azure-devops-server)
 ```
+
 ```{seealso}
 [https://azure.microsoft.com/en-us/services/devops/server/](https://azure.microsoft.com/en-us/services/devops/server/)
 ```
@@ -731,6 +736,7 @@ Bandit is a tool designed to find common security issues in Python code.
 - [Source up-to-dateness](#source-up-to-dateness-from-bandit)
 - [Security warnings](#security-warnings-from-bandit)
 ```
+
 ```{seealso}
 [https://github.com/PyCQA/bandit](https://github.com/PyCQA/bandit)
 ```
@@ -752,6 +758,7 @@ Static analysis software to identify security vulnerabilities in both custom cod
 - [Source version](#source-version-from-checkmarx-cxsast)
 - [Security warnings](#security-warnings-from-checkmarx-cxsast)
 ```
+
 ```{seealso}
 [https://checkmarx.com/glossary/static-application-security-testing-sast/](https://checkmarx.com/glossary/static-application-security-testing-sast/)
 ```
@@ -766,6 +773,7 @@ Cobertura is a free Java tool that calculates the percentage of code accessed by
 - [Test branch coverage](#test-branch-coverage-from-cobertura)
 - [Test line coverage](#test-line-coverage-from-cobertura)
 ```
+
 ```{seealso}
 [https://cobertura.github.io/cobertura/](https://cobertura.github.io/cobertura/)
 ```
@@ -779,6 +787,7 @@ Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of
 - [Test branch coverage](#test-branch-coverage-from-cobertura-jenkins-plugin)
 - [Test line coverage](#test-line-coverage-from-cobertura-jenkins-plugin)
 ```
+
 ```{seealso}
 [https://plugins.jenkins.io/cobertura/](https://plugins.jenkins.io/cobertura/)
 ```
@@ -790,6 +799,7 @@ A Dependency Manager for PHP.
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-composer)
 ```
+
 ```{seealso}
 [https://getcomposer.org/](https://getcomposer.org/)
 ```
@@ -806,6 +816,7 @@ GitLab provides Git-repositories, wiki's, issue-tracking and continuous integrat
 - [Unmerged branches](#unmerged-branches-from-gitlab)
 - [Unused CI-jobs](#unused-ci-jobs-from-gitlab)
 ```
+
 ```{seealso}
 [https://about.gitlab.com/](https://about.gitlab.com/)
 ```
@@ -817,6 +828,7 @@ A generic vulnerability report with security warnings in JSON format.
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-json-file-with-security-warnings)
 ```
+
 ```{seealso}
 [https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings](https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings)
 ```
@@ -830,6 +842,7 @@ Test reports in the JUnit XML format.
 - [Test cases](#test-cases-from-junit-xml-report)
 - [Tests](#tests-from-junit-xml-report)
 ```
+
 ```{seealso}
 [https://junit.org/junit5/](https://junit.org/junit5/)
 ```
@@ -843,6 +856,7 @@ JaCoCo is an open-source tool for measuring and reporting Java code coverage.
 - [Test branch coverage](#test-branch-coverage-from-jacoco)
 - [Test line coverage](#test-line-coverage-from-jacoco)
 ```
+
 ```{seealso}
 [https://www.eclemma.org/jacoco/](https://www.eclemma.org/jacoco/)
 ```
@@ -856,6 +870,7 @@ A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugi
 - [Test branch coverage](#test-branch-coverage-from-jacoco-jenkins-plugin)
 - [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin)
 ```
+
 ```{seealso}
 [https://plugins.jenkins.io/jacoco](https://plugins.jenkins.io/jacoco)
 ```
@@ -870,6 +885,7 @@ Jenkins is an open source continuous integration/continuous deployment server.
 - [Source version](#source-version-from-jenkins)
 - [Unused CI-jobs](#unused-ci-jobs-from-jenkins)
 ```
+
 ```{seealso}
 [https://www.jenkins.io/](https://www.jenkins.io/)
 ```
@@ -882,6 +898,7 @@ A Jenkins job with test results.
 - [Source up-to-dateness](#source-up-to-dateness-from-jenkins-test-report)
 - [Tests](#tests-from-jenkins-test-report)
 ```
+
 ```{seealso}
 [https://plugins.jenkins.io/junit](https://plugins.jenkins.io/junit)
 ```
@@ -899,6 +916,7 @@ Jira is a proprietary issue tracker developed by Atlassian supporting bug tracki
 - [User story points](#user-story-points-from-jira)
 - [Velocity](#velocity-from-jira)
 ```
+
 ```{seealso}
 [https://www.atlassian.com/software/jira](https://www.atlassian.com/software/jira)
 ```
@@ -920,6 +938,7 @@ A .NET code coverage solution.
 - [Test branch coverage](#test-branch-coverage-from-ncover)
 - [Test line coverage](#test-line-coverage-from-ncover)
 ```
+
 ```{seealso}
 [https://www.ncover.com/](https://www.ncover.com/)
 ```
@@ -931,6 +950,7 @@ An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules
 ```{admonition} Supported metrics
 - [Violations](#violations-from-ojaudit)
 ```
+
 ```{seealso}
 [https://www.oracle.com/application-development/technologies/jdeveloper.html](https://www.oracle.com/application-development/technologies/jdeveloper.html)
 ```
@@ -945,6 +965,7 @@ Dependency-Check is a utility that identifies project dependencies and checks if
 - [Source version](#source-version-from-owasp-dependency-check)
 - [Security warnings](#security-warnings-from-owasp-dependency-check)
 ```
+
 ```{seealso}
 [https://owasp.org/www-project-dependency-check/](https://owasp.org/www-project-dependency-check/)
 ```
@@ -958,6 +979,7 @@ The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabil
 - [Source version](#source-version-from-owasp-zap)
 - [Security warnings](#security-warnings-from-owasp-zap)
 ```
+
 ```{seealso}
 [https://owasp.org/www-project-zap/](https://owasp.org/www-project-zap/)
 ```
@@ -971,6 +993,7 @@ OpenVAS (Open Vulnerability Assessment System) is a software framework of severa
 - [Source version](#source-version-from-openvas)
 - [Security warnings](#security-warnings-from-openvas)
 ```
+
 ```{seealso}
 [https://www.openvas.org](https://www.openvas.org)
 ```
@@ -987,6 +1010,7 @@ An open source tool to run performancetests and create performancetest reports.
 - [Source up-to-dateness](#source-up-to-dateness-from-performancetest-runner)
 - [Tests](#tests-from-performancetest-runner)
 ```
+
 ```{seealso}
 [https://github.com/ICTU/performancetest-runner](https://github.com/ICTU/performancetest-runner)
 ```
@@ -998,6 +1022,7 @@ Safety checks Python dependencies for known security vulnerabilities.
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-pyupio-safety)
 ```
+
 ```{seealso}
 [https://github.com/pyupio/safety](https://github.com/pyupio/safety)
 ```
@@ -1012,6 +1037,7 @@ Quality report software for software development and maintenance.
 - [Source up-to-dateness](#source-up-to-dateness-from-quality-time)
 - [Source version](#source-version-from-quality-time)
 ```
+
 ```{seealso}
 [https://github.com/ICTU/quality-time](https://github.com/ICTU/quality-time)
 ```
@@ -1025,6 +1051,7 @@ Robot Framework is a generic open source automation framework for acceptance tes
 - [Source version](#source-version-from-robot-framework)
 - [Tests](#tests-from-robot-framework)
 ```
+
 ```{seealso}
 [https://robotframework.org](https://robotframework.org)
 ```
@@ -1037,6 +1064,7 @@ A Jenkins plugin for Robot Framework, a generic open source automation framework
 - [Source up-to-dateness](#source-up-to-dateness-from-robot-framework-jenkins-plugin)
 - [Tests](#tests-from-robot-framework-jenkins-plugin)
 ```
+
 ```{seealso}
 [https://plugins.jenkins.io/robot/](https://plugins.jenkins.io/robot/)
 ```
@@ -1048,6 +1076,7 @@ Snyk vulnerability report in JSON format.
 ```{admonition} Supported metrics
 - [Security warnings](#security-warnings-from-snyk)
 ```
+
 ```{seealso}
 [https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI)
 ```
@@ -1073,6 +1102,7 @@ SonarQube is an open-source platform for continuous inspection of code quality t
 - [Test line coverage](#test-line-coverage-from-sonarqube)
 - [Violations](#violations-from-sonarqube)
 ```
+
 ```{seealso}
 [https://www.sonarqube.org](https://www.sonarqube.org)
 ```
@@ -1086,6 +1116,7 @@ Test reports in the TestNG XML format.
 - [Test cases](#test-cases-from-testng)
 - [Tests](#tests-from-testng)
 ```
+
 ```{seealso}
 [https://testng.org](https://testng.org)
 ```
@@ -1098,6 +1129,7 @@ Trello is a collaboration tool that organizes projects into boards.
 - [Issues](#issues-from-trello)
 - [Source up-to-dateness](#source-up-to-dateness-from-trello)
 ```
+
 ```{seealso}
 [https://trello.com](https://trello.com)
 ```
@@ -1110,6 +1142,7 @@ cloc is an open-source tool for counting blank lines, comment lines, and physica
 - [Size (LOC)](#size-loc-from-cloc)
 - [Source version](#source-version-from-cloc)
 ```
+
 ```{seealso}
 [https://github.com/AlDanial/cloc](https://github.com/AlDanial/cloc)
 ```
@@ -1121,6 +1154,7 @@ npm is a package manager for the JavaScript programming language.
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-npm)
 ```
+
 ```{seealso}
 [https://docs.npmjs.com/](https://docs.npmjs.com/)
 ```
@@ -1132,6 +1166,7 @@ pip is the package installer for Python. You can use pip to install packages fro
 ```{admonition} Supported metrics
 - [Dependencies](#dependencies-from-pip)
 ```
+
 ```{seealso}
 [https://pip.pypa.io/en/stable/](https://pip.pypa.io/en/stable/)
 ```
@@ -1156,6 +1191,7 @@ Optional parameters:
 - **URL to an Axe report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the Axe report in CSV format.
 - **Username for basic authentication**.
 - **Violation types**. This parameter is multiple choice. Possible violation types are: `accesskeys`, `area-alt`, `aria-allowed-attr`, `aria-allowed-role`, `aria-dpub-role-fallback`, `aria-hidden-body`, `aria-hidden-focus`, `aria-input-field-name`, `aria-required-attr`, `aria-required-children`, `aria-required-parent`, `aria-roledescription`, `aria-roles`, `aria-toggle-field-name`, `aria-valid-attr-value`, `aria-valid-attr`, `audio-caption`, `autocomplete-valid`, `avoid-inline-spacing`, `blink`, `button-name`, `bypass`, `checkboxgroup`, `color-contrast`, `css-orientation-lock`, `definition-list`, `dlitem`, `document-title`, `duplicate-id-active`, `duplicate-id-aria`, `duplicate-id`, `empty-heading`, `focus-order-semantics`, `form-field-multiple-labels`, `frame-tested`, `frame-title-unique`, `frame-title`, `heading-order`, `hidden-content`, `html-has-lang`, `html-lang-valid`, `html-xml-lang-mismatch`, `image-alt`, `image-redundant-alt`, `input-button-name`, `input-image-alt`, `label-content-name-mismatch`, `label-title-only`, `label`, `landmark-banner-is-top-level`, `landmark-complementary-is-top-level`, `landmark-contentinfo-is-top-level`, `landmark-main-is-top-level`, `landmark-no-duplicate-banner`, `landmark-no-duplicate-contentinfo`, `landmark-one-main`, `landmark-unique`, `layout-table`, `link-in-text-block`, `link-name`, `list`, `listitem`, `marquee`, `meta-refresh`, `meta-viewport-large`, `meta-viewport`, `object-alt`, `p-as-heading`, `page-has-heading-one`, `radiogroup`, `region`, `role-img-alt`, `scope-attr-valid`, `scrollable-region-focusable`, `server-side-image-map`, `skip-link`, `tabindex`, `table-duplicate-name`, `table-fake-caption`, `td-has-header`, `td-headers-attr`, `th-has-data-cells`, `valid-lang`, `video-caption`, `video-description`. The default value is: _all violation types_.
+
   ```{seealso}
   [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
   ```
@@ -1191,10 +1227,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1202,26 +1241,26 @@ Optional parameters:
 Configurations:
 
 - Rules used to detect commented out code:
-   - abap:S125
-   - apex:S125
-   - c:CommentedCode
-   - cpp:CommentedCode
-   - csharpsquid:S125
-   - flex:CommentedCode
-   - java:S125
-   - javascript:CommentedCode
-   - javascript:S125
-   - kotlin:S125
-   - objc:CommentedCode
-   - php:S125
-   - plsql:S125
-   - python:S125
-   - scala:S125
-   - squid:CommentedOutCodeLine
-   - swift:S125
-   - typescript:S125
-   - Web:AvoidCommentedOutCodeCheck
-   - xml:S125
+  - abap:S125
+  - apex:S125
+  - c:CommentedCode
+  - cpp:CommentedCode
+  - csharpsquid:S125
+  - flex:CommentedCode
+  - java:S125
+  - javascript:CommentedCode
+  - javascript:S125
+  - kotlin:S125
+  - objc:CommentedCode
+  - php:S125
+  - plsql:S125
+  - python:S125
+  - scala:S125
+  - squid:CommentedOutCodeLine
+  - swift:S125
+  - typescript:S125
+  - Web:AvoidCommentedOutCodeCheck
+  - xml:S125
 
 ### Complex units from SonarQube
 
@@ -1235,10 +1274,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1246,27 +1288,27 @@ Optional parameters:
 Configurations:
 
 - Rules used to detect complex units:
-   - csharpsquid:S1541
-   - csharpsquid:S3776
-   - flex:FunctionComplexity
-   - go:S3776
-   - java:S1541
-   - javascript:FunctionComplexity
-   - javascript:S1541
-   - javascript:S3776
-   - kotlin:S3776
-   - php:S1541
-   - php:S3776
-   - python:FunctionComplexity
-   - python:S3776
-   - ruby:S3776
-   - scala:S3776
-   - squid:MethodCyclomaticComplexity
-   - squid:S3776
-   - typescript:S1541
-   - typescript:S3776
-   - vbnet:S1541
-   - vbnet:S3776
+  - csharpsquid:S1541
+  - csharpsquid:S3776
+  - flex:FunctionComplexity
+  - go:S3776
+  - java:S1541
+  - javascript:FunctionComplexity
+  - javascript:S1541
+  - javascript:S3776
+  - kotlin:S3776
+  - php:S1541
+  - php:S3776
+  - python:FunctionComplexity
+  - python:S3776
+  - ruby:S3776
+  - scala:S3776
+  - squid:MethodCyclomaticComplexity
+  - squid:S3776
+  - typescript:S1541
+  - typescript:S3776
+  - vbnet:S1541
+  - vbnet:S3776
 
 ### Dependencies from Composer
 
@@ -1275,6 +1317,7 @@ Configurations:
 Mandatory parameters:
 
 - **URL to a Composer 'outdated' report in JSON format or to a zip with Composer 'outdated' reports in JSON format**.
+
   ```{seealso}
   [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated)
   ```
@@ -1294,6 +1337,7 @@ Optional parameters:
 Mandatory parameters:
 
 - **URL to a npm 'outdated' report in JSON format or to a zip with npm 'outdated' reports in JSON format**.
+
   ```{seealso}
   [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html)
   ```
@@ -1327,6 +1371,7 @@ Optional parameters:
 Mandatory parameters:
 
 - **URL to a pip 'outdated' report in JSON format or to a zip with pip 'outdated' reports in JSON format**.
+
   ```{seealso}
   [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/)
   ```
@@ -1350,10 +1395,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1372,6 +1420,7 @@ Optional parameters:
 - **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
@@ -1390,9 +1439,11 @@ Optional parameters:
 - **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
 - **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Failed CI-jobs from GitLab
@@ -1403,6 +1454,7 @@ Mandatory parameters:
 
 - **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 - **Project (name with namespace or id)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
   ```
@@ -1410,12 +1462,15 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branches and tags to ignore (regular expressions, branch names or tag names)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
   ```
+
 - **Failure types**. Limit which failure types to count as failed. This parameter is multiple choice. Possible failure types are: `canceled`, `failed`, `skipped`. The default value is: _all failure types_.
 - **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression.
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
@@ -1427,14 +1482,17 @@ Optional parameters:
 Mandatory parameters:
 
 - **Issue query in WIQL (Work Item Query Language)**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
   ```
+
 - **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
 Optional parameters:
 
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
@@ -1446,9 +1504,11 @@ Optional parameters:
 Mandatory parameters:
 
 - **Issue query in JQL (Jira Query Language)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
   ```
+
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
 Optional parameters:
@@ -1463,21 +1523,26 @@ Optional parameters:
 Mandatory parameters:
 
 - **Board (title or id)**.
+
   ```{seealso}
   [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
   ```
+
 - **URL**. The default value is: `https://trello.com`.
 
 Optional parameters:
 
 - **API key**.
+
   ```{seealso}
   [https://trello.com/app-key](https://trello.com/app-key)
   ```
+
 - **Cards to count**. This parameter is multiple choice. Possible cards are: `inactive`, `overdue`. The default value is: _all cards_.
 - **Lists to ignore (title or id)**.
 - **Number of days without activity after which to consider cards inactive**. The default value is: `30`.
 - **Token**.
+
   ```{seealso}
   [https://trello.com/app-key](https://trello.com/app-key)
   ```
@@ -1493,9 +1558,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Languages to ignore (regular expressions or language names)**.
+
   ```{seealso}
   [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-)
   ```
+
 - **Password for basic authentication**.
 - **Private token**.
 - **URL to a cloc report in a human readable format**. If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.
@@ -1513,15 +1580,20 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Languages to ignore (regular expressions or language names)**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/analysis/languages/overview/](https://docs.sonarqube.org/latest/analysis/languages/overview/)
   ```
+
 - **Lines to count**. Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation. This parameter is single choice. Possible lines to count are: `all lines`, `lines with code`. The default value is: `lines with code`.
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1538,10 +1610,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1549,40 +1624,40 @@ Optional parameters:
 Configurations:
 
 - Rules used to detect long units:
-   - abap:S104
-   - c:FileLoc
-   - cpp:FileLoc
-   - csharpsquid:S104
-   - csharpsquid:S138
-   - flex:S138
-   - go:S104
-   - go:S138
-   - java:S138
-   - javascript:S104
-   - javascript:S138
-   - kotlin:S104
-   - kotlin:S138
-   - objc:FileLoc
-   - php:S104
-   - php:S138
-   - php:S2042
-   - Pylint:R0915
-   - python:S104
-   - ruby:S104
-   - ruby:S138
-   - scala:S104
-   - scala:S138
-   - squid:S00104
-   - squid:S1188
-   - squid:S138
-   - squid:S2972
-   - swift:S104
-   - typescript:S104
-   - typescript:S138
-   - vbnet:S104
-   - vbnet:S138
-   - Web:FileLengthCheck
-   - Web:LongJavaScriptCheck
+  - abap:S104
+  - c:FileLoc
+  - cpp:FileLoc
+  - csharpsquid:S104
+  - csharpsquid:S138
+  - flex:S138
+  - go:S104
+  - go:S138
+  - java:S138
+  - javascript:S104
+  - javascript:S138
+  - kotlin:S104
+  - kotlin:S138
+  - objc:FileLoc
+  - php:S104
+  - php:S138
+  - php:S2042
+  - Pylint:R0915
+  - python:S104
+  - ruby:S104
+  - ruby:S138
+  - scala:S104
+  - scala:S138
+  - squid:S00104
+  - squid:S1188
+  - squid:S138
+  - squid:S2972
+  - swift:S104
+  - typescript:S104
+  - typescript:S138
+  - vbnet:S104
+  - vbnet:S138
+  - Web:FileLengthCheck
+  - Web:LongJavaScriptCheck
 
 ### Manual test duration from Jira
 
@@ -1591,13 +1666,17 @@ Configurations:
 Mandatory parameters:
 
 - **Issue query in JQL (Jira Query Language)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
   ```
+
 - **Manual test duration field (name or id)**.
+
   ```{seealso}
   [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
   ```
+
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
 Optional parameters:
@@ -1613,17 +1692,21 @@ Mandatory parameters:
 
 - **Default expected manual test execution frequency (days)**. Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days. The default value is: `21`.
 - **Issue query in JQL (Jira Query Language)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
   ```
+
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
 Optional parameters:
 
 - **Manual test execution frequency field (name or id)**.
+
   ```{seealso}
   [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
   ```
+
 - **Password for basic authentication**.
 - **Username for basic authentication**.
 
@@ -1639,10 +1722,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -1650,21 +1736,21 @@ Optional parameters:
 Configurations:
 
 - Rules used to detect units with many parameters:
-   - c:S107
-   - cpp:S107
-   - csharpsquid:S107
-   - csharpsquid:S2436
-   - flex:S107
-   - java:S107
-   - javascript:ExcessiveParameterList
-   - javascript:S107
-   - objc:S107
-   - php:S107
-   - plsql:PlSql.FunctionAndProcedureExcessiveParameters
-   - python:S107
-   - squid:S00107
-   - tsql:S107
-   - typescript:S107
+  - c:S107
+  - cpp:S107
+  - csharpsquid:S107
+  - csharpsquid:S2436
+  - flex:S107
+  - java:S107
+  - javascript:ExcessiveParameterList
+  - javascript:S107
+  - objc:S107
+  - php:S107
+  - plsql:PlSql.FunctionAndProcedureExcessiveParameters
+  - python:S107
+  - squid:S00107
+  - tsql:S107
+  - typescript:S107
 
 ### Merge requests from Azure DevOps Server
 
@@ -1679,11 +1765,14 @@ Optional parameters:
 - **Merge request states**. Limit which merge request states to count. This parameter is multiple choice. Possible states are: `abandoned`, `active`, `completed`, `not set`. The default value is: _all states_.
 - **Minimum number of upvotes**. Only count merge requests with fewer than the minimum number of upvotes. The default value is: `0`.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
+
 - **Repository (name or id)**.
 - **Target branches to include (regular expressions or branch names)**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
   ```
@@ -1696,6 +1785,7 @@ Mandatory parameters:
 
 - **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 - **Project (name with namespace or id)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
   ```
@@ -1703,16 +1793,21 @@ Mandatory parameters:
 Optional parameters:
 
 - **Approval states to include (requires GitLab Premium)**. This parameter is multiple choice. Possible approval states are: `approved`, `not approved`, `unknown`. The default value is: _all approval states_.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/merge_requests/approvals/](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
   ```
+
 - **Merge request states**. Limit which merge request states to count. This parameter is multiple choice. Possible states are: `closed`, `locked`, `merged`, `opened`. The default value is: _all states_.
 - **Minimum number of upvotes**. Only count merge requests with fewer than the minimum number of upvotes. The default value is: `0`.
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
+
 - **Target branches to include (regular expressions or branch names)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
   ```
@@ -1785,14 +1880,19 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
+
 - **Types of effort**. This parameter is multiple choice. Possible effort types are: `effort to fix all bug issues`, `effort to fix all code smells`, `effort to fix all vulnerabilities`. The default value is: _all effort types_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/metric-definitions/](https://docs.sonarqube.org/latest/user-guide/metric-definitions/)
   ```
@@ -1854,9 +1954,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from Axe-core
@@ -1889,9 +1991,11 @@ Optional parameters:
 - **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
+
 - **Repository (name or id)**.
 
 ### Source up-to-dateness from Bandit
@@ -1943,9 +2047,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from Checkmarx CxSAST
@@ -1966,11 +2072,14 @@ Mandatory parameters:
 Mandatory parameters:
 
 - **File or folder path**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html)
   ```
+
 - **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 - **Project (name with namespace or id)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
   ```
@@ -1978,10 +2087,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
   ```
+
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
@@ -2012,9 +2124,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from Jenkins
@@ -2031,9 +2145,11 @@ Optional parameters:
 - **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
 - **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from Jenkins test report
@@ -2047,9 +2163,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from JUnit XML report
@@ -2178,9 +2296,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source up-to-dateness from SonarQube
@@ -2195,10 +2315,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -2225,19 +2348,24 @@ Optional parameters:
 Mandatory parameters:
 
 - **Board (title or id)**.
+
   ```{seealso}
   [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name)
   ```
+
 - **URL**. The default value is: `https://trello.com`.
 
 Optional parameters:
 
 - **API key**.
+
   ```{seealso}
   [https://trello.com/app-key](https://trello.com/app-key)
   ```
+
 - **Lists to ignore (title or id)**.
 - **Token**.
+
   ```{seealso}
   [https://trello.com/app-key](https://trello.com/app-key)
   ```
@@ -2308,6 +2436,7 @@ Mandatory parameters:
 Optional parameters:
 
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
@@ -2323,9 +2452,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Source version from Jira
@@ -2420,6 +2551,7 @@ Mandatory parameters:
 Optional parameters:
 
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -2451,9 +2583,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Severities**. If provided, only count security warnings with the selected severities. This parameter is multiple choice. Possible severities are: `Critical`, `High`, `Low`, `Medium`, `Negligible`, `Unknown`. The default value is: _all severities_.
 - **Username for basic authentication**.
 
@@ -2598,22 +2732,31 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
+
 - **Security hotspot review priorities**. This parameter is multiple choice. Possible review priorities are: `high`, `low`, `medium`. The default value is: _all review priorities_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/security-hotspots/](https://docs.sonarqube.org/latest/user-guide/security-hotspots/)
   ```
+
 - **Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)**. This parameter is multiple choice. Possible types are: `security_hotspot`, `vulnerability`. The default value is: `vulnerability`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
   ```
+
 - **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
   ```
@@ -2630,18 +2773,25 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
+
 - **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
   ```
+
 - **Types**. This parameter is multiple choice. Possible types are: `bug`, `code_smell`, `vulnerability`. The default value is: _all types_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
   ```
@@ -2649,18 +2799,18 @@ Optional parameters:
 Configurations:
 
 - Rules used to detect suppressed violations:
-   - csharpsquid:S1309
-   - java:NoSonar
-   - java:S1309
-   - java:S1310
-   - java:S1315
-   - php:NoSonar
-   - Pylint:I0011
-   - Pylint:I0020
-   - squid:NoSonar
-   - squid:S1309
-   - squid:S1310
-   - squid:S1315
+  - csharpsquid:S1309
+  - java:NoSonar
+  - java:S1309
+  - java:S1310
+  - java:S1315
+  - php:NoSonar
+  - Pylint:I0011
+  - Pylint:I0020
+  - squid:NoSonar
+  - squid:S1309
+  - squid:S1310
+  - squid:S1315
 
 ### Test cases from Jira
 
@@ -2669,9 +2819,11 @@ Configurations:
 Mandatory parameters:
 
 - **Issue query in JQL (Jira Query Language)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
   ```
+
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
 Optional parameters:
@@ -2722,9 +2874,11 @@ Optional parameters:
 
 - **Names of test runs to include (regular expressions or test run names)**. Limit which test runs to include by test run name.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
+
 - **States of the test runs to include**. Limit which test runs to include by test run state. This parameter is multiple choice. Possible test run states are: `aborted`, `completed`, `in progress`, `not started`. The default value is: _all test run states_.
 - **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `incomplete`, `not applicable`, `passed`. The default value is: _all test results_.
 
@@ -2739,9 +2893,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `failed`, `passed`, `skipped`. The default value is: _all test results_.
 - **Username for basic authentication**.
 
@@ -2805,9 +2961,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `fail`, `pass`. The default value is: _all test results_.
 - **Username for basic authentication**.
 
@@ -2823,13 +2981,17 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
+
 - **Test results**. Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. This parameter is multiple choice. Possible test results are: `errored`, `failed`, `passed`, `skipped`. The default value is: _all test results_.
 
 ### Tests from TestNG
@@ -2874,9 +3036,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Test branch coverage from JaCoCo
@@ -2905,9 +3069,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Test branch coverage from NCover
@@ -2936,10 +3102,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -2970,9 +3139,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Test line coverage from JaCoCo
@@ -3001,9 +3172,11 @@ Mandatory parameters:
 Optional parameters:
 
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### Test line coverage from NCover
@@ -3032,10 +3205,13 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
@@ -3051,14 +3227,18 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branches to ignore (regular expressions or branch names)**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops)
   ```
+
 - **Number of days since last commit after which to consider branches inactive**. The default value is: `7`.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
+
 - **Repository (name or id)**.
 
 ### Unmerged branches from GitLab
@@ -3069,6 +3249,7 @@ Mandatory parameters:
 
 - **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 - **Project (name with namespace or id)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
   ```
@@ -3076,11 +3257,14 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branches to ignore (regular expressions or branch names)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
   ```
+
 - **Number of days since last commit after which to consider branches inactive**. The default value is: `7`.
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
@@ -3099,6 +3283,7 @@ Optional parameters:
 - **Pipelines to ignore (regular expressions or pipeline names)**. Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Pipelines to include (regular expressions or pipeline names)**. Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
@@ -3111,6 +3296,7 @@ Mandatory parameters:
 
 - **GitLab instance URL**. URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.
 - **Project (name with namespace or id)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/)
   ```
@@ -3118,12 +3304,15 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branches and tags to ignore (regular expressions, branch names or tag names)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/)
   ```
+
 - **Jobs to ignore (regular expressions or job names)**. Jobs to ignore can be specified by job name or by regular expression.
 - **Number of days without builds after which to consider CI-jobs unused**. The default value is: `90`.
 - **Private token (with read_api scope)**.
+
   ```{seealso}
   [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
   ```
@@ -3142,9 +3331,11 @@ Optional parameters:
 - **Jobs to include (regular expressions or job names)**. Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.
 - **Number of days without builds after which to consider CI-jobs unused**. The default value is: `90`.
 - **Password or API token for basic authentication**.
+
   ```{seealso}
   [https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/)
   ```
+
 - **Username for basic authentication**.
 
 ### User story points from Azure DevOps Server
@@ -3154,14 +3345,17 @@ Optional parameters:
 Mandatory parameters:
 
 - **Issue query in WIQL (Work Item Query Language)**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops)
   ```
+
 - **URL including organization and project**. URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.
 
 Optional parameters:
 
 - **Private token**.
+
   ```{seealso}
   [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops)
   ```
@@ -3173,13 +3367,17 @@ Optional parameters:
 Mandatory parameters:
 
 - **Issue query in JQL (Jira Query Language)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/](https://support.atlassian.com/jira-software-cloud/docs/use-advanced-search-with-jira-query-language-jql/)
   ```
+
 - **Story points field (name or id)**. The default value is: `Story Points`.
+
   ```{seealso}
   [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html)
   ```
+
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
 
 Optional parameters:
@@ -3194,9 +3392,11 @@ Optional parameters:
 Mandatory parameters:
 
 - **Board (name or id)**.
+
   ```{seealso}
   [https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/)
   ```
+
 - **Number of sprints to base velocity on**. The default value is: `3`.
 - **Type of velocity**. Whether to report the amount of story points committed to, the amount of story points actually completed, or the difference between the two. This parameter is single choice. Possible velocity type are: `committed points`, `completed points minus committed points`, `completed points`. The default value is: `completed points`.
 - **URL**. URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.
@@ -3234,18 +3434,25 @@ Mandatory parameters:
 Optional parameters:
 
 - **Branch (only supported by commercial SonarQube editions)**. The default value is: `master`.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/)
   ```
+
 - **Private token**.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/)
   ```
+
 - **Severities**. This parameter is multiple choice. Possible severities are: `blocker`, `critical`, `info`, `major`, `minor`. The default value is: _all severities_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/)
   ```
+
 - **Types**. This parameter is multiple choice. Possible types are: `bug`, `code_smell`, `vulnerability`. The default value is: _all types_.
+
   ```{seealso}
   [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/)
   ```
