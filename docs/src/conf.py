@@ -12,10 +12,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath("."))
+
+# Build metrics and sources overview.
+import create_metrics_and_sources_md
+
+create_metrics_and_sources_md.main()
 
 # -- Project information -----------------------------------------------------
 

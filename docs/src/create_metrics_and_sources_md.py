@@ -231,7 +231,12 @@ def data_model_as_table(data_model) -> str:
     return re.sub(r"\n\n$", "\n", markdown)  # Remove final empty line
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Convert the data model."""
     data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "src" / "metrics_and_sources.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(get_data_model()))
+
+
+if __name__ == "__main__":
+    main()
