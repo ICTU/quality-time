@@ -1,4 +1,5 @@
 digraph {
+  graph [bcolor=transparant]
   browser [shape=rectangle]
   ldap [shape=rectangle]
   browser -> proxy [label=ui, dir="back"]

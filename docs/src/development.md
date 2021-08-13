@@ -177,7 +177,11 @@ Base images used in the Docker containers, and additionally installed software, 
 ## Software components
 
 ```{eval-rst}
-.. graphviz:: components.dot
+.. graphviz:: components-dark.dot
+   :class: only-dark
+
+.. graphviz:: components-light.dot
+   :class: only-light
 ```
 
 *Quality-time* consists of seven components. Three standard components:
