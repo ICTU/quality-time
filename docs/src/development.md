@@ -176,13 +176,15 @@ Base images used in the Docker containers, and additionally installed software, 
 
 ## Software components
 
-![Components](components.png)
+```{eval-rst}
+.. graphviz:: components.dot
+```
 
 *Quality-time* consists of seven components. Three standard components:
 
 - A proxy (we use the [ICTU variant of Caddy](https://github.com/ICTU/caddy), but this can be replaced by another proxy if so desired) routing traffic from and to the user's browser,
 - A database ([Mongo](https://www.mongodb.com)) for storing reports and measurements,
-- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api) to export reports to PDF,
+- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api)) to export reports to PDF,
 
 And four bespoke components:
 

@@ -18,7 +18,7 @@ import sys
 sys.path.insert(0, os.path.abspath("."))
 
 # Build metrics and sources overview.
-import create_metrics_and_sources_md
+import create_metrics_and_sources_md  # pylint: disable=wrong-import-position
 
 create_metrics_and_sources_md.main()
 
@@ -34,7 +34,7 @@ author = "ICTU"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["myst_parser", "sphinx_copybutton"]
+extensions = ["myst_parser", "sphinx_copybutton", "sphinx.ext.graphviz"]
 myst_enable_extensions = ["deflist"]
 
 # Add any paths that contain templates here, relative to this directory.
