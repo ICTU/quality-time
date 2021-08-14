@@ -1,8 +1,8 @@
 # Developer manual
 
-This document is aimed at *Quality-time* developers and maintainers.
+This document is aimed at *Quality-time* developers and maintainers and describes how to develop, test, document, release, and maintain *Quality-time*. To read more about how *Quality-time* is structured, see the [software documentation](software.md).
 
-## Develop
+## Developing
 
 ### Running *Quality-time* locally
 
@@ -94,7 +94,7 @@ This section contains some notes on coding style used in this project. It's far 
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
-To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repo. This pre-commit hook also updates the generated documentation in the `docs` folder.
+To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repo.
 
 Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
 
@@ -248,7 +248,7 @@ Add a small png file of the logo in [`components/server/src/routes/logos`](https
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
-## Test
+## Testing
 
 ### Unit tests
 
@@ -298,7 +298,30 @@ docker-compose up -d
 docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.6-browsers tests/application_tests/ci/test.sh
 ```
 
-## Release
+## Documentation and changelog
+
+The documentation is written in Markdown files and published on [Read the Docs](https://quality-time.readthedocs.io/en/latest/).
+
+To generate the documentation locally:
+
+```console
+cd docs
+python3 -m venv venv
+. venv/bin/activate  # on Windows: venv\Scripts\activate
+pip install -r requirements-dev.txt
+make html
+open build/html/index.html
+```
+
+`make html` also generates the `docs/src/metrics_and_sources.md` document, containing an overview of all metrics and sources.
+
+To check the correctness of the links:
+
+```console
+make linkcheck
+```
+
+## Releasing
 
 ### Preparation
 
@@ -379,30 +402,3 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the url-to-pdf-api image.
 - [Server](https://github.com/ICTU/quality-time/blob/master/components/server/Dockerfile): the Python base image.
 - [Testdata](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
-
-## Software components
-
-```{eval-rst}
-.. graphviz:: components-dark.dot
-   :class: only-dark
-
-.. graphviz:: components-light.dot
-   :class: only-light
-```
-
-*Quality-time* consists of seven components. Three standard components:
-
-- A proxy (we use the [ICTU variant of Caddy](https://github.com/ICTU/caddy), but this can be replaced by another proxy if so desired) routing traffic from and to the user's browser,
-- A database ([Mongo](https://www.mongodb.com)) for storing reports and measurements,
-- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api)) to export reports to PDF,
-
-And four bespoke components:
-
-- A [frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/README.md) serving the React UI,
-- A [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) serving the API,
-- A [collector](https://github.com/ICTU/quality-time/blob/master/components/collector/README.md) to collect the measurements from the sources.
-- A [notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/README.md) to notify users about events such as metrics turning red.
-
-In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
-
-For testing purposes there are also [test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/README.md) and an [LDAP-server](https://github.com/ICTU/quality-time/blob/master/components/ldap/README.md).

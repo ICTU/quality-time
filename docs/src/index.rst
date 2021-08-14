@@ -14,4 +14,5 @@ Welcome to Quality-time's documentation!
    metrics_and_sources.md
    deployment.md
    development.md
+   software.md
    changelog.md

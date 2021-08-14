@@ -73,4 +73,5 @@ linkcheck_ignore = [
     # False negative: Anchor 'recognized-languages-' not found:
     "https://github.com/AlDanial/cloc#recognized-languages-",
     "https://trello.com/1/members/me/boards",  # Only works when logged in
+    "https://react.semantic-ui.com/collections/table/#states",  # False negative: Anchor 'states' not found
 ]
