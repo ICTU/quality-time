@@ -104,6 +104,148 @@ Functional React components are preferred over class-based components.
 
 Production code and unit tests are organized together in one `src` folder hierarchy.
 
+### Adding metrics and sources
+
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](https://github.com/ICTU/quality-time/blob/master/components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component.
+
+#### Adding new metrics
+
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+
+#### Adding new sources
+
+To add support for a new source, the source needs to be added to the data model, code to retrieve and parse the source data needs to be added to the collector component, including unit tests and quality checks of course, and a logo should be added to the server component.
+
+##### Adding the new source to the data model
+
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
+
+Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
+
+```python
+"""Cloc source."""
+
+from ..meta.source import Source
+from ..parameters import access_parameters
+
+
+CLOC = Source(
+    name="cloc",
+    description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
+    "code in many programming languages.",
+    url="https://github.com/AlDanial/cloc",
+    parameters=dict(
+        **access_parameters(["loc"], source_type="cloc report", source_type_format="JSON")
+    ),
+)
+```
+
+##### Adding the new source to the collector
+
+To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py) needs to be created.
+
+Add a new Python package to the [`source_collectors` folder](https://github.com/ICTU/quality-time/tree/master/components/collector/src/source_collectors) with the same name as the source type in the data model. For example, if the new source type is `cloc`, the folder name of the collectors is also `cloc`. Next, create a module for each metric that the new source supports. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-up-to-dateness, you would create two modules, each containing a subclass of `SourceCollector`: a `ClocLOC` class in `cloc/loc.py` and a `ClocSourceUpToDateness` class if `cloc/source_up_to_dateness.py`. If code can be shared between these classes, add a `cloc/base.py` file with a `ClocBaseClass`.
+
+To reduce duplication, `SourceCollector` has several abstract subclasses. The class hierarchy is currently as follows:
+
+- `SourceCollector`
+  - `UnmergedBranchesSourceCollector`: for sources that collect data for the number of unmerged branches metric
+  - `JenkinsPluginCollector`: for sources that collect their data from Jenkins plugins
+  - `SourceUpToDatenessCollector`: for sources that support the source-up-to-dateness metric
+    - `JenkinsPluginSourceUpToDatenessCollector`: for getting the source-up-to-dateness from Jenkins plugins
+  - `LocalSourceCollector`: for sources that are local to the collector like fixed numbers and date/times
+  - `FileSourceCollector`: for sources that parse files
+    - `CSVFileSourceCollector`: for sources that parse CSV files
+    - `HTMLFileSourceCollector`: for sources that parse HTML files
+    - `JSONFileSourceCollector`: for sources that parse JSON files
+    - `XMLFileSourceCollector`: for sources that parse XML files
+
+To support [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric we need to read the size of source code from the JSON file that cloc can produce. We add a `cloc/loc.py` file and in `loc.py` we create a `ClocLOC` class with `JSONFileSourceCollector` as super class. The only method that needs to be implemented is `_parse_source_responses()` to get the amount of lines from the cloc JSON file. This could be as simple as:
+
+```python
+"""cloc lines of code collector."""
+
+from base_collectors import JSONFileSourceCollector
+from model import SourceMeasurement, SourceResponses
+
+
+class ClocLOC(JSONFileSourceCollector):
+    """cloc collector for size/lines of code."""
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        loc = 0
+        for response in responses:
+            for key, value in (await response.json()).items():
+                if key not in ("header", "SUM"):
+                    loc += value["code"]
+        return SourceMeasurement(value=str(loc))
+```
+
+Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
+
+###### Writing and running unit tests
+
+To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](https://github.com/ICTU/quality-time/tree/master/components/collector/tests), for example:
+
+```python
+"""Unit tests for the cloc source."""
+
+from ...source_collector_test_case import SourceCollectorTestCase
+
+
+class ClocLOCTest(SourceCollectorTestCase):
+    """Unit tests for the cloc loc collector."""
+
+    SOURCE_TYPE = "cloc"
+    METRIC_TYPE = "loc"
+
+    async def test_loc(self):
+        """Test that the number of lines is returned."""
+        cloc_json = {
+            "header": {}, "SUM": {},  # header and SUM are not used
+            "Python": {"nFiles": 1, "blank": 5, "comment": 10, "code": 60},
+            "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30}}
+        response = await self.collect(get_request_json_return_value=cloc_json)
+        self.assert_measurement(response, value="90", total="100")
+```
+
+Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which creates a source and metric for us, specified using `SOURCE_TYPE` and `METRIC_TYPE`, and provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
+
+In the case of collectors that use files as source, also add an example file to the [test data component](https://github.com/ICTU/quality-time/blob/master/components/testdata/README.md).
+
+To run the unit tests:
+
+```console
+cd components/collector
+ci/unittest.sh
+```
+
+You should get 100% line and branch coverage.
+
+###### Running quality checks
+
+To run the quality checks:
+
+```console
+cd components/collector
+ci/quality.sh
+```
+
+Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
+
+```console
+ci/quality.sh
+src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
+```
+
+Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
+
+##### Adding a logo for the new source to the server
+
+Add a small png file of the logo in [`components/server/src/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
+
+The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
+
 ## Test
 
 ### Unit tests
@@ -206,7 +348,7 @@ without releasing, invoke the release script with the version bump as determined
 python release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc-major, rc-minor, rc-patch, rc, or drop-rc
 ```
 
-If everything is ok, there is no output, and you can proceed creating the release. Otherwise, the release script will list the preconditions that have not been met and need fixing before you can create the release. 
+If everything is ok, there is no output, and you can proceed creating the release. Otherwise, the release script will list the preconditions that have not been met and need fixing before you can create the release.
 
 ### Create the release
 
@@ -262,143 +404,3 @@ And four bespoke components:
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
 For testing purposes there are also [test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/README.md) and an [LDAP-server](https://github.com/ICTU/quality-time/blob/master/components/ldap/README.md).
-
-## Adding metrics and sources
-
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](https://github.com/ICTU/quality-time/blob/master/components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component.
-
-### Adding new metrics
-
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
-
-### Adding new sources
-
-#### Adding the new source to the data model
-
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
-
-Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
-
-```python
-"""Cloc source."""
-
-from ..meta.source import Source
-from ..parameters import access_parameters
-
-
-CLOC = Source(
-    name="cloc",
-    description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
-    "code in many programming languages.",
-    url="https://github.com/AlDanial/cloc",
-    parameters=dict(
-        **access_parameters(["loc"], source_type="cloc report", source_type_format="JSON")
-    ),
-)
-```
-
-#### Adding the new source to the collector
-
-To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py) needs to be created.
-
-Add a new Python package to the [`source_collectors` folder](https://github.com/ICTU/quality-time/tree/master/components/collector/src/source_collectors) with the same name as the source type in the data model. For example, if the new source type is `cloc`, the folder name of the collectors is also `cloc`. Next, create a module for each metric that the new source supports. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-up-to-dateness, you would create two modules, each containing a subclass of `SourceCollector`: a `ClocLOC` class in `cloc/loc.py` and a `ClocSourceUpToDateness` class if `cloc/source_up_to_dateness.py`. If code can be shared between these classes, add a `cloc/base.py` file with a `ClocBaseClass`.
-
-To reduce duplication, `SourceCollector` has several abstract subclasses. The class hierarchy is currently as follows:
-
-- `SourceCollector`
-  - `UnmergedBranchesSourceCollector`: for sources that collect data for the number of unmerged branches metric
-  - `JenkinsPluginCollector`: for sources that collect their data from Jenkins plugins
-  - `SourceUpToDatenessCollector`: for sources that support the source-up-to-dateness metric
-    - `JenkinsPluginSourceUpToDatenessCollector`: for getting the source-up-to-dateness from Jenkins plugins
-  - `LocalSourceCollector`: for sources that are local to the collector like fixed numbers and date/times
-  - `FileSourceCollector`: for sources that parse files
-    - `CSVFileSourceCollector`: for sources that parse CSV files
-    - `HTMLFileSourceCollector`: for sources that parse HTML files
-    - `JSONFileSourceCollector`: for sources that parse JSON files
-    - `XMLFileSourceCollector`: for sources that parse XML files
-
-To support [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric we need to read the size of source code from the JSON file that cloc can produce. We add a `cloc/loc.py` file and in `loc.py` we create a `ClocLOC` class with `JSONFileSourceCollector` as super class. The only method that needs to be implemented is `_parse_source_responses()` to get the amount of lines from the cloc JSON file. This could be as simple as:
-
-```python
-"""cloc lines of code collector."""
-
-from base_collectors import JSONFileSourceCollector
-from model import SourceMeasurement, SourceResponses
-
-
-class ClocLOC(JSONFileSourceCollector):
-    """cloc collector for size/lines of code."""
-
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        loc = 0
-        for response in responses:
-            for key, value in (await response.json()).items():
-                if key not in ("header", "SUM"):
-                    loc += value["code"]
-        return SourceMeasurement(value=str(loc))
-```
-
-Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
-
-##### Writing and running unit tests
-
-To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](https://github.com/ICTU/quality-time/tree/master/components/collector/tests), for example:
-
-```python
-"""Unit tests for the cloc source."""
-
-from ...source_collector_test_case import SourceCollectorTestCase
-
-
-class ClocLOCTest(SourceCollectorTestCase):
-    """Unit tests for the cloc loc collector."""
-
-    SOURCE_TYPE = "cloc"
-    METRIC_TYPE = "loc"
-
-    async def test_loc(self):
-        """Test that the number of lines is returned."""
-        cloc_json = {
-            "header": {}, "SUM": {},  # header and SUM are not used
-            "Python": {"nFiles": 1, "blank": 5, "comment": 10, "code": 60},
-            "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30}}
-        response = await self.collect(get_request_json_return_value=cloc_json)
-        self.assert_measurement(response, value="90", total="100")
-```
-
-Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which creates a source and metric for us, specified using `SOURCE_TYPE` and `METRIC_TYPE`, and provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
-
-In the case of collectors that use files as source, also add an example file to the [test data component](https://github.com/ICTU/quality-time/blob/master/components/testdata/README.md).
-
-To run the unit tests:
-
-```console
-cd components/collector
-ci/unittest.sh
-```
-
-You should get 100% line and branch coverage.
-
-##### Running quality checks
-
-To run the quality checks:
-
-```console
-cd components/collector
-ci/quality.sh
-```
-
-Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
-
-```console
-ci/quality.sh
-src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
-```
-
-Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
-
-#### Adding a logo for the new source to the server
-
-Add a small png file of the logo in [`components/server/src/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
-
-The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
