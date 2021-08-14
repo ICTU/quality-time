@@ -1,4 +1,4 @@
-# Deploying *Quality-time*
+# Deployment instructions
 
 Quality-time consists of a set of containers that together form the application: a proxy that routes incoming traffic to either the frontend container to serve the React frontend and static resources or to the server container that serves the REST API. The database container runs a Mongo database server. The renderer containers is responsible for converting reports to PDF. The collector container collects the measurement data for the metrics. Finally, the notifier container notifies users of significant events, like metrics turning red.
 
@@ -6,7 +6,7 @@ In addition, *Quality-time* assumes an LDAP service is available to authenticate
 
 ## Docker-composition
 
-This document assumes docker-compose is used to deploy the containers. The docker folder of this repo contains different compose files for running *Quality-time* in development and continuous integration mode, see the [docker folder](https://github.com/ICTU/quality-time/tree/master/docker). You can use these compose files as basis for your own deployment configuration.
+This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repo contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
 
 ## Configuring LDAP
 

@@ -1,4 +1,6 @@
-# Developing *Quality-time*
+# Developer manual
+
+This document is aimed at *Quality-time* developers and maintainers.
 
 ## Develop
 

@@ -1,4 +1,8 @@
-# *Quality-time* user manual
+# User manual
+
+```{note}
+This user manual assumes *Quality-time* has been installed, is up and running, and that you have opened *Quality-time* in your browser.
+```
 
 ## Logging in and out
 
