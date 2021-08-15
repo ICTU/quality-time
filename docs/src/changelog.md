@@ -293,7 +293,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See [](usage.md#generic-json-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
+- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See [](usage.md#generic-json-format-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
 - In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 

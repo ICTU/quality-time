@@ -26,9 +26,9 @@ Open a terminal and start the standard containers with docker-compose:
 docker-compose up database ldap phpldapadmin mongo-express testdata
 ```
 
-Mongo-express is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
+{index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
-PHP-LDAP-admin is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the LDAP database. Click login, check the "Anonymous" box and click "Authenticate" to login.
+{index}`PHP-LDAP-admin` is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the {index}`LDAP` database. Click login, check the "Anonymous" box and click "Authenticate" to login.
 
 By default, there are three users defined in the LDAP database:
 
@@ -36,7 +36,7 @@ By default, there are three users defined in the LDAP database:
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
 
-#### Start the server
+#### Start the {index}`server <Server component>`
 
 Open another terminal and run the server:
 
@@ -50,7 +50,7 @@ python src/quality_time_server.py
 
 The API of the server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/v3/reports](http://localhost:5001/api/v3/reports) to get the available reports combined with their recent measurements.
 
-#### Start the collector
+#### Start the {index}`collector <Collector component>`
 
 Open another terminal and run the collector:
 
@@ -62,7 +62,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
 
-#### Start the frontend
+#### Start the {index}`frontend <Frontend component>`
 
 Open another terminal and run the frontend:
 
@@ -74,7 +74,7 @@ npm run start
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
 
-#### Start the notifier
+#### Start the {index}`notifier <Notifier component>`
 
 Optionally, open yet another terminal and run the notifier:
 
@@ -90,7 +90,7 @@ python src/quality_time_notifier.py
 
 This section contains some notes on coding style used in this project. It's far from complete, however.
 
-#### Python
+#### {index}`Python <pair: Coding style;Python>`
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
@@ -100,7 +100,7 @@ Methods that can or should be overridden in subclasses have a name with one lead
 
 Production code and unit tests are organized in parallel hierarchies. Each Python component has a `src` with the production code and a `tests` folder with the unit tests. The folder layout of the `tests` follows the layout of the `src` hierarchy.
 
-#### JavaScript
+#### {index}`JavaScript <pair: Coding style;JavaScript>`
 
 Functional React components are preferred over class-based components.
 
@@ -108,11 +108,11 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 ### Adding metrics and sources
 
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](https://github.com/ICTU/quality-time/blob/master/components/collector/README.md) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component.
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](software.md#server) component.
 
 #### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](software.md#server) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 #### Adding new sources
 
@@ -120,7 +120,7 @@ To add support for a new source, the source needs to be added to the data model,
 
 ##### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](https://github.com/ICTU/quality-time/blob/master/components/server/README.md) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](software.md#server) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
 
 Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
 
@@ -213,7 +213,7 @@ class ClocLOCTest(SourceCollectorTestCase):
 
 Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which creates a source and metric for us, specified using `SOURCE_TYPE` and `METRIC_TYPE`, and provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
 
-In the case of collectors that use files as source, also add an example file to the [test data component](https://github.com/ICTU/quality-time/blob/master/components/testdata/README.md).
+In the case of collectors that use files as source, also add an example file to the [test data component](software.md#test-data).
 
 To run the unit tests:
 

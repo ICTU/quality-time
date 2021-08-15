@@ -28,3 +28,4 @@ Welcome to Quality-time's documentation!
    changelog.md
    Source code <https://github.com/ICTU/quality-time>
    Issue tracker <https://github.com/ICTU/quality-time/issues>
+   genindex.md

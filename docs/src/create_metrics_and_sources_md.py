@@ -44,9 +44,10 @@ def definition_list(term: str, *definitions: str) -> str:
     return f"{term}\n{definitions_markdown}\n" if definitions_markdown else ""
 
 
-def markdown_header(header: str, level: int = 1) -> str:
+def markdown_header(header: str, level: int = 1, index: bool = False) -> str:
     """Return a Markdown header."""
-    return ("\n" if level > 1 else "") + "#" * level + f" {header}\n\n"
+    index_preamble = f"\n```{{index}} {header}\n```\n" if index else ("\n" if level > 1 else "")
+    return index_preamble + "#" * level + f" {header}\n\n"
 
 
 def metric_sections(data_model, universal_sources: list[str], level) -> str:
@@ -59,7 +60,7 @@ def metric_sections(data_model, universal_sources: list[str], level) -> str:
 
 def metric_section(data_model, metric, universal_sources: list[str], level) -> str:
     """Return the metric as Markdown section."""
-    markdown = markdown_header(metric["name"], level=level)
+    markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
@@ -102,7 +103,7 @@ def source_sections(data_model, universal_sources: list[str], level) -> str:
 
 def source_section(data_model, source, source_key, universal_sources: list[str], level) -> str:
     """Return the source as Markdown section."""
-    markdown = markdown_header(source["name"], level)
+    markdown = markdown_header(source["name"], level, index=True)
     markdown += markdown_paragraph(source["description"])
     markdown += "```{admonition} Supported metrics\n"
     if source_key in universal_sources:

@@ -4,13 +4,13 @@
 This user manual assumes *Quality-time* has been installed, is up and running, and that you have opened *Quality-time* in your browser.
 ```
 
-## Logging in and out
+## {index}`Logging in` and {index}`out <Logging out>`
 
 Quality reports can be viewed without logging in, but to edit reports and metrics you need to be logged in. Click the "Login" button in the menu bar:
 
 ![Logged out screenshot](screenshots/menubar_logged_out.png)
 
-Enter your LDAP-credentials in the dialog:
+Enter your {index}`LDAP`-credentials in the dialog:
 
 ![Login dialog screenshot](screenshots/login_dialog.png)
 
@@ -18,12 +18,16 @@ Enter your LDAP-credentials in the dialog:
 You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
 ```
 
+```{index} Gravatar
+```
 After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be shown next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
 Clicking "Logout" logs you out from *Quality-time*. Your user session expires after 24 hours and you need to log in again to be able to edit reports.
 
+```{index} Permissions
+```
 ## Configuring permissions
 
 *Quality-time* implements a simple permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit reports, subjects, metrics, sources and measured entities. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights.
@@ -52,6 +56,8 @@ Each *Quality-time* instance can serve multiple quality reports. A quality repor
 You need to be logged in to be able to edit quality reports.
 ```
 
+```{index} Report
+```
 ### Configuring reports
 
 #### Adding reports
@@ -72,6 +78,8 @@ To delete a report expand the report header and click the "Delete report" button
 Be careful, there's no way to undo your action via the user interface.
 ```
 
+```{index} Subject
+```
 ### Configuring subjects
 
 #### Adding subjects
@@ -102,6 +110,8 @@ To delete a subject expand the subject header and click the "Delete subject" but
 Be careful, there's no way to undo your action via the user interface.
 ```
 
+```{index} Metric
+```
 ### Configuring metrics
 
 #### Adding metrics
@@ -122,21 +132,23 @@ After you've added a metric, the metric is visible in the subject's metric table
 
 The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
 
-Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
+Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
 ![Dashboard tags](screenshots/dashboard_tags.png)
 
-The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale, or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
+The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale, or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
-The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.
+The "Metric {index}`direction <Direction>`" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.
 
-The "Metric unit" derives its default value from the metric type. Override as needed.
+The "Metric {index}`unit <Unit>`" derives its default value from the metric type. Override as needed.
 
-The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
+The "Metric {index}`target <Target>`" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 
+```{index} Technical debt
+```
 If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. 
 
-The "Comment" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supoorted.
+The "{index}`Comment`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supoorted.
 
 #### Reordering metrics
 
@@ -150,6 +162,8 @@ To delete a metric, expand the metric in the metric table and click the "Delete 
 Be careful, there's no way to undo your action via the user interface.
 ```
 
+```{index} Source
+```
 ### Configuring sources
 
 #### Adding sources
@@ -182,16 +196,20 @@ To delete a metric's source, expand the metric in the metric table, select the "
 Be careful, there's no way to undo your action via the user interface.
 ```
 
+```{index} Entity
+```
 ### Configuring entities
 
 An entity is a measured entity like for example one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
 
-To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all it's details.
+To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
 
-When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive of as fixed. Every action can be enriched with a comment for explanation.
+When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Every action can be enriched with a comment for explanation.
 
 ## Notes on specific metrics
 
+```{index} Metrics
+```
 ### Metrics
 
 One special metric type is "Metrics". It counts the number of metrics in a quality report. This makes it possible to create 'meta'-reports that for example measure the number of security metrics that don't meet their target.
@@ -202,6 +220,8 @@ After adding *Quality-time* as a source to a "Metrics"-metric, one can configure
 
 Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics, and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
 
+```{index} Unmerged branches
+```
 ### Unmerged branches
 
 The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -210,6 +230,8 @@ The "master"-branch is the default branch in both GitLab and Azure DevOps. This 
 
 To ignore branches that people are actively working on, use the "Number of days since last commit after which to consider branches inactive"-parameter.
 
+```{index} Merge requests
+```
 ### Merge requests
 
 The merge requests metric reports the number of merge requests. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -218,6 +240,8 @@ In itself, the number of merge requests is not indicative of software quality. H
 
 ## Notes on specific sources
 
+```{index} GitLab
+```
 ### GitLab
 
 Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
@@ -244,11 +268,23 @@ The project id can be found under the [project's general settings](https://docs.
 
 If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_repository" in the private token field.
 
-### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
+```{index} Jenkins
+```
+```{index} Jenkins test report
+```
+```{index} JaCoCo Jenkins plugin
+```
+```{index} OWASP Dependency Check Jenkins plugin
+```
+### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP Dependency Check Jenkins plugin
 
 To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike other sources, when using the API token Jenkins also requires the username to which the token belongs.
 
-### Generic JSON for security warnings
+```{index} Security warnings metric
+```
+```{index} Generic JSON format for security warnings
+```
+### Generic JSON format for security warnings
 
 In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a simple generic format.
 
@@ -277,18 +313,24 @@ Example generic JSON file:
 
 Users can customize quality reports on an individual basis by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
 
+```{index} Dashboard
+```
 ### Customizing dashboards
 
 Both the reports dashboard on the *Quality-time* landing page and the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
 
+```{index} Trend table
+```
 ### Subject trend table
 
-By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also show multiple recent measurement values of each metric in the form of a trend table. Use the 'hamburger' menu on the top left-hand side of the metric table to switch between the 'details' and 'trend table' views.
+By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also show multiple recent measurement values of each metric in the form of a trend table. Use the 'hamburger' menu on the top left-hand side of the metric table to switch between the 'details' and 'trend table' views.  The hamburger menu can also be used to show more or fewer dates and to configure the number of weeks between dates.
 
 ### Sorting metrics
 
 Metrics can be sorted by clicking on the table column headers. The sort order cycles between the default order, sorted ascending by the column click, and sorted descending by the column clicked.
 
+```{index} Tag
+```
 ### Filtering metrics by tag
 
 In a report's dashboard, click on a tag card to show only metrics that have the selected tag. The selected tag turns blue to indicate it is filtered on. Click the selected tag again to turn off the filtering. Selecting multiple tags shows metrics that have at least one of the selected tags.
@@ -303,10 +345,10 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 
 Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide specific columns from the metric tables.
 
-### Showing trend data
-
-Each metric table has a 'hamburger' menu on the top left-hand side that can be used to switch between the default details view and a trend table view that shows the current and past measurements. Use the hamburger menu to show more or fewer dates and to configure the number of weeks between dates.
-
+```{index} Export report
+```
+```{index} PDF
+```
 ## Export reports as PDF
 
 *Quality-time* reports can be downloaded as PDF. To create PDFs, *Quality-time* has a rendering service included to convert the HTML report into PDF.
@@ -337,11 +379,15 @@ To change the number of dates and the time between dates shown in the trend tabl
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
+```{index} Export report
+```
+```{index} Import report
+```
 ## Export and import reports as JSON
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
 
-A *Quality-time* report in JSON-format contains the latest configuration of the report, with all its subjects, metrics and sources. It does not contain any actual measurements. The credentials of configured sources are encrypted on export to protect sensitive data.
+A *Quality-time* report in JSON format contains the latest configuration of the report, with all its subjects, metrics and sources. It does not contain any actual measurements. The credentials of configured sources are encrypted on export to protect sensitive data.
 
 To use the import and export endpoints you need to be authenticated. For example, using curl:
 
@@ -361,7 +407,7 @@ curl --cookie cookie.txt --output export.json http://quality-time.example.org/ap
 
 The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
 
-The public key argument is optional. If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `www.quality-time.example.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
+The {index}`public key <Public key>` argument is optional. If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `www.quality-time.example.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
 
 ### Import API
 
@@ -380,10 +426,12 @@ If the report contains encrypted credentials, the importing *Quality-time* insta
 
 To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials. These unencrypted credentials will be imported unchanged.
 
+```{index} Notification
+```
 ## Notifications
 
-*Quality-time* can send notifications about metrics that change status to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+*Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
-If a webhook has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
+If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
 
 *Quality-time* sends a notification when the status of a metric changes as well as when the status of a metric has been the same for three weeks.
