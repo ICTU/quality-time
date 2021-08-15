@@ -12,7 +12,11 @@ Quality reports can be viewed without logging in, but to edit reports and metric
 
 Enter your {index}`LDAP`-credentials in the dialog:
 
-![Login dialog screenshot](screenshots/login_dialog.png)
+```{image} screenshots/login_dialog.png
+:alt: Loging dialog with username and password fields
+:width: 400px
+:align: center
+```
 
 ```{note}
 You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
