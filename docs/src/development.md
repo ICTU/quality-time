@@ -387,7 +387,7 @@ If all preconditions are met, the release script will bump the version numbers, 
 
 The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
 
-## Maintain
+## Maintenance
 
 Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
 

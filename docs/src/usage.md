@@ -76,7 +76,11 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding subjects
 
+![Adding subject screenshot](screenshots/adding_subject.png)
+
 Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to add a new subject. The subject is added to the report dashboard.
+
+Alternatively, you can also copy an existing subject or move an existing subject to the report. Clicking the "Copy subject" or "Move subject" button shows a drop down menu with all of the subjects to choose from. Copying or moving a subject also copies or moves the metrics and sources of the subject.
 
 #### Editing subjects
 
@@ -102,11 +106,13 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding metrics
 
-To add a metric to a subject, hit the "Add metric" button.
+To add a metric to a subject, hit the "Add metric" button to create a new metric.
 
 ![Adding metric screenshot](screenshots/adding_metric.png)
 
 *Quality-time* adds a metric to the report that you can next configure. It's immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
+
+Alternatively, you can also copy an existing metric or move an existing metric to the subject. Clicking the "Copy metric" or "Move metric" button shows a drop down menu with all of the metrics to choose from. Copying or moving a metric also copies or moves the sources of the metric.
 
 #### Editing metrics
 
@@ -114,7 +120,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Duplicated lines" in the example below, but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
@@ -128,7 +134,9 @@ The "Metric unit" derives its default value from the metric type. Override as ne
 
 The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 
-If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
+If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. 
+
+The "Comment" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supoorted.
 
 #### Reordering metrics
 
@@ -150,11 +158,13 @@ To add a source to a metric, expand the metric in the metric table and then clic
 
 ![Adding source screenshot](screenshots/adding_source.png)
 
+Alternatively, you can also copy an existing source or move an existing source to the metric. Clicking the "Copy source" or "Move source" button shows a drop down menu with all of the sources to choose from.
+
 If you add multiple sources for one metric the measurement values of each source are combined to get one measurement value for the metric. Usually this means adding up the values, but for some metrics this doesn't make sense and the minimum or maximum value of the sources is used as the metric value.
 
 #### Editing sources
 
-After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. SonarQube supports the commented out code metric type, but GitLab does not so GitLab is not shown.
+After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. OWASP Dependency Check supports the security warnings metric type, but GitLab does not so GitLab is not shown.
 
 By default, the name of the source equals the source type but this can be overridden using the "Source name" field.
 
