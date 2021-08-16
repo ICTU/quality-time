@@ -34,27 +34,31 @@ Some screenshots to wet your appetite.
 
 *Quality-time* shows a summary of the projects on its landing page:
 
-![Screenshot](docs/source/screenshots/projects_dashboard.png)
+![Screenshot](docs/src/screenshots/projects_dashboard.png)
 
 ### Metrics overview
 
 For each metric, *Quality-time* displays the key data:
 
-![Screenshot](docs/source/screenshots/metrics.png)
+![Screenshot](docs/src/screenshots/metrics.png)
 
 ### Metric details
 
 Users can expand the metrics to see and configure the metric details:
 
-![Screenshot](docs/source/screenshots/metric_details.png)
+![Screenshot](docs/src/screenshots/metric_details.png)
 
-And to manage false positives:
+Keep track of trends:
 
-![Screenshot](docs/source/screenshots/metric_entities.png)
+![Screenshot](docs/src/screenshots/metric_trendgraph.png)
+
+And manage false positives:
+
+![Screenshot](docs/src/screenshots/metric_entities.png)
 
 ## Features
 
-Implemented features so far include:
+Implemented features include:
 
 - Robust data collection (the collector should never fail, even in the face of misconfigured or unavailable sources).
 - Measurement history is kept in a database, allowing for time travel.
