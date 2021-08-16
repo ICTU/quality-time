@@ -7,6 +7,9 @@ Welcome to Quality-time's documentation!
 ========================================
 
 .. toctree::
+   intro.md
+
+.. toctree::
    :maxdepth: 2
    :caption: User documentation
 
