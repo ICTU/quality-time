@@ -18,7 +18,7 @@ function AboutAppColumn() {
             <List.Item as='a' href="https://www.ictu.nl/about-us">Developed by ICTU</List.Item>
             <List.Item as='a' href='https://github.com/ICTU/quality-time/blob/master/LICENSE'>License</List.Item>
             <List.Item as='a' href='https://quality-time.readthedocs.io/en/latest/changelog.html'>Changelog</List.Item>
-            <List.Item as='a' href="">Source code</List.Item>
+            <List.Item as='a' href="https://github.com/ICTU/quality-time">Source code</List.Item>
         </FooterColumn>
     )
 }
