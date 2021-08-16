@@ -4,3 +4,4 @@ gitpython==3.1.18
 myst-parser==0.15.1
 Sphinx==4.1.2
 sphinx-copybutton==0.4.0
+sphinx_panels==0.6.0

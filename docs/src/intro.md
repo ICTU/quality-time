@@ -1,4 +1,3 @@
-
 # About *Quality-time*
 
 *Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
@@ -9,23 +8,23 @@ Users can add and configure reports, metrics, and sources (such as SonarQube and
 
 *Quality-time* is developed by [ICTU](https://ictu.nl/about-us), an independent consultancy and project organisation within the Dutch government, helping government organizations develop and implement digital services.
 
-## Screenshots
+# Screenshots
 
 Some screenshots to wet your appetite.
 
-### Projects dashboard
+## Projects dashboard
 
 *Quality-time* shows a summary of the projects on its landing page:
 
 ![Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts](screenshots/projects_dashboard.png)
 
-### Metrics overview
+## Metrics overview
 
 For each metric, *Quality-time* displays the key data:
 
 ![Screenshot of a demo app with metrics that have different statuses](screenshots/metrics.png)
 
-### Metric details
+## Metric details
 
 Users can expand the metrics to see and configure the metric details:
 
@@ -39,7 +38,7 @@ And manage false positives:
 
 ![Screenshot of a metric's entities, in this case suppressed violations](screenshots/metric_entities.png)
 
-## Features
+# Features
 
 Implemented features include:
 
@@ -56,7 +55,7 @@ Implemented features include:
 
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
 
-## Trying it out
+# Trying it out
 
 *Quality-time* requires Docker and Docker-compose.
 
