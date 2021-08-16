@@ -24,6 +24,7 @@ You can either use your canonical LDAP name as username or your LDAP user id. Pl
 
 ```{index} Gravatar
 ```
+
 After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be shown next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
@@ -32,6 +33,7 @@ Clicking "Logout" logs you out from *Quality-time*. Your user session expires af
 
 ```{index} Permissions
 ```
+
 ## Configuring permissions
 
 *Quality-time* implements a simple permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit reports, subjects, metrics, sources and measured entities. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights.
@@ -62,6 +64,7 @@ You need to be logged in to be able to edit quality reports.
 
 ```{index} Report
 ```
+
 ### Configuring reports
 
 #### Adding reports
@@ -84,6 +87,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 ```{index} Subject
 ```
+
 ### Configuring subjects
 
 #### Adding subjects
@@ -116,6 +120,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 ```{index} Metric
 ```
+
 ### Configuring metrics
 
 #### Adding metrics
@@ -148,9 +153,7 @@ The "Metric {index}`unit <Unit>`" derives its default value from the metric type
 
 The "Metric {index}`target <Target>`" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 
-```{index} Technical debt
-```
-If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. 
+If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *{index}`technical debt <Technical debt>`*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field.
 
 The "{index}`Comment`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supoorted.
 
@@ -168,6 +171,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 ```{index} Source
 ```
+
 ### Configuring sources
 
 #### Adding sources
@@ -202,6 +206,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 ```{index} Entity
 ```
+
 ### Configuring entities
 
 An entity is a measured entity like for example one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
@@ -214,6 +219,7 @@ When clicking on one of the entities, it can be expanded and edited. Options are
 
 ```{index} Metrics
 ```
+
 ### Metrics
 
 One special metric type is "Metrics". It counts the number of metrics in a quality report. This makes it possible to create 'meta'-reports that for example measure the number of security metrics that don't meet their target.
@@ -226,6 +232,7 @@ Note that when the "Metrics" metric is itself part of the set of metrics it coun
 
 ```{index} Unmerged branches
 ```
+
 ### Unmerged branches
 
 The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -236,6 +243,7 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 ```{index} Merge requests
 ```
+
 ### Merge requests
 
 The merge requests metric reports the number of merge requests. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -246,6 +254,7 @@ In itself, the number of merge requests is not indicative of software quality. H
 
 ```{index} GitLab
 ```
+
 ### GitLab
 
 Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
@@ -274,20 +283,26 @@ If the repository is private, you also need to enter an [personal access token](
 
 ```{index} Jenkins
 ```
+
 ```{index} Jenkins test report
 ```
+
 ```{index} JaCoCo Jenkins plugin
 ```
+
 ```{index} OWASP Dependency Check Jenkins plugin
 ```
+
 ### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP Dependency Check Jenkins plugin
 
 To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike other sources, when using the API token Jenkins also requires the username to which the token belongs.
 
 ```{index} Security warnings metric
 ```
+
 ```{index} Generic JSON format for security warnings
 ```
+
 ### Generic JSON format for security warnings
 
 In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a simple generic format.
@@ -319,12 +334,14 @@ Users can customize quality reports on an individual basis by changing the dashb
 
 ```{index} Dashboard
 ```
+
 ### Customizing dashboards
 
 Both the reports dashboard on the *Quality-time* landing page and the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
 
 ```{index} Trend table
 ```
+
 ### Subject trend table
 
 By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also show multiple recent measurement values of each metric in the form of a trend table. Use the 'hamburger' menu on the top left-hand side of the metric table to switch between the 'details' and 'trend table' views.  The hamburger menu can also be used to show more or fewer dates and to configure the number of weeks between dates.
@@ -335,6 +352,7 @@ Metrics can be sorted by clicking on the table column headers. The sort order cy
 
 ```{index} Tag
 ```
+
 ### Filtering metrics by tag
 
 In a report's dashboard, click on a tag card to show only metrics that have the selected tag. The selected tag turns blue to indicate it is filtered on. Click the selected tag again to turn off the filtering. Selecting multiple tags shows metrics that have at least one of the selected tags.
@@ -351,8 +369,10 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 
 ```{index} Export report
 ```
+
 ```{index} PDF
 ```
+
 ## Export reports as PDF
 
 *Quality-time* reports can be downloaded as PDF. To create PDFs, *Quality-time* has a rendering service included to convert the HTML report into PDF.
@@ -385,8 +405,10 @@ To export an older version of a report, add the `report_date` parameter with a d
 
 ```{index} Export report
 ```
+
 ```{index} Import report
 ```
+
 ## Export and import reports as JSON
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
@@ -432,6 +454,7 @@ To allow for seeding a *Quality-time* instance with default reports, imported re
 
 ```{index} Notification
 ```
+
 ## Notifications
 
 *Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).

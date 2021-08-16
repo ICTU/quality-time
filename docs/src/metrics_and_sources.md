@@ -8,6 +8,7 @@ This is an overview of all the metrics that *Quality-time* can measure. For each
 
 ```{index} Accessibility violations
 ```
+
 ### Accessibility violations
 
 The number of accessibility violations in the web user interface of the software.
@@ -28,6 +29,7 @@ Default tags
 
 ```{index} Commented out code
 ```
+
 ### Commented out code
 
 The number of blocks of commented out lines of code.
@@ -47,6 +49,7 @@ Default tags
 
 ```{index} Complex units
 ```
+
 ### Complex units
 
 The amount of units (classes, functions, methods, files) that are too complex.
@@ -68,6 +71,7 @@ Default tags
 
 ```{index} Dependencies
 ```
+
 ### Dependencies
 
 The amount of (outdated) dependencies.
@@ -91,6 +95,7 @@ Default tags
 
 ```{index} Duplicated lines
 ```
+
 ### Duplicated lines
 
 The amount of lines that are duplicated.
@@ -111,6 +116,7 @@ Default tags
 
 ```{index} Failed CI-jobs
 ```
+
 ### Failed CI-jobs
 
 The number of continuous integration jobs or pipelines that have failed.
@@ -132,6 +138,7 @@ Default tags
 
 ```{index} Issues
 ```
+
 ### Issues
 
 The number of issues.
@@ -150,6 +157,7 @@ Scales
 
 ```{index} Long units
 ```
+
 ### Long units
 
 The amount of units (functions, methods, files) that are too long.
@@ -170,6 +178,7 @@ Default tags
 
 ```{index} Manual test duration
 ```
+
 ### Manual test duration
 
 The duration of the manual test in minutes.
@@ -189,6 +198,7 @@ Default tags
 
 ```{index} Manual test execution
 ```
+
 ### Manual test execution
 
 Measure the number of manual test cases that have not been tested on time.
@@ -208,6 +218,7 @@ Default tags
 
 ```{index} Many parameters
 ```
+
 ### Many parameters
 
 The amount of units (functions, methods, procedures) that have too many parameters.
@@ -228,6 +239,7 @@ Default tags
 
 ```{index} Merge requests
 ```
+
 ### Merge requests
 
 The amount of merge requests.
@@ -249,6 +261,7 @@ Default tags
 
 ```{index} Metrics
 ```
+
 ### Metrics
 
 The amount of metrics from one more quality reports, with specific states and/or tags.
@@ -266,6 +279,7 @@ Scales
 
 ```{index} Missing metrics
 ```
+
 ### Missing metrics
 
 Count the number of metrics that can be added to each report, but have not been added yet.
@@ -283,6 +297,7 @@ Scales
 
 ```{index} Performancetest duration
 ```
+
 ### Performancetest duration
 
 The duration of the performancetest in minutes.
@@ -302,6 +317,7 @@ Default tags
 
 ```{index} Performancetest stability
 ```
+
 ### Performancetest stability
 
 The duration of the performancetest at which throughput or error count increases.
@@ -321,6 +337,7 @@ Default tags
 
 ```{index} Scalability
 ```
+
 ### Scalability
 
 The percentage of (max) users at which ramp-up of throughput breaks.
@@ -340,6 +357,7 @@ Default tags
 
 ```{index} Security warnings
 ```
+
 ### Security warnings
 
 The number of security warnings about the software.
@@ -369,6 +387,7 @@ Default tags
 
 ```{index} Size (LOC)
 ```
+
 ### Size (LOC)
 
 The size of the software in lines of code.
@@ -389,6 +408,7 @@ Default tags
 
 ```{index} Slow transactions
 ```
+
 ### Slow transactions
 
 The number of transactions slower than their performance threshold.
@@ -408,6 +428,7 @@ Default tags
 
 ```{index} Source up-to-dateness
 ```
+
 ### Source up-to-dateness
 
 The number of days since the source was last updated.
@@ -452,6 +473,7 @@ Default tags
 
 ```{index} Source version
 ```
+
 ### Source version
 
 The version number of the source.
@@ -483,6 +505,7 @@ Default tags
 
 ```{index} Suppressed violations
 ```
+
 ### Suppressed violations
 
 The amount of violations suppressed in the source.
@@ -503,6 +526,7 @@ Default tags
 
 ```{index} Test branch coverage
 ```
+
 ### Test branch coverage
 
 The amount of code branches not covered by tests.
@@ -528,6 +552,7 @@ Default tags
 
 ```{index} Test cases
 ```
+
 ### Test cases
 
 The amount of test cases.
@@ -550,6 +575,7 @@ Default tags
 
 ```{index} Test line coverage
 ```
+
 ### Test line coverage
 
 The amount of lines of code not covered by tests.
@@ -575,6 +601,7 @@ Default tags
 
 ```{index} Tests
 ```
+
 ### Tests
 
 The amount of tests.
@@ -602,6 +629,7 @@ Default tags
 
 ```{index} Unmerged branches
 ```
+
 ### Unmerged branches
 
 The number of branches that have not been merged to the default branch.
@@ -622,6 +650,7 @@ Default tags
 
 ```{index} Unused CI-jobs
 ```
+
 ### Unused CI-jobs
 
 The number of continuous integration jobs that are unused.
@@ -643,6 +672,7 @@ Default tags
 
 ```{index} User story points
 ```
+
 ### User story points
 
 The total number of points of a selection of user stories.
@@ -663,6 +693,7 @@ Default tags
 
 ```{index} Velocity
 ```
+
 ### Velocity
 
 The average number of user story points delivered in recent sprints.
@@ -682,6 +713,7 @@ Default tags
 
 ```{index} Violation remediation effort
 ```
+
 ### Violation remediation effort
 
 The amount of effort it takes to remediate violations.
@@ -701,6 +733,7 @@ Default tags
 
 ```{index} Violations
 ```
+
 ### Violations
 
 The number of violations of programming rules in the software.
@@ -725,6 +758,7 @@ This is an overview of all the sources that *Quality-time* can use to measure me
 
 ```{index} Anchore
 ```
+
 ### Anchore
 
 Anchore image scan analysis report in JSON format.
@@ -740,6 +774,7 @@ Anchore image scan analysis report in JSON format.
 
 ```{index} Anchore Jenkins plugin
 ```
+
 ### Anchore Jenkins plugin
 
 A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.
@@ -755,6 +790,7 @@ A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.
 
 ```{index} Axe CSV
 ```
+
 ### Axe CSV
 
 An Axe accessibility report in CSV format.
@@ -769,6 +805,7 @@ An Axe accessibility report in CSV format.
 
 ```{index} Axe-core
 ```
+
 ### Axe-core
 
 Axe is an accessibility testing engine for websites and other HTML-based user interfaces.
@@ -785,6 +822,7 @@ Axe is an accessibility testing engine for websites and other HTML-based user in
 
 ```{index} Azure DevOps Server
 ```
+
 ### Azure DevOps Server
 
 Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.
@@ -806,6 +844,7 @@ Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft prov
 
 ```{index} Bandit
 ```
+
 ### Bandit
 
 Bandit is a tool designed to find common security issues in Python code.
@@ -821,6 +860,7 @@ Bandit is a tool designed to find common security issues in Python code.
 
 ```{index} Calendar date
 ```
+
 ### Calendar date
 
 Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test.
@@ -831,6 +871,7 @@ Warn when the date is too long ago. Can be used to, for example, warn when it is
 
 ```{index} Checkmarx CxSAST
 ```
+
 ### Checkmarx CxSAST
 
 Static analysis software to identify security vulnerabilities in both custom code and open source components.
@@ -847,6 +888,7 @@ Static analysis software to identify security vulnerabilities in both custom cod
 
 ```{index} Cobertura
 ```
+
 ### Cobertura
 
 Cobertura is a free Java tool that calculates the percentage of code accessed by tests.
@@ -864,6 +906,7 @@ Cobertura is a free Java tool that calculates the percentage of code accessed by
 
 ```{index} Cobertura Jenkins plugin
 ```
+
 ### Cobertura Jenkins plugin
 
 Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed by tests.
@@ -880,6 +923,7 @@ Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of
 
 ```{index} Composer
 ```
+
 ### Composer
 
 A Dependency Manager for PHP.
@@ -894,6 +938,7 @@ A Dependency Manager for PHP.
 
 ```{index} GitLab
 ```
+
 ### GitLab
 
 GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.
@@ -913,6 +958,7 @@ GitLab provides Git-repositories, wiki's, issue-tracking and continuous integrat
 
 ```{index} JSON file with security warnings
 ```
+
 ### JSON file with security warnings
 
 A generic vulnerability report with security warnings in JSON format.
@@ -927,6 +973,7 @@ A generic vulnerability report with security warnings in JSON format.
 
 ```{index} JUnit XML report
 ```
+
 ### JUnit XML report
 
 Test reports in the JUnit XML format.
@@ -943,6 +990,7 @@ Test reports in the JUnit XML format.
 
 ```{index} JaCoCo
 ```
+
 ### JaCoCo
 
 JaCoCo is an open-source tool for measuring and reporting Java code coverage.
@@ -959,6 +1007,7 @@ JaCoCo is an open-source tool for measuring and reporting Java code coverage.
 
 ```{index} JaCoCo Jenkins plugin
 ```
+
 ### JaCoCo Jenkins plugin
 
 A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin.
@@ -975,6 +1024,7 @@ A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugi
 
 ```{index} Jenkins
 ```
+
 ### Jenkins
 
 Jenkins is an open source continuous integration/continuous deployment server.
@@ -992,6 +1042,7 @@ Jenkins is an open source continuous integration/continuous deployment server.
 
 ```{index} Jenkins test report
 ```
+
 ### Jenkins test report
 
 A Jenkins job with test results.
@@ -1007,6 +1058,7 @@ A Jenkins job with test results.
 
 ```{index} Jira
 ```
+
 ### Jira
 
 Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.
@@ -1027,6 +1079,7 @@ Jira is a proprietary issue tracker developed by Atlassian supporting bug tracki
 
 ```{index} Manual number
 ```
+
 ### Manual number
 
 A manual number.
@@ -1037,6 +1090,7 @@ All metrics with the count or percentage scale can be measured with this source)
 
 ```{index} NCover
 ```
+
 ### NCover
 
 A .NET code coverage solution.
@@ -1053,6 +1107,7 @@ A .NET code coverage solution.
 
 ```{index} OJAudit
 ```
+
 ### OJAudit
 
 An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.
@@ -1067,6 +1122,7 @@ An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules
 
 ```{index} OWASP Dependency Check
 ```
+
 ### OWASP Dependency Check
 
 Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.
@@ -1084,6 +1140,7 @@ Dependency-Check is a utility that identifies project dependencies and checks if
 
 ```{index} OWASP ZAP
 ```
+
 ### OWASP ZAP
 
 The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested.
@@ -1100,6 +1157,7 @@ The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabil
 
 ```{index} OpenVAS
 ```
+
 ### OpenVAS
 
 OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management.
@@ -1116,6 +1174,7 @@ OpenVAS (Open Vulnerability Assessment System) is a software framework of severa
 
 ```{index} Performancetest-runner
 ```
+
 ### Performancetest-runner
 
 An open source tool to run performancetests and create performancetest reports.
@@ -1135,6 +1194,7 @@ An open source tool to run performancetests and create performancetest reports.
 
 ```{index} Pyupio Safety
 ```
+
 ### Pyupio Safety
 
 Safety checks Python dependencies for known security vulnerabilities.
@@ -1149,6 +1209,7 @@ Safety checks Python dependencies for known security vulnerabilities.
 
 ```{index} Quality-time
 ```
+
 ### Quality-time
 
 Quality report software for software development and maintenance.
@@ -1166,6 +1227,7 @@ Quality report software for software development and maintenance.
 
 ```{index} Robot Framework
 ```
+
 ### Robot Framework
 
 Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation.
@@ -1182,6 +1244,7 @@ Robot Framework is a generic open source automation framework for acceptance tes
 
 ```{index} Robot Framework Jenkins plugin
 ```
+
 ### Robot Framework Jenkins plugin
 
 A Jenkins plugin for Robot Framework, a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation.
@@ -1197,6 +1260,7 @@ A Jenkins plugin for Robot Framework, a generic open source automation framework
 
 ```{index} Snyk
 ```
+
 ### Snyk
 
 Snyk vulnerability report in JSON format.
@@ -1211,6 +1275,7 @@ Snyk vulnerability report in JSON format.
 
 ```{index} SonarQube
 ```
+
 ### SonarQube
 
 SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages.
@@ -1239,6 +1304,7 @@ SonarQube is an open-source platform for continuous inspection of code quality t
 
 ```{index} TestNG
 ```
+
 ### TestNG
 
 Test reports in the TestNG XML format.
@@ -1255,6 +1321,7 @@ Test reports in the TestNG XML format.
 
 ```{index} Trello
 ```
+
 ### Trello
 
 Trello is a collaboration tool that organizes projects into boards.
@@ -1270,6 +1337,7 @@ Trello is a collaboration tool that organizes projects into boards.
 
 ```{index} cloc
 ```
+
 ### cloc
 
 cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages.
@@ -1285,6 +1353,7 @@ cloc is an open-source tool for counting blank lines, comment lines, and physica
 
 ```{index} npm
 ```
+
 ### npm
 
 npm is a package manager for the JavaScript programming language.
@@ -1299,6 +1368,7 @@ npm is a package manager for the JavaScript programming language.
 
 ```{index} pip
 ```
+
 ### pip
 
 pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes.

@@ -10,7 +10,7 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
    :class: only-light
 ```
 
-*Quality-time* consists of seven components. 
+*Quality-time* consists of seven components.
 
 Four bespoke components:
 
@@ -96,11 +96,11 @@ class Metric(DescribedModel):
 
 The `name` is the default name of metrics of this type. The `description` describes what the metric measures. These are part of the `DescribedModel`.
 
-The `scales` list shows which scales the metric supports and the `default_scale` specifies which scale is the default scale. 
+The `scales` list shows which scales the metric supports and the `default_scale` specifies which scale is the default scale.
 
-The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units. 
+The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units.
 
-The `addition` determines how values from multiple sources are combined: possible values are `max`, `min`, and `sum`. 
+The `addition` determines how values from multiple sources are combined: possible values are `max`, `min`, and `sum`.
 
 The `direction` specifies whether smaller measurement values are better or worse.
 
@@ -167,7 +167,7 @@ class Parameter(NamedModel):
 
 Each parameter has a `name` (via `NamedModel`) and a `short_name` used as label in the user interface. The parameter can have a `help` string or a `help_url` (but not both).
 
-The `type` specifies the type of the parameter and the widget used to get user input. Possible values are amongst others `string`, `password`, `integer`, and `multiple_choice`. 
+The `type` specifies the type of the parameter and the widget used to get user input. Possible values are amongst others `string`, `password`, `integer`, and `multiple_choice`.
 
 The `placeholder` contains text to display in case of multiple choice parameters. For example, in the case of a multiple choice 'severities' parameter with possible values of 'low', 'medium', 'high', the placeholder can be set to 'all severities' to indicate that by default all severities will be measured.
 
@@ -179,7 +179,7 @@ The `unit` indicates the unit of the parameter. If the `type` is `integer` the `
 
 For each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
-If the `type` is `multiple_choice` the possible `values` need to be specified. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source. 
+If the `type` is `multiple_choice` the possible `values` need to be specified. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source.
 
 The `validate_on` field specifies that the parameter needs to be validated when the parameters in the list change. This can be used to specify that e.g. a url parameter must be validated when the user changes the password parameter.
 
@@ -212,13 +212,13 @@ class EntityAttribute(NamedModel):
 
 Each entity contains the name (both singular and plural) of the entities and a list of `attributes`.
 
-The attributes are shown as columns in the front end. Each attribute/column consists of a `name` (via `NamedModel`), which is used as column header, and a `key`, used to get the data from the database. 
+The attributes are shown as columns in the front end. Each attribute/column consists of a `name` (via `NamedModel`), which is used as column header, and a `key`, used to get the data from the database.
 
-An attribute/column can have a key `url` to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. 
+An attribute/column can have a key `url` to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way.
 
-To specify the data type of the attribute/column, use the `type` field. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. 
+To specify the data type of the attribute/column, use the `type` field. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime.
 
-Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states). 
+Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states).
 
 Users can mark entities as false positive to ignore them. By default, *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The entity field `measured_attribute` determines which attribute to use.
 
@@ -310,7 +310,7 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 ## Proxy
 
-The proxy routes traffic from and to the user's browser. *Quality-time* uses the [ICTU variant of Caddy](https://github.com/ICTU/caddy) as proxy, but this can be replaced by another proxy if so desired. 
+The proxy routes traffic from and to the user's browser. *Quality-time* uses the [ICTU variant of Caddy](https://github.com/ICTU/caddy) as proxy, but this can be replaced by another proxy if so desired.
 
 The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) simply wraps the Caddy image in a *Quality-time* image so the Caddy version number can be changed when needed.
 
@@ -362,4 +362,4 @@ The LDAP database has two (*) users:
 | Jane Doe      | janedoe@example.org | jadoe    | secret   |
 | John Doe      | johndoe@example.org | jodoe    | secret   |
 
-(*) The `osixia/openldap` Docker image normally has an administrator user as well, but due to [this issue in OpenLDAP 1.5.0](https://github.com/osixia/docker-openldap/issues/555) this user is currently not available. 
+(*) The `osixia/openldap` Docker image normally has an administrator user as well, but due to [this issue in OpenLDAP 1.5.0](https://github.com/osixia/docker-openldap/issues/555) this user is currently not available.

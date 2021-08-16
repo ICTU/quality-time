@@ -46,7 +46,7 @@ def definition_list(term: str, *definitions: str) -> str:
 
 def markdown_header(header: str, level: int = 1, index: bool = False) -> str:
     """Return a Markdown header."""
-    index_preamble = f"\n```{{index}} {header}\n```\n" if index else ("\n" if level > 1 else "")
+    index_preamble = f"\n```{{index}} {header}\n```\n\n" if index else ("\n" if level > 1 else "")
     return index_preamble + "#" * level + f" {header}\n\n"
 
 
