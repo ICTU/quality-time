@@ -1110,7 +1110,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Fixed
 
 - Add performance test stability and scalability metrics to the example report. Fixes [#447](https://github.com/ICTU/quality-time/issues/447).
-- Set up a new LDAP connection for each authentication in an attempt to prevent a "Broken pipe" between *Quality-time* and the LDAP-server. Fixes [#469](https://github.com/ICTU/quality-time/issues/469).
+- Set up a new LDAP connection for each authentication in an attempt to prevent a "Broken pipe" between *Quality-time* and the LDAP server. Fixes [#469](https://github.com/ICTU/quality-time/issues/469).
 
 ## [0.4.1] - [2019-07-08]
 
