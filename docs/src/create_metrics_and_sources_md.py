@@ -193,8 +193,7 @@ def metric_source_configuration_section(data_model, metric_key, source_key) -> s
 
 def data_model_as_table(data_model) -> str:
     """Return the data model as Markdown table."""
-    markdown = markdown_header("Metrics and sources reference")
-    markdown += markdown_paragraph(
+    markdown = markdown_paragraph(
         "This is an overview of all [metrics](#metrics) that *Quality-time* can measure and all "
         "[sources](#sources) that *Quality-time* can use to measure the metrics. For each "
         "[supported combination of metric and source](#metric-source-combinations), the parameters "
