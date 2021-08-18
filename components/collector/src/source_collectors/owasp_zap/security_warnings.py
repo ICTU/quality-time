@@ -40,8 +40,8 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         """Create an alert instance entity."""
         method = alert_instance.findtext("method", default="")
         uri = self.__stable_url(hashless(URL(alert_instance.findtext("uri", default=""))))
-        key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
-        old_key = md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}")
+        key = md5_hash(f"{':'.join(ids[:-1])}:{method}:{uri}")
+        old_key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
         location = f"{method} {uri}"
         return Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
 
