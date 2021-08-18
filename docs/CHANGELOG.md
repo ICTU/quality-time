@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Add subject name to metrics in MS Teams notifications, so it's clear which metric changed status when different subjects have metrics with the same name. Fixes [#2353](https://github.com/ICTU/quality-time/issues/2353).
 - After reloading a report, edit controls are shown even when the user has no edit permission. Fixes [#2373](https://github.com/ICTU/quality-time/issues/2373).
 - The security warnings in OWASP ZAP reports do not have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. Therefore, *Quality-time* generates keys for OWASP ZAP security warnings itself. Unfortunately, the key that *Quality-time* generated, was not guaranteed to be unique. Fixes [#2429](https://github.com/ICTU/quality-time/issues/2429).
+- JUnit XML files may have empty test suites, be prepared. Fixes [#2507](https://github.com/ICTU/quality-time/issues/2507).
 
 ### Added
 
