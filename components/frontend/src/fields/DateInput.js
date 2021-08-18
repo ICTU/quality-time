@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
-import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react';
+import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react-17';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 
