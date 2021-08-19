@@ -13,9 +13,7 @@ test('DeleteButton has the correct label', () => {
     expect(screen.getAllByText(/bar/).length).toBe(1);
 });
 
-const item_types = ["report", "subject", "metric", "source"];
-
-item_types.forEach((item_type) => {
+["report", "subject", "metric", "source"].forEach((item_type) => {
     test('CopyButton has the correct label', () => {
         render(<CopyButton item_type={item_type} />);
         expect(screen.getAllByText(new RegExp(`Copy ${item_type}`)).length).toBe(1);
@@ -69,13 +67,12 @@ test("DownloadAsPDFButton has the correct label", () => {
 
 jest.mock("../api/fetch_server_api.js")
 
-const test_report = {
-    report_uuid: "report_uuid"
-};
+const test_report = { report_uuid: "report_uuid" };
+const history = { location: { search: "" } };
 
 test("DownloadAsPDFButton indicates loading on click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
+    render(<DownloadAsPDFButton report={test_report} history={history} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
@@ -84,7 +81,7 @@ test("DownloadAsPDFButton indicates loading on click", async () => {
 
 test("DownloadAsPDFButton ignotes a second click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
+    render(<DownloadAsPDFButton report={test_report} history={history} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
@@ -95,7 +92,7 @@ test("DownloadAsPDFButton ignotes a second click", async () => {
 test("DownloadAsPDFButton stops loading after returning pdf", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue("pdf");
     window.URL.createObjectURL = jest.fn();
-    render(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
+    render(<DownloadAsPDFButton report={test_report} history={history} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
@@ -105,65 +102,25 @@ test("DownloadAsPDFButton stops loading after returning pdf", async () => {
 test("DownloadAsPDFButton stops loading after receiving error", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false });
     window.URL.createObjectURL = jest.fn();
-    render(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
+    render(<DownloadAsPDFButton report={test_report} history={history} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
     expect(screen.getByText(/Download/).className).not.toContain("loading")
 });
 
-test("ReorderButtonGroup calls the callback on click first", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the first position"));
-    expect(mockCallBack).toHaveBeenCalledWith("first");
-});
+["first", "last", "previous", "next"].forEach((direction) => {
+    test("ReorderButtonGroup calls the callback on click direction", () => {
+        const mockCallBack = jest.fn();
+        render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
+        fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`));
+        expect(mockCallBack).toHaveBeenCalledWith(direction);
+    });
 
-test('ReorderButtonGroup does not call the callback on click first when the button group is first', () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} first={true} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the first position"));
-    expect(mockCallBack).not.toHaveBeenCalled();
-});
-
-test("ReorderButtonGroup calls the callback on click previous", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the previous position"));
-    expect(mockCallBack).toHaveBeenCalledWith("previous");
-});
-
-test("ReorderButtonGroup does not call the callback on click previous when the button group is first", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} first={true} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the previous position"));
-    expect(mockCallBack).not.toHaveBeenCalled();
-})
-
-test("ReorderButtonGroup calls the callback on click next", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the next position"));
-    expect(mockCallBack).toHaveBeenCalledWith("next");
-});
-
-test("ReorderButtonGroup does not call the callback on click next when the button group is last", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} last={true} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the next position"));
-    expect(mockCallBack).not.toHaveBeenCalled();
-});
-
-test("ReorderButtonGroup calls the callback on click last", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the last position"));
-    expect(mockCallBack).toHaveBeenCalledWith("last");
-});
-
-test("ReorderButtonGroup does not call the callback on click last when the button group is last", () => {
-    const mockCallBack = jest.fn();
-    render(<ReorderButtonGroup onClick={mockCallBack} last={true} moveable="item" />);
-    fireEvent.click(screen.getByLabelText("Move item to the last position"));
-    expect(mockCallBack).not.toHaveBeenCalled();
+    test('ReorderButtonGroup does not call the callback on click direction when the button group is already there', () => {
+        const mockCallBack = jest.fn();
+        render(<ReorderButtonGroup onClick={mockCallBack} first={true} last={true} moveable="item" />);
+        fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`));
+        expect(mockCallBack).not.toHaveBeenCalled();
+    });
 });
