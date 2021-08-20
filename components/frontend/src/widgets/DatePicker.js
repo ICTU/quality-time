@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DateInput } from 'semantic-ui-calendar-react';
+import { DateInput } from 'semantic-ui-calendar-react-17';
 import { isValidDate_DDMMYYYY } from '../utils';
 
 export function DatePicker(props) {

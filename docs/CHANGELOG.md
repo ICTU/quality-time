@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - The API endpoint `/api/v3/report/{report_uuid}` now also supports tag uuid's.
 - Use [react-toastify](https://www.npmjs.com/package/react-toastify) for toast messages instead of the unmaintained [react-semantic-toasts](https://www.npmjs.com/package/react-semantic-toasts). Fixes [#2290](https://github.com/ICTU/quality-time/issues/2290).
+- Use [semantic-ui-calendar-react-17](https://www.npmjs.com/package/semantic-ui-calendar-react-17) for date pickers instead of the unmaintained [semantic-ui-calendar-react](https://www.npmjs.com/package/semantic-ui-calendar-react). Fixes [#2291](https://github.com/ICTU/quality-time/issues/2291).
 
 ### Deprecated
 
