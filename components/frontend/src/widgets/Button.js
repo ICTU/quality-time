@@ -103,11 +103,9 @@ export function ReorderButtonGroup(props) {
   )
 }
 
-function ActionAndItemPickerButton(props) {
-  const [options_loaded, setOptionsLoaded] = useState(false);
+function ActionAndItemPickerButton({ action, item_type, onChange, get_options, icon }) {
   const [options, setOptions] = useState([]);
 
-  var { action, item_type, onChange, get_options, icon } = props;
   var breadcrumb_props = { report: "report" };
   if (item_type !== 'report') {
     breadcrumb_props.subject = 'subject';
@@ -129,11 +127,12 @@ function ActionAndItemPickerButton(props) {
           header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
           options={options}
           onChange={(event, { value }) => onChange(value)}
-          onOpen={() => { if (!options_loaded) { setOptions(get_options()); setOptionsLoaded(true); } }}
+          onOpen={() => setOptions(get_options()) }
           scrolling
           selectOnBlur={false}
           selectOnNavigation={false}
           trigger={<><Icon name={icon} /> {`${action} ${item_type} `}</>}
+          value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
         />}
     />
   )
