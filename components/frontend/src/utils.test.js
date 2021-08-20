@@ -1,14 +1,5 @@
-import * as react_semantic_toast from 'react-semantic-toasts';
-import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, show_message, format_minutes } from './utils';
+import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, format_minutes } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
-
-jest.mock("react-semantic-toasts");
-
-it('shows a message', () => {
-  react_semantic_toast.toast = jest.fn();
-  show_message("error", "Error", "Description");
-  expect(react_semantic_toast.toast.mock.calls[0][0].type).toBe("error");
-});
 
 it('rounds numbers nicely', () => {
   expect(nice_number(15)).toBe(20);

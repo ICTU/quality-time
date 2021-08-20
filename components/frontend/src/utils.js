@@ -1,6 +1,5 @@
 import { parse, stringify } from 'query-string';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-semantic-toasts';
+import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 
 export function get_metric_direction(metric, data_model) {
@@ -45,16 +44,6 @@ export function get_metric_tags(metric) {
     return tags
 }
 
-export function show_message(type, title, description, icon) {
-    toast({
-        title: title,
-        type: type,
-        icon: icon,
-        size: "large",
-        description: <p>{description}</p>,
-        time: 30000
-    }, () => { }, () => { }, () => { });  // Event handlers are mandatory
-}
 
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

@@ -1,6 +1,6 @@
 """Step implementations for sources."""
 
-from asserts import assert_equal, assert_false, assert_not_equal
+from asserts import assert_equal, assert_false, assert_not_equal, assert_in
 from behave import then, when
 
 from item import get_item
@@ -26,22 +26,33 @@ def change_source_parameter(context, parameter, value, scope="source"):
     )
 
 
-@then('the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}"')
-def check_source_parameter_and_availability(context, parameter, value, status_code):
+@then('the source parameter {parameter} equals "{value}"')
+def check_source_parameter(context, parameter, value):
     """Check that the source parameter equals value."""
-    post_response = context.response.json()
     source = get_item(context, "source")
     assert_equal(sanitize_value(value), source["parameters"][parameter])
+
+
+@then('the availability status code equals "{status_code}"')
+def check_source_parameter_availability_status_code(context, status_code):
+    """Check the availability status code."""
+    post_response = context.post_response.json()
     if status_code == "None":
         assert_false("availability" in post_response)
     else:
         assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
 
 
-@then('the source parameter {parameter} equals "{value}"')
-def check_source_parameter(context, parameter, value):
-    """Check that the source parameter equals value."""
-    check_source_parameter_and_availability(context, parameter, value, "None")
+@then('the availability status reason equals "{message1}"')
+@then('the availability status reason equals either "{message1}" or "{message2}"')
+def check_source_parameter_availability_reason(context, message1, message2=""):
+    """Check the availability message."""
+    post_response = context.post_response.json()
+    reason = str(post_response["availability"][0]["reason"])
+    if message1 and message2:
+        assert_in(reason, (message1, message2))
+    else:
+        assert_equal(message1, reason)
 
 
 @then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')

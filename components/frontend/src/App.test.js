@@ -51,7 +51,7 @@ describe("<App/>", () => {
   it('renders all components, while loading', () => {
     const wrapper = shallow(<App />);
     expect(wrapper.find('Menubar').exists()).toBe(true);
-    expect(wrapper.find('SemanticToastContainer').exists()).toBe(true);
+    expect(wrapper.find('ToastContainer').exists()).toBe(true);
     expect(wrapper.find('Container').exists()).toBe(true);
     expect(wrapper.find('Container').find('Segment').exists()).toBe(true);
     expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
