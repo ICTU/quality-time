@@ -40,3 +40,8 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         self.set_source_parameter("url", "junit.zip")
         response = await self.collect(get_request_content=self.zipped_report(("junit.xml", self.JUNIT_XML)))
         self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
+
+    async def test_empty_test_suites(self):
+        """Test that a JUnit XML file with an empty testsuites node works."""
+        response = await self.collect(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
+        self.assert_measurement(response, value="0", total="0")

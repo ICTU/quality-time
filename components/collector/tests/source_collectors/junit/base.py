@@ -15,3 +15,4 @@ class JUnitCollectorTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         <testcase name="tc4" classname="cn"><error/></testcase>
         <testcase name="tc5" classname="cn"><skipped/></testcase>
     </testsuite></testsuites>"""
+    JUNIT_XML_EMPTY_TEST_SUITES = '<testsuites name="Mocha Tests" time="0.0000" tests="0" failures="0"></testsuites>'
