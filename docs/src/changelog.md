@@ -44,14 +44,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Remove the search function as it is very limited and users indicate they don't use it. Closes [#2305](https://github.com/ICTU/quality-time/issues/2305).
 
-## [3.23.3] - [2021-06-29]
+## [3.23.3] - 2021-06-29
 
 ### Fixed
 
 - Work around a [bug in aiohttp](https://github.com/aio-libs/aiohttp/issues/2217) that causes GitLab connections to hang and timeout when the GitLab data is paginated. Fixes [#2231](https://github.com/ICTU/quality-time/issues/2231).
 - The report dashboard layout couldn't be changed. Fixes [#2305](https://github.com/ICTU/quality-time/issues/2305).
 
-## [3.23.2] - [2021-06-17]
+## [3.23.2] - 2021-06-17
 
 ### Fixed
 
@@ -59,13 +59,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Fix a performance regression in the collector component, introduced in v3.23.0.
 - Allow for importing reports with metrics that have no scale or addition attribute. Fixes [#2262](https://github.com/ICTU/quality-time/issues/2262).
 
-## [3.23.1] - [2021-06-13]
+## [3.23.1] - 2021-06-13
 
 ### Fixed
 
 - Allow for importing reports with metrics that have no tags. Fixes [#2262](https://github.com/ICTU/quality-time/issues/2262).
 
-## [3.23.0] - [2021-06-09]
+## [3.23.0] - 2021-06-09
 
 ### Fixed
 
@@ -80,7 +80,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Drop support for Wekan source for Issue and Source-up-to-dateness metrics. Closes [#2229](https://github.com/ICTU/quality-time/issues/2229).
 
-## [3.22.0] - [2021-05-26]
+## [3.22.0] - 2021-05-26
 
 ### Fixed
 
@@ -97,7 +97,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add support for Robot Framework v4 XML files. Closes [#2136](https://github.com/ICTU/quality-time/issues/2136).
 
-## [3.21.0] - [2021-04-25]
+## [3.21.0] - 2021-04-25
 
 ### Fixed
 
@@ -116,7 +116,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Remove the 'random number' source. Closes [#2038](https://github.com/ICTU/quality-time/issues/2038).
 - It's no longer possible to make *Quality-time* wait before sending a notification. Closes [#2039](https://github.com/ICTU/quality-time/issues/2039).
 
-## [3.20.0] - [2021-04-07]
+## [3.20.0] - 2021-04-07
 
 ### Fixed
 
@@ -134,7 +134,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - The axe-selenium-python source type has been removed. To read JSON files produced by axe-selenium-python, use the new Axe-core source type. This works, as the JSON format produced by axe-selenium-python is basically the same as the format produced by Axe-core. Sources of type axe-selenium-python in existing reports are automatically changed into Axe-core. No user action is needed.
 
-## [3.19.1] - [2021-02-28]
+## [3.19.1] - 2021-02-28
 
 ### Fixed
 
@@ -143,7 +143,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - When measuring the up-to-dateness of a folder in GitLab with more than 100 files or subfolders, *Quality-time* uses the GitLab pagination API to retrieve the files and subfolders in batches of 100 each. However, due to a bug, the collector component would get stuck in a loop, retrieving the same files over and over again. Fixes [#1938](https://github.com/ICTU/quality-time/issues/1938).
 - Notifier would not work for recently set notification destinations. Fixes [#1946](https://github.com/ICTU/quality-time/issues/1946).
 
-## [3.19.0] - [2021-02-21]
+## [3.19.0] - 2021-02-21
 
 ### Fixed
 
@@ -157,7 +157,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add a 'merge requests' metric and add Azure Devops and GitLab as possible sources. Closes [#1644](https://github.com/ICTU/quality-time/issues/1644).
 
-## [3.18.0] - [2021-02-03]
+## [3.18.0] - 2021-02-03
 
 ### Fixed
 
@@ -170,7 +170,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - When measuring failed pipelines or unused pipelines with Azure DevOps as source, allow for including pipelines by name or by regular expression. Prepares for [#1804](https://github.com/ICTU/quality-time/issues/1804).
 - Allow using Azure DevOps pipelines as source for the 'source up-to-dateness' metric. Closes [#1804](https://github.com/ICTU/quality-time/issues/1804).
 
-## [3.17.1] - [2021-01-24]
+## [3.17.1] - 2021-01-24
 
 ### Fixed
 
@@ -178,7 +178,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Make sure the notifier component does not crash when a metric has no recent measurements. Fixes [#1831](https://github.com/ICTU/quality-time/issues/1831).
 - Adding or removing the OWASP ZAP "Parts of URLs to ignore" parameter would fail. Fixes [#1846](https://github.com/ICTU/quality-time/issues/1846).
 
-## [3.17.0] - [2021-01-17]
+## [3.17.0] - 2021-01-17
 
 ### Changed
 
@@ -198,7 +198,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Add the tags of accessibility rules to the detail information of axe-selenium-python sources. Closes [#1751](https://github.com/ICTU/quality-time/issues/1751).
 - Allow for filtering axe-selenium-python accessibility violations by tag. Closes [#1752](https://github.com/ICTU/quality-time/issues/1752).
 
-## [3.16.0] - [2020-12-12]
+## [3.16.0] - 2020-12-12
 
 ### Added
 
@@ -216,7 +216,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - MongoDB was upgraded to 4.2.11. No migration steps are needed. Simply update the MongoDB version number in your composition configuration.
 
-## [3.15.0] - [2020-11-29]
+## [3.15.0] - 2020-11-29
 
 ### Added
 
@@ -229,14 +229,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Make sure that the collector does not crash when a metric has a source that is no longer supported. Fixes [#1699](https://github.com/ICTU/quality-time/issues/1699).
 - When measuring test branch coverage with a JaCoCo XML file that doesn't contain any branches, don't complain but simply report 100% coverage. Fixes [#1700](https://github.com/ICTU/quality-time/issues/1700).
 
-## [3.14.1] - [2020-11-17]
+## [3.14.1] - 2020-11-17
 
 ### Fixed
 
 - Undo the fix for [#1656](https://github.com/ICTU/quality-time/issues/1656) as it causes timeouts. This fix was meant to prevent 403 responses (access forbidden) from GitLab when using HEAD requests. If they do still happen (can't reproduce at the moment) we'll need to find another solution. Fixes [#1675](https://github.com/ICTU/quality-time/issues/1675).
 - Turn on processing of all DTD's (despite the fact that security tools complain that this is insecure) because otherwise XML reports referring to a DTD can't be read. Fixes [#1676](https://github.com/ICTU/quality-time/issues/1676).
 
-## [3.14.0] - [2020-11-15]
+## [3.14.0] - 2020-11-15
 
 ### Added
 
@@ -257,7 +257,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655).
 - When using folders and/or files in GitLab as source for the 'source up-to-dateness' metric, *Quality-time* would use HEAD requests to get the ids of commits from GitLab. For issue [#1638](https://github.com/ICTU/quality-time/issues/1638), it was necessary to pass the private token as header instead of URL parameter. Unfortunately, this results in 403 (access forbidden) responses for HEAD requests. It's unclear why. Using GET requests instead does work, so we use that as a work-around. Fixes [#1656](https://github.com/ICTU/quality-time/issues/1656).
 
-## [3.13.0] - [2020-11-08]
+## [3.13.0] - 2020-11-08
 
 ### Added
 
@@ -276,7 +276,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
 - When using the same Microsoft Teams webhook in multiple reports, notifications for one report could also contain metrics of other reports.
 
-## [3.12.0] - [2020-10-31]
+## [3.12.0] - 2020-10-31
 
 ### Added
 
@@ -289,7 +289,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - When a source zip file doesn't contain any files with the expected extension, report an error instead of continuing with an empty list of files, because that may result in incorrect measurements. Fixes [#1618](https://github.com/ICTU/quality-time/issues/1618).
 
-## [3.11.0] - [2020-10-25]
+## [3.11.0] - 2020-10-25
 
 ### Added
 
@@ -297,14 +297,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
 - In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
-## [3.10.0] - [2020-10-18]
+## [3.10.0] - 2020-10-18
 
 ### Added
 
 - Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment instructions](deployment.md#configuring-forwarded-authentication).
 - Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment instructions](deployment.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
-## [3.9.0] - [2020-10-11]
+## [3.9.0] - 2020-10-11
 
 ### Added
 
@@ -316,7 +316,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - The date picker for the end date of technical debt has a minimum date set to today. Apparently, if the current value of the technical debt end date is far enough in the past so that the whole month popup consists of disabled dates, the date picker will crash. Worked around by removing the minimum date. Fixes [#1534](https://github.com/ICTU/quality-time/issues/1534).
 - Running `docker-compose up` in the project root folder wouldn't work on Windows. Fixes [#1543](https://github.com/ICTU/quality-time/issues/1543).
 
-## [3.8.0] - [2020-10-04]
+## [3.8.0] - 2020-10-04
 
 ### Changed
 
@@ -337,7 +337,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Trend graphs showing metrics with minutes as unit would have their y-axis labeled 'hours'. Fixes [#1522](https://github.com/ICTU/quality-time/issues/1522).
 - Tokens with an underscore would not be completely redacted from the collector log. Fixes [#1523](https://github.com/ICTU/quality-time/issues/1523).
 
-## [3.7.0] - [2020-09-27]
+## [3.7.0] - 2020-09-27
 
 ### Added
 
@@ -351,7 +351,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - The security warnings in OWASP ZAP reports do not have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. Therefore, *Quality-time* generates keys for OWASP ZAP security warnings itself. Unfortunately, the key that *Quality-time* generated, was not guaranteed to be unique. Fixes [#1492](https://github.com/ICTU/quality-time/issues/1492).
 - Time travel was broken. Fixes [#1497](https://github.com/ICTU/quality-time/issues/1497).
 
-## [3.6.0] - [2020-09-19]
+## [3.6.0] - 2020-09-19
 
 ### Changed
 
@@ -366,7 +366,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Retrieving measurements for the trend graph of a metric with many measurements and details (violations, user stories, security warnings, etc.) was slow because *Quality-time* would retrieve all details for all measurements even though it only needs the details for the most recent measurement. Fixes [#1468](https://github.com/ICTU/quality-time/issues/1468).
 
-## [3.5.0] - [2020-09-12]
+## [3.5.0] - 2020-09-12
 
 ### Fixed
 
@@ -383,7 +383,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - When measuring 'velocity' with Jira as source, the metric can also report the number of points committed to. Closes [#1406](https://github.com/ICTU/quality-time/issues/1406).
 - When measuring 'velocity' with Jira as source, the metric can also report the number of points completed minus the number of points committed to. Closes [#1408](https://github.com/ICTU/quality-time/issues/1408).
 
-## [3.4.0] - [2020-09-05]
+## [3.4.0] - 2020-09-05
 
 ### Fixed
 
@@ -399,7 +399,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Add 'velocity' metric. Currently, the only source supported for this metric is Jira. Closes [#1407](https://github.com/ICTU/quality-time/issues/1407).
 - Add [axe-selenium-python](https://github.com/mozilla-services/axe-selenium-python) JSON reports as possible source for the 'accessibility violations' metric. Closes [#1424](https://github.com/ICTU/quality-time/issues/1424).
 
-## [3.3.0] - [2020-08-29]
+## [3.3.0] - 2020-08-29
 
 ### Fixed
 
@@ -412,7 +412,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - When measuring ready user story points with Jira as source, show the sprint(s) of the user stories in the details. When measuring issues with Jira as source, show issue status, priority, sprint(s), creation date, and date of last update in the details. Closes [#1411](https://github.com/ICTU/quality-time/issues/1411).
 
-## [3.2.0] - [2020-08-22]
+## [3.2.0] - 2020-08-22
 
 ### Fixed
 
@@ -430,7 +430,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Allow for filtering Azure DevOps test runs by test run state. Closes [#1383](https://github.com/ICTU/quality-time/issues/1383).
 - Added Snyk JSON reports as source for the 'security warnings' metric. Contributed by [@greckko](https://github.com/greckko).
 
-## [3.1.0] - [2020-08-07]
+## [3.1.0] - 2020-08-07
 
 ### Fixed
 
@@ -447,7 +447,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Increase the number of ticks on the x-axis of trend graphs. Closes [#1126](https://github.com/ICTU/quality-time/issues/1126).
 
-## [3.0.0] - [2020-07-31]
+## [3.0.0] - 2020-07-31
 
 ### Fixed
 
@@ -468,20 +468,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Version 2 of the *Quality-time* API, which was deprecated since version 2.4.0, has been removed.
 - Remove code to fix the database structure. If you are migrating from a *Quality-time* version < 2.0.0 you need to install at least one *Quality-time* version >= 2.0.0 and < 3.0.0.
 
-## [2.5.2] - [2020-07-10]
+## [2.5.2] - 2020-07-10
 
 ### Fixed
 
 - Removing the end date of accepted technical debt would not correctly update the metric status. Fixes [#1284](https://github.com/ICTU/quality-time/issues/1284).
 - The 'tests' metric with the Performancetest-runner as source would fail to read the number of performance tests due to changes in the report format. Fixes [#1291](https://github.com/ICTU/quality-time/issues/1291).
 
-## [2.5.1] - [2020-07-06]
+## [2.5.1] - 2020-07-06
 
 ### Fixed
 
 - Older GitLab versions don't return a `web_url` as part of the `repository/branches` API, be prepared. Fixes [#1280](https://github.com/ICTU/quality-time/issues/1280).
 
-## [2.5.0] - [2020-07-05]
+## [2.5.0] - 2020-07-05
 
 ### Fixed
 
@@ -494,13 +494,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Documentation on how to add metrics and sources to *Quality-time*. Closes [#1273](https://github.com/ICTU/quality-time/issues/1273).
 - Add Cobertura coverage reports as source for the coverage metrics. Closes [#1275](https://github.com/ICTU/quality-time/issues/1275).
 
-## [2.4.1] - [2020-06-25]
+## [2.4.1] - 2020-06-25
 
 ### Fixed
 
 - Don't disable the 'scroll to dashboard' button when the dashboard is visible. This requires listening for scroll events which makes scrolling of big reports slow and causes other user interface issues like dropdown menu's not working. Fixes [#1260](https://github.com/ICTU/quality-time/issues/1260) and [#1261](https://github.com/ICTU/quality-time/issues/1261).
 
-## [2.4.0] - [2020-06-23]
+## [2.4.0] - 2020-06-23
 
 ### Added
 
@@ -524,7 +524,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - When using the OWASP Dependency Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
 - The trend sparkline graphs, showing the trend over the last week, would always use the full width, even when there was less than a week of data. Fixes [#1241](https://github.com/ICTU/quality-time/issues/1241).
 
-## [2.3.2] - [2020-06-10]
+## [2.3.2] - 2020-06-10
 
 ### Changed
 
@@ -535,13 +535,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between *Quality-time* and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
 - Re-enable environment variables to set a proxy to be used by the collector. See the [deployment documentation](deployment.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
 
-## [2.3.1] - [2020-06-02]
+## [2.3.1] - 2020-06-02
 
 ### Fixed
 
 - Don't strip hyphens from usernames when authenticating them with LDAP. Fixes [#1198](https://github.com/ICTU/quality-time/issues/1198).
 
-## [2.3.0] - [2020-06-01]
+## [2.3.0] - 2020-06-01
 
 ### Added
 
@@ -553,31 +553,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - *Quality-time* was using the 5.1 version of the Azure DevOps API to get the number of tests for the 'tests' metric causing *Quality-time* to not work with Azure DevOps Server 2019. Fixed by using the 5.0 version of the API that also returns the required data. Fixes [#1182](https://github.com/ICTU/quality-time/issues/1182).
 - Don't log a traceback the first time the collector component attempts to download the data model from the server component and fails. As the collector typically starts up faster than the server, one failed attempt is to be expected. Fixes [#1187](https://github.com/ICTU/quality-time/issues/1187).
 
-## [2.2.4] - [2020-05-11]
+## [2.2.4] - 2020-05-11
 
 ### Fixed
 
 - Adding a metric or changing the type of a metric would sometimes fail due to a conflict with saving the dashboard layout. Fixed by only saving the dashboard layout when the user manually rearranges cards and not when a card gets added or removed. Fixes [#1160](https://github.com/ICTU/quality-time/issues/1160).
 
-## [2.2.3] - [2020-05-10]
+## [2.2.3] - 2020-05-10
 
 ### Fixed
 
 - When using *Quality-time* as source for the Metrics metric, a timeout could occur due to *Quality-time* unnecessarily retrieving all measurements (it only needs the most recent ones). Fixes [#1154](https://github.com/ICTU/quality-time/issues/1154).
 
-## [2.2.2] - [2020-04-22]
+## [2.2.2] - 2020-04-22
 
 ### Fixed
 
 - Don't include SonarQube security hotspots in the complex units, long units, many parameters, commented out code, and suppressed violations metrics. Fixes [#1138](https://github.com/ICTU/quality-time/issues/1138) introduced in v2.2.1.
 
-## [2.2.1] - [2020-04-22]
+## [2.2.1] - 2020-04-22
 
 ### Fixed
 
 - [When requesting issues with a severity from SonarQube, SonarQube will not return security hotspots because security hotspots don't have a severity](https://community.sonarsource.com/t/issues-api-does-not-return-security-hotspots-when-passing-a-severity/23326). *Quality-time* incorrectly assumed security hotspots would always be returned regardless of the specified severities. Fixed by making a separate call to the SonarQube issues API if necessary to retrieve the security hotspots. Fixes [#1135](https://github.com/ICTU/quality-time/issues/1135).
 
-## [2.2.0] - [2020-04-14]
+## [2.2.0] - 2020-04-14
 
 ### Added
 
@@ -591,13 +591,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Remove private tokens from source error messages and collector logging. Fixes [#1127](https://github.com/ICTU/quality-time/issues/1127).
 
-## [2.1.1] - [2020-04-03]
+## [2.1.1] - 2020-04-03
 
 ### Fixed
 
 - When the collector fails to collect a measurement, a traceback would be included in the measurement. Unfortunately, tracebacks with the new asynchronous collector are very long. To prevent performance issues, the collector now only logs the error in the case of connection errors. Other types of errors still include a traceback. Fixes [#1122](https://github.com/ICTU/quality-time/issues/1122).
 
-## [2.1.0] - [2020-03-29]
+## [2.1.0] - 2020-03-29
 
 ### Changed
 
@@ -608,7 +608,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - The metrics "violations" and "suppressed violations" show zero violations (green status) even though the component has no SonarQube analysis. Fixes [#1090](https://github.com/ICTU/quality-time/issues/1090).
 
-## [2.0.0] - [2020-03-08]
+## [2.0.0] - 2020-03-08
 
 ### Added
 
@@ -627,13 +627,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Version 1 of the API has been removed. API version 1 was deprecated since *Quality-time* v1.3.0. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
 - Remove the Docker environment files and move the environment variables to the docker-compose files to simplify the compositions. Closes [#1063](https://github.com/ICTU/quality-time/issues/1063).
 
-## [1.8.1] - [2020-03-03]
+## [1.8.1] - 2020-03-03
 
 ### Fixed
 
 - When loading changes to show in the changelog, an internal server error could occur due to Mongo hitting its maximum buffer size for sorting. Add an index to the reports collection to prevent out of memory errors during sorting. Fixes [#1077](https://github.com/ICTU/quality-time/issues/1077).
 
-## [1.8.0] - [2020-03-01]
+## [1.8.0] - 2020-03-01
 
 ### Changed
 
@@ -644,7 +644,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Allow for specifying variable parts of URLs in OWASP ZAP reports. This makes it possible to mark warnings as false positive even when parts of URLs change between runs of OWASP ZAP. Note: because the way *Quality-time* keeps track of the warnings has been changed, some OWASP ZAP warnings may need to be marked as false positive again. Closes [#1045](https://github.com/ICTU/quality-time/issues/1045).
 - A new metric for measuring the number of (outdated) dependencies and a new source (Composer for PHP) that supports this metric were added. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
 
-## [1.7.1] - [2020-02-26]
+## [1.7.1] - 2020-02-26
 
 ### Fixed
 
@@ -652,7 +652,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - The docker-compose YAML file now specifies that the proxy container should wait for the server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
 - The collector would fail if it could not write a timestamp to the health_check.txt file, e.g. due to a permission error. Fixed by writing the health_check.txt file to /tmp instead of the home directory of the default user and by catching and logging any OS errors that may occur. Fixes [#1057](https://github.com/ICTU/quality-time/issues/1057).
 
-## [1.7.0] - [2020-02-22]
+## [1.7.0] - 2020-02-22
 
 ### Changed
 
@@ -667,7 +667,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Because the new rendering component (see "Changed") waits for network activity to stop before converting a report into PDF, the delay parameter is no longer needed.
 
-## [1.6.2] - [2020-02-19]
+## [1.6.2] - 2020-02-19
 
 ### Fixed
 
@@ -675,7 +675,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - OWASP ZAP warning keys were not always unique, causing trouble with marking them as false positive. Fixes [#1032](https://github.com/ICTU/quality-time/issues/1032).
 - The Jenkins test report source would not correctly get the number of passed tests from aggregated test reports. Fixes [#1033](https://github.com/ICTU/quality-time/issues/1033).
 
-## [1.6.1] - [2020-02-18]
+## [1.6.1] - 2020-02-18
 
 ### Fixed
 
@@ -685,7 +685,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Anchore vulnerability keys are not always valid as JSON key, causing exceptions when the user tries to make changes to vulnerabilities. Hashing the keys prevents this issue. Fixes [#1023](https://github.com/ICTU/quality-time/issues/1023).
 - The too many parameters, complex units, and long unit metrics with SonarQube as source would always report the percentage as zero. Fixes [#1027](https://github.com/ICTU/quality-time/issues/1027).
 
-## [1.6.0] - [2020-02-12]
+## [1.6.0] - 2020-02-12
 
 ### Changed
 
@@ -695,7 +695,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Changes made to violations, issues, warnings, etc., such as marking them as false positive, would not carry over after a failed measurement, forcing the user to make the same changes again. Fixes [#1007](https://github.com/ICTU/quality-time/issues/1007).
 
-## [1.5.0] - [2020-02-09]
+## [1.5.0] - 2020-02-09
 
 ### Added
 
@@ -712,7 +712,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Exporting tag reports to PDF did not work. Fixes [#990](https://github.com/ICTU/quality-time/issues/990).
 - When using Jira as source for the issues metric, the URL to Jira in the metrics table would not work properly. Fixes [#991](https://github.com/ICTU/quality-time/issues/991).
 
-## [1.4.0] - [2020-01-31]
+## [1.4.0] - 2020-01-31
 
 ### Added
 
@@ -727,32 +727,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - After changing a value in the UI, *Quality-time* would briefly show the old value while it was updating the database. Fixes [#954](https://github.com/ICTU/quality-time/issues/954).
 - Documentation API was not reachable. Fixes [#966](https://github.com/ICTU/quality-time/issues/966).
 
-## [1.3.4] - [2020-01-15]
+## [1.3.4] - 2020-01-15
 
 ### Fixed
 
 - Metrics with status unknown in the details view of the 'Metrics' metric did not show a question mark. Fixes [#935](https://github.com/ICTU/quality-time/issues/935).
 - Check connection for all URL and credential parameters. Fixes [#944](https://github.com/ICTU/quality-time/issues/944).
 
-## [1.3.3] - [2020-01-15]
+## [1.3.3] - 2020-01-15
 
 ### Fixed
 
 - Subject cards in the report dashboard would not have a default subject title when the subject had no title. Fixes [#942](https://github.com/ICTU/quality-time/issues/942).
 
-## [1.3.2] - [2020-01-15]
+## [1.3.2] - 2020-01-15
 
 ### Fixed
 
 - Metrics with status unknown in the details view of the 'Metrics' metric did not show a question mark. Fixes [#935](https://github.com/ICTU/quality-time/issues/935).
 
-## [1.3.1] - [2020-01-15]
+## [1.3.1] - 2020-01-15
 
 ### Fixed
 
 - Adding sources did not work. Fixes [#939](https://github.com/ICTU/quality-time/issues/939).
 
-## [1.3.0] - [2020-01-15]
+## [1.3.0] - 2020-01-15
 
 ### Added
 
@@ -777,7 +777,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Marking OWASP ZAP warnings as false positives did not work. Fixes [#922](https://github.com/ICTU/quality-time/issues/922).
 - Remove private tokens from URLs logged by the collector. Fixes [#934](https://github.com/ICTU/quality-time/issues/934).
 
-## [1.2.0] - [2019-12-10]
+## [1.2.0] - 2019-12-10
 
 ### Added
 
@@ -789,7 +789,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Open help urls in a new window or tab. Closes [#842](https://github.com/ICTU/quality-time/issues/842).
 
-## [1.1.0] - [2019-12-03]
+## [1.1.0] - 2019-12-03
 
 ### Fixed
 
@@ -805,7 +805,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Show the five most recent changes in the change log table initially so that the buttons below the change log table don't disappear off screen. Each click on the "load more changes" button still loads ten more changes. Closes [#836](https://github.com/ICTU/quality-time/issues/836).
 
-## [1.0.0] - [2019-11-28]
+## [1.0.0] - 2019-11-28
 
 ### Fixed
 
@@ -821,7 +821,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Removed deprecated metrics from metric types options. Closes [#826](https://github.com/ICTU/quality-time/issues/826).
 
-## [0.20.0] - [2019-11-23]
+## [0.20.0] - 2019-11-23
 
 ### Fixed
 
@@ -831,13 +831,13 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Allow for filtering metrics by metric type and source type in the *Quality-time* source. Closes [#805](https://github.com/ICTU/quality-time/issues/805).
 
-## [0.19.1] - [2019-11-19]
+## [0.19.1] - 2019-11-19
 
 ### Fixed
 
 - Determining the encoding of large OWASP Dependency Check XML reports was very slow. Fixes [#803](https://github.com/ICTU/quality-time/issues/803).
 
-## [0.19.0] - [2019-11-17]
+## [0.19.0] - 2019-11-17
 
 ### Fixed
 
@@ -848,7 +848,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Metric for manual test execution added. Closes [#556](https://github.com/ICTU/quality-time/issues/556).
 - Azure DevOps can now be a source for the failing jobs metric and the unused jobs metric. Closes [#638](https://github.com/ICTU/quality-time/issues/638).
 
-## [0.18.0] - [2019-11-12]
+## [0.18.0] - 2019-11-12
 
 ### Fixed
 
@@ -858,7 +858,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - In addition to a changelog per report, also keep a changelog for the reports overview. Closes [#746](https://github.com/ICTU/quality-time/issues/746).
 
-## [0.17.0] - [2019-11-10]
+## [0.17.0] - 2019-11-10
 
 ### Fixed
 
@@ -871,21 +871,21 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [deployment instructions](deployment.md#configuring-ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774).
 - Logo for Axe. Closes [#778](https://github.com/ICTU/quality-time/issues/778).
 
-## [0.16.1] - [2019-11-07]
+## [0.16.1] - 2019-11-07
 
 ### Fixed
 
 - Ignoring Jenkins child jobs (jobs within pipelines) did not work. Fixes [#763](https://github.com/ICTU/quality-time/issues/763).
 - Notifications from the server to the frontend about new measurements were broken after the introduction of the reverse proxy. Fixes [#765](https://github.com/ICTU/quality-time/issues/765).
 
-## [0.16.0] - [2019-11-02]
+## [0.16.0] - 2019-11-02
 
 ### Added
 
 - Allow for ignoring Jenkins jobs by name or regular expression. Closes [#747](https://github.com/ICTU/quality-time/issues/747).
 - For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. *Quality-time* will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, JUnit XML reports, NCover HTML reports, OJAudit XML reports, OpenVAS XML reports, OWASP Dependency Check XML reports, OWASP ZAP XML reports, Performancetest-runner HTML reports, Pyup.io Safety JSON reports, and Robot Framework XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
 
-## [0.15.0] - [2019-10-30]
+## [0.15.0] - 2019-10-30
 
 ### Fixed
 
@@ -896,13 +896,13 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Introduce a reverse proxy (Caddy) so that web frontend and API can both be accessed through the same port. Which is now port 80 by default. Fixes [#727](https://github.com/ICTU/quality-time/issues/727).
 
-## [0.14.1] - [2019-10-24]
+## [0.14.1] - 2019-10-24
 
 ### Fixed
 
 - Login problem solved for LDAP servers where a user bind must be done. Fixes [#734](https://github.com/ICTU/quality-time/issues/734).
 
-## [0.14.0] - [2019-10-23]
+## [0.14.0] - 2019-10-23
 
 ### Fixed
 
@@ -925,7 +925,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - The ability to use HQ quality reports as source was removed. Closes [#715](https://github.com/ICTU/quality-time/issues/715).
 
-## [0.13.0] - [2019-10-20]
+## [0.13.0] - 2019-10-20
 
 ### Added
 
@@ -939,7 +939,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Allow for specifying an Azure DevOps repository by name. Fixes [#683](https://github.com/ICTU/quality-time/issues/683).
 
-## [0.12.2] - [2019-10-16]
+## [0.12.2] - 2019-10-16
 
 ### Fixed
 
@@ -950,14 +950,14 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - *Quality-time* now uses Python 3.8 for the collector and server components. Closes [#684](https://github.com/ICTU/quality-time/issues/684).
 
-## [0.12.1] - [2019-10-14]
+## [0.12.1] - 2019-10-14
 
 ### Fixed
 
 - Allow for specifying the repository when using Azure DevOps as source for the "Source up-to-dateness" metric instead of assuming that the repository has the same name as the project. Fixes [#663](https://github.com/ICTU/quality-time/issues/663).
 - Do not repeat the top menu bar in printouts, it overlaps with content. Fixes [#680](https://github.com/ICTU/quality-time/issues/680).
 
-## [0.12.0] - [2019-10-11]
+## [0.12.0] - 2019-10-11
 
 ### Fixed
 
@@ -969,7 +969,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - *Quality-time* no longer collects detail information about security warnings from Checkmarx; the Checkmarx API is too complex, resulting in fragile interaction between *Quality-time* and Checkmarx. See [#670](https://github.com/ICTU/quality-time/issues/672).
 
-## [0.11.0] - [2019-10-07]
+## [0.11.0] - 2019-10-07
 
 ### Fixed
 
@@ -985,33 +985,33 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Add Azure DevOps as source for the "Unmerged branches" metric. Closes [#641](https://github.com/ICTU/quality-time/issues/641).
 - Add percentage scale to the "Complex units", "Many parameters", "Long units", and "Suppressed violations" metrics. Closes [#645](https://github.com/ICTU/quality-time/issues/645).
 
-## [0.10.2] - [2019-09-26]
+## [0.10.2] - 2019-09-26
 
 ### Fixed
 
 - Measuring the source up-to-dateness of folders in GitLab did not work. Fixes [#626](https://github.com/ICTU/quality-time/issues/626).
 
-## [0.10.1] - [2019-09-25]
+## [0.10.1] - 2019-09-25
 
 ### Fixed
 
 - Measuring size (LOC), size (non-commented LOC), tests, and failed tests using SonarQube as source would fail with a parse error. Fixes [#623](https://github.com/ICTU/quality-time/issues/623).
 
-## [0.10.0] - [2019-09-22]
+## [0.10.0] - 2019-09-22
 
 ### Added
 
 - All metrics now have an explicit scale that's either fixed to "Count" or "Percentage", or that can be changed from "Count to "Percentage" and vice versa. Metrics whose scale can be changed: "Duplicated lines", "Metrics", "Test branch coverage", and "Test line coverage". Closes [#504](https://github.com/ICTU/quality-time/issues/504).
 - Added a 'landing URL' parameter to some sources so *Quality-time* can refer users to a human readable version of a machine readable report. For example, you can add an HTML version of a JaCoCo report to a JaCoCo XML report source. Closes [#554](https://github.com/ICTU/quality-time/issues/554).
 
-## [0.9.1] - [2019-09-10]
+## [0.9.1] - 2019-09-10
 
 ### Fixed
 
 - To prevent reporting Checkmarx internal server errors to users when reports are unexpectedly unavailable, don't immediately remove a Checkmarx report after reading it, but silently ignore a removed report and create a new one. Fixes [#468](https://github.com/ICTU/quality-time/issues/468).
 - Prevent locked accounts by not contacting a source again after receiving a 401 (unauthorized) or 403 (forbidden) HTTP status, until the metric's configuration changes. Fixes [#604](https://github.com/ICTU/quality-time/issues/604).
 
-## [0.9.0] - [2019-09-06]
+## [0.9.0] - 2019-09-06
 
 ### Added
 
@@ -1027,13 +1027,13 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - The layout of the reports overview dashboard would be reset after visiting a tag report. Fixes [#588](https://github.com/ICTU/quality-time/issues/588).
 - Tag report donut charts were always white. Fixes [#589](https://github.com/ICTU/quality-time/issues/589).
 
-## [0.8.2] - [2019-08-28]
+## [0.8.2] - 2019-08-28
 
 ### Fixed
 
 - Prevent web browsers from automatically filling in username and password in the source configuration tab. Fixes [#574](https://github.com/ICTU/quality-time/issues/574).
 
-## [0.8.1] - [2019-08-28]
+## [0.8.1] - 2019-08-28
 
 ### Fixed
 
@@ -1041,7 +1041,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - When a user changes a password field, don't show the old password in the change log unmasked. Fixes [#565](https://github.com/ICTU/quality-time/issues/565).
 - Use <= and >= for the metric direction in the metric tables instead of < and >. Fixes [#567](https://github.com/ICTU/quality-time/issues/567).
 
-## [0.8.0] - [2019-08-23]
+## [0.8.0] - 2019-08-23
 
 ### Added
 
@@ -1052,14 +1052,14 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Don't use the unicode characters for <= and >= in the source code; it caused problems on Windows. Fixes [#558](https://github.com/ICTU/quality-time/issues/558).
 
-## [0.7.1] - [2019-08-18]
+## [0.7.1] - 2019-08-18
 
 ### Fixed
 
 - When generating keys for OWASP ZAP security warnings, strip any hashes from the application urls to ensure the keys are stable. Fixes [#541](https://github.com/ICTU/quality-time/issues/541).
 - In addition to version 2.0 also support version 2.1 and 2.2 of the OWASP Dependency Check XML format. Fixes [#543](https://github.com/ICTU/quality-time/issues/543).
 
-## [0.7.0] - [2019-08-14]
+## [0.7.0] - 2019-08-14
 
 ### Added
 
@@ -1075,7 +1075,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Don't try to retrieve more work items from Azure DevOps than allowed. Fixes [#532](https://github.com/ICTU/quality-time/issues/532).
 - Return a parse error if OWASP dependency report XML reports don't contain the expected root tag instead of reporting zero issues. Fixes [#536](https://github.com/ICTU/quality-time/issues/536).
 
-## [0.6.0] - [2019-08-11]
+## [0.6.0] - 2019-08-11
 
 ### Added
 
@@ -1092,14 +1092,14 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Use Jenkins job timestamp for the source up-to-dateness metric if the Jenkins test report doesn't contain timestamps in the test report itself. Fixes [#517](https://github.com/ICTU/quality-time/issues/517).
 - Stop sorting metrics when the user adds a new metric to prevent it from jumping around due to the sorting. Fixes [#518](https://github.com/ICTU/quality-time/issues/518).
 
-## [0.5.1] - [2019-07-18]
+## [0.5.1] - 2019-07-18
 
 ### Fixed
 
 - The Trello parameter "lists to ignore" was not displayed properly. Fixes [#471](https://github.com/ICTU/quality-time/issues/471).
 - The number of issues would not be measured if the source was Jira. Fixes [#475](https://github.com/ICTU/quality-time/issues/475).
 
-## [0.5.0] - [2019-07-16]
+## [0.5.0] - 2019-07-16
 
 ### Added
 
@@ -1112,20 +1112,20 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Add performance test stability and scalability metrics to the example report. Fixes [#447](https://github.com/ICTU/quality-time/issues/447).
 - Set up a new LDAP connection for each authentication in an attempt to prevent a "Broken pipe" between *Quality-time* and the LDAP server. Fixes [#469](https://github.com/ICTU/quality-time/issues/469).
 
-## [0.4.1] - [2019-07-08]
+## [0.4.1] - 2019-07-08
 
 ### Fixed
 
 - Frontend can't reach server.
 
-## [0.4.0] - [2019-07-07]
+## [0.4.0] - 2019-07-07
 
 ### Changed
 
 - Run server on port 5001 instead of 8080 to reduce chances of interfering with other applications.
 - Allow for deployments where the different components all have the same hostname, e.g. quality-time.example.org, and only the ports differ.
 
-## [0.3.0] - [2019-07-05]
+## [0.3.0] - 2019-07-05
 
 ### Added
 
@@ -1134,7 +1134,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Metric for performance scalability added. Closes [#434](https://github.com/ICTU/quality-time/issues/434).
 - [Performancetest-runner](https://github.com/ICTU/performancetest-runner) reports can now be used as metric source for the tests and failed tests metrics. Closes [#402](https://github.com/ICTU/quality-time/issues/402).
 
-## [0.2.3] - [2019-07-01]
+## [0.2.3] - 2019-07-01
 
 ### Fixed
 
@@ -1142,25 +1142,25 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Trend graphs would be too tall and overlap with the next metric. Fixes [#420](https://github.com/ICTU/quality-time/issues/420).
 - When clicking the report date field in the menu bar, the calendar popup would be displayed at the wrong location before popping up at the right location. Fixes [#424](https://github.com/ICTU/quality-time/issues/424).
 
-## [0.2.2] - [2019-06-28]
+## [0.2.2] - 2019-06-28
 
 ### Fixed
 
 - Version number was missing in the footer of the frontend. Fixes [#410](https://github.com/ICTU/quality-time/issues/420).
 
-## [0.2.1] - [2019-06-26]
+## [0.2.1] - 2019-06-26
 
 ### Fixed
 
 - Work around a limitation of the Travis configuration file. The deploy script does not allow sequences, which is surprising since scripts in other parts of the Travis configuration file do allow sequences. See [https://github.com/travis-ci/dpl/issues/673](https://github.com/travis-ci/dpl/issues/673).
 
-## [0.2.0] - [2019-06-26]
+## [0.2.0] - 2019-06-26
 
 ### Added
 
 - Release Docker containers from [Travis CI](https://travis-ci.org/ICTU/quality-time) to [Docker Hub](https://hub.docker.com/search?q=quality-time_&type=image).
 
-## [0.1.0] - [2019-06-24]
+## [0.1.0] - 2019-06-24
 
 ### Added
 
