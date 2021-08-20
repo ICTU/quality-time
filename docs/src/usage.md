@@ -220,6 +220,12 @@ When clicking on one of the entities, it can be expanded and edited. Options are
 ```{index} Metrics
 ```
 
+### Merge requests
+
+The merge requests metric reports the number of merge requests. Currently, GitLab and Azure DevOps can be configured as source for this metric.
+
+In itself, the number of merge requests is not indicative of software quality. However, by setting the parameter "Minimum number of upvotes", the metric can report on merge requests that have fewer than the minimum number of upvotes. The parameter "Merge request state" can be used to exclude e.g. closed merge requests. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge requests that target specific branches, e.g. the "develop" branch.
+
 ### Metrics
 
 One special metric type is "Metrics". It counts the number of metrics in a quality report. This makes it possible to create 'meta'-reports that for example measure the number of security metrics that don't meet their target.
@@ -233,6 +239,48 @@ Note that when the "Metrics" metric is itself part of the set of metrics it coun
 ```{index} Unmerged branches
 ```
 
+### Test cases
+
+The test cases metric reports on the number of test cases, and their test results. The test case metric is different than other metrics because it combines data from two types of sources: it needs one or more sources for the test cases, and one or more sources for the test results. The test case metric then matches the test results with the test cases.
+
+Currently, only Jira is supported as source for the test cases. JUnit and TestNG are supported as source for the test results. So, to configure the test cases metric, you need to add at least one Jira source and one JUnit or one TestNG source. In addition, to allow the test case metric to match test cases from Jira with test results from the JUnit and/or TestNG XML files, the test results should mention Jira issue keys in their title or description. 
+
+For example, suppose you have configured Jira with the JQL: `project = "My Project" and type = "Logical Test Case"` and this results in these test cases:
+
+| Key  | Summary     |
+|------|-------------|
+| MP-1 | Test case 1 |
+| MP-2 | Test case 2 |
+| MP-3 | Test case 3 |
+
+Also suppose your JUnit XML has the following test results:
+
+```xml
+<testsuite tests="5" errors="0" failures="1" skipped="1">
+    <testcase name="MP-1; step 1">
+        <failure />
+    </testcase>
+    <testcase name="MP-1; step 2">
+        <skipped />
+    </testcase>
+    <testcase name="MP-2">
+        <skipped />
+    </testcase>
+    <testcase name="MP-3; step 1"/>
+    <testcase name="MP-3; step 2"/>
+</testsuite>
+```
+
+The test case metric will combine the JUnit XML file with the test cases from Jira and report one failed, one skipped, and one passed test case:
+
+| Key  | Summary     | Test result |
+|------|-------------|-------------|
+| MP-1 | Test case 1 | failed      |
+| MP-2 | Test case 2 | skipped     |
+| MP-3 | Test case 3 | passed      |
+
+If multiple test results in the JUnit or TestNG XML file map to one Jira test case (as with MP-1 and MP-3 above), the "worst" test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed. 
+
 ### Unmerged branches
 
 The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -243,12 +291,6 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 ```{index} Merge requests
 ```
-
-### Merge requests
-
-The merge requests metric reports the number of merge requests. Currently, GitLab and Azure DevOps can be configured as source for this metric.
-
-In itself, the number of merge requests is not indicative of software quality. However, by setting the parameter "Minimum number of upvotes", the metric can report on merge requests that have fewer than the minimum number of upvotes. The parameter "Merge request state" can be used to exclude e.g. closed merge requests. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge requests that target specific branches, e.g. the "develop" branch.
 
 ## Notes on specific sources
 
