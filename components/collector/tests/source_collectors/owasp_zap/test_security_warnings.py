@@ -55,8 +55,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
             dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url1}"),
-                old_key=md5_hash(f"10021:16:15:3:GET:{url1}"),
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url1}"),
+                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url1}"),
                 name=self.WARNING_NAME,
                 description=self.WARNING_DESCRIPTION,
                 location=f"GET {url1}",
@@ -64,8 +64,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
                 risk=self.WARNING_RISK,
             ),
             dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url2}"),
-                old_key=md5_hash(f"10021:16:15:3:GET:{url2}"),
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url2}"),
+                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url2}"),
                 name=self.WARNING_NAME,
                 description=self.WARNING_DESCRIPTION,
                 location=f"GET {url2}",
@@ -96,8 +96,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{stable_url}"),
-                old_key=md5_hash(f"10021:16:15:3:GET:{stable_url}"),
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{stable_url}"),
+                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{stable_url}"),
                 name=self.WARNING_NAME,
                 uri=stable_url,
                 description=self.WARNING_DESCRIPTION,
