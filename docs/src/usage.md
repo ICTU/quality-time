@@ -236,16 +236,16 @@ After adding *Quality-time* as a source to a "Metrics"-metric, one can configure
 
 Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics, and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
 
-```{index} Unmerged branches
+```{index} Test cases
 ```
 
 ### Test cases
 
 The test cases metric reports on the number of test cases, and their test results. The test case metric is different than other metrics because it combines data from two types of sources: it needs one or more sources for the test cases, and one or more sources for the test results. The test case metric then matches the test results with the test cases.
 
-Currently, only Jira is supported as source for the test cases. JUnit and TestNG are supported as source for the test results. So, to configure the test cases metric, you need to add at least one Jira source and one JUnit or one TestNG source. In addition, to allow the test case metric to match test cases from Jira with test results from the JUnit and/or TestNG XML files, the test results should mention Jira issue keys in their title or description.
+Currently, only {index}`Jira` is supported as source for the test cases. {index}`JUnit` and {index}`TestNG` are supported as source for the test results. So, to configure the test cases metric, you need to add at least one Jira source and one JUnit or one TestNG source. In addition, to allow the test case metric to match test cases from Jira with test results from the JUnit and/or TestNG XML files, the test results should mention Jira issue keys in their title or description.
 
-For example, suppose you have configured Jira with the JQL: `project = "My Project" and type = "Logical Test Case"` and this results in these test cases:
+Suppose you have configured Jira with the query: `project = "My Project" and type = "Logical Test Case"` and this results in these test cases:
 
 | Key  | Summary     |
 |------|-------------|
@@ -280,6 +280,9 @@ The test case metric will combine the JUnit XML file with the test cases from Ji
 | MP-3 | Test case 3 | passed      |
 
 If multiple test results in the JUnit or TestNG XML file map to one Jira test case (as with MP-1 and MP-3 above), the "worst" test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed.
+
+```{index} Unmerged branches
+```
 
 ### Unmerged branches
 
