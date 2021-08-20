@@ -1,3 +1,3 @@
 # *Quality-time* proxy
 
-Wrap the Caddy image in a *Quality-time* image so the Caddy version number can be changed when needed.
+See the [software documentation](https://quality-time.readthedocs.io/en/latest/software.html#proxy).

@@ -2,7 +2,7 @@
 
 set -e
 
-./node_modules/markdownlint-cli/markdownlint.js *.md
+./node_modules/markdownlint-cli/markdownlint.js src/*.md
 mypy src
 pylint --rcfile=../.pylintrc src tests
 python -m flake8 --select=DUO src

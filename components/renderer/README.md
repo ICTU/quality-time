@@ -1,3 +1,3 @@
 # *Quality-time* renderer
 
-Wrap the ICTU/url-to-pdf-api image in a *Quality-time* image so the ICTU/url-to-pdf-api version number can be changed when needed.
+See the [software documentation](https://quality-time.readthedocs.io/en/latest/software.html#renderer).

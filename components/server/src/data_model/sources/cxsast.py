@@ -10,7 +10,7 @@ CXSAST = Source(
     name="Checkmarx CxSAST",
     description="Static analysis software to identify security vulnerabilities in both custom code and open source "
     "components.",
-    url="https://www.checkmarx.com/products/static-application-security-testing/",
+    url="https://checkmarx.com/glossary/static-application-security-testing-sast/",
     parameters=dict(
         project=StringParameter(
             name="Project (name or id)",

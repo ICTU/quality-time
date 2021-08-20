@@ -48,7 +48,7 @@ GITLAB = Source(
     name="GitLab",
     description="GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous "
     "deployment pipelines.",
-    url="https://gitlab.com/",
+    url="https://about.gitlab.com/",
     parameters=dict(
         url=URL(
             name="GitLab instance URL",
@@ -97,7 +97,7 @@ GITLAB = Source(
             metrics=["unmerged_branches"],
         ),
         inactive_job_days=Days(
-            name="Number of days without builds after which to consider CI-jobs unused.",
+            name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],

@@ -32,9 +32,8 @@ def parse_arguments() -> tuple[str, str, bool]:
   - the current folder is the release folder
   - the current branch is master
   - the workspace has no uncommitted changes
-  - the generated data model documentation is up-to-date
-  - the change log has an '[Unreleased]' header
-  - the change log contains no release candidates"""
+  - the changelog has an '[Unreleased]' header
+  - the changelog contains no release candidates"""
     parser = ArgumentParser(description=description, epilog=epilog, formatter_class=RawDescriptionHelpFormatter)
     allowed_bumps_in_rc_mode = ["rc", "rc-major", "rc-minor", "rc-patch", "drop-rc"]  # rc = release candidate
     allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
@@ -47,7 +46,7 @@ def parse_arguments() -> tuple[str, str, bool]:
     return current_version, arguments.bump, arguments.check_preconditions_only
 
 
-def check_preconditions(bump: str):
+def check_preconditions(bump: str) -> None:
     """Check preconditions for version bump."""
     messages = []
     release_folder = pathlib.Path(__file__).resolve().parent
@@ -59,20 +58,14 @@ def check_preconditions(bump: str):
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
-    docs = root / "docs"
-    create_metrics_and_sources = docs / "src" / "create_metrics_and_sources_md.py"
-    subprocess.run(["python3", create_metrics_and_sources], check=True)  # skipcq: BAN-B603,BAN-B607
-    metrics_and_sources = docs / "METRICS_AND_SOURCES.md"
-    if repo.is_dirty(path=metrics_and_sources):
-        messages.append(f"The generated data model documentation is out of date, please commit {metrics_and_sources}.")
-    changelog = docs / "CHANGELOG.md"
+    changelog = root / "docs" / "src" / "changelog.md"
     with changelog.open() as changelog_file:
         changelog_text = changelog_file.read()
     if "[Unreleased]" not in changelog_text:
-        messages.append(f"The change log ({changelog}) has no '[Unreleased]' header.")
+        messages.append(f"The changelog ({changelog}) has no '[Unreleased]' header.")
     if bump == "drop-rc" and "-rc." in changelog_text:
         messages.append(
-            f"The change log ({changelog}) still contains release candidates; remove "
+            f"The changelog ({changelog}) still contains release candidates; remove "
             "the release candidates and move their changes under the '[Unreleased]' header."
         )
     if messages:

@@ -19,7 +19,7 @@ def jenkins_access_parameters(*args, **kwargs):
         kwargs["kwargs"]["url"]["name"] = "URL to Jenkins job"
     kwargs["kwargs"]["password"] = dict(
         name="Password or API token for basic authentication",
-        help_url="https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients",
+        help_url="https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/",
     )
     return access_parameters(*args, **kwargs)
 
@@ -42,10 +42,10 @@ JOB_ENTITY = dict(
 JENKINS = Source(
     name="Jenkins",
     description="Jenkins is an open source continuous integration/continuous deployment server.",
-    url="https://jenkins.io/",
+    url="https://www.jenkins.io/",
     parameters=dict(
         inactive_days=Days(
-            name="Number of days without builds after which to consider CI-jobs unused.",
+            name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],

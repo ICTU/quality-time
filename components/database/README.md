@@ -1,3 +1,3 @@
 # *Quality-time* database
 
-Wrap the MongoDB image in a *Quality-time* image so the MongoDB version number can be changed when needed.
+See the [software documentation](https://quality-time.readthedocs.io/en/latest/software.html#database).

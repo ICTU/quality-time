@@ -1,4 +1,7 @@
 digraph {
+  graph [bgcolor=transparant, fontname="SFMono-Regular"]
+  node [color=white, fontcolor=white, fontname="SFMono-Regular"]
+  edge [color=white, fontcolor=white, fontname="SFMono-Regular"]
   browser [shape=rectangle]
   ldap [shape=rectangle]
   browser -> proxy [label=ui, dir="back"]
