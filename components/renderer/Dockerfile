@@ -3,15 +3,16 @@ FROM alpeware/chrome-headless-trunk:rev-905146
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time renderer"
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
   && apt-get update -y \
-  && apt-get install -y fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git \
+  && apt-get install --no-install-recommends -y fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git \
   && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-  && apt install -y nodejs \
+  && apt-get install --no-install-recommends -y nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+RUN groupadd --gid 1000 node && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
 USER node
 
