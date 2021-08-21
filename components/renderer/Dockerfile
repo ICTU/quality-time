@@ -4,8 +4,8 @@ LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time renderer"
 
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
-  && apt update -y \
-  && apt install -y fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git \
+  && apt-get update -y \
+  && apt-get install -y fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git \
   && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && apt install -y nodejs \
   && rm -rf /var/lib/apt/lists/*
@@ -16,6 +16,7 @@ RUN groupadd --gid 1000 node \
 USER node
 
 ENV HOME=/home/node
+RUN mkdir -p /home/node/srv
 ARG APP_HOME=/home/node/srv
 WORKDIR $APP_HOME
 
