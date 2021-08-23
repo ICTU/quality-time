@@ -12,6 +12,6 @@ USER notifier
 
 COPY src /home/notifier
 
-HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('/home/notifier/health_check.txt').read().strip()) > timedelta(seconds=600))"
+HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('/home/notifier/health_check.txt', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
 
 CMD ["python", "/home/notifier/quality_time_notifier.py"]

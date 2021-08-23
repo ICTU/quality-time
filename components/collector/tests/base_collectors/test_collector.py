@@ -296,7 +296,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
         self.collector.record_health()
-        mocked_open.assert_called_once_with("/home/collector/health_check.txt", "w")
+        mocked_open.assert_called_once_with("/home/collector/health_check.txt", "w", encoding="utf-8")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("builtins.open")
