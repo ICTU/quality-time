@@ -42,7 +42,7 @@ class HealthCheckTest(unittest.TestCase):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
         record_health()
-        mocked_open.assert_called_once_with(self.filename, "w")
+        mocked_open.assert_called_once_with(self.filename, "w", encoding="utf-8")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("builtins.open")

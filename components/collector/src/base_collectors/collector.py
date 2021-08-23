@@ -65,7 +65,7 @@ class Collector:
     def record_health(filename: str = "/home/collector/health_check.txt") -> None:
         """Record the current date and time in a file to allow for health checks."""
         try:
-            with open(filename, "w") as health_check:
+            with open(filename, "w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now().isoformat())
         except OSError as reason:
             logging.error("Could not write health check time stamp to %s: %s", filename, reason)
