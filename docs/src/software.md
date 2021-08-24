@@ -51,6 +51,9 @@ The frontend uses the following environment variables:
 
 The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the [section on configuration](#configuration) below.
 
+```{index} API
+```
+
 ### API
 
 API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v2 (all routes for a specific version, in this case version 2), and http://www.quality-time.example.org/api/v2/<route_fragment> (all routes matching a specific text fragment).

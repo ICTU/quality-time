@@ -26,6 +26,9 @@ When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their L
 
 See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more information on LDAP filters.
 
+```{index} Forwarded Authentication
+```
+
 ## Configuring Forwarded Authentication
 
 To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Security warning: Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. Add the environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
@@ -41,7 +44,7 @@ To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWA
 
 ### Proxy
 
-External traffic is routed by a Caddy reverse proxy (container name: www) to either the frontend container or the server container. The proxy listens on port 80. You can override the Caddy configuration in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) if so desired.
+External traffic is routed by a {index}`Caddy` reverse proxy (container name: www) to either the frontend container or the server container. The proxy listens on port 80. You can override the Caddy configuration in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) if so desired.
 
 ### Frontend
 
@@ -58,7 +61,7 @@ The React UI is served by the frontend container, which runs at port 5000 by def
 
 ### Server
 
-The API is accessible at the server container, running at port 5001 by default. The Caddy reverse proxy routes URLs that start with /api to the server. To configure the server container port, set the `SERVER_PORT` environment variable. Add the `SERVER_PORT` environment variable to the server, the collector, and the notifier services:
+The {index}`API` is accessible at the server container, running at port 5001 by default. The Caddy reverse proxy routes URLs that start with /api to the server. To configure the server container port, set the `SERVER_PORT` environment variable. Add the `SERVER_PORT` environment variable to the server, the collector, and the notifier services:
 
 ```yaml
   server:
