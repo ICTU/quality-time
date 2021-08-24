@@ -12,20 +12,20 @@ def build_notification_text(notification: Notification) -> str:
     nr_changed = len(notification.metrics)
     plural_s = "s" if nr_changed > 1 else ""
     report_link = f"[{notification.report_title}]({notification.url})"
-    result = f"{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n"
-    subjects = sorted(list(set(metric.subject_name for metric in notification.metrics)))
-    for subject in subjects:
-        result += f"* {subject}:\n"
-        for metric in [m for m in notification.metrics if m.subject_name == subject]:
+    markdown = f"{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n"
+    for subject_name in sorted({metric.subject_name for metric in notification.metrics}):
+        markdown += f"* {subject_name}:\n"
+        subject_metrics = [metric for metric in notification.metrics if metric.subject_name == subject_name]
+        for metric in sorted(subject_metrics, key=lambda metric: metric.metric_name):
             new_value = "?" if metric.new_metric_value is None else metric.new_metric_value
             old_value = "?" if metric.old_metric_value is None else metric.old_metric_value
             unit = metric.metric_unit if metric.metric_unit.startswith("%") else f" {metric.metric_unit}"
             old_value_text = " (unchanged)" if new_value == old_value else f", was {old_value}{unit}"
-            result += (
+            markdown += (
                 f"  * *{metric.metric_name}* status is {metric.new_metric_status}, was {metric.old_metric_status}. "
                 f"Value is {new_value}{unit}{old_value_text}.\n"
             )
-    return result
+    return markdown
 
 
 def send_notification(destination: str, text: str) -> None:
