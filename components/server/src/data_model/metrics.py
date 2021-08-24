@@ -115,7 +115,7 @@ METRICS = Metrics.parse_obj(
         ),
         metrics=dict(
             name="Metrics",
-            description="The amount of metrics from one more quality reports, with specific states and/or tags.",
+            description="The amount of metrics from one or more quality reports, with specific states and/or tags.",
             scales=["count", "percentage"],
             unit=Unit.METRICS,
             near_target="5",
