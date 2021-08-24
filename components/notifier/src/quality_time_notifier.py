@@ -9,8 +9,8 @@ from typing import Final, NoReturn, cast
 
 import aiohttp
 
+from destinations.ms_teams import build_notification_text, send_notification
 from notifier_utilities.type import JSON, URL
-from outbox import Outbox
 from strategies.notification_strategy import NotificationFinder
 
 
@@ -23,9 +23,8 @@ async def notify(log_level: int = None) -> NoReturn:
         f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
         f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/report"
     )
-    data_model = await retrieve_data_model(api_version)
+    data_model = await retrieve_data_model(api_version, sleep_duration)
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
-    outbox = Outbox()
     notification_finder = NotificationFinder(data_model)
     while True:
         record_health()
@@ -37,21 +36,17 @@ async def notify(log_level: int = None) -> NoReturn:
         except Exception as reason:  # pylint: disable=broad-except
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
-        notifications = notification_finder.get_notifications(json, most_recent_measurement_seen)
-        outbox.add_notifications(notifications)
-        outbox.send_notifications()
+        for notification in notification_finder.get_notifications(json, most_recent_measurement_seen):
+            send_notification(str(notification.destination["webhook"]), build_notification_text(notification))
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
 
 
-async def retrieve_data_model(api_version: str) -> JSON:
+async def retrieve_data_model(api_version: str, sleep_duration: int) -> JSON:
     """Retrieve data model from server."""
-    max_sleep_duration = 60  # Make an environment variable
-    timeout = aiohttp.ClientTimeout(total=120)
-    async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, trust_env=True) as session:
-        data_model = await fetch_data_model(session, max_sleep_duration, api_version)
-    return data_model
+    async with aiohttp.ClientSession(raise_for_status=True, trust_env=True) as session:
+        return await fetch_data_model(session, sleep_duration, api_version)
 
 
 def record_health(filename: str = "/home/notifier/health_check.txt") -> None:

@@ -4,7 +4,7 @@
 class MetricNotificationData:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
     """Handle metric data needed for notifications."""
 
-    def __init__(self, metric, subject, data_model, reason: str) -> None:
+    def __init__(self, metric, subject, data_model) -> None:
         """Initialise the Notification with metric data."""
         self.metric_name = metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}'
         self.metric_unit = metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}'
@@ -24,8 +24,6 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods,too-many
         if len(recent_measurements) >= 2:
             self.old_metric_value = recent_measurements[-2][scale]["value"]
             self.old_metric_status = self.__user_friendly_status(data_model, recent_measurements[-2][scale]["status"])
-
-        self.reason = reason
 
     @staticmethod
     def __user_friendly_status(data_model, metric_status) -> str:

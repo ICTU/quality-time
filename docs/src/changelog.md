@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Removed
+
+- Don't send notifications about metrics having the same status for three weeks: it's not useful enough. Closes [#2529](https://github.com/ICTU/quality-time/issues/2529).
+
 ## v3.24.0 - 2021-08-23
 
 ### Fixed
