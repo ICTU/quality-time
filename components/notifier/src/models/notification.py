@@ -1,27 +1,27 @@
 """Notification."""
 
+from dataclasses import dataclass
+from typing import Optional
+
+from notifier_utilities.type import JSON
 from models.metric_notification_data import MetricNotificationData
 
 
+@dataclass
 class Notification:
     """Handle notification contents and status."""
 
-    def __init__(self, report, metrics, destination_uuid, destination):
-        """Initialise the Notification with the required info."""
-        self.report_title = report["title"]
-        self.url = report.get("url")
-        self.metrics: list[MetricNotificationData] = metrics
-        self.destination_uuid = destination_uuid
-        self.destination = destination
+    report: JSON
+    metrics: list[MetricNotificationData]
+    destination_uuid: str
+    destination: dict[str, str]
 
-    def __eq__(self, other):
-        """Check if the notification itself is the same, regardless of its metric content."""
-        return (
-            self.report_title == other.report_title
-            and self.destination_uuid == other.destination_uuid
-            and self.destination == other.destination
-        )
+    @property
+    def report_title(self) -> str:
+        """Return the title of the report."""
+        return str(self.report["title"])
 
-    def merge_notification(self, new_metrics):
-        """Merge new metrics into this notification."""
-        self.metrics.extend(new_metrics)
+    @property
+    def url(self) -> Optional[str]:
+        """Return the URL of the report."""
+        return self.report.get("url")

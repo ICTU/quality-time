@@ -505,5 +505,3 @@ To allow for seeding a *Quality-time* instance with default reports, imported re
 *Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
 If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
-
-*Quality-time* sends a notification when the status of a metric changes as well as when the status of a metric has been the same for three weeks.
