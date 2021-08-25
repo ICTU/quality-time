@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 
-let mockHistory = { location: {}, replace: () => { } };
+let mockHistory = { location: {}, replace: () => { /* No implementation needed */ } };
 const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
 const report = {
   report_uuid: "report_uuid",

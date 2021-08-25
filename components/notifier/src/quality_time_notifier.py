@@ -9,7 +9,7 @@ from typing import Final, NoReturn, cast
 
 import aiohttp
 
-from destinations.ms_teams import build_notification_text, send_notification
+from destinations.ms_teams import notification_text, send_notification
 from notifier_utilities.type import JSON, URL
 from strategies.notification_strategy import NotificationFinder
 
@@ -37,7 +37,7 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
         for notification in notification_finder.get_notifications(json, most_recent_measurement_seen):
-            send_notification(str(notification.destination["webhook"]), build_notification_text(notification))
+            send_notification(str(notification.destination["webhook"]), notification_text(notification))
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
