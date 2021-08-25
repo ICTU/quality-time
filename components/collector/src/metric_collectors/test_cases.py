@@ -38,9 +38,13 @@ class TestCases(MetricCollector):
         ("errored", "failed"): "errored",
         ("errored", "errored"): "errored",
     }
+    # Mapping to uniformize the test results from different sources:
+    UNIFORMIZED_TEST_RESULTS = {"fail": "failed", "pass": "passed", "skip": "skipped"}
+    # Regular expression to identify test case ids in test names and descriptions:
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
+    # The supported source types for test cases and test reports:
     TEST_CASE_SOURCE_TYPES = ["jira"]
-    TEST_REPORT_SOURCE_TYPES = ["junit", "testng"]
+    TEST_REPORT_SOURCE_TYPES = ["junit", "robot_framework", "testng"]
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Override to add the test results from the test report(s) to the test cases."""
@@ -52,7 +56,7 @@ class TestCases(MetricCollector):
         for entity in self.test_report_entities(measurement.sources):
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
                 test_result_so_far = test_cases[test_case_key]["test_result"]
-                test_result = entity["test_result"]
+                test_result = self.test_result(entity)
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
         # Set the value of the test report sources to zero as this metric only counts test cases
         for source in self.test_report_sources(measurement.sources):
@@ -99,3 +103,8 @@ class TestCases(MetricCollector):
     def source_type(self, source: SourceMeasurement) -> str:
         """Return the source type."""
         return str(self._metric["sources"][source.source_uuid]["type"])
+
+    @classmethod
+    def test_result(cls, entity: Entity) -> str:
+        """Return the (uniformized) test result of the entity."""
+        return cls.UNIFORMIZED_TEST_RESULTS.get(entity["test_result"], entity["test_result"])

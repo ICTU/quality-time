@@ -34,7 +34,7 @@ class RobotFrameworkTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                     <status status="PASS"></status>
                 </test>
             </suite>
-             <statistics>
+            <statistics>
                 <total>
                     <stat pass="1" fail="1" skip="0">All Tests</stat>
                 </total>
@@ -53,7 +53,7 @@ class RobotFrameworkTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                     <status status="SKIP"></status>
                 </test>
             </suite>
-             <statistics>
+            <statistics>
                 <total>
                     <stat pass="1" fail="1" skip="1">All Tests</stat>
                 </total>

@@ -243,7 +243,7 @@ Note that when the "Metrics" metric is itself part of the set of metrics it coun
 
 The test cases metric reports on the number of test cases, and their test results. The test case metric is different than other metrics because it combines data from two types of sources: it needs one or more sources for the test cases, and one or more sources for the test results. The test case metric then matches the test results with the test cases.
 
-Currently, only {index}`Jira` is supported as source for the test cases. {index}`JUnit` and {index}`TestNG` are supported as source for the test results. So, to configure the test cases metric, you need to add at least one Jira source and one JUnit or one TestNG source. In addition, to allow the test case metric to match test cases from Jira with test results from the JUnit and/or TestNG XML files, the test results should mention Jira issue keys in their title or description.
+Currently, only {index}`Jira` is supported as source for the test cases. {index}`JUnit`, {index}`TestNG`, and {index}`Robot Framework` are supported as source for the test results. So, to configure the test cases metric, you need to add at least one Jira source and one JUnit, TestNG, Robot Framework source. In addition, to allow the test case metric to match test cases from Jira with test results from the JUnit, TestNG, or Robot Framework XML files, the test results should mention Jira issue keys in their title or description.
 
 Suppose you have configured Jira with the query: `project = "My Project" and type = "Logical Test Case"` and this results in these test cases:
 
@@ -279,7 +279,7 @@ The test case metric will combine the JUnit XML file with the test cases from Ji
 | MP-2 | Test case 2 | skipped     |
 | MP-3 | Test case 3 | passed      |
 
-If multiple test results in the JUnit or TestNG XML file map to one Jira test case (as with MP-1 and MP-3 above), the "worst" test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed.
+If multiple test results in the JUnit, TestNG, or Robot Framework XML file map to one Jira test case (as with MP-1 and MP-3 above), the "worst" test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed.
 
 ```{index} Unmerged branches
 ```
