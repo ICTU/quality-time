@@ -3,7 +3,7 @@
 import logging
 from unittest import mock, TestCase
 
-from destinations.ms_teams import build_notification_text, send_notification
+from destinations.ms_teams import notification_text, send_notification
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
 
@@ -68,7 +68,6 @@ class BuildNotificationTextTests(TestCase):
         notification = Notification(
             self.report, [metric_notification_data1, metric_notification_data2], "destination_uuid", {}
         )
-        text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
             "* Subject:\n"
@@ -76,7 +75,7 @@ class BuildNotificationTextTests(TestCase):
             "Value is 42 units, was 0 units.\n"
             "  * *Metric* status is red (target not met), was green (target met). "
             "Value is 10 units, was 5 units.\n",
-            text,
+            notification_text(notification),
         )
 
     def test_unknown_text(self):
@@ -93,11 +92,10 @@ class BuildNotificationTextTests(TestCase):
         )
         metric_notification_data1 = MetricNotificationData(metric1, self.subject, DATA_MODEL)
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
-        text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"
             "* Subject:\n"
             "  * *Metric* status is white (unknown), was yellow (near target met). "
             "Value is ? units, was 0 units.\n",
-            text,
+            notification_text(notification),
         )
