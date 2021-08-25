@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+
+- Allow Robot Framework reports as source for the test cases metric. Closes [#2534](https://github.com/ICTU/quality-time/issues/2534).
+
 ### Removed
 
 - Don't send notifications about metrics having the same status for three weeks: it's not useful enough. Closes [#2529](https://github.com/ICTU/quality-time/issues/2529).

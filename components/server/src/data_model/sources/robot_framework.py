@@ -7,7 +7,7 @@ from ..parameters import access_parameters, TestResult
 from .jenkins import jenkins_access_parameters
 
 
-ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "tests"]
+ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "test_cases", "tests"]
 
 ROBOT_FRAMEWORK = Source(
     name="Robot Framework",

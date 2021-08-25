@@ -122,6 +122,7 @@ from .quality_time.source_version import QualityTimeSourceVersion
 
 from .robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
 from .robot_framework.source_version import RobotFrameworkSourceVersion
+from .robot_framework.test_cases import RobotFrameworkTestCases
 from .robot_framework.tests import RobotFrameworkTests
 
 from .robot_framework_jenkins_plugin.source_up_to_dateness import RobotFrameworkJenkinsPluginSourceUpToDateness

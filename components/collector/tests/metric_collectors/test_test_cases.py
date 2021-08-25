@@ -34,6 +34,22 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
             <testcase name="no_such_key-1"><failure /></testcase>
         </testsuite>
         """
+    ROBOT_FRAMEWORK_XML_V4 = """<?xml version="1.0" encoding="UTF-8"?>
+        <robot generator="Robot 4.0b3.dev1 (Python 3.9.1 on linux)" generated="20210212 17:27:03.027">
+            <suite>
+                <test id="s1-t1" name="key-1; Test 1">
+                    <status status="PASS"></status>
+                </test>
+                <test id="s1-t2" name="key-1; Test 2">
+                    <status status="FAIL"></status>
+                </test>
+            </suite>
+            <statistics>
+                <total>
+                    <stat pass="1" fail="1" skip="0">All Tests</stat>
+                </total>
+            </statistics>
+        </robot>"""
     CREATED = "2020-08-06T16:36:48.000+0200"
 
     def setUp(self) -> None:  # pylint: disable=invalid-name
@@ -46,6 +62,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.jira_url = "https://jira"
         self.testng_url = "https://testng"
         self.junit_url = "https://junit"
+        self.robot_framework_url = "https://robot"
 
     def jira_issue(self, key="key-1", **fields):
         """Create a Jira issue."""
@@ -99,6 +116,18 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = dict(type="jira", parameters=dict(url=self.jira_url))
         junit = dict(type="junit", parameters=dict(url=self.junit_url))
         measurement = await self.collect(dict(jira=jira, junit=junit))
+        self.assertListEqual(
+            [self.jira_entity(test_result="failed"), self.jira_entity("key-2")], measurement.sources[0].entities
+        )
+        self.assertEqual("2", measurement.sources[0].value)
+        self.assertEqual("0", measurement.sources[1].value)
+
+    async def test_matching_test_case_robot_framework(self):
+        """Test one matching test case."""
+        self.response.text = AsyncMock(return_value=self.ROBOT_FRAMEWORK_XML_V4)
+        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        robot_framework = dict(type="robot_framework", parameters=dict(url=self.robot_framework_url))
+        measurement = await self.collect(dict(jira=jira, robot_framework=robot_framework))
         self.assertListEqual(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")], measurement.sources[0].entities
         )
