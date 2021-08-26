@@ -8,10 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.25.0-rc.1 - 2021-08-26
+## [Unreleased]
 
 ### Added
 
+- Add pagination support for Jira so queries that result in more than 500 results are retrieved completely. Closes [#2386](https://github.com/ICTU/quality-time/issues/2386).
 - Allow Robot Framework reports as source for the test cases metric. Closes [#2534](https://github.com/ICTU/quality-time/issues/2534).
 
 ### Removed
