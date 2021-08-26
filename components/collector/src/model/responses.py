@@ -36,5 +36,3 @@ class SourceResponses:
     def extend(self, responses: "SourceResponses") -> None:
         """Extend the responses."""
         self.__responses.extend(list(responses))
-        if self.__responses is None:
-            self.connection_error = responses.connection_error

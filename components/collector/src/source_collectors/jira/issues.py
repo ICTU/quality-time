@@ -1,5 +1,6 @@
 """Jira issues collector."""
 
+import itertools
 import re
 from typing import Union
 
@@ -43,28 +44,30 @@ class JiraIssues(SourceCollector):
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to implement pagination."""
-        start_at = 0
         all_responses = SourceResponses(api_url=urls[0])
-        last_responses = await super()._get_source_responses(urls[0], **kwargs)
-        all_responses.extend(last_responses)
-        json = await last_responses[0].json()
-        issues = json.get("issues", [])
-        while len(issues) == self.MAX_RESULTS:
-            start_at += self.MAX_RESULTS
-            last_responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"), **kwargs)
-            if last_responses:
-                json = await last_responses[0].json()
-                issues = json.get("issues", [])
-                all_responses.extend(last_responses)
+        for start_at in itertools.count(0, self.MAX_RESULTS):  # pragma: no cover
+            responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"), **kwargs)
+            if issues := await self._issues(responses):
+                all_responses.extend(responses)
+            if len(issues) < self.MAX_RESULTS:
+                break  # We got fewer than the maximum number of issues per page, so we know we're done
         return all_responses
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the issues from the responses."""
         url = URL(str(self._parameter("url")))
-        json = await responses[0].json()
-        issues = json.get("issues", [])
+        issues = await self._issues(responses)
         entities = Entities(self._create_entity(issue, url) for issue in issues if self._include_issue(issue))
         return SourceMeasurement(value=self._compute_value(entities), entities=entities)
+
+    @staticmethod
+    async def _issues(responses: SourceResponses):
+        """Return the issues from the responses."""
+        issues = []
+        for response in responses:
+            json = await response.json()
+            issues.extend(json.get("issues", []))
+        return issues
 
     @classmethod
     def _compute_value(cls, entities: Entities) -> Value:  # pylint: disable=unused-argument
