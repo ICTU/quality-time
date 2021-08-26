@@ -12,6 +12,7 @@ class JiraIssues(SourceCollector):
     """Jira collector for issues."""
 
     SPRINT_NAME_RE = re.compile(r",name=(.*),startDate=")
+    MAX_RESULTS = 500  # Maximum number of issues to retrieve per page. Jira allows at most 500.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,7 +26,7 @@ class JiraIssues(SourceCollector):
         self._field_ids = {field["name"].lower(): field["id"] for field in await response.json()}
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
-        return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
+        return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults={self.MAX_RESULTS}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the JQL query to the landing URL."""
@@ -39,6 +40,23 @@ class JiraIssues(SourceCollector):
         if parameter_key.endswith("field"):
             parameter_value = self._field_ids.get(str(parameter_value).lower(), parameter_value)
         return parameter_value
+
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+        """Extend to implement pagination."""
+        start_at = 0
+        all_responses = SourceResponses(api_url=urls[0])
+        last_responses = await super()._get_source_responses(urls[0], **kwargs)
+        all_responses.extend(last_responses)
+        json = await last_responses[0].json()
+        issues = json.get("issues", [])
+        while len(issues) == self.MAX_RESULTS:
+            start_at += self.MAX_RESULTS
+            last_responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"), **kwargs)
+            if last_responses:
+                json = await last_responses[0].json()
+                issues = json.get("issues", [])
+                all_responses.extend(last_responses)
+        return all_responses
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the issues from the responses."""
