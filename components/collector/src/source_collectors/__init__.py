@@ -67,6 +67,7 @@ from .jenkins.source_version import JenkinsSourceVersion
 from .jenkins.unused_jobs import JenkinsUnusedJobs
 
 from .jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
+from .jenkins_test_report.test_cases import JenkinsTestReportTestCases
 from .jenkins_test_report.tests import JenkinsTestReportTests
 
 from .jira.issues import JiraIssues
