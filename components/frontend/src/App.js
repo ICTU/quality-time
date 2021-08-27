@@ -99,7 +99,7 @@ class App extends Component {
     if (json.ok === false && json.status === 401) {
       this.set_user(null);
       if (this.login_forwardauth() === false) {
-        show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
+        show_message("warning", "Your session expired", "Please log in to renew your session");
       }
     }
   }
@@ -202,7 +202,7 @@ class App extends Component {
           set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
           user={this.state.user}
         />
-        <ToastContainer />
+        <ToastContainer theme="colored" />
         <Permissions.Provider value={user_permissions}>
           <Container fluid className="MainContainer">
             {this.state.loading ?
