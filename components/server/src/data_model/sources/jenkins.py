@@ -92,7 +92,7 @@ JENKINS = Source(
     ),
 )
 
-ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "tests"]
+ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
 
 JENKINS_TEST_REPORT = Source(
     name="Jenkins test report",
