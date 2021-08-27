@@ -1,10 +1,8 @@
-import { Icon } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 
-export function show_message(type, title, description, icon) {
-    const toast_type = {"success": toast.TYPE.SUCCESS, "warning": toast.TYPE.WARNING, "error": toast.TYPE.ERROR, "info": toast.TYPE.INFO}[type];
-    const toast_icon = icon ? icon : {"success": "thumbs up", "warning": "warning circle", "error": "close", "info": "info circle"}[type];
-    toast(<><h4><Icon name={toast_icon}/>{title}</h4><p>{description}</p></>, {type: toast_type, autoClose: 20000});
+export function show_message(type, title, description) {
+    const toast_message = title && description ? <><h4>{title}</h4><p>{description}</p></> : title;
+    toast(toast_message, { type: type, autoClose: 20000 });
 }
 
 export function show_connection_messages(json) {
