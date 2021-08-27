@@ -85,14 +85,20 @@ JENKINS = Source(
             ),
         )
     ),
-    entities=dict(
-        failed_jobs=JOB_ENTITY,
-        source_up_to_dateness=JOB_ENTITY,
-        unused_jobs=JOB_ENTITY,
-    ),
+    entities=dict(failed_jobs=JOB_ENTITY, source_up_to_dateness=JOB_ENTITY, unused_jobs=JOB_ENTITY),
 )
 
-ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "tests"]
+ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
+
+TEST_ENTITIES = dict(
+    name="test",
+    attributes=[
+        dict(name="Class name"),
+        dict(name="Test case", key="name"),
+        dict(name="Test result", color=dict(failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING)),
+        dict(name="Number of builds the test has been failing", key="age", type=EntityAttributeType.INTEGER),
+    ],
+)
 
 JENKINS_TEST_REPORT = Source(
     name="Jenkins test report",
@@ -111,17 +117,5 @@ JENKINS_TEST_REPORT = Source(
             ),
         )
     ),
-    entities=dict(
-        tests=dict(
-            name="test",
-            attributes=[
-                dict(name="Class name"),
-                dict(name="Test case", key="name"),
-                dict(
-                    name="Test result", color=dict(failed=Color.NEGATIVE, passed=Color.POSITIVE, skipped=Color.WARNING)
-                ),
-                dict(name="Number of builds the test has been failing", key="age", type=EntityAttributeType.INTEGER),
-            ],
-        )
-    ),
+    entities=dict(tests=TEST_ENTITIES, test_cases=TEST_ENTITIES),
 )

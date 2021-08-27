@@ -44,7 +44,7 @@ class TestCases(MetricCollector):
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
     # The supported source types for test cases and test reports:
     TEST_CASE_SOURCE_TYPES = ["jira"]
-    TEST_REPORT_SOURCE_TYPES = ["junit", "robot_framework", "testng"]
+    TEST_REPORT_SOURCE_TYPES = ["jenkins_test_report", "junit", "robot_framework", "testng"]
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Override to add the test results from the test report(s) to the test cases."""

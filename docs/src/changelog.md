@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add pagination support for Jira so queries that result in more than 500 results are retrieved completely. Closes [#2386](https://github.com/ICTU/quality-time/issues/2386).
 - Allow Robot Framework reports as source for the test cases metric. Closes [#2534](https://github.com/ICTU/quality-time/issues/2534).
+- Allow Jenkins test reports as source for the test cases metric. Closes [#2543](https://github.com/ICTU/quality-time/issues/2543).
 
 ### Removed
 
