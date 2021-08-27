@@ -10,12 +10,13 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
     OPENVAS_XML = """<?xml version="1.0"?>
         <report>
             <results>
-                <result id="id">
+                <result>
                     <name>Name</name>
                     <description>Description</description>
                     <threat>Low</threat>
-                    <host>1.2.3.4</host>
+                    <host>1.2.3.4<asset asset_id="asset_should_be_ignored"/></host>
                     <port>80/tcp</port>
+                    <nvt oid="4.2"/>
                 </result>
             </results>
         </report>"""
@@ -24,6 +25,13 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
         """Test that the number of warnings is returned."""
         response = await self.collect(get_request_text=self.OPENVAS_XML)
         expected_entities = [
-            dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")
+            dict(
+                key="1_2_3_4:80-tcp:4_2",
+                severity="Low",
+                name="Name",
+                description="Description",
+                host="1.2.3.4",
+                port="80/tcp",
+            )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)

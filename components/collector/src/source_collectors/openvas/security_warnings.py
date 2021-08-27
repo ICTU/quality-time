@@ -11,26 +11,26 @@ from model import Entities, Entity, SourceResponses
 class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
+    # Mapping of OpenVAS attribute names to the measurement entity attribute names:
+    ATTRIBUTES = dict(name="name", description="description", host="host", port="port", threat="severity")
+
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the OpenVAS XML."""
         entities = Entities()
         severities = cast(list[str], self._parameter("severities"))
         for response in responses:
             tree = await parse_source_response_xml(response)
-            entities.extend(
-                [
-                    Entity(
-                        key=result.attrib["id"],
-                        name=result.findtext("name", default=""),
-                        description=result.findtext("description", default=""),
-                        host=result.findtext("host", default=""),
-                        port=result.findtext("port", default=""),
-                        severity=result.findtext("threat", default=""),
-                    )
-                    for result in self.__results(tree, severities)
-                ]
-            )
+            entities.extend([self.__entity(result) for result in self.__results(tree, severities)])
         return entities
+
+    @classmethod
+    def __entity(cls, result: Element) -> Entity:
+        """Create the entity from the OpenVAS result."""
+        attributes = cls.ATTRIBUTES.items()
+        kwargs = {entity_attr: result.findtext(result_attr, default="") for result_attr, entity_attr in attributes}
+        oid = result.findall("nvt")[0].attrib["oid"]  # Object identifier of the network vulnerability test
+        key = f"{kwargs['host']}:{kwargs['port']}:{oid}"
+        return Entity(key=key, **kwargs)
 
     @staticmethod
     def __results(element: Element, severities: list[str]) -> list[Element]:
