@@ -1,4 +1,3 @@
-import { Icon } from 'semantic-ui-react';
 import * as react_toastify from 'react-toastify';
 import { show_message, show_connection_messages } from './toast';
 
@@ -9,7 +8,7 @@ it('shows a message', () => {
     react_toastify.toast = jest.fn();
     react_toastify.toast.TYPE = toast_type;
     show_message("error", "Error", "Description");
-    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4><Icon name="close"/>Error</h4><p>Description</p></>);
+    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4>Error</h4><p>Description</p></>);
 });
 
 it('shows a custom icon', () => {
@@ -17,7 +16,7 @@ it('shows a custom icon', () => {
     react_toastify.toast = jest.fn();
     react_toastify.toast.TYPE = toast_type;
     show_message("error", "Error", "Description", "question");
-    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4><Icon name="question"/>Error</h4><p>Description</p></>);
+    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4>Error</h4><p>Description</p></>);
 });
 
 it('shows no connection messages', () => {
@@ -33,7 +32,7 @@ it('shows a successful connection message', () => {
     react_toastify.toast = jest.fn();
     react_toastify.toast.TYPE = toast_type;
     show_connection_messages({availability: [{status_code: 200}]})
-    expect(react_toastify.toast.mock.calls[0][0]).toEqual(<><h4><Icon name="thumbs up"/>URL connection OK</h4><p/></>);
+    expect(react_toastify.toast.mock.calls[0][0]).toEqual("URL connection OK");
 });
   
 it('shows a failed connection message', () => {
@@ -41,7 +40,7 @@ it('shows a failed connection message', () => {
     react_toastify.toast = jest.fn();
     react_toastify.toast.TYPE = toast_type;
     show_connection_messages({availability: [{status_code: -1, reason: "Failure"}]})
-    expect(react_toastify.toast.mock.calls[0][0]).toEqual(<><h4><Icon name="warning circle"/>URL connection error</h4><p>Failure</p></>);
+    expect(react_toastify.toast.mock.calls[0][0]).toEqual(<><h4>URL connection error</h4><p>Failure</p></>);
 });
   
 it('shows the http status code', () => {
@@ -49,5 +48,5 @@ it('shows the http status code', () => {
     react_toastify.toast = jest.fn();
     react_toastify.toast.TYPE = toast_type;
     show_connection_messages({availability: [{status_code: 404, reason: "Not found"}]})
-    expect(react_toastify.toast.mock.calls[0][0]).toEqual(<><h4><Icon name="warning circle"/>URL connection error</h4><p>[HTTP status code 404] Not found</p></>);
+    expect(react_toastify.toast.mock.calls[0][0]).toEqual(<><h4>URL connection error</h4><p>[HTTP status code 404] Not found</p></>);
 });
