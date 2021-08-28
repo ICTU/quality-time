@@ -2,6 +2,12 @@
 
 set -e
 
+# We currently get one warning when running Python in dev mode:
+# astroid/node_classes.py:90: DeprecationWarning: The 'astroid.node_classes' module is deprecated and will be replaced
+# by 'astroid.nodes' in astroid 3.0.0
+# Turn off dev mode until astroid gets fixed or there's a way to suppress warnings in third party code
+#export PYTHONDEVMODE=1
+
 ./node_modules/markdownlint-cli/markdownlint.js src/*.md
 mypy src
 pylint --rcfile=../.pylintrc src tests
