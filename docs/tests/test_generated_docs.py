@@ -16,4 +16,6 @@ class GeneratedDocumentationTest(unittest.TestCase):
         repo = git.Repo(docs.parent)
         create_metrics_and_sources = docs / "src" / "create_metrics_and_sources_md.py"
         subprocess.run(["python3", create_metrics_and_sources], check=True)  # skipcq: BAN-B603,BAN-B607
-        self.assertFalse(repo.is_dirty(path=docs), [item.a_path for item in repo.index.diff(None)])
+        repo_is_clean = not repo.is_dirty(path=docs)
+        dirty_files = [item.a_path for item in repo.index.diff(None)]
+        self.assertTrue(repo_is_clean or ["docs/package-lock.json"] == dirty_files, dirty_files)
