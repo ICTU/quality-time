@@ -17,6 +17,8 @@ services:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:
       - ldap
+  internal-server:
+    build: ../components/internal-server
   database:
     build: ../components/database
     ports:

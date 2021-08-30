@@ -48,14 +48,14 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
 class Collector:
     """Collect measurements for all metrics."""
 
-    API_VERSION = "v3"
     MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 20))
     MEASUREMENT_LIMIT = int(os.environ.get("COLLECTOR_MEASUREMENT_LIMIT", 30))
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
-        self.server_url: Final[URL] = URL(
-            f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
+        self.internal_server_url: Final[URL] = URL(
+            f"http://{os.environ.get('INTERNAL_SERVER_HOST', 'localhost')}:"
+            f"{os.environ.get('INTERNAL_SERVER_PORT', '8000')}"
         )
         self.data_model: JSON = {}
         self.__previous_metrics: dict[str, Any] = {}
@@ -100,7 +100,7 @@ class Collector:
         # The first attempt is likely to fail because the collector starts up faster than the server,
         # so don't log tracebacks on the first attempt
         first_attempt = True
-        data_model_url = URL(f"{self.server_url}/api/{self.API_VERSION}/datamodel")
+        data_model_url = URL(f"{self.internal_server_url}/data_model")
         while True:
             self.record_health()
             logging.info("Loading data model from %s...", data_model_url)
@@ -112,7 +112,7 @@ class Collector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
+        metrics = await get(session, URL(f"{self.internal_server_url}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(metrics):
@@ -130,7 +130,7 @@ class Collector:
         metric_collector = metric_collector_class(session, metric, self.data_model)
         if measurement := await metric_collector.collect():
             measurement.metric_uuid = metric_uuid
-            api_url = URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements")
+            api_url = URL(f"{self.internal_server_url}/measurements")
             await post(session, api_url, measurement.as_dict())
 
     def __sorted_by_edit_status(self, metrics: dict[str, Any]) -> list[tuple[str, Any]]:

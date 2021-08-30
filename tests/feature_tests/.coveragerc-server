@@ -1,0 +1,8 @@
+[run]
+omit =
+    */venv/*
+    */.venv/*
+branch = True
+parallel = True
+concurrency =
+    gevent

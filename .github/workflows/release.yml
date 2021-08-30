@@ -58,6 +58,12 @@ jobs:
           context: components/server
           tags: ictu/quality-time_server:${{ steps.get_version.outputs.version }}
           push: true
+      - name: Push Internal-server to Docker Hub
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: components/internal-server
+          tags: ictu/quality-time_internal_server:${{ steps.get_version.outputs.version }}
+          push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v2.7.0
         with:

@@ -17,6 +17,8 @@ services:
     depends_on:
       - ldap
       - renderer
+  internal-server:
+    build: ../components/internal-server
   database:
     build: ../components/database
     ports:

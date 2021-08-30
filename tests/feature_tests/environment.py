@@ -10,22 +10,22 @@ def before_all(context):
         """Return the cookies."""
         return dict(session_id=context.session_id) if context.session_id else {}
 
-    def api_url(api, internal=False):
+    def api_url(api, internal_server=False):
         """Return the API URL."""
-        base_api_url = context.base_api_url.format("internal-" if internal else "")
+        base_api_url = "http://localhost:8000" if internal_server else "http://localhost:5001/api/v3"
         return f"{base_api_url}/{api}"
 
-    def get(api, headers=None, internal=False):
+    def get(api, headers=None, internal_server=False):
         """Get the resource."""
-        url = api_url(api, internal)
+        url = api_url(api, internal_server)
         if context.report_date:
             url += f"?report_date={context.report_date}"
         context.response = response = requests.get(url, headers=headers, cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def post(api, json=None, internal=False):
+    def post(api, json=None, internal_server=False):
         """Post the resource."""
-        url = api_url(api, internal)
+        url = api_url(api, internal_server)
         context.post_response = context.response = response = requests.post(url, json=json, cookies=cookies())
         if not response.ok:
             return response
@@ -38,12 +38,12 @@ def before_all(context):
         context.response = response = requests.delete(api_url(api), cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    context.base_api_url = "http://localhost:5001/{0}api/v3"
     context.session_id = None
     context.report_date = None
     context.response = None  # Most recent respone
     context.post_response = None  # Most recent post response
     context.uuid: dict[str, str] = {}  # Keep track of the most recent uuid per item type
+    context.api_url = api_url
     context.get = get
     context.post = post
     context.delete = delete

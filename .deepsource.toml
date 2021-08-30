@@ -22,6 +22,8 @@ dependency_file_paths = [
   "components/notifier/requirements-dev.txt",
   "components/server/requirements.txt",
   "components/server/requirements-dev.txt",
+  "components/internal-server/requirements.txt",
+  "components/internal-server/requirements-dev.txt",
 ]
 additional_builtins = ["given", "when", "then"]
 
@@ -44,6 +46,7 @@ enabled = true
     "components/proxy/Dockerfile",
     "components/renderer/Dockerfile",
     "components/server/Dockerfile",
+    "components/internal-server/Dockerfile",
     "components/testdata/Dockerfile",
   ]
 

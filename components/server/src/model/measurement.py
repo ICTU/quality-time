@@ -163,6 +163,8 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         self.__previous_measurement: Optional[Measurement] = kwargs.pop("previous_measurement", None)
         self.metric = metric
         super().__init__(*args, **kwargs)
+        if "_id" in self:
+            del self["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
         self["start"] = self["end"] = iso_timestamp()
         self["sources"] = [Source(self.metric, source) for source in self["sources"]]
 
@@ -186,29 +188,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self[item] = self.scale_measurement(item)
         return super().__getitem__(item)
 
-    def equals(self, other: Measurement) -> bool:
-        """Return whether this measurement is unchanged compared to an (older) measurement."""
-        return (
-            not other.debt_target_expired()
-            and other.sources() == self.sources()
-            and other.get("issue_status") == self.get("issue_status")
-        )
-
-    def debt_target_expired(self) -> bool:
-        """Return whether the technical debt target is expired.
-
-        Technical debt can expire because it was turned off or because the end date passed.
-        """
-        any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
-        return self.metric.accept_debt_expired() if any_debt_target else False
-
-    def copy_entity_user_data(self, measurement: Measurement) -> None:
-        """Copy the entity user data from the measurement to this measurement."""
-        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
-        for new_source in self.sources():
-            if old_source := old_sources.get(new_source["source_uuid"]):
-                new_source.copy_entity_user_data(old_source)
-
     def update_measurement(self) -> None:
         """Update the measurement targets, values, and statuses."""
         self[self.metric.scale()].update_targets()
@@ -219,11 +198,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return whether there are sources and none have parse or connection errors."""
         sources = self.sources()
         return bool(sources) and not any(source["parse_error"] or source["connection_error"] for source in sources)
-
-    def sources_exist(self) -> bool:
-        """Return whether the measurement has sources and they exist in the metric."""
-        sources = self.sources()
-        return bool(sources) and all(source["source_uuid"] in self.metric.sources() for source in sources)
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""

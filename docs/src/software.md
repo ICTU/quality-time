@@ -10,16 +10,17 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
    :class: only-light
 ```
 
-*Quality-time* consists of seven components.
+*Quality-time* consists of the following components:
 
-Four bespoke components:
+Bespoke components:
 
 - A [frontend](#frontend) serving the React UI,
-- A [server](#server) serving the API,
+- A [server](#server) serving the public API for the frontend,
+- An [internal-server](#internal-server) serving the private API for the collector and notifier components,
 - A [collector](#collector) to collect the measurements from the sources.
 - A [notifier](#notifier) to notify users about events such as metrics turning red.
 
-And three standard components:
+And standard components:
 
 - A [proxy](#proxy) routing traffic from and to the user's browser,
 - A [database](#database) for storing reports and measurements,
@@ -273,6 +274,20 @@ The server uses the following environment variables:
 | LDAP_SEARCH_FILTER | (&#124;(uid=$$username)(cn=$$username)) | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
 | LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
 
+## Internal-server
+
+### API
+
+The internal-server provides private API endpoints for the collector and notifier.
+
+### Health check
+
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal-server/Dockerfile) contains a health check that uses curl to retrieve an API (/) from the server.
+
+### Configuration
+
+The server uses no environment variables.
+
 ## Collector
 
 The collector is responsible for collecting measurement data from sources. It wakes up once every minute and asks the server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the server.
@@ -289,8 +304,8 @@ The collector uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :---------- | :------------ |
-| SERVER_HOST | server | Hostname of the server. The collector uses this to get the metrics and post the measurements. |
-| SERVER_PORT | 5001 | Port of the server. The collector uses this to get the metrics and post the measurements. |
+| INTERNAL_SERVER_HOST | server | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
+| INTERNAL_SERVER_PORT | 8000 | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
 | COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
 | COLLECTOR_MEASUREMENT_LIMIT | 30 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
 | COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |

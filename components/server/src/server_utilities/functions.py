@@ -43,11 +43,6 @@ def report_date_time() -> str:
     return ""
 
 
-def days_ago(date_time: datetime) -> int:
-    """Return the days since the date/time."""
-    return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
-
-
 def uuid() -> ReportId:
     """Return a UUID."""
     return ReportId(str(_uuid.uuid4()))

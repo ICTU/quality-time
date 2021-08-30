@@ -1,0 +1,28 @@
+name: Internal-server
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2.3.4
+    - name: Set up Python
+      uses: actions/setup-python@v2.2.2
+      with:
+        python-version: '3.9.6'
+    - name: Install dependencies
+      run: |
+        cd components/internal-server
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+    - name: Test
+      run: |
+        cd components/internal-server
+        ci/unittest.sh
+    - name: Quality
+      run: |
+        cd components/internal-server
+        ci/quality.sh

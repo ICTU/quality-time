@@ -56,6 +56,20 @@ updates:
   open-pull-requests-limit: 10
 
 - package-ecosystem: docker
+  directory: "/components/internal-server"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/components/internal-server"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
   directory: "/components/ldap"
   schedule:
     interval: daily

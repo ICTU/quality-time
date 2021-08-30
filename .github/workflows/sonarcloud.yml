@@ -56,6 +56,14 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
+    - name: Internal-server
+      if: env.SONAR_TOKEN != null
+      working-directory: components/internal-server
+      run: |
+        pip install -r requirements.txt -r requirements-dev.txt
+        ci/unittest.sh
+        export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
+        python -m xmlrunner --output-file build/unittests.xml
     - name: Frontend
       if: env.SONAR_TOKEN != null
       working-directory: components/frontend
@@ -71,6 +79,8 @@ jobs:
         touch components/__init__.py
         touch components/server/__init__.py
         touch components/server/src/__init__.py
+        touch components/internal-server/__init__.py
+        touch components/internal-server/src/__init__.py
         touch components/collector/__init__.py
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
@@ -81,6 +91,7 @@ jobs:
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/internal-server/build/unittest-coverage.xml
     - name: Sonarcloud scan
       if: env.SONAR_TOKEN != null
       uses: sonarsource/sonarcloud-github-action@master

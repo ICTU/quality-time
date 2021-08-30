@@ -4,8 +4,6 @@ omit =
     */.venv/*
 branch = True
 parallel = True
-concurrency =
-    gevent
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -17,6 +15,7 @@ exclude_lines =
     if TYPE_CHECKING:
 omit =
     components/server/tests/quality_time_server_under_coverage.py
+    components/internal-server/tests/quality_time_internal_server_under_coverage.py
 fail_under = 100
 skip_covered = True
 

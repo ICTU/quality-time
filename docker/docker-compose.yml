@@ -23,10 +23,10 @@ services:
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_PORT=5001
-      - SERVER_HOST=server
+      - INTERNAL_SERVER_PORT=8000
+      - INTERNAL_SERVER_HOST=internal-server
     depends_on:
-      - server
+      - internal-server
     cap_drop:
       - ALL
   notifier:
@@ -54,6 +54,15 @@ services:
       - LOAD_EXAMPLE_REPORTS=True
       - FORWARD_AUTH_ENABLED=False
       - FORWARD_AUTH_HEADER=X-Forwarded-User
+    depends_on:
+      - database
+    cap_drop:
+      - ALL
+  internal-server:
+    image: ictu/quality-time_internal-server:${QUALITY_TIME_VERSION}
+    environment:
+      - DATABASE_URL=mongodb://root:root@database:27017
+      - INTERNAL_SERVER_PORT=8000
     depends_on:
       - database
     cap_drop:

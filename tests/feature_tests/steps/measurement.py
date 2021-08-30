@@ -9,8 +9,8 @@ from sseclient import SSEClient
 
 @when("the collector gets the metrics to measure")
 def get_metrics(context):
-    """Get the metrics to measure from the server."""
-    context.get("metrics", internal=True)
+    """Get the metrics to measure from the internal server."""
+    context.get("metrics", internal_server=True)
 
 
 @given('the collector has measured "{number}"')
@@ -39,7 +39,7 @@ def measure(context, number, total="100"):
                 )
             ],
         ),
-        internal=True,
+        internal_server=True,
     )
 
 
@@ -86,7 +86,7 @@ def parse_error(context):
                 )
             ],
         ),
-        internal=True,
+        internal_server=True,
     )
 
 
@@ -103,7 +103,7 @@ def set_entity_attribute(context, attribute, key, value):
 def connect_to_nr_of_measurements_stream(context, stream):
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
-    for message in SSEClient(f"{context.base_api_url.format('')}/nr_measurements"):  # pragma: no cover-behave
+    for message in SSEClient(context.api_url("nr_measurements")):  # pragma: no cover-behave
         context.sse_messages.append(message)
         if stream == "stream":
             break

@@ -7,14 +7,15 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - run: |
           case $CIRCLE_NODE_INDEX in
-          	0) component=collector;;
-          	1) component=notifier;;
-          	2) component=server;;
+            0) component=collector;;
+            1) component=notifier;;
+            2) component=server;;
+            3) component=internal-server;;
           esac
           cd components/$component
           python -m venv venv
@@ -96,12 +97,20 @@ jobs:
     steps:
       - checkout
       - run:
-          working_directory: components/server
           command: |
             mkdir -p /tmp/log
+      - run:
+          working_directory: components/server
+          command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip-server.log
+      - run:
+          working_directory: components/internal-server
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip-internal-server.log
       - run:
           background: true
           working_directory: components/server
@@ -110,20 +119,29 @@ jobs:
             export RENDERER_HOST=localhost
             export PROXY_HOST=localhost
             export PROXY_PORT=5000
-            export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc
+            export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc-server
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
+          background: true
+          working_directory: components/internal-server
+          command: |
+            . venv/bin/activate
+            export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc-internal-server
+            python tests/quality_time_internal_server_under_coverage.py &>> /tmp/log/internal-server.log
+      - run:
+          name: Run feature tests
           command: |
             cd tests/feature_tests
             python3 -m venv venv
             . venv/bin/activate
             pip --quiet install --progress-bar off -r requirements-dev.txt
             cd ../..
-            export COVERAGE_RCFILE=tests/feature_tests/.coveragerc
-            coverage run -m behave --format progress tests/feature_tests
-            kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-            sleep 2  # Give the server time to write the coverage data
-            coverage combine . components/server
+            export COVERAGE_RCFILE=tests/feature_tests/.coveragerc-server
+            coverage run -m behave --format progress tests/feature_tests/features
+            kill -s TERM "$(pgrep -o -f tests/quality_time_server_under_coverage.py)"
+            kill -s TERM "$(pgrep -o -f tests/quality_time_internal_server_under_coverage.py)"
+            sleep 2  # Give the servers time to write the coverage data
+            coverage combine . components/server components/internal-server
             coverage html
             coverage report
       - store_artifacts:

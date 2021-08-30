@@ -1,0 +1,15 @@
+*.egg-info
+.coverage
+.dockerignore
+.idea
+.mypy_cache
+.pylintrc
+.vscode
+__pycache__
+build/
+ci/
+Dockerfile
+README.md
+requirements-dev.txt
+tests/
+venv
