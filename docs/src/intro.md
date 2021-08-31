@@ -77,4 +77,4 @@ Start the containers:
 docker-compose up
 ```
 
-*Quality-time* is served at [http://localhost](http://localhost). Use username `admin` and password `admin` to log in.
+*Quality-time* is served at [http://localhost](http://localhost). Use username `jadoe` and password `secret` to log in.
