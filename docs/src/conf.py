@@ -56,7 +56,7 @@ myst_heading_anchors = 3
 # a list of builtin themes.
 #
 html_theme = "furo"
-html_logo = "../../components/server/src/routes/logos/quality_time.png"
+html_logo = "_static/Quality-time.png"
 html_title = "Quality-time"
 html_favicon = "../../components/frontend/public/favicon.ico"
 
