@@ -30,7 +30,7 @@ function ReportsDashboard({ reports, open_report, layout, reload}) {
     <CardDashboard
       cards={report_cards.concat(tag_cards)}
       initial_layout={layout || []}
-      save_layout={function (layout) { set_reports_attribute("layout", layout, reload) }}
+      save_layout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
     />
   )
 }

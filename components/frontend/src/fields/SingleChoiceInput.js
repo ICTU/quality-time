@@ -3,8 +3,8 @@ import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 
 export function SingleChoiceInput(props) {
-  const value = props.options.filter(({ value }) => value === props.value)[0];
-  const value_text = value ? value.text : "";
+  const option_value = props.options.filter(({ value }) => value === props.value)[0];
+  const value_text = option_value ? option_value.text : "";
   let { editableLabel, set_value, options, sort, requiredPermissions, ...otherProps } = props;
 
   // default should be sorted
