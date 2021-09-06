@@ -210,9 +210,11 @@ class App extends Component {
               :
               this.state.report_uuid === "" ?
                 <Reports
+                  reports={props.reports}
                   open_report={(e, r) => this.open_report(e, r)}
+                  report_date={report_date}
                   reports_overview={this.state.reports_overview}
-                  {...props}
+                  reload={props.reload}
                 />
                 :
                 <Report
