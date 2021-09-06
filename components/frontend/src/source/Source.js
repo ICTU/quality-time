@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Grid, Header, Icon } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
@@ -9,6 +9,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';
+import { ErrorMessage } from '../errorMessage';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -59,19 +60,6 @@ function ParametersRow(props) {
     return (
         <Grid.Row columns={2}>
             <SourceParameters {...props} />
-        </Grid.Row>
-    )
-}
-
-function ErrorMessage({ title, message }) {
-    return (
-        <Grid.Row>
-            <Grid.Column>
-                <Message negative>
-                    <Message.Header>{title}</Message.Header>
-                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{message}</pre>
-                </Message>
-            </Grid.Column>
         </Grid.Row>
     )
 }
