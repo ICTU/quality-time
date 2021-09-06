@@ -28,17 +28,17 @@ function metric_scale_options(metric_scales, datamodel) {
     return scale_options;
 }
 
-export function MetricParameters(props) {
-    const metric_type = props.datamodel.metrics[props.metric.type];
-    const metric_scale = props.metric.scale || metric_type.default_scale || "count";
-    const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
+export function MetricParameters({ datamodel, report, metric, metric_uuid, reload }) {
+    const metric_type = datamodel.metrics[metric.type];
+    const metric_scale = metric.scale || metric_type.default_scale || "count";
+    const metric_unit_without_percentage = metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = {count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number"}[metric_scale];
     const more = {count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number"}[metric_scale];
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
-    const tags = Object.keys(props.report.summary_by_tag || {});
-    const scale_options = metric_scale_options(metric_type.scales || ["count"], props.datamodel);
+    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
+    const tags = Object.keys(report.summary_by_tag || {});
+    const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
     return (
         <>
             <Header>
@@ -53,10 +53,10 @@ export function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <MetricType
-                            datamodel={props.datamodel}
-                            metric_type={props.metric.type}
-                            metric_uuid={props.metric_uuid}
-                            reload={props.reload}
+                            datamodel={datamodel}
+                            metric_type={metric.type}
+                            metric_uuid={metric_uuid}
+                            reload={reload}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -64,8 +64,8 @@ export function MetricParameters(props) {
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Metric name"
                             placeholder={metric_type.name}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "name", value, props.reload)}
-                            value={props.metric.name}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
+                            value={metric.name}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -74,8 +74,8 @@ export function MetricParameters(props) {
                             allowAdditions
                             label="Tags"
                             options={[...tags]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "tags", value, props.reload)}
-                            value={get_metric_tags(props.metric)}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
+                            value={get_metric_tags(metric)}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -86,7 +86,7 @@ export function MetricParameters(props) {
                             label="Metric scale"
                             options={scale_options}
                             placeholder={metric_type.default_scale || "Count"}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "scale", value, props.reload)}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
                             value={metric_scale}
                         />
                     </Grid.Column>
@@ -97,7 +97,7 @@ export function MetricParameters(props) {
                             options={[
                                 { key: "0", text: `${fewer} is better`, value: "<" },
                                 { key: "1", text: `${more} is better`, value: ">" }]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "direction", value, props.reload)}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "direction", value, reload)}
                             value={metric_direction || "<"}
                         />
                     </Grid.Column>
@@ -108,8 +108,8 @@ export function MetricParameters(props) {
                                 placeholder={metric_type.unit}
                                 prefix={metric_scale === "percentage" ? "%" : ""}
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => set_metric_attribute(props.metric_uuid, "unit", value, props.reload)}
-                                value={props.metric.unit}
+                                set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
+                                value={metric.unit}
                             />
                         </Grid.Column>}
                 </Grid.Row>
@@ -118,14 +118,20 @@ export function MetricParameters(props) {
                         <Target
                             label="Metric target"
                             target_type="target"
-                            {...props}
+                            datamodel={datamodel}
+                            metric={metric}
+                            metric_uuid={metric_uuid}
+                            reload={reload}
                         />
                     </Grid.Column>
                     <Grid.Column>
                         <Target
                             label="Metric near target"
                             target_type="near_target"
-                            {...props}
+                            datamodel={datamodel}
+                            metric={metric}
+                            metric_uuid={metric_uuid}
+                            reload={reload}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -134,18 +140,21 @@ export function MetricParameters(props) {
                         <SingleChoiceInput
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
-                            value={props.metric.accept_debt || false}
+                            value={metric.accept_debt || false}
                             options={[
                                 { key: true, text: "Yes", value: true },
                                 { key: false, text: "No", value: false }]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "accept_debt", value, props.reload)}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "accept_debt", value, reload)}
                         />
                     </Grid.Column>
                     <Grid.Column>
                         <Target
                             label="Accepted technical debt"
                             target_type="debt_target"
-                            {...props}
+                            datamodel={datamodel}
+                            metric={metric}
+                            metric_uuid={metric_uuid}
+                            reload={reload}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -153,8 +162,8 @@ export function MetricParameters(props) {
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Technical debt end date"
                             placeholder="no end date"
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_end_date", value, props.reload)}
-                            value={props.metric.debt_end_date || ""}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
+                            value={metric.debt_end_date || ""}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -162,8 +171,8 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <Comment
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "comment", value, props.reload)}
-                            value={props.metric.comment}
+                            set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
+                            value={metric.comment}
                         />
                     </Grid.Column>
                 </Grid.Row>
