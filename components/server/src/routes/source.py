@@ -1,10 +1,8 @@
 """Source routes."""
 
-import re
 from typing import Any, Optional, Union, cast
 
 import bottle
-import requests
 from pymongo.database import Database
 
 from database.datamodels import default_source_parameters, latest_datamodel
@@ -14,8 +12,8 @@ from model.data import MetricData, SourceData
 from model.queries import is_password_parameter
 from model.transformations import change_source_parameter
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import uuid
-from server_utilities.type import URL, EditScope, MetricId, ReportId, SourceId, SubjectId
+from server_utilities.functions import check_url_availability, uuid
+from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
 
 
 @bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -196,37 +194,8 @@ def _availability_checks(data, parameter_key: str) -> list[dict[str, Union[str, 
         url = source_parameters.get(url_parameter_key, "")
         if not url:
             continue
-        availability = _check_url_availability(url, source_parameters)
+        availability = check_url_availability(url, source_parameters)
         availability["parameter_key"] = url_parameter_key
         availability["source_uuid"] = data.source_uuid
         availability_checks.append(availability)
     return availability_checks
-
-
-def _check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, Union[int, str]]:
-    """Check the availability of the URL."""
-    credentials = _basic_auth_credentials(source_parameters)
-    headers = _headers(source_parameters)
-    try:
-        response = requests.get(url, auth=credentials, headers=headers, verify=False)  # noqa: DUO123, # nosec
-        return dict(status_code=response.status_code, reason=response.reason)
-    except Exception as exception_instance:  # pylint: disable=broad-except
-        exception_reason = str(exception_instance) or exception_instance.__class__.__name__
-        # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
-        # that led to the error:
-        exception_reason = re.sub(r".*(\[errno \-?\d+\] [^\)^']+).*", r"\1", exception_reason, flags=re.IGNORECASE)
-        return dict(status_code=-1, reason=exception_reason)
-
-
-def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:
-    """Return the basic authentication credentials, if any."""
-    if private_token := source_parameters.get("private_token", ""):
-        return private_token, ""
-    username = source_parameters.get("username", "")
-    password = source_parameters.get("password", "")
-    return (username, password) if username and password else None
-
-
-def _headers(source_parameters) -> dict:
-    """Return the headers for the url-check."""
-    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}
