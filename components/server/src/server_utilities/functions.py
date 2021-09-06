@@ -6,10 +6,11 @@ import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Tuple, TypeVar, cast
+from typing import Optional, Tuple, TypeVar, Union, cast
 from base64 import b64decode, b64encode
 
 import bottle
+import requests
 from cryptography.hazmat.backends import default_backend, openssl
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
@@ -21,7 +22,7 @@ from cryptography.fernet import Fernet
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
 
-from server_utilities.type import Direction, ReportId
+from server_utilities.type import Direction, ReportId, URL
 
 
 class DecryptionError(Exception):
@@ -84,6 +85,35 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     if denominator == 0:
         return 0 if direction == "<" else 100
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
+
+
+def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, Union[int, str]]:
+    """Check the availability of the URL."""
+    credentials = _basic_auth_credentials(source_parameters)
+    headers = _headers(source_parameters)
+    try:
+        response = requests.get(url, auth=credentials, headers=headers, verify=False)  # noqa: DUO123, # nosec
+        return dict(status_code=response.status_code, reason=response.reason)
+    except Exception as exception_instance:  # pylint: disable=broad-except
+        exception_reason = str(exception_instance) or exception_instance.__class__.__name__
+        # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
+        # that led to the error:
+        exception_reason = re.sub(r".*(\[errno \-?\d+\] [^\)^']+).*", r"\1", exception_reason, flags=re.IGNORECASE)
+        return dict(status_code=-1, reason=exception_reason)
+
+
+def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:
+    """Return the basic authentication credentials, if any."""
+    if private_token := source_parameters.get("private_token", ""):
+        return private_token, ""
+    username = source_parameters.get("username", "")
+    password = source_parameters.get("password", "")
+    return (username, password) if username and password else None
+
+
+def _headers(source_parameters) -> dict:
+    """Return the headers for the url-check."""
+    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}
 
 
 def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
