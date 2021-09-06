@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Grid, Header, Icon } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
