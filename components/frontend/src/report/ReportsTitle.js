@@ -7,16 +7,15 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
 
-export function ReportsTitle(props) {
+export function ReportsTitle({ permissions, title, subtitle, reload}) {
 
     function setPermissions(permission, value){
-        const permissions = props.permissions
         permissions[permission] = value
-        set_reports_attribute("permissions", permissions, props.reload)
+        set_reports_attribute("permissions", permissions, reload)
     }
 
     return (
-        <HeaderWithDetails level="h1" header={props.title} subheader={props.subtitle}>
+        <HeaderWithDetails level="h1" header={title} subheader={subtitle}>
             <Grid stackable>
                 <Grid.Row columns={2}>
                     <Grid.Column>
@@ -24,8 +23,8 @@ export function ReportsTitle(props) {
                             id="report_overview_title"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview title"
-                            set_value={(value) => set_reports_attribute("title", value, props.reload)}
-                            value={props.title}
+                            set_value={(value) => set_reports_attribute("title", value, reload)}
+                            value={title}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -33,8 +32,8 @@ export function ReportsTitle(props) {
                             id="report_overview_subtitle"
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             label="Report overview subtitle"
-                            set_value={(value) => set_reports_attribute("subtitle", value, props.reload)}
-                            value={props.subtitle}
+                            set_value={(value) => set_reports_attribute("subtitle", value, reload)}
+                            value={subtitle}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -45,10 +44,10 @@ export function ReportsTitle(props) {
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit reports (user name or email address)"
-                            options={props.permissions[EDIT_REPORT_PERMISSION] || []}
+                            options={permissions[EDIT_REPORT_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_REPORT_PERMISSION, value)}
-                            value={props.permissions[EDIT_REPORT_PERMISSION]}
+                            value={permissions[EDIT_REPORT_PERMISSION]}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -59,10 +58,10 @@ export function ReportsTitle(props) {
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             allowAdditions
                             label="Users allowed to edit measured entities (user name or email address)"
-                            options={props.permissions[EDIT_ENTITY_PERMISSION] || []}
+                            options={permissions[EDIT_ENTITY_PERMISSION] || []}
                             placeholder="All authenticated users"
                             set_value={(value) => setPermissions(EDIT_ENTITY_PERMISSION, value)}
-                            value={props.permissions[EDIT_ENTITY_PERMISSION]}
+                            value={permissions[EDIT_ENTITY_PERMISSION]}
                         />
                     </Grid.Column>
                 </Grid.Row>

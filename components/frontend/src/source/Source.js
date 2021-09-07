@@ -70,7 +70,7 @@ function ChangeLogRow(props) {
             <Grid.Column>
                 <ChangeLog {...props} />
             </Grid.Column>
-        </Grid.Row >
+        </Grid.Row>
     )
 }
 

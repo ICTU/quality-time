@@ -7,7 +7,7 @@ export function alignment(column_type) {
   return {text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right"}[column_type];
 }
 
-export function SourceEntities(props) {
+export function SourceEntities({ datamodel, metric, metric_uuid, source, reload }) {
   const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
   const [sortColumn, setSortColumn] = useState(null);
   const [columnType, setColumnType] = useState('text');
@@ -25,10 +25,10 @@ export function SourceEntities(props) {
     return column === sortColumn ? sortDirection : null
   }
 
-  const report_source = props.metric.sources[props.source.source_uuid];
+  const report_source = metric.sources[source.source_uuid];
   const source_type = report_source.type;
-  const metric_entities = props.datamodel.sources[source_type].entities[props.metric.type];
-  if (!metric_entities || !Array.isArray(props.source.entities) || props.source.entities.length === 0) {
+  const metric_entities = datamodel.sources[source_type].entities[metric.type];
+  if (!metric_entities || !Array.isArray(source.entities) || source.entities.length === 0) {
     return null;
   }
   const entity_attributes = metric_entities.attributes.filter((attribute) => attribute.visible === undefined || attribute.visible);
@@ -58,7 +58,7 @@ export function SourceEntities(props) {
         </Table.HeaderCell>)
       }
     </Table.Row>
-  let entities = Array.from(props.source.entities);
+  let entities = Array.from(source.entities);
   if (sortColumn !== null) {
     const parse = {
       "integer": (value) => parseInt(value, 10),
@@ -80,15 +80,15 @@ export function SourceEntities(props) {
       entity_name={entity_name}
       hide_ignored_entities={hideIgnoredEntities}
       key={entity.key}
-      metric_uuid={props.metric_uuid}
-      reload={props.reload}
+      metric_uuid={metric_uuid}
+      reload={reload}
       status={
-        props.source.entity_user_data && props.source.entity_user_data[entity.key] &&
-          props.source.entity_user_data[entity.key].status ? props.source.entity_user_data[entity.key].status : "unconfirmed"}
+        source.entity_user_data && source.entity_user_data[entity.key] &&
+          source.entity_user_data[entity.key].status ? source.entity_user_data[entity.key].status : "unconfirmed"}
       rationale={
-        props.source.entity_user_data && props.source.entity_user_data[entity.key] &&
-          props.source.entity_user_data[entity.key].rationale ? props.source.entity_user_data[entity.key].rationale : ""}
-      source_uuid={props.source.source_uuid}
+        source.entity_user_data && source.entity_user_data[entity.key] &&
+          source.entity_user_data[entity.key].rationale ? source.entity_user_data[entity.key].rationale : ""}
+      source_uuid={source.source_uuid}
     />);
   return (
     <Table sortable size='small'>
