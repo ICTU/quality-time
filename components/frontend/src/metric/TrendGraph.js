@@ -16,18 +16,18 @@ function Background({ data, ...props }) {
   )
 }
 
-export function TrendGraph(props) {
+export function TrendGraph({ measurements, scale, unit, title }) {
   let measurement_values = [];
   let target_values = [];
   let near_target_values = [];
   let debt_target_values = [];
 
   function measurement_attribute_as_number(measurement, field) {
-    const value = (measurement[props.scale] && measurement[props.scale][field]) || null;
+    const value = (measurement[scale] && measurement[scale][field]) || null;
     return value !== null ? Number(value) : null;
   }
 
-  props.measurements.forEach((measurement) => {
+  measurements.forEach((measurement) => {
     measurement_values.push(measurement_attribute_as_number(measurement, "value"));
     target_values.push(measurement_attribute_as_number(measurement, "target"));
     near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
@@ -42,11 +42,11 @@ export function TrendGraph(props) {
   const colors = { "<": ["green", "grey", "yellow", "red"], ">": ["red", "yellow", "grey", "green"] };
   // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below:
   let areas = { "<": { green: [], grey: [], yellow: [], red: [] }, ">": { green: [], grey: [], yellow: [], red: [] } };
-  let measurements = [];  // The measurement values (x, y)
-  props.measurements.forEach((measurement, index) => {
+  let measurementValues = [];  // The measurement values (x, y)
+  measurements.forEach((measurement, index) => {
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
-    measurements.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
+    measurementValues.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
     if (target_values[index] === null) { return }  // Old measurements don't have target, near target and debt values
     let point = { green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
     const absolute_y_values = {
@@ -63,7 +63,7 @@ export function TrendGraph(props) {
         green: max_y
       }
     };
-    const direction = measurement[props.scale].direction || "<";
+    const direction = measurement[scale].direction || "<";
     let y0 = 0;
     colors[direction].forEach((color) => {
       const y = Math.max(0, absolute_y_values[direction][color] - y0);
@@ -94,7 +94,7 @@ export function TrendGraph(props) {
       theme={VictoryTheme.material}
       width={750}
     >
-      <VictoryLabel x={375} y={20} text={props.title} textAnchor="middle" />
+      <VictoryLabel x={375} y={20} text={title} textAnchor="middle" />
       <VictoryAxis
         label={"Time"}
         style={axisStyle}
@@ -102,12 +102,12 @@ export function TrendGraph(props) {
       <VictoryAxis
         dependentAxis
         domain={[0, max_y]}
-        label={props.unit}
+        label={unit}
         style={axisStyle}
         tickFormat={(t) => `${scaled_number(t)}`} />
       <Background data={background_data} />
       <VictoryLine
-        data={measurements}
+        data={measurementValues}
         interpolation="stepBefore"
         style={{ data: { stroke: "black", strokeWidth: 2 } }} />
     </VictoryChart>
