@@ -50,7 +50,7 @@ function ButtonRow({ subject_uuid, first_subject, last_subject, reload }) {
 }
 
 export function SubjectTitle({ datamodel, report, subject, subject_uuid, first_subject, last_subject, reload }) {
-    const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type", description: "No description" };
+    const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type" };
     const subject_name = subject.name || current_subject_type.name;
     const panes = [
         { menuItem: <Menu.Item key="type_and_name"><FocusableTab>{"Subject type and name"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
