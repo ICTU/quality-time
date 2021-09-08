@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon, Popup, Segment } from 'semantic-ui-react';
+import { Grid, Icon, Message, Popup, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
@@ -71,7 +71,7 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
     })
     return (
         <>
-            {notification_destinations}
+            {notification_destinations.length === 0 ? <Message><Message.Header>No notification destinations</Message.Header><p>No notification destinations have been configured yet.</p></Message>: notification_destinations}
             <ReadOnlyOrEditable key="1" requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment vertical>
                     <AddButton
