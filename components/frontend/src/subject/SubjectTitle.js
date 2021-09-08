@@ -9,13 +9,13 @@ import { delete_subject, set_subject_attribute } from '../api/subject';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
 
-function SubjectTypeAndName({ datamodel, subject, subject_uuid, reload }) {
-    const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type", description: "No description" };
+function SubjectTypeAndName({ datamodel, subject, subject_uuid, subject_name, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <SubjectType
+                        id="subject-type"
                         datamodel={datamodel}
                         set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
                         subject_type={subject.type}
@@ -23,9 +23,10 @@ function SubjectTypeAndName({ datamodel, subject, subject_uuid, reload }) {
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
+                        id="subject-name"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Subject name"
-                        placeholder={current_subject_type.name}
+                        placeholder={subject_name}
                         set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
                         value={subject.name}
                     />
@@ -52,7 +53,7 @@ export function SubjectTitle({ datamodel, report, subject, subject_uuid, first_s
     const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type", description: "No description" };
     const subject_name = subject.name || current_subject_type.name;
     const panes = [
-        { menuItem: <Menu.Item key="type_and_name"><FocusableTab>{"Subject type and name"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="type_and_name"><FocusableTab>{"Subject type and name"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report.report_uuid} subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ];
     return (
