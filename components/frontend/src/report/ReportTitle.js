@@ -38,24 +38,22 @@ function ReportAttributes(props) {
 
 function ButtonRow(props) {
     return (
-        <Grid.Row>
-            <Grid.Column>
-                <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
-                <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-                    <DeleteButton
-                        item_type='report'
-                        onClick={() => delete_report(props.report_uuid, props.go_home)}
-                    />}
-                />
-            </Grid.Column>
-        </Grid.Row>
+        <>
+            <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
+            <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
+                <DeleteButton
+                    item_type='report'
+                    onClick={() => delete_report(props.report_uuid, props.go_home)}
+                />}
+            />
+        </>
     )
 }
 
 export function ReportTitle({ report, go_home, history, reload }) {
     const report_uuid = report.report_uuid;
     const panes = [
-        { menuItem: <Menu.Item key="title"><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportAttributes report_uuid={report_uuid} reload={reload} title={report.title} subtitle={report.subtitle} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="title"><FocusableTab>{"Report title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportAttributes report_uuid={report_uuid} reload={reload} title={report.title} subtitle={report.subtitle} /></Tab.Pane> },
         { menuItem: <Menu.Item key="notifications"><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ]
