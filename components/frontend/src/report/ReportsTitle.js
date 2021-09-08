@@ -35,11 +35,12 @@ function Title({ title, subtitle, reload }) {
     )
 }
 
+function setPermissions(permissions, permission, value, reload) {
+    permissions[permission] = value;
+    set_reports_attribute("permissions", permissions, reload);
+}
+
 function Permissions({ permissions, reload }) {
-    function setPermissions(permission, value) {
-        permissions[permission] = value
-        set_reports_attribute("permissions", permissions, reload)
-    }
     return (
         <Grid stackable>
             <Grid.Row columns={1}>
@@ -51,7 +52,7 @@ function Permissions({ permissions, reload }) {
                         label="Users allowed to edit reports (user name or email address)"
                         options={permissions[EDIT_REPORT_PERMISSION] || []}
                         placeholder="All authenticated users"
-                        set_value={(value) => setPermissions(EDIT_REPORT_PERMISSION, value)}
+                        set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
                         value={permissions[EDIT_REPORT_PERMISSION]}
                     />
                 </Grid.Column>
@@ -65,7 +66,7 @@ function Permissions({ permissions, reload }) {
                         label="Users allowed to edit measured entities (user name or email address)"
                         options={permissions[EDIT_ENTITY_PERMISSION] || []}
                         placeholder="All authenticated users"
-                        set_value={(value) => setPermissions(EDIT_ENTITY_PERMISSION, value)}
+                        set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
                         value={permissions[EDIT_ENTITY_PERMISSION]}
                     />
                 </Grid.Column>

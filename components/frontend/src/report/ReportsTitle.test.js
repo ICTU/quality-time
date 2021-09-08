@@ -4,21 +4,18 @@ import userEvent from '@testing-library/user-event';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportsTitle } from './ReportsTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
-import * as changelog_api from '../api/changelog';
 
 jest.mock("../api/fetch_server_api.js")
-jest.mock("../api/changelog.js");
 
 function render_reports_title() {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsTitle permissions={[]} get_changelog={() => { /* Do nothing */ }} />
+            <ReportsTitle permissions={{}} get_changelog={() => { /* Do nothing */ }} />
         </Permissions.Provider>
     ) 
 }
 
 it('sets the title', async () => {
-    changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
         render_reports_title();
@@ -29,7 +26,6 @@ it('sets the title', async () => {
 });
 
 it('sets the subtitle', async () => {
-    changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
         render_reports_title();
@@ -37,4 +33,41 @@ it('sets the subtitle', async () => {
     });
     userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{selectall}{del}New subtitle{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {subtitle: "New subtitle"});
+});
+
+it('sets the edit report permission', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => {
+        render_reports_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Permissions/));
+    });
+    userEvent.type(screen.getAllByText(/All authenticated users/)[0], 'jadoe{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {permissions: {edit_reports: ["jadoe"]}});
+})
+
+it('sets the edit entities permission', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => {
+        render_reports_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Permissions/));
+    });
+    userEvent.type(screen.getAllByText(/All authenticated users/)[1], 'jodoe{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {permissions: {edit_entities: ["jodoe"]}});
+})
+
+it('loads the changelog', async () => {
+    await act(async () => {
+        render_reports_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Changelog/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/5");
 });
