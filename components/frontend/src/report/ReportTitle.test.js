@@ -24,7 +24,6 @@ it('deletes the report', async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/report/report_uuid/5");
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete report/));
     });
@@ -47,4 +46,26 @@ it('sets the subtitle', async () => {
     });
     userEvent.type(screen.getByLabelText(/Report subtitle/), '{selectall}{del}New subtitle{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/subtitle", {subtitle: "New subtitle"});
+});
+
+it('loads the changelog', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Changelog/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/report/report_uuid/5");
+});
+
+it('shows the notification destinations', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Notifications/));
+    });
+    expect(screen.getAllByText(/No notification destinations/).length).toBe(2);
 });
