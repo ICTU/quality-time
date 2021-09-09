@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -66,8 +66,8 @@ export function SubjectTitle({ datamodel, report, subject, subject_uuid, first_s
     const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type" };
     const subject_name = subject.name || current_subject_type.name;
     const panes = [
-        { menuItem: <Menu.Item key="configuration"><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report.report_uuid} subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
+        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report.report_uuid} subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ];
     return (
         <HeaderWithDetails level="h2" header={subject_name} style={{ marginTop: 50 }}>
