@@ -74,3 +74,11 @@ it('shows a parse error message', async () => {
     });
     expect(screen.getAllByText(/Parse error/).length).toBe(1);
 });
+
+it('loads the changelog', async () => {
+    await act(async () => {
+        render_source();
+        fireEvent.click(screen.getByText(/Changelog/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5");
+});
