@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { Grid, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Icon, Menu, Tab } from 'semantic-ui-react';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
@@ -77,9 +77,9 @@ function Permissions({ permissions, reload }) {
 
 export function ReportsTitle({ permissions, title, subtitle, reload }) {
     const panes = [
-        { menuItem: <Menu.Item key="title"><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Title title={title} subtitle={subtitle} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="permissions"><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={permissions} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog /></Tab.Pane> }
+        { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Title title={title} subtitle={subtitle} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={permissions} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog /></Tab.Pane> }
     ]
     return (
         <HeaderWithDetails level="h1" header={title} subheader={subtitle}>

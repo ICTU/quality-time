@@ -93,7 +93,7 @@ export function Source({ datamodel, source, source_uuid, first_source, last_sour
     const parameter_menu_item = connection_error || parse_error ? <Label color='red'>{"Configuration"}</Label> : "Configuration";
     const panes = [
         {
-            menuItem: <Menu.Item key="configuration"><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
+            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
                 <Parameters datamodel={datamodel} source={source} source_uuid={source_uuid}
                     connection_error={connection_error} parse_error={parse_error} metric_type={metric_type}
@@ -101,7 +101,7 @@ export function Source({ datamodel, source, source_uuid, first_source, last_sour
             </Tab.Pane>
         },
         {
-            menuItem: <Menu.Item key="changelog"><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
+            menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
                 <ChangeLog report_uuid={report.report_uuid} source_uuid={source_uuid} timestamp={report.timestamp} />
             </Tab.Pane>

@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 
-- Use tabs to organize settings accessible via expandable headers.
+- Use tabs to better organize the settings that are accessible via expandable headers. Also add icons to the tabs.
 
 ## v3.25.0 - 2021-09-06
 

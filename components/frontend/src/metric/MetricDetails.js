@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Header, Label, Menu, Tab } from 'semantic-ui-react';
+import { Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
@@ -24,13 +24,13 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
 function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, report, reload }) {
   const panes = [
     {
-      menuItem: <Menu.Item key='configuration'><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
+      menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
         <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {
-      menuItem: <Menu.Item key='changelog'><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
+      menuItem: <Menu.Item key='changelog'><Icon name="history" /><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
         <ChangeLog report_uuid={report.report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
       </Tab.Pane>
@@ -87,14 +87,14 @@ export function MetricDetails({
   let panes = [];
   panes.push(
     {
-      menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
+      menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
         <MetricConfiguration
           datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {
-      menuItem: <Menu.Item key='sources'><FocusableTab>{sources_menu_item}</FocusableTab></Menu.Item>,
+      menuItem: <Menu.Item key='sources'><Icon name="server" /><FocusableTab>{sources_menu_item}</FocusableTab></Menu.Item>,
       render: () => (
         <Tab.Pane>
           <Sources
@@ -116,7 +116,7 @@ export function MetricDetails({
     if (metric.scale !== "version_number") {
       panes.push(
         {
-          menuItem: <Menu.Item key='trend_graph'><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
+          menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
           render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metric_name} measurements={measurements} scale={scale} /></Tab.Pane>
         }
       )
