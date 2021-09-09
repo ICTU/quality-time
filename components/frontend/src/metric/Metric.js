@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TimeAgo from 'react-timeago';
 import { Popup, Table } from 'semantic-ui-react';
+import { get_tracker_issue_status } from '../api/metric';
 import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target } from '../utils';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
+import { IssueTrackerStatus } from './IssueTrackerStatus';
 import "./Metric.css";
 import { MetricDetails } from './MetricDetails';
 import { SourceStatus } from './SourceStatus';
@@ -26,6 +28,19 @@ export function Metric({
   hiddenColumns,
   reload
 }) {
+  const [issueStatus, setIssueStatus] = useState({loading: true})
+
+  const metric = report.subjects[subject_uuid].metrics[metric_uuid];
+
+  useEffect(() => {
+    if (metric.tracker_issue) {
+      get_tracker_issue_status(metric_uuid, setIssueStatus)
+    }
+    else {
+      setIssueStatus({loading: false, name: null})
+    }
+  }, [metric.tracker_issue, report.tracker_type, report.tracker_url, report.tracker_username, report.tracker_password, metric_uuid])
+
   function MeasurementValue() {
     const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
     const now = new Date();
@@ -58,7 +73,6 @@ export function Metric({
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
       metric={metric} source={source} datamodel={datamodel} />])
   }
-  const metric = report.subjects[subject_uuid].metrics[metric_uuid];
   const metric_type = datamodel.metrics[metric.type];
   const latest_measurements = metric.recent_measurements;
   const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
@@ -80,6 +94,7 @@ export function Metric({
       metric_unit={metric_unit}
       first_metric={first_metric}
       last_metric={last_metric}
+      issueStatus={issueStatus}
       stop_sort={stop_sort}
       changed_fields={changed_fields}
       visibleDetailsTabs={visibleDetailsTabs}
@@ -106,6 +121,7 @@ export function Metric({
       {!hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
       {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
+      {!hiddenColumns.includes("linked-issue") && <Table.Cell>{metric.tracker_issue && issueStatus.name ? <IssueTrackerStatus metric={metric} issueStatus={issueStatus}/> : ""}</Table.Cell>}
       {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
     </TableRowWithDetails>
   )

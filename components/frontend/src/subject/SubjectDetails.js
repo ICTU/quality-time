@@ -127,6 +127,7 @@ export function SubjectDetails(props) {
           <ColumnMenuItem column="target" />
           <ColumnMenuItem column="source" />
           <ColumnMenuItem column="comment" />
+          <ColumnMenuItem column="linked-issue" />
           <ColumnMenuItem column="tags" />
         </HamburgerMenu>
       </Table.HeaderCell>
@@ -145,6 +146,7 @@ export function SubjectDetails(props) {
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
+          {!props.hiddenColumns.includes("linked-issue") && <SortableHeader column='linked-issue' label='Linked Issue' />}
           {!props.hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
         </Table.Row>
       </Table.Header>

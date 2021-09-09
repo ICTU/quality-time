@@ -13,6 +13,7 @@ function render_report_title() {
             <ReportTitle
                 history={{location: {}}}
                 report={{ report_uuid: "report_uuid", title: "Report" }}
+                datamodel={{ sources: {}}}
             />
         </Permissions.Provider>
     ) 

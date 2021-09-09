@@ -11,6 +11,7 @@ from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
+from issue_tracker_collectors.tracker_collectors import *  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
 from model.actions import copy_report
 from model.data import ReportData
 from model.transformations import (

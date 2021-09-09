@@ -19,3 +19,7 @@ export function delete_metric(metric_uuid, reload) {
 export function set_metric_attribute(metric_uuid, attribute, value, reload) {
     fetch_server_api('post', `metric/${metric_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
+
+export function get_tracker_issue_status(metric_uuid, setState) {
+    fetch_server_api('get', `metric/${metric_uuid}/tracker_issue_status`).then((json) => setState({loading:false, ...json}))
+}

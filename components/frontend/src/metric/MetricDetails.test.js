@@ -65,6 +65,7 @@ async function render_metric_details(stop_sort) {
                     stop_sort={stop_sort}
                     subject_uuid="subject_uuid"
                     unit="unit"
+                    issueStatus={{loading: true}}
                     visibleDetailsTabs={[]}
                     toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
                 />

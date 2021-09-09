@@ -1,10 +1,13 @@
 """Unit tests for the metric routes."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
+
+import issue_tracker_collectors
 
 from routes.metric import (
     delete_metric,
+    get_issue_tracker_status,
     get_metrics,
     post_metric_attribute,
     post_metric_copy,
@@ -430,3 +433,46 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), delete_metric(METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assert_delta("John deleted metric 'Metric' from subject 'Subject' in report 'Report'.")
+
+    def test_get_issue_tracker_status_empty_status(self):
+        """Test that empty tracker status is returned."""
+        issue_tracker_status_dict = get_issue_tracker_status(METRIC_ID, self.database)
+
+        self.assertIsNone(issue_tracker_status_dict["name"])
+        self.assertIsNone(issue_tracker_status_dict["description"])
+        self.assertIsNone(issue_tracker_status_dict["error_message"])
+
+    def test_get_issue_tracker_status_invalid_tracker_type(self):
+        """Test that the metric can be deleted."""
+        report_with_issue_tracker = create_report()
+        report_with_issue_tracker["tracker_type"] = "invalid tracker type"
+        report_with_issue_tracker["tracker_url"] = "https://test"
+        report_with_issue_tracker["tracker_username"] = None
+        report_with_issue_tracker["tracker_password"] = None
+        report_with_issue_tracker["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tracker_issue"] = "123"
+        self.database.reports.find.return_value = [report_with_issue_tracker]
+
+        issue_tracker_status_dict = get_issue_tracker_status(METRIC_ID, self.database)
+
+        self.assertIsNone(issue_tracker_status_dict["name"])
+        self.assertIsNone(issue_tracker_status_dict["description"])
+        self.assertIsNone(issue_tracker_status_dict["error_message"])
+
+    def test_get_issue_tracker_status_with_status(self):
+        """Test that the metric can be deleted."""
+        report_with_issue_tracker = create_report()
+        report_with_issue_tracker["tracker_type"] = "jira"
+        report_with_issue_tracker["tracker_url"] = "https://test"
+        report_with_issue_tracker["tracker_username"] = None
+        report_with_issue_tracker["tracker_password"] = None
+        report_with_issue_tracker["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tracker_issue"] = "123"
+        self.database.reports.find.return_value = [report_with_issue_tracker]
+
+        with patch.object(
+            issue_tracker_collectors.base_tracker_collector.BaseTrackerCollector,
+            "collect",
+            MagicMock(return_value={"name": "test"}),
+        ):
+            issue_tracker_status_dict = get_issue_tracker_status(METRIC_ID, self.database)
+
+            self.assertEqual(issue_tracker_status_dict["name"], "test")

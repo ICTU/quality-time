@@ -30,6 +30,7 @@ class Source(DescribedModel):  # pylint: disable=too-few-public-methods
     configuration: Optional[Configurations] = None
     parameters: Parameters
     entities: Entities = cast(Entities, {})
+    issue_tracker: Optional[dict] = None
 
     @validator("parameters")
     def check_parameters(cls, parameters, values):  # pylint: disable=no-self-argument,no-self-use

@@ -2,15 +2,18 @@
 
 from typing import Any
 
+import logging
 import bottle
 from pymongo.database import Database
 
 from database.datamodels import default_metric_attributes, latest_datamodel
 from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import insert_new_report, latest_reports
+from issue_tracker_collectors.base_tracker_collector import BaseTrackerCollector
 from model.actions import copy_metric, move_item
 from model.data import MetricData, SubjectData
 from model.metric import Metric
+from model.tracker_issue_status import TrackerIssueStatus
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
@@ -125,3 +128,28 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
     return dict(ok=True)
+
+
+@bottle.get("/api/v3/metric/<metric_uuid>/tracker_issue_status", authentication_required=False)
+def get_issue_tracker_status(metric_uuid: MetricId, database: Database):
+    """Get the issue tracker status for one metric."""
+    data = MetricData(latest_datamodel(database), latest_reports(database), metric_uuid)
+    if data.report.get("tracker_type") and data.report.get("tracker_url") and data.metric.get("tracker_issue"):
+        return _get_issue_status(data.metric, data.report)
+    return TrackerIssueStatus.empty_status().to_dict()
+
+
+def _get_issue_status(metric, report):
+    """Get the issue status for one metric."""
+    tc_class = BaseTrackerCollector.get_subclass(report["tracker_type"])
+    if tc_class is None:
+        logging.warning(msg=f"Could not find Issuetrackercollector class for type {report['tracker_type']}")
+        return TrackerIssueStatus.empty_status().to_dict()
+    tracker = dict(
+        type=report["tracker_type"],
+        url=report["tracker_url"],
+        username=report.get("tracker_username"),
+        password=report.get("tracker_password"),
+    )
+    collector = tc_class(tracker, metric["tracker_issue"])
+    return collector.collect()
