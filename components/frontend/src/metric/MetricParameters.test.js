@@ -17,7 +17,7 @@ it('renders the default metric name', () => {
         metric={{ type: "violations", tags: [], accept_debt: false }}
         metric_uuid="metric_uuid"
     />);
-    expect(screen.getAllByText(/Violations/).length).toBe(1);
+    expect(screen.getAllByPlaceholderText(/Violations/).length).toBe(1);
 });
 
 it('shows the metric unit field for metrics with the count scale', () => {
