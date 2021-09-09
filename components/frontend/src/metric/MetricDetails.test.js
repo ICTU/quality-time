@@ -12,13 +12,13 @@ jest.mock("../api/measurement.js");
 measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
     ok: true,
     measurements: [
-        { 
-            count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", 
+        {
+            count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
             sources: [
-                { },
-                {source_uuid: "source_uuid"},
-                {source_uuid: "source_uuid", entities: [{}]}
-            ] 
+                {},
+                { source_uuid: "source_uuid" },
+                { source_uuid: "source_uuid", entities: [{}] }
+            ]
         },
     ]
 }));
@@ -52,63 +52,50 @@ const data_model = {
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
 }
 
+async function render_metric_details(stop_sort) {
+    await act(async () => {
+        render(
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <MetricDetails
+                    datamodel={data_model}
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    reports={[report]}
+                    scale="count"
+                    stop_sort={stop_sort}
+                    subject_uuid="subject_uuid"
+                    unit="unit"
+                    visibleDetailsTabs={[]}
+                    toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
+                />
+            </Permissions.Provider>
+        )
+    })
+}
+
 it('switches tabs', async () => {
-    await act(async () => render(<Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-        <MetricDetails
-            datamodel={data_model}
-            metric_uuid="metric_uuid"
-            report={report}
-            reports={[report]}
-            scale="count"
-            subject_uuid="subject_uuid"
-            unit="unit"
-            visibleDetailsTabs={[]}
-            toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
-        />
-    </Permissions.Provider>))
+    await render_metric_details();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Sources/)))
     expect(screen.getAllByText(/Source name/).length).toBe(1);
 })
 
 it('calls the callback on click', async () => {
-    const mockCallBack = jest.fn();
-    await act(async () => {
-        render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <MetricDetails
-                    datamodel={data_model}
-                    metric_uuid="metric_uuid"
-                    report={report}
-                    reports={[report]}
-                    stop_sort={mockCallBack}
-                    subject_uuid="subject_uuid"
-                    visibleDetailsTabs={[]}
-                    toggleVisibleDetailsTab={() => {/*Dummy implementation*/}}
-                />
-            </Permissions.Provider>
-        );
-    });
+    const mockCallback = jest.fn();
+    await render_metric_details(mockCallback);
     await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)));
-    expect(mockCallBack).toHaveBeenCalled();
+    expect(mockCallback).toHaveBeenCalled();
     expect(measurement_api.get_measurements).toHaveBeenCalled();
 })
 
+it('loads the changelog', async () => {
+    await render_metric_details();
+    await act(async () => fireEvent.click(screen.getByText(/Changelog/)));
+    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, {metric_uuid: "metric_uuid", report_uuid: "report_uuid"});
+});
+
 it('calls the callback on delete', async () => {
-    await act(async () => {
-        render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <MetricDetails
-                    datamodel={data_model}
-                    metric_uuid="metric_uuid"
-                    report={report}
-                    reports={[report]}
-                    subject_uuid="subject_uuid"
-                    visibleDetailsTabs={[]}
-                />
-            </Permissions.Provider>
-        );
-    });
+    await render_metric_details();
     await act(async () => fireEvent.click(screen.getByText(/Delete metric/)));
     expect(metric_api.delete_metric).toHaveBeenCalled();
 })
