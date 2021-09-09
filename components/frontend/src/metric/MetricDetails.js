@@ -21,18 +21,37 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
     })
 }
 
-export function MetricDetails(props) {
+export function MetricDetails({
+   datamodel,
+   report_date,
+   reports,
+   report,
+   subject_uuid,
+   metric_uuid,
+   metric_name,
+   metric_unit,
+   first_metric,
+   last_metric,
+   measurement,
+   scale,
+   unit,
+   stop_sort,
+   changed_fields,
+   visibleDetailsTabs,
+   toggleVisibleDetailsTab,
+   reload
+}) {
   const [measurements, setMeasurements] = useState([]);
   useEffect(() => {
-    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements);
+    fetch_measurements(report_date, metric_uuid, setMeasurements);
     // eslint-disable-next-line
-  }, [props.metric_uuid, props.report_date]);
-  function reload() {
-    props.reload();
-    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements)
+  }, [metric_uuid, report_date]);
+  function measurementsReload() {
+    reload();
+    fetch_measurements(report_date, metric_uuid, setMeasurements)
   }
-  const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
-  const report_uuid = props.report.report_uuid;
+  const metric = report.subjects[subject_uuid].metrics[metric_uuid];
+  const report_uuid = report.report_uuid;
   const last_measurement = measurements[measurements.length - 1];
   const any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
   const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
@@ -41,13 +60,27 @@ export function MetricDetails(props) {
     {
       menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters metric={metric} {...props} />
-        <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
+        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+        <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
       </Tab.Pane>
     },
     {
       menuItem: <Menu.Item key='sources'><FocusableTab>{sources_menu_item}</FocusableTab></Menu.Item>,
-      render: () => <Tab.Pane><Sources metric_type={metric.type} sources={metric.sources} {...props} /></Tab.Pane>
+      render: () => (
+        <Tab.Pane>
+          <Sources 
+            datamodel={datamodel}
+            reports={reports}
+            report={report}
+            metric_uuid={metric_uuid}
+            metric_type={metric.type}
+            metric_unit={metric_unit}
+            sources={metric.sources}
+            measurement={measurement}
+            changed_fields={changed_fields}
+            reload={reload} />
+        </Tab.Pane>
+      )
     }
   );
   if (measurements.length > 0) {
@@ -55,7 +88,7 @@ export function MetricDetails(props) {
       panes.push(
         {
           menuItem: <Menu.Item key='trend_graph'><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-          render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+          render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metric_name} measurements={measurements} scale={scale} /></Tab.Pane>
         }
       )
     }
@@ -64,10 +97,10 @@ export function MetricDetails(props) {
       if (!report_source) { return }  // source was deleted, continue
       const nr_entities = (source.entities && source.entities.length) || 0;
       if (nr_entities === 0) { return } // no entities to show, continue
-      const source_name = get_source_name(report_source, props.datamodel);
+      const source_name = get_source_name(report_source, datamodel);
       panes.push({
         menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><SourceEntities metric={metric} report_uuid={report_uuid} source={source} {...props} reload={reload} /></Tab.Pane>
+        render: () => <Tab.Pane><SourceEntities datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
       });
     });
   }
@@ -77,20 +110,20 @@ export function MetricDetails(props) {
       <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
         <div style={{ marginTop: "20px" }}>
           <ReorderButtonGroup
-            first={props.first_metric} last={props.last_metric} moveable="metric" slot="row"
-            onClick={(direction) => { props.stop_sort(); set_metric_attribute(props.metric_uuid, "position", direction, props.reload) }} />
-          <DeleteButton item_type="metric" onClick={() => delete_metric(props.metric_uuid, props.reload)} />
+            first={first_metric} last={last_metric} moveable="metric" slot="row"
+            onClick={(direction) => { stop_sort(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
+          <DeleteButton item_type="metric" onClick={() => delete_metric(metric_uuid, reload)} />
         </div>}
       />
     )
   }
   function onTabChange(event, data) {
-    const old_tab = props.visibleDetailsTabs.filter((tab) => tab?.startsWith(props.metric_uuid))[0];
-    const new_tab = `${props.metric_uuid}:${data.activeIndex}`;
-    props.toggleVisibleDetailsTab(old_tab, new_tab);
+    const old_tab = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid))[0];
+    const new_tab = `${metric_uuid}:${data.activeIndex}`;
+    toggleVisibleDetailsTab(old_tab, new_tab);
   }
 
-  const visible_tabs = props.visibleDetailsTabs.filter((tab) => tab?.startsWith(props.metric_uuid));
+  const visible_tabs = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid));
   const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
   return (
     <>
