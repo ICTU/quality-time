@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Label, Menu, Tab } from 'semantic-ui-react';
+import { Header, Label, Menu, Tab } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
@@ -21,25 +21,55 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
     })
 }
 
+function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, report, reload }) {
+  const panes = [
+    {
+      menuItem: <Menu.Item key='configuration'><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
+      render: () => <Tab.Pane>
+        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+      </Tab.Pane>
+    },
+    {
+      menuItem: <Menu.Item key='changelog'><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
+      render: () => <Tab.Pane>
+        <ChangeLog report_uuid={report.report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
+      </Tab.Pane>
+    }
+  ];
+  return (
+    <>
+      <Header>
+        <Header.Content>
+          {metric_type.name}
+          <Header.Subheader>
+            {metric_type.description}
+          </Header.Subheader>
+        </Header.Content>
+      </Header>
+      <Tab panes={panes} />
+    </>
+  )
+}
+
 export function MetricDetails({
-   datamodel,
-   report_date,
-   reports,
-   report,
-   subject_uuid,
-   metric_uuid,
-   metric_name,
-   metric_unit,
-   first_metric,
-   last_metric,
-   measurement,
-   scale,
-   unit,
-   stop_sort,
-   changed_fields,
-   visibleDetailsTabs,
-   toggleVisibleDetailsTab,
-   reload
+  datamodel,
+  report_date,
+  reports,
+  report,
+  subject_uuid,
+  metric_uuid,
+  metric_name,
+  metric_unit,
+  first_metric,
+  last_metric,
+  measurement,
+  scale,
+  unit,
+  stop_sort,
+  changed_fields,
+  visibleDetailsTabs,
+  toggleVisibleDetailsTab,
+  reload
 }) {
   const [measurements, setMeasurements] = useState([]);
   useEffect(() => {
@@ -51,7 +81,6 @@ export function MetricDetails({
     fetch_measurements(report_date, metric_uuid, setMeasurements)
   }
   const metric = report.subjects[subject_uuid].metrics[metric_uuid];
-  const report_uuid = report.report_uuid;
   const last_measurement = measurements[measurements.length - 1];
   const any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
   const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
@@ -60,15 +89,15 @@ export function MetricDetails({
     {
       menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
-        <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
+        <MetricConfiguration
+          datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {
       menuItem: <Menu.Item key='sources'><FocusableTab>{sources_menu_item}</FocusableTab></Menu.Item>,
       render: () => (
         <Tab.Pane>
-          <Sources 
+          <Sources
             datamodel={datamodel}
             reports={reports}
             report={report}
@@ -123,6 +152,7 @@ export function MetricDetails({
     toggleVisibleDetailsTab(old_tab, new_tab);
   }
 
+  const metric_type = datamodel.metrics[metric.type];
   const visible_tabs = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid));
   const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
   return (
