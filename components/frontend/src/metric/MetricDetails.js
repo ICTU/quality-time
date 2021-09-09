@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tab, Menu } from 'semantic-ui-react';
+import { Label, Menu, Tab } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
@@ -33,6 +33,9 @@ export function MetricDetails(props) {
   }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
+  const last_measurement = measurements[measurements.length - 1];
+  const any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
+  const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
   let panes = [];
   panes.push(
     {
@@ -43,7 +46,7 @@ export function MetricDetails(props) {
       </Tab.Pane>
     },
     {
-      menuItem: <Menu.Item key='sources'><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
+      menuItem: <Menu.Item key='sources'><FocusableTab>{sources_menu_item}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane><Sources metric_type={metric.type} sources={metric.sources} {...props} /></Tab.Pane>
     }
   );
@@ -56,7 +59,6 @@ export function MetricDetails(props) {
         }
       )
     }
-    const last_measurement = measurements[measurements.length - 1];
     last_measurement.sources.forEach((source) => {
       const report_source = metric.sources[source.source_uuid];
       if (!report_source) { return }  // source was deleted, continue
@@ -83,12 +85,12 @@ export function MetricDetails(props) {
     )
   }
   function onTabChange(event, data) {
-    const old_tab = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid))[0];
+    const old_tab = props.visibleDetailsTabs.filter((tab) => tab?.startsWith(props.metric_uuid))[0];
     const new_tab = `${props.metric_uuid}:${data.activeIndex}`;
     props.toggleVisibleDetailsTab(old_tab, new_tab);
   }
 
-  const visible_tabs = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid));
+  const visible_tabs = props.visibleDetailsTabs.filter((tab) => tab?.startsWith(props.metric_uuid));
   const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
   return (
     <>

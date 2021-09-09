@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Header, Menu, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -8,6 +8,19 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
+
+function SubjectHeader({ subject_type }) {
+    return (
+        <Header>
+            <Header.Content>
+                {subject_type.name}
+                <Header.Subheader>
+                    {subject_type.description}
+                </Header.Subheader>
+            </Header.Content>
+        </Header>
+    )
+}
 
 function SubjectTypeAndName({ datamodel, subject, subject_uuid, subject_name, reload }) {
     return (
@@ -58,6 +71,7 @@ export function SubjectTitle({ datamodel, report, subject, subject_uuid, first_s
     ];
     return (
         <HeaderWithDetails level="h2" header={subject_name} style={{ marginTop: 50 }}>
+            <SubjectHeader subject_type={current_subject_type} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
                 <ButtonRow subject_uuid={subject_uuid} first_subject={first_subject} last_subject={last_subject} reload={reload} />
