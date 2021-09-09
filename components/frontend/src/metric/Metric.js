@@ -56,7 +56,7 @@ export function Metric(props) {
     if (expand) {
       props.toggleVisibleDetailsTab(`${props.metric_uuid}:0`)
     } else {
-      const tabs = props.visibleDetailsTabs.filter((each) => each.startsWith(props.metric_uuid));
+      const tabs = props.visibleDetailsTabs.filter((each) => each?.startsWith(props.metric_uuid));
       if (tabs.length > 0) {
         props.toggleVisibleDetailsTab(tabs[0])
       }

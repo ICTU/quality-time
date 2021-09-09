@@ -44,7 +44,7 @@ it('changes the subject type', async () => {
 it('deals with unknown subject types', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await render_subject_title("unknown_subject_type");
-    expect(screen.getAllByText("Unknown subject type").length).toBe(1);
+    expect(screen.getAllByText("Unknown subject type").length).toBe(2);
 });
 
 it('changes the subject name', async () => {

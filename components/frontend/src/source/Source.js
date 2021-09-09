@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon } from 'semantic-ui-react';
+import { Grid, Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
@@ -10,6 +10,7 @@ import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';
 import { ErrorMessage } from '../errorMessage';
+import { FocusableTab } from '../widgets/FocusableTab';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -30,47 +31,32 @@ function SourceHeader(props) {
     )
 }
 
-function AttributesRow(props) {
+function SourceTypeAndName({ datamodel, source, source_uuid, metric_type, reload }) {
+    const source_type = datamodel.sources[source.type];
     return (
-        <Grid.Row columns={2}>
-            <Grid.Column>
-                <SourceType
-                    datamodel={props.datamodel}
-                    metric_type={props.metric_type} 
-                    set_source_attribute={(a, v) => set_source_attribute(props.source_uuid, a, v, props.reload)} 
-                    source_uuid={props.source_uuid}
-                    source_type={props.source.type}
-                />
-            </Grid.Column>
-            <Grid.Column>
-                <StringInput
-                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    id="source-name"
-                    label="Source name"
-                    placeholder={props.source_type.name}
-                    set_value={(value) => set_source_attribute(props.source_uuid, "name", value, props.reload)}
-                    value={props.source.name}
-                />
-            </Grid.Column>
-        </Grid.Row>
-    )
-}
-
-function ParametersRow(props) {
-    return (
-        <Grid.Row columns={2}>
-            <SourceParameters {...props} />
-        </Grid.Row>
-    )
-}
-
-function ChangeLogRow(props) {
-    return (
-        <Grid.Row>
-            <Grid.Column>
-                <ChangeLog {...props} />
-            </Grid.Column>
-        </Grid.Row>
+        <Grid stackable>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <SourceType
+                        datamodel={datamodel}
+                        metric_type={metric_type}
+                        set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
+                        source_uuid={source_uuid}
+                        source_type={source.type}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <StringInput
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        id="source-name"
+                        label="Source name"
+                        placeholder={source_type.name}
+                        set_value={(value) => set_source_attribute(source_uuid, "name", value, reload)}
+                        value={source.name}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
     )
 }
 
@@ -88,28 +74,59 @@ function ButtonGridRow(props) {
     )
 }
 
-export function Source(props) {
-    const source_type = props.datamodel.sources[props.source.type];
+function Parameters({ datamodel, source, source_uuid, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
+    return (
+        <Grid stackable>
+            <Grid.Row columns={2}>
+                <SourceParameters
+                    changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
+                    datamodel={datamodel}
+                    metric_type={metric_type}
+                    metric_unit={metric_unit}
+                    reload={reload}
+                    report={report}
+                    source={source}
+                    source_uuid={source_uuid}
+                />
+            </Grid.Row>
+            {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
+            {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
+        </Grid >
+    )
+}
+
+export function Source({ datamodel, source, source_uuid, first_source, last_source, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
+    const source_type = datamodel.sources[source.type];
+    const parameter_menu_item = connection_error || parse_error ? <Label color='red'>{"Parameters"}</Label> : "Parameters";
+    const panes = [
+        {
+            menuItem: <Menu.Item><FocusableTab>{"Source type and name"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <SourceTypeAndName datamodel={datamodel} source={source} source_uuid={source_uuid} metric_type={metric_type} reload={reload} />
+            </Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <Parameters datamodel={datamodel} source={source} source_uuid={source_uuid}
+                    connection_error={connection_error} parse_error={parse_error} metric_type={metric_type}
+                    metric_unit={metric_unit} report={report} changed_fields={changed_fields} reload={reload} />
+            </Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <ChangeLog report_uuid={report.report_uuid} source_uuid={source_uuid} timestamp={report.timestamp} />
+            </Tab.Pane>
+        }
+    ];
     return (
         <>
-            <SourceHeader source={props.source} source_type={source_type} />
-            <Grid stackable>
-                <AttributesRow datamodel={props.datamodel} reload={props.reload} source={props.source} source_type={source_type} source_uuid={props.source_uuid} metric_type={props.metric_type} />
-                <ParametersRow
-                    changed_param_keys={select_sources_parameter_keys(props.changed_fields, props.source_uuid)}
-                    datamodel={props.datamodel}
-                    metric_type={props.metric_type}
-                    metric_unit={props.metric_unit}
-                    reload={props.reload}
-                    report={props.report}
-                    source={props.source}
-                    source_uuid={props.source_uuid}
-                />
-                {props.connection_error && <ErrorMessage title="Connection error" message={props.connection_error} />}
-                {props.parse_error && <ErrorMessage title="Parse error" message={props.parse_error} />}
-                <ChangeLogRow report_uuid={props.report_uuid} source_uuid={props.source_uuid} timestamp={props.report.timestamp} />
-                <ButtonGridRow first_source={props.first_source} last_source={props.last_source} reload={props.reload} source_uuid={props.source_uuid} />
-            </Grid>
+            <SourceHeader source={source} source_type={source_type} />
+            <Tab panes={panes} />
+            <div style={{ marginTop: "20px" }}>
+                <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
+            </div>
         </>
     )
 }

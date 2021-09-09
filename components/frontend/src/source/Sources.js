@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment } from 'semantic-ui-react';
+import { Message, Segment } from 'semantic-ui-react';
 import { Source } from './Source';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
@@ -57,9 +57,10 @@ export function Sources({ datamodel, reports, report, metric_uuid, metric_type, 
             </Segment>
         )
     }
+    const source_segments = source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index));
     return (
         <>
-            {source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index))}
+            {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message>: source_segments}
             <ButtonSegment />
         </>
     )
