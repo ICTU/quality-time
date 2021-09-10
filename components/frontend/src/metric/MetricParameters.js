@@ -28,7 +28,7 @@ function metric_scale_options(metric_scales, datamodel) {
     return scale_options;
 }
 
-export function MetricParameters({ datamodel, issueTrackers, report, metric, issueStatus, metric_uuid, reload }) {
+export function MetricParameters({ datamodel, report, metric, metric_uuid, reload }) {
     const metric_type = datamodel.metrics[metric.type];
     const metric_scale = metric.scale || metric_type.default_scale || "count";
     const metric_unit_without_percentage = metric.unit || metric_type.unit;
@@ -160,16 +160,16 @@ export function MetricParameters({ datamodel, issueTrackers, report, metric, iss
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <StringInput
-                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            label="Issue ID"
-                            placeholder="An issue that tracks the progress of resolving this metric"
-                            set_value={(value) => set_metric_attribute(metric_uuid, "tracker_issue", value, reload)}
-                            value={metric.tracker_issue}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
+                <Grid.Column>
+                    <StringInput
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label="Issue ID"
+                        placeholder="An issue that tracks the progress of resolving this metric"
+                        set_value={(value) => set_metric_attribute(metric_uuid, "tracker_issue", value, reload)}
+                        value={metric.tracker_issue}
+                    />
+                </Grid.Column>
+            </Grid.Row>
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <Comment

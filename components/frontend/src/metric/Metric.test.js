@@ -71,7 +71,7 @@ it('renders the minutes as percentage', () => {
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0% minutes");
 });
 
-it('doesnt collect the issue tracker', () => {
+it('does not collect the issue tracker', () => {
   render(<Table><Table.Body><Metric
     hiddenColumns={[]}
     report={report}

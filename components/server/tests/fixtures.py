@@ -33,7 +33,6 @@ def create_report():
         _id=REPORT_ID,
         report_uuid=REPORT_ID,
         title="Report",
-        tracker_type=None,
         subjects={
             SUBJECT_ID: dict(
                 name="Subject",

@@ -22,12 +22,12 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
     })
 }
 
-function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, issueStatus, report, reload }) {
+function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, report, reload }) {
   const panes = [
     {
       menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} issueStatus={issueStatus} report={report} reload={reload} />
+        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {
@@ -92,7 +92,7 @@ export function MetricDetails({
       menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
         <MetricConfiguration
-          datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} issueStatus={issueStatus} report={report} reload={reload} />
+          datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
         {!issueStatus.loading && issueStatus.error_message ? <ErrorMessage title={issueStatus.name} message={issueStatus.error_message} /> : undefined}
       </Tab.Pane>
     },
