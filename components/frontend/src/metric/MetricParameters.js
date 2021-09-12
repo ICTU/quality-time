@@ -39,6 +39,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
+
     return (
         <Grid stackable>
             <Grid.Row columns={3}>
