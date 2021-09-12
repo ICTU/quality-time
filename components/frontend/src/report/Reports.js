@@ -49,8 +49,8 @@ export function Reports({ reports, open_report, report_date, reports_overview, r
     <div id="dashboard">
       <ReportsTitle
         permissions={reports_overview.permissions}
-        subtitle={reports_overview.subtitle}
         title={reports_overview.title}
+        subtitle={reports_overview.subtitle}
         reload={reload}
       />
       <ReportsDashboard reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
