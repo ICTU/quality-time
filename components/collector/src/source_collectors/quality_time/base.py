@@ -3,7 +3,8 @@
 from abc import ABC
 from typing import Any
 
-from base_collectors import SourceCollector, SourceCollectorException
+from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import Response, URL
 
 
@@ -26,5 +27,5 @@ class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
             reports = [report for report in reports if report_titles_or_ids & {report["title"], report["report_uuid"]}]
         if not reports:
             message = "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else "")
-            raise SourceCollectorException(message)
+            raise CollectorException(message)
         return reports

@@ -11,13 +11,10 @@ from typing import Any, Final, Optional, Union
 import aiohttp
 from packaging.version import Version
 
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
 from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, SourceParameters, SourceMeasurement, SourceResponses
-
-
-class SourceCollectorException(Exception):
-    """Something went wrong collecting information."""
 
 
 class SourceCollector(ABC):
@@ -85,7 +82,7 @@ class SourceCollector(ABC):
             responses = await self._get_source_responses(api_url)
             logging.info("Retrieved %s", safe_api_url)
             return responses
-        except (SourceCollectorException, aiohttp.ClientError) as reason:
+        except (CollectorException, aiohttp.ClientError) as reason:
             error = self.__logsafe_exception(reason)
             logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except

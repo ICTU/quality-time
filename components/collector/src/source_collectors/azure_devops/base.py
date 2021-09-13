@@ -6,7 +6,8 @@ from abc import ABC
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceCollectorException
+from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
@@ -34,7 +35,7 @@ class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstra
         repositories = (await (await super()._get_source_responses(repositories_url))[0].json())["value"]
         matching_repositories = [r for r in repositories if repository in (r["name"], r["id"])]
         if not matching_repositories:
-            raise SourceCollectorException(f"Repository '{repository}' not found")
+            raise CollectorException(f"Repository '{repository}' not found")
         return str(matching_repositories[0]["id"])
 
 

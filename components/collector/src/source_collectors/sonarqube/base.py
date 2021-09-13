@@ -2,7 +2,8 @@
 
 from abc import ABC
 
-from base_collectors import SourceCollector, SourceCollectorException
+from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import URL
 from model import Entities, SourceMeasurement, SourceResponses
 
@@ -20,7 +21,7 @@ class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
         response = (await super()._get_source_responses(show_component_url, **kwargs))[0]
         json = await response.json()
         if "errors" in json:
-            raise SourceCollectorException(json["errors"][0]["msg"])
+            raise CollectorException(json["errors"][0]["msg"])
         return await super()._get_source_responses(*urls, **kwargs)
 
 

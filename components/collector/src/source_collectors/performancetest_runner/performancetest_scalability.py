@@ -1,6 +1,6 @@
 """Performancetest-runner performancetest scalability collector."""
 
-from base_collectors import SourceCollectorException
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import Value
 from model import SourceResponses
 
@@ -16,7 +16,7 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
         for response in responses:
             breaking_point = int((await self._soup(response)).find(id="trendbreak_scalability").string)
             if breaking_point == 100:
-                raise SourceCollectorException(
+                raise CollectorException(
                     "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)"
                 )
             trend_breaks.append(breaking_point)
