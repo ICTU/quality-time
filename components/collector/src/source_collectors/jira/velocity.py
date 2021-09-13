@@ -4,7 +4,8 @@ from urllib.parse import parse_qs, urlparse
 
 from typing_extensions import TypedDict
 
-from base_collectors import SourceCollector, SourceCollectorException
+from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -92,5 +93,5 @@ class JiraVelocity(SourceCollector):
         matching_boards = [b for b in boards if board_name_or_id in (str(b["id"]), b["name"].lower().strip())]
         if not matching_boards:
             message = f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
-            raise SourceCollectorException(message)
+            raise CollectorException(message)
         return str(matching_boards[0]["id"])
