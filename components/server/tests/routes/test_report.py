@@ -212,6 +212,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = create_report()
         report = get_report(self.database, REPORT_ID)["reports"][0]
+        self.assertEqual("this string replaces credentials", report["issue_tracker"]["parameters"]["password"])
         self.assertEqual(
             "this string replaces credentials",
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"],
@@ -362,6 +363,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
             "password"
         )
+        expected_report["issue_tracker"]["parameters"].pop("password")
         self.database.reports.find_one.return_value = copy.deepcopy(self.report)
 
         # Without provided public key
@@ -369,7 +371,9 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
             "parameters"
         ].pop("password")
+        exported_report["issue_tracker"]["parameters"].pop("password")
 
+        self.maxDiff = None
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
@@ -381,6 +385,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
             "password"
         )
+        expected_report["issue_tracker"]["parameters"].pop("password")
 
         request.query = {"public_key": self.public_key}
         mocked_report = copy.deepcopy(self.report)
@@ -393,6 +398,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
             "parameters"
         ].pop("password")
+        exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))

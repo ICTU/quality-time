@@ -61,4 +61,5 @@ def create_report():
                 teams_webhook="", name="notification_destination", url="https://reporturl"
             )
         },
+        issue_tracker=dict(type="jira", parameters=dict(username="jadoe", password="secret")),
     )
