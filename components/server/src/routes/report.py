@@ -203,8 +203,11 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     old_value = data.report.get("issue_tracker", {}).get(tracker_attribute) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
-    data.report.setdefault("issue_tracker", {})[tracker_attribute] = new_value
-    if tracker_attribute in ("password", "token"):
+    if tracker_attribute == "type":
+        data.report.setdefault("issue_tracker", {})["type"] = new_value
+    else:
+        data.report.setdefault("issue_tracker", {}).setdefault("parameters", {})[tracker_attribute] = new_value
+    if tracker_attribute in ("password", "private_token"):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
     delta_description = (
         f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "

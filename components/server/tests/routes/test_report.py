@@ -102,7 +102,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
             ),
             self.report["delta"],
         )
-        self.assertEqual(dict(url="https://jira"), self.report["issue_tracker"])
+        self.assertEqual(dict(parameters=dict(url="https://jira")), self.report["issue_tracker"])
 
     def test_post_report_issue_tracker_username(self, request):
         """Test that the issue tracker username can be changed."""
@@ -117,7 +117,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
             ),
             self.report["delta"],
         )
-        self.assertEqual(dict(username="jodoe"), self.report["issue_tracker"])
+        self.assertEqual(dict(parameters=dict(username="jodoe")), self.report["issue_tracker"])
 
     def test_post_report_issue_tracker_password(self, request):
         """Test that the issue tracker password can be changed."""
@@ -132,7 +132,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
             ),
             self.report["delta"],
         )
-        self.assertEqual(dict(password="secret"), self.report["issue_tracker"])
+        self.assertEqual(dict(parameters=dict(password="secret")), self.report["issue_tracker"])
 
 
 class ReportTest(unittest.TestCase):
