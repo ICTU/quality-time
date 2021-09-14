@@ -1,5 +1,5 @@
 bandit==1.7.0
-black==21.8b0
+black==21.9b0
 coverage==5.5
 dlint==0.11.0
 isort==5.9.3
