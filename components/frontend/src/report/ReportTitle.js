@@ -5,7 +5,7 @@ import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
-import { delete_report, set_report_attribute } from '../api/report';
+import { delete_report, set_report_attribute, set_report_issue_tracker_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -92,8 +92,8 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker type"
                         options={trackerSources}
-                        set_value={(value) => set_report_attribute(report_uuid, "tracker_type", value, reload)}
-                        value={report.tracker_type}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "type", value, reload)}
+                        value={report.issue_tracker?.type}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -101,8 +101,8 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         id="tracker-url"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker URL"
-                        set_value={(value) => set_report_attribute(report_uuid, "tracker_url", value, reload)}
-                        value={report.tracker_url}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
+                        value={report.issue_tracker?.url}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -112,8 +112,8 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         id="tracker-username"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Username for basic authentication"
-                        set_value={(value) => set_report_attribute(report_uuid, "tracker_username", value, reload)}
-                        value={report.tracker_username}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "username", value, reload)}
+                        value={report.issue_tracker?.username}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -121,8 +121,8 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         id="tracker-password"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Password for basic authentication"
-                        set_value={(value) => set_report_attribute(report_uuid, "tracker_password", value, reload)}
-                        value={report.tracker_password}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
+                        value={report.issue_tracker?.password}
                     />
                 </Grid.Column>
             </Grid.Row>
