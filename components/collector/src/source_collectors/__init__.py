@@ -70,6 +70,7 @@ from .jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUp
 from .jenkins_test_report.test_cases import JenkinsTestReportTestCases
 from .jenkins_test_report.tests import JenkinsTestReportTests
 
+from .jira.issue_status import JiraIssueStatus
 from .jira.issues import JiraIssues
 from .jira.manual_test_duration import JiraManualTestDuration
 from .jira.manual_test_execution import JiraManualTestExecution

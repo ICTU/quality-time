@@ -5,6 +5,7 @@ from typing import Optional, Sequence
 from collector_utilities.type import ErrorMessage, Value, URL
 
 from .entity import Entities
+from .issue_status import IssueStatus
 
 
 class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
@@ -51,15 +52,19 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
 class MetricMeasurement:  # pylint: disable=too-few-public-methods
     """Class to hold measurements from one or more sources for one metric."""
 
-    def __init__(self, sources: Sequence[SourceMeasurement]) -> None:
+    def __init__(self, sources: Sequence[SourceMeasurement], issue_status: IssueStatus = None) -> None:
         self.sources = sources
+        self.issue_status = issue_status
         self.has_error = any(source.has_error() for source in sources)
         self.metric_uuid: Optional[str] = None
 
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""
-        return dict(
+        measurement = dict(
             sources=[source.as_dict() for source in self.sources],
             has_error=self.has_error,
             metric_uuid=self.metric_uuid,
         )
+        if self.issue_status:
+            measurement["issue_status"] = self.issue_status.as_dict()
+        return measurement

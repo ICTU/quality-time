@@ -29,8 +29,9 @@ class SourceCollector(ABC):
 
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
+        self._source = source
         self._data_model: Final = data_model
-        self._issue: str = None
+        self._issue = ""
         self.__parameters = SourceParameters(source, data_model)
 
     def __init_subclass__(cls) -> None:
@@ -67,7 +68,6 @@ class SourceCollector(ABC):
         responses = await self.__safely_get_source_responses()
         issue_status = await self.__safely_parse_issue_status(responses)
         issue_status.api_url = responses.api_url
-        issue_status.connection_error = responses.connection_error
         issue_status.landing_url = await self.__safely_parse_landing_url(responses)
         return issue_status
 
@@ -177,7 +177,7 @@ class SourceCollector(ABC):
         collector to fail.
         """
         if responses.connection_error:
-            return IssueStatus(self._issue)
+            return IssueStatus(self._issue, connection_error=responses.connection_error)
         try:
             return await self._parse_issue_status(responses)
         except Exception:  # pylint: disable=broad-except
