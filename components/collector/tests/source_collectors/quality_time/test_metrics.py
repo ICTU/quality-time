@@ -43,15 +43,13 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         """Test that the number of metrics is returned."""
         self.set_source_parameter("reports", [])
         response = await self.collect(get_request_json_return_value=dict(reports=[]))
-        self.assert_measurement(response, value=None, total="100", parse_error="No reports found", entities=[])
+        self.assert_measurement(response, parse_error="No reports found")
 
     async def test_nr_of_metrics_without_correct_report(self):
         """Test that the number of metrics is returned."""
         self.reports["reports"].pop(0)
         response = await self.collect(get_request_json_return_value=self.reports)
-        self.assert_measurement(
-            response, value=None, total="100", parse_error="No reports found with title or id", entities=[]
-        )
+        self.assert_measurement(response, parse_error="No reports found with title or id")
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Override to pass the api and landing URLs."""

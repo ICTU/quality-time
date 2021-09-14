@@ -32,10 +32,10 @@ class SonarQubeTestsTest(SonarQubeTestCase):
         """Test that the collector throws an exception if there are no tests."""
         json = dict(component=dict(measures=[]))
         response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, value=None, total="100", parse_error="KeyError")
+        self.assert_measurement(response, parse_error="KeyError")
 
     async def test_nr_of_tests_with_faulty_component(self):
         """Test that the measurement fails if the component does not exist."""
         json = dict(errors=[dict(msg="No such component")])
         response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, value=None, total=None, connection_error="No such component")
+        self.assert_measurement(response, connection_error="No such component")

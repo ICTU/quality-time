@@ -56,6 +56,5 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
         self.assert_measurement(
             response,
             landing_url=f"{self.url}/_git/wrong_repo/branches",
-            entities=[],
             connection_error="Repository 'wrong_repo' not found",
         )

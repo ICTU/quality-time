@@ -84,4 +84,4 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Test that an error is thrown for reports that don't exist."""
         self.reports["reports"] = []
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(response, value=None, parse_error="No reports found with title or id", entities=[])
+        self.assert_measurement(response, parse_error="No reports found with title or id")

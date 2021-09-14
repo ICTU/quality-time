@@ -19,7 +19,7 @@ class JaCoCoCommonTestsMixin:  # pylint: disable=too-few-public-methods
             ("jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>")
         )
         response = await self.collect(get_request_content=report)
-        self.assert_measurement(response, value=None, connection_error="Zipfile contains no files with extension xml")
+        self.assert_measurement(response, connection_error="Zipfile contains no files with extension xml")
 
 
 class JaCoCoCommonCoverageTestsMixin:
