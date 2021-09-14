@@ -191,6 +191,28 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
+@bottle.post(
+    "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
+def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
+    """Set the issue tracker attribute."""
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
+    new_value = dict(bottle.request.json)[tracker_attribute]
+    old_value = data.report.get("issue_tracker", {}).get(tracker_attribute) or ""
+    if old_value == new_value:
+        return dict(ok=True)  # Nothing to do
+    data.report.setdefault("issue_tracker", {})[tracker_attribute] = new_value
+    if tracker_attribute in ("password", "token"):
+        new_value, old_value = "*" * len(new_value), "*" * len(old_value)
+    delta_description = (
+        f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "
+        f"from '{old_value}' to '{new_value}'."
+    )
+    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
+
+
 def get_tag_report(data_model, reports, tag):
     """Get a report with all metrics that have the specified tag."""
     subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)

@@ -15,6 +15,7 @@ from routes.report import (
     post_report_copy,
     post_report_import,
     post_report_new,
+    post_report_issue_tracker_attribute,
 )
 from server_utilities.functions import asymmetric_encrypt
 from server_utilities.type import ReportId
@@ -58,6 +59,80 @@ class PostReportAttributeTest(unittest.TestCase):
             dict(uuids=[REPORT_ID], email=JOHN["email"], description="John changed the layout of report 'Title'."),
             self.report["delta"],
         )
+
+
+@patch("bottle.request")
+class ReportIssueTrackerTest(unittest.TestCase):
+    """Unit tests for the post report issue tracker attribute route."""
+
+    def setUp(self):
+        """Override to set up a database with a report and a user session."""
+        self.database = Mock()
+        self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
+        self.database.reports.find.return_value = [self.report]
+        self.database.sessions.find_one.return_value = JOHN
+        self.database.datamodels.find_one.return_value = {}
+        self.database.measurements.find.return_value = []
+
+    def test_post_report_issue_tracker_type(self, request):
+        """Test that the issue tracker type can be changed."""
+        request.json = dict(type="jira")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "type", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the type of the issue tracker of report 'Title' from '' to 'jira'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(type="jira"), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_url(self, request):
+        """Test that the issue tracker url can be changed."""
+        request.json = dict(url="https://jira")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "url", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the url of the issue tracker of report 'Title' from '' to 'https://jira'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(url="https://jira"), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_username(self, request):
+        """Test that the issue tracker username can be changed."""
+        request.json = dict(username="jodoe")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "username", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the username of the issue tracker of report 'Title' from '' to 'jodoe'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(username="jodoe"), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_password(self, request):
+        """Test that the issue tracker password can be changed."""
+        request.json = dict(password="secret")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the password of the issue tracker of report 'Title' from '' to '******'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(password="secret"), self.report["issue_tracker"])
 
 
 class ReportTest(unittest.TestCase):
