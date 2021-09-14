@@ -61,9 +61,10 @@ class MetricCollector:
 
     def __issue_status_collector(self) -> Optional[Coroutine]:
         """Create the issue status collector for the metric."""
+        issue = self._metric.get("tracker_issue")
         tracker = self._metric.get("issue_tracker", {})
         tracker_type = tracker.get("type")
-        issue = self._metric.get("tracker_issue")
-        if issue and tracker_type and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
+        has_tracker = bool(tracker_type and tracker.get("url"))
+        if issue and has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
             return collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue)
         return None
