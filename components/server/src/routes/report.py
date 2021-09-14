@@ -200,7 +200,10 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     reports = latest_reports(database)
     data = ReportData(data_model, reports, report_uuid)
     new_value = dict(bottle.request.json)[tracker_attribute]
-    old_value = data.report.get("issue_tracker", {}).get(tracker_attribute) or ""
+    if tracker_attribute == "type":
+        old_value = data.report.get("issue_tracker", {}).get("type") or ""
+    else:
+        old_value = data.report.get("issue_tracker", {}).get("parameters", {}).get(tracker_attribute) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     if tracker_attribute == "type":

@@ -29,7 +29,6 @@ class SourceCollector(ABC):
 
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
-        self._source = source
         self._data_model: Final = data_model
         self._issue = ""
         self.__parameters = SourceParameters(source, data_model)

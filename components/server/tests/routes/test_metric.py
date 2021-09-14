@@ -433,8 +433,7 @@ class MetricTest(unittest.TestCase):
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.side_effect = [self.report]
-        self.report["tracker_type"] = "jira"
-        self.report["tracker_url"] = "https://jira"
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tracker_issue"] = "FOO-42"
         self.assertEqual(
             {
@@ -447,7 +446,7 @@ class MetricTest(unittest.TestCase):
                     tags=["security"],
                     target="0",
                     tracker_issue="FOO-42",
-                    issue_tracker=dict(type="jira", url="https://jira", username=None, password=None),
+                    issue_tracker=dict(type="jira", parameters=dict(url="https://jira")),
                     sources=dict(
                         source_uuid=dict(
                             name="Source", type="source_type", parameters=dict(url="https://url", password="password")

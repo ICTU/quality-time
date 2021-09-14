@@ -10,12 +10,12 @@ class JiraIssueStatus(SourceCollector):
 
     async def _api_url(self) -> URL:
         """Override to get the issue, including the status field, from Jira."""
-        url = self._source.get("url", "").strip("/")
+        url = await super()._api_url()
         return URL(f"{url}/rest/api/2/issue/{self._issue}?fields=status")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the issue to the landing URL."""
-        url = self._source.get("url", "").strip("/")
+        url = await super()._api_url()
         return URL(f"{url}/browse/{self._issue}")
 
     async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:

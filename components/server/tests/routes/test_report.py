@@ -134,6 +134,14 @@ class ReportIssueTrackerTest(unittest.TestCase):
         )
         self.assertEqual(dict(parameters=dict(password="secret")), self.report["issue_tracker"])
 
+    def test_post_report_issue_tracker_password_unchanged(self, request):
+        """Test that nothing happens when the new issue tracker password is unchanged."""
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(password="secret"))
+        request.json = dict(password="secret")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(dict(type="jira", parameters=dict(password="secret")), self.report["issue_tracker"])
+
 
 class ReportTest(unittest.TestCase):
     """Unit tests for adding, deleting, and getting reports."""

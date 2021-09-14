@@ -24,11 +24,12 @@ def get_metrics(database: Database):
     """Get all metrics."""
     metrics: dict[str, Any] = {}
     for report in latest_reports(database):
-        issue_tracker = {attr: report.get(f"tracker_{attr}") for attr in ("type", "url", "username", "password")}
+        issue_tracker = report.get("issue_tracker", {})
+        has_issue_tracker = bool(issue_tracker.get("type") and issue_tracker.get("parameters", {}).get("url"))
         for subject in report["subjects"].values():
             for metric_uuid, metric in subject["metrics"].items():
                 metric["report_uuid"] = report["report_uuid"]
-                if issue_tracker.get("type") and issue_tracker.get("url") and metric.get("tracker_issue"):
+                if has_issue_tracker and metric.get("tracker_issue"):
                     metric["issue_tracker"] = issue_tracker
                 metrics[metric_uuid] = metric
     return metrics
