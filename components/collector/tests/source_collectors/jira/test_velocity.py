@@ -108,5 +108,5 @@ class JiraVelocityTest(JiraTestCase):
         boards_json = dict(startAt=0, maxResults=50, isLast=True, values=[dict(id=1, name="Board 1")])
         response = await self.collect(get_request_json_side_effect=[boards_json])
         self.assert_measurement(
-            response, value=None, connection_error="Could not find a Jira board with id or name", landing_url=self.url
+            response, connection_error="Could not find a Jira board with id or name", landing_url=self.url
         )

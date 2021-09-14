@@ -13,13 +13,19 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
 
     def __init__(
-        self, *, value: Value = None, total: Value = "100", entities: Entities = None, parse_error: ErrorMessage = None
+        self,
+        *,
+        value: Value = None,
+        total: Value = "100",
+        entities: Entities = None,
+        connection_error: ErrorMessage = None,
+        parse_error: ErrorMessage = None,
     ) -> None:
         self.value = str(len(entities)) if value is None and entities is not None else value
-        self.total = total
         self.entities = Entities() if entities is None else entities
         self.parse_error = parse_error
-        self.connection_error: ErrorMessage = None
+        self.connection_error = connection_error
+        self.total = None if self.has_error() else total
         self.api_url: Optional[URL] = None
         self.landing_url: Optional[URL] = None
         self.source_uuid: Optional[str] = None
@@ -34,8 +40,8 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
             value=self.value,
             total=self.total,
             entities=self.entities[: self.MAX_ENTITIES],
-            parse_error=self.parse_error,
             connection_error=self.connection_error,
+            parse_error=self.parse_error,
             api_url=self.api_url,
             landing_url=self.landing_url,
             source_uuid=self.source_uuid,

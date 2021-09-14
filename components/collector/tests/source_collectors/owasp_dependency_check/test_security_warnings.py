@@ -111,8 +111,6 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         response = await self.collect(get_request_text=xml)
         self.assert_measurement(
             response,
-            value=None,
-            entities=[],
             parse_error=f"""
 AssertionError: The XML root element should be one of \
 "{OWASPDependencyCheckBase.allowed_root_tags}" but is \

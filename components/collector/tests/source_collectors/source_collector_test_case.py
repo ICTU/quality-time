@@ -95,6 +95,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:
+                attributes.update(value=None, total=None, entities=[])
                 self.assertIn(attribute_value, getattr(measurement.sources[source_index], attribute_key))
             else:
                 self.assertIsNone(getattr(measurement.sources[source_index], attribute_key))

@@ -57,7 +57,6 @@ class SourceCollector(ABC):
         responses = await self.__safely_get_source_responses()
         measurement = await self.__safely_parse_source_responses(responses)
         measurement.api_url = responses.api_url
-        measurement.connection_error = responses.connection_error
         measurement.landing_url = await self.__safely_parse_landing_url(responses)
         return measurement
 
@@ -127,13 +126,11 @@ class SourceCollector(ABC):
         collector to fail.
         """
         if responses.connection_error:
-            measurement = SourceMeasurement(total=None)
-        else:
-            try:
-                measurement = await self._parse_source_responses(responses)
-            except Exception:  # pylint: disable=broad-except
-                measurement = SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
-        return measurement
+            return SourceMeasurement(connection_error=responses.connection_error)
+        try:
+            return await self._parse_source_responses(responses)
+        except Exception:  # pylint: disable=broad-except
+            return SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
