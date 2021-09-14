@@ -38,13 +38,32 @@ class MetricCollector:
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Collect the measurements from the metric's sources."""
+        collectors = self.__source_collectors()
+        issue_status_collector = self.__issue_status_collector()
+        if not collectors and not issue_status_collector:
+            return None
+        if issue_status_collector:
+            issue_status, *measurements = await asyncio.gather(issue_status_collector, *collectors)
+        else:
+            measurements = await asyncio.gather(*collectors)
+            issue_status = None
+        for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
+            source_measurement.source_uuid = source_uuid
+        return MetricMeasurement(measurements, issue_status)
+
+    def __source_collectors(self) -> list[SourceCollector]:
+        """Create the source collectors for the metric."""
         collectors = []
         for source in self._metric["sources"].values():
             if collector_class := SourceCollector.get_subclass(source["type"], self._metric["type"]):
                 collectors.append(collector_class(self.__session, source, self.__data_model).collect())
-        if not collectors:
-            return None
-        measurements = await asyncio.gather(*collectors)
-        for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
-            source_measurement.source_uuid = source_uuid
-        return MetricMeasurement(measurements)
+        return collectors
+
+    def __issue_status_collector(self) -> Optional[SourceCollector]:
+        """Create the issue status collector for the metric."""
+        tracker = self._metric.get("issue_tracker", {})
+        tracker_type = tracker.get("type")
+        issue = self._metric.get("tracker_issue")
+        if issue and tracker_type and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_tracker")):
+            return collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue)
+        return None
