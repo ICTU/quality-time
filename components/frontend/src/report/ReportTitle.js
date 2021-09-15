@@ -82,7 +82,6 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
         }
     );
     trackerSources.push(NONE_OPTION)
-
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
@@ -102,7 +101,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker URL"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
-                        value={report.issue_tracker?.url}
+                        value={report.issue_tracker?.parameters?.url}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -113,7 +112,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Username for basic authentication"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "username", value, reload)}
-                        value={report.issue_tracker?.username}
+                        value={report.issue_tracker?.parameters?.username}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -122,7 +121,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Password for basic authentication"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
-                        value={report.issue_tracker?.password}
+                        value={report.issue_tracker?.parameters?.password}
                     />
                 </Grid.Column>
             </Grid.Row>
