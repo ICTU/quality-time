@@ -373,7 +373,6 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         ].pop("password")
         exported_report["issue_tracker"]["parameters"].pop("password")
 
-        self.maxDiff = None
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
