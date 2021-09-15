@@ -130,7 +130,7 @@ The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezon
 
 ## Moving *Quality-time*
 
-The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied. 
+The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied.
 
 Start a new mongo container and use that to run the `mongodump` and `mongorestore` commands:
 
