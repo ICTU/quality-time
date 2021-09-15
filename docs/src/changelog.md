@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Use tabs to better organize the settings that are accessible via expandable headers. Also add icons to the tabs.
 
+### Added
+
+- Add [documentation on how to move *Quality-time* from location to another](https://quality-time.readthedocs.io/en/latest/deployment.html#moving-quality-time). Closes [#2538](https://github.com/ICTU/quality-time/issues/2538).
+
 ## v3.25.0 - 2021-09-06
 
 ### Fixed

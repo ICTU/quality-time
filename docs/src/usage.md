@@ -1,7 +1,7 @@
 # User manual
 
 ```{note}
-This user manual assumes *Quality-time* has been installed, is up and running, and that you have opened *Quality-time* in your browser.
+This user manual assumes *Quality-time* has been installed, is up and running, and that you have opened *Quality-time* in your browser. See the [](deployment.md) on how to deploy *Quality-time*.
 ```
 
 ## {index}`Logging in` and {index}`out <Logging out>`

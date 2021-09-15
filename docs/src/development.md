@@ -350,7 +350,9 @@ python release.py --help
 
 If you want to test the release (for example, deploy it to a test environment, or roll out a release to early adopters), it's possible to create a **release candidate** for a major, minor, or patch release.
 
-Note: to determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](changelog.md), excluding release candidates.
+```{important}
+To determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](changelog.md), excluding release candidates.
+```
 
 ### Determine the version bump
 
