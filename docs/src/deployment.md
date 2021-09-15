@@ -24,7 +24,9 @@ To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDA
 
 When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box.
 
+```{seealso}
 See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more information on LDAP filters.
+```
 
 ```{index} Forwarded Authentication
 ```
@@ -96,7 +98,9 @@ To optionally configure a proxy for the collector to use, set the `HTTP_PROXY` o
       - HTTP_PROXY="http://proxy.com"
 ```
 
+```{seealso}
 See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
+```
 
 ### Notifier
 
@@ -122,4 +126,24 @@ The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezon
       - ALLOW_HTTP=true
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Set the timezone to CET
+```
+
+## Moving *Quality-time*
+
+The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied. 
+
+Start a new mongo container and use that to run the `mongodump` and `mongorestore` commands:
+
+```console
+docker run -dP --rm --name mongo mongo
+docker exec -ti mongo mongodump --uri "mongodb://root:<pwd>@<hostname or ip>:27017" --out /tmp/dump/qt_dump
+docker exec -ti mongo mongorestore --uri "mongodb://root:<pwd>@<hostname or ip>:27017" /tmp/dump/qt_dump
+```
+
+The `<hostname or ip>` is the hostname or IP address of the Swarm manager in case of Docker Swarm.
+
+As the dump is stored in a temporary container, the dump will disappear as soon as the container is removed. To keep the dump around, map a folder (`-v`) in the `mongo` container.
+
+```{seealso}
+See [Back Up and Restore with MongoDB Tools](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
 ```

@@ -53,7 +53,9 @@ Implemented features include:
 - Notifications of events, such as metrics turning red, to Microsoft Teams.
 - Side-by-side comparison of measurements at different points in time.
 
+```{seealso}
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
+```
 
 # Trying it out
 
