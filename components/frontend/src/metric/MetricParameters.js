@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon } from 'semantic-ui-react';
+import { Grid, Header, Icon, Popup } from 'semantic-ui-react';
 import { MetricType } from './MetricType';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
@@ -39,7 +39,14 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
-
+    let issue_status_error = false;
+    if (metric.issue_status?.connection_error) {
+        issue_status_error = {content: "Connection error retrieving the issue status: " + metric.issue_status.connection_error};
+    }
+    if (metric.issue_status?.parse_error) {
+        issue_status_error = {content: "Parse error retrieving the issue status: " + metric.issue_status.parse_error};
+    }
+    const issue_status_help = "An issue that tracks the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -159,19 +166,18 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={1}>
-                <Grid.Column>
+            <Grid.Row>
+                <Grid.Column width={4}>
                     <StringInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Issue ID"
-                        placeholder="An issue that tracks the progress of resolving this metric"
+                        label={<label>Issue ID <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
+                        placeholder="Issue ID"
                         set_value={(value) => set_metric_attribute(metric_uuid, "tracker_issue", value, reload)}
                         value={metric.tracker_issue}
+                        error={issue_status_error}
                     />
                 </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={1}>
-                <Grid.Column>
+                <Grid.Column width={12}>
                     <Comment
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}

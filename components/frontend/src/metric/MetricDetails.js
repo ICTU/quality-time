@@ -11,7 +11,6 @@ import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { capitalize, get_source_name } from '../utils';
-import { ErrorMessage } from '../errorMessage';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
   get_measurements(metric_uuid, report_date)
@@ -66,7 +65,6 @@ export function MetricDetails({
   measurement,
   scale,
   unit,
-  issueStatus,
   stop_sort,
   changed_fields,
   visibleDetailsTabs,
@@ -91,9 +89,7 @@ export function MetricDetails({
     {
       menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricConfiguration
-          datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
-        {!issueStatus.loading && issueStatus.error_message ? <ErrorMessage title={issueStatus.name} message={issueStatus.error_message} /> : undefined}
+        <MetricConfiguration datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {

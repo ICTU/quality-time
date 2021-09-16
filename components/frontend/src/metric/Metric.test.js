@@ -2,8 +2,6 @@ import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
 import { Metric } from './Metric';
-import { render } from '@testing-library/react';
-import * as metric_api from '../api/metric';
 
 jest.mock("../api/metric")
 
@@ -69,33 +67,4 @@ it('renders the minutes as percentage', () => {
   const wrapper = metric();
   expect(wrapper.find("TableCell").at(4).text()).toBe("50% minutes");
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0% minutes");
-});
-
-it('does not collect the issue tracker', () => {
-  render(<Table><Table.Body><Metric
-    hiddenColumns={[]}
-    report={report}
-    reports={[report]}
-    metric_uuid="metric_uuid"
-    subject_uuid="subject_uuid"
-    datamodel={data_model}
-    visibleDetailsTabs={[]}
-    /></Table.Body></Table>)
-
-  expect(metric_api.get_tracker_issue_status).toHaveBeenCalledTimes(0);
-});
-
-it('collects the issue tracker status when issue_tracker is set', () => {
-  report.subjects.subject_uuid.metrics.metric_uuid.tracker_issue="123"
-  render(<Table><Table.Body><Metric
-    hiddenColumns={[]}
-    report={report}
-    reports={[report]}
-    metric_uuid="metric_uuid"
-    subject_uuid="subject_uuid"
-    datamodel={data_model}
-    visibleDetailsTabs={[]}
-    /></Table.Body></Table>)
-
-  expect(metric_api.get_tracker_issue_status).toHaveBeenCalledTimes(1);
 });

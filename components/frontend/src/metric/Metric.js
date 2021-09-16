@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TimeAgo from 'react-timeago';
 import { Popup, Table } from 'semantic-ui-react';
-import { get_tracker_issue_status } from '../api/metric';
 import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target } from '../utils';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
@@ -28,18 +27,7 @@ export function Metric({
   hiddenColumns,
   reload
 }) {
-  const [issueStatus, setIssueStatus] = useState({loading: true})
-
   const metric = report.subjects[subject_uuid].metrics[metric_uuid];
-
-  useEffect(() => {
-    if (metric.tracker_issue) {
-      get_tracker_issue_status(metric_uuid, setIssueStatus)
-    }
-    else {
-      setIssueStatus({loading: false, name: null})
-    }
-  }, [metric.tracker_issue, report.tracker_type, report.tracker_url, report.tracker_username, report.tracker_password, metric_uuid])
 
   function MeasurementValue() {
     const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
@@ -94,7 +82,6 @@ export function Metric({
       metric_unit={metric_unit}
       first_metric={first_metric}
       last_metric={last_metric}
-      issueStatus={issueStatus}
       stop_sort={stop_sort}
       changed_fields={changed_fields}
       visibleDetailsTabs={visibleDetailsTabs}
@@ -121,7 +108,7 @@ export function Metric({
       {!hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
       {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-      {!hiddenColumns.includes("linked-issue") && <Table.Cell>{metric.tracker_issue && issueStatus.name ? <IssueTrackerStatus metric={metric} issueStatus={issueStatus}/> : ""}</Table.Cell>}
+      {!hiddenColumns.includes("issue") && <Table.Cell>{metric.tracker_issue && metric.issue_status ? <IssueTrackerStatus metric={metric} /> : ""}</Table.Cell>}
       {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
     </TableRowWithDetails>
   )

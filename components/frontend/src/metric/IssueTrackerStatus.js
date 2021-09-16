@@ -1,20 +1,16 @@
 import React from 'react';
-import { Label, Loader, Popup } from 'semantic-ui-react';
+import { Label, Popup } from 'semantic-ui-react';
 import { HyperLink } from '../widgets/HyperLink';
 
-export function IssueTrackerStatus({metric, issueStatus}) {
-    if (issueStatus.loading){
-        return <Loader data-testid="issue-tracker-loader" active inline />
-    }
-    const trackerIssueText = metric.tracker_issue + ": " + issueStatus.name;
-    function source_label() {
-        return (issueStatus.landing_url ? <HyperLink url={issueStatus.landing_url}>{trackerIssueText}</HyperLink> : trackerIssueText)
-    }
+export function IssueTrackerStatus({ metric }) {
+    const label_text = metric.tracker_issue + ": " + (metric.issue_status.name || "?");
+    const label = metric.issue_status.landing_url ? <HyperLink url={metric.issue_status.landing_url}>{label_text}</HyperLink> : label_text;
+    const error = metric.issue_status?.connection_error ? "Connection error" : "Parse error";
     return (
         <Popup
             flowing hoverable
-            trigger={issueStatus.name.toLowerCase().includes("error") ? <Label data-testid="errorlabel" color='red'>{source_label()}</Label> : <div>{source_label()}</div>}>
-            {issueStatus.description}
+            trigger={metric.issue_status?.connection_error || metric.issue_status?.parse_error ? <Label data-testid="errorlabel" color='red'>{label}</Label> : <div>{label}</div>}>
+            {metric.issue_status.description || error}
         </Popup>
     )
 }
