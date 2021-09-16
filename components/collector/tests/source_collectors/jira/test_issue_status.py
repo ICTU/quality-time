@@ -4,12 +4,12 @@ from .base import JiraTestCase
 
 
 class JiraIssuesTest(JiraTestCase):
-    """Unit tests for the Jira issue collector."""
+    """Unit tests for the Jira issue status collector."""
 
     METRIC_TYPE = "issue_status"
 
     def setUp(self):
-        """Extend to add a issue tracker to the metric."""
+        """Extend to add an issue tracker to the metric."""
         super().setUp()
         self.metric["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
         self.metric["tracker_issue"] = "FOO-42"
@@ -18,19 +18,22 @@ class JiraIssuesTest(JiraTestCase):
         """Assert that the issue has the expected attributes."""
         issue_status = response.as_dict()["issue_status"]
         self.assertEqual("FOO-42", issue_status["issue"])
-        any_error = connection_error or parse_error
-        self.assertEqual(None if any_error else "Issue name", issue_status["name"])
-        self.assertEqual(None if any_error else "Issue description", issue_status["description"])
+        if connection_error or parse_error:
+            self.assertNotIn("name", issue_status)
+            self.assertNotIn("description", issue_status)
+            if connection_error:
+                self.assertIn(connection_error, issue_status["connection_error"])
+                self.assertNotIn("parse_error", issue_status)
+            if parse_error:
+                self.assertIn(parse_error, issue_status["parse_error"])
+                self.assertNotIn("connection_error", issue_status)
+        else:
+            self.assertEqual("Issue name", issue_status["name"])
+            self.assertEqual("Issue description", issue_status["description"])
+            self.assertNotIn("connection_error", issue_status)
+            self.assertNotIn("parse_error", issue_status)
         self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=status", issue_status["api_url"])
         self.assertEqual("https://jira/browse/FOO-42", issue_status["landing_url"])
-        if connection_error:
-            self.assertIn(connection_error, issue_status["connection_error"])
-        else:
-            self.assertEqual(None, issue_status["connection_error"])
-        if parse_error:
-            self.assertIn(parse_error, issue_status["parse_error"])
-        else:
-            self.assertEqual(None, issue_status["parse_error"])
 
     async def test_issue_status(self):
         """Test that the issue status is returned."""
