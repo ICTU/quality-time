@@ -166,7 +166,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row>
+            <Grid.Row columns="equal">
                 <Grid.Column width={4}>
                     <StringInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -177,7 +177,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         error={issue_status_error}
                     />
                 </Grid.Column>
-                <Grid.Column width={12}>
+                <Grid.Column stretched>
                     <Comment
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
