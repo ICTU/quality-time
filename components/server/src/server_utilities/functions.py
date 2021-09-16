@@ -116,25 +116,6 @@ def _headers(source_parameters) -> dict:
     return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}
 
 
-Substitution = tuple[re.Pattern[str], str]
-MEMORY_ADDRESS_SUB: Substitution = (re.compile(r" at 0x[0-9abcdef]+>"), ">")
-TOKEN_SUB: Substitution = (re.compile(r"token=[^&]+"), "token=<redacted>")
-KEY_SUB: Substitution = (re.compile(r"key=[0-9abcdef]+"), "key=<redacted>")
-HASH_SUB: Substitution = (re.compile(r"(?i)[a-f0-9]{20,}"), "hashremoved")
-
-
-def stable_traceback(traceback: str) -> str:
-    """Remove memory addresses from the traceback so make it easier to compare tracebacks."""
-    for reg_exp, replacement in [MEMORY_ADDRESS_SUB, TOKEN_SUB, KEY_SUB]:
-        traceback = re.sub(reg_exp, replacement, traceback)
-    return traceback
-
-
-def tokenless(url: str) -> str:
-    """Strip private tokens from (text with) urls."""
-    return re.sub(TOKEN_SUB[0], TOKEN_SUB[1], url)
-
-
 def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
     """
     Encrypt the given value using Fernet 32 byte key.
