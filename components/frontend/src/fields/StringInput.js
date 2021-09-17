@@ -4,7 +4,7 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 
 function StringInputWithSuggestions(props) {
-  let { editableLabel, required, options, set_value, value, warning, ...otherProps } = props;
+  let { editableLabel, required, options, requiredPermissions, set_value, value, warning, ...otherProps } = props;
   const [string_options, setOptions] = useState(options);
   const [search_query, setSearchQuery] = useState(value || '');
   return (

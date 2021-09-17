@@ -278,7 +278,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         ].pop("password")
         self.database.reports.find_one.return_value = copy.deepcopy(self.report)
 
-        # without provided public key
+        # Without provided public key
         exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
         exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
             "source_uuid"
@@ -303,7 +303,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         ] = [
             "0",
             "1",
-        ]  # use a list as password for coverage of the last line
+        ]  # Use a list as password for coverage of the last line
         self.database.reports.find_one.return_value = mocked_report
         exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
         exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
