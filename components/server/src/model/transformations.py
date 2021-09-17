@@ -29,15 +29,23 @@ def hide_credentials(data_model, *reports) -> None:
 
 def encrypt_credentials(data_model, public_key: str, *reports: dict):
     """Encrypt all credentials in the reports."""
+    encrypt_source_credentials(data_model, public_key, *reports)
+    encrypt_issue_tracker_credentials(public_key, *reports)
+
+
+def encrypt_source_credentials(data_model, public_key: str, *reports: dict):
+    """Encrypt all source credentials in the reports."""
     for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 password = source["parameters"][parameter_key]
                 if isinstance(password, (dict, list)):
                     password = json.dumps(password)
+                source["parameters"][parameter_key] = asymmetric_encrypt(public_key, password)
 
-                encrypted_key_value = asymmetric_encrypt(public_key, password)
-                source["parameters"][parameter_key] = encrypted_key_value
+
+def encrypt_issue_tracker_credentials(public_key: str, *reports: dict):
+    """Encrypt all issue tracker credentials in the reports."""
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
@@ -56,9 +64,8 @@ def decrypt_source_credentials(data_model, private_key: str, *reports: dict):
     for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
-                source["parameters"][parameter_key] = decrypt_credential(
-                    private_key, source["parameters"][parameter_key]
-                )
+                credential = decrypt_credential(private_key, source["parameters"][parameter_key])
+                source["parameters"][parameter_key] = credential
 
 
 def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
@@ -66,9 +73,8 @@ def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
-                report["issue_tracker"]["parameters"][secret_attribute] = decrypt_credential(
-                    private_key, report["issue_tracker"]["parameters"][secret_attribute]
-                )
+                credential = decrypt_credential(private_key, report["issue_tracker"]["parameters"][secret_attribute])
+                report["issue_tracker"]["parameters"][secret_attribute] = credential
 
 
 def decrypt_credential(private_key: str, credential: Union[str, tuple[str, str]]) -> str:
