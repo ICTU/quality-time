@@ -75,6 +75,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):  # pylint: disable=invalid-name
         """Define info that is used in multiple tests."""
         self.url = "https://report1"
+        self.report_api = "http://localhost:5001/api/v3/report"
         self.title = "Report 1"
         self.history = "2020-01-01T23:59:00+00:00"
         self.subjects = dict(
@@ -119,7 +120,11 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             await notify()
         except RuntimeError:
             pass
+        # We can't assert_called_once_with("Could not get reports from %s: %s", self.report_api, OSError()) because
+        # two different instances of OSError, even without arguments, don't compare equal.
         mocked_log_error.assert_called_once()
+        first_two_log_args = mocked_log_error.mock_calls[0][1][0:2]
+        self.assertEqual(("Could not get reports from %s: %s", self.report_api), first_two_log_args)
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
