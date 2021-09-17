@@ -26,7 +26,8 @@ function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, repo
     {
       menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+        <MetricParameters 
+          datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {

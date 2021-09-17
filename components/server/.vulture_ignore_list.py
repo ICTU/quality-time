@@ -45,7 +45,3 @@ help  # unused variable (/Users/fniessink/Developer/quality-time/components/serv
 set_description  # unused function (/Users/fniessink/Developer/quality-time/components/server/src/data/meta/base.py:17)
 get_tag_report_api  # unused function(/Users/werk/Projects/ictu/quality-time/components/server/src/routes/report.py:53)
 get_reports  # unused function (/Users/werk/Projects/ictu/quality-time/components/server/src/routes/reports_overview.py:21)
-issue_tracker  # unused variable(/Users/werk/Projects/ictu/quality-time/components/server/src/data_model/meta/source.py:33)
-Jira  # unused class (/Users/werk/Projects/ictu/quality-time/components/server/src/issue_tracker_collectors/tracker_collectors/jira.py:8)
-HASH_SUB  # unused variable (/Users/werk/Projects/ictu/quality-time/components/server/src/server_utilities/functions.py:120)
-get_issue_tracker_status  # unused function (/Users/werk/Projects/ictu/quality-time/components/server/src/routes/metric.py:133)
