@@ -26,8 +26,7 @@ function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, repo
     {
       menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters 
-          datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+        <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {
@@ -90,7 +89,8 @@ export function MetricDetails({
     {
       menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricConfiguration datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
+        <MetricConfiguration
+          datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
       </Tab.Pane>
     },
     {

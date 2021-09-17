@@ -3,8 +3,6 @@ import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
 import { Metric } from './Metric';
 
-jest.mock("../api/metric")
-
 let report = {
   report_uuid: "report_uuid",
   subjects: {
