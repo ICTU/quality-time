@@ -65,7 +65,7 @@ export function Metric({
   const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
   const metric_name = get_metric_name(metric, datamodel);
   const details = (
-    <MetricDetails 
+    <MetricDetails
       measurement={latest_measurement}
       metric_name={metric_name}
       scale={metric.scale}
