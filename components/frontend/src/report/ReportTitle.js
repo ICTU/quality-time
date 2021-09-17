@@ -61,7 +61,6 @@ const NONE_OPTION = {
 }
 
 function IssueTracker({ datamodel, report_uuid, report, reload }) {
-
     let trackerSources = Object.entries(datamodel.sources).filter(
         ([source_name, source_type], index, array) => {
             return source_type["issue_tracker"] !== undefined
