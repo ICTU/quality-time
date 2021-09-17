@@ -47,12 +47,22 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
 
 def decrypt_credentials(data_model, private_key: str, *reports: dict):
     """Decrypt all credentials in the reports."""
+    decrypt_source_credentials(data_model, private_key, *reports)
+    decrypt_issue_tracker_credentials(private_key, *reports)
+
+
+def decrypt_source_credentials(data_model, private_key: str, *reports: dict):
+    """Decrypt all source credentials in the reports."""
     for source in iter_sources(*reports):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 source["parameters"][parameter_key] = decrypt_credential(
                     private_key, source["parameters"][parameter_key]
                 )
+
+
+def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
+    """Decryp all issue tracker credentials in the reports."""
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
@@ -136,32 +146,38 @@ def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
 
 def summarize_report(report, recent_measurements, data_model) -> None:
     """Add a summary of the measurements to each subject."""
-    status_color_mapping: dict[Status, Color] = cast(
-        dict[Status, Color],
-        dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
-    )
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
     for subject_uuid, subject in report.get("subjects", {}).items():
-        for metric_uuid, metric in subject.get("metrics", {}).items():
-            recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
-            scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-            metric["scale"] = scale
-            last_measurement = recent[-1] if recent else {}
-            metric["status"] = metric_status(metric, last_measurement, scale)
-            if status_start := last_measurement.get(scale, {}).get("status_start"):
-                metric["status_start"] = status_start
-            metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
-            if metric.get("tracker_issue") and (issue_status := last_measurement.get("issue_status")):
-                metric["issue_status"] = issue_status
-            color = status_color_mapping.get(metric["status"], "white")
-            report["summary"][color] += 1
-            report["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[
-                color
-            ] += 1
-            for tag in metric.get("tags", []):
-                report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+        for metric_uuid in subject.get("metrics", {}):
+            summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measurements)
+
+
+STATUS_COLOR_MAPPING = cast(
+    dict[Status, Color],
+    dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
+)
+
+
+def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measurements):
+    """Add a summary of the metric to the report."""
+    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
+    recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
+    scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
+    metric["scale"] = scale
+    last_measurement = recent[-1] if recent else {}
+    metric["status"] = metric_status(metric, last_measurement, scale)
+    if status_start := last_measurement.get(scale, {}).get("status_start"):
+        metric["status_start"] = status_start
+    metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
+    if metric.get("tracker_issue") and (issue_status := last_measurement.get("issue_status")):
+        metric["issue_status"] = issue_status
+    color = STATUS_COLOR_MAPPING.get(metric["status"], "white")
+    report["summary"][color] += 1
+    report["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+    for tag in metric.get("tags", []):
+        report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 
 
 def metric_status(metric, last_measurement, scale) -> Optional[Status]:

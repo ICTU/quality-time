@@ -243,7 +243,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         measurement = dict(
             _id="id",
             metric_uuid=METRIC_ID,
-            count=dict(status="target_not_met", status_start="2020-12-03:22:28:00+00:00"),
+            count=dict(status="target_not_met", status_start="2020-12-03:22:29:00+00:00"),
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
             issue_status=issue_status,
         )
