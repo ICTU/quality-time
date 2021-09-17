@@ -1,17 +1,17 @@
-"""Feature tests for metric specific endpoints."""
-from asserts import assert_boolean_true, assert_dict_equal, assert_equal, assert_in
+"""Feature tests for metric specific attributes."""
+
+from asserts import assert_equal
 from behave import then
 
+from item import get_item
 
-@then("the issue tracker status has '{value}' {connection} key '{key}'")
-def assert_issue_tracker_status(context, value, connection, key):
-    """Get the issue tracker status for this metric."""
+
+@then("the issue status {attribute} is '{value}'")
+def assert_issue_status(context, attribute, value):
+    """Get the issue status for this metric and check the attribute."""
     if value == "None":
         value = None
-
-    tracker_status = context.get(f"metric/{context.uuid['metric']}/tracker_issue_status")
-
-    if connection == "for":
-        assert_equal(value, tracker_status[key])
-    if connection == "in":
-        assert_in(value, tracker_status[key])
+    report = get_item(context, "report")
+    print(report)
+    metric = get_item(context, "metric")
+    assert_equal(value, metric.get("issue_status", {}).get(attribute))

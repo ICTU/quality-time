@@ -72,32 +72,28 @@ Feature: metric
     When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"
 
-  Scenario: collect empty metric issue tracker
+  Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
     Given an existing metric
-    When the client changes the report tracker_type to "jira"
-    And the client changes the report tracker_url to "test_url"
-    Then the issue tracker status has 'None' for key 'name'
-    Then the issue tracker status has 'None' for key 'description'
-    Then the issue tracker status has 'None' for key 'landing_url'
-    Then the issue tracker status has 'None' for key 'error_message'
-
-  Scenario: collect non-existing source issue tracker
-    Given an existing metric
-    When the client changes the report tracker_type to "this-source-is-no-issue-tracker"
-    And the client changes the report tracker_url to "test_url"
-    Then the issue tracker status has 'None' for key 'name'
-    Then the issue tracker status has 'None' for key 'description'
-    Then the issue tracker status has 'None' for key 'landing_url'
-    Then the issue tracker status has 'None' for key 'error_message'
-
-  Scenario: collect a non-existing metric issue tracker
-    Given an existing metric
+    Given an existing source
     When the client changes the metric tracker_issue to "123"
-    And the client changes the report tracker_type to "jira"
-    And the client changes the report tracker_url to "test_url"
-    And the client changes the report tracker_username to "username"
-    And the client changes the report tracker_password to "password"
-    Then the issue tracker status has 'Connection error' for key 'name'
-    Then the issue tracker status has 'None' for key 'description'
-    Then the issue tracker status has 'None' for key 'landing_url'
-    Then the issue tracker status has 'Traceback' in key 'error_message'
+    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the collector measures issue status 'Completed' 
+    Then the issue status name is 'Completed'
+    And the issue status connection_error is 'None' 
+    And the issue status parse_error is 'None' 
+
+  Scenario: invalid issue tracker type
+    Given an existing metric
+    Given an existing source
+    When the client changes the metric tracker_issue to "123"
+    And the client changes the report tracker_type to "this-source-is-no-issue-tracker"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_username to "jadoe"
+    And the client changes the report tracker_password to "secret"
+    Then the issue status name is 'None'
+    And the issue status description is 'None'
+    And the issue status landing_url is 'None'
+    And the issue status connection_error is 'None' 
+    And the issue status parse_error is 'None' 

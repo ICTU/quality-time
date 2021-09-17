@@ -37,6 +37,9 @@ Feature: report
 
   Scenario: export report as json
     When the client creates a report
+    And the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_password to "secret"
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
@@ -77,6 +80,11 @@ Feature: report
       {
         "title": "Imported report",
         "report_uuid": "imported_report",
+        "issue_tracker": {
+          "parameters": {
+            "password": "unencrypted password"
+          }
+        },
         "subjects": {
           "subject_uuid": {
             "name": "Imported subject",

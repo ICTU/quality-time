@@ -67,7 +67,12 @@ def change_item_attribute(context, item, attribute, value):
     if item == "notification_destination":
         context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
     else:
-        context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
+        if item == "report" and attribute.startswith("tracker"):
+            attribute = attribute.split("_")[1]
+            attribute_fragment = "issue_tracker"
+        else:
+            attribute_fragment = "attribute"
+        context.post(f"{item_fragment}/{attribute_fragment}/{attribute}", json={attribute: value})
 
 
 def get_item(context, item):

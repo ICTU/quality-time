@@ -43,6 +43,30 @@ def measure(context, number, total="100"):
     )
 
 
+@when("the collector measures issue status '{name}'")
+def measure_issue_status(context, name):
+    """Post the measurement with the issue status."""
+    context.post(
+        "measurements",
+        json=dict(
+            metric_uuid=context.uuid["metric"],
+            has_error=False,
+            sources=[
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error=None,
+                    connection_error=None,
+                    value="10",
+                    total="100",
+                    entities=[],
+                )
+            ],
+            issue_status=dict(name=name),
+        ),
+        internal=True,
+    )
+
+
 @when("the collector encounters a parse error")
 def parse_error(context):
     """Post the parse error."""
