@@ -13,7 +13,7 @@ function render_report_title() {
             <ReportTitle
                 history={{location: {}}}
                 report={{ report_uuid: "report_uuid", title: "Report" }}
-                datamodel={{ sources: {jira: {name: "Jira", issue_tracker: {help: "..."}}}}}
+                datamodel={{ sources: {jira: {name: "Jira", issue_tracker: true}}}}
             />
         </Permissions.Provider>
     ) 

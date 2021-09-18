@@ -182,9 +182,8 @@ class SourceCollector(ABC):
         except Exception:  # pylint: disable=broad-except
             return IssueStatus(self._issue, parse_error=stable_traceback(traceback.format_exc()))
 
-    async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
+    async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:  # pylint: disable=unused-argument
         """Parse the responses to get the status of the metric's linked issue."""
-        # pylint: disable=no-self-use,unused-argument
         return IssueStatus(self._issue)  # pragma: no cover
 
     async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:

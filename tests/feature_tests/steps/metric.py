@@ -11,7 +11,5 @@ def assert_issue_status(context, attribute, value):
     """Get the issue status for this metric and check the attribute."""
     if value == "None":
         value = None
-    report = get_item(context, "report")
-    print(report)
     metric = get_item(context, "metric")
     assert_equal(value, metric.get("issue_status", {}).get(attribute))

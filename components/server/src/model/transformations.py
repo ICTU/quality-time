@@ -69,7 +69,7 @@ def decrypt_source_credentials(data_model, private_key: str, *reports: dict):
 
 
 def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
-    """Decryp all issue tracker credentials in the reports."""
+    """Decrypt all issue tracker credentials in the reports."""
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
