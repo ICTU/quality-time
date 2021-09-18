@@ -75,7 +75,7 @@ Feature: metric
   Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
     Given an existing metric
     Given an existing source
-    When the client changes the metric tracker_issue to "123"
+    When the client changes the metric issue_id to "123"
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_url to "https://jira"
@@ -87,7 +87,7 @@ Feature: metric
   Scenario: invalid issue tracker type
     Given an existing metric
     Given an existing source
-    When the client changes the metric tracker_issue to "123"
+    When the client changes the metric issue_id to "123"
     And the client changes the report tracker_type to "this-source-is-no-issue-tracker"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_username to "jadoe"

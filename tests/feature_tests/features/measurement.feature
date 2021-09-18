@@ -12,7 +12,7 @@ Feature: measurement
     Then the metric needs to be measured
 
   Scenario: the metric has no source but an issue
-    When the client changes the metric tracker_issue to "123"
+    When the client changes the metric issue_id to "123"
     And the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     When the collector gets the metrics to measure
