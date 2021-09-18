@@ -3,7 +3,7 @@ import { Form, Label } from 'semantic-ui-react';
 import { accessGranted, Permissions } from '../context/Permissions';
 
 export function Input(props) {
-  let { editableLabel, prefix, required, set_value, warning, requiredPermissions, ...otherProps } = props;
+  let { editableLabel, error, prefix, required, requiredPermissions, set_value, warning, ...otherProps } = props;
   const initialValue = props.value || "";
   const [value, setValue] = useState(initialValue);
 
@@ -23,6 +23,7 @@ export function Input(props) {
       <Permissions.Consumer>{(permissions) => (
         <Form.Input
           {...fixedProps}
+          error={error || (required && value === "") || (warning !== undefined && props.warning)}
           label={readOnly(permissions) ? props.label : editableLabel || props.label}
           onBlur={() => { submit_if_changed() }}
           onChange={(event) => setValue(event.target.value)}

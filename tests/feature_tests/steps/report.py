@@ -5,7 +5,7 @@ import time
 import urllib
 from datetime import datetime, timezone
 
-from asserts import assert_equal
+from asserts import assert_equal, assert_not_in
 from behave import then, when
 
 
@@ -75,6 +75,7 @@ def check_json(context):
     """Check the json."""
     assert_equal(200, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
+    assert_not_in("secret", context.response.text)
 
 
 @when("the client gets a non-existing report")

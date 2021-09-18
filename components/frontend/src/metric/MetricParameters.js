@@ -41,8 +41,8 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
     const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
 
     return (
-        <Grid stackable>
-            <Grid.Row columns={3}>
+        <Grid stackable columns={3}>
+            <Grid.Row>
                 <Grid.Column>
                     <MetricType
                         datamodel={datamodel}
@@ -71,7 +71,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={3}>
+            <Grid.Row>
                 <Grid.Column>
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -105,7 +105,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         />
                     </Grid.Column>}
             </Grid.Row>
-            <Grid.Row columns={3}>
+            <Grid.Row>
                 <Grid.Column>
                     <Target
                         label="Metric target"
@@ -127,7 +127,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={3}>
+            <Grid.Row>
                 <Grid.Column>
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}

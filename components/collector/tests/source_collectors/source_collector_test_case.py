@@ -50,7 +50,8 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
     ):
         """Collect the metric."""
         get_request = self.__mock_get_request(
-            self.__mock_get_request_json(get_request_json_return_value, get_request_json_side_effect),
+            get_request_json_return_value,
+            get_request_json_side_effect,
             get_request_content,
             get_request_text,
             get_request_headers,
@@ -65,24 +66,17 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
                 return await collector.collect()
 
     @staticmethod
-    def __mock_get_request(get_request_json, content, text, headers, links) -> AsyncMock:
+    def __mock_get_request(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
         """Create the mock get request."""
+        # pylint: disable=too-many-arguments
         get_request = AsyncMock()
-        get_request.json = get_request_json
+        get_request.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         get_request.read.return_value = content
         get_request.text.return_value = text
         type(get_request).headers = PropertyMock(return_value=headers or {})
         type(get_request).links = PropertyMock(return_value={}, side_effect=[links, {}] if links else None)
         type(get_request).filename = PropertyMock(return_value="")
         return get_request
-
-    @staticmethod
-    def __mock_get_request_json(json_return_value, json_side_effect) -> AsyncMock:
-        """Create the mock JSON."""
-        get_request_json = AsyncMock()
-        get_request_json.side_effect = json_side_effect
-        get_request_json.return_value = json_return_value
-        return get_request_json
 
     @staticmethod
     def __mock_post_request(json_return_value) -> AsyncMock:
