@@ -12,7 +12,7 @@ class JiraIssuesTest(JiraTestCase):
         """Extend to add an issue tracker to the metric."""
         super().setUp()
         self.metric["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
-        self.metric["tracker_issue"] = "FOO-42"
+        self.metric["issue_id"] = "FOO-42"
 
     def assert_issue_status(self, response, connection_error: str = None, parse_error: str = None):
         """Assert that the issue has the expected attributes."""

@@ -177,7 +177,7 @@ def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measu
     if status_start := last_measurement.get(scale, {}).get("status_start"):
         metric["status_start"] = status_start
     metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
-    if metric.get("tracker_issue") and (issue_status := last_measurement.get("issue_status")):
+    if metric.get("issue_id") and (issue_status := last_measurement.get("issue_status")):
         metric["issue_status"] = issue_status
     color = STATUS_COLOR_MAPPING.get(metric["status"], "white")
     report["summary"][color] += 1

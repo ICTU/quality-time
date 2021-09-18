@@ -108,7 +108,7 @@ export function Metric({
       {!hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
       {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-      {!hiddenColumns.includes("issue") && <Table.Cell>{metric.tracker_issue && metric.issue_status ? <IssueTrackerStatus metric={metric} /> : ""}</Table.Cell>}
+      {!hiddenColumns.includes("issue") && <Table.Cell>{metric.issue_id && metric.issue_status ? <IssueTrackerStatus metric={metric} /> : ""}</Table.Cell>}
       {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
     </TableRowWithDetails>
   )

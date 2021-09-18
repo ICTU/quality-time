@@ -249,7 +249,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         )
         self.database.measurements.find.return_value = [measurement]
         self.database.reports.find.return_value = [report := create_report()]
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tracker_issue"] = "FOO-42"
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_id"] = "FOO-42"
         report = get_report(self.database, REPORT_ID)["reports"][0]
         self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"])
 

@@ -26,7 +26,7 @@ def get_metrics(database: Database):
         for subject in report["subjects"].values():
             for metric_uuid, metric in subject["metrics"].items():
                 metric["report_uuid"] = report["report_uuid"]
-                if has_issue_tracker and metric.get("tracker_issue"):
+                if has_issue_tracker and metric.get("issue_id"):
                     metric["issue_tracker"] = issue_tracker
                 metrics[metric_uuid] = metric
     return metrics

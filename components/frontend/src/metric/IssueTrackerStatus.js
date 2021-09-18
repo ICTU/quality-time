@@ -3,7 +3,7 @@ import { Label, Popup } from 'semantic-ui-react';
 import { HyperLink } from '../widgets/HyperLink';
 
 export function IssueTrackerStatus({ metric }) {
-    const label_text = metric.tracker_issue + ": " + (metric.issue_status.name || "?");
+    const label_text = metric.issue_id + ": " + (metric.issue_status.name || "?");
     const label = metric.issue_status.landing_url ? <HyperLink url={metric.issue_status.landing_url}>{label_text}</HyperLink> : label_text;
     const error = metric.issue_status?.connection_error ? "Connection error" : "Parse error";
     return (

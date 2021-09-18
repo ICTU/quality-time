@@ -61,7 +61,7 @@ class MetricCollector:
 
     def __issue_status_collector(self) -> Optional[Coroutine]:
         """Create the issue status collector for the metric."""
-        issue = self._metric.get("tracker_issue")
+        issue = self._metric.get("issue_id")
         tracker = self._metric.get("issue_tracker", {})
         tracker_type = tracker.get("type")
         has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
