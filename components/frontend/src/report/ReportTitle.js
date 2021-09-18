@@ -86,6 +86,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                     <SingleChoiceInput
                         id="tracker-type"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        placeholder="None"
                         label="Issue tracker type"
                         options={trackerSources}
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "type", value, reload)}

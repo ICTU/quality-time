@@ -91,8 +91,11 @@ class ReportIssueTrackerTest(unittest.TestCase):
 
     def test_post_report_issue_tracker_url(self, request):
         """Test that the issue tracker url can be changed."""
+        self.report["issue_tracker"] = dict(type="jira")
         request.json = dict(url="https://jira")
-        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "url", self.database))
+        result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
+        self.assertTrue(result["ok"])
+        self.assertEqual(-1, result["availability"][0]["status_code"])
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
@@ -102,7 +105,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
             ),
             self.report["delta"],
         )
-        self.assertEqual(dict(parameters=dict(url="https://jira")), self.report["issue_tracker"])
+        self.assertEqual(dict(type="jira", parameters=dict(url="https://jira")), self.report["issue_tracker"])
 
     def test_post_report_issue_tracker_username(self, request):
         """Test that the issue tracker username can be changed."""

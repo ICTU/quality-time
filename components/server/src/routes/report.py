@@ -21,7 +21,7 @@ from model.transformations import (
     summarize_report,
 )
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
+from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -215,7 +215,12 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
         f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "
         f"from '{old_value}' to '{new_value}'."
     )
-    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    result = insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    issue_tracker = data.report.get("issue_tracker", {})
+    parameters = issue_tracker.get("parameters", {})
+    if issue_tracker.get("type") and (url := parameters.get("url")):
+        result["availability"] = [check_url_availability(url, parameters)]
+    return result
 
 
 def get_tag_report(data_model, reports, tag):
