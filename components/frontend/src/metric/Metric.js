@@ -23,7 +23,8 @@ export function Metric({
   changed_fields,
   visibleDetailsTabs,
   toggleVisibleDetailsTab,
-  hiddenColumns
+  hiddenColumns,
+  reload
 }) {
   function MeasurementValue() {
     const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
@@ -83,7 +84,7 @@ export function Metric({
       changed_fields={changed_fields}
       visibleDetailsTabs={visibleDetailsTabs}
       toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-      reload />
+      reload={reload} />
   )
   const expanded = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid)).length > 0;
   function onExpand(expand) {

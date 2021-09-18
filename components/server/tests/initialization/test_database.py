@@ -72,7 +72,8 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.distinct.return_value = ["report_uuid"]
         self.database.reports.find_one.return_value = {"_id": "1"}
         self.init_database("{}")
-        self.database.reports.update_many.assert_called_once()
+        expected_call = call({"_id": {"$in": ["1"]}}, {"$set": {"last": True}})
+        self.database.reports.update_many.assert_has_calls([expected_call])
 
     def test_rename_ready_user_story_points(self):
         """Test that the ready user story points metric is correctly renamed."""

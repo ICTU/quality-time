@@ -110,7 +110,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
-        self.assertEqual(REPORT_ID, get_report(self.database, REPORT_ID)["reports"][0]["report_uuid"])
+        self.assertEqual(REPORT_ID, get_report(self.database, REPORT_ID)["reports"][0][REPORT_ID])
 
     def test_get_report_and_info_about_other_reports(self):
         """Test that a report can be retrieved, and that other reports are also returned."""
@@ -126,13 +126,16 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_old_report(self, request):
         """Test that an old report can be retrieved and credentials are hidden."""
         request.query = dict(report_date="2020-08-31T23:59:59.000Z")
-        report = create_report()
         self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = report
-        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
-        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
-        report["summary_by_tag"] = {}
-        self.assertEqual(dict(reports=[report]), get_report(self.database, REPORT_ID))
+        self.database.reports.find_one.return_value = create_report()
+        report = get_report(self.database, REPORT_ID)["reports"][0]
+        self.assertEqual(
+            "this string replaces credentials",
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"],
+        )
+        self.assertEqual(dict(red=0, green=0, yellow=0, grey=0, white=1), report["summary"])
+        self.assertEqual({SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}, report["summary_by_subject"])
+        self.assertEqual(dict(security=dict(red=0, green=0, yellow=0, grey=0, white=1)), report["summary_by_tag"])
 
     def test_status_start(self):
         """Test that the status start is part of the reports summary."""
@@ -143,12 +146,12 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
         )
         self.database.measurements.find.return_value = [measurement]
-        report = create_report()
-        self.database.reports.find.return_value = [report]
-        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
-        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
-        report["summary_by_tag"] = {}
-        self.assertEqual(dict(reports=[report]), get_report(self.database, REPORT_ID))
+        self.database.reports.find.return_value = [create_report()]
+        report = get_report(self.database, REPORT_ID)["reports"][0]
+        self.assertEqual(
+            "2020-12-03:22:28:00+00:00",
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["recent_measurements"][0]["count"]["status_start"],
+        )
 
     @patch("server_utilities.functions.datetime")
     def test_get_tag_report(self, date_time):
@@ -239,7 +242,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
         self.assertEqual(
-            dict(uuids=[inserted["report_uuid"]], email=JENNY["email"], description="Jenny created a new report."),
+            dict(uuids=[inserted[REPORT_ID]], email=JENNY["email"], description="Jenny created a new report."),
             inserted["delta"],
         )
 
@@ -248,8 +251,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertTrue(post_report_copy(REPORT_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once()
         inserted_report = self.database.reports.insert.call_args[0][0]
-        inserted_report_uuid = inserted_report["report_uuid"]
-        self.assertNotEqual(self.report["report_uuid"], inserted_report_uuid)
+        inserted_report_uuid = inserted_report[REPORT_ID]
+        self.assertNotEqual(self.report[REPORT_ID], inserted_report_uuid)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID, inserted_report_uuid],
@@ -265,24 +268,24 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         response = Mock()
         response.content = b"PDF"
         requests_get.return_value = response
-        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid")))
+        self.assertEqual(b"PDF", export_report_as_pdf(REPORT_ID))
         requests_get.assert_called_once_with(
-            f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{self.options}"
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/{REPORT_ID}&{self.options}"
         )
 
     def test_get_json_report(self):
         """Test that a JSON version of the report can be retrieved with encrypted credentials."""
         expected_report = copy.deepcopy(self.report)
-        expected_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"][
-            "parameters"
-        ].pop("password")
+        expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
+            "password"
+        )
         self.database.reports.find_one.return_value = copy.deepcopy(self.report)
 
         # Without provided public key
-        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
-        exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
-            "source_uuid"
-        ]["parameters"].pop("password")
+        exported_report = export_report_as_json(self.database, REPORT_ID)
+        exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
+            "parameters"
+        ].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
@@ -292,23 +295,21 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
         expected_report = copy.deepcopy(self.report)
-        expected_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"][
-            "parameters"
-        ].pop("password")
+        expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
+            "password"
+        )
 
         request.query = {"public_key": self.public_key}
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
-            "password"
-        ] = [
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = [
             "0",
             "1",
         ]  # Use a list as password for coverage of the last line
         self.database.reports.find_one.return_value = mocked_report
-        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
-        exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
-            "source_uuid"
-        ]["parameters"].pop("password")
+        exported_report = export_report_as_json(self.database, REPORT_ID)
+        exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
+            "parameters"
+        ].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
@@ -336,20 +337,20 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
             "password"
         ] = asymmetric_encrypt(self.public_key, "test_message")
         request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("Report", inserted["title"])
-        self.assertNotEqual("report_uuid", inserted["report_uuid"])
+        self.assertNotEqual(REPORT_ID, inserted[REPORT_ID])
 
     @patch("bottle.request")
     def test_post_report_import_without_encrypted_credentials(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
             "password"
         ] = "unencrypted_password"
         request.json = mocked_report
@@ -364,9 +365,10 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import_with_failed_decryption(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
-            "password"
-        ] = ("not_properly_encrypted==", "test_message")
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
+            "not_properly_encrypted==",
+            "test_message",
+        )
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)

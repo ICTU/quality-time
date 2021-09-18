@@ -3,11 +3,11 @@
 import hashlib
 import re
 import uuid as _uuid
+from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional, Tuple, TypeVar, Union, cast
-from base64 import b64decode, b64encode
 
 import bottle
 import requests

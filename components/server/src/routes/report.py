@@ -46,6 +46,7 @@ def get_report(database: Database, report_uuid: ReportId = None):
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
                 summarize_report(report, recent_measurements, data_model)
+
     hide_credentials(data_model, *reports)
     return dict(reports=reports)
 

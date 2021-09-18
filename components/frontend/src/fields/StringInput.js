@@ -4,7 +4,7 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 
 function StringInputWithSuggestions(props) {
-  let { editableLabel, required, options, requiredPermissions, set_value, value, warning, ...otherProps } = props;
+  let { editableLabel, error, options, required, requiredPermissions, set_value, value, warning, ...otherProps } = props;
   const [string_options, setOptions] = useState(options);
   const [search_query, setSearchQuery] = useState(value || '');
   return (
@@ -13,7 +13,7 @@ function StringInputWithSuggestions(props) {
         {...otherProps}
         allowAdditions
         clearable
-        error={(required && search_query === "") || (warning !== undefined && props.warning)}
+        error={error || (required && search_query === "") || (warning !== undefined && props.warning)}
         fluid
         label={editableLabel || props.label}
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}

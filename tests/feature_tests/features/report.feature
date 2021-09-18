@@ -40,7 +40,7 @@ Feature: report
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
-    And the client sets the source parameter password to "test"
+    And the client sets the source parameter password to "secret"
     And the client downloads the report as json
     Then the client receives the json
 
@@ -49,7 +49,7 @@ Feature: report
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
-    And the client sets the source parameter password to "['item_1', 'item_2']"
+    And the client sets the source parameter password to "['secret_1', 'secret_2']"
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
@@ -64,9 +64,9 @@ Feature: report
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
-    And the client sets the source parameter password to "['item_1', 'item_2']"
+    And the client sets the source parameter password to "['secret_1', 'secret_2']"
     And the client creates a source
-    And the client sets the source parameter password to "test_password"
+    And the client sets the source parameter password to "secret"
     And the client downloads the report as json
     And the client re-imports a report
     Then the report title is "New report"
@@ -89,7 +89,7 @@ Feature: report
                     "type": "sonarqube",
                     "parameters": {
                       "url": "https://sonarcloud.io",
-                      "password": "unencrypted password"
+                      "password": "unencrypted secret"
                     }
                   }
                 }
@@ -119,7 +119,7 @@ Feature: report
                     "type": "sonarqube",
                     "parameters": {
                       "url": "https://sonarcloud.io",
-                      "password": ["message", "not_properly_encrypted_password"]
+                      "password": ["message", "not_properly_encrypted_secret"]
                     }
                   }
                 }
