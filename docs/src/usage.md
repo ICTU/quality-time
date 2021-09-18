@@ -73,7 +73,7 @@ To add a new report, be sure to be logged in and click the "Add report" button o
 
 #### Editing reports
 
-To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields. For notifications, see the [Notifications](#notifications) section below.
+To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
 
 ![Editing report screenshot](screenshots/editing_report.png)
 
@@ -155,7 +155,9 @@ The "Metric {index}`target <Target>`" determines at what value a measurement is 
 
 If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *{index}`technical debt <Technical debt>`*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field.
 
-The "{index}`Comment`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supoorted.
+The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to e.g. track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker.
+
+The "{index}`Comment`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supported.
 
 #### Reordering metrics
 
@@ -496,6 +498,15 @@ On import, all UUID's contained in the report (UUID's of the report, subjects, m
 If the report contains encrypted credentials, the importing *Quality-time* instance will decrypt the credentials using its public key. Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, an error will occur, and the import will fail.
 
 To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials. These unencrypted credentials will be imported unchanged.
+
+```{index} Issue tracker
+```
+
+## Issue tracker
+
+To track actions for metrics, for example to resolve technical debt, it's possible to add issue identifiers to metrics. *Quality-time* then uses the issue id to check the status of the issue with the issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or Trello.
+
+Currently, exactly at most one issue tracker can be configured per report, and at most one issue id can be tracked per metric.
 
 ```{index} Notification
 ```

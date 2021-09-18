@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
+- Allow for adding issues to metrics to e.g. track progress on resolving technical debt. Closes [#2215](https://github.com/ICTU/quality-time/issues/2215).
 - Add [documentation on how to move *Quality-time* from location to another](https://quality-time.readthedocs.io/en/latest/deployment.html#moving-quality-time). Closes [#2538](https://github.com/ICTU/quality-time/issues/2538).
 
 ## v3.25.0 - 2021-09-06
