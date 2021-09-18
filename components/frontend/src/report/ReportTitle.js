@@ -62,7 +62,7 @@ const NONE_OPTION = {
 
 function IssueTracker({ datamodel, report_uuid, report, reload }) {
     let trackerSources = Object.entries(datamodel.sources).filter(
-        ([source_name, source_type]) => source_type.issue_tracker
+        ([source_name, source_type]) => { return source_type.issue_tracker === true }
     ).map(
         ([source_name, source_type]) => {
             return {

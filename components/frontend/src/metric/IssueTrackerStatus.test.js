@@ -4,7 +4,7 @@ import { IssueTrackerStatus } from './IssueTrackerStatus';
 
 it("displays a link with correct content and popup.", async () => {
     const metric = {
-        issue_id: "123", 
+        issue_id: "123",
         issue_status: {issue: "123", name: "in progress", description: "doing", landing_url: "https://test"}
     }
     const statusText = metric.issue_id + ": " + metric.issue_status.name
