@@ -177,13 +177,19 @@ def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measu
     if status_start := last_measurement.get(scale, {}).get("status_start"):
         metric["status_start"] = status_start
     metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
-    if metric.get("issue_id") and (issue_status := last_measurement.get("issue_status")):
-        metric["issue_status"] = issue_status
+    if statuses := issue_statuses(metric, last_measurement):
+        metric["issue_status"] = statuses
     color = STATUS_COLOR_MAPPING.get(metric["status"], "white")
     report["summary"][color] += 1
     report["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
     for tag in metric.get("tags", []):
         report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+
+
+def issue_statuses(metric, last_measurement) -> list[dict]:
+    """Return the metric's issue  statuses."""
+    last_issue_statuses = last_measurement.get("issue_status", [])
+    return [status for status in last_issue_statuses if status["issue_id"] in metric.get("issue_ids")]
 
 
 def metric_status(metric, last_measurement, scale) -> Optional[Status]:

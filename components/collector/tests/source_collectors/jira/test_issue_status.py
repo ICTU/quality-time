@@ -12,12 +12,12 @@ class JiraIssuesTest(JiraTestCase):
         """Extend to add an issue tracker to the metric."""
         super().setUp()
         self.metric["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
-        self.metric["issue_id"] = "FOO-42"
+        self.metric["issue_ids"] = ["FOO-42"]
 
     def assert_issue_status(self, response, connection_error: str = None, parse_error: str = None):
         """Assert that the issue has the expected attributes."""
-        issue_status = response.as_dict()["issue_status"]
-        self.assertEqual("FOO-42", issue_status["issue"])
+        issue_status = response.as_dict()["issue_status"][0]
+        self.assertEqual("FOO-42", issue_status["issue_id"])
         if connection_error or parse_error:
             self.assertNotIn("name", issue_status)
             self.assertNotIn("description", issue_status)

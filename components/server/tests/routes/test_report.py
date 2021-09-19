@@ -242,19 +242,19 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
 
     def test_issue_status(self):
         """Test that the issue status is part of the metric."""
-        issue_status = dict(name="In progress", description="Issue is being worked on")
+        issue_status = dict(issue_id="FOO-42", name="In progress", description="Issue is being worked on")
         measurement = dict(
             _id="id",
             metric_uuid=METRIC_ID,
             count=dict(status="target_not_met", status_start="2020-12-03:22:29:00+00:00"),
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-            issue_status=issue_status,
+            issue_status=[issue_status],
         )
         self.database.measurements.find.return_value = [measurement]
         self.database.reports.find.return_value = [report := create_report()]
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_id"] = "FOO-42"
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
         report = get_report(self.database, REPORT_ID)["reports"][0]
-        self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"])
+        self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"][0])
 
     @patch("server_utilities.functions.datetime")
     def test_get_tag_report(self, date_time):

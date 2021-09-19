@@ -12,4 +12,4 @@ def assert_issue_status(context, attribute, value):
     if value == "None":
         value = None
     metric = get_item(context, "metric")
-    assert_equal(value, metric.get("issue_status", {}).get(attribute))
+    assert_equal(value, metric.get("issue_status")[0].get(attribute))

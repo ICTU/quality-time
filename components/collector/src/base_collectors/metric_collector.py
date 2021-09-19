@@ -38,18 +38,15 @@ class MetricCollector:
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Collect the measurements from the metric's sources."""
-        collectors = self.__source_collectors()
-        issue_status_collector = self.__issue_status_collector()
-        if not collectors and not issue_status_collector:
+        source_collectors = self.__source_collectors()
+        issue_status_collectors = self.__issue_status_collectors()
+        if not source_collectors and not issue_status_collectors:
             return None
-        if issue_status_collector:
-            issue_status, *measurements = await asyncio.gather(issue_status_collector, *collectors)
-        else:
-            measurements = await asyncio.gather(*collectors)
-            issue_status = None
+        measurements = await asyncio.gather(*source_collectors)
         for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
             source_measurement.source_uuid = source_uuid
-        return MetricMeasurement(measurements, issue_status)
+        issue_statuses = await asyncio.gather(*issue_status_collectors)
+        return MetricMeasurement(measurements, issue_statuses)
 
     def __source_collectors(self) -> list[Coroutine]:
         """Create the source collectors for the metric."""
@@ -59,12 +56,14 @@ class MetricCollector:
                 collectors.append(collector_class(self.__session, source, self.__data_model).collect())
         return collectors
 
-    def __issue_status_collector(self) -> Optional[Coroutine]:
+    def __issue_status_collectors(self) -> list[Coroutine]:
         """Create the issue status collector for the metric."""
-        issue = self._metric.get("issue_id")
         tracker = self._metric.get("issue_tracker", {})
         tracker_type = tracker.get("type")
         has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
-        if issue and has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
-            return collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue)
-        return None
+        if has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
+            return [
+                collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue_id)
+                for issue_id in self._metric.get("issue_ids", [])
+            ]
+        return []

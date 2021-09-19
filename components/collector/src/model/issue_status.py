@@ -10,14 +10,14 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
 
     def __init__(
         self,
-        issue: str,
+        issue_id: str,
         *,
         name: str = None,
         description: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
-        self.issue = issue
+        self.issue_id = issue_id
         self.name = name
         self.description = description
         self.parse_error = parse_error
@@ -28,7 +28,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
     def as_dict(self) -> dict:
         """Return the issue status as dict."""
         status = dict(
-            issue=self.issue,
+            issue_id=self.issue_id,
             name=self.name,
             description=self.description,
             parse_error=self.parse_error,

@@ -52,9 +52,9 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
 class MetricMeasurement:  # pylint: disable=too-few-public-methods
     """Class to hold measurements from one or more sources for one metric."""
 
-    def __init__(self, sources: Sequence[SourceMeasurement], issue_status: IssueStatus = None) -> None:
+    def __init__(self, sources: Sequence[SourceMeasurement], issue_statuses: Sequence[IssueStatus]) -> None:
         self.sources = sources
-        self.issue_status = issue_status
+        self.issue_statuses = issue_statuses
         self.has_error = any(source.has_error() for source in sources)
         self.metric_uuid: Optional[str] = None
 
@@ -65,6 +65,6 @@ class MetricMeasurement:  # pylint: disable=too-few-public-methods
             has_error=self.has_error,
             metric_uuid=self.metric_uuid,
         )
-        if self.issue_status:
-            measurement["issue_status"] = self.issue_status.as_dict()
+        if self.issue_statuses:
+            measurement["issue_status"] = [issue_status.as_dict() for issue_status in self.issue_statuses]
         return measurement

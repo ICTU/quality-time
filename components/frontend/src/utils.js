@@ -44,6 +44,11 @@ export function get_metric_tags(metric) {
     return tags
 }
 
+export function get_metric_issue_ids(metric) {
+    let issue_ids = metric.issue_ids ?? [];
+    issue_ids.sort();
+    return issue_ids
+}
 
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

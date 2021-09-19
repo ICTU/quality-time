@@ -9,8 +9,9 @@ import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { Target } from './Target';
+import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { get_metric_tags } from '../utils';
+import { get_metric_issue_ids, get_metric_tags } from '../utils';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -39,14 +40,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
-    let issue_status_error = false;
-    if (metric.issue_status?.connection_error) {
-        issue_status_error = {content: "Connection error retrieving the issue status: " + metric.issue_status.connection_error};
-    }
-    if (metric.issue_status?.parse_error) {
-        issue_status_error = {content: "Parse error retrieving the issue status: " + metric.issue_status.parse_error};
-    }
-    const issue_status_help = "An issue that tracks the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
+    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -166,18 +160,34 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns="equal">
-                <Grid.Column width={4}>
-                    <StringInput
+            <Grid.Row>
+                <Grid.Column width={16}>
+                    <MultipleChoiceInput
+                        allowAdditions
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label={<label>Issue ID <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
-                        placeholder="Issue ID"
-                        set_value={(value) => set_metric_attribute(metric_uuid, "issue_id", [value], reload)}
-                        value={metric.issue_id}
-                        error={issue_status_error}
+                        label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        options={get_metric_issue_ids(metric)}
+                        set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
+                        value={get_metric_issue_ids(metric)}
                     />
                 </Grid.Column>
-                <Grid.Column stretched>
+            </Grid.Row>
+            {metric.issue_status.filter((issue_status => issue_status.connection_error)).map((issue_status) => 
+                <Grid.Row key={issue_status.issue_id}>
+                    <Grid.Column width={16}>
+                        <ErrorMessage key={issue_status.issue_id} title={"Connection error while retrieving " + issue_status.issue_id} message={issue_status.connection_error} />
+                    </Grid.Column>
+                </Grid.Row>
+            )}
+            {metric.issue_status.filter((issue_status => issue_status.parse_error)).map((issue_status) => 
+                <Grid.Row key={issue_status.issue_id}>
+                    <Grid.Column width={16}>
+                        <ErrorMessage key={issue_status.issue_id} title={"Parse error while processing " + issue_status.issue_id} message={issue_status.parse_error} />
+                    </Grid.Column>
+                </Grid.Row>
+            )}
+            <Grid.Row>
+                <Grid.Column width={16}>
                     <Comment
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}

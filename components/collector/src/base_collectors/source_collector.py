@@ -30,7 +30,7 @@ class SourceCollector(ABC):
     def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
         self._data_model: Final = data_model
-        self._issue = ""
+        self._issue_id = ""
         self.__parameters = SourceParameters(source, data_model)
 
     def __init_subclass__(cls) -> None:
@@ -61,9 +61,9 @@ class SourceCollector(ABC):
         measurement.landing_url = await self.__safely_parse_landing_url(responses)
         return measurement
 
-    async def collect_issue_status(self, issue: str) -> IssueStatus:
+    async def collect_issue_status(self, issue_id: str) -> IssueStatus:
         """Return the issue status from this source."""
-        self._issue = issue
+        self._issue_id = issue_id
         responses = await self.__safely_get_source_responses()
         issue_status = await self.__safely_parse_issue_status(responses)
         issue_status.api_url = responses.api_url
@@ -176,15 +176,15 @@ class SourceCollector(ABC):
         collector to fail.
         """
         if responses.connection_error:
-            return IssueStatus(self._issue, connection_error=responses.connection_error)
+            return IssueStatus(self._issue_id, connection_error=responses.connection_error)
         try:
             return await self._parse_issue_status(responses)
         except Exception:  # pylint: disable=broad-except
-            return IssueStatus(self._issue, parse_error=stable_traceback(traceback.format_exc()))
+            return IssueStatus(self._issue_id, parse_error=stable_traceback(traceback.format_exc()))
 
     async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:  # pylint: disable=unused-argument
         """Parse the responses to get the status of the metric's linked issue."""
-        return IssueStatus(self._issue)  # pragma: no cover
+        return IssueStatus(self._issue_id)  # pragma: no cover
 
     async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:
         """Parse the responses to get the landing url, without failing.
