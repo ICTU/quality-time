@@ -504,9 +504,9 @@ To allow for seeding a *Quality-time* instance with default reports, imported re
 
 ## Issue tracker
 
-To track actions for metrics, for example to resolve technical debt, it's possible to add issue identifiers to metrics. *Quality-time* then uses the issue id to check the status of the issue with the issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or Trello.
+To track work being done on metrics, for example to resolve technical debt, it's possible to add (identifiers of) issues to metrics. *Quality-time* uses these issue ids to check the status of the issue with an issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or Trello.
 
-Currently, exactly at most one issue tracker can be configured per report, and at most one issue id can be tracked per metric.
+Currently, at most one issue tracker can be configured per report, and at most one issue id can be tracked per metric.
 
 ```{index} Notification
 ```
