@@ -172,14 +172,14 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     />
                 </Grid.Column>
             </Grid.Row>
-            {metric.issue_status.filter((issue_status => issue_status.connection_error)).map((issue_status) => 
+            {(metric.issue_status ?? []).filter((issue_status => issue_status.connection_error)).map((issue_status) => 
                 <Grid.Row key={issue_status.issue_id}>
                     <Grid.Column width={16}>
                         <ErrorMessage key={issue_status.issue_id} title={"Connection error while retrieving " + issue_status.issue_id} message={issue_status.connection_error} />
                     </Grid.Column>
                 </Grid.Row>
             )}
-            {metric.issue_status.filter((issue_status => issue_status.parse_error)).map((issue_status) => 
+            {(metric.issue_status ?? []).filter((issue_status => issue_status.parse_error)).map((issue_status) => 
                 <Grid.Row key={issue_status.issue_id}>
                     <Grid.Column width={16}>
                         <ErrorMessage key={issue_status.issue_id} title={"Parse error while processing " + issue_status.issue_id} message={issue_status.parse_error} />
