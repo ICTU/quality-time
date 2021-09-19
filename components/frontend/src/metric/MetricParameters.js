@@ -172,7 +172,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label={<label>Issue ID <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
                         placeholder="Issue ID"
-                        set_value={(value) => set_metric_attribute(metric_uuid, "issue_id", value, reload)}
+                        set_value={(value) => set_metric_attribute(metric_uuid, "issue_id", [value], reload)}
                         value={metric.issue_id}
                         error={issue_status_error}
                     />
