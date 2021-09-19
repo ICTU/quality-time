@@ -189,7 +189,7 @@ def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measu
 def issue_statuses(metric, last_measurement) -> list[dict]:
     """Return the metric's issue  statuses."""
     last_issue_statuses = last_measurement.get("issue_status", [])
-    return [status for status in last_issue_statuses if status["issue_id"] in metric.get("issue_ids")]
+    return [status for status in last_issue_statuses if status["issue_id"] in metric.get("issue_ids", [])]
 
 
 def metric_status(metric, last_measurement, scale) -> Optional[Status]:

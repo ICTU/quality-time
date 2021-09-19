@@ -43,8 +43,8 @@ def measure(context, number, total="100"):
     )
 
 
-@when("the collector measures issue status '{name}'")
-def measure_issue_status(context, name):
+@when("the collector measures issue '{issue_id}' status '{name}'")
+def measure_issue_status(context, issue_id, name):
     """Post the measurement with the issue status."""
     context.post(
         "measurements",
@@ -61,7 +61,7 @@ def measure_issue_status(context, name):
                     entities=[],
                 )
             ],
-            issue_status=dict(name=name),
+            issue_status=[dict(issue_id=issue_id, name=name)],
         ),
         internal=True,
     )
