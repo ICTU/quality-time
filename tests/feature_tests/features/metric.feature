@@ -74,11 +74,12 @@ Feature: metric
 
   Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
     Given an existing metric
-    Given an existing source
+    And an existing source
     When the client changes the metric issue_ids to "123"
-    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_url to "https://jira"
+    And the collector gets the metrics to measure
     And the collector measures issue '123' status 'Completed'
     Then the issue status name is 'Completed'
     And the issue status connection_error is 'None' 
@@ -86,7 +87,7 @@ Feature: metric
 
   Scenario: invalid issue tracker type
     Given an existing metric
-    Given an existing source
+    And an existing source
     When the client changes the metric issue_ids to "123"
     And the client changes the report tracker_type to "this-source-is-no-issue-tracker"
     And the client changes the report tracker_url to "https://jira"
