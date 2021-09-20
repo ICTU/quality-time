@@ -179,7 +179,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=None, headers={}, verify=False)
+        mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={}, verify=False)
         self.assert_delta(
             f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
         )

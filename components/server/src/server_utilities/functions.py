@@ -108,7 +108,7 @@ def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:
         return private_token, ""
     username = source_parameters.get("username", "")
     password = source_parameters.get("password", "")
-    return (username, password) if username and password else None
+    return (username, password) if username or password else None
 
 
 def _headers(source_parameters) -> dict:
