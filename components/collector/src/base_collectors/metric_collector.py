@@ -1,7 +1,7 @@
 """Metric collector base classes."""
 
 import asyncio
-from typing import Optional
+from typing import Coroutine, Optional
 
 import aiohttp
 
@@ -38,13 +38,32 @@ class MetricCollector:
 
     async def collect(self) -> Optional[MetricMeasurement]:
         """Collect the measurements from the metric's sources."""
+        source_collectors = self.__source_collectors()
+        issue_status_collectors = self.__issue_status_collectors()
+        if not source_collectors and not issue_status_collectors:
+            return None
+        measurements = await asyncio.gather(*source_collectors)
+        for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
+            source_measurement.source_uuid = source_uuid
+        issue_statuses = await asyncio.gather(*issue_status_collectors)
+        return MetricMeasurement(measurements, issue_statuses)
+
+    def __source_collectors(self) -> list[Coroutine]:
+        """Create the source collectors for the metric."""
         collectors = []
         for source in self._metric["sources"].values():
             if collector_class := SourceCollector.get_subclass(source["type"], self._metric["type"]):
                 collectors.append(collector_class(self.__session, source, self.__data_model).collect())
-        if not collectors:
-            return None
-        measurements = await asyncio.gather(*collectors)
-        for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
-            source_measurement.source_uuid = source_uuid
-        return MetricMeasurement(measurements)
+        return collectors
+
+    def __issue_status_collectors(self) -> list[Coroutine]:
+        """Create the issue status collector for the metric."""
+        tracker = self._metric.get("issue_tracker", {})
+        tracker_type = tracker.get("type")
+        has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
+        if has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
+            return [
+                collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue_id)
+                for issue_id in self._metric.get("issue_ids", [])
+            ]
+        return []

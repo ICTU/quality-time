@@ -186,6 +186,14 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self[item] = self.scale_measurement(item)
         return super().__getitem__(item)
 
+    def equals(self, other: Measurement) -> bool:
+        """Return whether this measurement is unchanged compared to an (older) measurement."""
+        return (
+            not other.debt_target_expired()
+            and other.sources() == self.sources()
+            and other.get("issue_status") == self.get("issue_status")
+        )
+
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.
 

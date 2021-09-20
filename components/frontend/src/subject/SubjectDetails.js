@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
-import { get_metric_comment, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectFooter } from './SubjectFooter';
 
@@ -62,6 +62,13 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
       m2_sources.sort();
       const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
       const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
+      return attribute1.localeCompare(attribute2)
+    },
+    issues: (m1, m2) => {
+      let m1_issues = get_metric_issue_ids(m1.props.metric);
+      let m2_issues = get_metric_issue_ids(m2.props.metric);
+      const attribute1 = m1_issues.length > 0 ? m1_issues[0] : '';
+      const attribute2 = m2_issues.length > 0 ? m2_issues[0] : '';
       return attribute1.localeCompare(attribute2)
     },
     tags: (m1, m2) => {
@@ -127,6 +134,7 @@ export function SubjectDetails(props) {
           <ColumnMenuItem column="target" />
           <ColumnMenuItem column="source" />
           <ColumnMenuItem column="comment" />
+          <ColumnMenuItem column="issues" />
           <ColumnMenuItem column="tags" />
         </HamburgerMenu>
       </Table.HeaderCell>
@@ -145,6 +153,7 @@ export function SubjectDetails(props) {
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
+          {!props.hiddenColumns.includes("issues") && <SortableHeader column='issues' label='Issues' />}
           {!props.hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
         </Table.Row>
       </Table.Header>

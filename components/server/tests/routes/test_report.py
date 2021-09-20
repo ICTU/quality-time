@@ -15,6 +15,7 @@ from routes.report import (
     post_report_copy,
     post_report_import,
     post_report_new,
+    post_report_issue_tracker_attribute,
 )
 from server_utilities.functions import asymmetric_encrypt
 from server_utilities.type import ReportId
@@ -58,6 +59,91 @@ class PostReportAttributeTest(unittest.TestCase):
             dict(uuids=[REPORT_ID], email=JOHN["email"], description="John changed the layout of report 'Title'."),
             self.report["delta"],
         )
+
+
+@patch("bottle.request")
+class ReportIssueTrackerTest(unittest.TestCase):
+    """Unit tests for the post report issue tracker attribute route."""
+
+    def setUp(self):
+        """Override to set up a database with a report and a user session."""
+        self.database = Mock()
+        self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
+        self.database.reports.find.return_value = [self.report]
+        self.database.sessions.find_one.return_value = JOHN
+        self.database.datamodels.find_one.return_value = {}
+        self.database.measurements.find.return_value = []
+
+    def test_post_report_issue_tracker_type(self, request):
+        """Test that the issue tracker type can be changed."""
+        request.json = dict(type="jira")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "type", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the type of the issue tracker of report 'Title' from '' to 'jira'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(type="jira"), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_url(self, request):
+        """Test that the issue tracker url can be changed."""
+        self.report["issue_tracker"] = dict(type="jira")
+        request.json = dict(url="https://jira")
+        result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
+        self.assertTrue(result["ok"])
+        self.assertEqual(-1, result["availability"][0]["status_code"])
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the url of the issue tracker of report 'Title' from '' to 'https://jira'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(type="jira", parameters=dict(url="https://jira")), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_username(self, request):
+        """Test that the issue tracker username can be changed."""
+        request.json = dict(username="jodoe")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "username", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the username of the issue tracker of report 'Title' from '' to 'jodoe'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(parameters=dict(username="jodoe")), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_password(self, request):
+        """Test that the issue tracker password can be changed."""
+        request.json = dict(password="secret")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JOHN["email"],
+                description="John changed the password of the issue tracker of report 'Title' from '' to '******'.",
+            ),
+            self.report["delta"],
+        )
+        self.assertEqual(dict(parameters=dict(password="secret")), self.report["issue_tracker"])
+
+    def test_post_report_issue_tracker_password_unchanged(self, request):
+        """Test that nothing happens when the new issue tracker password is unchanged."""
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(password="secret"))
+        request.json = dict(password="secret")
+        self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(dict(type="jira", parameters=dict(password="secret")), self.report["issue_tracker"])
 
 
 class ReportTest(unittest.TestCase):
@@ -129,6 +215,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = create_report()
         report = get_report(self.database, REPORT_ID)["reports"][0]
+        self.assertEqual("this string replaces credentials", report["issue_tracker"]["parameters"]["password"])
         self.assertEqual(
             "this string replaces credentials",
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"],
@@ -152,6 +239,22 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             "2020-12-03:22:28:00+00:00",
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["recent_measurements"][0]["count"]["status_start"],
         )
+
+    def test_issue_status(self):
+        """Test that the issue status is part of the metric."""
+        issue_status = dict(issue_id="FOO-42", name="In progress", description="Issue is being worked on")
+        measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(status="target_not_met", status_start="2020-12-03:22:29:00+00:00"),
+            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+            issue_status=[issue_status],
+        )
+        self.database.measurements.find.return_value = [measurement]
+        self.database.reports.find.return_value = [report := create_report()]
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
+        report = get_report(self.database, REPORT_ID)["reports"][0]
+        self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"][0])
 
     @patch("server_utilities.functions.datetime")
     def test_get_tag_report(self, date_time):
@@ -279,6 +382,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
             "password"
         )
+        expected_report["issue_tracker"]["parameters"].pop("password")
         self.database.reports.find_one.return_value = copy.deepcopy(self.report)
 
         # Without provided public key
@@ -286,6 +390,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
             "parameters"
         ].pop("password")
+        exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
@@ -298,6 +403,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
             "password"
         )
+        expected_report["issue_tracker"]["parameters"].pop("password")
 
         request.query = {"public_key": self.public_key}
         mocked_report = copy.deepcopy(self.report)
@@ -310,6 +416,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
             "parameters"
         ].pop("password")
+        exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))

@@ -42,7 +42,7 @@ def post_measurement(database: Database) -> None:
     if latest:
         latest_successful = latest_successful_measurement(database, metric)
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
-        if not latest.debt_target_expired() and latest.sources() == measurement.sources():
+        if measurement.equals(latest):
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return

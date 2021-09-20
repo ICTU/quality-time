@@ -41,6 +41,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         *,
         get_request_json_return_value=None,
         get_request_json_side_effect=None,
+        get_request_side_effect=None,
         get_request_content="",
         get_request_text="",
         get_request_headers=None,
@@ -58,12 +59,11 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             get_request_links,
         )
         post_request = self.__mock_post_request(post_request_json_return_value)
-        mocked_get = AsyncMock(return_value=get_request)
+        mocked_get = AsyncMock(return_value=get_request, side_effect=get_request_side_effect)
         mocked_post = AsyncMock(return_value=post_request, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", mocked_get), patch("aiohttp.ClientSession.post", mocked_post):
             async with aiohttp.ClientSession() as session:
-                collector = MetricCollector(session, self.metric, self.data_model)
-                return await collector.collect()
+                return await MetricCollector(session, self.metric, self.data_model).collect()
 
     @staticmethod
     def __mock_get_request(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:

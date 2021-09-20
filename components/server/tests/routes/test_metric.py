@@ -425,6 +425,35 @@ class MetricTest(unittest.TestCase):
             get_metrics(self.database),
         )
 
+    def test_get_metrics_with_issue(self):
+        """Test that the metrics can be retrieved and the issue tracker is included."""
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.side_effect = [self.report]
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
+        self.assertEqual(
+            {
+                METRIC_ID: dict(
+                    report_uuid=REPORT_ID,
+                    name="Metric",
+                    addition="sum",
+                    accept_debt=False,
+                    type="metric_type",
+                    tags=["security"],
+                    target="0",
+                    issue_ids=["FOO-42"],
+                    issue_tracker=dict(type="jira", parameters=dict(url="https://jira")),
+                    sources=dict(
+                        source_uuid=dict(
+                            name="Source", type="source_type", parameters=dict(url="https://url", password="password")
+                        )
+                    ),
+                )
+            },
+            get_metrics(self.database),
+        )
+
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
         self.assertEqual(dict(ok=True), delete_metric(METRIC_ID, self.database))

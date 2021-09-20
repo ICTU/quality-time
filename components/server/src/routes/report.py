@@ -21,7 +21,7 @@ from model.transformations import (
     summarize_report,
 )
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import DecryptionError, iso_timestamp, report_date_time, uuid
+from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -188,6 +188,39 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
         f"{{user}} changed the {report_attribute} of report '{data.report_name}'{value_change_description}."
     )
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
+
+
+@bottle.post(
+    "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
+def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
+    """Set the issue tracker attribute."""
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
+    new_value = dict(bottle.request.json)[tracker_attribute]
+    if tracker_attribute == "type":
+        old_value = data.report.get("issue_tracker", {}).get("type") or ""
+    else:
+        old_value = data.report.get("issue_tracker", {}).get("parameters", {}).get(tracker_attribute) or ""
+    if old_value == new_value:
+        return dict(ok=True)  # Nothing to do
+    if tracker_attribute == "type":
+        data.report.setdefault("issue_tracker", {})["type"] = new_value
+    else:
+        data.report.setdefault("issue_tracker", {}).setdefault("parameters", {})[tracker_attribute] = new_value
+    if tracker_attribute in ("password", "private_token"):
+        new_value, old_value = "*" * len(new_value), "*" * len(old_value)
+    delta_description = (
+        f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "
+        f"from '{old_value}' to '{new_value}'."
+    )
+    result = insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    issue_tracker = data.report.get("issue_tracker", {})
+    parameters = issue_tracker.get("parameters", {})
+    if issue_tracker.get("type") and (url := parameters.get("url")):
+        result["availability"] = [check_url_availability(url, parameters)]
+    return result
 
 
 def get_tag_report(data_model, reports, tag):

@@ -47,21 +47,21 @@ def measurements_by_metric(
     min_iso_timestamp: str = "",
     max_iso_timestamp: str = "",
 ):
-    """Return all measurements for one metric, without the entities, except for the most recent one."""
+    """Return all measurements for one metric, without entities and issue status, except for the most recent one."""
     measurement_filter: dict = {"metric_uuid": {"$in": metric_uuids}}
     if min_iso_timestamp:
         measurement_filter["end"] = {"$gt": min_iso_timestamp}
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
-    latest_with_entities = database.measurements.find_one(
+    latest_measurement_complete = database.measurements.find_one(
         measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False}
     )
-    if not latest_with_entities:
+    if not latest_measurement_complete:
         return []
-    all_measurements_without_entities = database.measurements.find(
-        measurement_filter, projection={"_id": False, "sources.entities": False}
+    all_measurements_stripped = database.measurements.find(
+        measurement_filter, projection={"_id": False, "sources.entities": False, "issue_status": False}
     )
-    return list(all_measurements_without_entities)[:-1] + [latest_with_entities]
+    return list(all_measurements_stripped)[:-1] + [latest_measurement_complete]
 
 
 def count_measurements(database: Database) -> int:

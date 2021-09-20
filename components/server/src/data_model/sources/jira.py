@@ -46,6 +46,7 @@ JIRA = Source(
     description="Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project "
     "management.",
     url="https://www.atlassian.com/software/jira",
+    issue_tracker=True,
     parameters=dict(
         jql=StringParameter(
             name="Issue query in JQL (Jira Query Language)",

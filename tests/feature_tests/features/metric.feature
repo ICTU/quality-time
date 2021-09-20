@@ -71,3 +71,30 @@ Feature: metric
     Given an existing metric
     When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"
+
+  Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
+    Given an existing metric
+    And an existing source
+    When the client changes the metric issue_ids to "123"
+    And the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the collector gets the metrics to measure
+    And the collector measures issue '123' status 'Completed'
+    Then the issue status name is 'Completed'
+    And the issue status connection_error is 'None' 
+    And the issue status parse_error is 'None' 
+
+  Scenario: invalid issue tracker type
+    Given an existing metric
+    And an existing source
+    When the client changes the metric issue_ids to "123"
+    And the client changes the report tracker_type to "this-source-is-no-issue-tracker"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_username to "jadoe"
+    And the client changes the report tracker_password to "secret"
+    Then the issue status name is 'None'
+    And the issue status description is 'None'
+    And the issue status landing_url is 'None'
+    And the issue status connection_error is 'None' 
+    And the issue status parse_error is 'None' 

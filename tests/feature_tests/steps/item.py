@@ -56,7 +56,7 @@ def delete_item(context, item):
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
     item_fragment = "reports_overview" if item == "reports_overview" else f"{item}/{context.uuid[item]}"
-    if attribute in ("tags",):  # convert comma separated values to lists
+    if attribute in ("tags", "issue_ids"):  # convert comma separated values to lists
         value = value.split(", ")
     elif attribute in ("permissions",):  # convert comma separated values to lists
         if value == "None":
@@ -67,7 +67,12 @@ def change_item_attribute(context, item, attribute, value):
     if item == "notification_destination":
         context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
     else:
-        context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
+        if item == "report" and attribute.startswith("tracker"):
+            attribute = attribute.split("_")[1]
+            attribute_fragment = "issue_tracker"
+        else:
+            attribute_fragment = "attribute"
+        context.post(f"{item_fragment}/{attribute_fragment}/{attribute}", json={attribute: value})
 
 
 def get_item(context, item):

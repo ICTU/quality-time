@@ -24,6 +24,10 @@ function set_report_attribute(report_uuid, attribute, value, reload) {
   return fetch_server_api('post', `report/${report_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
+function set_report_issue_tracker_attribute(report_uuid, attribute, value, reload) {
+  return fetch_server_api('post', `report/${report_uuid}/issue_tracker/${attribute}`, { [attribute]: value }).then(reload)
+}
+
 function set_reports_attribute(attribute, value, reload) {
   return fetch_server_api('post', `reports_overview/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
@@ -34,4 +38,4 @@ function get_report_pdf(report_uuid, query_string) {
 
 export {
   add_report, copy_report, delete_report, get_reports, get_reports_overview, get_report_pdf, set_report_attribute,
-  set_reports_attribute }
+  set_report_issue_tracker_attribute, set_reports_attribute }
