@@ -1,67 +1,79 @@
 import React from 'react';
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from 'semantic-ui-react';
 
+function FooterItem({ children, icon, url }) {
+    const item = icon ? <><Icon name={icon} /> {children}</> : children;
+    return url ? <List.Item as="a" href={url}>{item}</List.Item> : <List.Item>{item}</List.Item>;
+}
+
 function FooterColumn({ children, header, textAlign, width }) {
     return (
-        <Grid.Column width={width || 3} textAlign={textAlign || "left"}>
-            {header ? <Header inverted as='h4'>{header}</Header> : null}
-            <List link inverted>
+        <Grid.Column width={width} textAlign={textAlign}>
+            <Header inverted as='h4'>{header || <>&zwnj;</>}</Header> 
+            <List inverted link>
                 {children}
             </List>
         </Grid.Column>
     )
 }
 
+function FooterCenterColumn({ header, children }) {
+    return (
+        <FooterColumn header={header} width={8} textAlign="center">
+            {children}
+        </FooterColumn>
+    )
+}
+
+function FooterSideColumn({ header, children }) {
+    return (
+        <FooterColumn header={header} width={3} textAlign="left">
+            {children}
+        </FooterColumn>
+    )
+}
+
+
 function AboutAppColumn() {
     return (
-        <>
-            <Grid.Column width={1} />
-            <FooterColumn header={<><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</>} >
-                <List.Item as='a' href="https://www.ictu.nl/about-us"><Icon name="flask"/> Developed by ICTU</List.Item>
-                <List.Item as='a' href='https://github.com/ICTU/quality-time/blob/master/LICENSE'><Icon name="copyright outline" /> License</List.Item>
-                <List.Item as='a' href={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}><Icon name="history" /> Changelog</List.Item>
-                <List.Item as='a' href="https://github.com/ICTU/quality-time"><Icon name="code" /> Source code</List.Item>
-            </FooterColumn>
-        </>
-    )
-}
-
-function AboutReportColumn({ report, last_update }) {
-    return (
-        <FooterColumn width={8} textAlign="center" header="About this report">
-            <List.Item>{report.title}</List.Item>
-            <List.Item>{report.subtitle || <span>&nbsp;</span>}</List.Item>
-            <List.Item>{last_update.toLocaleDateString()}</List.Item>
-            <List.Item>{last_update.toLocaleTimeString()}</List.Item>
-        </FooterColumn>
-    )
-}
-
-function QuoteColumn() {
-    /* Use the zero-width non-joiner character to make this column the same height as the other two columns 
-       so that the two dividers between the three columns are equal height as well
-    */
-    return (
-        <FooterColumn textAlign='center' width={8} header="&zwnj;">
-            <List.Item><em>Quality without results is pointless.</em></List.Item>
-            <List.Item><em>Results without quality is boring.</em></List.Item>
-            <List.Item>Johan Cruyff</List.Item>
-            <List.Item>&zwnj;</List.Item>
-        </FooterColumn>
+        <FooterSideColumn header={<><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</>} >
+            <FooterItem icon="flask" url="https://www.ictu.nl/about-us">Created by ICTU</FooterItem>
+            <FooterItem icon="copyright outline" url="https://github.com/ICTU/quality-time/blob/master/LICENSE">License</FooterItem>
+            <FooterItem icon="history" url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}>Changelog</FooterItem>
+            <FooterItem icon="code branch" url="https://github.com/ICTU/quality-time">Source code</FooterItem>
+        </FooterSideColumn>
     )
 }
 
 function SupportColumn() {
     return (
-        <>
-            <Grid.Column width={1} />
-            <FooterColumn header='Support'>
-                <List.Item as='a' href={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}><Icon name="book" /> Documentation</List.Item>
-                <List.Item as='a' href={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/usage.html`}><Icon name="user outline" /> User manual</List.Item>
-                <List.Item as='a' href="https://github.com/ICTU/quality-time/issues"><Icon name="bug" /> Known issues</List.Item>
-                <List.Item as='a' href="https://github.com/ICTU/quality-time/issues/new"><Icon name="comment" /> Report an issue</List.Item>
-            </FooterColumn>
-        </>
+        <FooterSideColumn header="Support">
+            <FooterItem icon="book" url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}>Documentation</FooterItem>
+            <FooterItem icon="user outline" url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/usage.html`}>User manual</FooterItem>
+            <FooterItem icon="bug" url="https://github.com/ICTU/quality-time/issues">Known issues</FooterItem>
+            <FooterItem icon="comment outline" url="https://github.com/ICTU/quality-time/issues/new">Report an issue</FooterItem>
+        </FooterSideColumn>
+    )
+}
+
+function AboutReportColumn({ report, last_update }) {
+    return (
+        <FooterCenterColumn header="About this report">
+            <FooterItem>{report.title}</FooterItem>
+            <FooterItem>{report.subtitle}</FooterItem>
+            <FooterItem>{last_update.toLocaleDateString()}</FooterItem>
+            <FooterItem>{last_update.toLocaleTimeString()}</FooterItem>
+        </FooterCenterColumn>
+    )
+}
+
+function QuoteColumn() {
+    return (
+        <FooterCenterColumn>
+            <FooterItem><em>Quality without results is pointless.</em></FooterItem>
+            <FooterItem><em>Results without quality is boring.</em></FooterItem>
+            <FooterItem>Johan Cruyff</FooterItem>
+        </FooterCenterColumn>
     )
 }
 
@@ -69,10 +81,12 @@ export function Footer({ report, last_update }) {
     return (
         <Segment inverted style={{ margin: '5em 0em 0em', padding: '5em 0em 3em' }}>
             <Container>
-                <Grid inverted stackable verticalAlign='middle' columns={16}>
+                <Grid>
                     <Grid.Row>
+                        <Grid.Column width={1} />
                         <AboutAppColumn />
                         {report ? <AboutReportColumn report={report} last_update={last_update} /> : <QuoteColumn />}
+                        <Grid.Column width={1} />
                         <SupportColumn />
                     </Grid.Row>
                 </Grid>
