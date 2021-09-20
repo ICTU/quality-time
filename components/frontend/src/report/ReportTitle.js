@@ -96,6 +96,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                 <Grid.Column>
                     <StringInput
                         id="tracker-url"
+                        required={report.issue_tracker?.type}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker URL"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
@@ -116,6 +117,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                 <Grid.Column>
                     <PasswordInput
                         id="tracker-password"
+                        required={report.issue_tracker?.type && report.issue_tracker?.parameters?.username}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Password for basic authentication"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
