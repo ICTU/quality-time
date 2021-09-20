@@ -55,6 +55,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                 <Grid.Column>
                     <StringInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        id="metric-name"
                         label="Metric name"
                         placeholder={metric_type.name}
                         set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
@@ -97,6 +98,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                 {metric_scale !== "version_number" &&
                     <Grid.Column>
                         <StringInput
+                            id="metric-unit"
                             label="Metric unit"
                             placeholder={metric_type.unit}
                             prefix={metric_scale === "percentage" ? "%" : ""}
@@ -164,6 +166,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                 <Grid.Column width={16}>
                     <MultipleChoiceInput
                         allowAdditions
+                        id="issue-identifiers"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
                         options={get_metric_issue_ids(metric)}
