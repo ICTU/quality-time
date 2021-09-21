@@ -6,6 +6,9 @@ from fastapi.responses import RedirectResponse
 from routes import data_model, health, measurements, metrics
 
 
+# Start with: uvicorn quality_time_internal_server:app --reload --app-dir src
+
+
 app = FastAPI()
 for module in data_model, health, measurements, metrics:
     # DeepSource complains that getattr doesn't receive a default value and will cause an AttributeError if the

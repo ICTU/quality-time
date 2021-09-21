@@ -10,7 +10,7 @@ from database.data_models import latest_data_model
 router = APIRouter()
 
 
-@router.get("data_model")
+@router.get("/data_model")
 async def get_data_model(database: AsyncIOMotorDatabase = Depends(quality_time_database)):
     """Return the latest data model."""
     return await latest_data_model(database)
