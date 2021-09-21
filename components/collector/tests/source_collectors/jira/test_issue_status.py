@@ -20,7 +20,6 @@ class JiraIssuesTest(JiraTestCase):
         self.assertEqual("FOO-42", issue_status["issue_id"])
         if connection_error or parse_error:
             self.assertNotIn("name", issue_status)
-            self.assertNotIn("description", issue_status)
             if connection_error:
                 self.assertIn(connection_error, issue_status["connection_error"])
                 self.assertNotIn("parse_error", issue_status)
@@ -29,7 +28,6 @@ class JiraIssuesTest(JiraTestCase):
                 self.assertNotIn("connection_error", issue_status)
         else:
             self.assertEqual("Issue name", issue_status["name"])
-            self.assertEqual("Issue description", issue_status["description"])
             self.assertNotIn("connection_error", issue_status)
             self.assertNotIn("parse_error", issue_status)
         self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=status", issue_status["api_url"])
@@ -37,7 +35,7 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_issue_status(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(fields=dict(status=dict(name="Issue name", description="Issue description")))
+        issue_status_json = dict(fields=dict(status=dict(name="Issue name")))
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response)
 

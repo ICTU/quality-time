@@ -94,7 +94,6 @@ Feature: metric
     And the client changes the report tracker_username to "jadoe"
     And the client changes the report tracker_password to "secret"
     Then the issue status name is 'None'
-    And the issue status description is 'None'
     And the issue status landing_url is 'None'
     And the issue status connection_error is 'None' 
     And the issue status parse_error is 'None' 
