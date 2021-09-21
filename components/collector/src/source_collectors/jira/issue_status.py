@@ -22,5 +22,4 @@ class JiraIssueStatus(SourceCollector):
         """Override to get the issue status from the responses."""
         json = await responses[0].json()
         name = json["fields"]["status"]["name"]
-        description = json["fields"]["status"]["description"]
-        return IssueStatus(self._issue_id, name=name, description=description)
+        return IssueStatus(self._issue_id, name=name)
