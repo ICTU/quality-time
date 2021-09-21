@@ -6,62 +6,135 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/tests/application_tests"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/tests/feature_tests"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/release"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: npm
-  directory: "/components/frontend"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/components/server"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/components/collector"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: pip
-  directory: "/components/notifier"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 10
+
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/components/collector"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/collector"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/database"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/frontend"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: npm
+  directory: "/components/frontend"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/ldap"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/components/notifier"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/notifier"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/proxy"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/renderer"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/server"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/components/server"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: docker
+  directory: "/components/testdata"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
 - package-ecosystem: npm
   directory: "/docs"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
+
 - package-ecosystem: pip
   directory: "/docs"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/release"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/tests/application_tests"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
+- package-ecosystem: pip
+  directory: "/tests/feature_tests"
   schedule:
     interval: daily
     time: "04:00"
