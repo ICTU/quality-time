@@ -36,6 +36,7 @@ function metric() {
       hiddenColumns={[]}
       report={report}
       reports={[report]}
+      metric={report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]}
       metric_uuid="metric_uuid"
       subject_uuid="subject_uuid"
       datamodel={data_model}

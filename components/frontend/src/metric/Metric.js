@@ -17,6 +17,7 @@ export function Metric({
     report,
     report_date,
     subject_uuid,
+    metric,
     metric_uuid,
     first_metric,
     last_metric,
@@ -27,8 +28,6 @@ export function Metric({
     hiddenColumns,
     reload
 }) {
-    const metric = report.subjects[subject_uuid].metrics[metric_uuid];
-
     function MeasurementValue() {
         const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
         const valueText = <span>{value + metric_unit}</span>
