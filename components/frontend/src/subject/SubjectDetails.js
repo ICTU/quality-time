@@ -5,6 +5,61 @@ import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_s
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectFooter } from './SubjectFooter';
 
+function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
+    return (
+        <Dropdown.Item onClick={() => toggleHiddenColumn(column)}>
+            {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+        </Dropdown.Item>
+    )
+}
+
+function HamburgerHeader({ hiddenColumns, toggleHiddenColumn, extraHamburgerItems }) {
+    return (
+        <Table.HeaderCell collapsing textAlign="center">
+            <HamburgerMenu>
+                {extraHamburgerItems}
+                <Dropdown.Header>Columns</Dropdown.Header>
+                <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+            </HamburgerMenu>
+        </Table.HeaderCell>
+    )
+}
+
+function SortableHeader({ column, sortColumn, sortDirection, handleSort, label, textAlign }) {
+    const sorted = sortColumn === column ? sortDirection : null;
+    return (
+        <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
+            {label}
+        </Table.HeaderCell>
+    )
+}
+
+function SubjectTableHeader({ hiddenColumns, toggleHiddenColumn, sortColumn, sortDirection, handleSort, extraHamburgerItems }) {
+    const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
+    return (
+        <Table.Header>
+            <Table.Row>
+                <HamburgerHeader hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} extraHamburgerItems={extraHamburgerItems} />
+                <SortableHeader column='name' label='Metric' {...sortProps} />
+                {!hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
+                {!hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' {...sortProps} />}
+                {!hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' {...sortProps} />}
+                {!hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' {...sortProps} />}
+                {!hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' {...sortProps} />}
+                {!hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' {...sortProps} />}
+                {!hiddenColumns.includes("issues") && <SortableHeader column='issues' label='Issues' {...sortProps} />}
+                {!hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' {...sortProps} />}
+            </Table.Row>
+        </Table.Header>
+    )
+}
 
 function createMetricComponents(
     datamodel,
@@ -126,63 +181,15 @@ export function SubjectDetails(props) {
         }
     }
 
-    function SortableHeader({ column, label, textAlign }) {
-        const sorted = sortColumn === column ? sortDirection : null;
-        return (
-            <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
-                {label}
-            </Table.HeaderCell>
-        )
-    }
-
-    function HamburgerHeader() {
-        function ColumnMenuItem({ column }) {
-            return (
-                <Dropdown.Item onClick={() => props.toggleHiddenColumn(column)}>
-                    {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
-                </Dropdown.Item>
-            )
-        }
-        return (
-            <Table.HeaderCell collapsing textAlign="center">
-                <HamburgerMenu>
-                    {props.extraHamburgerItems}
-                    <Dropdown.Header>Columns</Dropdown.Header>
-                    <ColumnMenuItem column="trend" />
-                    <ColumnMenuItem column="status" />
-                    <ColumnMenuItem column="measurement" />
-                    <ColumnMenuItem column="target" />
-                    <ColumnMenuItem column="source" />
-                    <ColumnMenuItem column="comment" />
-                    <ColumnMenuItem column="issues" />
-                    <ColumnMenuItem column="tags" />
-                </HamburgerMenu>
-            </Table.HeaderCell>
-        )
-    }
-
-    function SubjectTableHeader() {
-        return (
-            <Table.Header>
-                <Table.Row>
-                    <HamburgerHeader />
-                    <SortableHeader column='name' label='Metric' />
-                    {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
-                    {!props.hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' />}
-                    {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' />}
-                    {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
-                    {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
-                    {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
-                    {!props.hiddenColumns.includes("issues") && <SortableHeader column='issues' label='Issues' />}
-                    {!props.hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
-                </Table.Row>
-            </Table.Header>
-        )
-    }
-
     return (
         <>
-            <SubjectTableHeader />
+            <SubjectTableHeader
+                hiddenColumns={props.hiddenColumns}
+                toggleHiddenColumn={props.toggleHiddenColumn}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                handleSort={handleSort}
+                extraHamburgerItems={props.extraHamburgerItems} />
             <Table.Body>{metricComponents}</Table.Body>
             <SubjectFooter
                 datamodel={props.datamodel}
