@@ -182,7 +182,7 @@ export function SubjectDetails(props) {
     }
 
     return (
-        <>
+        <Table sortable>
             <SubjectTableHeader
                 hiddenColumns={props.hiddenColumns}
                 toggleHiddenColumn={props.toggleHiddenColumn}
@@ -198,6 +198,6 @@ export function SubjectDetails(props) {
                 reload={props.reload}
                 reports={props.reports}
                 resetSortColumn={() => { setSortColumn(null) }} />
-        </>
+        </Table>
     )
 }
