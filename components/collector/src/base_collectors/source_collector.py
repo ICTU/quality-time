@@ -68,9 +68,6 @@ class SourceCollector(ABC):
         issue_status = await self.__safely_parse_issue_status(responses)
         issue_status.api_url = responses.api_url
         issue_status.landing_url = await self.__safely_parse_landing_url(responses)
-        print()
-        print(issue_status.as_dict())
-        print()
         return issue_status
 
     async def _api_url(self) -> URL:
