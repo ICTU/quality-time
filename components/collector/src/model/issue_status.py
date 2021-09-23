@@ -27,7 +27,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
 
     def as_dict(self) -> dict:
         """Return the issue status as dict."""
-        return dict(
+        status = dict(
             issue_id=self.issue_id,
             name=self.name,
             parse_error=self.parse_error,
@@ -36,3 +36,4 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
             api_url=self.api_url,
             landing_url=self.landing_url,
         )
+        return {key: value for key, value in status.items() if value}
