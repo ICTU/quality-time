@@ -14,7 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Make report title in the footer a URL to the report itself. Closes [#2532](https://github.com/ICTU/quality-time/issues/2532).
 
-
 ## v3.26.0-rc.1 - 2021-09-20
 
 ### Changed
