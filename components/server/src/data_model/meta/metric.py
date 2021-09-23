@@ -63,7 +63,9 @@ class Metric(DescribedModel):
         sources = [source for source in values.get("sources", []) if source != "manual_number"]
         if default_source is None and len(sources) == 1:
             default_source = sources[0]
-        if default_source not in sources:
+        if default_source is None:
+            default_source = "manual_number"
+        if default_source not in values.get("sources", []):
             raise ValueError(f"Default source '{default_source}' is not listed as source")
         return default_source
 

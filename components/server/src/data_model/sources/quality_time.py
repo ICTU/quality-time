@@ -83,6 +83,7 @@ QUALITY_TIME = Source(
                 "User story points",
                 "Velocity",
                 "Violations",
+                "Sentiment",
             ],
             api_values={
                 "Accessibility violations": "accessibility",
@@ -119,6 +120,7 @@ QUALITY_TIME = Source(
                 "Velocity": "velocity",
                 "Violations": "violations",
                 "Violation remediation effort": "remediation_effort",
+                "Sentiment": "sentiment",
             },
             metrics=["metrics"],
         ),

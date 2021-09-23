@@ -390,5 +390,15 @@ METRICS = Metrics.parse_obj(
             sources=["manual_number", "ojaudit", "sonarqube"],
             tags=[Tag.MAINTAINABILITY],
         ),
+        sentiment=dict(
+            name="Sentiment",
+            description="How are the team members feeling?",
+            unit=Unit.NONE,
+            direction=Direction.MORE_IS_BETTER,
+            target="10",
+            near_target="8",
+            sources=["manual_number"],
+            tags=[Tag.PROCESS_EFFICIENCY],
+        ),
     )
 )

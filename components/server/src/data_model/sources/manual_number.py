@@ -45,6 +45,7 @@ MANUAL_NUMBER = Source(
                 "unused_jobs",
                 "velocity",
                 "violations",
+                "sentiment",
             ],
         )
     ),
