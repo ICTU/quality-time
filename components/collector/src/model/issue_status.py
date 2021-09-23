@@ -13,6 +13,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         issue_id: str,
         *,
         name: str = None,
+        created: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
@@ -20,17 +21,18 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self.name = name
         self.parse_error = parse_error
         self.connection_error = connection_error
+        self.created: Optional[str] = created
         self.api_url: Optional[URL] = None
         self.landing_url: Optional[URL] = None
 
     def as_dict(self) -> dict:
         """Return the issue status as dict."""
-        status = dict(
+        return dict(
             issue_id=self.issue_id,
             name=self.name,
             parse_error=self.parse_error,
             connection_error=self.connection_error,
+            created=self.created,
             api_url=self.api_url,
             landing_url=self.landing_url,
         )
-        return {key: value for key, value in status.items() if value}
