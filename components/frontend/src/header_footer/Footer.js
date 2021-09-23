@@ -59,7 +59,7 @@ function SupportColumn() {
 function AboutReportColumn({ report, last_update }) {
     return (
         <FooterCenterColumn header="About this report">
-            <FooterItem>{report.title}</FooterItem>
+            <FooterItem url={window.location.href}>{report.title}</FooterItem>
             <FooterItem>{report.subtitle}</FooterItem>
             <FooterItem>{last_update.toLocaleDateString()}</FooterItem>
             <FooterItem>{last_update.toLocaleTimeString()}</FooterItem>
