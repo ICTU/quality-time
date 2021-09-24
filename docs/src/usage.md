@@ -426,7 +426,9 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 
 As *Quality-time* has to open the report in a (headless) browser and load all the metrics, creating the PDF can take some time. Especially for big reports.
 
-*Tip:* The report title in the footer of the pdf will link to the online version of the same report.
+```{tip}
+The report title in the footer of the PDF will link to the online version of the same report.
+```
 
 ### Manually
 
