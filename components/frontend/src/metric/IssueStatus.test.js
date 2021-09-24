@@ -11,6 +11,15 @@ it("displays a link with correct content", async () => {
     expect(queryByText(label).closest("a").href).toBe("https://test/")
 });
 
+it("displays the creation date", async () => {
+    let date = new Date();
+    date.setDate(date.getDate() - 2);
+    const metric = { issue_status: [{ issue_id: "123", name: "done", created: date.toISOString()}] }
+    const { queryByText } = render(<IssueStatus metric={metric} />)
+    userEvent.hover(queryByText(/123: ?/))
+    await waitFor(() => { expect(queryByText("2 days ago")).not.toBe(null) })
+});
+
 it("displays a connection error", async () => {
     const metric = { issue_status: [{ issue_id: "123", connection_error: "error" }] }
     const { queryByText } = render(<IssueStatus metric={metric} />)

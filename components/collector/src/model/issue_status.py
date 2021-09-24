@@ -21,7 +21,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self.name = name
         self.parse_error = parse_error
         self.connection_error = connection_error
-        self.created: Optional[str] = created
+        self.created = created
         self.api_url: Optional[URL] = None
         self.landing_url: Optional[URL] = None
 

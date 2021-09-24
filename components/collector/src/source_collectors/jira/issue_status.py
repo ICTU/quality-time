@@ -1,7 +1,5 @@
 """Jira issue status collector."""
 
-from datetime import datetime
-
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import IssueStatus, SourceResponses
@@ -24,6 +22,5 @@ class JiraIssueStatus(SourceCollector):
         """Override to get the issue status from the responses."""
         json = await responses[0].json()
         name = json["fields"]["status"]["name"]
-        created = datetime.strptime(json["fields"]["created"], "%Y-%m-%dT%H:%M:%S.%f%z")
-        date_string = created.strftime("%d-%m-%Y")
-        return IssueStatus(self._issue_id, name=name, created=date_string)
+        created = json["fields"]["created"]
+        return IssueStatus(self._issue_id, name=name, created=created)
