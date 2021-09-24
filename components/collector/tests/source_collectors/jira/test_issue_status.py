@@ -28,14 +28,15 @@ class JiraIssuesTest(JiraTestCase):
                 self.assertNotIn("connection_error", issue_status)
         else:
             self.assertEqual("Issue name", issue_status["name"])
+            self.assertEqual("1970-01-01T00:00:00.000+0000", issue_status["created"])
             self.assertNotIn("connection_error", issue_status)
             self.assertNotIn("parse_error", issue_status)
-        self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=status", issue_status["api_url"])
+        self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=created,status,updated", issue_status["api_url"])
         self.assertEqual("https://jira/browse/FOO-42", issue_status["landing_url"])
 
     async def test_issue_status(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(fields=dict(status=dict(name="Issue name")))
+        issue_status_json = dict(fields=dict(status=dict(name="Issue name"), created="1970-01-01T00:00:00.000+0000"))
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response)
 
