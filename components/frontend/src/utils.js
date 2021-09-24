@@ -78,6 +78,10 @@ export function scaled_number(number) {
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
+export function toLocaleString(date) {
+    return date.toLocaleString([], {dateStyle: "short", timeStyle: "short"})
+}
+
 export function format_minutes(number) {
     const hours = Math.floor(number / 60);
     const minutes = number - hours * 60;

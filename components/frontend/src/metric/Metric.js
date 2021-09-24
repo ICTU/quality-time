@@ -10,6 +10,7 @@ import { MetricDetails } from './MetricDetails';
 import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
+import { toLocaleString } from '../utils';
 
 export function Metric({
   datamodel,
@@ -39,7 +40,8 @@ export function Metric({
       <Popup
         trigger={<span>{value + metric_unit}</span>}
         flowing hoverable>
-        Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
+        Last measured <TimeAgo date={measurement_timestring} /> ({toLocaleString(end)})<br/>
+        First measured <TimeAgo date={start}/> ({toLocaleString(start)})
       </Popup>
     )
   }

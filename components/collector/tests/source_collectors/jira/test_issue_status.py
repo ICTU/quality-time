@@ -31,7 +31,7 @@ class JiraIssuesTest(JiraTestCase):
             self.assertEqual("1970-01-01T00:00:00.000+0000", issue_status["created"])
             self.assertNotIn("connection_error", issue_status)
             self.assertNotIn("parse_error", issue_status)
-        self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=created,status", issue_status["api_url"])
+        self.assertEqual("https://jira/rest/api/2/issue/FOO-42?fields=created,status,updated", issue_status["api_url"])
         self.assertEqual("https://jira/browse/FOO-42", issue_status["landing_url"])
 
     async def test_issue_status(self):

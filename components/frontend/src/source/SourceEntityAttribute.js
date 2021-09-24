@@ -2,11 +2,11 @@ import React from 'react';
 import TimeAgo from 'react-timeago';
 import { StatusIcon } from '../metric/StatusIcon';
 import { HyperLink } from '../widgets/HyperLink';
-import { format_minutes } from '../utils';
+import { format_minutes, toLocaleString } from '../utils';
 
 function DateAndTimeAgo(date_string, include_time) {
   const date = new Date(date_string);
-  const locale_string = include_time ? date.toLocaleString() : date.toLocaleDateString();
+  const locale_string = include_time ? toLocaleString(date) : date.toLocaleDateString();
   return <>{locale_string} <font color="grey">(<TimeAgo date={date_string} />)</font></>;
 }
 

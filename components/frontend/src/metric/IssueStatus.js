@@ -2,6 +2,13 @@ import React from 'react';
 import TimeAgo from 'react-timeago';
 import { Label, Popup } from 'semantic-ui-react';
 import { HyperLink } from '../widgets/HyperLink';
+import { toLocaleString } from '../utils';
+
+function StatusDeltaTimeAgo({ delta, date }) {
+    return (
+        <>{delta} <TimeAgo date={date} /> ({toLocaleString(date)})</>
+    )
+}
 
 export function IssueStatus({ metric }) {
     const issueStatuses = metric.issue_status || [];
@@ -18,9 +25,13 @@ export function IssueStatus({ metric }) {
         }
         if (!popupContent && issueStatus.created) {
             const creationDate = new Date(issueStatus.created);
-            popupContent = <>Created <TimeAgo date={issueStatus.created}/> ({creationDate.toLocaleString()})</>
+            popupContent = <StatusDeltaTimeAgo delta="Created" date={creationDate} />
+            if (issueStatus.updated) {
+                const updateDate = new Date(issueStatus.updated);
+                popupContent = <>{popupContent}<br/><StatusDeltaTimeAgo delta="Updated" date={updateDate} /></>
+            }
         }
-        if (popupContent){
+        if (popupContent) {
             label = <Popup content={popupContent} flowing hoverable trigger={label} />
         }
         return <div key={issueStatus.issue_id}>{label}</div>

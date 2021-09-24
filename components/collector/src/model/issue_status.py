@@ -14,6 +14,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         *,
         name: str = None,
         created: str = None,
+        updated: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
@@ -22,6 +23,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self.parse_error = parse_error
         self.connection_error = connection_error
         self.created = created
+        self.updated = updated
         self.api_url: Optional[URL] = None
         self.landing_url: Optional[URL] = None
 
@@ -33,6 +35,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
             parse_error=self.parse_error,
             connection_error=self.connection_error,
             created=self.created,
+            updated=self.updated,
             api_url=self.api_url,
             landing_url=self.landing_url,
         )
