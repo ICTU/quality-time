@@ -1,22 +1,15 @@
 import React from 'react';
-import TimeAgo from 'react-timeago';
 import { Label, Popup } from 'semantic-ui-react';
 import { HyperLink } from '../widgets/HyperLink';
-import { toLocaleString } from '../utils';
-
-function StatusDeltaTimeAgo({ delta, date }) {
-    return (
-        <>{delta} <TimeAgo date={date} /> ({toLocaleString(date)})</>
-    )
-}
+import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 
 export function IssueStatus({ metric }) {
     const issueStatuses = metric.issue_status || [];
     const statuses = issueStatuses.map((issueStatus) => {
-        let popupContent = "";
+        let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
         if (issueStatus.connection_error) { popupContent = "Connection error" }
         if (issueStatus.parse_error) { popupContent = "Parse error" }
-        const color = popupContent ? "red" : "grey";
+        const color = popupContent ? "red" : "blue";
         const basic = popupContent ? false : true;
         let label = <Label basic={basic} color={color}>{issueStatus.issue_id}<Label.Detail>{issueStatus.name || "?"}</Label.Detail></Label>
         if (issueStatus.landing_url) {
@@ -24,11 +17,9 @@ export function IssueStatus({ metric }) {
             label = <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
         }
         if (!popupContent && issueStatus.created) {
-            const creationDate = new Date(issueStatus.created);
-            popupContent = <StatusDeltaTimeAgo delta="Created" date={creationDate} />
+            popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
             if (issueStatus.updated) {
-                const updateDate = new Date(issueStatus.updated);
-                popupContent = <>{popupContent}<br/><StatusDeltaTimeAgo delta="Updated" date={updateDate} /></>
+                popupContent = <>{popupContent}<br/><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
             }
         }
         if (popupContent) {

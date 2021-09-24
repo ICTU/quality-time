@@ -24,15 +24,15 @@ it("displays the update date", async () => {
     creationDate.setDate(creationDate.getDate() - 4);
     let updateDate = new Date();
     updateDate.setDate(updateDate.getDate() - 2);
-    const metric = { 
+    const metric = {
         issue_status: [
             { issue_id: "123", name: "done", created: creationDate.toISOString(), updated: updateDate.toISOString()}
-        ] 
+        ]
     }
     const { queryByText } = render(<IssueStatus metric={metric} />)
     userEvent.hover(queryByText(/123/))
-    await waitFor(() => { 
-        expect(queryByText("4 days ago")).not.toBe(null); 
+    await waitFor(() => {
+        expect(queryByText("4 days ago")).not.toBe(null);
         expect(queryByText("2 days ago")).not.toBe(null);
     })
 });

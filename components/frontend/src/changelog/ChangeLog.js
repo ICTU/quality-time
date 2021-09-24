@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Feed, Form, Icon, Segment } from 'semantic-ui-react';
-import TimeAgo from 'react-timeago';
 import { get_changelog } from '../api/changelog';
 import { Avatar } from '../widgets/Avatar';
-import { toLocaleString } from '../utils';
+import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import './ChangeLog.css';
 
 function Event({ description, email, timestamp }) {
@@ -13,7 +12,7 @@ function Event({ description, email, timestamp }) {
             <Feed.Content>
                 <Feed.Summary>
                     {description}
-                    <Feed.Date>{toLocaleString(new Date(timestamp))}, <TimeAgo date={timestamp} /></Feed.Date>
+                    <Feed.Date><TimeAgoWithDate date={timestamp}/></Feed.Date>
                 </Feed.Summary>
             </Feed.Content>
         </Feed.Event>
