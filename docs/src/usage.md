@@ -426,6 +426,10 @@ Each metric table has a 'hamburger' menu on the top left-hand side that can be u
 
 As *Quality-time* has to open the report in a (headless) browser and load all the metrics, creating the PDF can take some time. Especially for big reports.
 
+```{tip}
+The report title in the footer of the PDF will link to the online version of the same report.
+```
+
 ### Manually
 
 To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.

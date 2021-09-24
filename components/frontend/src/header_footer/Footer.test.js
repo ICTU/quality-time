@@ -7,6 +7,8 @@ describe("<Footer />", () => {
       const last_update = new Date();
       const wrapper = mount(<Footer report={{title: "Report"}} last_update={last_update} />);
       expect(wrapper.find("AboutReportColumn").find("ListItem").at(0).text()).toStrictEqual("Report");
+      expect(wrapper.find("AboutReportColumn").find("ListItem").at(0).prop('href')).not.toBe(null);
+      expect(wrapper.find("AboutReportColumn").find("ListItem").at(0).prop('href')).not.toBe(undefined);
   });
   it('renders the quote title when there is no report', () => {
       const wrapper = mount(<Footer />);
