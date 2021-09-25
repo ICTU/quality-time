@@ -16,6 +16,12 @@ class DescribedModelTest(MetaModelTestCase):
             "Description.", DescribedModel.parse_obj(dict(name="Name", description="Description")).description
         )
 
+    def test_description_with_punctuation(self):
+        """Test that a description with punctuation passes the check."""
+        self.assertEqual(
+            "Description?", DescribedModel.parse_obj(dict(name="Name", description="Description?")).description
+        )
+
     def test_missing_description(self):
         """Test that the description is mandatory."""
         self.check_validation_error("description\n  field required", name="Name")

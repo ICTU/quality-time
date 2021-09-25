@@ -1,5 +1,7 @@
 """Data model base classes."""
 
+import string
+
 from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
 
 
@@ -17,4 +19,4 @@ class DescribedModel(NamedModel):  # pylint: disable=too-few-public-methods
     @validator("description")
     def set_description(cls, description):  # pylint: disable=no-self-argument,no-self-use
         """Add a dot if needed."""
-        return description if description.endswith(".") else description + "."
+        return description if description.endswith(tuple(string.punctuation)) else description + "."
