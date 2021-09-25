@@ -7,7 +7,7 @@ from ..parameters import IntegerParameter
 
 MANUAL_NUMBER = Source(
     name="Manual number",
-    description="A manual number.",
+    description="A number entered manually by a Quality-time user.",
     parameters=dict(
         number=IntegerParameter(
             name="Number",
@@ -36,6 +36,7 @@ MANUAL_NUMBER = Source(
                 "scalability",
                 "slow_transactions",
                 "security_warnings",
+                "sentiment",
                 "suppressed_violations",
                 "test_cases",
                 "tests",

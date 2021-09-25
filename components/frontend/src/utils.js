@@ -94,11 +94,14 @@ export function formatMetricUnit(metricType, metric, withMultiple = true) {
 }
 
 export function formatMetricScale(metric) {
-    return metric.scale === "percentage" ? "% " : " ";
+    return metric.scale === "percentage" ? "%" : "";
 }
 
 export function formatMetricScaleAndUnit(metricType, metric, withMultiple = true) {
-    return `${formatMetricScale(metric)}${formatMetricUnit(metricType, metric, withMultiple)}`;
+    const scale = formatMetricScale(metric);
+    const unit = formatMetricUnit(metricType, metric, withMultiple);
+    const sep = unit ? " " : "";
+    return `${scale}${sep}${unit}`;
 }
 
 export function useURLSearchQuery(history, key, state_type, default_value) {

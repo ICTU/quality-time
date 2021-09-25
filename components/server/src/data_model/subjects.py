@@ -30,6 +30,7 @@ SUBJECTS = Subjects.parse_obj(
                 "unmerged_branches",
                 "user_story_points",
                 "velocity",
+                "sentiment",
             ],
         ),
         report=dict(

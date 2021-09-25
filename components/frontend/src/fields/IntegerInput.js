@@ -8,7 +8,7 @@ export function IntegerInput(props) {
     const [value, setValue] = useState(initialValue)
 
     function readOnly(permissions) {
-      return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
+        return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
     }
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
@@ -27,7 +27,7 @@ export function IntegerInput(props) {
             set_value(value)
         }
     }
-    const fixedProps = { fluid: true, focus: true, labelPosition: "right", type: "number", width: 16 }
+    const fixedProps = { fluid: true, focus: true, labelPosition: unit ? "right" : "left", type: "number", width: 16 }
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
             <Permissions.Consumer>{(permissions) =>
@@ -45,7 +45,7 @@ export function IntegerInput(props) {
                 >
                     {prefix ? <Label basic>{prefix}</Label> : null}
                     <input />
-                    <Label basic>{unit}</Label>
+                    {unit ? <Label basic>{unit}</Label> : null}
                 </Form.Input>}
             </Permissions.Consumer>
         </Form>

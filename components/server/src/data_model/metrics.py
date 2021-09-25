@@ -267,6 +267,16 @@ METRICS = Metrics.parse_obj(
             ],
             tags=[Tag.SECURITY],
         ),
+        sentiment=dict(
+            name="Sentiment",
+            description="How are the team members feeling?",
+            unit=Unit.NONE,
+            addition=Addition.MIN,
+            direction=Direction.MORE_IS_BETTER,
+            target="10",
+            near_target="8",
+            sources=["manual_number"],
+        ),
         suppressed_violations=dict(
             name="Suppressed violations",
             description="The amount of violations suppressed in the source.",
