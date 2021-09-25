@@ -60,12 +60,13 @@ class Metric(DescribedModel):
     @validator("default_source", always=True)
     def set_default_source(cls, default_source, values):  # pylint: disable=no-self-argument,no-self-use
         """If the metric is supported by just one source besides manual_number, make that source the default source."""
-        sources = [source for source in values.get("sources", []) if source != "manual_number"]
+        sources = values.get("sources", [])
+        sources_except_manual_number = [source for source in sources if source != "manual_number"]
+        if default_source is None and len(sources_except_manual_number) == 1:
+            default_source = sources_except_manual_number[0]
         if default_source is None and len(sources) == 1:
             default_source = sources[0]
-        if default_source is None:
-            default_source = "manual_number"
-        if default_source not in values.get("sources", []):
+        if default_source not in sources:
             raise ValueError(f"Default source '{default_source}' is not listed as source")
         return default_source
 
