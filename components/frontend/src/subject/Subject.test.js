@@ -29,9 +29,9 @@ it('shows the subject title and subject details', async () => {
 
   // mock child components to check which one gets rendered
   jest.mock("./SubjectDetails")
-  SubjectDetails.SubjectDetails = () => <tbody data-testid="subject-details"></tbody>
+  SubjectDetails.SubjectDetails = () => <table><tbody data-testid="subject-details"></tbody></table>
   jest.mock("../trend_table/TrendTable")
-  TrendTable.TrendTable = () => <tbody data-testid="subject-table"></tbody>
+  TrendTable.TrendTable = () => <table><tbody data-testid="subject-table"></tbody></table>
 
   const { queryAllByText, queryAllByTestId } = render(
     <Subject 
