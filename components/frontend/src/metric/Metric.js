@@ -11,6 +11,20 @@ import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
 
+function MeasurementValue({ metric, metric_type, metric_unit, latest_measurement }) {
+    const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
+    const valueText = <span>{value + metric_unit}</span>
+    if (latest_measurement) {
+        return (
+            <Popup trigger={valueText} flowing hoverable>
+                <TimeAgoWithDate date={latest_measurement.end}>Last measured</TimeAgoWithDate><br />
+                <TimeAgoWithDate date={latest_measurement.start}>First measured</TimeAgoWithDate>
+            </Popup>
+        )
+    }
+    return valueText;
+}
+
 export function Metric({
     datamodel,
     reports_overview,
@@ -28,19 +42,6 @@ export function Metric({
     hiddenColumns,
     reload
 }) {
-    function MeasurementValue() {
-        const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
-        const valueText = <span>{value + metric_unit}</span>
-        if (latest_measurement) {
-            return (
-                <Popup trigger={valueText} flowing hoverable>
-                    <TimeAgoWithDate date={latest_measurement.end}>Last measured</TimeAgoWithDate><br />
-                    <TimeAgoWithDate date={latest_measurement.start}>First measured</TimeAgoWithDate>
-                </Popup>
-            )
-        }
-        return valueText;
-    }
     function measurement_target() {
         const metric_direction = get_metric_direction(metric, datamodel)
         let debt_end = "";
@@ -102,7 +103,7 @@ export function Metric({
             <Table.Cell>{metric_name}</Table.Cell>
             {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue /></Table.Cell>}
+            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_type={metric_type} metric_unit={metric_unit} latest_measurement={latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
