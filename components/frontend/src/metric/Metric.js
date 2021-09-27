@@ -5,11 +5,11 @@ import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { IssueStatus } from './IssueStatus';
-import "./Metric.css";
 import { MetricDetails } from './MetricDetails';
 import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
+import "./Metric.css";
 
 function MeasurementValue({ metric, metric_type, metric_unit, latest_measurement }) {
     const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
@@ -40,6 +40,12 @@ function MeasurementTarget({ datamodel, metric, metric_type, metric_unit }) {
     return `${metric_direction} ${target}${metric_unit}${debt}`
 }
 
+function MeasurementSources({ datamodel, metric, latest_measurement }) {
+    const sources = latest_measurement?.sources ?? [];
+    return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
+        metric={metric} source={source} datamodel={datamodel} />])
+}
+
 export function Metric({
     datamodel,
     reports_overview,
@@ -57,14 +63,9 @@ export function Metric({
     hiddenColumns,
     reload
 }) {
-    function measurement_sources() {
-        return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-            metric={metric} source={source} datamodel={datamodel} />])
-    }
     const metric_type = datamodel.metrics[metric.type];
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
-    const sources = (latest_measurement && latest_measurement.sources) || [];
     const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
     const metric_name = get_metric_name(metric, datamodel);
     const details = (
@@ -106,7 +107,7 @@ export function Metric({
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
             {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_type={metric_type} metric_unit={metric_unit} latest_measurement={latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget datamodel={datamodel} metric={metric} metric_type={metric_type} metric_unit={metric_unit} /></Table.Cell>}
-            {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
+            {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources datamodel={datamodel} metric={metric} latest_measurement={latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
