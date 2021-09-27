@@ -57,20 +57,6 @@ export function Metric({
     hiddenColumns,
     reload
 }) {
-    function measurement_target() {
-        const metric_direction = get_metric_direction(metric, datamodel)
-        let debt_end = "";
-        if (metric.debt_end_date) {
-            const end_date = new Date(metric.debt_end_date);
-            debt_end = ` until ${end_date.toLocaleDateString()}`;
-        }
-        const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
-        let target = get_metric_target(metric);
-        if (target && metric_type.unit === "minutes" && metric.scale !== "percentage") {
-            target = format_minutes(target)
-        }
-        return `${metric_direction} ${target}${metric_unit}${debt}`
-    }
     function measurement_sources() {
         return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
             metric={metric} source={source} datamodel={datamodel} />])
