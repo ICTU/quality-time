@@ -25,6 +25,21 @@ function MeasurementValue({ metric, metric_type, metric_unit, latest_measurement
     return valueText;
 }
 
+function MeasurementTarget({ datamodel, metric, metric_type, metric_unit }) {
+    const metric_direction = get_metric_direction(metric, datamodel)
+    let debt_end = "";
+    if (metric.debt_end_date) {
+        const end_date = new Date(metric.debt_end_date);
+        debt_end = ` until ${end_date.toLocaleDateString()}`;
+    }
+    const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
+    let target = get_metric_target(metric);
+    if (target && metric_type.unit === "minutes" && metric.scale !== "percentage") {
+        target = format_minutes(target)
+    }
+    return `${metric_direction} ${target}${metric_unit}${debt}`
+}
+
 export function Metric({
     datamodel,
     reports_overview,
@@ -104,7 +119,7 @@ export function Metric({
             {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
             {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_type={metric_type} metric_unit={metric_unit} latest_measurement={latest_measurement} /></Table.Cell>}
-            {!hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
+            {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget datamodel={datamodel} metric={metric} metric_type={metric_type} metric_unit={metric_unit} /></Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} /></Table.Cell>}
