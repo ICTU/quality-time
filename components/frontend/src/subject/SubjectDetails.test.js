@@ -32,7 +32,7 @@ it('changes the sort column when clicked', () => {
             hiddenColumns={[]}
             visibleDetailsTabs={[]} />
     );
-    for (let index of [0, 1, 2, 3, 4, 5, 6]) {
+    for (let index of [0, 1, 2, 3, 4, 5, 6, 7]) {
         expect(table_header_cell(index).prop("sorted")).toBe(null);
         table_header_cell(index).simulate("click");
         expect(table_header_cell(index).prop("sorted")).toBe("ascending");
