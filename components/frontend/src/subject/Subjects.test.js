@@ -1,4 +1,6 @@
 import React from 'react';
+import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from '@testing-library/user-event';
 import { shallow } from 'enzyme';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
@@ -12,7 +14,7 @@ function subjects() {
     return (
         shallow(
             <Subjects
-                clearHiddenColumns={() => {/*Dummy implementation*/}}
+                clearHiddenColumns={() => {/*Dummy implementation*/ }}
                 datamodel={datamodel}
                 hiddenColumns={[]}
                 history={mockHistory}
@@ -20,32 +22,57 @@ function subjects() {
                 report={report}
                 subject_uuid="subject_uuid"
                 tags={[]}
-                toggleHiddenColumn={() => {/*Dummy implementation*/}}
+                toggleHiddenColumn={() => {/*Dummy implementation*/ }}
             />
         )
     )
 }
 
+function render_subjects(permissions = []) {
+    return render(
+        <Permissions.Provider value={permissions}>
+            <Subjects
+                datamodel={datamodel}
+                hiddenColumns={[]}
+                history={{ location: {}, replace: () => {/* Dummy implementation */ } }}
+                report={report}
+                reports={[report]}
+                tags={[]}
+            />
+        </Permissions.Provider>
+    )
+}
+
+
+it("shows the subjects", () => {
+    render_subjects();
+    expect(screen.getAllByText(/Subject/).length).toBe(1);
+})
+
+it("shows the add subject button when editable", () => {
+    render_subjects([EDIT_REPORT_PERMISSION]);
+    expect(screen.getAllByText(/Add subject/).length).toBe(1);
+})
+
+it("does not show the add subject button when not editable", () => {
+    render_subjects();
+    expect(screen.queryByText(/Add subject/)).toBeNull();
+})
+
+it("hides metrics not requiring action", () => {
+    render_subjects();
+    userEvent.click(screen.getByRole("listbox"));
+    expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
+    fireEvent.click(screen.getByText(/Hide metrics not requiring action/));
+    fireEvent.click(screen.getByRole("listbox"));
+    expect(screen.queryByText(/Hide metrics not requiring action/)).toBeNull()
+    fireEvent.click(screen.getByText(/Show all metrics/));
+    fireEvent.click(screen.getByRole("listbox"));
+    expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
+})
+
 describe("<Subjects />", () => {
     beforeEach(() => { mockHistory["replace"] = jest.fn(); mockHistory.location = {} });
-    it('shows the subjects', () => {
-        const wrapper = shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} history={mockHistory} hidden_columns={[]} hide_metrics_not_requiring_action={false} />);
-        expect(wrapper.find("Subject").length).toBe(1);
-    });
-    it('shows the add subject button when editable', () => {
-        const wrapper = shallow(<Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} history={mockHistory} hidden_columns={[]} hide_metrics_not_requiring_action={false} />
-        </Permissions.Provider>);
-        expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddButton").prop("item_type")).toStrictEqual("subject");
-    });
-    it('hides metrics not requiring action', () => {
-        const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(2).simulate("click");
-        expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(2).simulate("click");
-        expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-    });
     it('hides metrics not requiring action on load', () => {
         mockHistory.location.search = "?hide_metrics_not_requiring_action=true"
         const wrapper = subjects();
