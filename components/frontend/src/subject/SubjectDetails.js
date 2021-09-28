@@ -61,115 +61,73 @@ function SubjectTableHeader({ hiddenColumns, toggleHiddenColumn, sortColumn, sor
     )
 }
 
-function createMetricComponents(
-    datamodel,
-    report,
-    report_date,
-    reports_overview,
-    subject_uuid,
-    metrics,
-    changed_fields,
-    visibleDetailsTabs,
-    toggleVisibleDetailsTab,
-    hiddenColumns,
-    setSortColumn,
-    reload) {
-    const subject = report.subjects[subject_uuid];
-    const last_index = Object.entries(subject.metrics).length - 1;
-
-    let components = [];
-    Object.entries(metrics).forEach(([metric_uuid, metric], index) => {
-        components.push(
-            <Metric
-                datamodel={datamodel}
-                reports_overview={reports_overview}
-                report={report}
-                report_date={report_date}
-                subject_uuid={subject_uuid}
-                metric={metric}
-                metric_uuid={metric_uuid}
-                first_metric={index === 0}
-                last_metric={index === last_index}
-                stop_sort={() => setSortColumn(null)}
-                changed_fields={changed_fields}
-                visibleDetailsTabs={visibleDetailsTabs}
-                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                hiddenColumns={hiddenColumns}
-                key={metric_uuid}
-                reload={reload}
-            />)
-    });
-    return components
-}
-
-function sortMetricComponents(datamodel, metricComponents, sortDirection, sortColumn) {
+function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
     const sorters = {
         name: (m1, m2) => {
-            const attribute1 = get_metric_name(m1.props.metric, datamodel);
-            const attribute2 = get_metric_name(m2.props.metric, datamodel);
+            const attribute1 = get_metric_name(m1[1], datamodel);
+            const attribute2 = get_metric_name(m2[1], datamodel);
             return attribute1.localeCompare(attribute2)
         },
         measurement: (m1, m2) => {
-            const attribute1 = get_metric_value(m1.props.metric);
-            const attribute2 = get_metric_value(m2.props.metric);
+            const attribute1 = get_metric_value(m1[1]);
+            const attribute2 = get_metric_value(m2[1]);
             return attribute1.localeCompare(attribute2)
         },
         target: (m1, m2) => {
-            const attribute1 = get_metric_target(m1.props.metric);
-            const attribute2 = get_metric_target(m2.props.metric);
+            const attribute1 = get_metric_target(m1[1]);
+            const attribute2 = get_metric_target(m2[1]);
             return attribute1.localeCompare(attribute2)
         },
         comment: (m1, m2) => {
-            const attribute1 = get_metric_comment(m1.props.metric);
-            const attribute2 = get_metric_comment(m2.props.metric);
+            const attribute1 = get_metric_comment(m1[1]);
+            const attribute2 = get_metric_comment(m2[1]);
             return attribute1.localeCompare(attribute2)
         },
         status: (m1, m2) => {
-            const attribute1 = status_order[get_metric_status(m1.props.metric)];
-            const attribute2 = status_order[get_metric_status(m2.props.metric)];
+            const attribute1 = status_order[get_metric_status(m1[1])];
+            const attribute2 = status_order[get_metric_status(m2[1])];
             return attribute1.localeCompare(attribute2)
         },
         source: (m1, m2) => {
-            let m1_sources = Object.values(m1.props.metric.sources).map((source) => get_source_name(source, datamodel));
+            let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
             m1_sources.sort();
-            let m2_sources = Object.values(m2.props.metric.sources).map((source) => get_source_name(source, datamodel));
+            let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
             m2_sources.sort();
             const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
             const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
             return attribute1.localeCompare(attribute2)
         },
         issues: (m1, m2) => {
-            let m1_issues = get_metric_issue_ids(m1.props.metric);
-            let m2_issues = get_metric_issue_ids(m2.props.metric);
+            let m1_issues = get_metric_issue_ids(m1[1]);
+            let m2_issues = get_metric_issue_ids(m2[1]);
             const attribute1 = m1_issues.length > 0 ? m1_issues[0] : '';
             const attribute2 = m2_issues.length > 0 ? m2_issues[0] : '';
             return attribute1.localeCompare(attribute2)
         },
         tags: (m1, m2) => {
-            let m1_tags = get_metric_tags(m1.props.metric);
-            let m2_tags = get_metric_tags(m2.props.metric);
+            let m1_tags = get_metric_tags(m1[1]);
+            let m2_tags = get_metric_tags(m2[1]);
             const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
             const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
             return attribute1.localeCompare(attribute2)
         }
     }
-    metricComponents.sort(sorters[sortColumn]);
+    metrics.sort(sorters[sortColumn]);
     if (sortDirection === 'descending') {
-        metricComponents.reverse()
+        metrics.reverse()
     }
 }
 
-export function SubjectDetails(props) {
+export function SubjectDetails({ datamodel, report, reports, report_date, reports_overview, subject_uuid, metrics, changed_fields, visibleDetailsTabs, toggleVisibleDetailsTab, hiddenColumns, toggleHiddenColumn, extraHamburgerItems, reload }) {
 
     const [sortDirection, setSortDirection] = useState('ascending');
     const [sortColumn, setSortColumn] = useState(null);
 
-    const metricComponents = createMetricComponents(props.datamodel, props.report, props.report_date, props.reports_overview, props.subject_uuid, props.metrics, props.changed_fields, props.visibleDetailsTabs, props.toggleVisibleDetailsTab, props.hiddenColumns, setSortColumn, props.reload)
+    let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
-        sortMetricComponents(props.datamodel, metricComponents, sortDirection, sortColumn)
+        sortMetrics(datamodel, metricEntries, sortDirection, sortColumn);
     }
-
     function handleSort(column) {
         if (sortColumn === column) {
             if (sortDirection === 'descending') {
@@ -180,23 +138,45 @@ export function SubjectDetails(props) {
             setSortColumn(column)
         }
     }
+    const subject = report.subjects[subject_uuid];
+    const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
         <Table sortable>
             <SubjectTableHeader
-                hiddenColumns={props.hiddenColumns}
-                toggleHiddenColumn={props.toggleHiddenColumn}
+                hiddenColumns={hiddenColumns}
+                toggleHiddenColumn={toggleHiddenColumn}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 handleSort={handleSort}
-                extraHamburgerItems={props.extraHamburgerItems} />
-            <Table.Body>{metricComponents}</Table.Body>
+                extraHamburgerItems={extraHamburgerItems} />
+            <Table.Body>
+                {metricEntries.map(([metric_uuid, metric], index) =>
+                    <Metric
+                        datamodel={datamodel}
+                        reports_overview={reports_overview}
+                        report={report}
+                        report_date={report_date}
+                        subject_uuid={subject_uuid}
+                        metric={metric}
+                        metric_uuid={metric_uuid}
+                        first_metric={index === 0}
+                        last_metric={index === last_index}
+                        stop_sort={() => setSortColumn(null)}
+                        changed_fields={changed_fields}
+                        visibleDetailsTabs={visibleDetailsTabs}
+                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                        hiddenColumns={hiddenColumns}
+                        key={metric_uuid}
+                        reload={reload}
+                    />)}
+            </Table.Body>
             <SubjectFooter
-                datamodel={props.datamodel}
-                subjectUuid={props.subject_uuid}
-                subject={props.report.subjects[props.subject_uuid]}
-                reload={props.reload}
-                reports={props.reports}
+                datamodel={datamodel}
+                subjectUuid={subject_uuid}
+                subject={report.subjects[subject_uuid]}
+                reload={reload}
+                reports={reports}
                 resetSortColumn={() => { setSortColumn(null) }} />
         </Table>
     )
