@@ -119,8 +119,22 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
     }
 }
 
-export function SubjectDetails({ datamodel, report, reports, report_date, reports_overview, subject_uuid, metrics, changed_fields, visibleDetailsTabs, toggleVisibleDetailsTab, hiddenColumns, toggleHiddenColumn, extraHamburgerItems, reload }) {
-
+export function SubjectDetails({
+    datamodel,
+    report,
+    reports,
+    report_date,
+    reports_overview,
+    subject_uuid,
+    metrics,
+    changed_fields,
+    visibleDetailsTabs,
+    toggleVisibleDetailsTab,
+    hiddenColumns,
+    toggleHiddenColumn,
+    extraHamburgerItems,
+    reload
+}) {
     const [sortDirection, setSortDirection] = useState('ascending');
     const [sortColumn, setSortColumn] = useState(null);
 

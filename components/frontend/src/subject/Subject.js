@@ -3,9 +3,25 @@ import { Dropdown } from 'semantic-ui-react';
 import { get_subject_measurements } from '../api/subject';
 import { TrendTable } from '../trend_table/TrendTable';
 import { SubjectDetails } from './SubjectDetails';
-import { SubjectFooter } from './SubjectFooter';
 import { SubjectTitle } from './SubjectTitle';
 
+function HamburgerItems({hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, }) {
+    return (
+        <>
+            <Dropdown.Header>Views</Dropdown.Header>
+            <Dropdown.Item onClick={() => setSubjectTrendTable(false)} active={!subjectTrendTable} >
+                Details
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSubjectTrendTable(true)} active={subjectTrendTable} >
+                Trend table
+            </Dropdown.Item>
+            <Dropdown.Header>Rows</Dropdown.Header>
+            <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
+                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
+            </Dropdown.Item>
+        </>
+    )
+}
 
 function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     const metrics = {}
@@ -17,72 +33,97 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     return metrics
 }
 
-
-export function Subject(props) {
-
-    const subject = props.report.subjects[props.subject_uuid];
-    const metrics = displayedMetrics(subject.metrics, props.hideMetricsNotRequiringAction, props.tags)
+export function Subject( {
+    changed_fields,
+    datamodel,
+    first_subject,
+    hiddenColumns,
+    hideMetricsNotRequiringAction,
+    last_subject,
+    report,
+    report_date,
+    reports,
+    reports_overview,
+    setHideMetricsNotRequiringAction,
+    setSubjectTrendTable,
+    setTrendTableInterval,
+    setTrendTableNrDates,
+    subject_uuid,
+    subjectTrendTable,
+    tags,
+    toggleHiddenColumn,
+    toggleVisibleDetailsTab,
+    trendTableInterval,
+    trendTableNrDates,
+    visibleDetailsTabs,
+    reload
+}) {
+    const subject = report.subjects[subject_uuid];
+    const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
 
     const [measurements, setMeasurements] = useState([]);
 
     useEffect(() => {
-        if (props.subjectTrendTable) {
-            get_subject_measurements(props.subject_uuid, props.report_date).then(json => {
+        if (subjectTrendTable) {
+            get_subject_measurements(subject_uuid, report_date).then(json => {
                 if (json.ok !== false) {
                     setMeasurements(json.measurements)
                 }
             })
         }
         // eslint-disable-next-line
-    }, [props.subjectTrendTable]);
+    }, [subjectTrendTable]);
 
-    const hamburgerItems = (
-        <>
-            <Dropdown.Header>Views</Dropdown.Header>
-            <Dropdown.Item onClick={() => props.setSubjectTrendTable(false)} active={!props.subjectTrendTable} >
-                Details
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => props.setSubjectTrendTable(true)} active={props.subjectTrendTable} >
-                Trend table
-            </Dropdown.Item>
-            <Dropdown.Header>Rows</Dropdown.Header>
-            <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
-                {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-            </Dropdown.Item>
-        </>
-    )
-
-    const subjectFooter = (
-        <SubjectFooter
-            datamodel={props.datamodel}
-            subjectUuid={props.subject_uuid}
-            subject={props.report.subjects[props.subject_uuid]}
-            reload={props.reload}
-            reports={props.reports}
-            resetSortColumn={() => { }} />
-    )
+    const hamburgerItems = <HamburgerItems
+        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+        subjectTrendTable={subjectTrendTable}
+        setSubjectTrendTable={setSubjectTrendTable}
+        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+    />
 
     return (
-        <div id={props.subject_uuid}>
-            <SubjectTitle subject={subject} {...props} />
-            {props.subjectTrendTable ?
+        <div id={subject_uuid}>
+            <SubjectTitle
+                datamodel={datamodel}
+                report={report}
+                subject={subject}
+                subject_uuid={subject_uuid}
+                first_subject={first_subject}
+                last_subject={last_subject}
+                reload={reload} />
+            {subjectTrendTable ?
                 <TrendTable
-                    datamodel={props.datamodel}
-                    reportDate={props.report_date}
+                    datamodel={datamodel}
+                    reportDate={report_date}
                     metrics={metrics}
                     measurements={measurements}
                     extraHamburgerItems={hamburgerItems}
-                    trendTableInterval={props.trendTableInterval}
-                    setTrendTableInterval={props.setTrendTableInterval}
-                    trendTableNrDates={props.trendTableNrDates}
-                    setTrendTableNrDates={props.setTrendTableNrDates}
-                    tableFooter={subjectFooter}
+                    trendTableInterval={trendTableInterval}
+                    setTrendTableInterval={setTrendTableInterval}
+                    trendTableNrDates={trendTableNrDates}
+                    setTrendTableNrDates={setTrendTableNrDates}
+                    subject_uuid={subject_uuid}
+                    subject={subject}
+                    reload={reload}
+                    reports={reports}
                 />
                 :
                 <SubjectDetails
+                    changed_fields={changed_fields}
+                    datamodel={datamodel}
+                    hiddenColumns={hiddenColumns}
+                    report={report}
+                    reports={reports}
+                    report_date={report_date}
+                    reports_overview={reports_overview}
+                    subject_uuid={subject_uuid}
                     metrics={metrics}
+                    visibleDetailsTabs={visibleDetailsTabs}
+                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                    toggleHiddenColumn={toggleHiddenColumn}
                     extraHamburgerItems={hamburgerItems}
-                    {...props} />
+                    reload={reload}
+                />
             }
         </div>
     )

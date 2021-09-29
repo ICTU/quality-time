@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { get_metric_name } from '../utils';
+import { SubjectFooter } from '../subject/SubjectFooter';
 import { MeasurementsRow } from './MeasurementsRow';
 import { TrendTableHeader } from './TrendTableHeader';
 
@@ -27,8 +28,11 @@ export function TrendTable({
   trendTableInterval,
   setTrendTableInterval,
   trendTableNrDates,
+  reports,
   setTrendTableNrDates,
-  tableFooter,
+  subject_uuid,
+  subject,
+  reload
 }) {
 
   const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
@@ -58,7 +62,13 @@ export function TrendTable({
         })
         }
       </Table.Body>
-      {tableFooter}
+      <SubjectFooter
+            datamodel={datamodel}
+            subjectUuid={subject_uuid}
+            subject={subject}
+            reload={reload}
+            reports={reports}
+            resetSortColumn={() => { }} />
     </Table>
   )
 }
