@@ -96,9 +96,9 @@ describe("<Subjects />", () => {
     it('toggles subject trend table', () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(1).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HamburgerItems").dive().find("DropdownItem").at(1).simulate("click");
         expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(true);
-        wrapper.find("Subject").dive().find("TrendTable").dive().find("TrendTableHeader").dive().find("HamburgerMenu").dive().find("DropdownItem").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("TrendTable").dive().find("TrendTableHeader").dive().find("HamburgerMenu").dive().find("HamburgerItems").dive().find("DropdownItem").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
     })
 });
