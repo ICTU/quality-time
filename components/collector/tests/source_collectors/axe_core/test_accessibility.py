@@ -125,12 +125,27 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         self.assert_measurement(response, value="2", entities=self.expected_entities)  # Duplicates are discarded
 
     async def test_json_with_only_violations(self):
-        """Test that a JSON file with just a list of violation works."""
+        """Test that a JSON file with just a list of violations works."""
         for entity in self.expected_entities:
             entity["page"] = ""
             entity["url"] = ""
         self.set_expected_entity_keys()
         response = await self.collect(get_request_json_return_value=self.json["violations"])
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_json_with_nested_lists_with_only_violations(self):
+        """Test that a JSON file with a nested list of violations works."""
+        for entity in self.expected_entities:
+            entity["page"] = ""
+            entity["url"] = ""
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=[self.json["violations"]])
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_json_with_list_of_result_type_dicts(self):
+        """Test that a JSON file with a list of result type dicts works."""
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=[self.json])
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
     async def test_result_type_parameter(self):
