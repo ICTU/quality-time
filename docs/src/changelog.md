@@ -8,11 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.26.0-rc.2 - 2021-09-26
+## [Unreleased]
 
 ### Changed
 
 - Use tabs to better organize the settings that are accessible via expandable headers. Also add icons to the tabs.
+- More flexible parsing of Axe-core JSON files to account for the different ways people aggregate Axe-core output into one JSON file. Closes [#2657](https://github.com/ICTU/quality-time/issues/2657).
 
 ### Added
 

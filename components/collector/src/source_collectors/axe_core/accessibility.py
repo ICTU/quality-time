@@ -15,15 +15,22 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
         """Override to parse the violations."""
         entity_attributes = []
         for response in responses:
-            json = await response.json(content_type=None)
-            if isinstance(json, list):
-                violations = dict(violations=json)
-                url = ""
-            else:
+            for json in self.__parse_json(await response.json(content_type=None)):
                 violations = {result_type: json.get(result_type) for result_type in self._parameter("result_types")}
                 url = json.get("url", "")
-            entity_attributes.extend(self.__parse_violations(violations, url))
+                entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
+
+    def __parse_json(self, json):
+        """Yield dicts with test result (applicable/incomplete/violations/passes) as key and rules as values."""
+        if isinstance(json, list):
+            if json and "tags" in json[0]:
+                yield dict(violations=json)  # The items in the list are violated rules
+            else:
+                for item in json:
+                    yield from self.__parse_json(item)  # Recursively parse the nested JSON
+        else:
+            yield json  # JSON is a dict with result types as keys and rules as values
 
     def __parse_violations(self, violations: dict[str, list[dict[str, list]]], url: str) -> list[dict[str, Any]]:
         """Parse the violations."""
