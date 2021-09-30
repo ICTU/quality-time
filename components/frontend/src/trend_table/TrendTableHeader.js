@@ -6,7 +6,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableN
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell textAlign="left">
+                <Table.HeaderCell textAlign="center">
                     <HamburgerMenu>
                         {extraHamburgerItems}
                         <Dropdown.Header>Number of dates</Dropdown.Header>
