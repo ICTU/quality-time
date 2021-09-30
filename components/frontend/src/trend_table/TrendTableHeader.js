@@ -19,6 +19,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableN
                         )}
                     </HamburgerMenu>
                 </Table.HeaderCell>
+                <Table.HeaderCell>Metric</Table.HeaderCell>
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 <Table.HeaderCell>Unit</Table.HeaderCell>
             </Table.Row>

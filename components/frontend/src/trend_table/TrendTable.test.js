@@ -21,17 +21,19 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-it('Calculates column dates correctly', () => {
+it('calculates column dates correctly', () => {
     const { queryAllByText } = render(
         <TrendTable
             datamodel={datamodel}
             reportDate={reportDate}
             measurements={[]}
             metrics={{ 1: metric }}
+            subject={{metrics: {1: metric}}}
             trendTableInterval={1}
             trendTableNrDates={3}
             setTrendTableInterval={() => {/*Dummy implementation*/ }}
             setTrendTableNrDates={() => {/*Dummy implementation*/ }}
+            visibleDetailsTabs={[]}
         />
     );
 
@@ -46,17 +48,19 @@ it('Calculates column dates correctly', () => {
     })
 });
 
-it('Displays all the metrics', () => {
+it('displays all the metrics', () => {
     const { queryAllByText } = render(
         <TrendTable
             datamodel={datamodel}
             reportDate={reportDate}
             measurements={[]}
             metrics={{ 1: metric, 2: metric2 }}
+            subject={{metrics: {1: metric, 2: metric2}}}
             trendTableInterval={1}
             trendTableNrDates={3}
             setTrendTableInterval={() => {/*Dummy implementation*/ }}
             setTrendTableNrDates={() => {/*Dummy implementation*/ }}
+            visibleDetailsTabs={[]}
         />
     );
 
