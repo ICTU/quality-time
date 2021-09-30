@@ -20,6 +20,7 @@ export function TableRowWithDetails(props) {
                     tabIndex="0"
                     textAlign="center"
                     style={style}
+                    role="button"
                 >
                     <Icon size='large' name={show_details ? "caret down" : "caret right"} />
                 </Table.Cell>
