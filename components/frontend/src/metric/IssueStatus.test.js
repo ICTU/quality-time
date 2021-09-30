@@ -13,7 +13,7 @@ it("displays a link with correct content", async () => {
 it("displays the creation date", async () => {
     let creationDate = new Date();
     creationDate.setDate(creationDate.getDate() - 4);
-    const metric = { issue_status: [{ issue_id: "123", name: "done", created: creationDate.toISOString()}] }
+    const metric = { issue_status: [{ issue_id: "123", name: "done", created: creationDate.toISOString() }] }
     const { queryByText } = render(<IssueStatus metric={metric} />)
     userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText("4 days ago")).not.toBe(null) })
@@ -26,7 +26,7 @@ it("displays the update date", async () => {
     updateDate.setDate(updateDate.getDate() - 2);
     const metric = {
         issue_status: [
-            { issue_id: "123", name: "done", created: creationDate.toISOString(), updated: updateDate.toISOString()}
+            { issue_id: "123", name: "done", created: creationDate.toISOString(), updated: updateDate.toISOString() }
         ]
     }
     const { queryByText } = render(<IssueStatus metric={metric} />)

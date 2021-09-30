@@ -12,7 +12,7 @@ function render_reports_title() {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <ReportsTitle permissions={{}} get_changelog={() => { /* Do nothing */ }} />
         </Permissions.Provider>
-    ) 
+    )
 }
 
 it('sets the title', async () => {
@@ -22,7 +22,7 @@ it('sets the title', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report overview title/), '{selectall}{del}New title{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", {title: "New title"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", { title: "New title" });
 });
 
 it('sets the subtitle', async () => {
@@ -32,7 +32,7 @@ it('sets the subtitle', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{selectall}{del}New subtitle{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {subtitle: "New subtitle"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
 it('sets the edit report permission', async () => {
@@ -45,7 +45,7 @@ it('sets the edit report permission', async () => {
         fireEvent.click(screen.getByText(/Permissions/));
     });
     userEvent.type(screen.getAllByText(/All authenticated users/)[0], 'jadoe{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {permissions: {edit_reports: ["jadoe"]}});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", { permissions: { edit_reports: ["jadoe"] } });
 })
 
 it('sets the edit entities permission', async () => {
@@ -58,7 +58,7 @@ it('sets the edit entities permission', async () => {
         fireEvent.click(screen.getByText(/Permissions/));
     });
     userEvent.type(screen.getAllByText(/All authenticated users/)[1], 'jodoe{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {permissions: {edit_entities: ["jodoe"]}});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", { permissions: { edit_entities: ["jodoe"] } });
 })
 
 it('loads the changelog', async () => {

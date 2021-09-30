@@ -6,7 +6,7 @@ export function show_message(type, title, description) {
 }
 
 export function show_connection_messages(json) {
-    json.availability?.forEach(({status_code, reason}) => {
+    json.availability?.forEach(({ status_code, reason }) => {
         if (status_code === 200) {
             show_message("success", "URL connection OK")
         } else {

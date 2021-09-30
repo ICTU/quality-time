@@ -13,16 +13,16 @@ describe("TrendTableHeader", () => {
     const mockSetNrDates = jest.fn()
 
     it('Renders title bar', () => {
-    
+
         const { queryAllByText, queryAllByRole } = render(
-          <table>
-            <TrendTableHeader 
-                columnDates={dates} 
-                trendTableNrDates={2} 
-                setTrendTableNrDates={mockSetNrDates} 
-                trendTableInterval={2} 
-                setTrendTableInterval={mockSetInterval}/>
-        </table>
+            <table>
+                <TrendTableHeader
+                    columnDates={dates}
+                    trendTableNrDates={2}
+                    setTrendTableNrDates={mockSetNrDates}
+                    trendTableInterval={2}
+                    setTrendTableInterval={mockSetInterval} />
+            </table>
         );
 
         // header cells
@@ -35,15 +35,15 @@ describe("TrendTableHeader", () => {
 
     it('Renders the hamburger menu', () => {
         const { queryAllByText, getByRole, getByText } = render(
-          <table>
-            <TrendTableHeader 
-                extraHamburgerItems={<Dropdown.Item>test item</Dropdown.Item>} 
-                columnDates={dates} 
-                trendTableNrDates={2} 
-                setTrendTableNrDates={mockSetNrDates} 
-                trendTableInterval={2} 
-                setTrendTableInterval={mockSetInterval}/>
-        </table>
+            <table>
+                <TrendTableHeader
+                    extraHamburgerItems={<Dropdown.Item>test item</Dropdown.Item>}
+                    columnDates={dates}
+                    trendTableNrDates={2}
+                    setTrendTableNrDates={mockSetNrDates}
+                    trendTableInterval={2}
+                    setTrendTableInterval={mockSetInterval} />
+            </table>
         );
 
         // no menu yet
@@ -71,14 +71,14 @@ describe("TrendTableHeader", () => {
 
     it('Calls state changing methods', () => {
         const { getByText, getByRole } = render(
-          <table>
-            <TrendTableHeader 
-                columnDates={dates} 
-                trendTableNrDates={2} 
-                setTrendTableNrDates={mockSetNrDates} 
-                trendTableInterval={2} 
-                setTrendTableInterval={mockSetInterval}/>
-        </table>
+            <table>
+                <TrendTableHeader
+                    columnDates={dates}
+                    trendTableNrDates={2}
+                    setTrendTableNrDates={mockSetNrDates}
+                    trendTableInterval={2}
+                    setTrendTableInterval={mockSetInterval} />
+            </table>
         );
 
         fireEvent.click(getByRole("listbox"))

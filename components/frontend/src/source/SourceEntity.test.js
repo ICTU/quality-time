@@ -10,7 +10,7 @@ describe('<SourceEntity />', () => {
             <Permissions.Provider value={[]}>
                 <Table>
                     <Table.Body>
-                        <SourceEntity entity_attributes={["attr"]} entity={{key:"1"}} />
+                        <SourceEntity entity_attributes={["attr"]} entity={{ key: "1" }} />
                     </Table.Body>
                 </Table>
             </Permissions.Provider>);

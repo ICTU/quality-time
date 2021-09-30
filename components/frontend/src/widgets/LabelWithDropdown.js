@@ -6,7 +6,7 @@ export function LabelWithDropdown(props) {
     return (
         <label>
             {label}
-            <span style={{paddingLeft: "6mm", color: props.color || "black"}}>
+            <span style={{ paddingLeft: "6mm", color: props.color || "black" }}>
                 {props.prefix}&nbsp;<Dropdown inline tabIndex="0" {...otherProps} />
             </span>
         </label>

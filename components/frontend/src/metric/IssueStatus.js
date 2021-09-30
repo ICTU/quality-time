@@ -19,7 +19,7 @@ export function IssueStatus({ metric }) {
         if (!popupContent && issueStatus.created) {
             popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
             if (issueStatus.updated) {
-                popupContent = <>{popupContent}<br/><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
+                popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
             }
         }
         if (popupContent) {

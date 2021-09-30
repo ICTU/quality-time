@@ -11,17 +11,17 @@ jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 
 it('shows the add metric button and adds a metric when clicked', async () => {
-    
+
     const { queryAllByText, getByText } = render(
-      <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-        <Table>
-            <SubjectFooter 
-                subjectUuid="subject_uuid" 
-                subject={report.subjects.subject_uuid} 
-                datamodel={datamodel} 
-                resetSortColumn={resetSort} />
-        </Table>
-      </Permissions.Provider>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <Table>
+                <SubjectFooter
+                    subjectUuid="subject_uuid"
+                    subject={report.subjects.subject_uuid}
+                    datamodel={datamodel}
+                    resetSortColumn={resetSort} />
+            </Table>
+        </Permissions.Provider>
     );
     expect(queryAllByText("Add metric").length).toBe(1);
 
@@ -30,46 +30,46 @@ it('shows the add metric button and adds a metric when clicked', async () => {
     });
     expect(resetSort).toBeCalled()
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {});
-  });
-  
-  it('copies a metric when the copy button is clicked and a metric is selected', async () => {
+});
+
+it('copies a metric when the copy button is clicked and a metric is selected', async () => {
     await act(async () => {
-      render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Table>
-                <SubjectFooter 
-                    subjectUuid="subject_uuid" 
-                    subject={report.subjects.subject_uuid} 
-                    datamodel={datamodel} 
-                    reports={[report]}
-                    resetSortColumn={resetSort} />
-            </Table>
-       </Permissions.Provider>);
-      fireEvent.click(screen.getByText(/Copy metric/));
+        render(
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <Table>
+                    <SubjectFooter
+                        subjectUuid="subject_uuid"
+                        subject={report.subjects.subject_uuid}
+                        datamodel={datamodel}
+                        reports={[report]}
+                        resetSortColumn={resetSort} />
+                </Table>
+            </Permissions.Provider>);
+        fireEvent.click(screen.getByText(/Copy metric/));
     });
     await act(async () => {
-      fireEvent.click(screen.getAllByText(/M1/)[0]);
+        fireEvent.click(screen.getAllByText(/M1/)[0]);
     });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
-  });
-  
-  it('moves a metric when the move button is clicked and a metric is selected', async () => {
+});
+
+it('moves a metric when the move button is clicked and a metric is selected', async () => {
     await act(async () => {
-      render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Table>
-                <SubjectFooter 
-                    subjectUuid="subject_uuid" 
-                    subject={report.subjects.subject_uuid} 
-                    datamodel={datamodel} 
-                    reports={[report]}
-                    resetSortColumn={resetSort} />
-            </Table>
-        </Permissions.Provider>)
-      fireEvent.click(screen.getByText(/Move metric/));
+        render(
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <Table>
+                    <SubjectFooter
+                        subjectUuid="subject_uuid"
+                        subject={report.subjects.subject_uuid}
+                        datamodel={datamodel}
+                        reports={[report]}
+                        resetSortColumn={resetSort} />
+                </Table>
+            </Permissions.Provider>)
+        fireEvent.click(screen.getByText(/Move metric/));
     });
     await act(async () => {
-      fireEvent.click(screen.getByText(/Subject 2 title/));
+        fireEvent.click(screen.getByText(/Subject 2 title/));
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});
-  });
+});

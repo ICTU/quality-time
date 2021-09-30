@@ -54,7 +54,7 @@ function ButtonRow(props) {
 }
 
 const NONE_OPTION = {
-    key: null, text: "None", value: null, content: 
+    key: null, text: "None", value: null, content:
         <Header as="h4">
             <Header.Content>None</Header.Content>
         </Header>
@@ -134,7 +134,7 @@ export function ReportTitle({ datamodel, report, go_home, history, reload }) {
     const panes = [
         { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportAttributes report_uuid={report_uuid} reload={reload} title={report.title} subtitle={report.subtitle} /></Tab.Pane> },
         { menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker datamodel={datamodel} report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane>},
+        { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker datamodel={datamodel} report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ]
     return (

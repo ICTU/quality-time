@@ -91,7 +91,7 @@ it('calls the callback on click', async () => {
 it('loads the changelog', async () => {
     await render_metric_details();
     await act(async () => fireEvent.click(screen.getByText(/Changelog/)));
-    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, {metric_uuid: "metric_uuid", report_uuid: "report_uuid"});
+    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid", report_uuid: "report_uuid" });
 });
 
 it('calls the callback on delete', async () => {

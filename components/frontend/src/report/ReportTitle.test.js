@@ -11,12 +11,12 @@ function render_report_title() {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <ReportTitle
-                history={{location: {}}}
+                history={{ location: {} }}
                 report={{ report_uuid: "report_uuid", title: "Report" }}
-                datamodel={{ sources: {jira: {name: "Jira", issue_tracker: true}}}}
+                datamodel={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}
             />
         </Permissions.Provider>
-    ) 
+    )
 }
 
 it('deletes the report', async () => {
@@ -37,7 +37,7 @@ it('sets the title', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report title/), '{selectall}{del}New title{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/title", {title: "New title"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/title", { title: "New title" });
 });
 
 it('sets the subtitle', async () => {
@@ -46,7 +46,7 @@ it('sets the subtitle', async () => {
         fireEvent.click(screen.getByTitle(/expand/));
     });
     userEvent.type(screen.getByLabelText(/Report subtitle/), '{selectall}{del}New subtitle{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/subtitle", {subtitle: "New subtitle"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
 it('sets the issue tracker type', async () => {
@@ -63,7 +63,7 @@ it('sets the issue tracker type', async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Jira/));
     });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/type", {type: "jira"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/type", { type: "jira" });
 });
 
 it('sets the issue tracker url', async () => {
@@ -75,7 +75,7 @@ it('sets the issue tracker url', async () => {
         fireEvent.click(screen.getByText(/Issue tracker/));
     });
     userEvent.type(screen.getByText(/URL/), '{selectall}{del}https://jira{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/url", {url: "https://jira"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/url", { url: "https://jira" });
 });
 
 it('sets the issue tracker username', async () => {
@@ -87,7 +87,7 @@ it('sets the issue tracker username', async () => {
         fireEvent.click(screen.getByText(/Issue tracker/));
     });
     userEvent.type(screen.getByText(/Username/), '{selectall}{del}janedoe{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/username", {username: "janedoe"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/username", { username: "janedoe" });
 });
 
 it('sets the issue tracker username', async () => {
@@ -99,7 +99,7 @@ it('sets the issue tracker username', async () => {
         fireEvent.click(screen.getByText(/Issue tracker/));
     });
     userEvent.type(screen.getByText(/Password/), '{selectall}{del}secret{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/password", {password: "secret"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/password", { password: "secret" });
 });
 
 it('loads the changelog', async () => {

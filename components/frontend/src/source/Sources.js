@@ -60,7 +60,7 @@ export function Sources({ datamodel, reports, report, metric_uuid, metric_type, 
     const source_segments = source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index));
     return (
         <>
-            {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message>: source_segments}
+            {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : source_segments}
             <ButtonSegment />
         </>
     )

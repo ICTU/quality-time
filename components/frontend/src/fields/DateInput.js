@@ -16,7 +16,7 @@ function EditableDateInput(props) {
                 disabled={false}
                 error={props.required && props.value === ""}
                 label={props.label}
-                onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value)}}}
+                onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value) } }}
                 placeholder={props.placeholder}
                 value={props.value}
             />

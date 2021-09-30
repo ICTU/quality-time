@@ -9,7 +9,7 @@ jest.mock("../api/fetch_server_api.js")
 
 const datamodel = {
     metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },
-    sources: { 
+    sources: {
         source_type1: { name: "Source type 1", parameters: {} },
         source_type2: { name: "Source type 2", parameters: {} }
     }
@@ -20,13 +20,13 @@ const report = { report_uuid: "report_uuid", subjects: {} };
 function render_source(props) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Source 
-                datamodel={datamodel} 
-                metric_type="metric_type" 
-                report={report} 
-                reports={[report]} 
-                source={source} 
-                source_uuid="source_uuid" 
+            <Source
+                datamodel={datamodel}
+                metric_type="metric_type"
+                report={report}
+                reports={[report]}
+                source={source}
+                source_uuid="source_uuid"
                 {...props}
             />
         </Permissions.Provider>
@@ -48,7 +48,7 @@ it('changes the source type', async () => {
         fireEvent.click(screen.getAllByText(/Source type 1/)[0]);
     })
     fireEvent.click(screen.getByText(/Source type 2/));
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", {type: "source_type2"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", { type: "source_type2" });
 });
 
 it('changes the source name', async () => {
@@ -56,12 +56,12 @@ it('changes the source name', async () => {
         render_source();
     })
     userEvent.type(screen.getByLabelText(/Source name/), 'New source name{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", {name: "New source name"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", { name: "New source name" });
 });
 
 it('shows a connection error message', async () => {
     await act(async () => {
-        render_source({connection_error: "Oops"});
+        render_source({ connection_error: "Oops" });
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Connection error/).length).toBe(1);
@@ -69,7 +69,7 @@ it('shows a connection error message', async () => {
 
 it('shows a parse error message', async () => {
     await act(async () => {
-        render_source({parse_error: "Oops"});
+        render_source({ parse_error: "Oops" });
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Parse error/).length).toBe(1);
