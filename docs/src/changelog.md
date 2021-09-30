@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.26.0-rc.3 - 2021-09-30
+## [Unreleased]
 
 ### Changed
 
@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
+- Make metrics expandable in the metric trend table view so metrics and sources can be configured in the trend table view as well as in the metric detail view. Closes [#2176](https://github.com/ICTU/quality-time/issues/2176)
 - Allow for adding issues to metrics to e.g. track progress on resolving technical debt. Closes [#2215](https://github.com/ICTU/quality-time/issues/2215) and [#2628](https://github.com/ICTU/quality-time/issues/2628).
 - Make report title in the footer a URL to the report itself. Closes [#2532](https://github.com/ICTU/quality-time/issues/2532).
 - Sentiment metric. Closes [#2533](https://github.com/ICTU/quality-time/issues/2533).
