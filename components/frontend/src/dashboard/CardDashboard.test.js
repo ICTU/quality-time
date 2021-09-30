@@ -32,7 +32,7 @@ describe("<CardDashboard />", () => {
     });
     it('saves the layout after drag', async () => {
         await act(async () => {
-            wrapper.find("ReactGridLayout").at(0).prop("onLayoutChange")([{h: 6, w: 4, x: 200, y: 200}]);
+            wrapper.find("ReactGridLayout").at(0).prop("onLayoutChange")([{ h: 6, w: 4, x: 200, y: 200 }]);
         });
         expect(mockCallback).toHaveBeenCalled();
     });

@@ -22,7 +22,7 @@ const report = {
     }
 };
 
-async function render_subject_title(subject_type="subject_type") {
+async function render_subject_title(subject_type = "subject_type") {
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>

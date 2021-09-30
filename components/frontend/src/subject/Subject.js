@@ -5,7 +5,7 @@ import { TrendTable } from '../trend_table/TrendTable';
 import { SubjectDetails } from './SubjectDetails';
 import { SubjectTitle } from './SubjectTitle';
 
-function HamburgerItems({hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, }) {
+function HamburgerItems({ hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, }) {
     return (
         <>
             <Dropdown.Header>Views</Dropdown.Header>
@@ -33,7 +33,7 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     return metrics
 }
 
-export function Subject( {
+export function Subject({
     changed_fields,
     datamodel,
     first_subject,

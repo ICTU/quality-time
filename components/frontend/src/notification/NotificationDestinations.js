@@ -71,7 +71,7 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
     })
     return (
         <>
-            {notification_destinations.length === 0 ? <Message><Message.Header>No notification destinations</Message.Header><p>No notification destinations have been configured yet.</p></Message>: notification_destinations}
+            {notification_destinations.length === 0 ? <Message><Message.Header>No notification destinations</Message.Header><p>No notification destinations have been configured yet.</p></Message> : notification_destinations}
             <ReadOnlyOrEditable key="1" requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment vertical>
                     <AddButton

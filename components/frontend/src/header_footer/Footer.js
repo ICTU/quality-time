@@ -9,7 +9,7 @@ function FooterItem({ children, icon, url }) {
 function FooterColumn({ children, header, textAlign, width }) {
     return (
         <Grid.Column width={width} textAlign={textAlign}>
-            <Header inverted as='h4'>{header || <>&zwnj;</>}</Header> 
+            <Header inverted as='h4'>{header || <>&zwnj;</>}</Header>
             <List inverted link>
                 {children}
             </List>
