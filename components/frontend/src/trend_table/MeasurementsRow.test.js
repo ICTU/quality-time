@@ -76,6 +76,6 @@ describe("MeasurementRow", () => {
     it('expands the metric', () => {
         const { queryAllByText } = render_measurements_row({ unit: "foo" }, { type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
         fireEvent.click(screen.getByRole("button"));
-
+        expect(queryAllByText("Configuration").length).toBe(1)
     });
 })
