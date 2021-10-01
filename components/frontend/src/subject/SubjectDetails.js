@@ -15,7 +15,7 @@ function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 
 function HamburgerHeader({ hiddenColumns, toggleHiddenColumn, extraHamburgerItems }) {
     return (
-        <Table.HeaderCell collapsing textAlign="center">
+        <Table.HeaderCell textAlign="center">
             <HamburgerMenu>
                 {extraHamburgerItems}
                 <Dropdown.Header>Columns</Dropdown.Header>

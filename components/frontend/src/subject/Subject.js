@@ -93,6 +93,7 @@ export function Subject({
                 reload={reload} />
             {subjectTrendTable ?
                 <TrendTable
+                    changed_fields={changed_fields}
                     datamodel={datamodel}
                     reportDate={report_date}
                     metrics={metrics}
@@ -105,7 +106,11 @@ export function Subject({
                     subject_uuid={subject_uuid}
                     subject={subject}
                     reload={reload}
+                    report={report}
                     reports={reports}
+                    reports_overview={reports_overview}
+                    visibleDetailsTabs={visibleDetailsTabs}
+                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 />
                 :
                 <SubjectDetails
