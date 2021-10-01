@@ -20,6 +20,7 @@ import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
 import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
+import { DataModel } from './context/DataModel';
 
 class App extends Component {
     constructor(props) {
