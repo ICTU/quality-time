@@ -109,7 +109,7 @@ export function Metric({
             {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget datamodel={datamodel} metric={metric} metric_type={metric_type} metric_unit={metric_unit} /></Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources datamodel={datamodel} metric={metric} latest_measurement={latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-            {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} /></Table.Cell>}
+            {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
             {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
         </TableRowWithDetails>
     )

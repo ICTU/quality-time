@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Header, Icon, Menu, Popup, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -79,6 +79,12 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
         }
     );
     trackerSources.push(NONE_OPTION)
+
+    const show_issue_creation_date_help = "Next to the issue status, also show how long ago issue were created. Note: the popup over the issue also shows the exact date when the issue was created."
+    const show_issue_creation_date_label = <label>Show how long ago issues were created <Popup on={['hover', 'focus']} content={show_issue_creation_date_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
+    const show_issue_update_date_help = "Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue also shows the exact date when the issue was last updated."
+    const show_issue_update_date_label = <label>Show how long ago issues were updated <Popup on={['hover', 'focus']} content={show_issue_update_date_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
+
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
@@ -130,7 +136,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                     <SingleChoiceInput
                         id="issue-creation-date"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Show issue creation date in issue column"
+                        label={show_issue_creation_date_label}
                         options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_creation_date", value, reload)}
                         value={report.issue_tracker?.parameters?.show_issue_creation_date ?? false}
@@ -140,7 +146,7 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                     <SingleChoiceInput
                         id="issue-update-date"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Show issue update date in issue column"
+                        label={show_issue_update_date_label}
                         options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_update_date", value, reload)}
                         value={report.issue_tracker?.parameters?.show_issue_update_date ?? false}
