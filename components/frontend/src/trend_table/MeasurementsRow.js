@@ -11,7 +11,6 @@ export function MeasurementsRow(
         first_metric,
         last_metric,
         metric_uuid,
-        metricType,
         metric,
         measurements,
         dates,
@@ -24,6 +23,7 @@ export function MeasurementsRow(
         reload
     }
 ) {
+    const metricType = datamodel.metrics[metric.type];
     const unit = formatMetricUnit(metricType, metric)
     const measurementCells = []
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
@@ -38,10 +38,10 @@ export function MeasurementsRow(
         measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
     })
 
-    const metric_type = datamodel.metrics[metric.type];
+   
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements?.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
-    const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
+    const metric_unit = formatMetricScaleAndUnit(metricType, metric);
     const metricName = get_metric_name(metric, datamodel);
     const details = (
         <MetricDetails
@@ -50,7 +50,7 @@ export function MeasurementsRow(
             measurement={latest_measurement}
             metric_name={metricName}
             scale={metric.scale}
-            unit={formatMetricScaleAndUnit(metric_type, metric, false)}
+            unit={formatMetricScaleAndUnit(metricType, metric, false)}
             datamodel={datamodel}
             report_date={reportDate}
             reports={reports_overview}
