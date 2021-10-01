@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Label, Popup } from 'semantic-ui-react';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';
+import { DataModel } from '../context/Contexts';
 
-export function SourceStatus(props) {
+export function SourceStatus({metric, measurement_source, source_uuid}) {
+    const dataModel = useContext(DataModel)
     // Source may be deleted from report but still referenced in the latest measurement, be prepared:
-    if (!Object.keys(props.metric.sources).includes(props.source_uuid)) { return null }
-    const source = props.metric.sources[props.source_uuid];
-    const source_name = get_source_name(source, props.datamodel);
+    if (!Object.keys(metric.sources).includes(source_uuid)) { return null }
+    const source = metric.sources[source_uuid];
+    const source_name = get_source_name(source, dataModel);
     function source_label() {
-        return (props.source.landing_url ? <HyperLink url={props.source.landing_url}>{source_name}</HyperLink> : source_name)
+        return (measurement_source.landing_url ? <HyperLink url={measurement_source.landing_url}>{source_name}</HyperLink> : source_name)
     }
-    if (props.source.connection_error || props.source.parse_error) {
+    if (measurement_source.connection_error || measurement_source.parse_error) {
         return (
             <Popup
                 flowing hoverable
                 trigger={<Label color='red'>{source_label()}</Label>}>
-                {props.source.connection_error ? 'Connection error' : 'Parse error'}
+                {measurement_source.connection_error ? 'Connection error' : 'Parse error'}
             </Popup>
         )
     } else {

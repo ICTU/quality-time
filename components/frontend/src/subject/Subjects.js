@@ -9,14 +9,14 @@ import { useDelayedRender, useURLSearchQuery } from '../utils';
 import { DataModel } from '../context/Contexts';
 
 export function Subjects({
-        clearHiddenColumns, 
         hiddenColumns, 
         tags, 
         toggleHiddenColumn,
-        report, 
+        report,
+        report_date,
+        reports_overview,
         changed_fields, 
-        reload, 
-        report_date, 
+        reload,
         reports,
         history}) {
     const visible = useDelayedRender();
@@ -32,24 +32,22 @@ export function Subjects({
             {Object.keys(report.subjects).map((subject_uuid, index) =>
                 visible || index < 3 ?
                     <Subject
-                        report={report}
-                        reports={reports}
-                        report_date={report_date}
-                        tags={tags}
                         changed_fields={changed_fields}
-                        clearHiddenColumns={clearHiddenColumns}
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         first_subject={index === 0}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        key={subject_uuid}
                         last_subject={index === last_index}
+                        report={report}
+                        report_date={report_date}
+                        reports={reports}
+                        reports_overview={reports_overview}
                         setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
                         setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
-                        setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
-                        subjectTrendTable={subjectTrendTable}
+                        setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
                         subject_uuid={subject_uuid}
+                        subjectTrendTable={subjectTrendTable}
+                        tags={tags}
                         toggleHiddenColumn={toggleHiddenColumn}
                         toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
                         trendTableInterval={trendTableInterval}

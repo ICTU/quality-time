@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Header } from 'semantic-ui-react';
+import { DataModel } from '../context/Contexts';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Logo } from './Logo';
 
-export function SourceType(props) {
+export function SourceType({metric_type, set_source_attribute, source_type}) {
+    const dataModel = useContext(DataModel)
     let options = [];
-    props.datamodel.metrics[props.metric_type].sources.forEach(
+    dataModel.metrics[metric_type].sources.forEach(
         (key) => {
-            const source_type = props.datamodel.sources[key];
+            const source_type = dataModel.sources[key];
             options.push(
                 {
                     key: key,
@@ -27,8 +29,8 @@ export function SourceType(props) {
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label="Source type"
             options={options}
-            set_value={(value) => props.set_source_attribute("type", value)}
-            value={props.source_type}
+            set_value={(value) => set_source_attribute("type", value)}
+            value={source_type}
         />
     )
 }

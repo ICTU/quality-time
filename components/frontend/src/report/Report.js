@@ -61,6 +61,7 @@ export function Report({
         reload,
         report_date,
         reports,
+        reports_overview,
         history}) {
 
     function navigate_to_subject(event, subject_uuid) {
@@ -99,15 +100,15 @@ export function Report({
                 reload={reload}
             />
             <Subjects
-                clearHiddenColumns={clearHiddenColumns}
                 hiddenColumns={hiddenColumns}
                 tags={tags}
                 toggleHiddenColumn={toggleHiddenColumn}
                 report={report}
+                report_date={report_date}
                 changed_fields={changed_fields}
                 reload={reload}
-                report_date={report_date}
                 reports={reports}
+                reports_overview={reports_overview}
                 history={history}
             />
         </div>

@@ -48,7 +48,7 @@ function MeasurementTarget({ metric, metric_unit }) {
 function MeasurementSources({ metric, latest_measurement }) {
     const sources = latest_measurement?.sources ?? [];
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-        metric={metric} source={source} />])
+        metric={metric} measurement_source={source} />])
 }
 
 export function Metric({
