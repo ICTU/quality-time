@@ -73,9 +73,12 @@ describe("MeasurementRow", () => {
         expect(queryAllByText("hours").length).toBe(1)
     });
 
-    it('expands the metric', () => {
+    it('expands and collapses the metric', () => {
         const { queryAllByText } = render_measurements_row({ unit: "foo" }, { type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
-        fireEvent.click(screen.getByRole("button"));
+        const expand = screen.getByRole("button");
+        fireEvent.click(expand);
         expect(queryAllByText("Configuration").length).toBe(1)
+        fireEvent.click(expand);
+        expect(queryAllByText("Configuration").length).toBe(0)
     });
 })
