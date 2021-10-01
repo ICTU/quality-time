@@ -19,6 +19,7 @@ import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
 import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
+import { DataModel } from './context/DataModel';
 
 class App extends Component {
     constructor(props) {
@@ -188,9 +189,6 @@ class App extends Component {
         const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
         const permissions = this.state.reports_overview.permissions || {};
         const user_permissions = getUserPermissions(this.state.user, this.state.email, this.current_report_is_tag_report(), report_date, permissions)
-        const props = {
-            reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
-        };
         return (
             <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
                 <HashLinkObserver />
@@ -204,29 +202,33 @@ class App extends Component {
                 />
                 <ToastContainer theme="colored" />
                 <Permissions.Provider value={user_permissions}>
-                    <Container fluid className="MainContainer">
-                        {this.state.loading ?
-                            <Segment basic placeholder loading size="massive" />
-                            :
-                            this.state.report_uuid === "" ?
-                                <ReportsOverview
-                                    reports={props.reports}
-                                    open_report={(e, r) => this.open_report(e, r)}
-                                    report_date={report_date}
-                                    reports_overview={this.state.reports_overview}
-                                    reload={props.reload}
-                                />
-                                :
-                                <Report
-                                    datamodel={this.state.datamodel}
-                                    go_home={() => this.go_home()}
-                                    nr_measurements={this.state.nr_measurements}
-                                    report={current_report}
-                                    changed_fields={this.changed_fields}
-                                    {...props}
-                                />
-                        }
-                    </Container>
+                    <DataModel.Provider value={this.state.datamodel}>
+                      <Container fluid className="MainContainer">
+                          {this.state.loading ?
+                              <Segment basic placeholder loading size="massive" />
+                              :
+                              this.state.report_uuid === "" ?
+                                  <ReportsOverview
+                                      reports={this.state.reports}
+                                      open_report={(e, r) => this.open_report(e, r)}
+                                      report_date={report_date}
+                                      reports_overview={this.state.reports_overview}
+                                      reload={(json) => this.reload(json)}
+                                  />
+                                  :
+                                  <Report
+                                      go_home={() => this.go_home()}
+                                      nr_measurements={this.state.nr_measurements}
+                                      report={current_report}
+                                      changed_fields={this.changed_fields}
+                                      reload={(json) => this.reload(json)}
+                                      report_data={report_date}
+                                      reports={this.state.reports}
+                                      history={this.state.history}
+                                  />
+                          }
+                      </Container>
+                    </DataModel.Provider>
                 </Permissions.Provider>
                 <Footer last_update={this.state.last_update} report={current_report} />
             </div>
