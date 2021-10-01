@@ -7,6 +7,7 @@ import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { useDelayedRender, useURLSearchQuery } from '../utils';
+import { DataModel } from '../context/Contexts';
 
 export function Subjects({
         hiddenColumns,

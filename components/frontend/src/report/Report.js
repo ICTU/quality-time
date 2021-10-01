@@ -9,6 +9,7 @@ import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/P
 import { set_report_attribute } from '../api/report';
 import { get_subject_name, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
+import { DataModel } from '../context/Contexts';
 
 function ReportDashboard({report, onClick, hideTags, setTags, tags, reload}) {
     const dataModel = useContext(DataModel)
@@ -62,7 +63,6 @@ export function Report({
         report_date,
         reports,
         history}) {
-
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
