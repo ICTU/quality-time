@@ -20,7 +20,6 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 export function TrendTable({
     changed_fields,
-    datamodel,
     reportDate,
     metrics,
     measurements,

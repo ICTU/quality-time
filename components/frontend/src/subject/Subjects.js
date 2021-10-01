@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
@@ -6,25 +6,41 @@ import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { useDelayedRender, useURLSearchQuery } from '../utils';
+import { DataModel } from '../context/Contexts';
 
-export function Subjects(props) {
+export function Subjects({
+        clearHiddenColumns, 
+        hiddenColumns, 
+        tags, 
+        toggleHiddenColumn,
+        report, 
+        changed_fields, 
+        reload, 
+        report_date, 
+        reports,
+        history}) {
     const visible = useDelayedRender();
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
-    const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(props.history, "subject_trend_table", "boolean")
-    const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(props.history, "trend_table_nr_dates", "integer", 7);
-    const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(props.history, "trend_table_interval", "integer", 1);
-    const last_index = Object.keys(props.report.subjects).length - 1;
+    const dataModel = useContext(DataModel)
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean");
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
+    const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean")
+    const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
+    const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 1);
+    const last_index = Object.keys(report.subjects).length - 1;
     return (
         <>
-            {Object.keys(props.report.subjects).map((subject_uuid, index) =>
+            {Object.keys(report.subjects).map((subject_uuid, index) =>
                 visible || index < 3 ?
                     <Subject
-                        {...props}
-                        clearHiddenColumns={props.clearHiddenColumns}
+                        report={report}
+                        reports={reports}
+                        report_date={report_date}
+                        tags={tags}
+                        changed_fields={changed_fields}
+                        clearHiddenColumns={clearHiddenColumns}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         first_subject={index === 0}
-                        hiddenColumns={props.hiddenColumns}
+                        hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         key={subject_uuid}
                         last_subject={index === last_index}
@@ -34,25 +50,26 @@ export function Subjects(props) {
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
                         subjectTrendTable={subjectTrendTable}
                         subject_uuid={subject_uuid}
-                        toggleHiddenColumn={props.toggleHiddenColumn}
+                        toggleHiddenColumn={toggleHiddenColumn}
                         toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
                         trendTableInterval={trendTableInterval}
                         trendTableNrDates={trendTableNrDates}
                         visibleDetailsTabs={visibleDetailsTabs}
+                        reload={reload}
                     /> : null
             )}
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
-                    <AddButton item_type="subject" onClick={() => add_subject(props.report.report_uuid, props.reload)} />
+                    <AddButton item_type="subject" onClick={() => add_subject(report.report_uuid, reload)} />
                     <CopyButton
                         item_type="subject"
-                        onChange={(source_subject_uuid) => copy_subject(source_subject_uuid, props.report.report_uuid, props.reload)}
-                        get_options={() => subject_options(props.reports, props.datamodel)}
+                        onChange={(source_subject_uuid) => copy_subject(source_subject_uuid, report.report_uuid, reload)}
+                        get_options={() => subject_options(reports, dataModel)}
                     />
                     <MoveButton
                         item_type="subject"
-                        onChange={(source_subject_uuid) => move_subject(source_subject_uuid, props.report.report_uuid, props.reload)}
-                        get_options={() => subject_options(props.reports, props.datamodel, props.report.report_uuid)}
+                        onChange={(source_subject_uuid) => move_subject(source_subject_uuid, report.report_uuid, reload)}
+                        get_options={() => subject_options(reports, dataModel, report.report_uuid)}
                     />
                 </Segment>}
             />

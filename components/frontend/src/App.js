@@ -19,7 +19,7 @@ import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
 import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
-import { DataModel } from './context/DataModel';
+import { DataModel } from './context/Contexts';
 
 class App extends Component {
     constructor(props) {
@@ -222,7 +222,7 @@ class App extends Component {
                                       report={current_report}
                                       changed_fields={this.changed_fields}
                                       reload={(json) => this.reload(json)}
-                                      report_data={report_date}
+                                      report_date={report_date}
                                       reports={this.state.reports}
                                       history={this.state.history}
                                   />
