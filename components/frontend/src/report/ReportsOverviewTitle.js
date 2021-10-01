@@ -75,7 +75,7 @@ function Permissions({ permissions, reload }) {
     )
 }
 
-export function ReportsTitle({ permissions, title, subtitle, reload }) {
+export function ReportsOverviewTitle({ permissions, title, subtitle, reload }) {
     const panes = [
         { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Title title={title} subtitle={subtitle} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={permissions} reload={reload} /></Tab.Pane> },

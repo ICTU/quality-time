@@ -54,23 +54,23 @@ describe("<App/>", () => {
         expect(wrapper.find('ToastContainer').exists()).toBe(true);
         expect(wrapper.find('Container').exists()).toBe(true);
         expect(wrapper.find('Container').find('Segment').exists()).toBe(true);
-        expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
+        expect(wrapper.find('Container').find('ReportsOverview').exists()).toBe(false);
         expect(wrapper.find('Container').find('Report').exists()).toBe(false);
         expect(wrapper.find('Footer').exists()).toBe(true);
     });
 
-    it('renders Reports', () => {
+    it('renders the report overview', () => {
         const wrapper = shallow(<App />);
         wrapper.setState({ loading: false, report_uuid: '' });
-        expect(wrapper.find('Container').find('Reports').exists()).toBe(true);
+        expect(wrapper.find('Container').find('ReportsOverview').exists()).toBe(true);
         expect(wrapper.find('Container').find('Report').exists()).toBe(false);
         expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
     });
 
-    it('renders Report', () => {
+    it('renders a report', () => {
         const wrapper = shallow(<App />);
         wrapper.setState({ loading: false, report_uuid: 'id' });
-        expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
+        expect(wrapper.find('Container').find('ReportsOverview').exists()).toBe(false);
         expect(wrapper.find('Container').find('Report').exists()).toBe(true);
         expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
     });

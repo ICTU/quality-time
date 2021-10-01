@@ -43,7 +43,6 @@ export function Subject({
     report,
     report_date,
     reports,
-    reports_overview,
     setHideMetricsNotRequiringAction,
     setSubjectTrendTable,
     setTrendTableInterval,
@@ -108,7 +107,6 @@ export function Subject({
                     reload={reload}
                     report={report}
                     reports={reports}
-                    reports_overview={reports_overview}
                     visibleDetailsTabs={visibleDetailsTabs}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 />
@@ -120,7 +118,6 @@ export function Subject({
                     report={report}
                     reports={reports}
                     report_date={report_date}
-                    reports_overview={reports_overview}
                     subject_uuid={subject_uuid}
                     metrics={metrics}
                     visibleDetailsTabs={visibleDetailsTabs}

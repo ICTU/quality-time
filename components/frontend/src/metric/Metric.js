@@ -48,7 +48,7 @@ function MeasurementSources({ datamodel, metric, latest_measurement }) {
 
 export function Metric({
     datamodel,
-    reports_overview,
+    reports,
     report,
     report_date,
     subject_uuid,
@@ -76,7 +76,7 @@ export function Metric({
             unit={formatMetricScaleAndUnit(metric_type, metric, false)}
             datamodel={datamodel}
             report_date={report_date}
-            reports={reports_overview}
+            reports={reports}
             report={report}
             subject_uuid={subject_uuid}
             metric_uuid={metric_uuid}

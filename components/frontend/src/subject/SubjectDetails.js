@@ -124,7 +124,6 @@ export function SubjectDetails({
     report,
     reports,
     report_date,
-    reports_overview,
     subject_uuid,
     metrics,
     changed_fields,
@@ -168,8 +167,8 @@ export function SubjectDetails({
                 {metricEntries.map(([metric_uuid, metric], index) =>
                     <Metric
                         datamodel={datamodel}
-                        reports_overview={reports_overview}
                         report={report}
+                        reports={reports}
                         report_date={report_date}
                         subject_uuid={subject_uuid}
                         metric={metric}

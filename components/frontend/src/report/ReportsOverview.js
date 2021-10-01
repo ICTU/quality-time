@@ -4,7 +4,7 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
-import { ReportsTitle } from './ReportsTitle';
+import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
@@ -35,7 +35,7 @@ function ReportsDashboard({ reports, open_report, layout, reload }) {
     )
 }
 
-export function Reports({ reports, open_report, report_date, reports_overview, reload }) {
+export function ReportsOverview({ reports, open_report, report_date, reports_overview, reload }) {
     if (reports.length === 0 && report_date !== null) {
         return (
             <Message warning size='huge'>
@@ -47,7 +47,7 @@ export function Reports({ reports, open_report, report_date, reports_overview, r
     }
     return (
         <div id="dashboard">
-            <ReportsTitle
+            <ReportsOverviewTitle
                 permissions={reports_overview.permissions}
                 title={reports_overview.title}
                 subtitle={reports_overview.subtitle}
