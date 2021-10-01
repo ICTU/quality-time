@@ -11,6 +11,7 @@ import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
 import "./Metric.css";
+import { DataModel } from '../context/Contexts';
 
 function MeasurementValue({ metric, metric_unit, latest_measurement }) {
     const dataModel = useContext(DataModel)

@@ -6,6 +6,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
+import { DataModel } from '../context/Contexts';
 
 export function Sources({ reports, report, metric_uuid, metric_type, metric_unit, sources, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
