@@ -59,7 +59,7 @@ describe("<App/>", () => {
         expect(wrapper.find('Footer').exists()).toBe(true);
     });
 
-    it('renders Reports', () => {
+    it('renders the report overview', () => {
         const wrapper = shallow(<App />);
         wrapper.setState({ loading: false, report_uuid: '' });
         expect(wrapper.find('Container').find('ReportsOverview').exists()).toBe(true);
@@ -67,7 +67,7 @@ describe("<App/>", () => {
         expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
     });
 
-    it('renders Report', () => {
+    it('renders a report', () => {
         const wrapper = shallow(<App />);
         wrapper.setState({ loading: false, report_uuid: 'id' });
         expect(wrapper.find('Container').find('ReportsOverview').exists()).toBe(false);
