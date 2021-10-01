@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
+import { DataModel } from '../context/Contexts';
 import { Metric } from '../metric/Metric';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
@@ -120,7 +121,6 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 }
 
 export function SubjectDetails({
-    datamodel,
     report,
     reports,
     report_date,
@@ -134,12 +134,13 @@ export function SubjectDetails({
     extraHamburgerItems,
     reload
 }) {
+    const dataModel = useContext(DataModel)
     const [sortDirection, setSortDirection] = useState('ascending');
     const [sortColumn, setSortColumn] = useState(null);
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
-        sortMetrics(datamodel, metricEntries, sortDirection, sortColumn);
+        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
     }
     function handleSort(column) {
         if (sortColumn === column) {
@@ -166,7 +167,7 @@ export function SubjectDetails({
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) =>
                     <Metric
-                        datamodel={datamodel}
+                        reports_overview={reports_overview}
                         report={report}
                         reports={reports}
                         report_date={report_date}
@@ -185,7 +186,6 @@ export function SubjectDetails({
                     />)}
             </Table.Body>
             <SubjectFooter
-                datamodel={datamodel}
                 subjectUuid={subject_uuid}
                 subject={report.subjects[subject_uuid]}
                 reload={reload}

@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { set_metric_attribute } from '../api/metric';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { DataModel } from '../context/Contexts';
 
-export function Target({ datamodel, metric, metric_uuid, target_type, label, reload }) {
-    const metric_type = datamodel.metrics[metric.type];
-    const metric_scale = metric.scale || metric_type.default_scale || "count";
+export function Target({ metric, metric_uuid, target_type, label, reload }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
+    const metric_scale = metric.scale || metricType.default_scale || "count";
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
+    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metricType.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
-    const default_target = metric_type[target_type];
+    const default_target = metricType[target_type];
     const measurement_value = metric[target_type];
-    const metric_unit_without_percentage = metric.unit || metric_type.unit;
+    const metric_unit_without_percentage = metric.unit || metricType.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
-    const inputLabel = label + (metric_type[target_type] === metric[target_type] || default_target === undefined ? '' : ` (default: ${default_target} ${metric_unit})`);
+    const inputLabel = label + (metricType[target_type] === metric[target_type] || default_target === undefined ? '' : ` (default: ${default_target} ${metric_unit})`);
     if (metric_scale === "version_number") {
         return (
             <StringInput

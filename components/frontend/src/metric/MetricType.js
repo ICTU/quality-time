@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Header } from 'semantic-ui-react';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { DataModel } from '../context/Contexts';
 
-export function MetricType(props) {
+export function MetricType({metricType, metric_uuid, reload}) {
+    const dataModel = useContext(DataModel)
     let options = [];
-    Object.keys(props.datamodel.metrics).forEach(
+    Object.keys(dataModel.metrics).forEach(
         (key) => {
-            const metric_type = props.datamodel.metrics[key];
+            const metric_type = dataModel.metrics[key];
             options.push({
                 key: key, text: metric_type.name, value: key,
                 content: <Header as="h4" content={metric_type.name} subheader={metric_type.description} />
@@ -19,8 +21,8 @@ export function MetricType(props) {
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label="Metric type"
             options={options}
-            set_value={(value) => set_metric_attribute(props.metric_uuid, "type", value, props.reload)}
-            value={props.metric_type}
+            set_value={(value) => set_metric_attribute(metric_uuid, "type", value, reload)}
+            value={metricType}
         />
     )
 }

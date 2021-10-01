@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Header, Icon, Popup } from 'semantic-ui-react';
 import { MetricType } from './MetricType';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
@@ -12,6 +12,7 @@ import { Target } from './Target';
 import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { get_metric_issue_ids, get_metric_tags } from '../utils';
+import { DataModel } from '../context/Contexts';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -29,25 +30,25 @@ function metric_scale_options(metric_scales, datamodel) {
     return scale_options;
 }
 
-export function MetricParameters({ datamodel, report, metric, metric_uuid, reload }) {
-    const metric_type = datamodel.metrics[metric.type];
-    const metric_scale = metric.scale || metric_type.default_scale || "count";
-    const metric_unit_without_percentage = metric.unit || metric_type.unit;
+export function MetricParameters({ report, metric, metric_uuid, reload }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
+    const metric_scale = metric.scale || metricType.default_scale || "count";
+    const metric_unit_without_percentage = metric.unit || metricType.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = { count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number" }[metric_scale];
     const more = { count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number" }[metric_scale];
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metric_type.direction];
+    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metricType.direction];
     const tags = Object.keys(report.summary_by_tag || {});
-    const scale_options = metric_scale_options(metric_type.scales || ["count"], datamodel);
+    const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
     const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
                 <Grid.Column>
                     <MetricType
-                        datamodel={datamodel}
-                        metric_type={metric.type}
+                        metricType={metric.type}
                         metric_uuid={metric_uuid}
                         reload={reload}
                     />
@@ -57,7 +58,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         id="metric-name"
                         label="Metric name"
-                        placeholder={metric_type.name}
+                        placeholder={metricType.name}
                         set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
                         value={metric.name}
                     />
@@ -79,7 +80,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Metric scale"
                         options={scale_options}
-                        placeholder={metric_type.default_scale || "Count"}
+                        placeholder={metricType.default_scale || "Count"}
                         set_value={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
                         value={metric_scale}
                     />
@@ -100,7 +101,7 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                         <StringInput
                             id="metric-unit"
                             label="Metric unit"
-                            placeholder={metric_type.unit}
+                            placeholder={metricType.unit}
                             prefix={metric_scale === "percentage" ? "%" : ""}
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
@@ -113,7 +114,6 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     <Target
                         label="Metric target"
                         target_type="target"
-                        datamodel={datamodel}
                         metric={metric}
                         metric_uuid={metric_uuid}
                         reload={reload}
@@ -123,7 +123,6 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     <Target
                         label="Metric near target"
                         target_type="near_target"
-                        datamodel={datamodel}
                         metric={metric}
                         metric_uuid={metric_uuid}
                         reload={reload}
@@ -146,7 +145,6 @@ export function MetricParameters({ datamodel, report, metric, metric_uuid, reloa
                     <Target
                         label="Accepted technical debt"
                         target_type="debt_target"
-                        datamodel={datamodel}
                         metric={metric}
                         metric_uuid={metric_uuid}
                         reload={reload}

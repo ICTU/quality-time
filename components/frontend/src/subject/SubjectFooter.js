@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import { Table } from "semantic-ui-react";
 import { add_metric, copy_metric, move_metric } from "../api/metric";
+import { DataModel } from "../context/Contexts";
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions";
 import { AddButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
 
-export function SubjectFooter({ datamodel, subject, subjectUuid, reload, reports, resetSortColumn }) {
+export function SubjectFooter({ subject, subjectUuid, reload, reports, resetSortColumn }) {
+    const dataModel = useContext(DataModel)
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Table.Footer>
@@ -21,7 +24,7 @@ export function SubjectFooter({ datamodel, subject, subjectUuid, reload, reports
                                 resetSortColumn()
                                 copy_metric(source_metric_uuid, subjectUuid, reload);
                             }}
-                            get_options={() => metric_options(reports, datamodel, subject.type)}
+                            get_options={() => metric_options(reports, dataModel, subject.type)}
                         />
                         <MoveButton
                             item_type="metric"
@@ -29,7 +32,7 @@ export function SubjectFooter({ datamodel, subject, subjectUuid, reload, reports
                                 resetSortColumn()
                                 move_metric(source_metric_uuid, subjectUuid, reload);
                             }}
-                            get_options={() => metric_options(reports, datamodel, subject.type, subjectUuid)}
+                            get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
                         />
                     </Table.HeaderCell>
                 </Table.Row>

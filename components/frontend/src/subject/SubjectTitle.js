@@ -67,7 +67,7 @@ export function SubjectTitle({ report, subject, subject_uuid, first_subject, las
     const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type" };
     const subject_name = subject.name || current_subject_type.name;
     const panes = [
-        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report.report_uuid} subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ];
     return (

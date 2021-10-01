@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { get_subject_measurements } from '../api/subject';
-import { DataModel } from '../context/Contexts';
 import { TrendTable } from '../trend_table/TrendTable';
 import { SubjectDetails } from './SubjectDetails';
 import { SubjectTitle } from './SubjectTitle';

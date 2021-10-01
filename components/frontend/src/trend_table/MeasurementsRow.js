@@ -3,11 +3,12 @@ import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { MetricDetails } from '../metric/MetricDetails';
 import { formatMetricScale, formatMetricUnit, formatMetricScaleAndUnit, format_minutes, get_metric_name } from "../utils";
 import './TrendTable.css';
+import { useContext } from "react";
+import { DataModel } from "../context/Contexts";
 
 export function MeasurementsRow(
     {
         changed_fields,
-        datamodel,
         first_metric,
         last_metric,
         metric_uuid,
@@ -23,7 +24,8 @@ export function MeasurementsRow(
         reload
     }
 ) {
-    const metricType = datamodel.metrics[metric.type];
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
     const unit = formatMetricUnit(metricType, metric)
     const measurementCells = []
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
@@ -42,7 +44,7 @@ export function MeasurementsRow(
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements?.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
     const metric_unit = formatMetricScaleAndUnit(metricType, metric);
-    const metricName = get_metric_name(metric, datamodel);
+    const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
             first_metric={first_metric}
@@ -51,7 +53,6 @@ export function MeasurementsRow(
             metric_name={metricName}
             scale={metric.scale}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
-            datamodel={datamodel}
             report_date={reportDate}
             reports={reports}
             report={report}
