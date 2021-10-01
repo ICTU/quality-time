@@ -12,7 +12,6 @@ export function MeasurementsRow(
         last_metric,
         metric_uuid,
         metricType,
-        metricName,
         metric,
         measurements,
         dates,
@@ -43,13 +42,13 @@ export function MeasurementsRow(
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements?.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
     const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
-    const metric_name = get_metric_name(metric, datamodel);
+    const metricName = get_metric_name(metric, datamodel);
     const details = (
         <MetricDetails
             first_metric={first_metric}
             last_metric={last_metric}
             measurement={latest_measurement}
-            metric_name={metric_name}
+            metric_name={metricName}
             scale={metric.scale}
             unit={formatMetricScaleAndUnit(metric_type, metric, false)}
             datamodel={datamodel}

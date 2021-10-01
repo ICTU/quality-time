@@ -37,9 +37,8 @@ describe("MeasurementRow", () => {
             <table>
                 <tbody>
                     <MeasurementsRow
-                        datamodel={{ metrics: { metricType: { unit: "" } } }}
+                        datamodel={{ metrics: { metricType: { name: "testName", unit: "" } } }}
                         metricType={metricType}
-                        metricName="testName"
                         metric_uuid="metric_uuid"
                         metric={metric}
                         report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}

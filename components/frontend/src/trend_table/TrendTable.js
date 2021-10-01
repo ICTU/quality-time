@@ -55,7 +55,6 @@ export function TrendTable({
             <Table.Body>
                 {Object.entries(metrics).map(([metric_uuid, metric], index) => {
                     const metricType = datamodel.metrics[metric.type]
-                    const metricName = get_metric_name(metric, datamodel)
                     return (
                         <MeasurementsRow key={metric_uuid}
                             changed_fields={changed_fields}
@@ -64,7 +63,6 @@ export function TrendTable({
                             last_metric={index === last_index}
                             metric_uuid={metric_uuid}
                             metricType={metricType}
-                            metricName={metricName}
                             metric={metric}
                             dates={dates}
                             reportDate={reportDate}
