@@ -218,7 +218,8 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     result = insert_new_report(database, delta_description, (data.report, [report_uuid]))
     issue_tracker = data.report.get("issue_tracker", {})
     parameters = issue_tracker.get("parameters", {})
-    if issue_tracker.get("type") and (url := parameters.get("url")):
+    url_parameters = ("type", "url", "username", "password")
+    if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:
         result["availability"] = [check_url_availability(url, parameters)]
     return result
 
