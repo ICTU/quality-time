@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { get_metric_name } from '../utils';
 import { SubjectFooter } from '../subject/SubjectFooter';
 import { MeasurementsRow } from './MeasurementsRow';
 import { TrendTableHeader } from './TrendTableHeader';
