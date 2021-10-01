@@ -40,14 +40,14 @@ function ReportAttributes(props) {
     )
 }
 
-function ButtonRow(props) {
+function ButtonRow({report_uuid, go_home, history}) {
     return (
         <>
-            <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
+            <DownloadAsPDFButton report_uuid={report_uuid} history={history} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <DeleteButton
                     item_type='report'
-                    onClick={() => delete_report(props.report_uuid, props.go_home)}
+                    onClick={() => delete_report(report_uuid, go_home)}
                 />}
             />
         </>
