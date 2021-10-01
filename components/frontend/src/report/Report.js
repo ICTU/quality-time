@@ -63,12 +63,12 @@ export function Report({
         report_date,
         reports,
         history}) {
+
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
     }
-
     const [tags, setTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report
