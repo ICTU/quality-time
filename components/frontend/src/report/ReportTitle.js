@@ -125,6 +125,28 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                     />
                 </Grid.Column>
             </Grid.Row>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <SingleChoiceInput
+                        id="issue-creation-date"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label="Show issue creation date in issue column"
+                        options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_creation_date", value, reload)}
+                        value={report.issue_tracker?.parameters?.show_issue_creation_date ?? false}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <SingleChoiceInput
+                        id="issue-update-date"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label="Show issue update date in issue column"
+                        options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_update_date", value, reload)}
+                        value={report.issue_tracker?.parameters?.show_issue_update_date ?? false}
+                    />
+                </Grid.Column>
+            </Grid.Row>
         </Grid>
     )
 }
