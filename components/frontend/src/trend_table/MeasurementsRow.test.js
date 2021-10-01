@@ -65,7 +65,7 @@ describe("MeasurementRow", () => {
     });
 
     it('renders one single row with metric name, measurement values and minutes unit', () => {
-        const { queryAllByText } = render_measurements_row({ unit: "minutes" }, { type: "metricType", unit: "", scale: "count", recent_measurements: [] })
+        const { queryAllByText } = render_measurements_row({ unit: "minutes", recent_measurements: measurements }, { type: "metricType", unit: "", scale: "count", recent_measurements: [] })
         expect(queryAllByText("testName").length).toBe(1) // measurement name cell
         expect(queryAllByText("?").length).toBe(1) // first date before first measurement
         expect(queryAllByText("0:00").length).toBe(1) // two cells with measurements
