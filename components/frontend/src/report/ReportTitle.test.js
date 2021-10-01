@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportTitle } from './ReportTitle';
@@ -100,6 +100,36 @@ it('sets the issue tracker username', async () => {
     });
     userEvent.type(screen.getByText(/Password/), '{selectall}{del}secret{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/password", { password: "secret" });
+});
+
+it('sets the issue creation date visibility', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Issue tracker/));
+    });
+    await act(async () => {
+        const dropdown = document.getElementById("issue-creation-date")
+        fireEvent.click(within(dropdown).getByText(/Yes/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/show_issue_creation_date", { show_issue_creation_date: true });
+});
+
+it('sets the issue update date visibility', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Issue tracker/));
+    });
+    await act(async () => {
+        const dropdown = document.getElementById("issue-update-date")
+        fireEvent.click(within(dropdown).getByText(/Yes/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/show_issue_update_date", { show_issue_update_date: true });
 });
 
 it('loads the changelog', async () => {
