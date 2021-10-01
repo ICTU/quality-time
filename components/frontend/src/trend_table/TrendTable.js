@@ -28,12 +28,11 @@ export function TrendTable({
     trendTableInterval,
     setTrendTableInterval,
     trendTableNrDates,
-    reports,
     setTrendTableNrDates,
     subject_uuid,
     subject,
     report,
-    reports_overview,
+    reports,
     visibleDetailsTabs,
     toggleVisibleDetailsTab,
     reload
@@ -66,7 +65,7 @@ export function TrendTable({
                             dates={dates}
                             reportDate={reportDate}
                             report={report}
-                            reports_overview={reports_overview}
+                            reports={reports}
                             subject_uuid={subject_uuid}
                             measurements={measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)}
                             visibleDetailsTabs={visibleDetailsTabs}

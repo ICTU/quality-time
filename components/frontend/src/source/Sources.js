@@ -49,7 +49,6 @@ export function Sources({ datamodel, reports, report, metric_uuid, metric_type, 
                     parse_error={source_error(source_uuid, "parse_error")}
                     reload={reload}
                     report={report}
-                    reports={reports}
                     source={sources[source_uuid]}
                     source_uuid={source_uuid}
                     changed_fields={changed_fields}

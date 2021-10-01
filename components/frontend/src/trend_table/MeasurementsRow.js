@@ -16,7 +16,7 @@ export function MeasurementsRow(
         dates,
         report,
         reportDate,
-        reports_overview,
+        reports,
         subject_uuid,
         visibleDetailsTabs,
         toggleVisibleDetailsTab,
@@ -53,7 +53,7 @@ export function MeasurementsRow(
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
             datamodel={datamodel}
             report_date={reportDate}
-            reports={reports_overview}
+            reports={reports}
             report={report}
             subject_uuid={subject_uuid}
             metric_uuid={metric_uuid}

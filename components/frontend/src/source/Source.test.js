@@ -24,7 +24,6 @@ function render_source(props) {
                 datamodel={datamodel}
                 metric_type="metric_type"
                 report={report}
-                reports={[report]}
                 source={source}
                 source_uuid="source_uuid"
                 {...props}
