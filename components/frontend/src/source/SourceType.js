@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 import { Header } from 'semantic-ui-react';
+<<<<<<< HEAD
 import { DataModel } from '../context/DataModel';
+=======
+import { DataModel } from '../context/Contexts';
+>>>>>>> b61395ea (found some last props.datamodel)
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Logo } from './Logo';
@@ -10,7 +14,11 @@ export function SourceType({metric_type, set_source_attribute, source_type}) {
     let options = [];
     dataModel.metrics[metric_type].sources.forEach(
         (key) => {
+<<<<<<< HEAD
             const option_source_type = dataModel.sources[key];
+=======
+            const source_type = dataModel.sources[key];
+>>>>>>> b61395ea (found some last props.datamodel)
             options.push(
                 {
                     key: key,

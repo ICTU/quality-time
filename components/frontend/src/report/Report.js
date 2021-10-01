@@ -62,6 +62,7 @@ export function Report({
         reload,
         report_date,
         reports,
+        reports_overview,
         history}) {
 
     function navigate_to_subject(event, subject_uuid) {
@@ -109,6 +110,7 @@ export function Report({
                 changed_fields={changed_fields}
                 reload={reload}
                 reports={reports}
+                reports_overview={reports_overview}
                 history={history}
             />
         </div>

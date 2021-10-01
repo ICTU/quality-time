@@ -10,12 +10,22 @@ import { useDelayedRender, useURLSearchQuery } from '../utils';
 import { DataModel } from '../context/Contexts';
 
 export function Subjects({
+<<<<<<< HEAD
         hiddenColumns,
         tags,
         toggleHiddenColumn,
         report,
         report_date,
         changed_fields,
+=======
+        hiddenColumns, 
+        tags, 
+        toggleHiddenColumn,
+        report,
+        report_date,
+        reports_overview,
+        changed_fields, 
+>>>>>>> b61395ea (found some last props.datamodel)
         reload,
         reports,
         history}) {
@@ -37,11 +47,14 @@ export function Subjects({
                         first_subject={index === 0}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        key={subject_uuid}
                         last_subject={index === last_index}
                         report={report}
                         report_date={report_date}
                         reports={reports}
+<<<<<<< HEAD
+=======
+                        reports_overview={reports_overview}
+>>>>>>> b61395ea (found some last props.datamodel)
                         setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
                         setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
