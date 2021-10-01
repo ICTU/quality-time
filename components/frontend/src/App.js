@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 import { Report } from './report/Report.js';
-import { Reports } from './report/Reports.js';
+import { ReportsOverview } from './report/ReportsOverview.js';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { parse, stringify } from 'query-string';
@@ -209,7 +209,7 @@ class App extends Component {
                             <Segment basic placeholder loading size="massive" />
                             :
                             this.state.report_uuid === "" ?
-                                <Reports
+                                <ReportsOverview
                                     reports={props.reports}
                                     open_report={(e, r) => this.open_report(e, r)}
                                     report_date={report_date}

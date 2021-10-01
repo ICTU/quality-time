@@ -2,7 +2,7 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
-import { ReportsTitle } from './ReportsTitle';
+import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
 
 jest.mock("../api/fetch_server_api.js")
@@ -10,7 +10,7 @@ jest.mock("../api/fetch_server_api.js")
 function render_reports_title() {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsTitle permissions={{}} get_changelog={() => { /* Do nothing */ }} />
+            <ReportsOverviewTitle permissions={{}} get_changelog={() => { /* Do nothing */ }} />
         </Permissions.Provider>
     )
 }
