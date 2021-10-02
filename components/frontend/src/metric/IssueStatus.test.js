@@ -104,8 +104,13 @@ it("displays the update date in the popup", async () => {
     })
 });
 
-if("displays no popup if the issue has no creation date and there is no error", async () => {
+it("displays no popup if the issue has no creation date and there is no error", async () => {
     const { queryByText } = renderIssueStatus({ created: false })
+    userEvent.hover(queryByText(/123/))
+    await waitFor(() => {
+        expect(queryByText("4 days ago")).toBe(null);
+        expect(queryByText("2 days ago")).toBe(null);
+    })
 })
 
 it("displays a connection error in the popup", async () => {
