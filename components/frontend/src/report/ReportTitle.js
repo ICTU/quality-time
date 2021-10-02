@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Header, Icon, Menu, Popup, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -79,6 +79,12 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
         }
     );
     trackerSources.push(NONE_OPTION)
+
+    const showIssueCreationDateHelp = "Next to the issue status, also show how long ago issue were created. Note: the popup over the issue also shows the exact date when the issue was created."
+    const showIssueCreationDateLabel = <label>Show how long ago issues were created <Popup on={['hover', 'focus']} content={showIssueCreationDateHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
+    const showIssueUpdateDateHelp = "Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue also shows the exact date when the issue was last updated."
+    const showIssueUpdateDateLabel = <label>Show how long ago issues were updated <Popup on={['hover', 'focus']} content={showIssueUpdateDateHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
+
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
@@ -122,6 +128,28 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
                         label="Password for basic authentication"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
                         value={report.issue_tracker?.parameters?.password}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <SingleChoiceInput
+                        id="issue-creation-date"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label={showIssueCreationDateLabel}
+                        options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_creation_date", value, reload)}
+                        value={report.issue_tracker?.parameters?.show_issue_creation_date ?? false}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <SingleChoiceInput
+                        id="issue-update-date"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label={showIssueUpdateDateLabel}
+                        options={[{ key: "yes", text: "Yes", value: true }, { key: "no", text: "No", value: false }]}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "show_issue_update_date", value, reload)}
+                        value={report.issue_tracker?.parameters?.show_issue_update_date ?? false}
                     />
                 </Grid.Column>
             </Grid.Row>
