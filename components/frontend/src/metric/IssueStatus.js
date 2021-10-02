@@ -13,10 +13,10 @@ export function IssueStatus({ metric, issueTracker }) {
         const color = popupContent ? "red" : "blue";
         const basic = popupContent ? false : true;
         let labelDetails = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
-        if (issueStatus.name && issueTracker?.parameters?.show_issue_creation_date) {
+        if (issueStatus.created && issueTracker?.parameters?.show_issue_creation_date) {
             labelDetails.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created}/></Label.Detail>)
         }
-        if (issueStatus.name && issueTracker?.parameters?.show_issue_update_date) {
+        if (issueStatus.updated && issueTracker?.parameters?.show_issue_update_date) {
             labelDetails.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated}/></Label.Detail>)
         }
         let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails}</Label>
