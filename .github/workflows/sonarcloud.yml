@@ -45,7 +45,7 @@ jobs:
       run: |
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
-        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+        python -m xmlrunner --output-file build/nosetests.xml
     - name: Server
       if: env.SONAR_TOKEN != null
       working-directory: components/server
