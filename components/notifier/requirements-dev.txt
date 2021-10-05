@@ -1,3 +1,1 @@
 -r ../../requirements-dev.txt
-unittest-xml-reporting==3.0.4
-
