@@ -1,7 +1,4 @@
-version: 2.1
-
-orbs:
-  browser-tools: circleci/browser-tools@1.2.2
+version: 2
 
 jobs:
   unittest_backend:
@@ -62,14 +59,11 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 -V
-          
           export ENV=ci
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          tests/application_tests/ci/test.sh
-          #docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 cimg/python:3.10.0-browsers tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.10.0rc2-browsers tests/application_tests/ci/test.sh
 
   feature_tests:
     docker:
