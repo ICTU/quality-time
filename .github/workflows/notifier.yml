@@ -17,6 +17,7 @@ jobs:
       run: |
         cd components/notifier
         python -m pip install --upgrade pip
+        python -m pip install wheel
         pip install -r requirements.txt -r requirements-dev.txt
     - name: Test
       run: |
