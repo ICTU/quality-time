@@ -62,6 +62,8 @@ jobs:
     steps:
       - checkout
       - run: |
+          python3 -V
+          
           export ENV=ci
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
