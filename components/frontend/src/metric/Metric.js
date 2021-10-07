@@ -68,7 +68,7 @@ export function Metric({
     hiddenColumns,
     reload
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
