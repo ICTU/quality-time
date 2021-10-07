@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
+import { DataModel } from '../context/Contexts';
 
 let mockHistory = { location: {}, replace: () => { /* No implementation needed */ } };
 const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
@@ -34,22 +35,23 @@ const report = {
 };
 
 it('shows the report', () => {
-    render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />);
+    render(
+        <DataModel.Provider value={datamodel}><Report history={mockHistory} reports={[report]} report={report} /></DataModel.Provider>);
     expect(screen.getAllByText(/Subject title/).length).toBe(2)  // Once as dashboard card and once as subject header
 });
 
 it('shows an error message if there is no report', () => {
-    render(<Report history={mockHistory} />);
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} /></DataModel.Provider>);
     expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
 });
 
 it('shows an error message if there was no report', () => {
-    render(<Report history={mockHistory} report_date={new Date("2020-01-01")} />);
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} report_date={new Date("2020-01-01")} /></DataModel.Provider>);
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
 });
 
 it('hides columns', () => {
-    render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />);
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>);
     expect(screen.getAllByText(/Status/).length).toBe(1)
     fireEvent.click(screen.getByRole(/listbox/));
     fireEvent.click(screen.getByText(/Hide status column/));
@@ -58,7 +60,7 @@ it('hides columns', () => {
 
 it('hides columns on load', () => {
     mockHistory.location.search = "?hidden_columns=status"
-    render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
     fireEvent.click(screen.getByRole(/listbox/));
     fireEvent.click(screen.getByText(/Show status column/));
@@ -67,7 +69,7 @@ it('hides columns on load', () => {
 
 it('hides multiple columns on load', () => {
     mockHistory.location.search = "?hidden_columns=status,tags"
-    render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
     expect(screen.queryByText(/Tags/)).toBe(null)
     fireEvent.click(screen.getByRole(/listbox/));
@@ -77,6 +79,6 @@ it('hides multiple columns on load', () => {
 
 it('can handle missing columns', () => {
     mockHistory.location.search = "?hidden_columns="
-    render(<Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} />)
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.getAllByText(/Status/).length).toBe(1)
 });

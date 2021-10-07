@@ -14,7 +14,6 @@ export function Subjects({
         toggleHiddenColumn,
         report,
         report_date,
-        reports_overview,
         changed_fields, 
         reload,
         reports,

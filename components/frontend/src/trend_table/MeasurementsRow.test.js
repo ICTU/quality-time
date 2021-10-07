@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MeasurementsRow } from './MeasurementsRow';
+import { DataModel } from '../context/Contexts';
 
 describe("MeasurementRow", () => {
 
@@ -40,18 +41,19 @@ describe("MeasurementRow", () => {
         return render(
             <table>
                 <tbody>
-                    <MeasurementsRow
-                        datamodel={dataModel}
-                        metric_uuid="metric_uuid"
-                        metric={metric}
-                        report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
-                        subject_uuid="subject_uuid"
-                        measurements={measurements}
-                        dates={dates}
-                        reportDate={null}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                        toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
-                    />
+                    <DataModel.Provider value={dataModel}>
+                        <MeasurementsRow
+                            metric_uuid="metric_uuid"
+                            metric={metric}
+                            report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
+                            subject_uuid="subject_uuid"
+                            measurements={measurements}
+                            dates={dates}
+                            reportDate={null}
+                            visibleDetailsTabs={visibleDetailsTabs}
+                            toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
+                        />
+                    </DataModel.Provider>
                 </tbody>
             </table>
         );

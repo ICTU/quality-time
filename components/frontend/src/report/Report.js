@@ -110,7 +110,6 @@ export function Report({
                 changed_fields={changed_fields}
                 reload={reload}
                 reports={reports}
-                reports_overview={reports_overview}
                 history={history}
             />
         </div>

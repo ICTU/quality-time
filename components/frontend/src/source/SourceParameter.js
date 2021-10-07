@@ -62,8 +62,8 @@ export function SourceParameter({
         Object.values(report.subjects).forEach((subject) => {
             Object.values(subject.metrics).forEach((metric) => {
                 Object.values(metric.sources).forEach((metric_source) => {
-                    if (metric_source.type === source.type && source.parameters) {
-                        const value = source.parameters[parameter_key];
+                    if (metric_source.type === source.type && metric_source.parameters) {
+                        const value = metric_source.parameters[parameter_key];
                         if (value) {
                             if (Array.isArray(value)) {
                                 value.forEach((item) => values.add(item))

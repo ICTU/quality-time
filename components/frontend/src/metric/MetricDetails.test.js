@@ -5,6 +5,7 @@ import { MetricDetails } from './MetricDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
 import * as measurement_api from '../api/measurement';
+import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/changelog.js");
 jest.mock("../api/metric.js");
@@ -56,18 +57,19 @@ async function render_metric_details(stop_sort) {
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <MetricDetails
-                    datamodel={data_model}
-                    metric_uuid="metric_uuid"
-                    report={report}
-                    reports={[report]}
-                    scale="count"
-                    stop_sort={stop_sort}
-                    subject_uuid="subject_uuid"
-                    unit="unit"
-                    visibleDetailsTabs={[]}
-                    toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
-                />
+                <DataModel.Provider value={data_model}>
+                    <MetricDetails
+                        metric_uuid="metric_uuid"
+                        report={report}
+                        reports={[report]}
+                        scale="count"
+                        stop_sort={stop_sort}
+                        subject_uuid="subject_uuid"
+                        unit="unit"
+                        visibleDetailsTabs={[]}
+                        toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
+                    />
+                </DataModel.Provider>
             </Permissions.Provider>
         )
     })

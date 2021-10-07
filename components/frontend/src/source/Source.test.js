@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Source } from './Source';
 import * as fetch_server_api from '../api/fetch_server_api';
+import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -20,14 +21,15 @@ const report = { report_uuid: "report_uuid", subjects: {} };
 function render_source(props) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Source
-                datamodel={datamodel}
-                metric_type="metric_type"
-                report={report}
-                source={source}
-                source_uuid="source_uuid"
-                {...props}
-            />
+            <DataModel.Provider value={datamodel}>
+                <Source
+                    metric_type="metric_type"
+                    report={report}
+                    source={source}
+                    source_uuid="source_uuid"
+                    {...props}
+                />
+            </DataModel.Provider>
         </Permissions.Provider>
     )
 }

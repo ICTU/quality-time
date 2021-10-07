@@ -2,6 +2,7 @@ import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
 import { Metric } from './Metric';
+import { DataModel } from '../context/Contexts';
 
 let report = {
     report_uuid: "report_uuid",
@@ -32,15 +33,21 @@ const data_model = {
 
 function metric() {
     return (
-        mount(<Table><Table.Body><Metric
-            hiddenColumns={[]}
-            report={report}
-            reports={[report]}
-            metric={report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]}
-            metric_uuid="metric_uuid"
-            subject_uuid="subject_uuid"
-            datamodel={data_model}
-            visibleDetailsTabs={[]} /></Table.Body></Table>
+        mount(
+            <DataModel.Provider value={data_model}>
+                <Table>
+                    <Table.Body>
+                        <Metric
+                            hiddenColumns={[]}
+                            report={report}
+                            reports={[report]}
+                            metric={report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]}
+                            metric_uuid="metric_uuid"
+                            subject_uuid="subject_uuid"
+                            visibleDetailsTabs={[]} />
+                    </Table.Body>
+                </Table>
+            </DataModel.Provider>
         )
     )
 }
@@ -50,7 +57,7 @@ it('renders the metric', () => {
     expect(wrapper.find("TableCell").at(1).text()).toBe("Metric");
     expect(wrapper.find("TableCell").at(4).text()).toBe("50 violations");
     expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0 violations");
-    expect(wrapper.find("TableCell").at(6).find("SourceStatus").prop("source").name).toBe("Source");
+    expect(wrapper.find("TableCell").at(6).find("SourceStatus").prop("measurement_source").name).toBe("Source");
 });
 
 it('renders the minutes', () => {

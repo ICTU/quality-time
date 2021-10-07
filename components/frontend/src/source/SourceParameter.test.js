@@ -8,10 +8,21 @@ Enzyme.configure({ adapter: new Adapter() });
 const example_report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": "b" } }] }] }] }
 
 it('renders url type', () => {
-    const wrapper = shallow(<SourceParameter placeholder="place-holder" readOnly={true} parameter_name="name"
-        required={false} source_uuid="source-uuid" parameter_key="key"
-        parameter_type="url" reload="reload-" parameter_value="value-" warning={true}
-        source={{ "type": "x" }} report={example_report} />);
+    const wrapper = shallow(
+        <SourceParameter 
+            placeholder="place-holder"
+            readOnly={true}
+            parameter_name="name"
+            required={false}
+            source_uuid="source-uuid"
+            parameter_key="key"
+            parameter_type="url"
+            reload="reload-"
+            parameter_value="value-"
+            warning={true}
+            source={{ "type": "x" }}
+            report={example_report} />
+    );
 
     expect(wrapper.find('StringInput').prop('label')).toBe("name");
     expect(Array.from(wrapper.find('StringInput').prop('options'))).toStrictEqual(["b"]);
