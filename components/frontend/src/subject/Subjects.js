@@ -40,7 +40,6 @@ export function Subjects({
                         report={report}
                         report_date={report_date}
                         reports={reports}
-                        reports_overview={reports_overview}
                         setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
                         setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}

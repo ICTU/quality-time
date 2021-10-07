@@ -167,9 +167,8 @@ export function SubjectDetails({
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) =>
                     <Metric
-                        reports_overview={reports_overview}
-                        report={report}
                         reports={reports}
+                        report={report}
                         report_date={report_date}
                         subject_uuid={subject_uuid}
                         metric={metric}

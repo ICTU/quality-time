@@ -52,8 +52,8 @@ function MeasurementSources({ metric, latest_measurement }) {
 }
 
 export function Metric({
-    reports_overview,
     report,
+    reports,
     report_date,
     subject_uuid,
     metric,

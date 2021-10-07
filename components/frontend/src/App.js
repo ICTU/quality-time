@@ -224,7 +224,7 @@ class App extends Component {
                                       reload={(json) => this.reload(json)}
                                       report_date={report_date}
                                       reports={this.state.reports}
-                                      history={this.state.history}
+                                      history={this.history}
                                   />
                           }
                       </Container>
