@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { SourceEntities } from './SourceEntities';
+import { DataModel } from '../context/Contexts';
 
 const data_model = {
     sources: {
@@ -63,7 +64,7 @@ const source = {
 
 describe('<SourceEntities />', () => {
     it('renders', () => {
-        const wrapper = mount(<SourceEntities datamodel={data_model} metric={metric} source={source} />);
+        const wrapper = mount(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>);
         expect(wrapper.find("TableRow").at(1).hasClass("status_unknown"))
     });
     it('sorts', () => {
@@ -77,7 +78,7 @@ describe('<SourceEntities />', () => {
         function sortColumn(columnIndex) {
             wrapper.find("TableHeaderCell").at(columnIndex).simulate("click");
         }
-        const wrapper = mount(<SourceEntities datamodel={data_model} metric={metric} source={source} />);
+        const wrapper = mount(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>);
         sortColumn(2);
         expectSorting(2, true, { 0: "1", 5: "2", 10: "3" });
         sortColumn(2);

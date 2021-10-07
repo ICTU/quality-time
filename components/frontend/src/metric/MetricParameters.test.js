@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { MetricParameters } from './MetricParameters';
 import * as fetch_server_api from '../api/fetch_server_api';
+import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -19,13 +20,14 @@ const report = { summary_by_tag: {} }
 function render_metric_parameters(scale = "count") {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <MetricParameters
-                datamodel={data_model}
-                metric={{ type: "violations", tags: [], accept_debt: false, scale: scale }}
-                metric_uuid="metric_uuid"
-                reload={() => {/* Dummy implementation */ }}
-                report={report}
-            />
+            <DataModel.Provider value={data_model}>
+                <MetricParameters
+                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale }}
+                    metric_uuid="metric_uuid"
+                    reload={() => {/* Dummy implementation */ }}
+                    report={report}
+                />
+            </DataModel.Provider>
         </Permissions.Provider>
     );
 }
@@ -52,10 +54,10 @@ it('sets the metric unit field for metrics with the percentage scale', async () 
 });
 
 it('skips the metric unit field for metrics with the version number scale', () => {
-    render(<MetricParameters
-        datamodel={data_model} report={report}
+    render(<DataModel.Provider value={data_model}><MetricParameters
+        report={report}
         metric={{ type: "source_version", tags: [], accept_debt: false }}
         metric_uuid="metric_uuid"
-    />);
+    /></DataModel.Provider>);
     expect(screen.queryAllByText(/Metric unit/).length).toBe(0);
 });

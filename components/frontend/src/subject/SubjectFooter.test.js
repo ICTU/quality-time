@@ -4,6 +4,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
 import { SubjectFooter } from "./SubjectFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
+import { DataModel } from "../context/Contexts";
 
 const resetSort = jest.fn()
 
@@ -14,13 +15,14 @@ it('shows the add metric button and adds a metric when clicked', async () => {
 
     const { queryAllByText, getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <Table>
-                <SubjectFooter
-                    subjectUuid="subject_uuid"
-                    subject={report.subjects.subject_uuid}
-                    datamodel={datamodel}
-                    resetSortColumn={resetSort} />
-            </Table>
+            <DataModel.Provider value={datamodel}>
+                <Table>
+                    <SubjectFooter
+                        subjectUuid="subject_uuid"
+                        subject={report.subjects.subject_uuid}
+                        resetSortColumn={resetSort} />
+                </Table>
+            </DataModel.Provider>
         </Permissions.Provider>
     );
     expect(queryAllByText("Add metric").length).toBe(1);
@@ -36,14 +38,15 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <Table>
-                    <SubjectFooter
-                        subjectUuid="subject_uuid"
-                        subject={report.subjects.subject_uuid}
-                        datamodel={datamodel}
-                        reports={[report]}
-                        resetSortColumn={resetSort} />
-                </Table>
+                <DataModel.Provider value={datamodel}>
+                    <Table>
+                        <SubjectFooter
+                            subjectUuid="subject_uuid"
+                            subject={report.subjects.subject_uuid}
+                            reports={[report]}
+                            resetSortColumn={resetSort} />
+                    </Table>
+                </DataModel.Provider>
             </Permissions.Provider>);
         fireEvent.click(screen.getByText(/Copy metric/));
     });
@@ -56,16 +59,17 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
 it('moves a metric when the move button is clicked and a metric is selected', async () => {
     await act(async () => {
         render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <Table>
-                    <SubjectFooter
-                        subjectUuid="subject_uuid"
-                        subject={report.subjects.subject_uuid}
-                        datamodel={datamodel}
-                        reports={[report]}
-                        resetSortColumn={resetSort} />
-                </Table>
-            </Permissions.Provider>)
+            <DataModel.Provider value={datamodel}>
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                    <Table>
+                        <SubjectFooter
+                            subjectUuid="subject_uuid"
+                            subject={report.subjects.subject_uuid}
+                            reports={[report]}
+                            resetSortColumn={resetSort} />
+                    </Table>
+                </Permissions.Provider>
+            </DataModel.Provider>)
         fireEvent.click(screen.getByText(/Move metric/));
     });
     await act(async () => {
