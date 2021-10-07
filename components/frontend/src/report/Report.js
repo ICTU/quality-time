@@ -75,6 +75,8 @@ export function Report({
         // Make sure we only filter by tags that are actually used in this report
         setTags(prev_tags => prev_tags.filter(tag => Object.keys(report.summary_by_tag || {}).includes(tag)))
     }, [report]);
+
+    // eslint-disable-next-line
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array");
 
     if (!report) {
