@@ -203,7 +203,6 @@ class App extends Component {
                 <ToastContainer theme="colored" />
                 <Permissions.Provider value={user_permissions}>
                     <DataModel.Provider value={this.state.datamodel}>
-<<<<<<< HEAD
                       <Container fluid className="MainContainer">
                           {this.state.loading ?
                               <Segment basic placeholder loading size="massive" />
@@ -229,34 +228,6 @@ class App extends Component {
                                   />
                           }
                       </Container>
-=======
-                        <Container fluid className="MainContainer">
-                            {this.state.loading ?
-                                <Segment basic placeholder loading size="massive" />
-                                :
-                                this.state.report_uuid === "" ?
-                                    <Reports
-                                        reports={this.state.reports}
-                                        open_report={(e, r) => this.open_report(e, r)}
-                                        report_date={report_date}
-                                        reports_overview={this.state.reports_overview}
-                                        reload={(json) => this.reload(json)}
-                                    />
-                                    :
-                                    <Report
-                                        go_home={() => this.go_home()}
-                                        nr_measurements={this.state.nr_measurements}
-                                        report={current_report}
-                                        changed_fields={this.changed_fields}
-                                        reload={(json) => this.reload(json)}
-                                        report_date={report_date}
-                                        reports={this.state.reports}
-                                        reports_overview={this.state.reports_overview}
-                                        history={this.history}
-                                    />
-                            }
-                        </Container>
->>>>>>> 66a5803c (4 space indentation)
                     </DataModel.Provider>
                 </Permissions.Provider>
                 <Footer last_update={this.state.last_update} report={current_report} />
