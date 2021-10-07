@@ -62,7 +62,6 @@ export function Report({
         reload,
         report_date,
         reports,
-        reports_overview,
         history}) {
 
     function navigate_to_subject(event, subject_uuid) {

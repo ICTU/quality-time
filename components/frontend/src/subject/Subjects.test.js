@@ -5,7 +5,6 @@ import { mount } from 'enzyme';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
-import { DataModel } from '../context/Contexts';
 
 const datamodel = {
     subjects: {
