@@ -10,16 +10,16 @@ export function SourceType({metric_type, set_source_attribute, source_type}) {
     let options = [];
     dataModel.metrics[metric_type].sources.forEach(
         (key) => {
-            const source_type = dataModel.sources[key];
+            const option_source_type = dataModel.sources[key];
             options.push(
                 {
                     key: key,
-                    text: source_type.name,
+                    text: option_source_type.name,
                     value: key,
                     content:
                         <Header as="h4">
                             <Header.Content>
-                                <Logo logo={key} alt={source_type.name} />{source_type.name}<Header.Subheader>{source_type.description}</Header.Subheader>
+                                <Logo logo={key} alt={option_source_type.name} />{option_source_type.name}<Header.Subheader>{option_source_type.description}</Header.Subheader>
                             </Header.Content>
                         </Header>
                 })

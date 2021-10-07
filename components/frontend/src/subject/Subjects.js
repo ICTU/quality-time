@@ -22,7 +22,7 @@ export function Subjects({
     const dataModel = useContext(DataModel)
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean");
     // eslint-disable-next-line
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
+    const [visibleDetailsTabs, toggleVisibleDetailsTab] = useURLSearchQuery(history, "tabs", "array");
     const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean")
     const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
     const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 1);

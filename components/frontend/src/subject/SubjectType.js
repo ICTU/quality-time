@@ -8,10 +8,10 @@ export function SubjectType({subject_type, set_value}) {
     const dataModel = useContext(DataModel)
     let options = [];
     Object.keys(dataModel.subjects).forEach((key) => {
-        const subject_type = dataModel.subjects[key];
+        const option_subject_type = dataModel.subjects[key];
         options.push({
-            key: key, text: subject_type.name, value: key,
-            content: <Header as="h4" content={subject_type.name} subheader={subject_type.description} />
+            key: key, text: option_subject_type.name, value: key,
+            content: <Header as="h4" content={option_subject_type.name} subheader={option_subject_type.description} />
         });
     });
     return (

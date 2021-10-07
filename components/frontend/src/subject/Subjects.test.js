@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
 import { DataModel } from '../context/Contexts';

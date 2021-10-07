@@ -27,7 +27,7 @@ function ReportDashboard({report, onClick, hideTags, setTags, tags, reload}) {
             <MetricSummaryCard
                 header={<Tag tag={tag} color={tags.includes(tag) ? "blue" : null} />}
                 key={tag}
-                onClick={() => setTags(tags => (tags.includes(tag) ? tags.filter((value) => value !== tag) : [tag, ...tags]))}
+                onClick={() => setTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
                 {...summary}
             />
         );
@@ -61,7 +61,6 @@ export function Report({
         reload,
         report_date,
         reports,
-        reports_overview,
         history}) {
 
     function navigate_to_subject(event, subject_uuid) {
@@ -77,7 +76,7 @@ export function Report({
     }, [report]);
 
     // eslint-disable-next-line
-    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array");
+    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
 
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
