@@ -62,13 +62,8 @@ export function SourceParameter({
         Object.values(report.subjects).forEach((subject) => {
             Object.values(subject.metrics).forEach((metric) => {
                 Object.values(metric.sources).forEach((metric_source) => {
-<<<<<<< HEAD
                     if (metric_source.type === source.type && metric_source.parameters) {
                         const value = metric_source.parameters[parameter_key];
-=======
-                    if (metric_source.type === source.type && source.parameters) {
-                        const value = source.parameters[parameter_key];
->>>>>>> b61395ea (found some last props.datamodel)
                         if (value) {
                             if (Array.isArray(value)) {
                                 value.forEach((item) => values.add(item))
@@ -87,19 +82,11 @@ export function SourceParameter({
         label = <label>{parameter_name} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
     }
     if (help) {
-<<<<<<< HEAD
         label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />} /></label>
     }
     let parameter_props = {
         requiredPermissions: requiredPermissions,
         editableLabel: <SourceParameterLabel
-=======
-        label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
-    }
-    let parameter_props = {
-        requiredPermissions: requiredPermissions,
-        editableLabel: <SourceParameterLabel 
->>>>>>> b61395ea (found some last props.datamodel)
             edit_scope={edit_scope}
             label={label}
             setEditScope={setEditScope}

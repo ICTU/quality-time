@@ -1,10 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid } from 'semantic-ui-react';
-<<<<<<< HEAD
 import { DataModel } from '../context/DataModel';
-=======
-import { DataModel } from '../context/Contexts';
->>>>>>> b61395ea (found some last props.datamodel)
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
 
@@ -37,11 +33,7 @@ export function SourceParameters({report, source_uuid, source, metric_type, metr
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 placeholder={all_parameters[parameter_key].placeholder || ""}
                 required={all_parameters[parameter_key].mandatory}
-<<<<<<< HEAD
                 warning={changed_param_keys?.indexOf(parameter_key) !== -1}
-=======
-                warning={changed_param_keys ? (changed_param_keys.indexOf(parameter_key) !== -1) : false}
->>>>>>> b61395ea (found some last props.datamodel)
                 reload={reload}
                 index={index}
             />
