@@ -37,7 +37,6 @@ it('calculates column dates correctly', () => {
                 visibleDetailsTabs={[]}
             />
         </DataModel.Provider>
-
     );
 
     const expectedDates = [

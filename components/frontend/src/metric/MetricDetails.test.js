@@ -6,6 +6,7 @@ import { MetricDetails } from './MetricDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
 import * as measurement_api from '../api/measurement';
+import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/changelog.js");
 jest.mock("../api/metric.js");

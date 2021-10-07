@@ -5,6 +5,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { SubjectTitle } from './SubjectTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
+import { DataModel } from '../context/Contexts';
 
 const datamodel = {
     subjects: {
