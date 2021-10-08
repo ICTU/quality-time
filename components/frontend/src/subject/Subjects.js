@@ -1,20 +1,20 @@
 import React, { useContext } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { useDelayedRender, useURLSearchQuery } from '../utils';
-import { DataModel } from '../context/Contexts';
 
 export function Subjects({
-        hiddenColumns, 
-        tags, 
+        hiddenColumns,
+        tags,
         toggleHiddenColumn,
         report,
         report_date,
-        changed_fields, 
+        changed_fields,
         reload,
         reports,
         history}) {

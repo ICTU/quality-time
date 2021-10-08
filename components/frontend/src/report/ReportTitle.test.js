@@ -1,10 +1,10 @@
 import React from 'react';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportTitle } from './ReportTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
-import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/fetch_server_api.js")
 

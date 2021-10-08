@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Popup, Table } from 'semantic-ui-react';
 import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target } from '../utils';
+import { DataModel } from '../context/DataModel';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
@@ -10,7 +11,6 @@ import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
 import "./Metric.css";
-import { DataModel } from '../context/Contexts';
 
 function MeasurementValue({ metric, metric_unit, latest_measurement }) {
     const dataModel = useContext(DataModel)

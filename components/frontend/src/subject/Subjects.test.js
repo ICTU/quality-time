@@ -2,9 +2,9 @@ import React from 'react';
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 import { mount } from 'enzyme';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
-import { DataModel } from '../context/Contexts';
 
 const datamodel = {
     subjects: {

@@ -6,12 +6,13 @@ import { createBrowserHistory, Action } from 'history';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-import { Report } from './report/Report.js';
-import { ReportsOverview } from './report/ReportsOverview.js';
+import { Report } from './report/Report';
+import { ReportsOverview } from './report/ReportsOverview';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { parse, stringify } from 'query-string';
 
+import { DataModel } from './context/DataModel';
 import { Permissions } from './context/Permissions';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_reports_overview } from './api/report';
@@ -19,7 +20,6 @@ import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
 import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
-import { DataModel } from './context/Contexts';
 
 class App extends Component {
     constructor(props) {

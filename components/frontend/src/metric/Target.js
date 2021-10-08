@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { set_metric_attribute } from '../api/metric';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { DataModel } from '../context/Contexts';
 
 export function Target({ metric, metric_uuid, target_type, label, reload }) {
     const dataModel = useContext(DataModel)

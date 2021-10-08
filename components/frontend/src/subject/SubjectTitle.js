@@ -6,9 +6,9 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { DataModel } from '../context/Contexts';
 
 function SubjectHeader({ subject_type }) {
     return (

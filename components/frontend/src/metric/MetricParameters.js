@@ -10,9 +10,9 @@ import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { Target } from './Target';
 import { ErrorMessage } from '../errorMessage';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { get_metric_issue_ids, get_metric_tags } from '../utils';
-import { DataModel } from '../context/Contexts';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];

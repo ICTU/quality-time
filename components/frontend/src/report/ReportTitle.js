@@ -11,7 +11,7 @@ import { NotificationDestinations } from '../notification/NotificationDestinatio
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 function ReportAttributes(props) {
     return (

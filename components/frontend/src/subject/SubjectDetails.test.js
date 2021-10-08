@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import { SubjectDetails } from './SubjectDetails';
 import { render } from '@testing-library/react';
 import { datamodel, report } from "../__fixtures__/fixtures";
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 it('displays one row per metric', () => {
     const { queryAllByText } = render(

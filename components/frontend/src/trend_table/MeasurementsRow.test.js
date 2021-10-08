@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MeasurementsRow } from './MeasurementsRow';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 describe("MeasurementRow", () => {
 

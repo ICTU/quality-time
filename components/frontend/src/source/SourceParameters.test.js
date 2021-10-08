@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 import { SourceParameters } from './SourceParameters';
 
 it('renders without crashing', () => {

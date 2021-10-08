@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Header } from 'semantic-ui-react';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 

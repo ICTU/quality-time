@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Label, Popup } from 'semantic-ui-react';
+import { DataModel } from '../context/DataModel';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';
-import { DataModel } from '../context/Contexts';
 
 export function SourceStatus({metric, measurement_source, source_uuid}) {
     const dataModel = useContext(DataModel)

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid } from 'semantic-ui-react';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
 

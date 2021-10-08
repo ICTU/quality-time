@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
 import { Metric } from './Metric';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 let report = {
     report_uuid: "report_uuid",

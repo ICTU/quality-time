@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { TrendTable } from '../trend_table/TrendTable';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 const metric = {
     unit: "testUnit",
@@ -37,7 +37,7 @@ it('calculates column dates correctly', () => {
                 visibleDetailsTabs={[]}
             />
         </DataModel.Provider>
-        
+
     );
 
     const expectedDates = [

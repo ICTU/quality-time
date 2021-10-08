@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { SourceEntities } from './SourceEntities';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 const data_model = {
     sources: {

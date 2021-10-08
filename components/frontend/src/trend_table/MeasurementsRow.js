@@ -4,7 +4,7 @@ import { MetricDetails } from '../metric/MetricDetails';
 import { formatMetricScale, formatMetricUnit, formatMetricScaleAndUnit, format_minutes, get_metric_name } from "../utils";
 import './TrendTable.css';
 import { useContext } from "react";
-import { DataModel } from "../context/Contexts";
+import { DataModel } from "../context/DataModel";
 
 export function MeasurementsRow(
     {
@@ -40,7 +40,7 @@ export function MeasurementsRow(
         measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
     })
 
-   
+
     const latest_measurements = metric.recent_measurements;
     const latest_measurement = latest_measurements?.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
     const metric_unit = formatMetricScaleAndUnit(metricType, metric);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { DataModel } from '../context/DataModel';
 import { SourceStatus } from './SourceStatus';
-import { DataModel } from '../context/Contexts';
 
 const metric = { sources: { source_uuid: { name: "Source name" } } };
 

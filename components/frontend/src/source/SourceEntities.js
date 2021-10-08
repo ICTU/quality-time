@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Button, Popup, Table } from 'semantic-ui-react';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
-import { DataModel } from '../context/Contexts';
+import { DataModel } from '../context/DataModel';
 
 export function alignment(column_type) {
     return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[column_type];
