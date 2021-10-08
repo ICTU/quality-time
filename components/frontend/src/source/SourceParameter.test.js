@@ -9,7 +9,7 @@ const example_report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x",
 
 it('renders url type', () => {
     const wrapper = shallow(
-        <SourceParameter 
+        <SourceParameter
             placeholder="place-holder"
             readOnly={true}
             parameter_name="name"
@@ -67,9 +67,15 @@ it('renders date type', () => {
 });
 
 it('renders multiple choice type', () => {
+    const wrapper = shallow(<SourceParameter parameter_type="single_choice" source={{ "type": "x" }} report={example_report} parameter_values={[]} />);
+    expect(wrapper.find('SingleChoiceInput').exists()).toBe(true);
+});
+
+it('renders multiple choice type', () => {
     const wrapper = shallow(<SourceParameter parameter_type="multiple_choice" source={{ "type": "x" }} report={example_report} />);
     expect(wrapper.find('MultipleChoiceInput').exists()).toBe(true);
 });
+
 it('renders null, if unknown', () => {
     const wrapper = shallow(<SourceParameter parameter_type="UNKNOWN type" source={{ "type": "x" }} report={example_report} />);
     expect(wrapper).toEqual({});

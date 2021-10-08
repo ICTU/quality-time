@@ -6,10 +6,10 @@ import { SourceStatus } from './SourceStatus';
 
 const metric = { sources: { source_uuid: { name: "Source name" } } };
 
-function render_source_status(measurement_source) {
+function render_source_status(measurement_source, source_uuid) {
     return render(
         <DataModel.Provider value={{}}><SourceStatus
-            metric={metric} measurement_source={measurement_source} source_uuid="source_uuid"
+            metric={metric} measurement_source={measurement_source} source_uuid={source_uuid || "source_uuid"}
         /></DataModel.Provider>
     )
 }
@@ -40,4 +40,9 @@ it('renders the source label and the popup if there is a parse error', async () 
     await waitFor(() => {
         expect(screen.queryByText("Parse error")).not.toBe(null)
     })
+});
+
+it('renders nothing if the source has been deleted', () => {
+    render_source_status({}, "other_source_uuid");
+    expect(screen.queryByText(/Source name/)).toBe(null)
 });
