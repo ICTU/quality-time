@@ -3,7 +3,7 @@ version: 2
 jobs:
   unittest_backend:
     docker:
-      - image: cimg/python:3.9.6
+      - image: cimg/python:3.10.0
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -40,7 +40,7 @@ jobs:
 
   unittest_docs:
     docker:
-      - image: cimg/python:3.9.6-node
+      - image: cimg/python:3.10.0-node
     steps:
       - checkout
       - run: |
@@ -63,11 +63,11 @@ jobs:
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.6-browsers tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.10.0rc2-browsers tests/application_tests/ci/test.sh
 
   feature_tests:
     docker:
-      - image: cimg/python:3.9.6
+      - image: cimg/python:3.10.0
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
