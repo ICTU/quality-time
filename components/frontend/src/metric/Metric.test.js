@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { Metric } from './Metric';
 import { DataModel } from '../context/DataModel';
 
@@ -10,15 +10,25 @@ let report = {
         subject_uuid: {
             name: "Subject",
             metrics: {
-                metric_uuid: {
-                    name: "Metric",
+                violations: {
+                    name: "Violations",
                     accept_debt: false,
                     tags: [],
                     type: "violations",
-                    sources: [],
+                    sources: {source_uuid1: {name: "Source 1"}, source_uuid2: {name: "Source 2"}},
                     status: "target_not_met",
                     value: "50",
-                    recent_measurements: [{ sources: [{ name: "Source", source_uuid: "1" }] }]
+                    recent_measurements: [{ sources: [{ source_uuid: "source_uuid1" }, {source_uuid: "source_uuid2"}] }]
+                },
+                stability: {
+                    name: "Stability",
+                    accept_debt: false,
+                    tags: [],
+                    type: "stability",
+                    sources: {source_uuid: {name: "Source"}},
+                    status: "target_not_met",
+                    value: "50",
+                    recent_measurements: [{ sources: [{ source_uuid: "source_uuid" }] }]
                 }
             }
         }
@@ -31,9 +41,9 @@ const data_model = {
     }
 };
 
-function metric() {
+function render_metric(metric_uuid) {
     return (
-        mount(
+        render(
             <DataModel.Provider value={data_model}>
                 <Table>
                     <Table.Body>
@@ -41,8 +51,8 @@ function metric() {
                             hiddenColumns={[]}
                             report={report}
                             reports={[report]}
-                            metric={report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]}
-                            metric_uuid="metric_uuid"
+                            metric={report.subjects["subject_uuid"].metrics[metric_uuid]}
+                            metric_uuid={metric_uuid}
                             subject_uuid="subject_uuid"
                             visibleDetailsTabs={[]} />
                     </Table.Body>
@@ -53,24 +63,22 @@ function metric() {
 }
 
 it('renders the metric', () => {
-    const wrapper = metric();
-    expect(wrapper.find("TableCell").at(1).text()).toBe("Metric");
-    expect(wrapper.find("TableCell").at(4).text()).toBe("50 violations");
-    expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0 violations");
-    expect(wrapper.find("TableCell").at(6).find("SourceStatus").prop("measurement_source").name).toBe("Source");
+    render_metric("violations");
+    expect(screen.getAllByText(/Violations/).length).toBe(1);
+    expect(screen.getAllByText(/50 violations/).length).toBe(1);
+    expect(screen.getAllByText(/≦ 0 violations/).length).toBe(1);
+    expect(screen.getAllByText(/Source 1, Source 2/).length).toBe(1);
 });
 
 it('renders the minutes', () => {
-    report.subjects.subject_uuid.metrics.metric_uuid.type = "stability";
-    const wrapper = metric();
-    expect(wrapper.find("TableCell").at(4).text()).toBe("0:50 hours");
-    expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0:00 hours");
+    render_metric("stability");
+    expect(screen.getAllByText(/0:50 hours/).length).toBe(1);
+    expect(screen.getAllByText(/≦ 0:00 hours/).length).toBe(1);
 });
 
 it('renders the minutes as percentage', () => {
-    report.subjects.subject_uuid.metrics.metric_uuid.type = "stability";
-    report.subjects.subject_uuid.metrics.metric_uuid.scale = "percentage";
-    const wrapper = metric();
-    expect(wrapper.find("TableCell").at(4).text()).toBe("50% minutes");
-    expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0% minutes");
+    report.subjects.subject_uuid.metrics.stability.scale = "percentage";
+    render_metric("stability");
+    expect(screen.getAllByText(/50% minutes/).length).toBe(1);
+    expect(screen.getAllByText(/≦ 0% minutes/).length).toBe(1);
 });
