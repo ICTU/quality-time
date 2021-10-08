@@ -107,7 +107,7 @@ class PercentageScaleMeasurement(ScaleMeasurement):
         totals = [int(source.total() or 100) for source in sources]
         direction = self._metric.direction()
         if (add := self._metric.addition()) is sum:
-            # The metric specific to sum the percentages of each source. Directly summing percentages isn't possible
+            # The metric specifies to sum the percentages of each source. Directly summing percentages isn't possible
             # mathematically, so we first sum the nominators and denominators and then divide the sums
             value = percentage(add(values), add(totals), direction)
         else:
