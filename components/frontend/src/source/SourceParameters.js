@@ -33,7 +33,7 @@ export function SourceParameters({report, source_uuid, source, metric_type, metr
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 placeholder={all_parameters[parameter_key].placeholder || ""}
                 required={all_parameters[parameter_key].mandatory}
-                warning={changed_param_keys ? (changed_param_keys.indexOf(parameter_key) !== -1) : false}
+                warning={changed_param_keys?.indexOf(parameter_key) !== -1}
                 reload={reload}
                 index={index}
             />
