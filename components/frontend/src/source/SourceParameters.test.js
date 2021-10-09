@@ -52,6 +52,11 @@ it("renders the source parameter value", () => {
     expect(screen.queryAllByDisplayValue(/Value/).length).toBe(1);
 });
 
+it("does not render a warning if the url was reachable", () => {
+    renderSourceParameters({type: "url", changed_param_keys: ["other_parameter_key"]});
+    expect(screen.getByDisplayValue(/Default value/)).toBeValid();
+});
+
 it("renders a warning if the url was not reachable", () => {
     renderSourceParameters({type: "url", changed_param_keys: ["parameter_key"]});
     expect(screen.getByDisplayValue(/Default value/)).toBeInvalid();
