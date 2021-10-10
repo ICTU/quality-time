@@ -11,6 +11,7 @@ jest.mock("../api/fetch_server_api.js")
 const data_model = {
     metrics: {
         violations: { unit: "violations", direction: "<", name: "Violations", default_scale: "count", scales: ["count", "percentage"] },
+        violations_with_default_target: { target: "100", unit: "violations", direction: "<", name: "Violations", default_scale: "count", scales: ["count", "percentage"] },
         source_version: { unit: "", direction: "<", name: "Source version", default_scale: "version_number", scales: ["version_number"] }
     }
 };
@@ -44,3 +45,8 @@ it('sets the metric version target', async () => {
     userEvent.type(screen.getByDisplayValue("10"), '{selectall}4.2{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", { target: "4.2" });
 });
+
+it('displays the default target if changed', () => {
+    render_metric_target("violations_with_default_target");
+    expect(screen.queryAllByText(/default:/).length).toBe(1);
+})
