@@ -68,6 +68,7 @@ html_static_path = ["_static"]
 # -- Options for linkcheck ---------------------------------------------------
 
 linkcheck_ignore = [
+    r"http://localhost",  # Getting started URL
     r"http://localhost:\d+",  # Example URLs
     "http://quality-time.example.org",  # Example URLs
     # False negative: Anchor 'recognized-languages-' not found:

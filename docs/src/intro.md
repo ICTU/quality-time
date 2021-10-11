@@ -6,7 +6,7 @@ Technically, *Quality-time* consists of a React frontend, a Mongo database serve
 
 Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured metric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
-*Quality-time* is developed by [ICTU](https://ictu.nl/about-us), an independent consultancy and project organisation within the Dutch government, helping government organizations develop and implement digital services.
+*Quality-time* is developed by [ICTU](https://www.ictu.nl/about-us), an independent consultancy and project organisation within the Dutch government, helping government organizations develop and implement digital services.
 
 # Screenshots
 

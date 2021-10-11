@@ -8,7 +8,7 @@ from ..parameters import access_parameters, Severities
 GENERIC_JSON = Source(
     name="JSON file with security warnings",
     description="A generic vulnerability report with security warnings in JSON format.",
-    url="https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-for-security-warnings",
+    url="https://quality-time.readthedocs.io/en/latest/usage.html#generic-json-format-for-security-warnings",
     parameters=dict(
         severities=Severities(values=["low", "medium", "high"]),
         **access_parameters(
