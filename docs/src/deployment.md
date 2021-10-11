@@ -33,13 +33,17 @@ See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more in
 
 ## Configuring Forwarded Authentication
 
-To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Security warning: Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. Add the environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
   server:
     environment:
       - FORWARD_AUTH_ENABLED=True
       - FORWARD_AUTH_HEADER=X-Forwarded-User
+```
+
+```{danger}
+Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. 
 ```
 
 ## Settings per component
