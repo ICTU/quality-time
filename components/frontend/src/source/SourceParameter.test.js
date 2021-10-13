@@ -3,12 +3,32 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SourceParameter } from './SourceParameter';
 
-const report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": "b" } }] }] }] }
+const report = {
+    "subjects": {
+        "subject_uuid": {
+            "metrics": {
+                "metric_uuid": {
+                    "sources": {
+                        "source_uuid": {
+                            "type": "source_type",
+                            "parameters": { "key1": "" }
+                        },
+                        "other_source_uuid": {
+                            "type": "source_type",
+                            "parameters": { "key1": ["value1", "value2"] }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 function renderSourceParameter(
     {
         help = null,
         help_url = null,
+        parameter_key = "key1",
         parameter_name = "URL",
         parameter_type = "url",
         parameter_value = "https://test",
@@ -21,13 +41,15 @@ function renderSourceParameter(
         <SourceParameter
             help={help}
             help_url={help_url}
+            parameter_key={parameter_key}
             parameter_name={parameter_name}
             parameter_type={parameter_type}
             parameter_value={parameter_value}
             parameter_values={parameter_values}
             placeholder={placeholder}
             report={report}
-            source={{ "type": "x" }}
+            source={{ "type": "source_type" }}
+            source_uuid="source_uuid"
             warning={warning}
         />
     )
@@ -36,21 +58,21 @@ function renderSourceParameter(
 it('renders an url parameter', () => {
     renderSourceParameter({});
     expect(screen.queryAllByText(/URL/).length).toBe(1);
-    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+    expect(screen.queryAllByText(/placeholder/).length).toBe(1);
     expect(screen.getByDisplayValue(/https:\/\/test/)).toBeValid();
 });
 
 it('renders an url parameter with warning', () => {
     renderSourceParameter({ warning: true });
     expect(screen.queryAllByText(/URL/).length).toBe(1);
-    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
-    expect(screen.getByDisplayValue(/https:\/\/test/)).toBeInvalid();
+    expect(screen.queryAllByText(/placeholder/).length).toBe(1);
+    expect(screen.getByRole("combobox")).toBeInvalid();
 });
 
 it('renders a string parameter', () => {
     renderSourceParameter({ parameter_name: "String", parameter_type: "string" });
     expect(screen.queryAllByText(/String/).length).toBe(1);
-    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+    expect(screen.queryAllByText(/placeholder/).length).toBe(1);
 });
 
 it('renders a password parameter', () => {
