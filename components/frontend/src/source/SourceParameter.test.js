@@ -1,82 +1,110 @@
 import React from 'react';
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+import { render, screen } from '@testing-library/react';
 import { SourceParameter } from './SourceParameter';
 
-Enzyme.configure({ adapter: new Adapter() });
+const report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": "b" } }] }] }] }
 
-const example_report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": "b" } }] }] }] }
-
-it('renders url type', () => {
-    const wrapper = shallow(
+function renderSourceParameter(
+    {
+        parameter_name = "URL",
+        parameter_type = "url",
+        parameter_value = "https://test",
+        parameter_values = [],
+        placeholder = "placeholder",
+        warning = false,
+    }
+) {
+    return render(
         <SourceParameter
-            placeholder="place-holder"
-            readOnly={true}
-            parameter_name="name"
-            required={false}
-            source_uuid="source-uuid"
-            parameter_key="key"
-            parameter_type="url"
-            reload="reload-"
-            parameter_value="value-"
-            warning={true}
+            parameter_name={parameter_name}
+            parameter_type={parameter_type}
+            parameter_value={parameter_value}
+            parameter_values={parameter_values}
+            placeholder={placeholder}
+            report={report}
             source={{ "type": "x" }}
-            report={example_report} />
+            warning={warning}
+        />
+    )
+}
+
+it('renders an url parameter', () => {
+    renderSourceParameter({});
+    expect(screen.queryAllByText(/URL/).length).toBe(1);
+    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+    expect(screen.getByDisplayValue(/https:\/\/test/)).toBeValid();
+});
+
+it('renders an url parameter with warning', () => {
+    renderSourceParameter({ warning: true });
+    expect(screen.queryAllByText(/URL/).length).toBe(1);
+    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+    expect(screen.getByDisplayValue(/https:\/\/test/)).toBeInvalid();
+});
+
+it('renders a string parameter', () => {
+    renderSourceParameter({ parameter_name: "String", parameter_type: "string" });
+    expect(screen.queryAllByText(/String/).length).toBe(1);
+    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+});
+
+it('renders a password parameter', () => {
+    renderSourceParameter({ parameter_name: "Password", parameter_type: "password" });
+    expect(screen.queryAllByText(/Password/).length).toBe(1);
+    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+});
+
+it('renders a date parameter', () => {
+    renderSourceParameter({ parameter_name: "Date", parameter_type: "date", parameter_value: "2021-10-10" });
+    expect(screen.queryAllByText(/Date/).length).toBe(1);
+    expect(screen.queryAllByDisplayValue(/2021\-10\-10/).length).toBe(1);
+});
+
+it('renders an integer parameter', () => {
+    renderSourceParameter({ parameter_name: "Integer", parameter_type: "integer" });
+    expect(screen.queryAllByText(/Integer/).length).toBe(1);
+    expect(screen.queryAllByPlaceholderText(/placeholder/).length).toBe(1);
+});
+
+it('renders a single choice parameter', () => {
+    renderSourceParameter(
+        {
+            parameter_name: "Single choice",
+            parameter_type: "single_choice",
+            parameter_value: "option 1",
+            parameter_values: ["option 1", "option 2"],
+        }
     );
-
-    expect(wrapper.find('StringInput').prop('label')).toBe("name");
-    expect(Array.from(wrapper.find('StringInput').prop('options'))).toStrictEqual(["b"]);
-    expect(wrapper.find('StringInput').prop('placeholder')).toBe("place-holder");
-    expect(wrapper.find('StringInput').prop('required')).toBe(false);
-    expect(wrapper.find('StringInput').prop('set_value').toString().includes('set_source_parameter')).toBe(true);
-    expect(wrapper.find('StringInput').prop('value')).toBe('value-');
-    expect(wrapper.find('StringInput').prop('warning')).toBe(true);
+    expect(screen.queryAllByText(/Single choice/).length).toBe(1);
+    expect(screen.queryAllByText(/option 1/).length).toBe(2);
 });
 
-it('renders string type', () => {
-    const example_report_local = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": ["a", "b"] } }] }] }] }
-    const wrapper = shallow(<SourceParameter parameter_type="string" help_url="help-"
-        parameter_name="name" parameter_key="key" source={{ "type": "x" }}
-        report={example_report_local} />);
-    expect(wrapper.find('StringInput').prop('label').type).toEqual('label');
-    expect(wrapper.find('StringInput').prop('label').props.children[0]).toEqual('name');
-    expect(Array.from(wrapper.find('StringInput').prop('options'))).toStrictEqual(["a", "b"]);
+it('renders a multiple choice parameter', () => {
+    renderSourceParameter(
+        {
+            parameter_name: "Multiple choice",
+            parameter_type: "multiple_choice",
+            parameter_value: ["option 1", "option 2"],
+            parameter_values: ["option 1", "option 2", "option 3"],
+        }
+    );
+    expect(screen.queryAllByText(/Multiple choice/).length).toBe(1);
+    expect(screen.queryAllByText(/option 1/).length).toBe(1);
 });
 
-it('renders password type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="password" />);
-    expect(wrapper.find('PasswordInput').exists()).toBe(true);
+it('renders a multiple choice with addition parameter', () => {
+    renderSourceParameter(
+        {
+            parameter_name: "Multiple choice with addition",
+            parameter_type: "multiple_choice_with_addition",
+            parameter_value: ["option 1", "option 2"],
+            placeholder: null,
+        }
+    );
+    expect(screen.queryAllByText(/Multiple choice/).length).toBe(1);
 });
 
-it('renders integer type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="integer" parameter_max="10" parameter_min="1" parameter_unit="mg" />);
-    expect(wrapper.find('IntegerInput').exists()).toBe(true);
-    expect(wrapper.find('IntegerInput').prop('max')).toBe("10");
-    expect(wrapper.find('IntegerInput').prop('min')).toBe("1");
-    expect(wrapper.find('IntegerInput').prop('unit')).toBe('mg');
-});
-
-it('renders multiple choice type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="multiple_choice_with_addition" source={{ "type": "x" }} report={example_report} />);
-    expect(wrapper.find('MultipleChoiceInput').exists()).toBe(true);
-});
-
-it('renders date type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="date" />);
-    expect(wrapper.find('DateInput').exists()).toBe(true);
-});
-
-it('renders multiple choice type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="single_choice" source={{ "type": "x" }} report={example_report} parameter_values={[]} />);
-    expect(wrapper.find('SingleChoiceInput').exists()).toBe(true);
-});
-
-it('renders multiple choice type', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="multiple_choice" source={{ "type": "x" }} report={example_report} />);
-    expect(wrapper.find('MultipleChoiceInput').exists()).toBe(true);
-});
-
-it('renders null, if unknown', () => {
-    const wrapper = shallow(<SourceParameter parameter_type="UNKNOWN type" source={{ "type": "x" }} report={example_report} />);
-    expect(wrapper).toEqual({});
-});
+it('renders nothing on unknown parameter type', () => {
+    renderSourceParameter({parameter_name: "Unknown", parameter_type: "unknown"})
+    expect(screen.queryAllByText(/Unknown/).length).toBe(0);
+})

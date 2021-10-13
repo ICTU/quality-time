@@ -36,6 +36,7 @@ export function Subjects({
                         first_subject={index === 0}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        key={subject_uuid}
                         last_subject={index === last_index}
                         report={report}
                         report_date={report_date}
