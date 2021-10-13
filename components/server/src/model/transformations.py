@@ -170,14 +170,13 @@ def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measu
     """Add a summary of the metric to the report."""
     metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
     recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
-    scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-    metric["scale"] = scale
-    last_measurement = recent[-1] if recent else {}
-    metric["status"] = metric_status(metric, last_measurement, scale)
-    if status_start := last_measurement.get(scale, {}).get("status_start"):
+    latest_measurement = recent[-1] if recent else {}
+    scale = metric["scale"] = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
+    metric["status"] = metric_status(metric, latest_measurement, scale)
+    if status_start := latest_measurement.get(scale, {}).get("status_start"):
         metric["status_start"] = status_start
-    metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
-    if statuses := issue_statuses(metric, last_measurement):
+    metric["value"] = latest_measurement.get(scale, {}).get("value", latest_measurement.get("value"))
+    if statuses := issue_statuses(metric, latest_measurement):
         metric["issue_status"] = statuses
     color = STATUS_COLOR_MAPPING.get(metric["status"], "white")
     report["summary"][color] += 1
