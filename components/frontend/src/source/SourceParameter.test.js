@@ -1,11 +1,14 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SourceParameter } from './SourceParameter';
 
 const report = { "subjects": [{ "metrics": [{ "sources": [{ "type": "x", "parameters": { "key": "b" } }] }] }] }
 
 function renderSourceParameter(
     {
+        help = null,
+        help_url = null,
         parameter_name = "URL",
         parameter_type = "url",
         parameter_value = "https://test",
@@ -16,6 +19,8 @@ function renderSourceParameter(
 ) {
     return render(
         <SourceParameter
+            help={help}
+            help_url={help_url}
             parameter_name={parameter_name}
             parameter_type={parameter_type}
             parameter_value={parameter_value}
@@ -105,6 +110,17 @@ it('renders a multiple choice with addition parameter', () => {
 });
 
 it('renders nothing on unknown parameter type', () => {
-    renderSourceParameter({parameter_name: "Unknown", parameter_type: "unknown"})
+    renderSourceParameter({ parameter_name: "Unknown", parameter_type: "unknown" })
     expect(screen.queryAllByText(/Unknown/).length).toBe(0);
-})
+});
+
+it('renders a help url', () => {
+    renderSourceParameter({ help_url: "https://help" })
+    expect(screen.queryByTitle(/Opens new window/).closest("a").href).toBe("https://help/")
+});
+
+it('renders a help text', async () => {
+    renderSourceParameter({ help: "Help text" })
+    userEvent.hover(screen.queryByTestId("help-icon"))
+    await waitFor(() => { expect(screen.queryAllByText(/Help text/).length).toBe(1) });
+});

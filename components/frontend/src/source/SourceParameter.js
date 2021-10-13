@@ -82,11 +82,11 @@ export function SourceParameter({
         label = <label>{parameter_name} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
     }
     if (help) {
-        label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>
+        label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />} /></label>
     }
     let parameter_props = {
         requiredPermissions: requiredPermissions,
-        editableLabel: <SourceParameterLabel 
+        editableLabel: <SourceParameterLabel
             edit_scope={edit_scope}
             label={label}
             setEditScope={setEditScope}
