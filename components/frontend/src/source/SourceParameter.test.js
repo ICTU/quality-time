@@ -15,8 +15,13 @@ const report = {
                         },
                         "other_source_uuid": {
                             "type": "source_type",
+                            "parameters": { "key1": "value" }
+                        },
+                        "another_source_uuid": {
+                            "type": "source_type",
                             "parameters": { "key1": ["value1", "value2"] }
-                        }
+                        },
+                        "yet_another_source_uuid": { "type": "other_source_type" }
                     }
                 }
             }
@@ -28,6 +33,7 @@ function renderSourceParameter(
     {
         help = null,
         help_url = null,
+        index = 0,
         parameter_key = "key1",
         parameter_name = "URL",
         parameter_type = "url",
@@ -41,6 +47,7 @@ function renderSourceParameter(
         <SourceParameter
             help={help}
             help_url={help_url}
+            index={index}
             parameter_key={parameter_key}
             parameter_name={parameter_name}
             parameter_type={parameter_type}
@@ -63,7 +70,7 @@ it('renders an url parameter', () => {
 });
 
 it('renders an url parameter with warning', () => {
-    renderSourceParameter({ warning: true });
+    renderSourceParameter({ warning: true, index: 1 });
     expect(screen.queryAllByText(/URL/).length).toBe(1);
     expect(screen.queryAllByText(/placeholder/).length).toBe(1);
     expect(screen.getByRole("combobox")).toBeInvalid();
