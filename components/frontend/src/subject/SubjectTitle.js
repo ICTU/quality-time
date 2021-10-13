@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
@@ -6,6 +6,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
 
@@ -22,14 +23,13 @@ function SubjectHeader({ subject_type }) {
     )
 }
 
-function SubjectTypeAndName({ datamodel, subject, subject_uuid, subject_name, reload }) {
+function SubjectTypeAndName({ subject, subject_uuid, subject_name, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <SubjectType
                         id="subject-type"
-                        datamodel={datamodel}
                         set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
                         subject_type={subject.type}
                     />
@@ -62,11 +62,12 @@ function ButtonRow({ subject_uuid, first_subject, last_subject, reload }) {
     )
 }
 
-export function SubjectTitle({ datamodel, report, subject, subject_uuid, first_subject, last_subject, reload }) {
-    const current_subject_type = datamodel.subjects[subject.type] || { name: "Unknown subject type" };
+export function SubjectTitle({ report, subject, subject_uuid, first_subject, last_subject, reload }) {
+    const dataModel = useContext(DataModel)
+    const current_subject_type = dataModel.subjects[subject.type] || { name: "Unknown subject type" };
     const subject_name = subject.name || current_subject_type.name;
     const panes = [
-        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName datamodel={datamodel} subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectTypeAndName subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report.report_uuid} subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ];
     return (

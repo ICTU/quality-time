@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Header, Icon, Menu, Popup, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
@@ -11,6 +11,7 @@ import { NotificationDestinations } from '../notification/NotificationDestinatio
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
+import { DataModel } from '../context/DataModel';
 
 function ReportAttributes(props) {
     return (
@@ -39,14 +40,14 @@ function ReportAttributes(props) {
     )
 }
 
-function ButtonRow(props) {
+function ButtonRow({report_uuid, go_home, history}) {
     return (
         <>
-            <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
+            <DownloadAsPDFButton report_uuid={report_uuid} history={history} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <DeleteButton
                     item_type='report'
-                    onClick={() => delete_report(props.report_uuid, props.go_home)}
+                    onClick={() => delete_report(report_uuid, go_home)}
                 />}
             />
         </>
@@ -60,8 +61,9 @@ const NONE_OPTION = {
         </Header>
 }
 
-function IssueTracker({ datamodel, report_uuid, report, reload }) {
-    let trackerSources = Object.entries(datamodel.sources).filter(
+function IssueTracker({ report_uuid, report, reload }) {
+    const dataModel = useContext(DataModel)
+    let trackerSources = Object.entries(dataModel.sources).filter(
         ([source_name, source_type]) => { return source_type.issue_tracker === true }
     ).map(
         ([source_name, source_type]) => {
@@ -157,12 +159,12 @@ function IssueTracker({ datamodel, report_uuid, report, reload }) {
     )
 }
 
-export function ReportTitle({ datamodel, report, go_home, history, reload }) {
+export function ReportTitle({ report, go_home, history, reload }) {
     const report_uuid = report.report_uuid;
     const panes = [
         { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportAttributes report_uuid={report_uuid} reload={reload} title={report.title} subtitle={report.subtitle} /></Tab.Pane> },
         { menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker datamodel={datamodel} report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ]
     return (

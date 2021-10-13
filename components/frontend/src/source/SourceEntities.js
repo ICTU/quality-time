@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Popup, Table } from 'semantic-ui-react';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
+import { DataModel } from '../context/DataModel';
 
 export function alignment(column_type) {
     return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[column_type];
 }
 
-export function SourceEntities({ datamodel, metric, metric_uuid, source, reload }) {
+export function SourceEntities({ metric, metric_uuid, source, reload }) {
+    const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
     const [sortColumn, setSortColumn] = useState(null);
     const [columnType, setColumnType] = useState('text');
@@ -27,7 +29,7 @@ export function SourceEntities({ datamodel, metric, metric_uuid, source, reload 
 
     const report_source = metric.sources[source.source_uuid];
     const source_type = report_source.type;
-    const metric_entities = datamodel.sources[source_type].entities[metric.type];
+    const metric_entities = dataModel.sources[source_type].entities[metric.type];
     if (!metric_entities || !Array.isArray(source.entities) || source.entities.length === 0) {
         return null;
     }

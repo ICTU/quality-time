@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
@@ -34,12 +35,14 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
         })
 }
 
-function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, report, reload }) {
+function MetricConfiguration({ metric, metric_uuid, report, reload }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type]
     const panes = [
         {
             menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricParameters datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+                <MetricParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {
@@ -53,9 +56,9 @@ function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, repo
         <>
             <Header>
                 <Header.Content>
-                    {metric_type.name}
+                    {metricType.name}
                     <Header.Subheader>
-                        {metric_type.description}
+                        {metricType.description}
                     </Header.Subheader>
                 </Header.Content>
             </Header>
@@ -65,7 +68,6 @@ function MetricConfiguration({ datamodel, metric, metric_uuid, metric_type, repo
 }
 
 export function MetricDetails({
-    datamodel,
     report_date,
     reports,
     report,
@@ -84,6 +86,7 @@ export function MetricDetails({
     toggleVisibleDetailsTab,
     reload
 }) {
+    const dataModel = useContext(DataModel)
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
         fetch_measurements(report_date, metric_uuid, setMeasurements);
@@ -103,7 +106,7 @@ export function MetricDetails({
             menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
                 <MetricConfiguration
-                    datamodel={datamodel} metric={metric} metric_type={metric_type} metric_uuid={metric_uuid} report={report} reload={reload} />
+                    metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {
@@ -111,7 +114,6 @@ export function MetricDetails({
             render: () => (
                 <Tab.Pane>
                     <Sources
-                        datamodel={datamodel}
                         reports={reports}
                         report={report}
                         metric_uuid={metric_uuid}
@@ -139,10 +141,10 @@ export function MetricDetails({
             if (!report_source) { return }  // source was deleted, continue
             const nr_entities = (source.entities && source.entities.length) || 0;
             if (nr_entities === 0) { return } // no entities to show, continue
-            const source_name = get_source_name(report_source, datamodel);
+            const source_name = get_source_name(report_source, dataModel);
             panes.push({
                 menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-                render: () => <Tab.Pane><SourceEntities datamodel={datamodel} metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
+                render: () => <Tab.Pane><SourceEntities metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
             });
         });
     }
@@ -153,7 +155,6 @@ export function MetricDetails({
         toggleVisibleDetailsTab(old_tab, new_tab);
     }
 
-    const metric_type = datamodel.metrics[metric.type];
     const visible_tabs = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid));
     const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
     return (

@@ -1,29 +1,58 @@
 import React from 'react';
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
 
-const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metrics: { metric_type: { tags: [] } } }
-const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [], recent_measurements: [] } } } } };
+const datamodel = {
+    subjects: {
+        subject_type: {
+            name: "Subject type"
+        }
+    },
+    metrics: {
+        metric_type: {
+            tags: []
+        }
+    }
+}
+
+const report = {
+    subjects: {
+        subject_uuid: {
+            type: "subject_type",
+            name: "Subject title",
+            metrics: {
+                metric_uuid: {
+                    type: "metric_type",
+                    tags: [],
+                    recent_measurements: [],
+                    sources: {}
+                }
+            }
+        }
+    }
+};
 
 let mockHistory = {};
 
 function subjects() {
     return (
-        shallow(
-            <Subjects
-                clearHiddenColumns={() => {/*Dummy implementation*/ }}
-                datamodel={datamodel}
-                hiddenColumns={[]}
-                history={mockHistory}
-                reports={[report]}
-                report={report}
-                subject_uuid="subject_uuid"
-                tags={[]}
-                toggleHiddenColumn={() => {/*Dummy implementation*/ }}
-            />
+        mount(
+            <DataModel.Provider value={datamodel}>
+                <Subjects
+                    hiddenColumns={[]}
+                    history={mockHistory}
+                    reports={[report]}
+                    report={report}
+                    subject_uuid="subject_uuid"
+                    tags={[]}
+                    toggleHiddenColumn={() => {/*Dummy implementation*/ }}
+                    report_date={new Date()}
+                />
+            </DataModel.Provider>
         )
     )
 }
@@ -31,14 +60,15 @@ function subjects() {
 function render_subjects(permissions = []) {
     return render(
         <Permissions.Provider value={permissions}>
-            <Subjects
-                datamodel={datamodel}
-                hiddenColumns={[]}
-                history={{ location: {}, replace: () => {/* Dummy implementation */ } }}
-                report={report}
-                reports={[report]}
-                tags={[]}
-            />
+            <DataModel.Provider value={datamodel}>
+                <Subjects
+                    hiddenColumns={[]}
+                    history={{ location: {}, replace: () => {/* Dummy implementation */ } }}
+                    report={report}
+                    reports={[report]}
+                    tags={[]}
+                />
+            </DataModel.Provider>
         </Permissions.Provider>
     )
 }
@@ -76,29 +106,29 @@ describe("<Subjects />", () => {
     it('hides metrics not requiring action on load', () => {
         mockHistory.location.search = "?hide_metrics_not_requiring_action=true"
         const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
+        expect(wrapper.find("Subjects").find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
     });
     it('shows metrics not requiring action on load', () => {
         mockHistory.location.search = "?hide_metrics_not_requiring_action=false"
         const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
+        expect(wrapper.find("Subjects").find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
     });
     it('toggles tabs', () => {
         const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
-        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("MetricDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
-        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
-        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
+        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
+        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("TableCell").at(0).simulate("click");
+        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
+        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("MetricDetails").find("Tab").find("Menu").find("MenuItem").at(1).find("a").simulate("click");
+        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
+        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("TableCell").at(0).simulate("click");
+        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
     });
     it('toggles subject trend table', () => {
         const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
-        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HamburgerItems").dive().find("DropdownItem").at(1).simulate("click");
-        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(true);
-        wrapper.find("Subject").dive().find("TrendTable").dive().find("TrendTableHeader").dive().find("HamburgerMenu").dive().find("HamburgerItems").dive().find("DropdownItem").at(0).simulate("click");
-        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
+        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
+        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("SubjectTableHeader").find("HamburgerHeader").find("HamburgerItems").find("DropdownItem").at(1).simulate("click");
+        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(true);
+        wrapper.find("Subjects").find("Subject").find("TrendTable").find("TrendTableHeader").find("HamburgerMenu").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
+        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
     })
 });

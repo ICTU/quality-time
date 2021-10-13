@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { SubjectTitle } from './SubjectTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
@@ -26,7 +27,9 @@ async function render_subject_title(subject_type = "subject_type") {
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <SubjectTitle datamodel={datamodel} report={report} subject={{ type: subject_type }} subject_uuid="subject_uuid" />
+                <DataModel.Provider value={datamodel}>
+                    <SubjectTitle report={report} subject={{ type: subject_type }} subject_uuid="subject_uuid" />
+                </DataModel.Provider>
             </Permissions.Provider>
         )
         fireEvent.click(screen.getByTitle(/expand/));

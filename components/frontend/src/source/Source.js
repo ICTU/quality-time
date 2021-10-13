@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
+import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
@@ -16,43 +17,45 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
 }
 
-function SourceHeader(props) {
+function SourceHeader({ source }) {
+    const dataModel = useContext(DataModel)
+    const source_type = dataModel.sources[source.type];
     return (
         <Header>
             <Header.Content>
-                <Logo logo={props.source.type} alt={props.source_type.name} />
-                {props.source_type.name}
+                <Logo logo={source.type} alt={source_type.name} />
+                {source_type.name}
                 <Header.Subheader>
-                    {props.source_type.description}
-                    {props.source_type.url && <HyperLink url={props.source_type.url}><Icon name="external" link /></HyperLink>}
+                    {source_type.description}
+                    {source_type.url && <HyperLink url={source_type.url}><Icon name="external" link /></HyperLink>}
                 </Header.Subheader>
             </Header.Content>
         </Header>
     )
 }
 
-function ButtonGridRow(props) {
+function ButtonGridRow({first_source, last_source, source_uuid, reload}) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Grid.Row>
                 <Grid.Column>
-                    <ReorderButtonGroup first={props.first_source} last={props.last_source} moveable="source"
-                        onClick={(direction) => { set_source_attribute(props.source_uuid, "position", direction, props.reload) }} />
-                    <DeleteButton item_type="source" onClick={() => delete_source(props.source_uuid, props.reload)} />
+                    <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
+                        onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
+                    <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
                 </Grid.Column>
             </Grid.Row>}
         />
     )
 }
 
-function Parameters({ datamodel, source, source_uuid, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
-    const source_type = datamodel.sources[source.type];
+function Parameters({ source, source_uuid, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
+    const dataModel = useContext(DataModel)
+    const source_type = dataModel.sources[source.type];
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <SourceType
-                        datamodel={datamodel}
                         metric_type={metric_type}
                         set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
                         source_uuid={source_uuid}
@@ -73,7 +76,6 @@ function Parameters({ datamodel, source, source_uuid, connection_error, parse_er
             <Grid.Row columns={2}>
                 <SourceParameters
                     changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
-                    datamodel={datamodel}
                     metric_type={metric_type}
                     metric_unit={metric_unit}
                     reload={reload}
@@ -88,14 +90,13 @@ function Parameters({ datamodel, source, source_uuid, connection_error, parse_er
     )
 }
 
-export function Source({ datamodel, source, source_uuid, first_source, last_source, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
-    const source_type = datamodel.sources[source.type];
+export function Source({ source, source_uuid, first_source, last_source, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
     const parameter_menu_item = connection_error || parse_error ? <Label color='red'>{"Configuration"}</Label> : "Configuration";
     const panes = [
         {
             menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <Parameters datamodel={datamodel} source={source} source_uuid={source_uuid}
+                <Parameters source={source} source_uuid={source_uuid}
                     connection_error={connection_error} parse_error={parse_error} metric_type={metric_type}
                     metric_unit={metric_unit} report={report} changed_fields={changed_fields} reload={reload} />
             </Tab.Pane>
@@ -109,7 +110,7 @@ export function Source({ datamodel, source, source_uuid, first_source, last_sour
     ];
     return (
         <>
-            <SourceHeader source={source} source_type={source_type} />
+            <SourceHeader source={source} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
                 <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />

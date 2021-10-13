@@ -35,7 +35,6 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
 
 export function Subject({
     changed_fields,
-    datamodel,
     first_subject,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -83,7 +82,6 @@ export function Subject({
     return (
         <div id={subject_uuid}>
             <SubjectTitle
-                datamodel={datamodel}
                 report={report}
                 subject={subject}
                 subject_uuid={subject_uuid}
@@ -93,7 +91,6 @@ export function Subject({
             {subjectTrendTable ?
                 <TrendTable
                     changed_fields={changed_fields}
-                    datamodel={datamodel}
                     reportDate={report_date}
                     metrics={metrics}
                     measurements={measurements}
@@ -113,7 +110,6 @@ export function Subject({
                 :
                 <SubjectDetails
                     changed_fields={changed_fields}
-                    datamodel={datamodel}
                     hiddenColumns={hiddenColumns}
                     report={report}
                     reports={reports}
