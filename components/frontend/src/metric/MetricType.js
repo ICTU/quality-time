@@ -4,7 +4,6 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { DataModel } from '../context/Contexts';
 
 export function MetricType({metricType, metric_uuid, reload}) {
     const dataModel = useContext(DataModel)

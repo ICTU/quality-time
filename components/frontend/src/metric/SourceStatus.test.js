@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { SourceStatus } from './SourceStatus';
-import { DataModel } from '../context/Contexts';
 
 const metric = { sources: { source_uuid: { name: "Source name" } } };
 

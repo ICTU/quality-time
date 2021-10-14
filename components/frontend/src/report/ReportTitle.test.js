@@ -5,7 +5,6 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportTitle } from './ReportTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
-import { DataModel } from '../context/Contexts';
 
 jest.mock("../api/fetch_server_api.js")
 

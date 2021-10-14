@@ -9,7 +9,6 @@ import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/P
 import { set_report_attribute } from '../api/report';
 import { get_subject_name, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
-import { DataModel } from '../context/Contexts';
 
 function ReportDashboard({report, onClick, hideTags, setTags, tags, reload}) {
     const dataModel = useContext(DataModel)
@@ -69,6 +68,7 @@ export function Report({
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
     }
+
     const [tags, setTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report

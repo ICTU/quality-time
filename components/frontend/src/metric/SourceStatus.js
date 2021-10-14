@@ -3,7 +3,6 @@ import { Label, Popup } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';
-import { DataModel } from '../context/Contexts';
 
 export function SourceStatus({metric, measurement_source }) {
     const dataModel = useContext(DataModel)

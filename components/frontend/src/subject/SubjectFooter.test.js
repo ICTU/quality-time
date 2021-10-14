@@ -5,7 +5,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
 import { SubjectFooter } from "./SubjectFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
-import { DataModel } from "../context/Contexts";
 
 const resetSort = jest.fn()
 

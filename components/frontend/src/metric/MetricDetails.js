@@ -12,7 +12,6 @@ import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { capitalize, get_source_name } from '../utils';
-import { DataModel } from '../context/Contexts';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stop_sort, reload }) {
     return (

@@ -5,7 +5,6 @@ import * as TrendTable from '../trend_table/TrendTable';
 import * as SubjectDetails from './SubjectDetails';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
-import { DataModel } from "../context/Contexts";
 
 it('fetches measurements', async () => {
 
