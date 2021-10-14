@@ -15,9 +15,9 @@ jest.mock('../api/subject', () => {
     return {
         __esModule: true,
         ...originalModule,
-        add_subject: jest.fn(() => {}),
-        copy_subject: jest.fn(() => {}),
-        move_subject: jest.fn(() => {}),
+        add_subject: jest.fn(),
+        copy_subject: jest.fn(),
+        move_subject: jest.fn(),
     };
 });
 
