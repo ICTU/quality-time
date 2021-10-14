@@ -143,7 +143,7 @@ class Collector:
 
     def __can_collect(self, metric) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
-        sources = metric.get("sources")
+        sources = metric.get("sources", {})
         for source in sources.values():
             parameters = self.data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
             for parameter_key, parameter in parameters.items():
