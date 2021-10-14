@@ -1,2 +1,2 @@
 -r ../../requirements-dev.txt
-selenium==3.141.0
+selenium==4.0.0
