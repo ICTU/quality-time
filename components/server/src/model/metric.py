@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import date
-from typing import Optional, cast
+from typing import cast
 
 from model.source import Source
 from server_utilities.type import Direction, MetricId, Scale, TargetType
@@ -55,7 +55,7 @@ class Metric(dict):
         """Return the end date of the accepted technical debt."""
         return str(self.get("debt_end_date")) or date.max.isoformat()
 
-    def get_target(self, target_type: TargetType) -> Optional[str]:
+    def get_target(self, target_type: TargetType) -> str | None:
         """Return the target."""
         target = self.get(target_type)
         return str(target) if target else None
@@ -64,7 +64,7 @@ class Metric(dict):
         """Return the metric sources."""
         return cast(dict, self.get("sources", {}))
 
-    def get_measured_attribute(self, source: Source) -> tuple[Optional[str], str]:
+    def get_measured_attribute(self, source: Source) -> tuple[str | None, str]:
         """Return the attribute of the source entities that is used to measure the value, and its type.
 
         For example, when using Jira as source for user story points, the points of user stories (the source entities)
@@ -78,7 +78,7 @@ class Metric(dict):
         return measured_attribute, attribute_type
 
     @staticmethod
-    def _get_measured_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: Optional[str]) -> str:
+    def _get_measured_attribute_type(entity: dict[str, list[dict[str, str]]], attribute_key: str | None) -> str:
         """Look up the type of an entity attribute."""
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))

@@ -1,7 +1,6 @@
 """Notification."""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from notifier_utilities.type import JSON
 from models.metric_notification_data import MetricNotificationData
@@ -22,6 +21,6 @@ class Notification:
         return str(self.report["title"])
 
     @property
-    def url(self) -> Optional[str]:
+    def url(self) -> str | None:
         """Return the URL of the report."""
         return self.report.get("url")

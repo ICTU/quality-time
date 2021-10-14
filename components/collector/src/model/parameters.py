@@ -1,6 +1,6 @@
 """Source parameters."""
 
-from typing import cast, Union
+from typing import cast
 import urllib
 
 from collector_utilities.type import URL
@@ -33,7 +33,7 @@ class SourceParameters:
         """Return the password."""
         return cast(str, self.__parameters.get("password", ""))
 
-    def get(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
+    def get(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Return the parameter with the given key."""
 
         def quote_if_needed(parameter_value: str) -> str:

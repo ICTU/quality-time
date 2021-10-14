@@ -18,16 +18,16 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement on a specific scale."""
 
     def __init__(self, *args, **kwargs):
-        self.__previous_scale_measurement: Optional[ScaleMeasurement] = kwargs.pop("previous_scale_measurement")
+        self.__previous_scale_measurement: ScaleMeasurement | None = kwargs.pop("previous_scale_measurement")
         self._measurement: Measurement = kwargs.pop("measurement")
         self._metric: Metric = self._measurement.metric
         super().__init__(*args, **kwargs)
 
-    def status(self) -> Optional[Status]:
+    def status(self) -> Status | None:
         """Return the measurement status."""
         return cast(Optional[Status], self.get("status"))
 
-    def status_start(self) -> Optional[str]:
+    def status_start(self) -> str | None:
         """Return the start date of the status."""
         return str(self.get("status_start", "")) or None
 
@@ -38,7 +38,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         self["status"] = status = self.__calculate_status(value)
         self.__set_status_start(status)
 
-    def __set_status_start(self, status: Optional[str]) -> None:
+    def __set_status_start(self, status: str | None) -> None:
         """Set the status start date."""
         if (previous := self.__previous_scale_measurement) is None:
             return
@@ -55,7 +55,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
     def _calculate_value(self) -> str:
         """Calculate the value of the measurement."""
 
-    def __calculate_status(self, value: Optional[str]) -> Optional[Status]:
+    def __calculate_status(self, value: str | None) -> Status | None:
         """Determine the status of the measurement."""
         target, near_target, debt_target = self.get("target"), self.get("near_target"), self.get("debt_target")
         if value is None:
@@ -70,14 +70,14 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
             status = "target_not_met"
         return status
 
-    def __calculate_status_without_measurement(self) -> Optional[Status]:
+    def __calculate_status_without_measurement(self) -> Status | None:
         """Determine the status of the measurement if there is no measurement value."""
         # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
         return None if self._metric.accept_debt_expired() or self._metric.sources() else "debt_target_met"
 
     @abstractmethod
-    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+    def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
         """Return whether value 1 is better or equal than value 2."""
 
 
@@ -91,7 +91,7 @@ class CountScaleMeasurement(ScaleMeasurement):
         add = self._metric.addition()
         return str(add(values))
 
-    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+    def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
         """Override to convert the values to integers before comparing."""
         better_or_equal = {">": int.__ge__, "<": int.__le__}[self["direction"]]
         return better_or_equal(int(value1 or 0), int(value2 or 0))
@@ -117,7 +117,7 @@ class PercentageScaleMeasurement(ScaleMeasurement):
             value = add([percentage(value, total, direction) for value, total in zip(values, totals)])
         return str(value)
 
-    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+    def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
         """Override to convert the values to floats before comparing."""
         better_or_equal = {">": float.__ge__, "<": float.__le__}[self["direction"]]
         return better_or_equal(float(value1 or 0), float(value2 or 0))
@@ -132,13 +132,13 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
         add = self._metric.addition()  # Returns either min or max
         return str(add(values))
 
-    def _better_or_equal(self, value1: Optional[str], value2: Optional[str]) -> bool:
+    def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
         """Override to convert the values to version numbers before comparing."""
         better_or_equal = {">": Version.__ge__, "<": Version.__le__}[self["direction"]]
         return better_or_equal(self.parse_version(value1), self.parse_version(value2))
 
     @staticmethod
-    def parse_version(value: Optional[str]) -> Version:
+    def parse_version(value: str | None) -> Version:
         """Parse the version."""
         if value is not None:  # pragma: no cover-behave
             try:
@@ -160,7 +160,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     )
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
-        self.__previous_measurement: Optional[Measurement] = kwargs.pop("previous_measurement", None)
+        self.__previous_measurement: Measurement | None = kwargs.pop("previous_measurement", None)
         self.metric = metric
         super().__init__(*args, **kwargs)
         self["start"] = self["end"] = iso_timestamp()

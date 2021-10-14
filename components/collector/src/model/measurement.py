@@ -1,6 +1,6 @@
 """Measurement model classes."""
 
-from typing import Optional, Sequence
+from typing import Sequence
 
 from collector_utilities.type import ErrorMessage, Value, URL
 
@@ -27,9 +27,9 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-inst
         self.parse_error = parse_error
         self.connection_error = connection_error
         self.total = None if self.has_error() else total
-        self.api_url: Optional[URL] = None
-        self.landing_url: Optional[URL] = None
-        self.source_uuid: Optional[str] = None
+        self.api_url: URL | None = None
+        self.landing_url: URL | None = None
+        self.source_uuid: str | None = None
 
     def has_error(self) -> bool:
         """Return whether the measurement had a connection or parse error."""
@@ -56,7 +56,7 @@ class MetricMeasurement:  # pylint: disable=too-few-public-methods
         self.sources = sources
         self.issue_statuses = issue_statuses
         self.has_error = any(source.has_error() for source in sources)
-        self.metric_uuid: Optional[str] = None
+        self.metric_uuid: str | None = None
 
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""

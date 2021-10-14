@@ -1,6 +1,6 @@
 """Source routes."""
 
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import bottle
 from pymongo.database import Database
@@ -68,9 +68,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         f"'{target.subject_name}' in report '{target.report_name}'."
     )
     target.metric["sources"][source_uuid] = source.source
-    target_uuids: list[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = [
-        target.report_uuid
-    ]
+    target_uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [target.report_uuid]
     reports_to_insert = [(target.report, target_uuids)]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
@@ -180,7 +178,7 @@ def _source_description(data, edit_scope, parameter_key, old_value):
     return source_description
 
 
-def _availability_checks(data, parameter_key: str) -> list[dict[str, Union[str, int]]]:
+def _availability_checks(data, parameter_key: str) -> list[dict[str, str | int]]:
     """Check the availability of the URLs."""
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
     source_parameters = data.source["parameters"]

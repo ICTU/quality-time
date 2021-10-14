@@ -1,7 +1,5 @@
 """Azure Devops Server user story points collector."""
 
-from typing import Optional
-
 from collector_utilities.type import Value
 from model import Entities, SourceResponses
 
@@ -23,6 +21,6 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
         return str(sum([self.__story_points(work_item) for work_item in await self._work_items(responses)], 0.0))
 
     @staticmethod
-    def __story_points(work_item: dict[str, dict[str, Optional[float]]]) -> float:
+    def __story_points(work_item: dict[str, dict[str, None | float]]) -> float:
         """Return the number of story points from the work item."""
         return work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints") or 0.0

@@ -1,7 +1,7 @@
 """Collector base classes for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import Optional, cast
+from typing import cast
 
 import aiohttp
 
@@ -14,7 +14,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for CxSAST collectors."""
 
     def __init__(self, *args, **kwargs) -> None:
-        self.__token: Optional[str] = None
+        self.__token: str | None = None
         super().__init__(*args, **kwargs)
 
     def _headers(self) -> dict[str, str]:
@@ -23,7 +23,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         headers["Authorization"] = f"Bearer {self.__token}"
         return headers
 
-    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
+    def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Override to return nothing because the token is added as header."""
         return None
 
@@ -54,8 +54,8 @@ class CxSASTScanBase(CxSASTBase):
     """Base class for Checkmarx collectors that need scans."""
 
     def __init__(self, *args, **kwargs) -> None:
-        self.__project_id: Optional[str] = None
-        self._scan_id: Optional[str] = None
+        self.__project_id: str | None = None
+        self._scan_id: str | None = None
         super().__init__(*args, **kwargs)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:

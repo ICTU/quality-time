@@ -4,7 +4,6 @@ import io
 import logging
 import unittest
 import zipfile
-from typing import Union
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -116,6 +115,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
                 zipped_report.writestr(filename, content)
         return bytes_io.getvalue()
 
-    def set_source_parameter(self, key: str, value: Union[str, list[str]]) -> None:
+    def set_source_parameter(self, key: str, value: str | list[str]) -> None:
         """Set a source parameter."""
         self.sources["source_id"]["parameters"][key] = value

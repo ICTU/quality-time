@@ -7,7 +7,7 @@ from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Optional, Tuple, TypeVar, Union, cast
+from typing import Tuple, TypeVar, cast
 
 import bottle
 import requests
@@ -87,7 +87,7 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
 
-def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, Union[int, str]]:
+def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, int | str]:
     """Check the availability of the URL."""
     credentials = _basic_auth_credentials(source_parameters)
     headers = _headers(source_parameters)
@@ -102,7 +102,7 @@ def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[
         return dict(status_code=-1, reason=exception_reason)
 
 
-def _basic_auth_credentials(source_parameters) -> Optional[tuple[str, str]]:
+def _basic_auth_credentials(source_parameters) -> tuple[str, str] | None:
     """Return the basic authentication credentials, if any."""
     if private_token := source_parameters.get("private_token", ""):
         return private_token, ""

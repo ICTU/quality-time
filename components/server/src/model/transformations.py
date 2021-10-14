@@ -5,7 +5,7 @@ import json
 from collections.abc import Iterator
 from datetime import date
 from json.decoder import JSONDecodeError
-from typing import Optional, Union, cast
+from typing import cast
 
 from server_utilities.functions import DecryptionError, asymmetric_decrypt, asymmetric_encrypt, unique, uuid
 from server_utilities.type import Color, EditScope, ItemId, Status
@@ -77,7 +77,7 @@ def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
                 report["issue_tracker"]["parameters"][secret_attribute] = credential
 
 
-def decrypt_credential(private_key: str, credential: Union[str, tuple[str, str]]) -> str:
+def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> str:
     """Decrypt the credential if it's encrypted, otherwise return it unchanged."""
     if isinstance(credential, str):
         return credential
@@ -191,7 +191,7 @@ def issue_statuses(metric, last_measurement) -> list[dict]:
     return [status for status in last_issue_statuses if status["issue_id"] in metric.get("issue_ids", [])]
 
 
-def metric_status(metric, last_measurement, scale) -> Optional[Status]:
+def metric_status(metric, last_measurement, scale) -> Status | None:
     """Determine the metric status."""
     if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
         return cast(Status, status)
