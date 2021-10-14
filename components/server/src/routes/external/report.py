@@ -8,7 +8,6 @@ import requests
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
-from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
@@ -38,14 +37,12 @@ def get_report(database: Database, report_uuid: ReportId = None):
         tag_report = get_tag_report(data_model, reports, report_uuid[4:])
         reports = []
         if tag_report is not None:
-            recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
-            summarize_report(tag_report, recent_measurements, data_model)
+            summarize_report(tag_report, database, data_model, date_time)
             reports.append(tag_report)
     else:
-        recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-                summarize_report(report, recent_measurements, data_model)
+                summarize_report(report, database, data_model, date_time)
 
     hide_credentials(data_model, *reports)
     return dict(reports=reports)
@@ -69,7 +66,7 @@ def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
         subjects=subjects,
     )
     hide_credentials(data_model, tag_report)
-    summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
+    summarize_report(tag_report, database, data_model, date_time)
     return tag_report
 
 

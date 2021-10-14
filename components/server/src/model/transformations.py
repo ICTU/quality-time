@@ -6,8 +6,16 @@ from collections.abc import Iterator
 from datetime import date
 from json.decoder import JSONDecodeError
 from typing import cast
+from database.measurements import latest_measurements_by_metric_uuid, recent_measurements_by_metric_uuid
 
-from server_utilities.functions import DecryptionError, asymmetric_decrypt, asymmetric_encrypt, unique, uuid
+from server_utilities.functions import (
+    DecryptionError,
+    asymmetric_decrypt,
+    asymmetric_encrypt,
+    report_metrics_uuids,
+    unique,
+    uuid,
+)
 from server_utilities.type import Color, EditScope, ItemId, Status
 
 from .iterators import sources as iter_sources
@@ -150,14 +158,17 @@ def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
     yield from {data.source_uuid: data.source}.items() if scope == "source" else metric["sources"].items()
 
 
-def summarize_report(report, recent_measurements, data_model) -> None:
+def summarize_report(report, database, data_model, date_time) -> None:
     """Add a summary of the measurements to each subject."""
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
+    metric_uuids = report_metrics_uuids(report)
+    recent_measurements = recent_measurements_by_metric_uuid(database, date_time, metric_uuids=metric_uuids)
+    latest_measurements = latest_measurements_by_metric_uuid(database, metric_uuids)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid in subject.get("metrics", {}):
-            summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measurements)
+            summarize_metric(data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid)
 
 
 STATUS_COLOR_MAPPING = cast(
@@ -166,11 +177,13 @@ STATUS_COLOR_MAPPING = cast(
 )
 
 
-def summarize_metric(data_model, report, subject_uuid, metric_uuid, recent_measurements):
+def summarize_metric(data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid):
     """Add a summary of the metric to the report."""
     metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
-    recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
-    latest_measurement = recent[-1] if recent else {}
+    latest_measurement = metric["latest_measurement"] = (
+        latest_measurements[metric_uuid] if metric_uuid in latest_measurements else {}
+    )
+    metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
     scale = metric["scale"] = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
     metric["status"] = metric_status(metric, latest_measurement, scale)
     if status_start := latest_measurement.get(scale, {}).get("status_start"):

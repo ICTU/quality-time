@@ -1,6 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
+from typing import Dict, List
 
 import pymongo
 from pymongo.database import Database
@@ -17,6 +18,21 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
+def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[str]) -> Dict[str, Measurement]] | None:
+    """Return the latest measurements in a dict with metric_uuids as keys."""
+    latest_measurements = database.measurements.find(
+        filter={"metric_uuid": {"$in": metric_uuids}},
+        sort=[("start", pymongo.DESCENDING)],
+        projection={"_id": False, "sources.entities": False},
+    )
+    latest_measurements_by_uuid = {}
+    for metric_uuid in metric_uuids:
+        for measurement in latest_measurements:
+            if measurement["metric_uuid"] == metric_uuid:
+                latest_measurements_by_uuid[metric_uuid] = measurement
+    return latest_measurements_by_uuid
+
+
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
@@ -25,12 +41,15 @@ def latest_successful_measurement(database: Database, metric: Metric) -> Measure
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):
-    """Return all recent measurements."""
+def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None):
+    """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
+    filter_dict = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
+    if metric_uuids is not None:
+        filter_dict["metric_uuid"] = {"$in": metric_uuids}
     recent_measurements = database.measurements.find(
-        filter={"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}},
+        filter=filter_dict,
         sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False},
     )
