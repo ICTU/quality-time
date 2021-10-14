@@ -1,7 +1,6 @@
 """Issue status model class."""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from collector_utilities.type import ErrorMessage, URL
 
@@ -11,8 +10,8 @@ class Issue:
     """Class representing issues."""
 
     issue_id: str
-    created: Optional[str] = None
-    updated: Optional[str] = None
+    created: str | None = None
+    updated: str | None = None
 
     def as_dict(self) -> dict:
         """Return the issue as dict."""
@@ -36,8 +35,8 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self.name = name
         self.parse_error = parse_error
         self.connection_error = connection_error
-        self.api_url: Optional[URL] = None
-        self.landing_url: Optional[URL] = None
+        self.api_url: URL | None = None
+        self.landing_url: URL | None = None
 
     def as_dict(self) -> dict:
         """Return the issue status as dict."""

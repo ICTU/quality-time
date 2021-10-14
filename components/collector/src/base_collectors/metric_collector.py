@@ -1,7 +1,7 @@
 """Metric collector base classes."""
 
 import asyncio
-from typing import Coroutine, Optional
+from typing import Coroutine
 
 import aiohttp
 
@@ -36,7 +36,7 @@ class MetricCollector:
                 return subclass
         return cls
 
-    async def collect(self) -> Optional[MetricMeasurement]:
+    async def collect(self) -> MetricMeasurement | None:
         """Collect the measurements from the metric's sources."""
         source_collectors = self.__source_collectors()
         issue_status_collectors = self.__issue_status_collectors()

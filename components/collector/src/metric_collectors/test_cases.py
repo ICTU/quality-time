@@ -1,7 +1,7 @@
 """Test cases collector."""
 
 import re
-from typing import cast, Optional, Sequence
+from typing import cast, Sequence
 
 from base_collectors import MetricCollector
 from model import Entities, Entity, SourceMeasurement, MetricMeasurement
@@ -46,7 +46,7 @@ class TestCases(MetricCollector):
     TEST_CASE_SOURCE_TYPES = ["jira"]
     TEST_REPORT_SOURCE_TYPES = ["jenkins_test_report", "junit", "robot_framework", "testng"]
 
-    async def collect(self) -> Optional[MetricMeasurement]:
+    async def collect(self) -> MetricMeasurement | None:
         """Override to add the test results from the test report(s) to the test cases."""
         if (measurement := await super().collect()) is None:
             return None

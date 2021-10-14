@@ -1,7 +1,6 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Optional
 
 import pymongo
 from pymongo.database import Database
@@ -12,13 +11,13 @@ from server_utilities.functions import iso_timestamp
 from server_utilities.type import MeasurementId, MetricId
 
 
-def latest_measurement(database: Database, metric: Metric) -> Optional[Measurement]:
+def latest_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest measurement."""
     latest = database.measurements.find_one(filter={"metric_uuid": metric.uuid}, sort=[("start", pymongo.DESCENDING)])
     return None if latest is None else Measurement(metric, latest)
 
 
-def latest_successful_measurement(database: Database, metric: Metric) -> Optional[Measurement]:
+def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
         filter={"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]

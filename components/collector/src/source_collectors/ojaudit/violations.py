@@ -1,6 +1,6 @@
 """OJAudit violations collector."""
 
-from typing import Optional, cast
+from typing import cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
@@ -48,7 +48,7 @@ class OJAuditViolations(XMLFileSourceCollector):
 
     def __violation(
         self, violation: Element, namespaces: Namespaces, models: ModelFilePaths, severities: list[str]
-    ) -> Optional[Entity]:
+    ) -> Entity | None:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
         if not location:

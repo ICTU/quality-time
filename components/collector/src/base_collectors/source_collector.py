@@ -6,7 +6,7 @@ import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Final, Optional, Union
+from typing import Any, Final
 
 import aiohttp
 from packaging.version import Version
@@ -38,7 +38,7 @@ class SourceCollector(ABC):
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_type: str, metric_type: str) -> Optional[type["SourceCollector"]]:
+    def get_subclass(cls, source_type: str, metric_type: str) -> type["SourceCollector"] | None:
         """Return the subclass registered for the source/metric name.
 
         First try to find a match on both source type and metric type. If no match is found, return the generic
@@ -74,7 +74,7 @@ class SourceCollector(ABC):
         """Translate the url parameter into the API url."""
         return self.__parameters.api_url()
 
-    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Return the parameter value."""
         return self.__parameters.get(parameter_key, quote)
 
@@ -118,7 +118,7 @@ class SourceCollector(ABC):
                 raise response
         return SourceResponses(responses=list(responses), api_url=urls[0])
 
-    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
+    def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Return the basic authentication credentials, if any."""
         if token := self.__parameters.private_token():
             return token, ""

@@ -1,7 +1,6 @@
 """Unit tests for the test cases metric collector."""
 
 import unittest
-from typing import Optional
 from unittest.mock import AsyncMock
 
 from metric_collectors import TestCases
@@ -81,7 +80,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
             test_result=test_result,
         )
 
-    async def collect(self, sources) -> Optional[MetricMeasurement]:
+    async def collect(self, sources) -> MetricMeasurement | None:
         """Collect the measurement."""
         metric = dict(type="test_cases", sources=sources)
         return await TestCases(self.session, metric, DATA_MODEL).collect()

@@ -1,6 +1,6 @@
 """Base classes for Jira collectors."""
 
-from typing import Optional, cast
+from typing import cast
 
 from collector_utilities.type import URL, Value
 from model import Entities, Entity
@@ -33,7 +33,7 @@ class JiraFieldSumBase(JiraIssues):
         """Extend to also get the field this collector needs to sum."""
         return super()._fields() + "," + cast(str, self._parameter(self.field_parameter))
 
-    def __value_of_field_to_sum(self, issue: dict) -> Optional[float]:
+    def __value_of_field_to_sum(self, issue: dict) -> float | None:
         """Return the value of the issue field that this collector is to sum."""
         value = issue["fields"].get(self._parameter(self.field_parameter))
         return value if value is None else float(value)

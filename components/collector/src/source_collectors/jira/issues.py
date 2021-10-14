@@ -2,7 +2,6 @@
 
 import itertools
 import re
-from typing import Union
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
@@ -35,7 +34,7 @@ class JiraIssues(SourceCollector):
         jql = str(self._parameter("jql", quote=True))
         return URL(f"{url}/issues/?jql={jql}")
 
-    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, list[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Extend to replace field names with field ids, if the parameter is a field."""
         parameter_value = super()._parameter(parameter_key, quote)
         if parameter_key.endswith("field"):

@@ -1,6 +1,6 @@
 """Reports collection."""
 
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 import pymongo
 from pymongo.database import Database
@@ -53,7 +53,7 @@ def report_exists(database: Database, report_uuid: ReportId):
     return report_uuid in database.reports.distinct("report_uuid")
 
 
-def latest_metric(database: Database, metric_uuid: MetricId) -> Optional[Metric]:
+def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
     """Return the latest metric with the specified metric uuid."""
     for report in latest_reports(database):
         for subject in report.get("subjects", {}).values():
@@ -120,7 +120,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     metric_uuid="metric_uuid", and source_uuid="source_uuid".
     """
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
-    delta_filter: dict[str, Union[dict, list]] = {"delta": DOES_EXIST}
+    delta_filter: dict[str, dict | list] = {"delta": DOES_EXIST}
     changes: list[Change] = []
     if not uuids:
         changes.extend(

@@ -2,7 +2,6 @@
 
 from abc import ABC
 from collections.abc import Sequence
-from typing import Optional
 
 from dateutil.parser import parse
 
@@ -26,7 +25,7 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
             all_responses.extend(responses := await super()._get_source_responses(*next_urls, **kwargs))
         return all_responses
 
-    def _basic_auth_credentials(self) -> Optional[tuple[str, str]]:
+    def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Override to return None, as the private token is passed as header."""
         return None
 

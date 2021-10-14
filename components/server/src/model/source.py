@@ -24,11 +24,11 @@ class Source(dict):  # lgtm [py/missing-equals]
         self.__metric = metric
         super().__init__(*args, **kwargs)
 
-    def total(self) -> Optional[str]:
+    def total(self) -> str | None:
         """Return the measurement total of the source."""
         return cast(Optional[str], self["total"])
 
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         """Return the measurement value of the source."""
         return cast(Optional[str], self["value"])
 
