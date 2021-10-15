@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
@@ -59,22 +58,20 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
     const cols = 32;
     const divs = card_divs(cards, cols, isDragging);
     return (
-        <Segment>
-            <Permissions.Consumer>{(permissions) => (
-                <ReactGridLayout
-                    cols={cols}
-                    compactType={null}
-                    isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
-                    layout={layout}
-                    onDragStart={onDragStart}
-                    onDragStop={onDragStop}
-                    onLayoutChange={onLayoutChange}
-                    preventCollision={true}
-                    rowHeight={24}
-                >
-                    {divs}
-                </ReactGridLayout>)}
-            </Permissions.Consumer>
-        </Segment>
+        <Permissions.Consumer>{(permissions) => (
+            <ReactGridLayout
+                cols={cols}
+                compactType={null}
+                isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
+                layout={layout}
+                onDragStart={onDragStart}
+                onDragStop={onDragStop}
+                onLayoutChange={onLayoutChange}
+                preventCollision={true}
+                rowHeight={24}
+            >
+                {divs}
+            </ReactGridLayout>)}
+        </Permissions.Consumer>
     )
 }
