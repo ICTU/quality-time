@@ -50,15 +50,6 @@ function Logout(props) {
     )
 }
 
-function go_dashboard(event) {
-    event.preventDefault();
-    const dashboard = document.getElementById("dashboard");
-    if (dashboard) {
-        dashboard.scrollIntoView();
-        window.scrollBy(0, -65);  // Correct for menu bar
-    }
-}
-
 export function Menubar(props) {
     return (
         <Menu className="Menubar" fixed='top' inverted>
@@ -69,11 +60,6 @@ export function Menubar(props) {
                             <Image size='mini' src='/favicon.ico' alt="Go home" />
                             <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                         </>
-                    </Menu.Item>}
-                />
-                <Popup content="Scroll to dashboard" trigger={
-                    <Menu.Item>
-                        <Button inverted icon="arrow circle up" onClick={(e) => go_dashboard(e)} aria-label="Scroll to dashboard" />
                     </Menu.Item>}
                 />
                 <Menu.Menu position='right'>
