@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 
-- Prevent "Warning: `Infinity` is an invalid value for the `width` css style property." message in the console log.
+- Prevent "Warning: `Infinity` is an invalid value for the `width` css style property." messages in the console log.
+- Prevent "Error: Problem parsing d="M-2592.670630208333,NaNL-2592.670630208333,..." messages in the console log. These messages were caused by trying to create a sparkline graph for the source version metric. Fixes [#2663](https://github.com/ICTU/quality-time/issues/2663).
 
 ### Changed
 
