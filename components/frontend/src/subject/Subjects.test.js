@@ -10,7 +10,7 @@ import { subject_options } from '../widgets/menu_options';
 
 jest.mock('../api/subject', () => {
     const originalModule = jest.requireActual('../api/subject');
-  
+
     //Mock the default export and named export 'foo'
     return {
         __esModule: true,
@@ -23,7 +23,7 @@ jest.mock('../api/subject', () => {
 
 jest.mock('../widgets/menu_options', () => {
     const originalModule = jest.requireActual('../api/subject');
-  
+
     //Mock the default export and named export 'foo'
     return {
         __esModule: true,
@@ -177,8 +177,9 @@ describe("<Subjects />", () => {
     });
     it('toggles subject trend table', () => {
         const wrapper = subjects();
+        console.log(wrapper.debug());
         expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
-        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("SubjectTableHeader").find("HamburgerHeader").find("HamburgerItems").find("DropdownItem").at(1).simulate("click");
+        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("SubjectTableHeader").find("HamburgerHeader").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
         expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(true);
         wrapper.find("Subjects").find("Subject").find("TrendTable").find("TrendTableHeader").find("HamburgerMenu").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
         expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
