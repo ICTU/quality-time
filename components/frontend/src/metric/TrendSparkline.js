@@ -14,11 +14,13 @@ export function TrendSparkline(props) {
     const now = props.report_date ? new Date(props.report_date) : new Date();
     let week_ago = props.report_date ? new Date(props.report_date) : new Date();
     week_ago.setDate(week_ago.getDate() - 7);
+    // The width property below is not used according to https://formidable.com/open-source/victory/docs/common-props#width,
+    // but setting it prevents these messages in the console: "Warning: `Infinity` is an invalid value for the `width` css style property.""
     return (
         <VictoryGroup theme={VictoryTheme.material} scale={{ x: "time", y: "linear" }} domain={{ x: [week_ago, now] }} height={30} padding={0}>
             <VictoryLine data={measurements} interpolation="stepBefore" style={{
                 data: {
-                    stroke: "black", strokeWidth: 3
+                    stroke: "black", strokeWidth: 3, width: "100%"
                 }
             }} />
         </VictoryGroup>
