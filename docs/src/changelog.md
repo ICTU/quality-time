@@ -12,14 +12,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 
+- Use ❯ instead of / to create subject breadcrumbs in tag reports, so they are consistent with breadcrumbs in copy and move button dropdowns.
 - Prevent "Warning: `Infinity` is an invalid value for the `width` css style property." messages in the console log.
 - Prevent "Error: Problem parsing d="M-2592.670630208333,NaNL-2592.670630208333,..." messages in the console log. These messages were caused by trying to create a sparkline graph for the source version metric. Fixes [#2663](https://github.com/ICTU/quality-time/issues/2663).
+- Use submenus in the hamburger menu to make it shorter and prevent menu items from being drawn off-screen. Fixes [#2666](https://github.com/ICTU/quality-time/issues/2666).
+- Measurement entities marked as false positive or fixed weren't being crossed out. Fixes [#2739](https://github.com/ICTU/quality-time/issues/2739).
 
 ### Changed
 
 - Make the metric tables use less vertical space when in details view. This allows for more metrics to fit on the screen. It also makes the vertical space used by the details view and the trend view more similar.
 - Use a lightning bolt icon for metrics that don't meet their target value, to suggest danger and/or risk. The previously used x-shaped icon is typically associated with closing things, and thus less appropriate.
-- Measurement entities marked as false positive or fixed weren't being crossed out. Fixes [#2739](https://github.com/ICTU/quality-time/issues/2739).
+
+### Removed
+
+- Remove the box around dashboards to reduce visual clutter.
+- Remove the 'scroll to dashboard' button; it's not really needed (users can simply use the home button) and an unusual feature.
 
 ## v3.26.0 - 2021-10-04
 
