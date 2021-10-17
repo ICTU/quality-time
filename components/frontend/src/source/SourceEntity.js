@@ -31,14 +31,14 @@ export function SourceEntity(props) {
         status={props.status}
     />;
     const entityCells = <>
-        <Table.Cell>{source_entity_status_name[props.status]}</Table.Cell>
+        <Table.Cell style={style}>{source_entity_status_name[props.status]}</Table.Cell>
         {props.entity_attributes.map((entity_attribute, col_index) =>
-            <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)}>
+            <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)} style={style}>
                 <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
             </Table.Cell>)}
     </>;
     return (
-        <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
+        <TableRowWithDetails className={status} details={details} key={props.entity.key}>
             {entityCells}
         </TableRowWithDetails>
     );
