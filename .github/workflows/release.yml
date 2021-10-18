@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.5
       - name: Get release version from the pushed tag
         id: get_version
         uses: battila7/get-version-action@v2
