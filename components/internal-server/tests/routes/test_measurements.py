@@ -9,11 +9,8 @@ from routes.measurements import post_measurements
 from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
-@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
-class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
-    """Unit tests for the post measurements endpoint."""
+class PostMeasurementTestCase(unittest.IsolatedAsyncioTestCase):
+    """Base class for the post measurements route unit tests."""
 
     def setUp(self):
         """Override to setup a mock database fixture with some content."""
@@ -51,13 +48,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
             sources=dict(junit=dict(entities={})),
         )
         self.database.datamodels.find_one = AsyncMock(return_value=self.data_model)
-        self.old_measurement = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            count=dict(status="target_met"),
-            sources=[self.source(value="0"), self.source(source_uuid=SOURCE_ID2)],
-        )
-        self.database.measurements.find_one = AsyncMock(return_value=self.old_measurement)
 
         def set_measurement_id(measurement):
             """Fake setting a measurement id on the inserted measurement."""
@@ -104,9 +94,20 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
             measurement["status_start"] = status_start
         return measurement
 
+
+@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
+class PostFirstMeasurementTest(PostMeasurementTestCase):
+    """Unit tests for the post measurements endpoint when posting the first measurement for a metric."""
+
+    def setUp(self):
+        """Extend to let the database return no measurements."""
+        super().setUp()
+        self.database.measurements.find_one = AsyncMock(return_value=None)
+
     async def test_first_measurement(self):
         """Post the first measurement for a metric."""
-        self.database.measurements.find_one.return_value = None
         sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         await post_measurements(self.posted_measurement, self.database)
         self.database.measurements.insert_one.assert_called_once_with(
@@ -115,7 +116,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_percentage_scale(self):
         """Post the first measurement on the percentage scale."""
-        self.database.measurements.find_one.return_value = None
         self.data_model["metrics"]["metric_type"]["scales"] = ["percentage"]
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "percentage"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
@@ -127,7 +127,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_percentage_scale_with_denominator_zero(self):
         """Post the first measurement on the percentage scale with denominator zero."""
-        self.database.measurements.find_one.return_value = None
         self.data_model["metrics"]["metric_type"]["scales"] = ["percentage"]
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "percentage"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
@@ -139,7 +138,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_version_number_scale(self):
         """Post the first measurement on the version number scale."""
-        self.database.measurements.find_one.return_value = None
         self.data_model["metrics"]["metric_type"]["scales"] = ["version_number"]
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
@@ -154,7 +152,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_two_scales(self):
         """Post the first measurement for a metric with two scales."""
-        self.database.measurements.find_one.return_value = None
         self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
         sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         await post_measurements(self.posted_measurement, self.database)
@@ -168,7 +165,6 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_with_measured_attribute(self):
         """Test that the value of the measured attribute is subtracted from the measurement value."""
-        self.database.measurements.find_one.return_value = None
         self.data_model["sources"]["junit"]["entities"]["metric_type"] = dict(
             attributes=[dict(key="tests", type="integer")], measured_attribute="tests"
         )
@@ -183,12 +179,29 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_first_measurement_without_value(self):
         """Test that the status is None."""
-        self.database.measurements.find_one.return_value = None
         sources = self.posted_measurement["sources"] = [self.source(connection_error="Error")]
         await post_measurements(self.posted_measurement, self.database)
         self.database.measurements.insert_one.assert_called_once_with(
             self.measurement(count=self.scale_measurement(value=None), sources=sources)
         )
+
+
+@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
+class PostMeasurementTest(PostMeasurementTestCase):
+    """Unit tests for the post measurements endpoint."""
+
+    def setUp(self):
+        """Extend to set up an existing measurement."""
+        super().setUp()
+        self.old_measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(status="target_met"),
+            sources=[self.source(value="0"), self.source(source_uuid=SOURCE_ID2)],
+        )
+        self.database.measurements.find_one = AsyncMock(return_value=self.old_measurement)
 
     async def test_unchanged_measurement(self):
         """Post an unchanged measurement for a metric."""
