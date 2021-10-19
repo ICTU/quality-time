@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from routes.changelog import (
+from routes.external import (
     get_changelog,
     get_metric_changelog,
     get_report_changelog,
@@ -11,7 +11,7 @@ from routes.changelog import (
     get_subject_changelog,
 )
 
-from ..fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from ...fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 class ChangeLogTest(unittest.TestCase):
