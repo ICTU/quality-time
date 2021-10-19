@@ -286,7 +286,7 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/int
 
 ### Configuration
 
-The server uses no environment variables.
+The internal-server uses no environment variables.
 
 ## Collector
 

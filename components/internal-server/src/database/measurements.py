@@ -35,8 +35,6 @@ async def update_measurement_end(database: AsyncIOMotorDatabase, measurement_id:
 async def insert_new_measurement(database: AsyncIOMotorDatabase, measurement: Measurement) -> Measurement:
     """Insert a new measurement into the measurements collection."""
     measurement.update_measurement()
-    if "_id" in measurement:
-        del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     await database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement

@@ -176,10 +176,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self.get(scale, {}), measurement=self, previous_scale_measurement=previous
         )  # type: ignore[abstract]
 
-    def copy(self) -> Measurement:
-        """Extend to return an instance of this class instead of a dict."""
-        return self.__class__(self.metric, super().copy(), previous_measurement=self)
-
     def __getitem__(self, item):
         """Override to convert the scale dictionary to a ScaleMeasurement instance before returning it."""
         if item in self.metric.scales() and not isinstance(self.get(item), ScaleMeasurement):

@@ -8,7 +8,7 @@ from utilities.type import Direction
 
 def iso_timestamp() -> str:
     """Return the ISO-format version of the current UTC date and time without microseconds."""
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()  # pragma: no cover
 
 
 def days_ago(date_time: datetime) -> int:

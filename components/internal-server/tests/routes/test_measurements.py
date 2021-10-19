@@ -68,12 +68,14 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
         self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
 
     @staticmethod
-    def source(*, source_uuid=SOURCE_ID, value="1", entities=None, entity_user_data=None, connection_error=None):
+    def source(
+        *, source_uuid=SOURCE_ID, value="1", total=None, entities=None, entity_user_data=None, connection_error=None
+    ):
         """Return a measurement source."""
         return dict(
             source_uuid=source_uuid,
             value=value,
-            total=None,
+            total=total,
             parse_error=None,
             connection_error=connection_error,
             entities=entities or [],
@@ -111,18 +113,28 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
             self.measurement(count=self.scale_measurement(value="2", status="near_target_met"), sources=sources)
         )
 
-    async def test_first_measurement_two_scales(self):
-        """Post the first measurement for a metric with two scales."""
+    async def test_first_measurement_percentage_scale(self):
+        """Post the first measurement on the percentage scale."""
         self.database.measurements.find_one.return_value = None
-        self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
-        sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
+        self.data_model["metrics"]["metric_type"]["scales"] = ["percentage"]
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "percentage"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
+        sources = self.posted_measurement["sources"] = [self.source(value="50")]
         await post_measurements(self.posted_measurement, self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            self.measurement(
-                sources=sources,
-                count=self.scale_measurement(value="2", status="near_target_met"),
-                percentage=dict(direction="<", value="1", status="target_not_met"),
-            )
+            self.measurement(percentage=self.scale_measurement(value="50", status="target_not_met"), sources=sources)
+        )
+
+    async def test_first_measurement_percentage_scale_with_denominator_zero(self):
+        """Post the first measurement on the percentage scale with denominator zero."""
+        self.database.measurements.find_one.return_value = None
+        self.data_model["metrics"]["metric_type"]["scales"] = ["percentage"]
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "percentage"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
+        sources = self.posted_measurement["sources"] = [self.source(value="0", total="0")]
+        await post_measurements(self.posted_measurement, self.database)
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(percentage=self.scale_measurement(value="0", status="target_met"), sources=sources)
         )
 
     async def test_first_measurement_version_number_scale(self):
@@ -138,6 +150,44 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
                 sources=[self.source(value="1.1.3")],
                 version_number=self.scale_measurement(value="1.1.3", status="near_target_met"),
             )
+        )
+
+    async def test_first_measurement_two_scales(self):
+        """Post the first measurement for a metric with two scales."""
+        self.database.measurements.find_one.return_value = None
+        self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
+        sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
+        await post_measurements(self.posted_measurement, self.database)
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(
+                sources=sources,
+                count=self.scale_measurement(value="2", status="near_target_met"),
+                percentage=dict(direction="<", value="1", status="target_not_met"),
+            )
+        )
+
+    async def test_first_measurement_with_measured_attribute(self):
+        """Test that the value of the measured attribute is subtracted from the measurement value."""
+        self.database.measurements.find_one.return_value = None
+        self.data_model["sources"]["junit"]["entities"]["metric_type"] = dict(
+            attributes=[dict(key="tests", type="integer")], measured_attribute="tests"
+        )
+        sources = self.posted_measurement["sources"] = [
+            self.source(entities=[dict(key="key", tests=1)], entity_user_data=dict(key=dict(status="false_positive"))),
+            self.source(source_uuid=SOURCE_ID2),
+        ]
+        await post_measurements(self.posted_measurement, self.database)
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(count=self.scale_measurement(value="1", status="near_target_met"), sources=sources)
+        )
+
+    async def test_first_measurement_without_value(self):
+        """Test that the status is None."""
+        self.database.measurements.find_one.return_value = None
+        sources = self.posted_measurement["sources"] = [self.source(connection_error="Error")]
+        await post_measurements(self.posted_measurement, self.database)
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(count=self.scale_measurement(value=None), sources=sources)
         )
 
     async def test_unchanged_measurement(self):
@@ -277,6 +327,17 @@ class PostMeasurementTest(unittest.IsolatedAsyncioTestCase):
             self.measurement(
                 sources=[self.source(entities=[{"key": "entity1"}], entity_user_data={})],
                 count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+            )
+        )
+
+    async def test_previous_measurement_without_status_start(self):
+        """Test that the new measurement has no status start if the previous has none and the status is unchanged."""
+        self.posted_measurement["sources"].append(self.source(value="0"))
+        await post_measurements(self.posted_measurement, self.database)
+        self.database.measurements.insert_one.assert_called_once_with(
+            self.measurement(
+                sources=[self.source(value="0")],
+                count=self.scale_measurement(value="0", status="target_met"),
             )
         )
 
