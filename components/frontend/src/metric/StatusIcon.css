@@ -11,9 +11,5 @@ i.inverted.circular.icon.near_target_met {
 }
 
 i.inverted.circular.icon.debt_target_met {
-    background-color: rgb(150,150,150) !important;
-}
-
-i.inverted.circular.icon.unknown {
-    background-color: rgb(245,245,245) !important;
+    background-color: rgb(140,140,140) !important;
 }
