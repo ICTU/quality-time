@@ -291,7 +291,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                         timestamp=now.replace(microsecond=0).isoformat(),
                         subjects={
                             SUBJECT_ID: dict(
-                                name="Report / Subject",
+                                name="Report ❯ Subject",
                                 type="subject_type",
                                 metrics=dict(
                                     metric_with_tag=dict(

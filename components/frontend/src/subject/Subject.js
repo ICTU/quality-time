@@ -8,14 +8,9 @@ import { SubjectTitle } from './SubjectTitle';
 function HamburgerItems({ hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, }) {
     return (
         <>
-            <Dropdown.Header>Views</Dropdown.Header>
-            <Dropdown.Item onClick={() => setSubjectTrendTable(false)} active={!subjectTrendTable} >
-                Details
+            <Dropdown.Item key="view" onClick={() => setSubjectTrendTable(!subjectTrendTable)}>
+                {subjectTrendTable ? "Show metric details" : "Show metric trend"}
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => setSubjectTrendTable(true)} active={subjectTrendTable} >
-                Trend table
-            </Dropdown.Item>
-            <Dropdown.Header>Rows</Dropdown.Header>
             <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
                 {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
             </Dropdown.Item>

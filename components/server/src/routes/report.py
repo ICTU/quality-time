@@ -249,6 +249,6 @@ def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):
                     del subject["metrics"][metric_uuid]
             if subject.get("metrics", {}):
                 subject_name = subject.get("name") or data_model["subjects"][subject["type"]]["name"]
-                subject["name"] = report["title"] + " / " + subject_name
+                subject["name"] = report["title"] + " ❯ " + subject_name
                 subjects[subject_uuid] = subject
     return subjects

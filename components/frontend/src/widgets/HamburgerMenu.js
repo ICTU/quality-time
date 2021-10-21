@@ -4,7 +4,7 @@ import './HamburgerMenu.css';
 
 export function HamburgerMenu({ children }) {
     return (
-        <Dropdown className="HamburgerMenu" item icon='sidebar'>
+        <Dropdown className="HamburgerMenu" item simple icon='sidebar'>
             <Dropdown.Menu>
                 {children}
             </Dropdown.Menu>
