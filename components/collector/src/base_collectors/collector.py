@@ -122,7 +122,9 @@ class Collector:
                 tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
         await asyncio.gather(*tasks)
 
-    async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
+    async def collect_metric(
+        self, session: aiohttp.ClientSession, metric_uuid: str, metric: dict, next_fetch: datetime
+    ) -> None:
         """Collect measurements for the metric and post it to the server."""
         self.__previous_metrics[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
@@ -137,11 +139,11 @@ class Collector:
         """First return the edited metrics, then the rest."""
         return sorted(metrics.items(), key=lambda item: bool(self.__previous_metrics.get(item[0]) == item[1]))
 
-    def __can_and_should_collect(self, metric_uuid: str, metric) -> bool:
+    def __can_and_should_collect(self, metric_uuid: str, metric: dict) -> bool:
         """Return whether the metric can and needs to be measured."""
         return self.__should_collect(metric_uuid, metric) if self.__can_collect(metric) else False
 
-    def __can_collect(self, metric) -> bool:
+    def __can_collect(self, metric: dict) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
         sources = metric.get("sources", {})
         for source in sources.values():
@@ -156,7 +158,7 @@ class Collector:
                     return False
         return bool(sources)
 
-    def __should_collect(self, metric_uuid: str, metric) -> bool:
+    def __should_collect(self, metric_uuid: str, metric: dict) -> bool:
         """Return whether the metric should be collected.
 
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
