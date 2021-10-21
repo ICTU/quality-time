@@ -42,7 +42,9 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     filter_dict = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
-    if metric_uuids is not None:
+    # metric_uuids needs to be optional as long as the /reports endpoint is supported for backwards compatibility
+    # however, there is no test anymore covering that endpoint, which means incomplete coverage on this if statement
+    if metric_uuids is not None:  # pragma: no cover
         filter_dict["metric_uuid"] = {"$in": metric_uuids}
     recent_measurements = database.measurements.find(
         filter_dict,
