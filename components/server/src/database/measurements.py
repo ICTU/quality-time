@@ -32,7 +32,7 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     recent_measurements = database.measurements.find(
         filter={"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}},
         sort=[("start", pymongo.ASCENDING)],
-        projection={"_id": False, "sources.entities": False},
+        projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False},
     )
     measurements_by_metric_uuid: dict[MetricId, list] = {}
     for measurement in recent_measurements:
@@ -58,7 +58,8 @@ def measurements_by_metric(
     if not latest_measurement_complete:
         return []
     all_measurements_stripped = database.measurements.find(
-        measurement_filter, projection={"_id": False, "sources.entities": False, "issue_status": False}
+        measurement_filter,
+        projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False, "issue_status": False},
     )
     return list(all_measurements_stripped)[:-1] + [latest_measurement_complete]
 
