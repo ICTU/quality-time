@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from database.measurements import measurements_by_metric
+from database.measurements import measurements_by_metric, recent_measurements_by_metric_uuid
 
 from ..fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 
@@ -26,19 +26,19 @@ class MeasurementsByMetricTest(unittest.TestCase):
             {"start": "8", "end": "9", "metric_uuid": METRIC_ID3},
         ]
 
-        def find_one_side_effect(query, projection, sort=None):
+        def find_one_side_effect(filter, projection=None, sort=None):  # pylint: disable=unused-argument
             """Side effect for mocking the database measurements."""
-            return find_side_effect(query, projection, sort)[-1]
+            return find_side_effect(filter, projection, sort)[-1]
 
-        def find_side_effect(query, projection, sort=None):  # pylint: disable=unused-argument
+        def find_side_effect(filter, projection=None, sort=None):  # pylint: disable=unused-argument
             """Side effect for mocking the last database measurement."""
-            metric_uuids = query["metric_uuid"]["$in"]
-            min_iso_timestamp = query["end"]["$gt"] if "end" in query else ""
-            max_iso_timestamp = query["start"]["$lt"] if "start" in query else ""
+            metric_uuids = filter["metric_uuid"]["$in"] if "metric_uuid" in filter else None
+            min_iso_timestamp = filter["end"]["$gt"] if "end" in filter and "$gt" in filter["end"] else ""
+            max_iso_timestamp = filter["start"]["$lt"] if "start" in filter and "$lt" in filter["start"] else ""
             return [
                 m
                 for m in measurements
-                if m["metric_uuid"] in metric_uuids
+                if (metric_uuids is None or m["metric_uuid"] in metric_uuids)
                 and (not min_iso_timestamp or m["end"] > min_iso_timestamp)
                 and (not max_iso_timestamp or m["start"] < max_iso_timestamp)
             ]
@@ -67,3 +67,23 @@ class MeasurementsByMetricTest(unittest.TestCase):
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
             self.assertIn(measurement["start"], ["0", "3"])
+
+    def test_recent_measurements_by_uuid(self):
+        """Test that we get all measurements with all metric id's."""
+        recent_measurements = recent_measurements_by_metric_uuid(self.database)
+        self.assertEqual(len(recent_measurements), 3)
+        self.assertIn(METRIC_ID, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
+        self.assertIn(METRIC_ID2, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID2]), 3)
+        self.assertIn(METRIC_ID3, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID3]), 3)
+
+    def test_recent_measurements_by_uuid_uuid_filter(self):
+        """Test that we get all measurements with all metric id's."""
+        recent_measurements = recent_measurements_by_metric_uuid(self.database, metric_uuids=[METRIC_ID, METRIC_ID2])
+        self.assertEqual(len(recent_measurements), 2)
+        self.assertIn(METRIC_ID, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
+        self.assertIn(METRIC_ID2, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID2]), 3)

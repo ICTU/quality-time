@@ -25,11 +25,7 @@ def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[st
         sort=[("start", pymongo.DESCENDING)],
         projection={"_id": False, "sources.entities": False},
     )
-    latest_measurements_by_uuid = {}
-    for metric_uuid in metric_uuids:
-        for measurement in latest_measurements:
-            if measurement["metric_uuid"] == metric_uuid:
-                latest_measurements_by_uuid[metric_uuid] = measurement
+    latest_measurements_by_uuid = {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
     return latest_measurements_by_uuid
 
 
