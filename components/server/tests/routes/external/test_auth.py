@@ -10,9 +10,7 @@ import ldap3
 from ldap3.core import exceptions
 
 from database import sessions
-from routes import auth
-
-from routes.auth import get_public_key
+from routes.external import login, logout, get_public_key
 
 USERNAME = "john-doe"
 PASSWORD = "secret"
@@ -94,14 +92,14 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
         self.assertIsInstance(logging_mock.call_args[0][1], exception)
 
-    @patch("routes.auth.datetime", MOCK_DATETIME)
+    @patch("routes.external.auth.datetime", MOCK_DATETIME)
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
         """Test successful login from forwarded authentication header."""
         connection_mock.return_value = None
         with patch.dict(
             "os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}
         ), patch("bottle.request.get_header", Mock(return_value=self.USER_EMAIL)):
-            self.assertEqual(self.login_ok, auth.login(self.database))
+            self.assertEqual(self.login_ok, login(self.database))
         self.assert_cookie_has_session_id()
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
@@ -112,28 +110,28 @@ class LoginTests(AuthTestCase):
         with patch.dict(
             "os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}
         ), patch("bottle.request.get_header", Mock(return_value=None)):
-            self.assertEqual(self.login_nok, auth.login(self.database))
+            self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 
-    @patch("routes.auth.datetime", MOCK_DATETIME)
+    @patch("routes.external.auth.datetime", MOCK_DATETIME)
     def test_successful_login(self, connection_mock, connection_enter):
         """Test successful login."""
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_ok, auth.login(self.database))
+        self.assertEqual(self.login_ok, login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
 
-    @patch("routes.auth.datetime", MOCK_DATETIME)
+    @patch("routes.external.auth.datetime", MOCK_DATETIME)
     def test_successful_bind_login(self, connection_mock, connection_enter):
         """Test successful login if ldap server does not reveal password digest."""
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = None
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_ok, auth.login(self.database))
+        self.assertEqual(self.login_ok, login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_bind_connection_created(connection_mock)
@@ -144,7 +142,7 @@ class LoginTests(AuthTestCase):
     def test_login_server_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when a server creation error occurs."""
         connection_mock.return_value = None
-        self.assertEqual(self.login_nok, auth.login(self.database))
+        self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
         self.assert_log(logging_mock, exceptions.LDAPServerPoolError)
@@ -155,7 +153,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_connection.bind.return_value = False
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_nok, auth.login(self.database))
+        self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logging_mock, exceptions.LDAPBindError)
@@ -166,7 +164,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_connection.search.side_effect = exceptions.LDAPResponseTimeoutError
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_nok, auth.login(self.database))
+        self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logging_mock, exceptions.LDAPResponseTimeoutError)
@@ -177,7 +175,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{XSHA}whatever-here"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_nok, auth.login(self.database))
+        self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
         self.assertEqual("Only SSHA LDAP password digest supported!", logging_mock.call_args_list[0][0][0])
         self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult)
@@ -188,7 +186,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{SSHA}W841/abcdefghijklmnopqrstuvwxyz0"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_nok, auth.login(self.database))
+        self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
         self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult)
 
@@ -202,7 +200,7 @@ class LogoutTests(AuthTestCase):
         """Test successful logout."""
         session_id = "the session id"
         request_mock.get_cookie = Mock(return_value=session_id)
-        self.assertEqual(dict(ok=True), auth.logout(self.database))
+        self.assertEqual(dict(ok=True), logout(self.database))
         cookie = self.assert_cookie_has_session_id()
         self.assertTrue(cookie.find(session_id) > 0)
         self.assertRegex(cookie.upper(), r".+MON,\s*0*1\s*JAN\S*\s*0*1")

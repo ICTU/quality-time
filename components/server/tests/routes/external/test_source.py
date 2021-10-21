@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from routes.source import (
+from routes.external import (
     delete_source,
     post_move_source,
     post_source_attribute,
@@ -15,7 +15,7 @@ from routes.source import (
     post_source_parameter,
 )
 
-from ..fixtures import (
+from ...fixtures import (
     METRIC_ID,
     METRIC_ID2,
     METRIC_ID3,

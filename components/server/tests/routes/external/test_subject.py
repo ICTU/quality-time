@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.subject import (
+from routes.external import (
     delete_subject,
     get_subject_measurements,
     post_move_subject,
@@ -13,7 +13,7 @@ from routes.subject import (
 )
 from server_utilities.type import SubjectId
 
-from ..fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
+from ...fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 class GetSubjectTest(unittest.TestCase):

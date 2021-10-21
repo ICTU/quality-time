@@ -6,7 +6,7 @@ from typing import cast
 from unittest.mock import Mock, patch
 import copy
 
-from routes.report import (
+from routes.external import (
     delete_report,
     export_report_as_json,
     export_report_as_pdf,
@@ -20,7 +20,7 @@ from routes.report import (
 from server_utilities.functions import asymmetric_encrypt
 from server_utilities.type import ReportId
 
-from ..fixtures import JENNY, JOHN, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
+from ...fixtures import JENNY, JOHN, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -396,7 +396,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
-    @patch("routes.report.bottle.request")
+    @patch("routes.external.report.bottle.request")
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
         expected_report = copy.deepcopy(self.report)
