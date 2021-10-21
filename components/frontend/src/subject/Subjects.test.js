@@ -177,7 +177,6 @@ describe("<Subjects />", () => {
     });
     it('toggles subject trend table', () => {
         const wrapper = subjects();
-        console.log(wrapper.debug());
         expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
         wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("SubjectTableHeader").find("HamburgerHeader").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
         expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(true);
