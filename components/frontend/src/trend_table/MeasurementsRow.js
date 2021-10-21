@@ -40,16 +40,13 @@ export function MeasurementsRow(
         measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
     })
 
-
-    const latest_measurements = metric.recent_measurements;
-    const latest_measurement = latest_measurements?.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
     const metric_unit = formatMetricScaleAndUnit(metricType, metric);
     const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
             first_metric={first_metric}
             last_metric={last_metric}
-            measurement={latest_measurement}
+            measurement={metric.latest_measurement}
             metric_name={metricName}
             scale={metric.scale}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
