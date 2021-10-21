@@ -18,7 +18,7 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
-def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[str]) -> Dict[str, Measurement]] | None:
+def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[str]) -> Dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
     latest_measurements = database.measurements.find(
         filter={"metric_uuid": {"$in": metric_uuids}},

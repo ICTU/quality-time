@@ -7,7 +7,7 @@ from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Tuple, TypeVar, cast
+from typing import Dict, List, Tuple, TypeVar, cast
 
 import bottle
 import requests
