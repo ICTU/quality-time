@@ -176,8 +176,10 @@ STATUS_COLOR_MAPPING = cast(
     dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
 )
 
-
-def summarize_metric(data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid):
+# disable too-many-arguments for now, until refactor of measurements functions
+def summarize_metric(
+    data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid
+):  # pylint: disable=too-many-arguments
     """Add a summary of the metric to the report."""
     metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
     latest_measurement = metric["latest_measurement"] = (

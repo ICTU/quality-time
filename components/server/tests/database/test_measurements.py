@@ -26,15 +26,15 @@ class MeasurementsByMetricTest(unittest.TestCase):
             {"start": "8", "end": "9", "metric_uuid": METRIC_ID3},
         ]
 
-        def find_one_side_effect(filter, projection=None, sort=None):  # pylint: disable=unused-argument
+        def find_one_side_effect(query, projection=None, sort=None):  # pylint: disable=unused-argument
             """Side effect for mocking the database measurements."""
-            return find_side_effect(filter, projection, sort)[-1]
+            return find_side_effect(query, projection, sort)[-1]
 
-        def find_side_effect(filter, projection=None, sort=None):  # pylint: disable=unused-argument
+        def find_side_effect(query, projection=None, sort=None):  # pylint: disable=unused-argument
             """Side effect for mocking the last database measurement."""
-            metric_uuids = filter["metric_uuid"]["$in"] if "metric_uuid" in filter else None
-            min_iso_timestamp = filter["end"]["$gt"] if "end" in filter and "$gt" in filter["end"] else ""
-            max_iso_timestamp = filter["start"]["$lt"] if "start" in filter and "$lt" in filter["start"] else ""
+            metric_uuids = query["metric_uuid"]["$in"] if "metric_uuid" in query else None
+            min_iso_timestamp = query["end"]["$gt"] if "end" in query and "$gt" in query["end"] else ""
+            max_iso_timestamp = query["start"]["$lt"] if "start" in query and "$lt" in query["start"] else ""
             return [
                 m
                 for m in measurements

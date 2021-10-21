@@ -21,7 +21,7 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
 def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[str]) -> Dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
     latest_measurements = database.measurements.find(
-        filter={"metric_uuid": {"$in": metric_uuids}},
+        {"metric_uuid": {"$in": metric_uuids}},
         sort=[("start", pymongo.DESCENDING)],
         projection={"_id": False, "sources.entities": False},
     )
@@ -32,7 +32,7 @@ def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[st
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        filter={"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
@@ -45,7 +45,7 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     if metric_uuids is not None:
         filter_dict["metric_uuid"] = {"$in": metric_uuids}
     recent_measurements = database.measurements.find(
-        filter=filter_dict,
+        filter_dict,
         sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False},
     )
