@@ -22,8 +22,8 @@ def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[st
     """Return the latest measurements in a dict with metric_uuids as keys."""
     latest_measurements = database.measurements.find(
         {"metric_uuid": {"$in": metric_uuids}},
-        sort=[("start", pymongo.DESCENDING)],
-        projection={"_id": False, "sources.entities": False},
+        sort=[("start", pymongo.ASCENDING)],
+        projection={"_id": False, "sources.entities": False, "entity_user_data": False},
     )
     latest_measurements_by_uuid = {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
     return latest_measurements_by_uuid
