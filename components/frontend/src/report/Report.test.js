@@ -53,7 +53,6 @@ it('shows an error message if there was no report', () => {
 it('hides columns', () => {
     render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>);
     expect(screen.getAllByText(/Status/).length).toBe(1)
-    fireEvent.click(screen.getByRole(/listbox/));
     fireEvent.click(screen.getByText(/Hide status column/));
     expect(screen.queryByText(/Status/)).toBe(null)
 });
@@ -62,7 +61,6 @@ it('hides columns on load', () => {
     mockHistory.location.search = "?hidden_columns=status"
     render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
-    fireEvent.click(screen.getByRole(/listbox/));
     fireEvent.click(screen.getByText(/Show status column/));
     expect(screen.getAllByText(/Status/).length).toBe(1)
 });
@@ -72,7 +70,6 @@ it('hides multiple columns on load', () => {
     render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
     expect(screen.queryByText(/Tags/)).toBe(null)
-    fireEvent.click(screen.getByRole(/listbox/));
     fireEvent.click(screen.getByText(/Show status column/));
     expect(screen.getAllByText(/Status/).length).toBe(1)
 });
