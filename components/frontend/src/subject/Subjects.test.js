@@ -143,13 +143,10 @@ it("moves a subject", () => {
 
 it("hides metrics not requiring action", () => {
     render_subjects();
-    userEvent.click(screen.getByRole("listbox"));
     expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
     fireEvent.click(screen.getByText(/Hide metrics not requiring action/));
-    fireEvent.click(screen.getByRole("listbox"));
     expect(screen.queryByText(/Hide metrics not requiring action/)).toBeNull()
     fireEvent.click(screen.getByText(/Show all metrics/));
-    fireEvent.click(screen.getByRole("listbox"));
     expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
 })
 
