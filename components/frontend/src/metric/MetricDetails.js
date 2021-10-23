@@ -116,10 +116,9 @@ export function MetricDetails({
                     <Sources
                         reports={reports}
                         report={report}
+                        metric={metric}
                         metric_uuid={metric_uuid}
-                        metric_type={metric.type}
                         metric_unit={metric_unit}
-                        sources={metric.sources}
                         measurement={measurement}
                         changed_fields={changed_fields}
                         reload={reload} />

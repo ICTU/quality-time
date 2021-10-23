@@ -7,7 +7,7 @@ import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
 
-export function Sources({ reports, report, metric_uuid, metric_type, metric_unit, sources, measurement, changed_fields, reload }) {
+export function Sources({ reports, report, metric, metric_uuid, metric_unit, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const measurement_sources = measurement ? measurement.sources : [];
     function source_error(source_uuid, error_type) {
@@ -21,19 +21,19 @@ export function Sources({ reports, report, metric_uuid, metric_type, metric_unit
                     <CopyButton
                         item_type="source"
                         onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
-                        get_options={() => source_options(reports, dataModel, metric_type)}
+                        get_options={() => source_options(reports, dataModel, metric.type)}
                     />
                     <MoveButton
                         item_type="source"
                         onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
-                        get_options={() => source_options(reports, dataModel, metric_type, metric_uuid)}
+                        get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
                     />
                 </Segment>}
             />
         )
     }
-    const source_uuids = Object.keys(sources).filter((source_uuid) =>
-        dataModel.metrics[metric_type].sources.includes(sources[source_uuid].type)
+    const source_uuids = Object.keys(metric.sources).filter((source_uuid) =>
+        dataModel.metrics[metric.type].sources.includes(metric.sources[source_uuid].type)
     );
     const last_index = source_uuids.length - 1;
 
@@ -44,13 +44,13 @@ export function Sources({ reports, report, metric_uuid, metric_type, metric_unit
                     connection_error={source_error(source_uuid, "connection_error")}
                     first_source={index === 0}
                     last_source={index === last_index}
-                    metric_type={metric_type}
+                    metric_type={metric.type}
                     metric_uuid={metric_uuid}
                     metric_unit={metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}
                     reload={reload}
                     report={report}
-                    source={sources[source_uuid]}
+                    source={metric.sources[source_uuid]}
                     source_uuid={source_uuid}
                     changed_fields={changed_fields}
                 />
