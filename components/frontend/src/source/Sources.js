@@ -45,13 +45,11 @@ export function Sources({ reports, report, metric, metric_uuid, metric_unit, mea
                     connection_error={source_error(source_uuid, "connection_error")}
                     first_source={index === 0}
                     last_source={index === last_index}
-                    metric_type={metric.type}
-                    metric_uuid={metric_uuid}
+                    metric={metric}
                     metric_unit={metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}
                     reload={reload}
                     report={report}
-                    source={metric.sources[source_uuid]}
                     source_uuid={source_uuid}
                     changed_fields={changed_fields}
                 />

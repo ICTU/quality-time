@@ -16,6 +16,7 @@ const datamodel = {
     }
 };
 const source = { type: "source_type1" };
+const metric = { type: "metric_type", sources: {"source_uuid": source}}
 const report = { report_uuid: "report_uuid", subjects: {} };
 
 function render_source(props) {
@@ -23,9 +24,8 @@ function render_source(props) {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Source
-                    metric_type="metric_type"
+                    metric={metric}
                     report={report}
-                    source={source}
                     source_uuid="source_uuid"
                     {...props}
                 />

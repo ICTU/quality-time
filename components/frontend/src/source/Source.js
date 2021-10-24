@@ -90,14 +90,15 @@ function Parameters({ source, source_uuid, connection_error, parse_error, metric
     )
 }
 
-export function Source({ source, source_uuid, first_source, last_source, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
+export function Source({ metric, source_uuid, first_source, last_source, connection_error, parse_error, metric_unit, report, changed_fields, reload }) {
+    const source = metric.sources[source_uuid];
     const parameter_menu_item = connection_error || parse_error ? <Label color='red'>{"Configuration"}</Label> : "Configuration";
     const panes = [
         {
             menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
                 <Parameters source={source} source_uuid={source_uuid}
-                    connection_error={connection_error} parse_error={parse_error} metric_type={metric_type}
+                    connection_error={connection_error} parse_error={parse_error} metric_type={metric.type}
                     metric_unit={metric_unit} report={report} changed_fields={changed_fields} reload={reload} />
             </Tab.Pane>
         },
