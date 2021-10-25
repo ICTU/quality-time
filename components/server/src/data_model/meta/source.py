@@ -23,10 +23,17 @@ class Configurations(BaseModel):  # pylint: disable=too-few-public-methods
     __root__: dict[str, Configuration]
 
 
+class Documentation(BaseModel):  # pylint: disable=too-few-public-methods
+    """Source documentation for specific metrics."""
+
+    __root__: dict[str, str]
+
+
 class Source(DescribedModel):  # pylint: disable=too-few-public-methods
     """The source model extends the base model with source parameters and measurement entities."""
 
     url: Optional[HttpUrl] = None
+    documentation: Optional[Documentation] = None  # Documentation in Markdown format
     configuration: Optional[Configurations] = None
     parameters: Parameters
     entities: Entities = cast(Entities, {})

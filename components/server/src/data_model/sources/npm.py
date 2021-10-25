@@ -7,6 +7,19 @@ from ..parameters import access_parameters
 NPM = Source(
     name="npm",
     description="npm is a package manager for the JavaScript programming language.",
+    documentation=dict(
+        dependencies="""````{tip}
+To generate the list of outdated dependencies, run:
+```bash
+npm outdated --all --long --json > npm-outdated.json
+```
+To run `npm outdated` with Docker, use:
+```bash
+NODEJS_VERSION="16.9" docker run --rm -v "$SRC_DIRECTORY":/work -w /work node:$NODEJS_VERSION npm outdated --all --long --json > ${WORKSPACE}/outdated.json"
+```
+````
+"""
+    ),
     url="https://docs.npmjs.com/",
     parameters=access_parameters(
         ["dependencies"],

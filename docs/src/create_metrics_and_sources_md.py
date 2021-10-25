@@ -128,10 +128,11 @@ def metric_source_slug(metric_name: str, source_name: str) -> str:
 
 def metric_source_section(data_model, metric_key, source_key) -> str:
     """Return the metric source combination as Markdown section."""
-    source_name = data_model["sources"][source_key]["name"]
+    source = data_model["sources"][source_key]
+    source_name = source["name"]
     metric = data_model["metrics"][metric_key]
     metric_name = metric["name"]
-    parameters = [p for p in data_model["sources"][source_key]["parameters"].values() if metric_key in p["metrics"]]
+    parameters = [p for p in source["parameters"].values() if metric_key in p["metrics"]]
     sorted_parameters = sorted(parameters, key=lambda parameter: str(parameter["name"]))
     mandatory_parameters = [p for p in sorted_parameters if p["mandatory"]]
     optional_parameters = [p for p in sorted_parameters if not p["mandatory"]]
@@ -145,6 +146,8 @@ def metric_source_section(data_model, metric_key, source_key) -> str:
         markdown += markdown_paragraph("Optional parameters:")
         for parameter in optional_parameters:
             markdown += parameter_description(parameter)
+    if documentation := source.get("documentation", {}).get(metric_key):
+        markdown += markdown_paragraph(documentation)
     return markdown
 
 
