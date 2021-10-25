@@ -39,7 +39,6 @@ export function TextInput(props) {
                     onKeyDown={onKeyDown}
                     onKeyPress={onKeyPress}
                     readOnly={readOnly(permissions)}
-                    style={{ marginBottom: "20pt" }}
                     value={text}
                 />)}
             </Permissions.Consumer>
