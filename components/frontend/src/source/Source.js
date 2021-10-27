@@ -34,16 +34,18 @@ function SourceHeader({ source }) {
     )
 }
 
-function ButtonGridRow({first_source, last_source, source_uuid, reload}) {
+function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-            <Grid.Row>
-                <Grid.Column>
-                    <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
-                        onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
-                    <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
-                </Grid.Column>
-            </Grid.Row>}
+            <div style={{ marginTop: "20px" }}>
+                <Grid.Row>
+                    <Grid.Column>
+                        <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
+                            onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
+                        <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
+                    </Grid.Column>
+                </Grid.Row>
+            </div>}
         />
     )
 }
@@ -115,9 +117,7 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
         <>
             <SourceHeader source={source} />
             <Tab panes={panes} />
-            <div style={{ marginTop: "20px" }}>
-                <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
-            </div>
+            <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
         </>
     )
 }
