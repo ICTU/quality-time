@@ -28,39 +28,50 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     )
 }
 
+function SourceSegment({ report, metric, metric_unit, source_uuid, index, last_index, measurement_source, changed_fields, reload} ) {
+    return (
+        <Segment vertical>
+            <Source
+                first_source={index === 0}
+                last_source={index === last_index}
+                metric={metric}
+                metric_unit={metric_unit}
+                measurement_source={measurement_source}
+                reload={reload}
+                report={report}
+                source_uuid={source_uuid}
+                changed_fields={changed_fields}
+            />
+        </Segment>
+    )
+}
+
 export function Sources({ reports, report, metric, metric_uuid, metric_unit, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
-    const measurement_sources = measurement ? measurement.sources : [];
-    function source_error(source_uuid, error_type) {
-        return measurement_sources.find((source) => source.source_uuid === source_uuid)?.[error_type] || '';
-    }
-    const source_uuids = Object.keys(metric.sources).filter((source_uuid) =>
-        dataModel.metrics[metric.type].sources.includes(metric.sources[source_uuid].type)
+    const measurementSources = measurement ? measurement.sources : [];
+    const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
+        dataModel.metrics[metric.type].sources.includes(metric.sources[sourceUuid].type)
     );
-    const last_index = source_uuids.length - 1;
-
-    function SourceSegment(source_uuid, index) {
+    const lastIndex = sourceUuids.length - 1;
+    const sourceSegments = sourceUuids.map((sourceUuid, index) => {
         return (
-            <Segment vertical key={source_uuid}>
-                <Source
-                    connection_error={source_error(source_uuid, "connection_error")}
-                    first_source={index === 0}
-                    last_source={index === last_index}
-                    metric={metric}
-                    metric_unit={metric_unit}
-                    parse_error={source_error(source_uuid, "parse_error")}
-                    reload={reload}
-                    report={report}
-                    source_uuid={source_uuid}
-                    changed_fields={changed_fields}
-                />
-            </Segment>
+            <SourceSegment
+                key={sourceUuid}
+                report={report}
+                metric={metric}
+                metric_unit={metric_unit}
+                source_uuid={sourceUuid}
+                index={index}
+                last_index={lastIndex}
+                measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
+                changed_fields={changed_fields}
+                reload={reload}
+            />
         )
-    }
-    const source_segments = source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index));
+    });
     return (
         <>
-            {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : source_segments}
+            {sourceSegments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : sourceSegments}
             <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )

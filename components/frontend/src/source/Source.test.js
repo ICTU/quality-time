@@ -62,7 +62,7 @@ it('changes the source name', async () => {
 
 it('shows a connection error message', async () => {
     await act(async () => {
-        render_source({ connection_error: "Oops" });
+        render_source({ measurement_source: { connection_error: "Oops" }});
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Connection error/).length).toBe(1);
@@ -70,7 +70,7 @@ it('shows a connection error message', async () => {
 
 it('shows a parse error message', async () => {
     await act(async () => {
-        render_source({ parse_error: "Oops" });
+        render_source({ measurement_source: { parse_error: "Oops" }});
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Parse error/).length).toBe(1);
