@@ -15,7 +15,7 @@ npm outdated --all --long --json > npm-outdated.json
 ```
 To run `npm outdated` with Docker, use:
 ```bash
-NODEJS_VERSION="16.9" docker run --rm -v "$SRC_DIRECTORY":/work -w /work node:$NODEJS_VERSION npm outdated --all --long --json > ${WORKSPACE}/outdated.json"
+docker run --rm -v "$SRC":/work -w /work node:16.9 npm outdated --all --long --json > outdated.json"
 ```
 ````
 """
