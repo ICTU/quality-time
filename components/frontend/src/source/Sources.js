@@ -7,7 +7,8 @@ import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
 
-function ButtonSegment({ reports, dataModel, metric_uuid, metric, reload }) {
+function ButtonSegment({ reports, metric_uuid, metric, reload }) {
+    const dataModel = useContext(DataModel);
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment vertical>
@@ -60,7 +61,7 @@ export function Sources({ reports, report, metric, metric_uuid, metric_unit, mea
     return (
         <>
             {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : source_segments}
-            <ButtonSegment reports={reports} dataModel={dataModel} metric_uuid={metric_uuid} metric={metric} reload={reload} />
+            <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )
 }
