@@ -126,29 +126,36 @@ def metric_source_slug(metric_name: str, source_name: str) -> str:
     return slugify(f"{metric_name} from {source_name}")
 
 
-def metric_source_section(data_model, metric_key, source_key) -> str:
+def metric_source_section(data_model, metric_key: str, source_key: str) -> str:
     """Return the metric source combination as Markdown section."""
-    source_name = data_model["sources"][source_key]["name"]
+    source = data_model["sources"][source_key]
+    source_name = source["name"]
     metric = data_model["metrics"][metric_key]
     metric_name = metric["name"]
-    parameters = [p for p in data_model["sources"][source_key]["parameters"].values() if metric_key in p["metrics"]]
-    sorted_parameters = sorted(parameters, key=lambda parameter: str(parameter["name"]))
-    mandatory_parameters = [p for p in sorted_parameters if p["mandatory"]]
-    optional_parameters = [p for p in sorted_parameters if not p["mandatory"]]
     metric_link = f"[{metric_name.lower()}]({slugify(metric_name)})"
     source_link = f"[{source_name}]({slugify(source_name)})"
     markdown = markdown_paragraph(f"{source_link} can be used to measure {metric_link.lower()}.")
-    markdown += markdown_paragraph("Mandatory parameters:")
-    for parameter in mandatory_parameters:
-        markdown += parameter_description(parameter)
-    if optional_parameters:
-        markdown += markdown_paragraph("Optional parameters:")
-        for parameter in optional_parameters:
+    if documentation := source.get("documentation", {}).get(metric_key):
+        markdown += markdown_paragraph(documentation)
+    parameters = [p for p in source["parameters"].values() if metric_key in p["metrics"]]
+    for mandatory in True, False:
+        markdown += parameter_paragraph(parameters, mandatory)
+    return markdown
+
+
+def parameter_paragraph(parameters: list[dict], mandatory: bool) -> str:
+    """Return the parameters as Markdown paragraph."""
+    markdown = ""
+    parameters = [parameter for parameter in parameters if parameter["mandatory"] == mandatory]
+    if parameters:
+        markdown += markdown_header(f"{'Mandatory' if mandatory else 'Optional'} parameters", 4)
+        sorted_parameters = sorted(parameters, key=lambda parameter: str(parameter["name"]))
+        for parameter in sorted_parameters:
             markdown += parameter_description(parameter)
     return markdown
 
 
-def parameter_description(parameter) -> str:
+def parameter_description(parameter: dict) -> str:
     """Return the Markdown version of the parameter."""
     short_name = parameter["short_name"]
     if help_text := parameter.get("help", ""):
