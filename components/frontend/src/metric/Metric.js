@@ -70,13 +70,11 @@ export function Metric({
 }) {
     const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
-    const latest_measurements = metric.recent_measurements;
-    const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
     const metric_unit = formatMetricScaleAndUnit(metricType, metric);
     const metric_name = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
-            measurement={latest_measurement}
+            measurement={metric.latest_measurement}
             metric_name={metric_name}
             scale={metric.scale}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
@@ -108,11 +106,11 @@ export function Metric({
     return (
         <TableRowWithDetails id={metric_uuid} className={metric.status} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
             <Table.Cell>{metric_name}</Table.Cell>
-            {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
+            {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_unit={metric_unit} latest_measurement={latest_measurement} /></Table.Cell>}
+            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_unit={metric_unit} latest_measurement={metric.latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} metric_unit={metric_unit} /></Table.Cell>}
-            {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources metric={metric} latest_measurement={latest_measurement} /></Table.Cell>}
+            {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources metric={metric} latest_measurement={metric.latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
             {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}

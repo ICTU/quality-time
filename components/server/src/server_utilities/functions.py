@@ -183,3 +183,11 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
     message = symmetric_decrypt(decrypted_key, message_bytes)
 
     return message.decode()
+
+
+def report_metrics_uuids(report: dict) -> list[str]:
+    """Get all metric_uuids belonging to one report."""
+    metric_uuids = []
+    for subject in report["subjects"].values():
+        metric_uuids.extend(subject["metrics"].keys())
+    return metric_uuids

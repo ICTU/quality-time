@@ -45,6 +45,7 @@ def create_report():
                         target="0",
                         accept_debt=False,
                         tags=["security"],
+                        scales=["count", "percentage"],
                         sources={
                             SOURCE_ID: dict(
                                 type="source_type",

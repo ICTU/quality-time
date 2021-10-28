@@ -182,13 +182,20 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="Subject type")),
-            metrics=dict(metric_type=dict(name="Metric type")),
+            metrics=dict(
+                metric_type=dict(
+                    name="Metric type",
+                    scales=["count", "percentage"],
+                )
+            ),
             sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
         )
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.secrets.find_one.return_value = {"public_key": self.public_key, "private_key": self.private_key}
         self.database.measurements.find.return_value = []
+        self.database.measurements.find_one.return_value = {"sources": []}
+        self.database.measurements.aggregate.return_value = []
         self.options = (
             "emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&"
             "pdf.margin.top=25&pdf.margin.bottom=25&pdf.margin.left=25&pdf.margin.right=25"
@@ -232,6 +239,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             count=dict(status="target_not_met", status_start="2020-12-03:22:28:00+00:00"),
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
         )
+        self.database.measurements.aggregate.return_value = []
         self.database.measurements.find.return_value = [measurement]
         self.database.reports.find.return_value = [create_report()]
         report = get_report(self.database, REPORT_ID)["reports"][0]
@@ -250,6 +258,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
             issue_status=[issue_status],
         )
+        self.database.measurements.aggregate.return_value = []
         self.database.measurements.find.return_value = [measurement]
         self.database.reports.find.return_value = [report := create_report()]
         report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
@@ -299,6 +308,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                                         value=None,
                                         scale="count",
                                         recent_measurements=[],
+                                        latest_measurement={},
                                         type="metric_type",
                                         tags=["tag"],
                                     )

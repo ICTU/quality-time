@@ -3,7 +3,11 @@
 import unittest
 from unittest.mock import Mock
 
-from database.measurements import measurements_by_metric
+from database.measurements import (
+    latest_measurements_by_metric_uuid,
+    measurements_by_metric,
+    recent_measurements_by_metric_uuid,
+)
 
 from ..fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 
@@ -14,40 +18,23 @@ class MeasurementsByMetricTest(unittest.TestCase):
     def setUp(self):
         """Override to create a mock database fixture."""
         self.database = Mock()
-        measurements = [
-            {"start": "0", "end": "1", "metric_uuid": METRIC_ID},
-            {"start": "3", "end": "4", "metric_uuid": METRIC_ID},
-            {"start": "6", "end": "7", "metric_uuid": METRIC_ID},
-            {"start": "1", "end": "2", "metric_uuid": METRIC_ID2},
-            {"start": "4", "end": "5", "metric_uuid": METRIC_ID2},
-            {"start": "7", "end": "8", "metric_uuid": METRIC_ID2},
-            {"start": "2", "end": "3", "metric_uuid": METRIC_ID3},
-            {"start": "5", "end": "6", "metric_uuid": METRIC_ID3},
-            {"start": "8", "end": "9", "metric_uuid": METRIC_ID3},
+        self.measurements = [
+            {"_id": 1, "start": "0", "end": "1", "metric_uuid": METRIC_ID},
+            {"_id": 2, "start": "3", "end": "4", "metric_uuid": METRIC_ID},
+            {"_id": 3, "start": "6", "end": "7", "metric_uuid": METRIC_ID},
+            {"_id": 4, "start": "1", "end": "2", "metric_uuid": METRIC_ID2},
+            {"_id": 5, "start": "4", "end": "5", "metric_uuid": METRIC_ID2},
+            {"_id": 6, "start": "7", "end": "8", "metric_uuid": METRIC_ID2},
+            {"_id": 7, "start": "2", "end": "3", "metric_uuid": METRIC_ID3},
+            {"_id": 8, "start": "5", "end": "6", "metric_uuid": METRIC_ID3},
+            {"_id": 9, "start": "8", "end": "9", "metric_uuid": METRIC_ID3},
         ]
-
-        def find_one_side_effect(query, projection, sort=None):
-            """Side effect for mocking the database measurements."""
-            return find_side_effect(query, projection, sort)[-1]
-
-        def find_side_effect(query, projection, sort=None):  # pylint: disable=unused-argument
-            """Side effect for mocking the last database measurement."""
-            metric_uuids = query["metric_uuid"]["$in"]
-            min_iso_timestamp = query["end"]["$gt"] if "end" in query else ""
-            max_iso_timestamp = query["start"]["$lt"] if "start" in query else ""
-            return [
-                m
-                for m in measurements
-                if m["metric_uuid"] in metric_uuids
-                and (not min_iso_timestamp or m["end"] > min_iso_timestamp)
-                and (not max_iso_timestamp or m["start"] < max_iso_timestamp)
-            ]
-
-        self.database.measurements.find_one.side_effect = find_one_side_effect
-        self.database.measurements.find.side_effect = find_side_effect
+        self.database.measurements.aggregate.return_value = []
 
     def test_get_from_one_metric(self):
         """Test that we get all three measurement fields."""
+        self.database.measurements.find_one.return_value = self.measurements[0]
+        self.database.measurements.find.return_value = self.measurements[0:3]
         measurements = measurements_by_metric(self.database, METRIC_ID)
         self.assertEqual(len(measurements), 3)
         for measurement in measurements:
@@ -55,6 +42,8 @@ class MeasurementsByMetricTest(unittest.TestCase):
 
     def test_get_from_multiple_metric(self):
         """Test that we get all three measurement fields."""
+        self.database.measurements.find_one.return_value = self.measurements[0]
+        self.database.measurements.find.return_value = self.measurements[0:6]
         measurements = measurements_by_metric(self.database, *[METRIC_ID, METRIC_ID2])
         self.assertEqual(len(measurements), 6)
         for measurement in measurements:
@@ -62,8 +51,42 @@ class MeasurementsByMetricTest(unittest.TestCase):
 
     def test_get_timestamp_restriction(self):
         """Test that we get all three measurement fields."""
+        self.database.measurements.find_one.return_value = self.measurements[0]
+        self.database.measurements.find.return_value = self.measurements[0:2]
         measurements = measurements_by_metric(self.database, METRIC_ID, min_iso_timestamp="0.5", max_iso_timestamp="4")
         self.assertEqual(len(measurements), 2)
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
             self.assertIn(measurement["start"], ["0", "3"])
+
+    def test_recent_measurements_by_uuid(self):
+        """Test that we get all measurements with all metric ids."""
+        self.database.measurements.find.return_value = self.measurements
+        recent_measurements = recent_measurements_by_metric_uuid(self.database)
+        self.assertEqual(len(recent_measurements), 3)
+        self.assertIn(METRIC_ID, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
+        self.assertIn(METRIC_ID2, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID2]), 3)
+        self.assertIn(METRIC_ID3, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID3]), 3)
+
+    def test_recent_measurements_by_uuid_uuid_filter(self):
+        """Test that we get all measurements with all metric ids."""
+        self.database.measurements.find.return_value = self.measurements[0:6]
+        recent_measurements = recent_measurements_by_metric_uuid(self.database, metric_uuids=[METRIC_ID, METRIC_ID2])
+        self.assertEqual(len(recent_measurements), 2)
+        self.assertIn(METRIC_ID, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
+        self.assertIn(METRIC_ID2, recent_measurements)
+        self.assertEqual(len(recent_measurements[METRIC_ID2]), 3)
+
+    def test_latest_measurements_by_uuid_uuid_filter(self):
+        """Test that we get all measurements with all metric ids."""
+        self.database.measurements.find.return_value = [self.measurements[2], self.measurements[5]]
+        latest_measurements = latest_measurements_by_metric_uuid(self.database, metric_uuids=[METRIC_ID, METRIC_ID2])
+        self.assertEqual(len(latest_measurements), 2)
+        self.assertIn(METRIC_ID, latest_measurements)
+        self.assertEqual(latest_measurements[METRIC_ID]["start"], "6")
+        self.assertIn(METRIC_ID2, latest_measurements)
+        self.assertEqual(latest_measurements[METRIC_ID2]["start"], "7")

@@ -17,20 +17,42 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
+def latest_measurements_by_metric_uuid(database: Database, metric_uuids: list[str]) -> dict[str, Measurement] | None:
+    """Return the latest measurements in a dict with metric_uuids as keys."""
+    latest_measurement_ids = database.measurements.aggregate(
+        [
+            {"$match": {"metric_uuid": {"$in": metric_uuids}}},
+            {"$sort": {"metric_uuid": 1, "start": -1}},
+            {"$group": {"_id": "$metric_uuid", "measurement_id": {"$first": "$_id"}}},
+            {"$project": {"_id": False}},
+        ]
+    )
+    latest_measurements = database.measurements.find(
+        {"_id": {"$in": [measurement["measurement_id"] for measurement in latest_measurement_ids]}},
+        projection={"_id": False, "sources.entities": False, "entity_user_data": False},
+    )
+    return {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
+
+
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        filter={"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):
-    """Return all recent measurements."""
+def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None):
+    """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
+    measurement_filter = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
+    # metric_uuids needs to be optional as long as the /reports endpoint is supported for backwards compatibility
+    # however, there is no test anymore covering that endpoint, which means incomplete coverage on this if statement
+    if metric_uuids is not None:  # pragma: no cover
+        measurement_filter["metric_uuid"] = {"$in": metric_uuids}
     recent_measurements = database.measurements.find(
-        filter={"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}},
+        measurement_filter,
         sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False},
     )

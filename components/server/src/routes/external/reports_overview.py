@@ -30,7 +30,7 @@ def get_reports(database: Database):  # pragma: no cover
     overview["reports"] = []
     recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
     for report in latest_reports(database, date_time):
-        summarize_report(report, recent_measurements, data_model)
+        summarize_report(report, database, recent_measurements, data_model)
         overview["reports"].append(report)
     hide_credentials(data_model, *overview["reports"])
     return overview

@@ -78,11 +78,15 @@ Feature: measurement entities
       | key | story_points |
       | 1   | 100          |
       | 2   | 20           |
+    When the client waits a second
     And the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_not_met"
     When the client deletes the source
+    When the client waits a second
     And the collector measures "0"
+    When the client waits a second
     And the client creates a source with type "azure_devops"
+    When the client waits a second
     And the collector measures "120"
       | key | story_points |
       | 1   | 100          |
@@ -97,8 +101,10 @@ Feature: measurement entities
       | 1   | 100          |
       | 2   | 20           |
     Then the metric status is "target_met"
+    When the client waits a second
     When the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_not_met"
+    When the client waits a second
     When the collector measures "120"
       | key | story_points |
       | 1   | 100          |
@@ -113,8 +119,10 @@ Feature: measurement entities
       | 1   | 100          |
       | 2   | 20           |
     Then the metric status is "target_met"
+    When the client waits a second
     When the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_not_met"
+    When the client waits a second
     When the collector measures "20"
       | key | story_points |
       | 2   | 20           |

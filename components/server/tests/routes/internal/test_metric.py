@@ -30,6 +30,7 @@ class MetricTest(unittest.TestCase):
                     type="metric_type",
                     tags=["security"],
                     target="0",
+                    scales=["count", "percentage"],
                     sources=dict(
                         source_uuid=dict(
                             name="Source", type="source_type", parameters=dict(url="https://url", password="password")
@@ -56,6 +57,7 @@ class MetricTest(unittest.TestCase):
                     target="0",
                     issue_ids=["FOO-42"],
                     issue_tracker=dict(type="jira", parameters=dict(url="https://jira")),
+                    scales=["count", "percentage"],
                     sources=dict(
                         source_uuid=dict(
                             name="Source", type="source_type", parameters=dict(url="https://url", password="password")

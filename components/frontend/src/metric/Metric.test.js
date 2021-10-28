@@ -18,7 +18,8 @@ let report = {
                     sources: {source_uuid1: {name: "Source 1"}, source_uuid2: {name: "Source 2"}},
                     status: "target_not_met",
                     value: "50",
-                    recent_measurements: [{ sources: [{ source_uuid: "source_uuid1" }, {source_uuid: "source_uuid2"}] }]
+                    latest_measurement: { sources: [{ source_uuid: "source_uuid1" }, {source_uuid: "source_uuid2"}] },
+                    recent_measurements: []
                 },
                 stability: {
                     name: "Stability",
@@ -28,7 +29,8 @@ let report = {
                     sources: {source_uuid: {name: "Source"}},
                     status: "target_not_met",
                     value: "50",
-                    recent_measurements: [{ sources: [{ source_uuid: "source_uuid" }] }]
+                    latest_measurement: { sources: [{ source_uuid: "source_uuid" }] },
+                    recent_measurements: []
                 }
             }
         }
