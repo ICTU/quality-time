@@ -20,8 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 
-- Add a separate "latest_measurent" key to each metric in the /report endpoint. Closes [#2692](https://github.com/ICTU/quality-time/issues/2692).
-- Add a parameter metric_uuids to recent_measurements_by_metric_uuid to minimize the database load. Closes [#2695](https://github.com/ICTU/quality-time/issues/2695).
+- Performance improvements. Closes [#2692](https://github.com/ICTU/quality-time/issues/2692) and [#2695](https://github.com/ICTU/quality-time/issues/2695).
 - Make the metric tables use less vertical space when in details view. This allows for more metrics to fit on the screen. It also makes the vertical space used by the details view and the trend view more similar.
 - Use a lightning bolt icon for metrics that don't meet their target value, to suggest danger and/or risk. The previously used x-shaped icon is typically associated with closing things, and thus less appropriate.
 
