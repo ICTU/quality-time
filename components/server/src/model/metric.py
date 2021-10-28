@@ -7,7 +7,7 @@ from datetime import date
 from typing import cast
 
 from model.source import Source
-from server_utilities.type import Direction, MetricId, Scale, TargetType
+from server_utilities.type import Direction, MetricId, Scale, Status, TargetType
 
 
 class Metric(dict):
@@ -25,6 +25,18 @@ class Metric(dict):
     def type(self) -> str:
         """Return the type of the metric."""
         return str(self["type"])
+
+    def status(self, last_measurement):
+        """Determine the metric status."""
+        if status := last_measurement.get(self.scale(), {}).get("status", last_measurement.get("status")):
+            return cast(Status, status)
+        debt_end_date = self.get("debt_end_date") or date.max.isoformat()
+        return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
+
+    def issue_statuses(self, last_measurement) -> list[dict]:
+        """Return the metric's issue  statuses."""
+        last_issue_statuses = last_measurement.get("issue_status", [])
+        return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
@@ -82,3 +94,17 @@ class Metric(dict):
         """Look up the type of an entity attribute."""
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
+
+    def summarize(self, latest_measurement, measurements_summary):
+        """Add a summary of the metric to the report."""
+        summary = dict(self)
+        summary["latest_measurement"] = latest_measurement
+        summary["recent_measurements"] = measurements_summary
+        summary["scale"] = self.scale()
+        summary["status"] = self.status(latest_measurement)
+        summary["issue_status"] = self.issue_statuses(latest_measurement)
+
+        if status_start := latest_measurement.get(self.scale(), {}).get("status_start"):
+            summary["status_start"] = status_start
+
+        return summary
