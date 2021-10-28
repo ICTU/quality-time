@@ -54,9 +54,8 @@ def recent_measurements_by_metric_uuid(
     # however, there is no test anymore covering that endpoint, which means incomplete coverage on this if statement
     if metric_uuids is not None:  # pragma: no cover
         measurement_filter["metric_uuid"] = {"$in": metric_uuids}
-
     projection = {"_id": False, "metric_uuid": True, "start": True, "end": True}
-    projection.update({scale + ".value": True for scale in data_model["scales"].keys()})
+    projection.update({scale + ".value": True for scale in data_model.get("scales", {}).keys()})
     recent_measurements = database.measurements.find(
         measurement_filter,
         sort=[("start", pymongo.ASCENDING)],
