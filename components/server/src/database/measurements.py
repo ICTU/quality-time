@@ -20,9 +20,16 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
 
 def latest_measurements_by_metric_uuid(database: Database, metric_uuids: List[str]) -> Dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
+    latest_measurement_ids = database.measurements.aggregate(
+        [
+            {"$match": {"metric_uuid": {"$in": metric_uuids}}},
+            {"$sort": {"metric_uuid": 1, "start": -1}},
+            {"$group": {"_id": "$metric_uuid", "measurement_id": {"$first": "$_id"}}},
+            {"$project": {"_id": False}},
+        ]
+    )
     latest_measurements = database.measurements.find(
-        {"metric_uuid": {"$in": metric_uuids}},
-        sort=[("start", pymongo.ASCENDING)],
+        {"_id": {"$in": [measurement["measurement_id"] for measurement in latest_measurement_ids]}},
         projection={"_id": False, "sources.entities": False, "entity_user_data": False},
     )
     latest_measurements_by_uuid = {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
