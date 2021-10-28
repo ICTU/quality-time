@@ -7,7 +7,7 @@ from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Dict, List, Tuple, TypeVar, cast
+from typing import Tuple, TypeVar, cast
 
 import bottle
 import requests
@@ -185,7 +185,7 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: Tuple[str, str]) ->
     return message.decode()
 
 
-def report_metrics_uuids(report: Dict) -> List[str]:
+def report_metrics_uuids(report: dict) -> list[str]:
     """Get all metric_uuids belonging to one report."""
     metric_uuids = []
     for subject in report["subjects"].values():

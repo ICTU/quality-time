@@ -7,7 +7,6 @@ from datetime import date
 from json.decoder import JSONDecodeError
 from typing import cast
 from database.measurements import latest_measurements_by_metric_uuid, recent_measurements_by_metric_uuid
-
 from server_utilities.functions import (
     DecryptionError,
     asymmetric_decrypt,
