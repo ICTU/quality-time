@@ -30,7 +30,7 @@ class MeasurementsByMetricTest(unittest.TestCase):
             {"start": "8", "end": "9", "metric_uuid": METRIC_ID3},
         ]
 
-        def find_one_side_effect(query, projection=None, sort=None):  # pylint: disable=unused-argument
+        def find_one_side_effect(query, projection=None, sort=None):
             """Side effect for mocking the database measurements."""
             return find_side_effect(query, projection, sort)[-1]
 
@@ -73,7 +73,7 @@ class MeasurementsByMetricTest(unittest.TestCase):
             self.assertIn(measurement["start"], ["0", "3"])
 
     def test_recent_measurements_by_uuid(self):
-        """Test that we get all measurements with all metric id's."""
+        """Test that we get all measurements with all metric ids."""
         recent_measurements = recent_measurements_by_metric_uuid(self.database)
         self.assertEqual(len(recent_measurements), 3)
         self.assertIn(METRIC_ID, recent_measurements)
