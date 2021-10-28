@@ -5,6 +5,7 @@ from typing import Union
 
 import pymongo
 from pymongo.database import Database
+from data_model.meta.data_model import DataModel
 
 from model.measurement import Measurement
 from model.metric import Metric
