@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 import pymongo
 from pymongo.database import Database
-from data_model.meta.data_model import DataModel
 
 from model.measurement import Measurement
 from model.metric import Metric
@@ -44,7 +43,7 @@ def latest_successful_measurement(database: Database, metric: Metric) -> Measure
 
 
 def recent_measurements_by_metric_uuid(
-    data_model: DataModel, database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None
+    data_model: dict, database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None
 ):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
