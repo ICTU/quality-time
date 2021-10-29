@@ -90,6 +90,13 @@ it('switches tabs to measurement entities', async () => {
     expect(screen.getAllByText(/Attribute status/).length).toBe(1);
 })
 
+it('switches tabs to the trend graph', async () => {
+    await render_metric_details();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
+    expect(screen.getAllByText(/Time/).length).toBe(1);
+})
+
 it('displays whether sources have errors', async () => {
     await render_metric_details(null, "Connection error");
     expect(screen.getByText(/Sources/)).toHaveClass("red label");
