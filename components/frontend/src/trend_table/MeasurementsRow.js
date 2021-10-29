@@ -46,9 +46,7 @@ export function MeasurementsRow(
         <MetricDetails
             first_metric={first_metric}
             last_metric={last_metric}
-            measurement={metric.latest_measurement}
             metric_name={metricName}
-            scale={metric.scale}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
             report_date={reportDate}
             reports={reports}

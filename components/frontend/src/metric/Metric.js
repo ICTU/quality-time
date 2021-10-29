@@ -74,9 +74,7 @@ export function Metric({
     const metric_name = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
-            measurement={metric.latest_measurement}
             metric_name={metric_name}
-            scale={metric.scale}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
             report_date={report_date}
             reports={reports}

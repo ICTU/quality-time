@@ -77,8 +77,6 @@ export function MetricDetails({
     metric_unit,
     first_metric,
     last_metric,
-    measurement,
-    scale,
     unit,
     stop_sort,
     changed_fields,
@@ -119,7 +117,7 @@ export function MetricDetails({
                         metric={metric}
                         metric_uuid={metric_uuid}
                         metric_unit={metric_unit}
-                        measurement={measurement}
+                        measurement={metric.latest_measurement}
                         changed_fields={changed_fields}
                         reload={reload} />
                 </Tab.Pane>
@@ -131,7 +129,7 @@ export function MetricDetails({
             panes.push(
                 {
                     menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-                    render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metric_name} measurements={measurements} scale={scale} /></Tab.Pane>
+                    render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metric_name} measurements={measurements} scale={metric.scale} /></Tab.Pane>
                 }
             )
         }
