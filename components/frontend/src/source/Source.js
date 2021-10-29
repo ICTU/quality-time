@@ -34,16 +34,18 @@ function SourceHeader({ source }) {
     )
 }
 
-function ButtonGridRow({first_source, last_source, source_uuid, reload}) {
+function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-            <Grid.Row>
-                <Grid.Column>
-                    <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
-                        onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
-                    <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
-                </Grid.Column>
-            </Grid.Row>}
+            <div style={{ marginTop: "20px" }}>
+                <Grid.Row>
+                    <Grid.Column>
+                        <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
+                            onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
+                        <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
+                    </Grid.Column>
+                </Grid.Row>
+            </div>}
         />
     )
 }
@@ -90,14 +92,17 @@ function Parameters({ source, source_uuid, connection_error, parse_error, metric
     )
 }
 
-export function Source({ source, source_uuid, first_source, last_source, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
-    const parameter_menu_item = connection_error || parse_error ? <Label color='red'>{"Configuration"}</Label> : "Configuration";
+export function Source({ metric, source_uuid, first_source, last_source, measurement_source, metric_unit, report, changed_fields, reload }) {
+    const source = metric.sources[source_uuid];
+    const connectionError = measurement_source?.connection_error || "";
+    const parseError = measurement_source?.parse_error || "";
+    const configurationTabLabel = connectionError || parseError ? <Label color='red'>{"Configuration"}</Label> : "Configuration";
     const panes = [
         {
-            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{parameter_menu_item}</FocusableTab></Menu.Item>,
+            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{configurationTabLabel}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
                 <Parameters source={source} source_uuid={source_uuid}
-                    connection_error={connection_error} parse_error={parse_error} metric_type={metric_type}
+                    connection_error={connectionError} parse_error={parseError} metric_type={metric.type}
                     metric_unit={metric_unit} report={report} changed_fields={changed_fields} reload={reload} />
             </Tab.Pane>
         },
@@ -112,9 +117,7 @@ export function Source({ source, source_uuid, first_source, last_source, connect
         <>
             <SourceHeader source={source} />
             <Tab panes={panes} />
-            <div style={{ marginTop: "20px" }}>
-                <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
-            </div>
+            <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
         </>
     )
 }

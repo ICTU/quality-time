@@ -7,61 +7,72 @@ import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
 
-export function Sources({ reports, report, metric_uuid, metric_type, metric_unit, sources, measurement, changed_fields, reload }) {
+function ButtonSegment({ reports, metric_uuid, metric, reload }) {
+    const dataModel = useContext(DataModel);
+    return (
+        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
+            <Segment vertical>
+                <AddButton item_type="source" onClick={() => add_source(metric_uuid, reload)} />
+                <CopyButton
+                    item_type="source"
+                    onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
+                    get_options={() => source_options(reports, dataModel, metric.type)}
+                />
+                <MoveButton
+                    item_type="source"
+                    onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
+                    get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
+                />
+            </Segment>}
+        />
+    )
+}
+
+function SourceSegment({ report, metric, metric_unit, source_uuid, index, last_index, measurement_source, changed_fields, reload} ) {
+    return (
+        <Segment vertical>
+            <Source
+                first_source={index === 0}
+                last_source={index === last_index}
+                metric={metric}
+                metric_unit={metric_unit}
+                measurement_source={measurement_source}
+                reload={reload}
+                report={report}
+                source_uuid={source_uuid}
+                changed_fields={changed_fields}
+            />
+        </Segment>
+    )
+}
+
+export function Sources({ reports, report, metric, metric_uuid, metric_unit, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
-    const measurement_sources = measurement ? measurement.sources : [];
-    function source_error(source_uuid, error_type) {
-        return measurement_sources.find((source) => source.source_uuid === source_uuid)?.[error_type] || '';
-    }
-    function ButtonSegment() {
+    const measurementSources = measurement ? measurement.sources : [];
+    const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
+        dataModel.metrics[metric.type].sources.includes(metric.sources[sourceUuid].type)
+    );
+    const lastIndex = sourceUuids.length - 1;
+    const sourceSegments = sourceUuids.map((sourceUuid, index) => {
         return (
-            <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-                <Segment vertical>
-                    <AddButton item_type="source" onClick={() => add_source(metric_uuid, reload)} />
-                    <CopyButton
-                        item_type="source"
-                        onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
-                        get_options={() => source_options(reports, dataModel, metric_type)}
-                    />
-                    <MoveButton
-                        item_type="source"
-                        onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
-                        get_options={() => source_options(reports, dataModel, metric_type, metric_uuid)}
-                    />
-                </Segment>}
+            <SourceSegment
+                key={sourceUuid}
+                report={report}
+                metric={metric}
+                metric_unit={metric_unit}
+                source_uuid={sourceUuid}
+                index={index}
+                last_index={lastIndex}
+                measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
+                changed_fields={changed_fields}
+                reload={reload}
             />
         )
-    }
-    const source_uuids = Object.keys(sources).filter((source_uuid) =>
-        dataModel.metrics[metric_type].sources.includes(sources[source_uuid].type)
-    );
-    const last_index = source_uuids.length - 1;
-
-    function SourceSegment(source_uuid, index) {
-        return (
-            <Segment vertical key={source_uuid}>
-                <Source
-                    connection_error={source_error(source_uuid, "connection_error")}
-                    first_source={index === 0}
-                    last_source={index === last_index}
-                    metric_type={metric_type}
-                    metric_uuid={metric_uuid}
-                    metric_unit={metric_unit}
-                    parse_error={source_error(source_uuid, "parse_error")}
-                    reload={reload}
-                    report={report}
-                    source={sources[source_uuid]}
-                    source_uuid={source_uuid}
-                    changed_fields={changed_fields}
-                />
-            </Segment>
-        )
-    }
-    const source_segments = source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index));
+    });
     return (
         <>
-            {source_segments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : source_segments}
-            <ButtonSegment />
+            {sourceSegments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : sourceSegments}
+            <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )
 }

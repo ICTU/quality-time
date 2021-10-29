@@ -16,6 +16,7 @@ const datamodel = {
     }
 };
 const source = { type: "source_type1" };
+const metric = { type: "metric_type", sources: {"source_uuid": source}}
 const report = { report_uuid: "report_uuid", subjects: {} };
 
 function render_source(props) {
@@ -23,9 +24,8 @@ function render_source(props) {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Source
-                    metric_type="metric_type"
+                    metric={metric}
                     report={report}
-                    source={source}
                     source_uuid="source_uuid"
                     {...props}
                 />
@@ -62,7 +62,7 @@ it('changes the source name', async () => {
 
 it('shows a connection error message', async () => {
     await act(async () => {
-        render_source({ connection_error: "Oops" });
+        render_source({ measurement_source: { connection_error: "Oops" }});
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Connection error/).length).toBe(1);
@@ -70,7 +70,7 @@ it('shows a connection error message', async () => {
 
 it('shows a parse error message', async () => {
     await act(async () => {
-        render_source({ parse_error: "Oops" });
+        render_source({ measurement_source: { parse_error: "Oops" }});
         fireEvent.click(screen.getByText(/Configuration/));
     });
     expect(screen.getAllByText(/Parse error/).length).toBe(1);
