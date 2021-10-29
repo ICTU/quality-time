@@ -71,10 +71,9 @@ export function Metric({
     const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
     const metric_unit = formatMetricScaleAndUnit(metricType, metric);
-    const metric_name = get_metric_name(metric, dataModel);
+    const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
-            metric_name={metric_name}
             unit={formatMetricScaleAndUnit(metricType, metric, false)}
             report_date={report_date}
             reports={reports}
@@ -103,7 +102,7 @@ export function Metric({
     }
     return (
         <TableRowWithDetails id={metric_uuid} className={metric.status} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
-            <Table.Cell>{metric_name}</Table.Cell>
+            <Table.Cell>{metricName}</Table.Cell>
             {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
             {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_unit={metric_unit} latest_measurement={metric.latest_measurement} /></Table.Cell>}
