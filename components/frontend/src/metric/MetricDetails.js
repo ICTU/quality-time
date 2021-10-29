@@ -73,7 +73,6 @@ export function MetricDetails({
     report,
     subject_uuid,
     metric_uuid,
-    metric_unit,
     first_metric,
     last_metric,
     unit,
@@ -115,7 +114,6 @@ export function MetricDetails({
                         report={report}
                         metric={metric}
                         metric_uuid={metric_uuid}
-                        metric_unit={metric_unit}
                         measurement={metric.latest_measurement}
                         changed_fields={changed_fields}
                         reload={reload} />

@@ -7,6 +7,7 @@ function renderSourceParameters({placeholder = "", type = "string", source_param
     return render(
         <DataModel.Provider value={
             {
+                metrics: { violations: {} },
                 sources: {
                     source_type: {
                         parameters: {
@@ -24,7 +25,7 @@ function renderSourceParameters({placeholder = "", type = "string", source_param
         }>
             <SourceParameters
                 report={{subjects: {}}}
-                metric_type="violations"
+                metric={{type: "violations"}}
                 source={{ type: "source_type", parameters: {parameter_key: source_parameter_value} }}
                 changed_param_keys={changed_param_keys}
             />

@@ -80,7 +80,6 @@ export function Metric({
             report={report}
             subject_uuid={subject_uuid}
             metric_uuid={metric_uuid}
-            metric_unit={metric_unit}
             first_metric={first_metric}
             last_metric={last_metric}
             stop_sort={stop_sort}
