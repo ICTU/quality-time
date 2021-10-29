@@ -71,6 +71,16 @@ it("doesn't show sources not in the data model", () => {
     expect(screen.queryAllByDisplayValue(/Other source/).length).toBe(0);
 })
 
+it('shows errored sources', () => {
+    render_sources(
+        {
+            metric: { type: "metric_type", sources: { source_uuid: { type: "source_type1" } } },
+            measurement: {sources: [{source_uuid: "source_uuid", connection_error: "Oops"}]}
+        }
+    )
+    expect(screen.getAllByText(/Connection error/).length).toBe(1);
+})
+
 it('creates a new source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
