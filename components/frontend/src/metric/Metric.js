@@ -12,11 +12,12 @@ import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
 import "./Metric.css";
 
-function MeasurementValue({ metric, metric_unit, latest_measurement }) {
+function MeasurementValue({ metric, latest_measurement }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
+    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
     const value = metric.value && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
-    const valueText = <span>{value + metric_unit}</span>
+    const valueText = <span>{value + metricUnit}</span>
     if (latest_measurement) {
         return (
             <Popup trigger={valueText} flowing hoverable>
@@ -28,9 +29,10 @@ function MeasurementValue({ metric, metric_unit, latest_measurement }) {
     return valueText;
 }
 
-function MeasurementTarget({ metric, metric_unit }) {
+function MeasurementTarget({ metric }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
+    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
     const metric_direction = get_metric_direction(metric, dataModel)
     let debt_end = "";
     if (metric.debt_end_date) {
@@ -42,7 +44,7 @@ function MeasurementTarget({ metric, metric_unit }) {
     if (target && metricType.unit === "minutes" && metric.scale !== "percentage") {
         target = format_minutes(target)
     }
-    return `${metric_direction} ${target}${metric_unit}${debt}`
+    return `${metric_direction} ${target}${metricUnit}${debt}`
 }
 
 function MeasurementSources({ metric, latest_measurement }) {
@@ -70,7 +72,6 @@ export function Metric({
 }) {
     const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
-    const metric_unit = formatMetricScaleAndUnit(metricType, metric);
     const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
@@ -104,8 +105,8 @@ export function Metric({
             <Table.Cell>{metricName}</Table.Cell>
             {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} metric_unit={metric_unit} latest_measurement={metric.latest_measurement} /></Table.Cell>}
-            {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} metric_unit={metric_unit} /></Table.Cell>}
+            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} latest_measurement={metric.latest_measurement} /></Table.Cell>}
+            {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources metric={metric} latest_measurement={metric.latest_measurement} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
