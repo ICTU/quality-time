@@ -12,17 +12,17 @@ import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
 import "./Metric.css";
 
-function MeasurementValue({ metric, latest_measurement }) {
+function MeasurementValue({ metric }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
     const value = metric.value && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
     const valueText = <span>{value + metricUnit}</span>
-    if (latest_measurement) {
+    if (metric.latest_measurement) {
         return (
             <Popup trigger={valueText} flowing hoverable>
-                <TimeAgoWithDate date={latest_measurement.end}>Last measured</TimeAgoWithDate><br />
-                <TimeAgoWithDate date={latest_measurement.start}>First measured</TimeAgoWithDate>
+                <TimeAgoWithDate date={metric.latest_measurement.end}>Last measured</TimeAgoWithDate><br />
+                <TimeAgoWithDate date={metric.latest_measurement.start}>First measured</TimeAgoWithDate>
             </Popup>
         )
     }
@@ -47,8 +47,8 @@ function MeasurementTarget({ metric }) {
     return `${metric_direction} ${target}${metricUnit}${debt}`
 }
 
-function MeasurementSources({ metric, latest_measurement }) {
-    const sources = latest_measurement?.sources ?? [];
+function MeasurementSources({ metric }) {
+    const sources = metric.latest_measurement?.sources ?? [];
     return sources.map(
         (source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} metric={metric} measurement_source={source} />]
     );
@@ -105,9 +105,9 @@ export function Metric({
             <Table.Cell>{metricName}</Table.Cell>
             {!hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={report_date} scale={metric.scale} /></Table.Cell>}
             {!hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} latest_measurement={metric.latest_measurement} /></Table.Cell>}
+            {!hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} /></Table.Cell>}
-            {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources metric={metric} latest_measurement={metric.latest_measurement} /></Table.Cell>}
+            {!hiddenColumns.includes("source") && <Table.Cell><MeasurementSources metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
             {!hiddenColumns.includes("tags") && <Table.Cell>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
