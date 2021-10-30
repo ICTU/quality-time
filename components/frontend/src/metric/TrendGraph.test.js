@@ -14,7 +14,7 @@ function render_trendgraph(measurements=[]) {
     return (
         render(
             <DataModel.Provider value={dataModel}>
-                <TrendGraph metric={{type: "violations"}} measurements={measurements} />
+                <TrendGraph metric={{type: "violations", scale: "count"}} measurements={measurements} />
             </DataModel.Provider>
         )
     )
