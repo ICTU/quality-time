@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack } from 'victory';
-import { nice_number, scaled_number } from '../utils';
+import { DataModel } from "../context/DataModel";
+import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, scaled_number } from '../utils';
 
 function Background({ data, ...props }) {
     return (
@@ -16,14 +17,18 @@ function Background({ data, ...props }) {
     )
 }
 
-export function TrendGraph({ measurements, scale, unit, title }) {
+export function TrendGraph({ metric, measurements }) {
+    const dataModel = useContext(DataModel)
+    const metricName = get_metric_name(metric, dataModel);
+    const metricType = dataModel.metrics[metric.type];
+    const unit = capitalize(formatMetricScaleAndUnit(metricType, metric, false));
     let measurement_values = [];
     let target_values = [];
     let near_target_values = [];
     let debt_target_values = [];
 
     function measurement_attribute_as_number(measurement, field) {
-        const value = (measurement[scale] && measurement[scale][field]) || null;
+        const value = (measurement[metric.scale] && measurement[metric.scale][field]) || null;
         return value !== null ? Number(value) : null;
     }
 
@@ -63,7 +68,7 @@ export function TrendGraph({ measurements, scale, unit, title }) {
                 green: max_y
             }
         };
-        const direction = measurement[scale].direction || "<";
+        const direction = measurement[metric.scale].direction || "<";
         let y0 = 0;
         colors[direction].forEach((color) => {
             const y = Math.max(0, absolute_y_values[direction][color] - y0);
@@ -94,7 +99,7 @@ export function TrendGraph({ measurements, scale, unit, title }) {
             theme={VictoryTheme.material}
             width={750}
         >
-            <VictoryLabel x={375} y={20} text={title} textAnchor="middle" />
+            <VictoryLabel x={375} y={20} text={metricName} textAnchor="middle" />
             <VictoryAxis
                 label={"Time"}
                 style={axisStyle}

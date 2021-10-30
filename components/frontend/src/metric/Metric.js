@@ -71,11 +71,9 @@ export function Metric({
     reload
 }) {
     const dataModel = useContext(DataModel);
-    const metricType = dataModel.metrics[metric.type];
     const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
-            unit={formatMetricScaleAndUnit(metricType, metric, false)}
             report_date={report_date}
             reports={reports}
             report={report}

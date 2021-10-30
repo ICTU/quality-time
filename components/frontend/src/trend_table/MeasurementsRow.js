@@ -1,7 +1,7 @@
 import { Table } from "semantic-ui-react";
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { MetricDetails } from '../metric/MetricDetails';
-import { formatMetricScale, formatMetricUnit, formatMetricScaleAndUnit, format_minutes, get_metric_name } from "../utils";
+import { formatMetricScale, formatMetricUnit, format_minutes, get_metric_name } from "../utils";
 import './TrendTable.css';
 import { useContext } from "react";
 import { DataModel } from "../context/DataModel";
@@ -45,7 +45,6 @@ export function MeasurementsRow(
         <MetricDetails
             first_metric={first_metric}
             last_metric={last_metric}
-            unit={formatMetricScaleAndUnit(metricType, metric, false)}
             report_date={reportDate}
             reports={reports}
             report={report}

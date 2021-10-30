@@ -11,7 +11,7 @@ import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { capitalize, get_metric_name, get_source_name } from '../utils';
+import { get_source_name } from '../utils';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stop_sort, reload }) {
     return (
@@ -75,7 +75,6 @@ export function MetricDetails({
     metric_uuid,
     first_metric,
     last_metric,
-    unit,
     stop_sort,
     changed_fields,
     visibleDetailsTabs,
@@ -122,12 +121,11 @@ export function MetricDetails({
         }
     );
     if (measurements.length > 0) {
-        const metricName = get_metric_name(metric, dataModel);
         if (metric.scale !== "version_number") {
             panes.push(
                 {
                     menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-                    render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metricName} measurements={measurements} scale={metric.scale} /></Tab.Pane>
+                    render: () => <Tab.Pane><TrendGraph metric={metric} measurements={measurements} /></Tab.Pane>
                 }
             )
         }
