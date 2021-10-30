@@ -13,11 +13,11 @@ export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_en
         return null;
     }
     const style = ignored_entity ? { textDecoration: "line-through" } : {};
-    var status = "unknown_status";
+    var statusClassName = "unknown_status";
     for (let entity_attribute of entity_attributes) {
         let cell_contents = entity[entity_attribute.key];
         if (entity_attribute.color && entity_attribute.color[cell_contents]) {
-            status = entity_attribute.color[cell_contents] + '_status';
+            statusClassName = entity_attribute.color[cell_contents] + '_status';
             break
         }
     }
@@ -38,7 +38,7 @@ export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_en
             </Table.Cell>)}
     </>;
     return (
-        <TableRowWithDetails className={status} details={details} key={entity.key}>
+        <TableRowWithDetails className={statusClassName} details={details} key={entity.key}>
             {entityCells}
         </TableRowWithDetails>
     );
