@@ -48,7 +48,7 @@ function MetricConfiguration({ metric, metric_uuid, report, reload }) {
         {
             menuItem: <Menu.Item key='changelog'><Icon name="history" /><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <ChangeLog report_uuid={report.report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
+                <ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />
             </Tab.Pane>
         }
     ];

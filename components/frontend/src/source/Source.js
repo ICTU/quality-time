@@ -107,7 +107,7 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
         {
             menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <ChangeLog report_uuid={report.report_uuid} source_uuid={source_uuid} timestamp={report.timestamp} />
+                <ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />
             </Tab.Pane>
         }
     ];
