@@ -63,10 +63,8 @@ async function render_metric_details(stop_sort, connection_error) {
                         metric_uuid="metric_uuid"
                         report={report}
                         reports={[report]}
-                        scale="count"
                         stop_sort={stop_sort}
                         subject_uuid="subject_uuid"
-                        unit="unit"
                         visibleDetailsTabs={[]}
                         toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
                     />

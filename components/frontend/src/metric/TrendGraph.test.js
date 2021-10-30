@@ -30,7 +30,7 @@ it('renders the measurements', () => {
     expect(screen.getAllByText(/Time/).length).toBe(1);
 });
 
-it('renders measurements with targets without crashing', () => {
+it('renders measurements with targets', () => {
     render_trendgraph([{ count: { value: "1", target: "10", near_target: "20" }, start: "2019-09-29", end: "2019-09-30" }]);
     expect(screen.getAllByText(/Time/).length).toBe(1);
 });
