@@ -40,7 +40,6 @@ export function MeasurementsRow(
         measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
     })
 
-    const metric_unit = formatMetricScaleAndUnit(metricType, metric);
     const metricName = get_metric_name(metric, dataModel);
     const details = (
         <MetricDetails
@@ -52,7 +51,6 @@ export function MeasurementsRow(
             report={report}
             subject_uuid={subject_uuid}
             metric_uuid={metric_uuid}
-            metric_unit={metric_unit}
             changed_fields={changed_fields}
             visibleDetailsTabs={visibleDetailsTabs}
             toggleVisibleDetailsTab={toggleVisibleDetailsTab}

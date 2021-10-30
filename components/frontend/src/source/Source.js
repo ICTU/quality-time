@@ -50,7 +50,7 @@ function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
     )
 }
 
-function Parameters({ metric, source, source_uuid, connection_error, parse_error, metric_unit, report, changed_fields, reload }) {
+function Parameters({ metric, source, source_uuid, connection_error, parse_error, report, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const source_type = dataModel.sources[source.type];
     return (
