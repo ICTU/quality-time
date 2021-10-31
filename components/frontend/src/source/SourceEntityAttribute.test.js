@@ -1,24 +1,39 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
-import { StatusIcon } from '../metric/StatusIcon';
 
-it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<SourceEntityAttribute entity={{ name: "name" }} entity_attribute={{ key: "name" }} />, div);
-    ReactDOM.unmountComponentAtNode(div);
-});
+function renderSourceEntityAttribute(entity, entity_attribute) {
+    return render(
+        <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />
+    )
+}
 
-describe('<SourceEntityAttribute />', () => {
-    it('shows an icon for status', () => {
-        const wrapper = shallow(
-            <SourceEntityAttribute entity={{ status: "target_met" }} entity_attribute={{ key: "status", type: "status" }} />);
-        expect(wrapper.find(StatusIcon).prop("status")).toBe("target_met");
-    });
-    it('renders an url', () => {
-        const wrapper = shallow(
-            <SourceEntityAttribute entity={{ status: "target_met", url: "https://url" }} entity_attribute={{ key: "status", type: "status", url: "url" }} />);
-        expect(wrapper.find("HyperLink").prop("url")).toBe("https://url");
-    });
-});
+it('renders a datetime', () => {
+    renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime"})
+    expect(screen.getAllByText(/10\-10\-2021 10:10/).length).toBe(1)
+})
+
+it('renders a date', () => {
+    renderSourceEntityAttribute({ date: "2021-10-10T10:10:10" }, { key: "date", type: "date"})
+    expect(screen.getAllByText(/10\-10\-2021/).length).toBe(1)
+})
+
+it('renders minutes', () => {
+    renderSourceEntityAttribute({ duration: "42" }, { key: "duration", type: "minutes"})
+    expect(screen.getAllByText(/0:42/).length).toBe(1)
+})
+
+it('renders a status icon', () => {
+    renderSourceEntityAttribute({ status: "target_met" }, { key: "status", type: "status" })
+    expect(screen.getAllByLabelText("Target met").length).toBe(1)
+})
+
+it('renders a url', () => {
+    renderSourceEntityAttribute({ status: "target_met", url: "https://url" }, { key: "status", type: "status", url: "url" })
+    expect(screen.getByLabelText("Target met").closest("a").href).toBe("https://url/")
+})
+
+it('renders preformatted text', () => {
+    renderSourceEntityAttribute({ text: "text" }, { key: "text", pre: true })
+    expect(screen.getByTestId("pre-wrapped")).toBeInTheDocument()
+})
