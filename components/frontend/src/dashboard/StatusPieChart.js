@@ -10,17 +10,17 @@ function nr_metrics_label(nr_metrics) {
     return nr_metrics === 0 ? "no metrics" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
-export function StatusPieChart(props) {
+export function StatusPieChart({green, red,  yellow, grey, white}) {
     function pie_chart_label() {
         let label = 'Status pie chart: ' + nr_metrics_label(nr_metrics);
-        if (props.green > 0) { label += `, ${props.green} target met` }
-        if (props.red > 0) { label += `, ${props.red} target not met` }
-        if (props.yellow > 0) { label += `, ${props.yellow} near target` }
-        if (props.grey > 0) { label += `, ${props.grey} with accepted technical debt` }
-        if (props.white > 0) { label += `, ${props.white} with unknown status` }
+        if (green > 0) { label += `, ${green} target met` }
+        if (red > 0) { label += `, ${red} target not met` }
+        if (yellow > 0) { label += `, ${yellow} near target` }
+        if (grey > 0) { label += `, ${grey} with accepted technical debt` }
+        if (white > 0) { label += `, ${white} with unknown status` }
         return label
     }
-    const nr_metrics = props.red + props.green + props.yellow + props.grey + props.white;
+    const nr_metrics = red + green + yellow + grey + white;
     const radius = 175;
     const innerRadius = Math.max(60, (radius - 50) - Math.pow(nr_metrics, 1.35));
     return (
@@ -47,11 +47,11 @@ export function StatusPieChart(props) {
                     labelComponent={<VictoryTooltip constrainToVisibleArea cornerRadius={6} renderInPortal={false} />}
                     animate={{ duration: 2000 }}
                     data={[
-                        { y: props.red, label: `Target not met: ${nr_metrics_label(props.red)}` },
-                        { y: props.green, label: `Target met: ${nr_metrics_label(props.green)}` },
-                        { y: props.yellow, label: `Near target: ${nr_metrics_label(props.yellow)}` },
-                        { y: props.grey, label: `Technical debt target met: ${nr_metrics_label(props.grey)}` },
-                        { y: props.white, label: `Unknown: ${nr_metrics_label(props.white)}` }
+                        { y: red, label: `Target not met: ${nr_metrics_label(red)}` },
+                        { y: green, label: `Target met: ${nr_metrics_label(green)}` },
+                        { y: yellow, label: `Near target: ${nr_metrics_label(yellow)}` },
+                        { y: grey, label: `Technical debt target met: ${nr_metrics_label(grey)}` },
+                        { y: white, label: `Unknown: ${nr_metrics_label(white)}` }
                     ]}
                 />
             }
