@@ -10,11 +10,15 @@ function renderSourceEntityAttribute(entity, entity_attribute) {
 
 it('renders a datetime', () => {
     renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime"})
+    const date = new Date("2021-10-10T10:10:10")
+    const expected_text = date.toLocaleString([], { dateStyle: "short" } )
     expect(screen.getAllByText(/10\-10\-2021 10:10/).length).toBe(1)
 })
 
 it('renders a date', () => {
     renderSourceEntityAttribute({ date: "2021-10-10T10:10:10" }, { key: "date", type: "date"})
+    const date = new Date("2021-10-10T10:10:10")
+    const expected_text = date.toLocaleString([], { dateStyle: "short" } )
     expect(screen.getAllByText(/10\-10\-2021/).length).toBe(1)
 })
 
