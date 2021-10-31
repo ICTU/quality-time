@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The ARIA (Rich Internet Application Accessibility) label of status pie charts would report the wrong number of red metrics. Fixes [#2779](https://github.com/ICTU/quality-time/issues/2779).
+
 ## v3.27.0 - 2021-10-25
 
 ### Fixed

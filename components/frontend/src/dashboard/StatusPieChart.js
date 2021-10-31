@@ -7,14 +7,14 @@ function nr_metrics_text(nr_metrics) {
 }
 
 function nr_metrics_label(nr_metrics) {
-    return nr_metrics === 0 ? "no" : nr_metrics + pluralize(" metric", nr_metrics)
+    return nr_metrics === 0 ? "no metrics" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
 export function StatusPieChart(props) {
     function pie_chart_label() {
-        let label = 'Status pie chart: ' + nr_metrics_text(nr_metrics);
+        let label = 'Status pie chart: ' + nr_metrics_label(nr_metrics);
         if (props.green > 0) { label += `, ${props.green} target met` }
-        if (props.red > 0) { label += `, ${props.green} target not met` }
+        if (props.red > 0) { label += `, ${props.red} target not met` }
         if (props.yellow > 0) { label += `, ${props.yellow} near target` }
         if (props.grey > 0) { label += `, ${props.grey} with accepted technical debt` }
         if (props.white > 0) { label += `, ${props.white} with unknown status` }
