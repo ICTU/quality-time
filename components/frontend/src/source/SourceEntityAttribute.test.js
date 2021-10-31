@@ -8,6 +8,11 @@ function renderSourceEntityAttribute(entity, entity_attribute) {
     )
 }
 
+it('renders an empty string', () => {
+    renderSourceEntityAttribute({ other: "will not be shown"}, { key: "missing" })
+    expect(screen.queryAllByText(/will not be shown/).length).toBe(0)
+})
+
 it('renders a datetime', () => {
     renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime"})
     expect(screen.getAllByText(/ago/).length).toBe(1)
