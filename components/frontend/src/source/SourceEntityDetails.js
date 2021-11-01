@@ -23,17 +23,17 @@ function entity_status_options(entity_type) {
     ]
 }
 
-export function SourceEntityDetails(props) {
+export function SourceEntityDetails({ metric_uuid, source_uuid, entity, name, status, rationale, reload}) {
     return (
         <Grid stackable>
             <Grid.Row columns={4}>
                 <Grid.Column width={4}>
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={`${capitalize(props.name)} status`}
-                        options={entity_status_options(props.name)}
-                        set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
-                        value={props.status}
+                        label={`${capitalize(name)} status`}
+                        options={entity_status_options(name)}
+                        set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)}
+                        value={status}
                         sort={false}
                     />
                 </Grid.Column>
@@ -41,9 +41,9 @@ export function SourceEntityDetails(props) {
                     <TextInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
                         label="Rationale"
-                        placeholder={`Rationale for ${props.name} status...`}
-                        set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.reload)}
-                        value={props.rationale}
+                        placeholder={`Rationale for ${name} status...`}
+                        set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "rationale", value, reload)}
+                        value={rationale}
                     />
                 </Grid.Column>
             </Grid.Row>
