@@ -3,7 +3,7 @@
 from ..meta.source import Sources
 
 from .anchore import ANCHORE, ANCHORE_JENKINS_PLUGIN
-from .axe import AXE_CORE, AXE_CSV
+from .axe import AXE_CORE, AXE_CSV, AXE_HTML_REPORTER
 from .azure_devops import AZURE_DEVOPS
 from .bandit import BANDIT
 from .calendar import CALENDAR
@@ -40,6 +40,7 @@ SOURCES = Sources.parse_obj(
         anchore=ANCHORE,
         anchore_jenkins_plugin=ANCHORE_JENKINS_PLUGIN,
         axe_core=AXE_CORE,
+        axe_html_reporter=AXE_HTML_REPORTER,
         axecsv=AXE_CSV,
         azure_devops=AZURE_DEVOPS,
         bandit=BANDIT,

@@ -10,7 +10,7 @@ METRICS = Metrics.parse_obj(
             description="The number of accessibility violations in the web user interface of the software.",
             unit=Unit.VIOLATIONS,
             default_source="axecsv",
-            sources=["axecsv", "axe_core", "manual_number"],
+            sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number"],
             tags=[Tag.ACCESSIBILITY],
         ),
         commented_out_code=dict(

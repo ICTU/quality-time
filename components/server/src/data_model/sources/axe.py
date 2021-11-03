@@ -184,3 +184,10 @@ AXE_CSV = Source(
         )
     ),
 )
+
+AXE_HTML_REPORTER = Source(
+    name="Axe HTML reporter",
+    description="Creates an HTML report from the axe-core library AxeResults object.",
+    url="https://www.npmjs.com/package/axe-html-reporter",
+    parameters=dict(**access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML")),
+)
