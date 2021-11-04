@@ -5,7 +5,11 @@ import json
 from collections.abc import Iterator
 from json.decoder import JSONDecodeError
 from typing import cast
-from database.measurements import latest_measurements_by_metric_uuid, recent_measurements_by_metric_uuid
+from database.measurements import (
+    latest_measurements_by_metric_uuid,
+    measurement_summeries,
+    recent_measurements_by_metric_uuid,
+)
 from server_utilities.functions import (
     DecryptionError,
     asymmetric_decrypt,
@@ -168,9 +172,7 @@ def summarize_report(report_dict, database, data_model, date_time) -> None:
     report_dict["summary_by_subject"] = {}
     report_dict["summary_by_tag"] = {}
     metric_uuids = report_metrics_uuids(report_dict)
-    measurements_summaries = recent_measurements_by_metric_uuid(
-        data_model, database, date_time, metric_uuids=metric_uuids
-    )
+    measurements_summaries = measurement_summeries(data_model, database, *metric_uuids, date_time)
     latest_measurements = latest_measurements_by_metric_uuid(database, metric_uuids)
     for subject_uuid, subject in report_dict.get("subjects", {}).items():
         for metric_uuid, metric_dict in subject.get("metrics", {}).items():

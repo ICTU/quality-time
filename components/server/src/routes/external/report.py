@@ -12,6 +12,7 @@ from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
+from model.report import Report
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -32,6 +33,7 @@ def get_report(database: Database, report_uuid: ReportId = None):
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, date_time)
+    summaries = []
 
     if report_uuid and report_uuid.startswith("tag-"):
         tag_report = get_tag_report(data_model, reports, report_uuid[4:])
@@ -42,6 +44,9 @@ def get_report(database: Database, report_uuid: ReportId = None):
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
+                report = Report(data_model, report, report_uuid)
+                summaries.append(report.summarize())
+
                 summarize_report(report, database, data_model, date_time)
 
     hide_credentials(data_model, *reports)

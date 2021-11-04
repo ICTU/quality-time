@@ -22,7 +22,7 @@ MatchType = dict[str, dict[str, Union[list[str], str]]]
 
 
 def latest_measurements_by_metric_uuid(
-    database: Database, date_time: str, metric_uuids: list[str]
+    database: Database, date_time: str, *metric_uuids: list[str]
 ) -> dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
     metric_uuid_match: MatchType = {"metric_uuid": {"$in": metric_uuids}}
@@ -50,9 +50,7 @@ def latest_successful_measurement(database: Database, metric: Metric) -> Measure
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def recent_measurements_by_metric_uuid(
-    data_model: dict, database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None
-):
+def measurement_summeries(data_model: dict, database: Database, *metric_uuids, max_iso_timestamp: str = "", days=7):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()

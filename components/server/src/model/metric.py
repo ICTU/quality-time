@@ -5,17 +5,19 @@ from __future__ import annotations
 from collections.abc import Sequence
 from datetime import date
 from typing import cast
+from model.measurement import Measurement
 
 from model.source import Source
-from server_utilities.type import Direction, MetricId, Scale, Status, TargetType
+from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
 
 
 class Metric(dict):
     """Class representing a metric."""
 
-    def __init__(self, data_model, metric_data, metric_uuid: MetricId) -> None:
+    def __init__(self, data_model, metric_data, metric_uuid: MetricId, subject_uuid: SubjectId) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid
+        self.subject_uuid = subject_uuid
         super().__init__(metric_data)
 
     def __eq__(self, other):
@@ -96,11 +98,14 @@ class Metric(dict):
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
 
-    def summarize(self, latest_measurement: dict | None, measurements_summary: dict | None):
+    def summarize(self, measurements: list[Measurement] | None):
         """Add a summary of the metric to the report."""
+
+        latest_measurement = measurements[-1].summarize() if measurements else None
+
         summary = dict(self)
         summary["latest_measurement"] = latest_measurement
-        summary["recent_measurements"] = measurements_summary
+        summary["recent_measurements"] = [measurement.summarize(short=True) for measurement in measurements]
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
         summary["issue_status"] = self.issue_statuses(latest_measurement)
