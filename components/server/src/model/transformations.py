@@ -4,21 +4,14 @@ import json
 
 from collections.abc import Iterator
 from json.decoder import JSONDecodeError
-from typing import cast
-from database.measurements import (
-    latest_measurements_by_metric_uuid,
-    recent_measurements,
-)
 from server_utilities.functions import (
     DecryptionError,
     asymmetric_decrypt,
     asymmetric_encrypt,
-    report_metrics_uuids,
     unique,
     uuid,
 )
-from server_utilities.type import Color, EditScope, ItemId, Status
-from model.metric import Metric
+from server_utilities.type import EditScope, ItemId
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
 

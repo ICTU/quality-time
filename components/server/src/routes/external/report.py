@@ -43,7 +43,7 @@ def get_report(database: Database, report_uuid: ReportId = None):
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-                measurements = recent_measurements(data_model, database, report.metrics_dict, date_time)
+                measurements = recent_measurements(database, report.metrics_dict, date_time)
                 summaries.append(report.summarize(measurements))
 
     hide_credentials(data_model, *summaries)
