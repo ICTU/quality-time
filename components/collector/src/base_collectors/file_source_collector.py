@@ -10,6 +10,8 @@ from http import HTTPStatus
 from typing import cast
 from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup
+
 from collector_utilities.type import JSON, URL, Response, Responses
 from model import SourceResponses
 
@@ -78,6 +80,11 @@ class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
     """Base class for source collectors that retrieve HTML files."""
 
     file_extensions = ["html", "htm"]
+
+    @staticmethod
+    async def _soup(response: Response):
+        """Return the HTML soup."""
+        return BeautifulSoup(await response.text(), "html.parser")
 
 
 class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
