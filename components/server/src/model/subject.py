@@ -33,5 +33,8 @@ class Subject(dict):
     def summarize(self, measurements: dict[str, Measurement] | None):
         """Create a summary dict of this subject."""
         summary = dict(self)
-        summary["metrics"] = {metric.uuid: metric.summarize(measurements[metric.uuid]) for metric in self.metrics}
+        summary["metrics"] = {}
+        for metric in self.metrics:
+            metric_measurements = measurements[metric.uuid] if metric.uuid in measurements else None
+            summary["metrics"][metric.uuid] = metric.summarize(metric_measurements)
         return summary
