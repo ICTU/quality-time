@@ -28,7 +28,7 @@ def get_reports(database: Database):  # pragma: no cover
     data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)
     overview["reports"] = []
-    recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
+    recent_measurements = recent_measurements_by_metric_uuid(data_model, database, date_time)
     for report in latest_reports(database, date_time):
         summarize_report(report, database, recent_measurements, data_model)
         overview["reports"].append(report)

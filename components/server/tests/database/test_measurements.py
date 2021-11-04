@@ -62,7 +62,7 @@ class MeasurementsByMetricTest(unittest.TestCase):
     def test_recent_measurements_by_uuid(self):
         """Test that we get all measurements with all metric ids."""
         self.database.measurements.find.return_value = self.measurements
-        recent_measurements = recent_measurements_by_metric_uuid(self.database)
+        recent_measurements = recent_measurements_by_metric_uuid({}, self.database)
         self.assertEqual(len(recent_measurements), 3)
         self.assertIn(METRIC_ID, recent_measurements)
         self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
@@ -74,7 +74,9 @@ class MeasurementsByMetricTest(unittest.TestCase):
     def test_recent_measurements_by_uuid_uuid_filter(self):
         """Test that we get all measurements with all metric ids."""
         self.database.measurements.find.return_value = self.measurements[0:6]
-        recent_measurements = recent_measurements_by_metric_uuid(self.database, metric_uuids=[METRIC_ID, METRIC_ID2])
+        recent_measurements = recent_measurements_by_metric_uuid(
+            {}, self.database, metric_uuids=[METRIC_ID, METRIC_ID2]
+        )
         self.assertEqual(len(recent_measurements), 2)
         self.assertIn(METRIC_ID, recent_measurements)
         self.assertEqual(len(recent_measurements[METRIC_ID]), 3)

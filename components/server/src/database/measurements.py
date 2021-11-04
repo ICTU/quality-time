@@ -42,7 +42,9 @@ def latest_successful_measurement(database: Database, metric: Metric) -> Measure
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None):
+def recent_measurements_by_metric_uuid(
+    data_model: dict, database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None
+):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
@@ -51,10 +53,12 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     # however, there is no test anymore covering that endpoint, which means incomplete coverage on this if statement
     if metric_uuids is not None:  # pragma: no cover
         measurement_filter["metric_uuid"] = {"$in": metric_uuids}
+    projection = {"_id": False, "metric_uuid": True, "start": True, "end": True}
+    projection.update({scale + ".value": True for scale in data_model.get("scales", {}).keys()})
     recent_measurements = database.measurements.find(
         measurement_filter,
         sort=[("start", pymongo.ASCENDING)],
-        projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False},
+        projection=projection,
     )
     measurements_by_metric_uuid: dict[MetricId, list] = {}
     for measurement in recent_measurements:
