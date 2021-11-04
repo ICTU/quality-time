@@ -168,17 +168,22 @@ def summarize_report(report_dict, database, data_model, date_time) -> None:
     report_dict["summary_by_subject"] = {}
     report_dict["summary_by_tag"] = {}
     metric_uuids = report_metrics_uuids(report_dict)
-    measurements_summary = recent_measurements_by_metric_uuid(
+    measurements_summaries = recent_measurements_by_metric_uuid(
         data_model, database, date_time, metric_uuids=metric_uuids
     )
     latest_measurements = latest_measurements_by_metric_uuid(database, metric_uuids)
     for subject_uuid, subject in report_dict.get("subjects", {}).items():
         for metric_uuid, metric_dict in subject.get("metrics", {}).items():
             metric = Metric(data_model, metric_dict, metric_uuid)
-            metric_summary = metric.summarize(latest_measurements[metric_uuid], measurements_summary[metric_uuid])
+            latest_measurement = latest_measurements[metric_uuid] if metric_uuid in latest_measurements else None
+            measurements_summary = (
+                measurements_summaries[metric_uuid] if metric_uuid in measurements_summaries else None
+            )
+
+            metric_summary = metric.summarize(latest_measurement, measurements_summary)
             report_dict["subjects"][subject_uuid]["metrics"][metric_uuid] = metric_summary
 
-            color = STATUS_COLOR_MAPPING.get(metric.status(latest_measurements[metric_uuid]), "white")
+            color = STATUS_COLOR_MAPPING.get(metric.status(latest_measurement), "white")
             report_dict["summary"][color] += 1
             report_dict["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[
                 color
