@@ -15,34 +15,82 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
         """Extend to set up test data."""
         super().setUp()
         self.html = """
-<div class="violationNode">
-    <table>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>
-                    <p><strong>Element location</strong></p>
-                    <pre><code class="css text-wrap">#from0</code></pre>
-                    <p><strong>Element source</strong></p>
-                    <pre><code class="html text-wrap">&lt;input type&#x3D;&quot;text&quot; value&#x3D;&quot;&quot; class&#x3D;&quot;city-input ac_input ui-autocomplete-input&quot; autocomplete&#x3D;&quot;off&quot; id&#x3D;&quot;from0&quot; name&#x3D;&quot;from0&quot; tabindex&#x3D;&quot;1&quot; role&#x3D;&quot;textbox&quot; aria-autocomplete&#x3D;&quot;list&quot; aria-haspopup&#x3D;&quot;true&quot;&gt;</code></pre>
-                </td>
-                <td>
-                    <div class="wrapBreakWord">
-                        <p>Fix any of the following:</p>
-                        <ul class="text-muted">
-                            <li>  Element has a tabindex greater than 0</li>
-                        </ul>
+            <div class="card violationCard">
+                <div class="card-body">
+                    <div class="violationCardLine">
+                        <h5 class="card-title violationCardTitleItem">
+                            <a id="1">1.</a> &lt;html&gt; element must have a lang attribute
+                        </h5>
+                        <a
+                            href="https:&#x2F;&#x2F;dequeuniversity.com&#x2F;rules&#x2F;axe&#x2F;3.5&#x2F;html-has-lang?application&#x3D;axeAPI"
+                            target="_blank"
+                            class="card-link violationCardTitleItem learnMore"
+                            >Learn more</a
+                        >
                     </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>"""
+                    <div class="violationCardLine">
+                        <h6 class="card-subtitle mb-2 text-muted">html-has-lang</h6>
+                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
+                            WCAG 2 Level A, WCAG 3.1.1
+                        </h6>
+                    </div>
+                    <div class="violationCardLine">
+                        <p class="card-text">Ensures every HTML document has a lang attribute</p>
+                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
+                            serious
+                        </h6>
+                    </div>
+                    <div class="violationCardLine">
+                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
+                            Issue Tags:
+                            <span class="badge bg-light text-dark"> cat.language </span>
+
+                            <span class="badge bg-light text-dark"> wcag2a </span>
+
+                            <span class="badge bg-light text-dark"> wcag311 </span>
+                        </h6>
+                    </div>
+                    <div class="violationNode">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 2%">#</th>
+                                    <th style="width: 49%">Issue Description</th>
+                                    <th style="width: 49%">
+                                        To solve this violation, you need to...
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <p><strong>Element location</strong></p>
+                                        <pre><code class="css text-wrap">html</code></pre>
+                                        <p><strong>Element source</strong></p>
+                                        <pre><code class="html text-wrap">&lt;html&gt;</code></pre>
+                                    </td>
+                                    <td>
+                                        <div class="wrapBreakWord">
+                                            <p>Fix any of the following:</p>
+                                            <ul class="text-muted">
+                                                <li>  The &lt;html&gt; element does not have a lang attribute</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>"""
         self.expected_entities = [
-            {
-                "description": "Fix any of the following: Element has a tabindex greater than 0",
-                "element": """Element location #from0 Element source <input type="text" value="" class="city-input ac_input ui-autocomplete-input" autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" aria-autocomplete="list" aria-haspopup="true">""",
-            },
+            dict(
+                solution="Fix any of the following: The <html> element does not have a lang attribute",
+                element="Element location html Element source <html>",
+                rule="1. <html> element must have a lang attribute",
+                tags=["cat.language", "wcag2a", "wcag311"],
+            ),
         ]
         self.set_expected_entity_keys()
 
