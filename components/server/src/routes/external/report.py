@@ -8,17 +8,16 @@ import requests
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
+from database.measurements import recent_measurements
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
-from model.report import Report
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
     hide_credentials,
     replace_report_uuids,
-    summarize_report,
 )
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
@@ -32,25 +31,23 @@ def get_report(database: Database, report_uuid: ReportId = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, date_time)
+    reports = latest_reports(database, data_model, date_time)
     summaries = []
 
     if report_uuid and report_uuid.startswith("tag-"):
         tag_report = get_tag_report(data_model, reports, report_uuid[4:])
         reports = []
-        if tag_report is not None:
-            summarize_report(tag_report, database, data_model, date_time)
-            reports.append(tag_report)
+        # if tag_report is not None:
+        #     summarize_report(tag_report, database, data_model, date_time)
+        #     reports.append(tag_report)
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-                report = Report(data_model, report, report_uuid)
-                summaries.append(report.summarize())
+                measurements = recent_measurements(data_model, database, report.metrics_dict, date_time)
+                summaries.append(report.summarize(measurements))
 
-                summarize_report(report, database, data_model, date_time)
-
-    hide_credentials(data_model, *reports)
-    return dict(reports=reports)
+    hide_credentials(data_model, *summaries)
+    return dict(reports=summaries)
 
 
 @bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)

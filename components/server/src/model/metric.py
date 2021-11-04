@@ -5,10 +5,14 @@ from __future__ import annotations
 from collections.abc import Sequence
 from datetime import date
 from typing import cast
-from model.measurement import Measurement
 
 from model.source import Source
 from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from model.measurement import Measurement
 
 
 class Metric(dict):
@@ -98,17 +102,19 @@ class Metric(dict):
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
 
-    def summarize(self, measurements: list[Measurement] | None):
+    def summarize(self, measurements: list[Measurement] = None):
         """Add a summary of the metric to the report."""
 
-        latest_measurement = measurements[-1].summarize() if measurements else None
+        latest_measurement = measurements[-1] if measurements else None
 
         summary = dict(self)
-        summary["latest_measurement"] = latest_measurement
-        summary["recent_measurements"] = [measurement.summarize(short=True) for measurement in measurements]
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
         summary["issue_status"] = self.issue_statuses(latest_measurement)
+
+        if measurements is not None:
+            summary["latest_measurement"] = latest_measurement
+            summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
 
         if latest_measurement and latest_measurement.get(self.scale(), {}).get("status_start"):
             status_start = latest_measurement.get(self.scale(), {}).get("status_start")

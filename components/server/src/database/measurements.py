@@ -22,7 +22,7 @@ MatchType = dict[str, dict[str, Union[list[str], str]]]
 
 
 def latest_measurements_by_metric_uuid(
-    database: Database, date_time: str, *metric_uuids: list[str]
+    database: Database, date_time: str, metrics: list[str]
 ) -> dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
     metric_uuid_match: MatchType = {"metric_uuid": {"$in": metric_uuids}}
@@ -35,11 +35,16 @@ def latest_measurements_by_metric_uuid(
             {"$project": {"_id": False}},
         ]
     )
-    latest_measurements = database.measurements.find(
+    latest_measurement_dicts = database.measurements.find(
         {"_id": {"$in": [measurement["measurement_id"] for measurement in latest_measurement_ids]}},
         projection={"_id": False, "sources.entities": False, "entity_user_data": False},
     )
-    return {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
+    measurements = {}
+    for measurement_dict in latest_measurement_dicts:
+        metric = metrics[measurement_dict["metric_uuid"]]
+        measurements[metric.uuid] = Measurement(metric, measurement_dict)
+
+    return measurements
 
 
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
@@ -50,27 +55,27 @@ def latest_successful_measurement(database: Database, metric: Metric) -> Measure
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def measurement_summeries(data_model: dict, database: Database, *metric_uuids, max_iso_timestamp: str = "", days=7):
+def recent_measurements(
+    data_model: dict, database: Database, metrics_dict: dict[str, Metric], max_iso_timestamp: str = "", days=7
+):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     measurement_filter = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
-    # metric_uuids needs to be optional as long as the /reports endpoint is supported for backwards compatibility
-    # however, there is no test anymore covering that endpoint, which means incomplete coverage on this if statement
-    if metric_uuids is not None:  # pragma: no cover
-        measurement_filter["metric_uuid"] = {"$in": metric_uuids}
-    projection = {"_id": False, "metric_uuid": True, "start": True, "end": True}
-    for scale in data_model["scales"]:
-        # Add value for the sparkline graph and status for the notifier:
-        projection.update({f"{scale}.value": True, f"{scale}.status": True})
-    recent_measurements = database.measurements.find(
+    measurement_filter["metric_uuid"] = {"$in": list(metrics_dict.keys())}
+    # projection = {"_id": False, "metric_uuid": True, "start": True, "end": True}
+    # projection.update({scale + ".value": True for scale in data_model.get("scales", {}).keys()})
+    projection = {"_id": False, "sources.entities": False, "entity_user_data": False}
+    measurements = database.measurements.find(
         measurement_filter,
         sort=[("start", pymongo.ASCENDING)],
         projection=projection,
     )
     measurements_by_metric_uuid: dict[MetricId, list] = {}
-    for measurement in recent_measurements:
-        measurements_by_metric_uuid.setdefault(measurement["metric_uuid"], []).append(measurement)
+    for measurement in measurements:
+        metric_uuid = measurement["metric_uuid"]
+        metric = metrics_dict[metric_uuid]
+        measurements_by_metric_uuid.setdefault(metric_uuid, []).append(Measurement(metric, measurement))
     return measurements_by_metric_uuid
 
 

@@ -20,12 +20,12 @@ class Report(dict):
 
         subject_data = report_data.pop("subjects")
         self.subjects_dict = self._subjects(subject_data)
-        self.subjects = self.subjects_dict.keys()
-        self.subject_uuids = self.subjects_dict.values()
+        self.subjects = list(self.subjects_dict.values())
+        self.subject_uuids = list(self.subjects_dict.keys())
 
         self.metrics_dict = self._metrics(self.subjects)
-        self.metrics = self.metrics_dict.keys()
-        self.metric_uuids = self.metrics_dict.values()
+        self.metrics = list(self.metrics_dict.values())
+        self.metric_uuids = list(self.metrics_dict.keys())
 
         report_data["_id"] = str(report_data["_id"])
 
@@ -47,10 +47,10 @@ class Report(dict):
         """All metrics of all subjects of this report."""
         metrics = {}
         for subject in subjects:
-            metrics.update(subject.metrics)
+            metrics.update(subject.metrics_dict)
         return metrics
 
-    def summarize(self, measurements: list[Measurement] | None) -> dict:
+    def summarize(self, measurements: dict[str, Measurement] | None) -> dict:
         """Create a summary dict of this report."""
 
         summary = dict(self)
@@ -61,7 +61,8 @@ class Report(dict):
         summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
 
         for metric in self.metrics:
-            color = STATUS_COLOR_MAPPING.get(metric.status(measurements[-1]), "white")
+            metric_measurements = measurements[metric.uuid]
+            color = STATUS_COLOR_MAPPING.get(metric.status(metric_measurements[-1]), "white")
             summary["summary"][color] += 1
             summary["summary_by_subject"].setdefault(
                 metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)

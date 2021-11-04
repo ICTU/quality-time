@@ -17,7 +17,7 @@ from . import datamodels, sessions
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def latest_reports(database: Database, data_model, max_iso_timestamp: str = ""):
+def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
         report_filter = dict(deleted=DOES_NOT_EXIST, timestamp={"$lt": max_iso_timestamp})
@@ -34,11 +34,11 @@ def latest_reports(database: Database, data_model, max_iso_timestamp: str = ""):
     return reports
 
 
-def latest_report(database: Database, report_uuid: str):
+def latest_report(database: Database, data_model, report_uuid: str):
     """Get latest report with this uuid."""
-    report = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    report["_id"] = str(report["_id"])
-    return report
+    return Report(
+        data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
+    )
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
@@ -57,11 +57,10 @@ def report_exists(database: Database, report_uuid: ReportId):
 
 def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
     """Return the latest metric with the specified metric uuid."""
-    for report in latest_reports(database):
-        for subject in report.get("subjects", {}).values():
-            metrics = subject.get("metrics", {})
-            if metric_uuid in metrics:
-                return Metric(datamodels.latest_datamodel(database), metrics[metric_uuid], metric_uuid)
+    data_model = datamodels.latest_datamodel(database)
+    for report in latest_reports(database, data_model):
+        if metric_uuid in report.metric_uuids:
+            return report.metrics_dict[metric_uuid]
     return None
 
 

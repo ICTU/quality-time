@@ -14,8 +14,8 @@ class Subject(dict):
 
         metric_data = subject_data.pop("metrics")
         self.metrics_dict = self._instantiate_metrics(metric_data)
-        self.metrics = self.metrics_dict.values()
-        self.metric_uuids = self.metrics_dict.keys()
+        self.metrics = list(self.metrics_dict.values())
+        self.metric_uuids = list(self.metrics_dict.keys())
 
         super().__init__(subject_data)
 
@@ -30,8 +30,8 @@ class Subject(dict):
             metrics[metric_uuid] = Metric(self.__data_model, metric_dict, metric_uuid, self.uuid)
         return metrics
 
-    def summarize(self, measurements: list[Measurement] | None):
+    def summarize(self, measurements: dict[str, Measurement] | None):
         """Create a summary dict of this subject."""
         summary = dict(self)
-        summary["metrics"] = {metric.uuid: metric.summarize(measurements) for metric in self.metrics}
+        summary["metrics"] = {metric.uuid: metric.summarize(measurements[metric.uuid]) for metric in self.metrics}
         return summary

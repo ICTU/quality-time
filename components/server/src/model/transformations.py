@@ -7,8 +7,7 @@ from json.decoder import JSONDecodeError
 from typing import cast
 from database.measurements import (
     latest_measurements_by_metric_uuid,
-    measurement_summeries,
-    recent_measurements_by_metric_uuid,
+    recent_measurements,
 )
 from server_utilities.functions import (
     DecryptionError,
@@ -158,39 +157,3 @@ def _metrics_to_change(data, subject, scope: EditScope) -> Iterator:
 def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
     yield from {data.source_uuid: data.source}.items() if scope == "source" else metric["sources"].items()
-
-
-STATUS_COLOR_MAPPING = cast(
-    dict[Status, Color],
-    dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
-)
-
-
-def summarize_report(report_dict, database, data_model, date_time) -> None:
-    """Add a summary of the measurements to each subject."""
-    report_dict["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
-    report_dict["summary_by_subject"] = {}
-    report_dict["summary_by_tag"] = {}
-    metric_uuids = report_metrics_uuids(report_dict)
-    measurements_summaries = measurement_summeries(data_model, database, *metric_uuids, date_time)
-    latest_measurements = latest_measurements_by_metric_uuid(database, metric_uuids)
-    for subject_uuid, subject in report_dict.get("subjects", {}).items():
-        for metric_uuid, metric_dict in subject.get("metrics", {}).items():
-            metric = Metric(data_model, metric_dict, metric_uuid)
-            latest_measurement = latest_measurements[metric_uuid] if metric_uuid in latest_measurements else None
-            measurements_summary = (
-                measurements_summaries[metric_uuid] if metric_uuid in measurements_summaries else None
-            )
-
-            metric_summary = metric.summarize(latest_measurement, measurements_summary)
-            report_dict["subjects"][subject_uuid]["metrics"][metric_uuid] = metric_summary
-
-            color = STATUS_COLOR_MAPPING.get(metric.status(latest_measurement), "white")
-            report_dict["summary"][color] += 1
-            report_dict["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[
-                color
-            ] += 1
-            for tag in metric.get("tags", []):
-                report_dict["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[
-                    color
-                ] += 1
