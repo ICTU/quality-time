@@ -90,9 +90,10 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 element="Element location: html\nElement source: <html>",
                 rule="1. <html> element must have a lang attribute",
                 rule_id="html-has-lang",
+                rule_category="WCAG 2 Level A, WCAG 3.1.1",
                 tags="cat.language, wcag2a, wcag311",
                 impact="serious",
-                help="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
+                help_url="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
             ),
         ]
         self.set_expected_entity_keys()
@@ -107,13 +108,13 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
         response = await self.collect(get_request_text=self.html)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
-    '''
     async def test_no_issues(self):
         """Test zero issues."""
-        self.json["violations"] = []
-        response = await self.collect(get_request_json_return_value=self.json)
+        self.html = ""
+        response = await self.collect(get_request_text=self.html)
         self.assert_measurement(response, value="0", entities=[])
 
+    '''
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.set_source_parameter("impact", ["serious", "critical"])

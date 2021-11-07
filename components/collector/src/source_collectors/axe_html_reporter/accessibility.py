@@ -18,9 +18,10 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector):
             for violated_rule in soup.select("div.violationCard > div.card-body"):
                 rule = violated_rule.select_one("h5").get_text(" ", strip=True)
                 rule_id = violated_rule("h6")[0].get_text(strip=True)
+                rule_category = violated_rule("h6")[1].get_text(strip=True)
                 tags = self.__parse_tags(violated_rule)
                 impact = violated_rule("h6")[2].get_text(strip=True)
-                help = violated_rule.select_one("a.learnMore")["href"]
+                help_url = violated_rule.select_one("a.learnMore")["href"]
                 for violation in violated_rule.select("div.violationNode tbody tr"):
                     element = self.__parse_element(violation)
                     solution = violation("td")[2].get_text("\n", strip=True)
@@ -31,8 +32,9 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector):
                             impact=impact,
                             rule=rule,
                             rule_id=rule_id,
+                            rule_category=rule_category,
                             tags=tags,
-                            help=help,
+                            help_url=help_url,
                         )
                     )
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
