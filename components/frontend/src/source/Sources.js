@@ -28,14 +28,13 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     )
 }
 
-function SourceSegment({ report, metric, metric_unit, source_uuid, index, last_index, measurement_source, changed_fields, reload} ) {
+function SourceSegment({ report, metric, source_uuid, index, last_index, measurement_source, changed_fields, reload} ) {
     return (
         <Segment vertical>
             <Source
                 first_source={index === 0}
                 last_source={index === last_index}
                 metric={metric}
-                metric_unit={metric_unit}
                 measurement_source={measurement_source}
                 reload={reload}
                 report={report}
@@ -46,7 +45,7 @@ function SourceSegment({ report, metric, metric_unit, source_uuid, index, last_i
     )
 }
 
-export function Sources({ reports, report, metric, metric_uuid, metric_unit, measurement, changed_fields, reload }) {
+export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const measurementSources = measurement ? measurement.sources : [];
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
@@ -59,7 +58,6 @@ export function Sources({ reports, report, metric, metric_uuid, metric_unit, mea
                 key={sourceUuid}
                 report={report}
                 metric={metric}
-                metric_unit={metric_unit}
                 source_uuid={sourceUuid}
                 index={index}
                 last_index={lastIndex}

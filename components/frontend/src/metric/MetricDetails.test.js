@@ -63,10 +63,8 @@ async function render_metric_details(stop_sort, connection_error) {
                         metric_uuid="metric_uuid"
                         report={report}
                         reports={[report]}
-                        scale="count"
                         stop_sort={stop_sort}
                         subject_uuid="subject_uuid"
-                        unit="unit"
                         visibleDetailsTabs={[]}
                         toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
                     />
@@ -90,6 +88,13 @@ it('switches tabs to measurement entities', async () => {
     expect(screen.getAllByText(/Attribute status/).length).toBe(1);
 })
 
+it('switches tabs to the trend graph', async () => {
+    await render_metric_details();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
+    expect(screen.getAllByText(/Time/).length).toBe(1);
+})
+
 it('displays whether sources have errors', async () => {
     await render_metric_details(null, "Connection error");
     expect(screen.getByText(/Sources/)).toHaveClass("red label");
@@ -106,7 +111,7 @@ it('calls the callback on click', async () => {
 it('loads the changelog', async () => {
     await render_metric_details();
     await act(async () => fireEvent.click(screen.getByText(/Changelog/)));
-    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid", report_uuid: "report_uuid" });
+    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid" });
 });
 
 it('calls the callback on delete', async () => {

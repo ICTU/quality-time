@@ -50,7 +50,7 @@ function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
     )
 }
 
-function Parameters({ source, source_uuid, connection_error, parse_error, metric_type, metric_unit, report, changed_fields, reload }) {
+function Parameters({ metric, source, source_uuid, connection_error, parse_error, report, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const source_type = dataModel.sources[source.type];
     return (
@@ -58,7 +58,7 @@ function Parameters({ source, source_uuid, connection_error, parse_error, metric
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <SourceType
-                        metric_type={metric_type}
+                        metric_type={metric.type}
                         set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
                         source_uuid={source_uuid}
                         source_type={source.type}
@@ -78,8 +78,7 @@ function Parameters({ source, source_uuid, connection_error, parse_error, metric
             <Grid.Row columns={2}>
                 <SourceParameters
                     changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
-                    metric_type={metric_type}
-                    metric_unit={metric_unit}
+                    metric={metric}
                     reload={reload}
                     report={report}
                     source={source}
@@ -92,7 +91,7 @@ function Parameters({ source, source_uuid, connection_error, parse_error, metric
     )
 }
 
-export function Source({ metric, source_uuid, first_source, last_source, measurement_source, metric_unit, report, changed_fields, reload }) {
+export function Source({ metric, source_uuid, first_source, last_source, measurement_source, report, changed_fields, reload }) {
     const source = metric.sources[source_uuid];
     const connectionError = measurement_source?.connection_error || "";
     const parseError = measurement_source?.parse_error || "";
@@ -101,15 +100,14 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
         {
             menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{configurationTabLabel}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <Parameters source={source} source_uuid={source_uuid}
-                    connection_error={connectionError} parse_error={parseError} metric_type={metric.type}
-                    metric_unit={metric_unit} report={report} changed_fields={changed_fields} reload={reload} />
+                <Parameters metric={metric} source={source} source_uuid={source_uuid} connection_error={connectionError}
+                parse_error={parseError} report={report} changed_fields={changed_fields} reload={reload} />
             </Tab.Pane>
         },
         {
             menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <ChangeLog report_uuid={report.report_uuid} source_uuid={source_uuid} timestamp={report.timestamp} />
+                <ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />
             </Tab.Pane>
         }
     ];

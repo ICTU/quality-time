@@ -2,8 +2,8 @@ import React from 'react';
 import { Image } from 'semantic-ui-react';
 import { api_version } from '../api/fetch_server_api';
 
-export function Logo(props) {
+export function Logo({ alt, logo }) {
     return (
-        <Image src={`api/${api_version}/logo/${props.logo}`} alt={`${props.alt} logo`} size="mini" spaced="right" />
+        <Image src={`api/${api_version}/logo/${logo}`} alt={`${alt} logo`} size="mini" spaced="right" />
     )
 }

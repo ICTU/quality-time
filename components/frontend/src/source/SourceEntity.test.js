@@ -1,19 +1,35 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import { SourceEntity } from './SourceEntity';
-import { Permissions } from '../context/Permissions';
 
-describe('<SourceEntity />', () => {
-    it('render', () => {
-        const wrapper = mount(
-            <Permissions.Provider value={[]}>
-                <Table>
-                    <Table.Body>
-                        <SourceEntity entity_attributes={["attr"]} entity={{ key: "1" }} />
-                    </Table.Body>
-                </Table>
-            </Permissions.Provider>);
-        expect(wrapper.find("TableRow").hasClass("status_unknown"))
-    });
-});
+function renderSourceEntity({ status = "unconfirmed", hide_ignored_entities = false }) {
+    return render(
+        <Table>
+            <Table.Body>
+                <SourceEntity
+                    status={status}
+                    hide_ignored_entities={hide_ignored_entities}
+                    entity_attributes={[{key: "attr1"}, {key: "attr2", color: {bad: "warning"}}]}
+                    entity={{ attr1: "good", attr2: "bad" }}
+                />
+            </Table.Body>
+        </Table>
+    )
+}
+
+it('renders the unconfirmed status', () => {
+    renderSourceEntity({ });
+    expect(screen.getAllByText(/Unconfirmed/).length).toBe(1);
+    expect(screen.getByText(/Unconfirmed/).closest("tr").className).toContain("warning_status")
+})
+
+it('renders the fixed status', () => {
+    renderSourceEntity({ status: "fixed" });
+    expect(screen.getAllByText(/Fixed/).length).toBe(1);
+})
+
+it('renders nothing if the status is to be ignored', () => {
+    renderSourceEntity({ status: "fixed", hide_ignored_entities: true });
+    expect(screen.queryAllByText(/Fixed/).length).toBe(0);
+})

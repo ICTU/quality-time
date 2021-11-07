@@ -13,7 +13,7 @@ import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
 import { DataModel } from '../context/DataModel';
 
-function ReportAttributes(props) {
+function ReportAttributes({ report_uuid, title, subtitle, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
@@ -22,8 +22,8 @@ function ReportAttributes(props) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         id="report-title"
                         label="Report title"
-                        set_value={(value) => set_report_attribute(props.report_uuid, "title", value, props.reload)}
-                        value={props.title}
+                        set_value={(value) => set_report_attribute(report_uuid, "title", value, reload)}
+                        value={title}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -31,8 +31,8 @@ function ReportAttributes(props) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         id="report-subtitle"
                         label="Report subtitle"
-                        set_value={(value) => set_report_attribute(props.report_uuid, "subtitle", value, props.reload)}
-                        value={props.subtitle}
+                        set_value={(value) => set_report_attribute(report_uuid, "subtitle", value, reload)}
+                        value={subtitle}
                     />
                 </Grid.Column>
             </Grid.Row>

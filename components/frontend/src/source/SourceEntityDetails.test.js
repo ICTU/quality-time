@@ -1,28 +1,46 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { EDIT_ENTITY_PERMISSION, Permissions } from '../context/Permissions';
 import * as source from '../api/source';
 import { SourceEntityDetails } from './SourceEntityDetails';
 
 jest.mock("../api/source.js")
 
-describe('<SourceEntityDetails />', () => {
-    beforeEach(() => { source.set_source_entity_attribute = jest.fn(); });
-    it('invokes the callback on changing the status', () => {
-        const wrapper = mount(
-            <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
-                <SourceEntityDetails entity={{ key: "key" }} status="unconfirmed" name="violation" />
-            </Permissions.Provider>);
-        wrapper.find("div.item").at(1).simulate("click");
-        expect(source.set_source_entity_attribute).toHaveBeenCalled();
-    });
-    it('invokes the callback on changing the comment', () => {
-        const wrapper = mount(
-            <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
-                <SourceEntityDetails entity={{ key: "key" }} status="unconfirmed" name="violation" />
-            </Permissions.Provider>);
-        wrapper.find("textarea").at(0).simulate("change", { target: { value: "comment" } });
-        wrapper.find("TextInput").at(0).simulate("submit");
-        expect(source.set_source_entity_attribute).toHaveBeenCalled();
-    });
-});
+function reload() {
+    /* Dummy implementation */
+}
+
+function renderSourceEntityDetails() {
+    render(
+        <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
+            <SourceEntityDetails
+                metric_uuid="metric_uuid"
+                source_uuid="source_uuid"
+                entity={{ key: "key" }}
+                status="unconfirmed"
+                name="violation"
+                reload={reload}
+            />
+        </Permissions.Provider>
+    )
+}
+
+it('changes the entity status', () => {
+    source.set_source_entity_attribute = jest.fn()
+    renderSourceEntityDetails()
+    fireEvent.click(screen.getByText(/Confirm/))
+    expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
+        "metric_uuid", "source_uuid", "key", "status", "confirmed", reload
+    );
+})
+
+it('changes the rationale', () => {
+    source.set_source_entity_attribute = jest.fn()
+    renderSourceEntityDetails()
+    userEvent.type(screen.getByPlaceholderText(/Rationale/), 'Rationale');
+    userEvent.tab()
+    expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
+        "metric_uuid", "source_uuid", "key", "rationale", "Rationale", reload
+    );
+})

@@ -1,21 +1,36 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render, screen } from '@testing-library/react';
+import { DataModel } from '../context/DataModel';
 import { TrendGraph } from './TrendGraph';
 
-it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<TrendGraph measurements={[]} />, div);
-    ReactDOM.unmountComponentAtNode(div);
+const dataModel = {
+    metrics: {
+        stability: { name: "Stability", unit: "minutes", direction: "<", tags: [] },
+        violations: { name: "Violations", unit: "violations", direction: "<", tags: [] }
+    }
+};
+
+function render_trendgraph(measurements=[]) {
+    return (
+        render(
+            <DataModel.Provider value={dataModel}>
+                <TrendGraph metric={{type: "violations", scale: "count"}} measurements={measurements} />
+            </DataModel.Provider>
+        )
+    )
+}
+
+it('renders the time axis', () => {
+    render_trendgraph();
+    expect(screen.getAllByText(/Time/).length).toBe(1);
 });
 
-it('renders measurements without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<TrendGraph measurements={[{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }]} scale="count" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+it('renders the measurements', () => {
+    render_trendgraph([{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }]);
+    expect(screen.getAllByText(/Time/).length).toBe(1);
 });
 
-it('renders measurements with targets without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<TrendGraph measurements={[{ count: { value: "1", target: "10", near_target: "20" }, start: "2019-09-29", end: "2019-09-30" }]} scale="count" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+it('renders measurements with targets', () => {
+    render_trendgraph([{ count: { value: "1", target: "10", near_target: "20" }, start: "2019-09-29", end: "2019-09-30" }]);
+    expect(screen.getAllByText(/Time/).length).toBe(1);
 });

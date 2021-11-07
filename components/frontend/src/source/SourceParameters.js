@@ -3,12 +3,15 @@ import { Grid } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
+import { formatMetricScaleAndUnit } from '../utils';
 
-export function SourceParameters({report, source_uuid, source, metric_type, metric_unit, changed_param_keys, reload}) {
+export function SourceParameters({report, metric, source_uuid, source, changed_param_keys, reload}) {
     const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
+    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
     const all_parameters = dataModel.sources[source.type].parameters;
     const parameter_keys = Object.keys(all_parameters).filter((parameter_key) =>
-        all_parameters[parameter_key].metrics.includes(metric_type)
+        all_parameters[parameter_key].metrics.includes(metric.type)
     );
     const parameters = parameter_keys.map((parameter_key, index) =>
     (
@@ -22,7 +25,7 @@ export function SourceParameters({report, source_uuid, source, metric_type, metr
                 parameter_type={all_parameters[parameter_key].type}
                 parameter_name={all_parameters[parameter_key].name}
                 parameter_short_name={all_parameters[parameter_key].short_name}
-                parameter_unit={all_parameters[parameter_key].unit || metric_unit}
+                parameter_unit={all_parameters[parameter_key].unit || metricUnit}
                 parameter_min={all_parameters[parameter_key].min_value || null}
                 parameter_max={all_parameters[parameter_key].max_value || null}
                 parameter_value={source.parameters && source.parameters[parameter_key] ?

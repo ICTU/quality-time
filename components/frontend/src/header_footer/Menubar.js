@@ -5,7 +5,7 @@ import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
 
-function Login(props) {
+function Login({ set_user }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [login_error, setLoginError] = useState(false);
@@ -14,7 +14,7 @@ function Login(props) {
         login(username, password)
             .then(function (json) {
                 if (json.ok) {
-                    props.set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
+                    set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
                 } else {
                     setLoginError(true);
                 }
@@ -40,22 +40,22 @@ function Login(props) {
     )
 }
 
-function Logout(props) {
-    const trigger = <><Avatar email={props.email} /> {props.user}</>
+function Logout({ user, email, set_user }) {
+    const trigger = <><Avatar email={email} /> {user}</>
     return (
         <Dropdown
             trigger={trigger}
-            options={[{ key: "logout", text: "Logout", icon: "log out", onClick: () => { logout().then(() => props.set_user(null)) } }]}
+            options={[{ key: "logout", text: "Logout", icon: "log out", onClick: () => { logout().then(() => set_user(null)) } }]}
         />
     )
 }
 
-export function Menubar(props) {
+export function Menubar({ go_home, email, user, set_user, onDate, report_date_string }) {
     return (
         <Menu className="Menubar" fixed='top' inverted>
             <Container fluid>
                 <Popup content="Go to reports overview" trigger={
-                    <Menu.Item header onClick={() => props.go_home()} tabIndex={0}>
+                    <Menu.Item header onClick={() => go_home()} tabIndex={0}>
                         <>
                             <Image size='mini' src='/favicon.ico' alt="Go home" />
                             <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
@@ -64,10 +64,10 @@ export function Menubar(props) {
                 />
                 <Menu.Menu position='right'>
                     <Menu.Item>
-                        <DatePicker onDate={props.onDate} name="report_date_string" value={props.report_date_string} label="Report date" />
+                        <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
                     </Menu.Item>
                     <Menu.Item>
-                        {(props.user !== null) ? <Logout email={props.email} user={props.user} set_user={props.set_user} /> : <Login set_user={props.set_user} />}
+                        {(user !== null) ? <Logout email={email} user={user} set_user={set_user} /> : <Login set_user={set_user} />}
                     </Menu.Item>
                 </Menu.Menu>
             </Container>

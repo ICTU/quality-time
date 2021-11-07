@@ -11,7 +11,7 @@ import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { capitalize, get_source_name } from '../utils';
+import { get_source_name } from '../utils';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stop_sort, reload }) {
     return (
@@ -48,7 +48,7 @@ function MetricConfiguration({ metric, metric_uuid, report, reload }) {
         {
             menuItem: <Menu.Item key='changelog'><Icon name="history" /><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <ChangeLog report_uuid={report.report_uuid} timestamp={report.timestamp} metric_uuid={metric_uuid} />
+                <ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />
             </Tab.Pane>
         }
     ];
@@ -73,13 +73,8 @@ export function MetricDetails({
     report,
     subject_uuid,
     metric_uuid,
-    metric_name,
-    metric_unit,
     first_metric,
     last_metric,
-    measurement,
-    scale,
-    unit,
     stop_sort,
     changed_fields,
     visibleDetailsTabs,
@@ -118,8 +113,7 @@ export function MetricDetails({
                         report={report}
                         metric={metric}
                         metric_uuid={metric_uuid}
-                        metric_unit={metric_unit}
-                        measurement={measurement}
+                        measurement={metric.latest_measurement}
                         changed_fields={changed_fields}
                         reload={reload} />
                 </Tab.Pane>
@@ -131,7 +125,7 @@ export function MetricDetails({
             panes.push(
                 {
                     menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-                    render: () => <Tab.Pane><TrendGraph unit={capitalize(unit)} title={metric_name} measurements={measurements} scale={scale} /></Tab.Pane>
+                    render: () => <Tab.Pane><TrendGraph metric={metric} measurements={measurements} /></Tab.Pane>
                 }
             )
         }
