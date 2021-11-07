@@ -87,7 +87,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
         self.expected_entities = [
             dict(
                 solution="Fix any of the following: The <html> element does not have a lang attribute",
-                element="Element location html Element source <html>",
+                element="Element location: html\nElement source: <html>",
                 rule="1. <html> element must have a lang attribute",
                 tags=["cat.language", "wcag2a", "wcag311"],
             ),
