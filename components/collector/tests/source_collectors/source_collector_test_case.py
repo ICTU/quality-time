@@ -101,7 +101,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         attribute_value = getattr(measurement.sources[source_index], attribute_key)
         if isinstance(expected_attribute_value, list):
             for pair in zip(expected_attribute_value, attribute_value):
-                self.assertEqual(pair[0], pair[1])
+                self.assertDictEqual(pair[0], pair[1])
             self.assertEqual(len(expected_attribute_value), len(attribute_value), attribute_key)
         else:
             self.assertEqual(expected_attribute_value, attribute_value, attribute_key)

@@ -86,10 +86,11 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
             </div>"""
         self.expected_entities = [
             dict(
-                solution="Fix any of the following: The <html> element does not have a lang attribute",
+                solution="Fix any of the following:\nThe <html> element does not have a lang attribute",
                 element="Element location: html\nElement source: <html>",
                 rule="1. <html> element must have a lang attribute",
-                tags=["cat.language", "wcag2a", "wcag311"],
+                tags="cat.language, wcag2a, wcag311",
+                impact="serious",
             ),
         ]
         self.set_expected_entity_keys()
@@ -97,8 +98,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
     def set_expected_entity_keys(self):
         """Update the keys of the expected entities."""
         for entity in self.expected_entities:
-            values = [str(value) for value in entity.values()]
-            entity["key"] = md5_hash(",".join(values))
+            entity["key"] = md5_hash(",".join(sorted(entity.values())))
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
