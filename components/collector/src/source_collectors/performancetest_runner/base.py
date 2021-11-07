@@ -3,7 +3,6 @@
 from abc import ABC
 
 from base_collectors import HTMLFileSourceCollector
-from collector_utilities.type import Response
 
 
 class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
