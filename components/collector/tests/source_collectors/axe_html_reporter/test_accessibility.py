@@ -89,6 +89,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 solution="Fix any of the following:\nThe <html> element does not have a lang attribute",
                 element="Element location: html\nElement source: <html>",
                 rule="1. <html> element must have a lang attribute",
+                rule_id="html-has-lang",
                 tags="cat.language, wcag2a, wcag311",
                 impact="serious",
                 help="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
