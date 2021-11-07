@@ -91,6 +91,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 rule="1. <html> element must have a lang attribute",
                 tags="cat.language, wcag2a, wcag311",
                 impact="serious",
+                help="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
             ),
         ]
         self.set_expected_entity_keys()

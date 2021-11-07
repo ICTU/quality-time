@@ -19,11 +19,12 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector):
                 rule = violated_rule.select_one("h5").get_text(" ", strip=True)
                 tags = self.__parse_tags(violated_rule)
                 impact = violated_rule("h6")[2].get_text(strip=True)
+                help = violated_rule.select_one("a.learnMore")["href"]
                 for violation in violated_rule.select("div.violationNode tbody tr"):
                     element = self.__parse_element(violation)
                     solution = violation("td")[2].get_text("\n", strip=True)
                     entity_attributes.append(
-                        dict(solution=solution, element=element, impact=impact, rule=rule, tags=tags)
+                        dict(solution=solution, element=element, impact=impact, rule=rule, tags=tags, help=help)
                     )
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 
