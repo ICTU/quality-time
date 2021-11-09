@@ -1,5 +1,7 @@
 """Unit tests for the Axe HTML reporter accessibility collector."""
 
+import pathlib
+
 from collector_utilities.functions import md5_hash
 
 from ..source_collector_test_case import SourceCollectorTestCase
@@ -14,103 +16,72 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
     def setUp(self):
         """Extend to set up test data."""
         super().setUp()
-        self.html = """
-            <div class="card violationCard">
-                <div class="card-body">
-                    <div class="violationCardLine">
-                        <h5 class="card-title violationCardTitleItem">
-                            <a id="1">1.</a> &lt;html&gt; element must have a lang attribute
-                        </h5>
-                        <a
-                            href="https:&#x2F;&#x2F;dequeuniversity.com&#x2F;rules&#x2F;axe&#x2F;3.5&#x2F;html-has-lang?application&#x3D;axeAPI"
-                            target="_blank"
-                            class="card-link violationCardTitleItem learnMore"
-                            >Learn more</a
-                        >
-                    </div>
-                    <div class="violationCardLine">
-                        <h6 class="card-subtitle mb-2 text-muted">html-has-lang</h6>
-                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
-                            WCAG 2 Level A, WCAG 3.1.1
-                        </h6>
-                    </div>
-                    <div class="violationCardLine">
-                        <p class="card-text">Ensures every HTML document has a lang attribute</p>
-                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
-                            serious
-                        </h6>
-                    </div>
-                    <div class="violationCardLine">
-                        <h6 class="card-subtitle mb-2 text-muted violationCardTitleItem">
-                            Issue Tags:
-                            <span class="badge bg-light text-dark"> cat.language </span>
-
-                            <span class="badge bg-light text-dark"> wcag2a </span>
-
-                            <span class="badge bg-light text-dark"> wcag311 </span>
-                        </h6>
-                    </div>
-                    <div class="violationNode">
-                        <table class="table table-sm table-bordered">
-                            <thead>
-                                <tr>
-                                    <th style="width: 2%">#</th>
-                                    <th style="width: 49%">Issue Description</th>
-                                    <th style="width: 49%">
-                                        To solve this violation, you need to...
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <p><strong>Element location</strong></p>
-                                        <pre><code class="css text-wrap">html</code></pre>
-                                        <p><strong>Element source</strong></p>
-                                        <pre><code class="html text-wrap">&lt;html&gt;</code></pre>
-                                    </td>
-                                    <td>
-                                        <div class="wrapBreakWord">
-                                            <p>Fix any of the following:</p>
-                                            <ul class="text-muted">
-                                                <li>  The &lt;html&gt; element does not have a lang attribute</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>"""
+        axe_html_report = (
+            pathlib.Path(__file__).parent.parent.parent.parent.parent / "testdata/reports/axe/axe-html-reporter.html"
+        )
+        self.html = axe_html_report.read_text()
         self.expected_entities = [
             dict(
-                solution="Fix any of the following:\nThe <html> element does not have a lang attribute",
-                element="Element location: html\nElement source: <html>",
-                rule="1. <html> element must have a lang attribute",
-                rule_id="html-has-lang",
-                rule_category="WCAG 2 Level A, WCAG 3.1.1",
+                element="<html>",
+                violation_type="html-has-lang",
+                description="Ensures every HTML document has a lang attribute",
                 tags="cat.language, wcag2a, wcag311",
                 impact="serious",
-                help_url="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
+                help="https://dequeuniversity.com/rules/axe/3.5/html-has-lang?application=axeAPI",
+            ),
+            dict(
+                element="<html>",
+                violation_type="landmark-one-main",
+                description="Ensures the document has a main landmark",
+                tags="best-practice, cat.semantics",
+                impact="moderate",
+                help="https://dequeuniversity.com/rules/axe/3.5/landmark-one-main?application=axeAPI",
+            ),
+            dict(
+                element="""<div>\n    <h1>Example Domain</h1>\n    <p>This domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.</p>\n    <p><a href="https://www.iana.org/domains/example">More information...</a></p>\n</div>""",
+                violation_type="region",
+                description="Ensures all page content is contained by landmarks",
+                tags="best-practice, cat.keyboard",
+                impact="moderate",
+                help="https://dequeuniversity.com/rules/axe/3.5/region?application=axeAPI",
+            ),
+            dict(
+                element="""<input type="text" value="" class="city-input ac_input ui-autocomplete-input" autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" aria-autocomplete="list" aria-haspopup="true">""",
+                violation_type="tabindex",
+                description="Ensures tabindex attribute values are not greater than 0",
+                tags="best-practice, cat.keyboard",
+                impact="serious",
+                help="https://dequeuniversity.com/rules/axe/3.5/tabindex?application=axeAPI",
+            ),
+            dict(
+                element="""<input type="text" value="" class="city-input ac_input ui-autocomplete-input" autocomplete="off" id="to0" name="to0" tabindex="1" role="textbox" aria-autocomplete="list" aria-haspopup="true">""",
+                violation_type="tabindex",
+                description="Ensures tabindex attribute values are not greater than 0",
+                tags="best-practice, cat.keyboard",
+                impact="serious",
+                help="https://dequeuniversity.com/rules/axe/3.5/tabindex?application=axeAPI",
+            ),
+            dict(
+                element="""<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" tabindex="3" class="hasDatepicker input-dept">""",
+                violation_type="tabindex",
+                description="Ensures tabindex attribute values are not greater than 0",
+                tags="best-practice, cat.keyboard",
+                impact="serious",
+                help="https://dequeuniversity.com/rules/axe/3.5/tabindex?application=axeAPI",
             ),
         ]
-        self.set_expected_entity_keys()
-
-    def set_expected_entity_keys(self):
-        """Update the keys of the expected entities."""
         for entity in self.expected_entities:
+            entity["page"] = entity["url"] = "http://example.com/"
             entity["key"] = md5_hash(",".join(sorted(entity.values())))
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        self.assert_measurement(response, value="6", entities=self.expected_entities)
 
     async def test_no_issues(self):
         """Test zero issues."""
-        self.html = ""
+        self.html = """<div class="summary"><a href="http:&#x2F;&#x2F;example.com&#x2F;">http:&#x2F;&#x2F;example.com&#x2F</a></div>"""
         response = await self.collect(get_request_text=self.html)
         self.assert_measurement(response, value="0", entities=[])
 

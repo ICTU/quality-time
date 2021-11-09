@@ -15,26 +15,25 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector):
         entity_attributes = []
         for response in responses:
             soup = await self._soup(response)
+            page_url = soup.select_one("div.summary > a")["href"]
             for violated_rule in soup.select("div.violationCard > div.card-body"):
-                rule = violated_rule.select_one("h5").get_text(" ", strip=True)
-                rule_id = violated_rule("h6")[0].get_text(strip=True)
-                rule_category = violated_rule("h6")[1].get_text(strip=True)
+                violation_type = violated_rule("h6")[0].get_text(strip=True)
+                description = violated_rule.select_one("p.card-text").get_text(strip=True)
                 tags = self.__parse_tags(violated_rule)
                 impact = violated_rule("h6")[2].get_text(strip=True)
                 help_url = violated_rule.select_one("a.learnMore")["href"]
                 for violation in violated_rule.select("div.violationNode tbody tr"):
                     element = self.__parse_element(violation)
-                    solution = violation("td")[2].get_text("\n", strip=True)
                     entity_attributes.append(
                         dict(
-                            solution=solution,
-                            element=element,
+                            violation_type=violation_type,
+                            description=description,
                             impact=impact,
-                            rule=rule,
-                            rule_id=rule_id,
-                            rule_category=rule_category,
+                            element=element,
                             tags=tags,
-                            help_url=help_url,
+                            help=help_url,
+                            page=page_url,
+                            url=page_url,
                         )
                     )
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
@@ -49,8 +48,7 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector):
     def __parse_element(violation: Tag) -> str:
         """Parse the element from the violation soup."""
         element_tags = violation("td")[1].find_all(True, recursive=False)  # Find all direct child tags
-        element_strings = [tag.get_text(" ", strip=True) for tag in element_tags]
-        return f"{element_strings[0]}: {element_strings[1]}\n{element_strings[2]}: {element_strings[3]}"
+        return str(element_tags[-1].get_text("", strip=True))
 
     @staticmethod
     def __create_key(attributes) -> str:
