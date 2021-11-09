@@ -190,4 +190,17 @@ AXE_HTML_REPORTER = Source(
     description="Creates an HTML report from the axe-core library AxeResults object.",
     url="https://www.npmjs.com/package/axe-html-reporter",
     parameters=dict(**access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML")),
+    entities=dict(
+        accessibility=dict(
+            name="accessibility violation",
+            attributes=[
+                dict(name="Violation type", url="help"),
+                dict(name="Impact"),
+                dict(name="Page of the violation", key="page", url="url"),
+                dict(name="Element"),
+                dict(name="Description"),
+                dict(name="Tags"),
+            ],
+        )
+    ),
 )
