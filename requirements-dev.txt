@@ -2,7 +2,7 @@ bandit==1.7.0
 black==21.10b0
 coverage==6.1.1
 dlint==0.12.0
-isort==5.10.0
+isort==5.10.1
 lxml==4.6.4  # Needed to be able to run mypy with `--html-report`.
 mypy==0.910
 pep8-naming==0.12.1
