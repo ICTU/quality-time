@@ -1,5 +1,6 @@
 """Step implementations for measurement."""
 
+from datetime import datetime, timedelta
 import time
 
 from asserts import assert_equal, assert_true
@@ -38,6 +39,37 @@ def measure(context, number, total="100"):
                     entities=entities,
                 )
             ],
+        ),
+        internal=True,
+    )
+
+
+@given('yesterday the collector measured "{number}"')
+def measured(context, number):
+    """Post the measurement."""
+    entities = []
+    if context.table:
+        for row in context.table:
+            entity = {heading: row[heading] for heading in context.table.headings}
+            entities.append(entity)
+    start = (datetime.now() - timedelta(days=1, seconds=1)).replace(microsecond=0).isoformat()
+    end = (datetime.now() - timedelta(days=1)).replace(microsecond=0).isoformat()
+    context.post(
+        "measurements",
+        json=dict(
+            metric_uuid=context.uuid["metric"],
+            has_error=False,
+            sources=[
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error=None,
+                    connection_error=None,
+                    value=number,
+                    entities=entities,
+                )
+            ],
+            start=start,
+            end=end,
         ),
         internal=True,
     )
