@@ -111,6 +111,9 @@ class Metric(dict):
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
         summary["issue_status"] = self.issue_statuses(latest_measurement)
+        summary["latest_measurement"] = None
+        summary["recent_measurements"] = []
+        summary["status_start"] = None
 
         if measurements is not None:
             summary["latest_measurement"] = latest_measurement
