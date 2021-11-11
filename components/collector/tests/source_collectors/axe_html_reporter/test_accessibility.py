@@ -36,28 +36,36 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 impact="moderate",
             ),
             dict(
-                element="""<div>\n    <h1>Example Domain</h1>\n    <p>This domain is for use in illustrative examples in documents. You may use this\n    domain in literature without prior coordination or asking for permission.</p>\n    <p><a href="https://www.iana.org/domains/example">More information...</a></p>\n</div>""",
+                element="<div>\n    <h1>Example Domain</h1>\n    <p>This domain is for use in illustrative examples "
+                "in documents. You may use this\n    domain in literature without prior coordination or asking "
+                'for permission.</p>\n    <p><a href="https://www.iana.org/domains/example">More '
+                "information...</a></p>\n</div>",
                 violation_type="region",
                 description="Ensures all page content is contained by landmarks",
                 tags="best-practice, cat.keyboard",
                 impact="moderate",
             ),
             dict(
-                element="""<input type="text" value="" class="city-input ac_input ui-autocomplete-input" autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" aria-autocomplete="list" aria-haspopup="true">""",
+                element='<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
+                'autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" '
+                'aria-autocomplete="list" aria-haspopup="true">',
                 violation_type="tabindex",
                 description="Ensures tabindex attribute values are not greater than 0",
                 tags="best-practice, cat.keyboard",
                 impact="serious",
             ),
             dict(
-                element="""<input type="text" value="" class="city-input ac_input ui-autocomplete-input" autocomplete="off" id="to0" name="to0" tabindex="1" role="textbox" aria-autocomplete="list" aria-haspopup="true">""",
+                element='<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
+                'autocomplete="off" id="to0" name="to0" tabindex="1" role="textbox" aria-autocomplete="list" '
+                'aria-haspopup="true">',
                 violation_type="tabindex",
                 description="Ensures tabindex attribute values are not greater than 0",
                 tags="best-practice, cat.keyboard",
                 impact="serious",
             ),
             dict(
-                element="""<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" tabindex="3" class="hasDatepicker input-dept">""",
+                element='<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" '
+                'tabindex="3" class="hasDatepicker input-dept">',
                 violation_type="tabindex",
                 description="Ensures tabindex attribute values are not greater than 0",
                 tags="best-practice, cat.keyboard",
@@ -65,7 +73,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
             ),
         ]
         for entity in self.expected_entities:
-            entity["page"] = entity["url"] = "http://example.com/"
+            entity["page"] = entity["url"] = "https://example.com/"
             entity["help"] = f"https://dequeuniversity.com/rules/axe/3.5/{entity['violation_type']}?application=axeAPI"
             entity["result_type"] = "violations"
             entity["key"] = md5_hash(",".join(sorted(entity.values())))
@@ -77,7 +85,10 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
 
     async def test_no_issues(self):
         """Test zero issues."""
-        self.html = """<div class="summary"><a href="http:&#x2F;&#x2F;example.com&#x2F;">http:&#x2F;&#x2F;example.com&#x2F</a></div>"""
+        self.html = (
+            '<div class="summary"><a href="https:&#x2F;&#x2F;example.com&#x2F;">'
+            "https:&#x2F;&#x2F;example.com&#x2F</a></div>"
+        )
         response = await self.collect(get_request_text=self.html)
         self.assert_measurement(response, value="0", entities=[])
 
