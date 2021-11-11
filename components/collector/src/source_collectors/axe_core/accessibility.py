@@ -3,12 +3,32 @@
 from collections.abc import Collection
 from typing import Any
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 
-class AxeCoreAccessibility(JSONFileSourceCollector):
+class AxeAccessibilityCollector(SourceCollector):
+    """Collector base class for getting accessibility violations from Axe."""
+
+    def _include_violation(self, impact: str, tags: Collection[str]) -> bool:
+        """Return whether to include the violation."""
+        if impact and impact not in self._parameter("impact"):
+            return False
+        if tags_to_include := self._parameter("tags_to_include"):
+            for tag in tags:
+                if match_string_or_regular_expression(tag, tags_to_include):
+                    break
+            else:
+                return False
+        if tags_to_ignore := self._parameter("tags_to_ignore"):
+            for tag in tags:
+                if match_string_or_regular_expression(tag, tags_to_ignore):
+                    return False
+        return True
+
+
+class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
     """Collector class to get accessibility violations."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
@@ -46,7 +66,7 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
         tags = violation.get("tags", [])
         for node in violation.get("nodes", []) or [violation]:  # Use the violation as node if it has no nodes
             impact = node.get("impact")
-            if self.__include_violation(impact, tags):
+            if self._include_violation(impact, tags):
                 entity_attributes.append(
                     dict(
                         description=violation.get("description"),
@@ -61,22 +81,6 @@ class AxeCoreAccessibility(JSONFileSourceCollector):
                     )
                 )
         return entity_attributes
-
-    def __include_violation(self, impact: str, tags: Collection[str]) -> bool:
-        """Return whether to include the violation."""
-        if impact is not None and impact not in self._parameter("impact"):
-            return False
-        if tags_to_include := self._parameter("tags_to_include"):
-            for tag in tags:
-                if match_string_or_regular_expression(tag, tags_to_include):
-                    break
-            else:
-                return False
-        if tags_to_ignore := self._parameter("tags_to_ignore"):
-            for tag in tags:
-                if match_string_or_regular_expression(tag, tags_to_ignore):
-                    return False
-        return True
 
     @staticmethod
     def __create_key(attributes) -> str:

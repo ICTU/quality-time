@@ -10,7 +10,7 @@ from http import HTTPStatus
 from typing import cast
 from urllib.parse import urlparse
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from collector_utilities.type import JSON, URL, Response, Responses
 from model import SourceResponses
@@ -82,7 +82,7 @@ class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
     file_extensions = ["html", "htm"]
 
     @staticmethod
-    async def _soup(response: Response):
+    async def _soup(response: Response) -> Tag:
         """Return the HTML soup."""
         return BeautifulSoup(await response.text(), "html.parser")
 
