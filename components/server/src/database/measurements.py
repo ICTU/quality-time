@@ -31,8 +31,6 @@ def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     measurement_filter = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
     measurement_filter["metric_uuid"] = {"$in": list(metrics_dict.keys())}
-    # projection = {"_id": False, "metric_uuid": True, "start": True, "end": True}
-    # projection.update({scale + ".value": True for scale in data_model.get("scales", {}).keys()})
     projection = {"_id": False, "sources.entities": False, "entity_user_data": False}
     measurements = database.measurements.find(
         measurement_filter,
