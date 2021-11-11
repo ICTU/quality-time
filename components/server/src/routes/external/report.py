@@ -13,6 +13,7 @@ from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
+from model.report import Report
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -35,15 +36,13 @@ def get_report(database: Database, report_uuid: ReportId = None):
     summaries = []
 
     if report_uuid and report_uuid.startswith("tag-"):
-        tag_report = get_tag_report(data_model, reports, report_uuid[4:])
-        reports = []
-        # if tag_report is not None:
-        #     summarize_report(tag_report, database, data_model, date_time)
-        #     reports.append(tag_report)
+        report = tag_report(data_model, report_uuid[4:], reports)
+        if len(report.subjects) > 0:
+            measurements = recent_measurements(database, report.metrics_dict, date_time)
+            summaries.append(report.summarize(measurements))
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-
                 measurements = recent_measurements(database, report.metrics_dict, date_time)
                 summaries.append(report.summarize(measurements))
 
@@ -60,16 +59,10 @@ def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
     date_time = report_date_time()
     reports = latest_reports(database, date_time)
     data_model = latest_datamodel(database, date_time)
-    subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
-    tag_report = dict(
-        title=f'Report for tag "{tag}"',
-        subtitle="Note: tag reports are read-only",
-        report_uuid=f"tag-{tag}",
-        timestamp=iso_timestamp(),
-        subjects=subjects,
-    )
-    hide_credentials(data_model, tag_report)
-    summarize_report(tag_report, database, data_model, date_time)
+    report = tag_report(data_model, tag, reports)
+    measurements = recent_measurements(database, report.metrics_dict)
+    summary = report.summarize(measurements)
+    hide_credentials(data_model, summary)
     return tag_report
 
 
@@ -224,31 +217,23 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     return result
 
 
-def get_tag_report(data_model, reports, tag):
-    """Get a report with all metrics that have the specified tag."""
-    subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
-    if len(subjects) > 0:
-        tag_report = dict(
+def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
+    """Rreate a report for a tag."""
+    subjects = {}
+    for report in reports:
+        for subject in report.subjects:
+            tag_subject = subject.tag_subject(tag)
+            if tag_subject is not None:
+                subjects[subject.uuid] = subject.tag_subject(tag)
+
+    report = Report(
+        data_model,
+        dict(
             title=f'Report for tag "{tag}"',
             subtitle="Note: tag reports are read-only",
             report_uuid=f"tag-{tag}",
             timestamp=iso_timestamp(),
             subjects=subjects,
-        )
-        return tag_report
-    return None
-
-
-def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):
-    """Return all subjects and metrics that have the tag."""
-    subjects = {}
-    for report in reports:
-        for subject_uuid, subject in list(report.get("subjects", {}).items()):
-            for metric_uuid, metric in list(subject.get("metrics", {}).items()):
-                if tag not in metric.get("tags", []):
-                    del subject["metrics"][metric_uuid]
-            if subject.get("metrics", {}):
-                subject_name = subject.get("name") or data_model["subjects"][subject["type"]]["name"]
-                subject["name"] = report["title"] + " ❯ " + subject_name
-                subjects[subject_uuid] = subject
-    return subjects
+        ),
+    )
+    return report

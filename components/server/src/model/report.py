@@ -18,7 +18,7 @@ class Report(dict):
         self.__data_model = data_model
         self.uuid = cast(ReportId, report_data["report_uuid"])
 
-        subject_data = report_data.pop("subjects")
+        subject_data = report_data.pop("subjects", {})
         self.subjects_dict = self._subjects(subject_data)
         self.subjects = list(self.subjects_dict.values())
         self.subject_uuids = list(self.subjects_dict.keys())
@@ -27,7 +27,8 @@ class Report(dict):
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
 
-        report_data["_id"] = str(report_data["_id"])
+        if "_id" in report_data:
+            report_data["_id"] = str(report_data["_id"])
 
         super().__init__(report_data)
 
@@ -38,8 +39,11 @@ class Report(dict):
     def _subjects(self, subject_data) -> tuple[set, set]:
         """Instantiate subjects of this report."""
         subjects = {}
-        for subject_uuid, subject_dict in subject_data.items():
-            subjects[subject_uuid] = Subject(self.__data_model, subject_dict, subject_uuid, self.uuid)
+        for subject_uuid, subject in subject_data.items():
+            if isinstance(subject, Subject):
+                subjects[subject_uuid] = subject
+            else:
+                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
 
         return subjects
 
