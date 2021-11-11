@@ -40,10 +40,11 @@ def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max
         projection=projection,
     )
     measurements_by_metric_uuid: dict[MetricId, list] = {}
-    for measurement in measurements:
-        metric_uuid = measurement["metric_uuid"]
+    for measurement_dict in measurements:
+        metric_uuid = measurement_dict["metric_uuid"]
         metric = metrics_dict[metric_uuid]
-        measurements_by_metric_uuid.setdefault(metric_uuid, []).append(Measurement(metric, measurement))
+        measurement = Measurement(metric, measurement_dict)
+        measurements_by_metric_uuid.setdefault(metric_uuid, []).append(measurement)
     return measurements_by_metric_uuid
 
 
