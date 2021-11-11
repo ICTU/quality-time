@@ -50,32 +50,27 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 'autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" '
                 'aria-autocomplete="list" aria-haspopup="true">',
                 violation_type="tabindex",
-                description="Ensures tabindex attribute values are not greater than 0",
-                tags="best-practice, cat.keyboard",
-                impact="serious",
             ),
             dict(
                 element='<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
                 'autocomplete="off" id="to0" name="to0" tabindex="1" role="textbox" aria-autocomplete="list" '
                 'aria-haspopup="true">',
                 violation_type="tabindex",
-                description="Ensures tabindex attribute values are not greater than 0",
-                tags="best-practice, cat.keyboard",
-                impact="serious",
             ),
             dict(
                 element='<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" '
                 'tabindex="3" class="hasDatepicker input-dept">',
                 violation_type="tabindex",
-                description="Ensures tabindex attribute values are not greater than 0",
-                tags="best-practice, cat.keyboard",
-                impact="serious",
             ),
         ]
         for entity in self.expected_entities:
             entity["page"] = entity["url"] = "https://example.com/"
             entity["help"] = f"https://dequeuniversity.com/rules/axe/3.5/{entity['violation_type']}?application=axeAPI"
             entity["result_type"] = "violations"
+            if entity["violation_type"] == "tabindex":
+                entity["description"] = "Ensures tabindex attribute values are not greater than 0"
+                entity["tags"] = "best-practice, cat.keyboard"
+                entity["impact"] = "serious"
             entity["key"] = md5_hash(",".join(sorted(entity.values())))
 
     async def test_nr_of_issues(self):
