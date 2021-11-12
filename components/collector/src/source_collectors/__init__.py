@@ -12,6 +12,8 @@ from .axe_core.source_version import AxeCoreSourceVersion
 
 from .axe_csv.accessibility import AxeCSVAccessibility
 
+from .axe_html_reporter.accessibility import AxeHTMLReporterAccessibility
+
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
 from .azure_devops.issues import AzureDevopsIssues
 from .azure_devops.merge_requests import AzureDevopsMergeRequests

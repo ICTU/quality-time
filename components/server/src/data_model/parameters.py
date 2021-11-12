@@ -1,6 +1,6 @@
 """Data model source parameters."""
 
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 from pydantic import validator  # pylint: disable=no-name-in-module
 
@@ -189,7 +189,7 @@ def access_parameters(
     metrics: list[str],
     include: dict[str, bool] = None,
     source_type: str = "",
-    source_type_format: str = "",
+    source_type_format: Literal["", "CSV", "HTML", "JSON", "XML"] = "",
     kwargs: dict[str, dict[str, Union[str, bool, list[str]]]] = None,
 ) -> dict[str, Parameter]:
     """Create the access parameters, needed to access the source."""
@@ -214,7 +214,7 @@ def access_parameters(
         )
     url_kwargs.setdefault("metrics", metrics)
     parameters["url"] = URL(validate_on=validate_on, **url_kwargs)
-    if include.get("landing_url", True):
+    if include.get("landing_url", source_type_format != "HTML"):
         landing_url_name = f"URL to {source_type_article} {source_type} in a human readable format"
         landing_url_help = (
             "If provided, users clicking the source URL will visit this URL instead of the "

@@ -735,6 +735,18 @@
                                 "tags_to_ignore": [],
                                 "impact": []
                             }
+                        },
+                        "05c347bd-0318-5ef7-a092-543fd2b2dc35": {
+                            "type": "axe_html_reporter",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/axe/axe-html-reporter.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "tags_to_include": [],
+                                "tags_to_ignore": [],
+                                "impact": []
+                            }
                         }
                     },
                     "name": null,
