@@ -35,23 +35,24 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
         for violated_rule in soup.select("div.violationCard > div.card-body"):
             impact = violated_rule("h6")[2].get_text(strip=True)
             tags = self.__parse_tags(violated_rule)
-            if self._include_violation(impact, tags):
-                violation_type = violated_rule("h6")[0].get_text(strip=True)
-                description = violated_rule.select_one("p.card-text").get_text(strip=True)
-                help_url = violated_rule.select_one("a.learnMore")["href"]
-                for violation in violated_rule.select("div.violationNode tbody tr"):
-                    element = self.__parse_element(violation)
-                    yield dict(
-                        violation_type=violation_type,
-                        description=description,
-                        impact=impact,
-                        element=element,
-                        tags=", ".join(tags),
-                        help=help_url,
-                        page=page_url,
-                        url=page_url,
-                        result_type="violations",
-                    )
+            if not self._include_violation(impact, tags):
+                continue
+            violation_type = violated_rule("h6")[0].get_text(strip=True)
+            description = violated_rule.select_one("p.card-text").get_text(strip=True)
+            help_url = violated_rule.select_one("a.learnMore")["href"]
+            for violation in violated_rule.select("div.violationNode tbody tr"):
+                element = self.__parse_element(violation)
+                yield dict(
+                    violation_type=violation_type,
+                    description=description,
+                    impact=impact,
+                    element=element,
+                    tags=", ".join(tags),
+                    help=help_url,
+                    page=page_url,
+                    url=page_url,
+                    result_type="violations",
+                )
 
     @staticmethod
     def __parse_rules_from_html_soup(soup: Tag, page_url: str, result_type: str) -> Iterator[dict[str, str]]:

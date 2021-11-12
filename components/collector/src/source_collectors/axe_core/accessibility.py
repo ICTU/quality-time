@@ -29,7 +29,7 @@ class AxeAccessibilityCollector(SourceCollector):
 
 
 class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
-    """Collector class to get accessibility violations."""
+    """Collector class to get accessibility violations from Axe-core JSON output."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the violations."""

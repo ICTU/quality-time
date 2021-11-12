@@ -13,14 +13,15 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
     METRIC_TYPE = "accessibility"
     SOURCE_TYPE = "axe_html_reporter"
 
-    def setUp(self):
-        """Extend to set up test data."""
-        super().setUp()
+    @classmethod
+    def setUpClass(cls):
+        """Extend to read the Axe HTML report and set the expected entities."""
+        super().setUpClass()
         axe_html_report = (
             pathlib.Path(__file__).parent.parent.parent.parent.parent / "testdata/reports/axe/axe-html-reporter.html"
         )
-        self.html = axe_html_report.read_text()
-        self.expected_entities = [
+        cls.html = axe_html_report.read_text()
+        cls.expected_entities = [
             dict(
                 element="<html>",
                 violation_type="html-has-lang",
@@ -63,7 +64,7 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
                 violation_type="tabindex",
             ),
         ]
-        for entity in self.expected_entities:
+        for entity in cls.expected_entities:
             entity["page"] = entity["url"] = "https://example.com/"
             entity["help"] = f"https://dequeuniversity.com/rules/axe/3.5/{entity['violation_type']}?application=axeAPI"
             entity["result_type"] = "violations"
