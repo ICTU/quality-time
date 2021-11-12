@@ -181,6 +181,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.database.sessions.find_one.return_value = JENNY
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
+            scales=["count", "percentage"],
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(
                 metric_type=dict(
