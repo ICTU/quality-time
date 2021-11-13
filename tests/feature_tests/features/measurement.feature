@@ -23,6 +23,11 @@ Feature: measurement
     When the collector measures "0"
     Then the metric status is "target_met"
 
+  Scenario: the metric has no recent measurements
+    Given an existing source
+    Given the collector has measured "0" yesterday
+    Then the metric status is "None"
+
   Scenario: the metric is measured and doesn't meet the target
     Given an existing source
     When the collector measures "100"
