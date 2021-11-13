@@ -24,9 +24,8 @@ Feature: measurement
     Then the metric status is "target_met"
 
   Scenario: the metric has no recent measurements
-    Given an existing metric
     Given an existing source
-    Given yesterday the collector measured "0"
+    Given the collector has measured "0" yesterday
     Then the metric status is "None"
 
   Scenario: the metric is measured and doesn't meet the target
