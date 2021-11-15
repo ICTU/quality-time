@@ -1,4 +1,4 @@
-bandit==1.7.0
+bandit==1.7.1
 black==21.10b0
 coverage==6.1.2
 dlint==0.12.0
