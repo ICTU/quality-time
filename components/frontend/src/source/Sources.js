@@ -47,7 +47,7 @@ function SourceSegment({ report, metric, source_uuid, index, last_index, measure
 
 export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
-    const measurementSources = measurement ? measurement.sources : [];
+    const measurementSources = measurement?.sources ?? [];
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         dataModel.metrics[metric.type].sources.includes(metric.sources[sourceUuid].type)
     );
