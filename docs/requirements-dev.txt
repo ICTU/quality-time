@@ -1,5 +1,5 @@
 -r ../requirements-dev.txt
-furo==2021.11.15
+furo==2021.11.16
 gitpython==3.1.24
 myst-parser==0.15.2
 Sphinx==4.3.0
