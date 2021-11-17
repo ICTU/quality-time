@@ -1,4 +1,5 @@
 import React from 'react';
+import { parse } from 'query-string';
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from 'semantic-ui-react';
 
 function FooterItem({ children, icon, url }) {
@@ -33,7 +34,6 @@ function FooterSideColumn({ header, children }) {
     )
 }
 
-
 function AboutAppColumn() {
     return (
         <FooterSideColumn header={<><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</>} >
@@ -57,9 +57,12 @@ function SupportColumn() {
 }
 
 function AboutReportColumn({ report, last_update }) {
+    // When exporting to PDF, window.location.href may not the correct URL. This is fixed by having the user's browser
+    // pass the correct URL as search parameter and use that instead:
+    const reportURL = parse(window.location.search)["report_url"] ?? window.location.href;
     return (
         <FooterCenterColumn header="About this report">
-            <FooterItem url={window.location.href}>{report.title}</FooterItem>
+            <FooterItem url={reportURL}>{report.title}</FooterItem>
             <FooterItem>{report.subtitle}</FooterItem>
             <FooterItem>{last_update.toLocaleDateString()}</FooterItem>
             <FooterItem>{last_update.toLocaleTimeString()}</FooterItem>
