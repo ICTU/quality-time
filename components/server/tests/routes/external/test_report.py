@@ -232,23 +232,6 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertEqual({SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}, report["summary_by_subject"])
         self.assertEqual(dict(security=dict(red=0, green=0, yellow=0, grey=0, white=1)), report["summary_by_tag"])
 
-    def test_status_start(self):
-        """Test that the status start is part of the reports summary."""
-        measurement = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            count=dict(status="target_not_met", status_start="2020-12-03:22:28:00+00:00"),
-            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-        )
-        self.database.measurements.aggregate.return_value = []
-        self.database.measurements.find.return_value = [measurement]
-        self.database.reports.find.return_value = [create_report()]
-        report = get_report(self.database, REPORT_ID)["reports"][0]
-        self.assertEqual(
-            "2020-12-03:22:28:00+00:00",
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["recent_measurements"][0]["count"]["status_start"],
-        )
-
     def test_issue_status(self):
         """Test that the issue status is part of the metric."""
         issue_status = dict(issue_id="FOO-42", name="In progress", description="Issue is being worked on")
@@ -288,7 +271,6 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                 },
             )
         ]
-        self.maxDiff = None
         self.assertDictEqual(
             dict(
                 reports=[
@@ -307,7 +289,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                                 metrics=dict(
                                     metric_with_tag=dict(
                                         status=None,
-                                        value=None,
+                                        status_start=None,
                                         scale="count",
                                         recent_measurements=[],
                                         latest_measurement=None,
