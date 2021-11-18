@@ -288,6 +288,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                 },
             )
         ]
+        self.maxDiff = None
         self.assertDictEqual(
             dict(
                 reports=[
@@ -309,7 +310,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                                         value=None,
                                         scale="count",
                                         recent_measurements=[],
-                                        latest_measurement={},
+                                        latest_measurement=None,
                                         type="metric_type",
                                         tags=["tag"],
                                     )

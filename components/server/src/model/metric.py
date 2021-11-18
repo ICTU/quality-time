@@ -56,7 +56,7 @@ class Metric(dict):
 
     def scale(self) -> Scale:
         """Return the current metric scale."""
-        return cast(Scale, self.get("scale") or self.__data_model["metrics"][self.type()]["default_scale"])
+        return cast(Scale, self.get("scale") or self.__data_model["metrics"][self.type()].get("default_scale", "count"))
 
     def scales(self) -> Sequence[Scale]:
         """Return the scales supported by the metric."""
@@ -112,7 +112,6 @@ class Metric(dict):
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
         summary["latest_measurement"] = latest_measurement
-        summary["recent_measurements"] = []
         summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
 
         if latest_measurement:
