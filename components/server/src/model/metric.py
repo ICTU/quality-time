@@ -105,17 +105,18 @@ class Metric(dict):
     def summarize(self, measurements: list[Measurement] = None):
         """Add a summary of the metric to the report."""
 
+        measurements = measurements if measurements is not None else []
         latest_measurement = measurements[-1] if measurements else None
 
         summary = dict(self)
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
+        summary["latest_measurement"] = latest_measurement
+        summary["recent_measurements"] = []
+        summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
+
         if latest_measurement:
             summary["issue_status"] = self.issue_statuses(latest_measurement)
-
-        if measurements is not None:
-            summary["latest_measurement"] = latest_measurement
-            summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
 
         summary["status_start"] = None
         if latest_measurement and latest_measurement.get(self.scale(), {}).get("status_start"):
