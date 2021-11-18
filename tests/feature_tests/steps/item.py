@@ -20,7 +20,9 @@ def add_item(context, item, attribute=None, value=None, parameter=None, paramete
     if "tries to" in context.step.name:
         context.post(api)
         return
-    context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
+    response = context.post(api)
+    print(response)
+    context.uuid[item] = response[f"new_{item}_uuid"]
     if attribute and value:
         context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
     if parameter and parameter_value:

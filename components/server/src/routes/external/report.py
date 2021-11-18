@@ -109,7 +109,7 @@ def post_report_new(database: Database):
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
     delta_description = f"{{user}} copied the report '{data.report_name}'."
@@ -143,7 +143,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
-    report = latest_report(database, report_uuid)
+    report = latest_report(database, data_model, report_uuid)
 
     # pylint doesn't seem to be able to see that bottle.request.query is dict(like) at runtime
     if "public_key" in bottle.request.query:  # pylint: disable=unsupported-membership-test
@@ -160,7 +160,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     data.report["deleted"] = "true"
     delta_description = f"{{user}} deleted the report '{data.report_name}'."
@@ -171,7 +171,7 @@ def delete_report(report_uuid: ReportId, database: Database):
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
     old_value = data.report.get(report_attribute) or ""
@@ -189,7 +189,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
     """Set the issue tracker attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     new_value = dict(bottle.request.json)[tracker_attribute]
     if tracker_attribute == "type":

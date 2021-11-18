@@ -18,7 +18,7 @@ from server_utilities.type import MetricId, ReportId, SubjectId
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
     delta_description = f"{{user}} created a new subject in report '{data.report_name}'."
@@ -32,7 +32,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     source = SubjectData(data_model, reports, subject_uuid)
     target = ReportData(data_model, reports, report_uuid)
     target.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(source.subject, source.datamodel)
@@ -50,7 +50,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     source = SubjectData(data_model, reports, subject_uuid)
     target = ReportData(data_model, reports, target_report_uuid)
     target.report["subjects"][subject_uuid] = source.subject
@@ -67,7 +67,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = SubjectData(data_model, reports, subject_uuid)
     del data.report["subjects"][subject_uuid]
     delta_description = f"{{user}} deleted the subject '{data.subject_name}' from report '{data.report_name}'."
@@ -81,7 +81,7 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = SubjectData(data_model, reports, subject_uuid)
     value = dict(bottle.request.json)[subject_attribute]
     old_value = data.subject.get(subject_attribute) or ""

@@ -18,7 +18,7 @@ class Report(dict):
         self.__data_model = data_model
         self.uuid = cast(ReportId, report_data["report_uuid"])
 
-        subject_data = report_data.pop("subjects", {})
+        subject_data = report_data.get("subjects", {})
         self.subjects_dict = self._subjects(subject_data)
         self.subjects = list(self.subjects_dict.values())
         self.subject_uuids = list(self.subjects_dict.keys())

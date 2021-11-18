@@ -20,7 +20,7 @@ from server_utilities.type import EditScope, MetricId, ReportId, SourceId, Subje
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = MetricData(data_model, reports, metric_uuid)
     metric_type = data.metric["type"]
     source_type = data_model["metrics"][metric_type]["default_source"]
@@ -40,7 +40,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
 def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     source = SourceData(data_model, reports, source_uuid)
     target = MetricData(data_model, reports, metric_uuid)
     target.metric["sources"][(source_copy_uuid := uuid())] = copy_source(source.source, source.datamodel)
@@ -59,7 +59,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     source = SourceData(data_model, reports, source_uuid)
     target = MetricData(data_model, reports, target_metric_uuid)
     delta_description = (
@@ -92,7 +92,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = SourceData(data_model, reports, source_uuid)
     delta_description = (
         f"{{user}} deleted the source '{data.source_name}' from metric "
@@ -107,7 +107,7 @@ def delete_source(source_uuid: SourceId, database: Database):
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = SourceData(data_model, reports, source_uuid)
     value = dict(bottle.request.json)[source_attribute]
     old_value: Any
@@ -131,7 +131,9 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 @bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
-    data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database, data_model)
+    data = SourceData(data_model, reports, source_uuid)
     new_value = new_parameter_value(data, parameter_key)
     old_value = data.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:

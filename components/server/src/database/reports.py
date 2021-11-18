@@ -17,7 +17,7 @@ from . import datamodels, sessions
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = ""):
+def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = "") -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection."""
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
         report_filter = dict(deleted=DOES_NOT_EXIST, timestamp={"$lt": max_iso_timestamp})
@@ -34,7 +34,7 @@ def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str 
     return reports
 
 
-def latest_report(database: Database, data_model, report_uuid: str):
+def latest_report(database: Database, data_model, report_uuid: str) -> Report:
     """Get latest report with this uuid."""
     return Report(
         data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})

@@ -34,7 +34,9 @@ def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
 ) -> dict:
     """Set an entity attribute."""
-    data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database, data_model)
+    data = SourceData(data_model, reports, source_uuid)
     metric = Metric(data.datamodel, data.metric, metric_uuid)
     old_measurement = cast(Measurement, latest_measurement(database, metric))
     new_measurement = old_measurement.copy()

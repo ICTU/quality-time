@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class Metric(dict):
     """Class representing a metric."""
 
-    def __init__(self, data_model, metric_data, metric_uuid: MetricId, subject_uuid: SubjectId) -> None:
+    def __init__(self, data_model, metric_data, metric_uuid: MetricId, subject_uuid: SubjectId = None) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid
         self.subject_uuid = subject_uuid

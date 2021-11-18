@@ -18,7 +18,7 @@ class Subject(dict):
         self.uuid = subject_uuid
         self.report = report
 
-        metric_data = subject_data.pop("metrics", {})
+        metric_data = subject_data.get("metrics", {})
         self.metrics_dict = self._instantiate_metrics(metric_data)
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
