@@ -6,6 +6,8 @@ from unittest.mock import Mock, patch
 
 import requests
 
+from model.report import Report
+
 from routes.external import (
     delete_source,
     post_move_source,
@@ -471,7 +473,7 @@ class SourceTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.report = create_report()
+        self.report = Report(None, create_report())
         self.database.reports.find.return_value = [self.report]
         self.target_metric_name = "Target metric"
 
@@ -482,7 +484,8 @@ class SourceTest(SourceTestCase):
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid]
         description = "Jenny added a new source to metric 'Metric' of subject 'Subject' in report 'Report'."
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_copy_source(self):
         """Test that a source can be copied."""
@@ -497,7 +500,8 @@ class SourceTest(SourceTestCase):
             "Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report 'Report' to metric "
             "'Metric' of subject 'Subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_within_subject(self):
         """Test that a source can be moved to a different metric in the same subject."""
@@ -513,7 +517,8 @@ class SourceTest(SourceTestCase):
             f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""
@@ -529,7 +534,8 @@ class SourceTest(SourceTestCase):
             f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Target subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_across_reports(self):
         """Test that a source can be moved to a different metric in a different report."""
@@ -549,8 +555,12 @@ class SourceTest(SourceTestCase):
             "report 'Target report'."
         )
         expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID]
-        self.assert_delta(expected_description, expected_uuids)
-        self.assert_delta(expected_description, expected_uuids, target_report)
+
+        updated_reports = self.database.reports.insert_many.call_args[0][0]
+        updated_target_report = updated_reports[0]
+        updated_source_report = updated_reports[1]
+        self.assert_delta(expected_description, expected_uuids, updated_source_report)
+        self.assert_delta(expected_description, expected_uuids, updated_target_report)
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
@@ -558,4 +568,5 @@ class SourceTest(SourceTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID]
         description = "Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report'."
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
