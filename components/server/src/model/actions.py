@@ -66,15 +66,17 @@ def move_item(data, new_position: Position, item_type: Literal["metric", "source
     new_index = dict(first=0, last=nr_items - 1, previous=max(0, old_index - 1), next=min(nr_items - 1, old_index + 1))[
         new_position
     ]
-    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
-    # we construct a new dict in the right order and insert that in the report.
-    reordered_items: dict[str, dict] = {}
-    del items[item_to_move_id]
-    for item_id, item in items.items():
+    if old_index != new_index:
+        # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7,
+        # but there's no API to change the order so
+        # we construct a new dict in the right order and insert that in the report.
+        reordered_items: dict[str, dict] = {}
+        del items[item_to_move_id]
+        for item_id, item in items.items():
+            if len(reordered_items) == new_index:
+                reordered_items[item_to_move_id] = item_to_move
+            reordered_items[item_id] = item
         if len(reordered_items) == new_index:
             reordered_items[item_to_move_id] = item_to_move
-        reordered_items[item_id] = item
-    if len(reordered_items) == new_index:
-        reordered_items[item_to_move_id] = item_to_move
-    container[item_type + "s"] = reordered_items
+        container[item_type + "s"] = reordered_items
     return old_index, new_index

@@ -82,32 +82,44 @@ class PostSubjectAttributeTest(unittest.TestCase):
         request.json = dict(position="first")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID2, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
-        self.assert_delta("position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
+        self.assert_delta(
+            "position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
+        )
 
     def test_post_position_last(self, request):
         """Test that a subject can be moved to the bottom."""
         request.json = dict(position="last")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
-        self.assert_delta("position of subject 'subject1' in report 'Report' from '0' to '1'", SUBJECT_ID)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
+        self.assert_delta(
+            "position of subject 'subject1' in report 'Report' from '0' to '1'", SUBJECT_ID, updated_report
+        )
 
     def test_post_position_previous(self, request):
         """Test that a subject can be moved up."""
         request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID2, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
-        self.assert_delta("position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
+        self.assert_delta(
+            "position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
+        )
 
     def test_post_position_next(self, request):
         """Test that a subject can be moved down."""
         request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
-        self.assert_delta("position of subject 'subject1' in report 'Report' from '0' to '1'", SUBJECT_ID)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
+        self.assert_delta(
+            "position of subject 'subject1' in report 'Report' from '0' to '1'", SUBJECT_ID, updated_report
+        )
 
     def test_post_position_first_previous(self, request):
         """Test that moving the first subject up does nothing."""
