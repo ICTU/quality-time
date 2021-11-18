@@ -110,15 +110,14 @@ class Metric(dict):
         summary = dict(self)
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
-        summary["issue_status"] = self.issue_statuses(latest_measurement)
-        summary["latest_measurement"] = None
-        summary["recent_measurements"] = []
-        summary["status_start"] = None
+        if latest_measurement:
+            summary["issue_status"] = self.issue_statuses(latest_measurement)
 
         if measurements is not None:
             summary["latest_measurement"] = latest_measurement
             summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
 
+        summary["status_start"] = None
         if latest_measurement and latest_measurement.get(self.scale(), {}).get("status_start"):
             status_start = latest_measurement.get(self.scale(), {}).get("status_start")
             summary["status_start"] = status_start
