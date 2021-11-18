@@ -104,16 +104,18 @@ class PostSourceAttributeTest(SourceTestCase):
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Extend to set up fixed parameters."""
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID] + (uuids or [SOURCE_ID])
-        super().assert_delta(f"Jenny changed the {description}.", uuids)
+        super().assert_delta(f"Jenny changed the {description}.", uuids, report)
 
     def test_name(self, request):
         """Test that the source name can be changed."""
         request.json = dict(name="New source name")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "name of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'Source' to "
-            "'New source name'"
+            "'New source name'",
+            report=updated_report,
         )
 
     def test_post_source_type(self, request):
@@ -121,9 +123,11 @@ class PostSourceAttributeTest(SourceTestCase):
         request.json = dict(type="new_source_type")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'source_type' to "
-            "'new_source_type'"
+            "'new_source_type'",
+            report=updated_report,
         )
 
     def test_post_position(self, request):
@@ -131,12 +135,14 @@ class PostSourceAttributeTest(SourceTestCase):
         request.json = dict(position="first")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID2, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())
         )
         self.assert_delta(
             "position of source 'Source 2' of metric 'Metric' of subject 'Subject' in report 'Report' from '1' to '0'",
             [SOURCE_ID2],
+            report=updated_report,
         )
 
     def test_no_change(self, request):
