@@ -18,7 +18,7 @@ jobs:
       with:
         fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
     - name: Set up Python
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2.3.0
       if: env.SONAR_TOKEN != null
       with:
         python-version: '3.10.0'
