@@ -56,7 +56,6 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         expected_entities = [
             dict(
                 key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url1}"),
-                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url1}"),
                 name=self.WARNING_NAME,
                 description=self.WARNING_DESCRIPTION,
                 location=f"GET {url1}",
@@ -65,7 +64,6 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
             ),
             dict(
                 key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url2}"),
-                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url2}"),
                 name=self.WARNING_NAME,
                 description=self.WARNING_DESCRIPTION,
                 location=f"GET {url2}",
@@ -81,7 +79,7 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         expected_entities = [
             dict(
-                key=md5_hash("X-Content-Type-Options Header Missing:10021:16:15:3"),
+                key=md5_hash("X-Content-Type-Options Header Missing:10021:16:15"),
                 name=self.WARNING_NAME,
                 description=self.WARNING_DESCRIPTION,
                 risk=self.WARNING_RISK,
@@ -97,7 +95,6 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         expected_entities = [
             dict(
                 key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{stable_url}"),
-                old_key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{stable_url}"),
                 name=self.WARNING_NAME,
                 uri=stable_url,
                 description=self.WARNING_DESCRIPTION,
