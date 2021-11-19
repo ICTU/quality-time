@@ -8,12 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.28.0-rc.3 - 2021-11-17
+## [Unreleased]
 
 ### Fixed
 
 - Use the correct report URL in the footer of reports exported to PDF. Fixes [#2750](https://github.com/ICTU/quality-time/issues/2750).
 - The ARIA (Rich Internet Application Accessibility) label of status pie charts would report the wrong number of red metrics. Fixes [#2779](https://github.com/ICTU/quality-time/issues/2779).
+- The security warnings in OWASP ZAP reports do not have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. Therefore, *Quality-time* generates keys for OWASP ZAP security warnings itself. Unfortunately, the key that *Quality-time* generated, was not guaranteed to be unique. Fixes [#2852](https://github.com/ICTU/quality-time/issues/2852).
 
 ### Added
 
