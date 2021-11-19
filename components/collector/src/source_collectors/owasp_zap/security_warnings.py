@@ -20,9 +20,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         risks = cast(list[str], self._parameter("risks"))
         count_alert_instances = cast(str, self._parameter("alerts")) == "alert instances"
         for alert in await self.__alerts(responses, risks):
-            ids = [
-                alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid", "sourceid")
-            ]
+            ids = [alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid")]
             name = alert.findtext("name", default="")
             description = tag_re.sub("", alert.findtext("desc", default=""))
             risk = alert.findtext("riskdesc", default="")
@@ -40,10 +38,9 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         """Create an alert instance entity."""
         method = alert_instance.findtext("method", default="")
         uri = self.__stable_url(hashless(URL(alert_instance.findtext("uri", default=""))))
-        key = md5_hash(f"{':'.join(ids[:-1])}:{method}:{uri}")
-        old_key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
+        key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
         location = f"{method} {uri}"
-        return Entity(key=key, old_key=old_key, uri=uri, location=location, **entity_kwargs)
+        return Entity(key=key, uri=uri, location=location, **entity_kwargs)
 
     @staticmethod
     def __alert_type_entity(ids, entity_kwargs) -> Entity:
