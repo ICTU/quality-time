@@ -12,39 +12,36 @@ from routes.external import (
 from ...fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 
-@patch("bottle.request")
-class PostNotificationAttributesTest(unittest.TestCase):
-    """Unit tests for the post notification destination attributes route."""
+class NotificationTestCase(unittest.TestCase):
+    """Base class for notification unit tests."""
 
     def setUp(self):
-        """Define variables that are used in multiple tests."""
+        """Set up the database."""
         self.database = Mock()
-        self.report = dict(
-            _id="id",
-            report_uuid=REPORT_ID,
-            title="Report",
-            notification_destinations={
-                NOTIFICATION_DESTINATION_ID: dict(teams_webhook="", name="notification_destination", url="")
-            },
-        )
+        self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.datamodels.find_one.return_value = dict(_id="id")
-        self.email = "john@example.org"
-        self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
+        self.email = "jenny@example.org"
+        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
+
+    def assert_delta(self, description, uuids=None):
+        """Check that the delta description is correct."""
+        uuids = sorted(uuids or [REPORT_ID, NOTIFICATION_DESTINATION_ID])
+        self.assertEqual(dict(uuids=uuids, email=self.email, description=description), self.report["delta"])
+
+
+@patch("bottle.request")
+class PostNotificationAttributesTest(NotificationTestCase):
+    """Unit tests for the post notification destination attributes route."""
 
     def test_post_notification_destination_attribute(self, request):
         """Test changing the name of a notification destination."""
         request.json = dict(name="new name")
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
-                email=self.email,
-                description="John changed the 'name' of notification destination 'notification_destination' "
-                "in report 'Report' from 'notification_destination' to 'new name'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            description="Jenny changed the 'name' of notification destination 'notification_destination' "
+            "in report 'Report' from 'notification_destination' to 'new name'."
         )
 
     def test_post_notification_destination_unchanged_attribute(self, request):
@@ -58,58 +55,33 @@ class PostNotificationAttributesTest(unittest.TestCase):
         request.json = dict(name="new name", url="https://newurl")
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
-                email=self.email,
-                description="John changed the 'name' and 'url' of notification destination 'notification_destination' "
-                "in report 'Report' from 'notification_destination' and '' to 'new name' and "
-                "'https://newurl'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            description="Jenny changed the 'name' and 'url' of notification destination 'notification_destination' "
+            "in report 'Report' from 'notification_destination' and 'https://reporturl' to 'new name' and "
+            "'https://newurl'."
         )
 
 
-class NotificationDestinationTest(unittest.TestCase):
+class NotificationDestinationTest(NotificationTestCase):
     """Unit tests for adding and deleting notification destinations."""
-
-    def setUp(self):
-        """Define variables that are used in multiple tests."""
-        self.report = create_report()
-        self.database = Mock()
-        self.database.reports.find.return_value = [self.report]
-        self.database.datamodels.find_one.return_value = dict(_id="id")
-        self.email = "jenny@example.org"
-        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
 
     def test_add_new_notification_destination(self):
         """Test that a notification destination can be added."""
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
         notification_destinations_uuid = list(self.report["notification_destinations"].keys())[1]
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, notification_destinations_uuid],
-                email=self.email,
-                description="Jenny created a new destination for notifications in report 'Report'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            description="Jenny created a new destination for notifications in report 'Report'.",
+            uuids=[REPORT_ID, notification_destinations_uuid],
         )
 
     def test_add_first_new_notification_destination(self):
         """Test that a notification destination can be added."""
-        report_without_destinations = self.report
-        del report_without_destinations["notification_destinations"]
-        self.database.reports.find.return_value = [report_without_destinations]
-
+        # del self.report["notification_destinations"]
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
-        notification_destinations_uuid = list(report_without_destinations["notification_destinations"].keys())[0]
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, notification_destinations_uuid],
-                email=self.email,
-                description="Jenny created a new destination for notifications in report 'Report'.",
-            ),
-            report_without_destinations["delta"],
+        notification_destinations_uuid = list(self.report["notification_destinations"].keys())[1]
+        self.assert_delta(
+            description="Jenny created a new destination for notifications in report 'Report'.",
+            uuids=[REPORT_ID, notification_destinations_uuid],
         )
 
     def test_delete_notification_destination(self):
@@ -117,11 +89,7 @@ class NotificationDestinationTest(unittest.TestCase):
         self.assertEqual(
             dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         )
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
-                email=self.email,
-                description="Jenny deleted destination notification_destination from report 'Report'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            description="Jenny deleted destination notification_destination from report 'Report'.",
+            uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
         )

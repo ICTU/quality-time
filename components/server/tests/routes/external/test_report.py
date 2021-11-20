@@ -369,7 +369,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertNotEqual(self.report[REPORT_ID], inserted_report_uuid)
         self.assertEqual(
             dict(
-                uuids=[REPORT_ID, inserted_report_uuid],
+                uuids=sorted([REPORT_ID, inserted_report_uuid]),
                 email=JENNY["email"],
                 description="Jenny copied the report 'Report'.",
             ),

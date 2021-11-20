@@ -81,7 +81,7 @@ class PostMetricAttributeTest(unittest.TestCase):
 
     def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"]):
         """Assert that the report delta contains the correct data."""
-        uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
+        uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         description = f"John changed the {description}."
         self.assertDictEqual(dict(uuids=uuids, email=email, description=description), self.report["delta"])
 
@@ -338,7 +338,7 @@ class MetricTest(unittest.TestCase):
 
     def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
-        uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
+        uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         report = report or self.report
         self.assertEqual(dict(uuids=uuids, email=email, description=description), report["delta"])
 
