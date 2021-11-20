@@ -31,7 +31,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
         f"'{data.subject_name}' in report '{data.report_name}'."
     )
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid, source_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
+    result = insert_new_report(database, delta_description, uuids, data.report)
     result["new_source_uuid"] = source_uuid
     return result
 
@@ -50,7 +50,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
         f"'{target.subject_name}' in report '{target.report_name}'."
     )
     uuids = [target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid]
-    result = insert_new_report(database, delta_description, (target.report, uuids))
+    result = insert_new_report(database, delta_description, uuids, target.report)
     result["new_source_uuid"] = source_copy_uuid
     return result
 
@@ -77,15 +77,15 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         source.metric_uuid,
         source_uuid,
     ]
-    reports_to_insert = [(target.report, uuids)]
+    reports_to_insert = [target.report]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
     else:
         # Source is moved from one report to another, update both
         del source.metric["sources"][source_uuid]
-        reports_to_insert.append((source.report, uuids))
-    return insert_new_report(database, delta_description, *reports_to_insert)
+        reports_to_insert.append(source.report)
+    return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
 @bottle.delete("/api/v3/source/<source_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -100,7 +100,7 @@ def delete_source(source_uuid: SourceId, database: Database):
     )
     uuids = [data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid]
     del data.metric["sources"][source_uuid]
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)
 
 
 @bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -125,7 +125,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     uuids = [data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid]
     if source_attribute == "type":
         data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)
 
 
 @bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -146,8 +146,8 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
-    reports_to_insert = [(report, changed_ids) for report in data.reports if report["report_uuid"] in changed_ids]
-    result = insert_new_report(database, delta_description, *reports_to_insert)
+    reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
+    result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
 
     if availability_checks := _availability_checks(data, parameter_key):
         result["availability"] = availability_checks

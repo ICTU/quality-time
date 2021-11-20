@@ -33,7 +33,7 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
     if report_exists(database, imported_report["report_uuid"]):  # pragma: no cover-behave
         logging.info("Skipping import of %s; it already exists", filename)
     else:  # pragma: no cover-behave
-        insert_new_report(database, "{{user}} imported a new report", (imported_report, imported_report["report_uuid"]))
+        insert_new_report(database, "{{user}} imported a new report", [imported_report["report_uuid"]], imported_report)
         logging.info("Report %s imported", filename)
 
 

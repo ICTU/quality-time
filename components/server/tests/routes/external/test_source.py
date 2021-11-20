@@ -382,7 +382,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = dict(username=self.NEW_VALUE, edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
-        self.database.reports.insert_many.assert_called_once_with([self.report, self.report2], ordered=False)
+        self.database.reports.insert_many.assert_called_once_with((self.report, self.report2), ordered=False)
         self.assert_value(
             {
                 self.NEW_VALUE: [
@@ -396,10 +396,19 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
             }
         )
-        extra_uuids = [METRIC_ID2, SOURCE_ID5, SUBJECT_ID2, METRIC_ID3, SOURCE_ID6]
-        extra_uuids.extend([REPORT_ID2, SUBJECT_ID3, METRIC_ID4, SOURCE_ID7])
-        self.assert_delta("in all reports from 'username' to 'new username'", extra_uuids)
-        self.assert_delta("in all reports from 'username' to 'new username'", extra_uuids, self.report2)
+        uuids = [
+            REPORT_ID2,
+            SUBJECT_ID2,
+            SUBJECT_ID3,
+            METRIC_ID2,
+            METRIC_ID3,
+            METRIC_ID4,
+            SOURCE_ID5,
+            SOURCE_ID6,
+            SOURCE_ID7,
+        ]
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids)
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids, self.report2)
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""

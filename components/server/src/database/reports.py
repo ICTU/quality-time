@@ -72,10 +72,9 @@ def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[Metr
     return list(report["subjects"][subject_uuid]["metrics"].keys())
 
 
-def insert_new_report(database: Database, delta_description: str, *reports_and_uuids) -> dict[str, Any]:
+def insert_new_report(database: Database, delta_description: str, uuids, *reports) -> dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_documents_for_insertion(database, delta_description, *reports_and_uuids, last=True)
-    reports = [report for report, uuids in reports_and_uuids]
+    _prepare_documents_for_insertion(database, delta_description, reports, uuids, last=True)
     report_uuids = [report["report_uuid"] for report in reports]
     database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
     if len(reports) > 1:
@@ -87,13 +86,13 @@ def insert_new_report(database: Database, delta_description: str, *reports_and_u
 
 def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    _prepare_documents_for_insertion(database, delta_description, (reports_overview, []))
+    _prepare_documents_for_insertion(database, delta_description, [reports_overview])
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
 
 
 def _prepare_documents_for_insertion(
-    database: Database, delta_description: str, *documents, **extra_attributes
+    database: Database, delta_description: str, documents, uuids=None, **extra_attributes
 ) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
@@ -102,7 +101,7 @@ def _prepare_documents_for_insertion(
     username = user.get("user", "An operator")
     # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
     description = delta_description.replace("{user}", username, 1)
-    for document, uuids in documents:
+    for document in documents:
         if "_id" in document:
             del document["_id"]
         document["timestamp"] = now
