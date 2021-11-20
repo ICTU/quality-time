@@ -88,7 +88,7 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Check that the report has the correct delta."""
         report = report or self.report
-        self.assertEqual(dict(uuids=uuids or [], email=self.email, description=description), report["delta"])
+        self.assertEqual(dict(uuids=sorted(uuids) or [], email=self.email, description=description), report["delta"])
 
 
 @patch("bottle.request")

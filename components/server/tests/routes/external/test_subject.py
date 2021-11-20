@@ -140,7 +140,7 @@ class SubjectTest(unittest.TestCase):
         report = report or self.report
         report_id = report["report_uuid"]
         self.assertEqual(
-            dict(uuids=[report_id, subject_id], email=self.email, description=f"Jenny {delta}."),
+            dict(uuids=sorted([report_id, subject_id]), email=self.email, description=f"Jenny {delta}."),
             report["delta"],
         )
 
