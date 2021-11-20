@@ -119,7 +119,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid".
     """
-    projection = {"delta.description": True, "delta.email": True, "timestamp": True}
+    projection = {"delta": True, "timestamp": True}
     delta_filter: dict[str, dict | list] = {"delta": DOES_EXIST}
     changes: list[Change] = []
     if not uuids:
@@ -138,4 +138,12 @@ def changelog(database: Database, nr_changes: int, **uuids):
     )
     changes = sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
-    return list(unique(changes, lambda change: cast(dict[str, str], change["delta"])["description"]))[:nr_changes]
+    return list(unique(changes, get_change_key))[:nr_changes]
+
+
+def get_change_key(change: Change) -> str:
+    """Return a key for detecting equal changes."""
+    description = cast(dict[str, str], change["delta"])["description"]
+    changed_uuids = cast(dict[str, list[str]], change["delta"]).get("uuids", [])
+    key = f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
+    return key

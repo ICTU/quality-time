@@ -21,6 +21,7 @@ class ChangeLogTest(unittest.TestCase):
         """Override to set up the database."""
         self.database = Mock()
         self.database.sessions.find_one.return_value = JENNY
+        self.database.reports_overviews.find.return_value = []
         self.database.reports.find.return_value = [
             dict(timestamp="2", delta=dict(description="delta2", email=JENNY["email"])),
             dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
@@ -35,7 +36,6 @@ class ChangeLogTest(unittest.TestCase):
 
     def test_get_changelog(self):
         """Test that the changelog is returned."""
-        self.database.reports_overviews.find.return_value = []
         self.assertEqual(self.expected_changelog, get_changelog("10", self.database))
 
     def test_get_report_changelog(self):
@@ -61,3 +61,12 @@ class ChangeLogTest(unittest.TestCase):
     def test_get_source_changelog(self):
         """Test that the changelog can be limited to a specific source."""
         self.assertEqual(self.expected_changelog, get_source_changelog(SOURCE_ID, "10", self.database))
+
+    def test_get_moved_item_changelog(self):
+        """Test that the changelog does not contain the moved item twice."""
+        self.database.reports.find.return_value = [
+            dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
+            dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
+        ]
+        expected_changelog = dict(changelog=[dict(delta="delta1", email=JENNY["email"], timestamp="1")])
+        self.assertEqual(expected_changelog, get_changelog("10", self.database))
