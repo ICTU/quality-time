@@ -12,7 +12,7 @@ from routes.external import (
 from ...fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 
-class NotificationTestCase(unittest.TestCase):
+class NotificationTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for notification unit tests."""
 
     def setUp(self):
