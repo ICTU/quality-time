@@ -539,8 +539,9 @@ class SourceTest(SourceTestCase):
             f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in "
             "report 'Target report'."
         )
-        self.assert_delta(expected_description, [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID])
-        self.assert_delta(expected_description, [REPORT_ID2, SUBJECT_ID2, METRIC_ID2, SOURCE_ID], target_report)
+        expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID]
+        self.assert_delta(expected_description, expected_uuids)
+        self.assert_delta(expected_description, expected_uuids, target_report)
 
     def test_delete_source(self):
         """Test that the source can be deleted."""

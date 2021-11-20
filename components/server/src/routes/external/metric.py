@@ -56,17 +56,15 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
         f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
     )
     target.subject["metrics"][metric_uuid] = source.metric
+    uuids = [target.report_uuid, source.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
     if target.report_uuid == source.report_uuid:
         # Metric is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
-        target_uuids = [target.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
-        reports_to_insert = [(target.report, target_uuids)]
+        reports_to_insert = [(target.report, uuids)]
     else:
         # Metric is moved from one report to another, update both
         del source.subject["metrics"][metric_uuid]
-        source_uuids = [source.report_uuid, source.subject_uuid, metric_uuid]
-        target_uuids = [target.report_uuid, target_subject_uuid, metric_uuid]
-        reports_to_insert = [(target.report, target_uuids), (source.report, source_uuids)]
+        reports_to_insert = [(target.report, uuids), (source.report, uuids)]
     return insert_new_report(database, delta_description, *reports_to_insert)
 
 

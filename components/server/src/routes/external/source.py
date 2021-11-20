@@ -68,22 +68,23 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         f"'{target.subject_name}' in report '{target.report_name}'."
     )
     target.metric["sources"][source_uuid] = source.source
-    target_uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [target.report_uuid]
-    reports_to_insert = [(target.report, target_uuids)]
+    uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [
+        target.report_uuid,
+        target.subject_uuid,
+        target_metric_uuid,
+        source.report_uuid,
+        source.subject_uuid,
+        source.metric_uuid,
+        source_uuid,
+    ]
+    reports_to_insert = [(target.report, uuids)]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
-        if target.subject_uuid != source.subject_uuid:
-            # Source is moved from one subject to another subject, include both subject uuids in the delta
-            target_uuids.append(source.subject_uuid)
-        target_uuids.extend([target.subject_uuid, source.metric_uuid])
     else:
         # Source is moved from one report to another, update both
         del source.metric["sources"][source_uuid]
-        source_uuids = [source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid]
-        reports_to_insert.append((source.report, source_uuids))
-        target_uuids.append(target.subject_uuid)
-    target_uuids.extend([target_metric_uuid, source_uuid])
+        reports_to_insert.append((source.report, uuids))
     return insert_new_report(database, delta_description, *reports_to_insert)
 
 

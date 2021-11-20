@@ -135,12 +135,11 @@ class SubjectTest(unittest.TestCase):
             sources=dict(source_type=dict(name="Source type")),
         )
 
-    def assert_delta(self, delta: str, subject_id: SubjectId, report=None) -> None:
+    def assert_delta(self, delta: str, uuids, report=None) -> None:
         """Check that the delta is correct."""
         report = report or self.report
-        report_id = report["report_uuid"]
         self.assertEqual(
-            dict(uuids=sorted([report_id, subject_id]), email=self.email, description=f"Jenny {delta}."),
+            dict(uuids=sorted(uuids), email=self.email, description=f"Jenny {delta}."),
             report["delta"],
         )
 
@@ -148,7 +147,7 @@ class SubjectTest(unittest.TestCase):
         """Test that a subject can be added."""
         self.assertTrue(post_new_subject(REPORT_ID, self.database)["ok"])
         subject_uuid = list(self.report["subjects"].keys())[1]
-        self.assert_delta("created a new subject in report 'Report'", subject_uuid)
+        self.assert_delta("created a new subject in report 'Report'", [REPORT_ID, subject_uuid])
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""
@@ -157,12 +156,14 @@ class SubjectTest(unittest.TestCase):
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))
         subject_copy_uuid = list(self.report["subjects"].keys())[1]
-        self.assert_delta("copied the subject 'Subject' from report 'Report' to report 'Report'", subject_copy_uuid)
+        self.assert_delta(
+            "copied the subject 'Subject' from report 'Report' to report 'Report'", [REPORT_ID, subject_copy_uuid]
+        )
 
     def test_delete_subject(self):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject(SUBJECT_ID, self.database))
-        self.assert_delta("deleted the subject 'Subject' from report 'Report'", SUBJECT_ID)
+        self.assert_delta("deleted the subject 'Subject' from report 'Report'", [REPORT_ID, SUBJECT_ID])
 
     def test_move_subject(self):
         """Test that a subject can be moved to another report."""
@@ -173,5 +174,6 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual({}, self.report["subjects"])
         self.assertEqual((SUBJECT_ID, subject), next(iter(target_report["subjects"].items())))
         expected_description = "moved the subject 'Subject' from report 'Report' to report 'Target'"
-        self.assert_delta(expected_description, SUBJECT_ID)
-        self.assert_delta(expected_description, SUBJECT_ID, target_report)
+        expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID]
+        self.assert_delta(expected_description, expected_uuids)
+        self.assert_delta(expected_description, expected_uuids, target_report)

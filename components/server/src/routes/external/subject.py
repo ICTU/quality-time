@@ -59,9 +59,8 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
         f"{{user}} moved the subject '{source.subject_name}' from report "
         f"'{source.report_name}' to report '{target.report_name}'."
     )
-    source_uuids = [source.report_uuid, subject_uuid]
-    target_uuids = [target_report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, (source.report, source_uuids), (target.report, target_uuids))
+    uuids = [target_report_uuid, source.report_uuid, subject_uuid]
+    return insert_new_report(database, delta_description, (source.report, uuids), (target.report, uuids))
 
 
 @bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

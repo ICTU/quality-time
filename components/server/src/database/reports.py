@@ -108,7 +108,7 @@ def _prepare_documents_for_insertion(
         document["timestamp"] = now
         document["delta"] = dict(description=description, email=email)
         if uuids:
-            document["delta"]["uuids"] = sorted(uuids)
+            document["delta"]["uuids"] = sorted(list(set(uuids)))
         for key, value in extra_attributes.items():
             document[key] = value
 
