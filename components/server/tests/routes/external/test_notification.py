@@ -76,9 +76,9 @@ class NotificationDestinationTest(NotificationTestCase):
 
     def test_add_first_new_notification_destination(self):
         """Test that a notification destination can be added."""
-        # del self.report["notification_destinations"]
+        del self.report["notification_destinations"]
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
-        notification_destinations_uuid = list(self.report["notification_destinations"].keys())[1]
+        notification_destinations_uuid = list(self.report["notification_destinations"].keys())[0]
         self.assert_delta(
             description="Jenny created a new destination for notifications in report 'Report'.",
             uuids=[REPORT_ID, notification_destinations_uuid],
