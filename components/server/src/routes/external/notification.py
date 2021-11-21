@@ -22,7 +22,7 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     )
     delta_description = f"{{user}} created a new destination for notifications in report '{data.report_name}'."
     uuids = [report_uuid, notification_destination_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
+    result = insert_new_report(database, delta_description, uuids, data.report)
     result["new_destination_uuid"] = notification_destination_uuid
     return result
 
@@ -40,7 +40,7 @@ def delete_notification_destination(
     del data.report["notification_destinations"][notification_destination_uuid]
     delta_description = f"{{user}} deleted destination {destination_name} from report '{data.report_name}'."
     uuids = [report_uuid, notification_destination_uuid]
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)
 
 
 @bottle.post(
@@ -69,4 +69,4 @@ def post_notification_destination_attributes(
         f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'."
     )
     uuids = [data.report_uuid, notification_destination_uuid]
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)

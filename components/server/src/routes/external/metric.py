@@ -23,7 +23,7 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
     description = f"{{user}} added a new metric to subject '{data.subject_name}' in report '{data.report_name}'."
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    result = insert_new_report(database, description, (data.report, uuids))
+    result = insert_new_report(database, description, uuids, data.report)
     result["new_metric_uuid"] = metric_uuid
     return result
 
@@ -40,7 +40,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
         f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
     )
     uuids = [target.report_uuid, target.subject_uuid, metric_copy_uuid]
-    result = insert_new_report(database, description, (target.report, uuids))
+    result = insert_new_report(database, description, uuids, target.report)
     result["new_metric_uuid"] = metric_copy_uuid
     return result
 
@@ -56,18 +56,16 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
         f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
     )
     target.subject["metrics"][metric_uuid] = source.metric
+    uuids = [target.report_uuid, source.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
     if target.report_uuid == source.report_uuid:
         # Metric is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
-        target_uuids = [target.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
-        reports_to_insert = [(target.report, target_uuids)]
+        reports_to_insert = [target.report]
     else:
         # Metric is moved from one report to another, update both
         del source.subject["metrics"][metric_uuid]
-        source_uuids = [source.report_uuid, source.subject_uuid, metric_uuid]
-        target_uuids = [target.report_uuid, target_subject_uuid, metric_uuid]
-        reports_to_insert = [(target.report, target_uuids), (source.report, source_uuids)]
-    return insert_new_report(database, delta_description, *reports_to_insert)
+        reports_to_insert = [target.report, source.report]
+    return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
 @bottle.delete("/api/v3/metric/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -80,7 +78,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     )
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
     del data.subject["metrics"][metric_uuid]
-    return insert_new_report(database, description, (data.report, uuids))
+    return insert_new_report(database, description, uuids, data.report)
 
 
 ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
@@ -108,7 +106,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{new_value}'."
     )
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    insert_new_report(database, description, (data.report, uuids))
+    insert_new_report(database, description, uuids, data.report)
     metric = Metric(data.datamodel, data.metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())

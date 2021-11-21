@@ -390,8 +390,9 @@ class MetricTest(unittest.TestCase):
             "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
             "'Target'."
         )
-        self.assert_delta(expected_description)
-        self.assert_delta(expected_description, uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID], report=target_report)
+        expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID]
+        self.assert_delta(expected_description, uuids=expected_uuids)
+        self.assert_delta(expected_description, uuids=expected_uuids, report=target_report)
 
     def test_delete_metric(self):
         """Test that the metric can be deleted."""

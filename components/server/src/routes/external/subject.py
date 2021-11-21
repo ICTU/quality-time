@@ -23,7 +23,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
     delta_description = f"{{user}} created a new subject in report '{data.report_name}'."
     uuids = [report_uuid, subject_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
+    result = insert_new_report(database, delta_description, uuids, data.report)
     result["new_subject_uuid"] = subject_uuid
     return result
 
@@ -41,7 +41,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
         f"'{source.report_name}' to report '{target.report_name}'."
     )
     uuids = [target.report_uuid, subject_copy_uuid]
-    result = insert_new_report(database, delta_description, (target.report, uuids))
+    result = insert_new_report(database, delta_description, uuids, target.report)
     result["new_subject_uuid"] = subject_copy_uuid
     return result
 
@@ -59,9 +59,8 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
         f"{{user}} moved the subject '{source.subject_name}' from report "
         f"'{source.report_name}' to report '{target.report_name}'."
     )
-    source_uuids = [source.report_uuid, subject_uuid]
-    target_uuids = [target_report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, (source.report, source_uuids), (target.report, target_uuids))
+    uuids = [target_report_uuid, source.report_uuid, subject_uuid]
+    return insert_new_report(database, delta_description, uuids, source.report, target.report)
 
 
 @bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -73,7 +72,7 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
     del data.report["subjects"][subject_uuid]
     delta_description = f"{{user}} deleted the subject '{data.subject_name}' from report '{data.report_name}'."
     uuids = [data.report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)
 
 
 @bottle.post(
@@ -97,7 +96,7 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
         f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'."
     )
     uuids = [data.report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, (data.report, uuids))
+    return insert_new_report(database, delta_description, uuids, data.report)
 
 
 @bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)

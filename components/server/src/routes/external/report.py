@@ -93,7 +93,7 @@ def post_report_import(database: Database):
         }
 
     replace_report_uuids(report)
-    result = insert_new_report(database, "{{user}} imported a new report", (report, report["report_uuid"]))
+    result = insert_new_report(database, "{{user}} imported a new report", [report["report_uuid"]], report)
     result["new_report_uuid"] = report["report_uuid"]
     return result
 
@@ -104,7 +104,7 @@ def post_report_new(database: Database):
     report_uuid = uuid()
     delta_description = "{user} created a new report."
     report = dict(report_uuid=report_uuid, title="New report", subjects={})
-    result = insert_new_report(database, delta_description, (report, [report_uuid]))
+    result = insert_new_report(database, delta_description, [report_uuid], report)
     result["new_report_uuid"] = report_uuid
     return result
 
@@ -118,7 +118,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     report_copy = copy_report(data.report, data.datamodel)
     delta_description = f"{{user}} copied the report '{data.report_name}'."
     uuids = [report_uuid, report_copy["report_uuid"]]
-    result = insert_new_report(database, delta_description, (report_copy, uuids))
+    result = insert_new_report(database, delta_description, uuids, report_copy)
     result["new_report_uuid"] = report_copy["report_uuid"]
     return result
 
@@ -168,7 +168,7 @@ def delete_report(report_uuid: ReportId, database: Database):
     data = ReportData(data_model, reports, report_uuid)
     data.report["deleted"] = "true"
     delta_description = f"{{user}} deleted the report '{data.report_name}'."
-    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    return insert_new_report(database, delta_description, [report_uuid], data.report)
 
 
 @bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -184,7 +184,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     delta_description = (
         f"{{user}} changed the {report_attribute} of report '{data.report_name}'{value_change_description}."
     )
-    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    return insert_new_report(database, delta_description, [report_uuid], data.report)
 
 
 @bottle.post(
@@ -212,7 +212,7 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
         f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "
         f"from '{old_value}' to '{new_value}'."
     )
-    result = insert_new_report(database, delta_description, (data.report, [report_uuid]))
+    result = insert_new_report(database, delta_description, [report_uuid], data.report)
     issue_tracker = data.report.get("issue_tracker", {})
     parameters = issue_tracker.get("parameters", {})
     url_parameters = ("type", "url", "username", "password")
