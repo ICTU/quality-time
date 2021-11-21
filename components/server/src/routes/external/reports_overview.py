@@ -5,7 +5,6 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel
-from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
 from model.transformations import hide_credentials, summarize_report
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -28,9 +27,8 @@ def get_reports(database: Database):  # pragma: no cover
     data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)
     overview["reports"] = []
-    recent_measurements = recent_measurements_by_metric_uuid(data_model, database, date_time)
     for report in latest_reports(database, date_time):
-        summarize_report(report, database, recent_measurements, data_model)
+        summarize_report(report, database, data_model, date_time)
         overview["reports"].append(report)
     hide_credentials(data_model, *overview["reports"])
     return overview
