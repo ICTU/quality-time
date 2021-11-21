@@ -11,7 +11,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
     def setUp(self):
         """Set up test data."""
         super().setUp()
-        self.api_url = f"{self.url}/api/v3/reports"
+        self.api_url = f"{self.url}/api/v3/report"
 
     async def test_nr_of_metrics(self):
         """Test that the number of metrics is returned."""
