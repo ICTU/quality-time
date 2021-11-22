@@ -7,4 +7,4 @@ pydantic==1.8.2
 pymongo==3.12.1
 ldap3==2.9.1
 requests==2.26.0
-cryptography==35.0.0
+cryptography==36.0.0
