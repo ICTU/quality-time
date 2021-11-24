@@ -36,8 +36,6 @@ additional-deps:
       repo: bottlepy/bottle
     - name: mypy
       repo: python/mypy
-    - name: nose
-      repo: nose-devs/nose
 
 ignore-failures:
   javascript:
@@ -47,5 +45,4 @@ ignore-failures:
     - aiodns
     - behave
     - bottle-mongo
-    - nose
     - selenium
