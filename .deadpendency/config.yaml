@@ -38,11 +38,9 @@ additional-deps:
       repo: python/mypy
 
 ignore-failures:
-  javascript:
-    - semantic-ui-calendar-react
-    - semantic-ui-css
   python:
-    - aiodns
-    - behave
-    - bottle-mongo
-    - selenium
+    - alabaster
+    - flake8-polyfill 
+    - mccabe
+    - mypy-extensions
+    - sphinxcontrib-jsmath
