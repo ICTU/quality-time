@@ -40,7 +40,12 @@ additional-deps:
 ignore-failures:
   python:
     - alabaster
+    - behave
+    - bottle-mongo
     - flake8-polyfill 
     - mccabe
     - mypy-extensions
     - sphinxcontrib-jsmath
+  javascript:
+    - semantic-ui-css
+
