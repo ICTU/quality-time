@@ -1,0 +1,15 @@
+bandit==1.7.1
+black==21.11b1
+coverage==6.1.2
+dlint==0.12.0
+isort==5.10.1
+lxml==4.6.4  # Needed to be able to run mypy with `--html-report`.
+mypy==0.910
+pep8-naming==0.12.1
+pip==21.3.1
+pip-tools==6.4.0  # To add hashes to requirements
+pydantic==1.8.2  # Needed for importing the data model from the server component
+pylint==2.11.1
+safety==1.10.3
+unittest-xml-reporting==3.0.4  # Needed to generate JUnit XML output for Sonarcloud.io
+vulture==2.3

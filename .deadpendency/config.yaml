@@ -1,29 +1,32 @@
 additional-dependency-files:
   - type: pip-requirements-txt
-    path: components/collector/requirements.txt
+    path: components/collector/requirements.in
   - type: pip-requirements-txt
-    path: components/collector/requirements-dev.txt
+    path: components/collector/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: components/notifier/requirements.in
+  - type: pip-requirements-txt
+    path: components/notifier/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: components/server/requirements.in
+  - type: pip-requirements-txt
+    path: components/server/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: tests/application_tests/requirements-dev.in
+  - type: pip-requirements-txt
+    path: tests/feature_tests/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: release/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: docs/requirements-dev.in
 
   - type: npm-package-json
     path: components/frontend/package.json
-
-  - type: pip-requirements-txt
-    path: components/notifier/requirements.txt
-  - type: pip-requirements-txt
-    path: components/notifier/requirements-dev.txt
-
-  - type: pip-requirements-txt
-    path: components/server/requirements.txt
-  - type: pip-requirements-txt
-    path: components/server/requirements-dev.txt
-
-  - type: pip-requirements-txt
-    path: tests/application_tests/requirements-dev.txt
-  - type: pip-requirements-txt
-    path: tests/feature_tests/requirements-dev.txt
-
-  - type: pip-requirements-txt
-    path: release/requirements-dev.txt
 
 additional-deps:
   python:
@@ -33,16 +36,16 @@ additional-deps:
       repo: bottlepy/bottle
     - name: mypy
       repo: python/mypy
-    - name: nose
-      repo: nose-devs/nose
 
 ignore-failures:
-  javascript:
-    - semantic-ui-calendar-react
-    - semantic-ui-css
   python:
-    - aiodns
+    - alabaster
     - behave
     - bottle-mongo
-    - nose
-    - selenium
+    - flake8-polyfill 
+    - mccabe
+    - mypy-extensions
+    - sphinxcontrib-jsmath
+  javascript:
+    - semantic-ui-css
+
