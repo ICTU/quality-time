@@ -1,8 +1,8 @@
 additional-dependency-files:
   - type: pip-requirements-txt
-    path: components/collector/requirements.txt
+    path: components/collector/requirements.in
   - type: pip-requirements-txt
-    path: components/collector/requirements-dev.txt
+    path: components/collector/requirements-dev.in
 
   - type: npm-package-json
     path: components/frontend/package.json
