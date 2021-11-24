@@ -1,4 +1,4 @@
--r ../../requirements-dev.txt
+-r ../../requirements-dev.in
 asserts==0.11.1
 behave==1.2.6
 gevent==21.8.0

@@ -4,9 +4,6 @@ additional-dependency-files:
   - type: pip-requirements-txt
     path: components/collector/requirements-dev.in
 
-  - type: npm-package-json
-    path: components/frontend/package.json
-
   - type: pip-requirements-txt
     path: components/notifier/requirements.in
   - type: pip-requirements-txt
@@ -24,6 +21,12 @@ additional-dependency-files:
 
   - type: pip-requirements-txt
     path: release/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: docs/requirements-dev.in
+
+  - type: npm-package-json
+    path: components/frontend/package.json
 
 additional-deps:
   python:

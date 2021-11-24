@@ -1,2 +1,2 @@
--r ../../requirements-dev.txt
+-r ../../requirements-dev.in
 selenium==4.1.0
