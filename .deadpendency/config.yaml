@@ -8,9 +8,9 @@ additional-dependency-files:
     path: components/frontend/package.json
 
   - type: pip-requirements-txt
-    path: components/notifier/requirements.txt
+    path: components/notifier/requirements.in
   - type: pip-requirements-txt
-    path: components/notifier/requirements-dev.txt
+    path: components/notifier/requirements-dev.in
 
   - type: pip-requirements-txt
     path: components/server/requirements.in
