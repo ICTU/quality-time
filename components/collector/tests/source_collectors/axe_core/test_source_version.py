@@ -14,3 +14,9 @@ class AxeCoreSourceVersionTest(AxeCoreTestCase):
         axe_json = dict(testEngine=dict(version="4.1.3"))
         response = await self.collect(get_request_json_return_value=axe_json)
         self.assert_measurement(response, value="4.1.3")
+
+    async def test_source_version_in_list(self):
+        """Test that the Axe-core version is returned."""
+        axe_json = [dict(testEngine=dict(version="4.2.4"))]
+        response = await self.collect(get_request_json_return_value=axe_json)
+        self.assert_measurement(response, value="4.2.4")

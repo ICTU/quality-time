@@ -11,4 +11,7 @@ class AxeCoreSourceVersion(JSONFileSourceCollector, SourceVersionCollector):
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the response."""
-        return Version((await response.json(content_type=None))["testEngine"]["version"])
+        json = await response.json(content_type=None)
+        if isinstance(json, list):
+            json = json[0]  # The JSON consists of several Axe-core JSONs in a list, assume they have the same version
+        return Version(json["testEngine"]["version"])
