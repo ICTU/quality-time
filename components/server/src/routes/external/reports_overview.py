@@ -30,7 +30,8 @@ def get_reports(database: Database):  # pragma: no cover
     overview["reports"] = []
     reports = latest_reports(database, data_model, date_time)
     metrics_dict = {}
-    [metrics_dict.update(report.metrics_dict) for report in reports]
+    for report in reports:
+        metrics_dict.update(report.metrics_dict)
     measurements = recent_measurements(database, metrics_dict, date_time)
     for report in reports:
         overview["reports"].append(report.summarize(measurements))

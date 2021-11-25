@@ -181,7 +181,9 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual(2, len(inserted_subjects))
         subject_copy_uuid = list(self.report["subjects"].keys())[1]
         self.assert_delta(
-            "copied the subject 'Subject' from report 'Report' to report 'Report'", [REPORT_ID, subject_copy_uuid], report=updated_report
+            "copied the subject 'Subject' from report 'Report' to report 'Report'",
+            [REPORT_ID, subject_copy_uuid],
+            report=updated_report,
         )
 
     def test_delete_subject(self):

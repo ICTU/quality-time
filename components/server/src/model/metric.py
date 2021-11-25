@@ -1,15 +1,14 @@
 """Metric model class."""
-
 from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import date
 from typing import cast
 
+from typing import TYPE_CHECKING
+
 from model.source import Source
 from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from model.measurement import Measurement

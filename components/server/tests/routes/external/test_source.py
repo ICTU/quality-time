@@ -193,8 +193,9 @@ class PostSourceParameterTest(SourceTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={}, verify=False)
         updated_report = self.database.reports.insert.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'",
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
             report=updated_report,
         )
 
@@ -207,8 +208,9 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response, -1, "RequestException")
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'",
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
             report=updated_report,
         )
 
@@ -221,8 +223,9 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response, -1, "[Errno 1234] Error message")
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'",
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
             report=updated_report,
         )
 
@@ -235,8 +238,9 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response, -1, "[Errno -2] Error message")
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'",
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
             report=updated_report,
         )
 
@@ -301,7 +305,8 @@ class PostSourceParameterTest(SourceTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "password of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '******'",
+            """password of source 'Source' of metric 'Metric' of subject """
+            """'Subject' in report 'Report' from '' to '******'""",
             report=updated_report,
         )
 

@@ -18,14 +18,13 @@ class Report(dict):
     def __init__(self, data_model, report_data: dict) -> None:
         """Instantiate a Report."""
         self.__data_model = data_model
-        self.uuid = cast(ReportId, report_data["report_uuid"])
 
         subject_data = report_data.get("subjects", {})
         self.subjects_dict = self._subjects(subject_data)
         self.subjects = list(self.subjects_dict.values())
         self.subject_uuids = list(self.subjects_dict.keys())
 
-        self.metrics_dict = self._metrics(self.subjects)
+        self.metrics_dict = self._metrics()
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
 
@@ -33,6 +32,11 @@ class Report(dict):
             report_data["_id"] = str(report_data["_id"])
 
         super().__init__(report_data)
+
+    @property
+    def uuid(self):
+        """Return the uuid of this report."""
+        return cast(ReportId, self["report_uuid"])
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
@@ -49,10 +53,10 @@ class Report(dict):
 
         return subjects
 
-    def _metrics(self, subjects: list[Subject]) -> dict[str, Metric]:
+    def _metrics(self) -> dict[str, Metric]:
         """All metrics of all subjects of this report."""
         metrics = {}
-        for subject in subjects:
+        for subject in self.subjects:
             metrics.update(subject.metrics_dict)
         return metrics
 

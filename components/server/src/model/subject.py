@@ -1,9 +1,9 @@
 """A class that represents a Subject."""
+from typing import TYPE_CHECKING, Optional
+
 from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.type import SubjectId
-
-from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from model.report import Report
@@ -12,19 +12,11 @@ if TYPE_CHECKING:
 class Subject(dict):
     """Class representing a report."""
 
-    def __init__(
-        self,
-        data_model,
-        subject_data: dict,
-        subject_uuid: SubjectId,
-        report: Optional["Report"],
-        tag: str | None = None,
-    ) -> None:
+    def __init__(self, data_model, subject_data: dict, subject_uuid: SubjectId, report: Optional["Report"]) -> None:
         """Instantiate a Subject."""
         self.__data_model = data_model
         self.uuid = subject_uuid
         self.report = report if report is not None else {}
-        self.tag = tag
 
         metric_data = subject_data.get("metrics", {})
         self.metrics_dict = self._instantiate_metrics(metric_data)
@@ -56,7 +48,7 @@ class Subject(dict):
         data = dict(self)
         data["metrics"] = metrics
         data["name"] = self.report.get("title", "") + " ❯ " + self.name()
-        return Subject(self.__data_model, data, self.uuid, report, tag)
+        return Subject(self.__data_model, data, self.uuid, report)
 
     def summarize(self, measurements: dict[str, list[Measurement]] | None):
         """Create a summary dict of this subject."""
