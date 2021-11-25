@@ -8,9 +8,16 @@ class AxeCoreSourceVersionTest(AxeCoreTestCase):
 
     METRIC_TYPE = "source_version"
     METRIC_ADDITION = "min"
+    AXE_VERSION = "4.1.3"
 
     async def test_source_version(self):
         """Test that the Axe-core version is returned."""
-        axe_json = dict(testEngine=dict(version="4.1.3"))
+        axe_json = dict(testEngine=dict(version=self.AXE_VERSION))
         response = await self.collect(get_request_json_return_value=axe_json)
-        self.assert_measurement(response, value="4.1.3")
+        self.assert_measurement(response, value=self.AXE_VERSION)
+
+    async def test_source_version_in_list(self):
+        """Test that the Axe-core version is returned."""
+        axe_json = [dict(testEngine=dict(version=self.AXE_VERSION))]
+        response = await self.collect(get_request_json_return_value=axe_json)
+        self.assert_measurement(response, value=self.AXE_VERSION)
