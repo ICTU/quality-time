@@ -30,7 +30,7 @@ class Metric(dict):
 
     def type(self) -> str:
         """Return the type of the metric."""
-        return str(self["type"])
+        return str(self["type"]) if "type" in self else None
 
     def status(self, last_measurement: dict | None) -> str | Status:
         """Determine the metric status."""
@@ -60,7 +60,8 @@ class Metric(dict):
 
     def scales(self) -> Sequence[Scale]:
         """Return the scales supported by the metric."""
-        return cast(Sequence[Scale], self.__data_model["metrics"][self.type()]["scales"])
+        scales = self.__data_model.get("metrics", {}).get(self.type(), {}).get("scales", [])
+        return cast(Sequence[Scale], scales)
 
     def accept_debt(self) -> bool:
         """Return whether the metric has its technical debt accepted."""
