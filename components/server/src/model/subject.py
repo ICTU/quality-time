@@ -12,11 +12,19 @@ if TYPE_CHECKING:
 class Subject(dict):
     """Class representing a report."""
 
-    def __init__(self, data_model, subject_data: dict, subject_uuid: SubjectId, report: "Report") -> None:
+    def __init__(
+        self,
+        data_model,
+        subject_data: dict,
+        subject_uuid: SubjectId,
+        report: Optional["Report"],
+        tag: str | None = None,
+    ) -> None:
         """Instantiate a Subject."""
         self.__data_model = data_model
         self.uuid = subject_uuid
-        self.report = report
+        self.report = report if report is not None else {}
+        self.tag = tag
 
         metric_data = subject_data.get("metrics", {})
         self.metrics_dict = self._instantiate_metrics(metric_data)
@@ -40,21 +48,21 @@ class Subject(dict):
         """Either a custom name or one from the subject type in the data model."""
         return self.get("name") or self.__data_model["subjects"][self["type"]]["name"]
 
-    def tag_subject(self, tag: str) -> Optional["Subject"]:
+    def tag_subject(self, tag: str, report: Optional["Report"] = None) -> Optional["Subject"]:
         """Return a Subject instance with only metrics belonging to one tag."""
         metrics = {metric.uuid: metric for metric in self.metrics if tag in metric.get("tags", [])}
         if len(metrics) == 0:
-            return
+            return None
         data = dict(self)
         data["metrics"] = metrics
-        data["name"] = self.report["title"] + " ❯ " + self.name()
-        return Subject(self.__data_model, data, self.uuid, tag)
+        data["name"] = self.report.get("title", "") + " ❯ " + self.name()
+        return Subject(self.__data_model, data, self.uuid, report, tag)
 
-    def summarize(self, measurements: dict[str, Measurement] | None):
+    def summarize(self, measurements: dict[str, list[Measurement]] | None):
         """Create a summary dict of this subject."""
         summary = dict(self)
         summary["metrics"] = {}
         for metric in self.metrics:
-            metric_measurements = measurements[metric.uuid] if metric.uuid in measurements else None
+            metric_measurements = measurements[metric.uuid] if measurements and metric.uuid in measurements else None
             summary["metrics"][metric.uuid] = metric.summarize(metric_measurements)
         return summary

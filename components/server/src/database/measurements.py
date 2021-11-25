@@ -1,6 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
+from typing import Any
 
 import pymongo
 from pymongo.database import Database
@@ -29,7 +30,7 @@ def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
-    measurement_filter = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
+    measurement_filter: dict[str, Any] = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
     measurement_filter["metric_uuid"] = {"$in": list(metrics_dict.keys())}
     projection = {"_id": False, "sources.entities": False, "entity_user_data": False}
     measurements = database.measurements.find(

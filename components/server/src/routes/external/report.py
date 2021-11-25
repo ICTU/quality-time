@@ -59,8 +59,8 @@ def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
     DEPRECATED use /api/v3/report/<report_uuid> instead.
     """
     date_time = report_date_time()
-    reports = latest_reports(database, date_time)
     data_model = latest_datamodel(database, date_time)
+    reports = latest_reports(database, data_model, date_time)
     report = tag_report(data_model, tag, reports)
     measurements = recent_measurements(database, report.metrics_dict)
     summary = report.summarize(measurements)

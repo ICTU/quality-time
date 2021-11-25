@@ -28,11 +28,11 @@ class Metric(dict):
         """Return whether the metrics are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
 
-    def type(self) -> str:
+    def type(self) -> str | None:
         """Return the type of the metric."""
         return str(self["type"]) if "type" in self else None
 
-    def status(self, last_measurement: dict | None) -> str | Status:
+    def status(self, last_measurement: dict | None) -> Status | None:
         """Determine the metric status."""
         if last_measurement and last_measurement.get(self.scale(), {}).get("status", last_measurement.get("status")):
             status = last_measurement.get(self.scale(), {}).get("status", last_measurement.get("status"))

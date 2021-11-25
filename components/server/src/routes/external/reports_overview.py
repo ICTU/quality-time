@@ -28,8 +28,11 @@ def get_reports(database: Database):  # pragma: no cover
     data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)
     overview["reports"] = []
-    measurements = recent_measurements(database, date_time)
-    for report in latest_reports(database, date_time):
+    reports = latest_reports(database, data_model, date_time)
+    metrics_dict = {}
+    [metrics_dict.update(report.metrics_dict) for report in reports]
+    measurements = recent_measurements(database, metrics_dict, date_time)
+    for report in reports:
         overview["reports"].append(report.summarize(measurements))
     hide_credentials(data_model, *overview["reports"])
     return overview

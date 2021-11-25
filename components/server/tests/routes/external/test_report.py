@@ -277,6 +277,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
                 },
             )
         ]
+        self.maxDiff = None
         self.assertDictEqual(
             dict(
                 reports=[

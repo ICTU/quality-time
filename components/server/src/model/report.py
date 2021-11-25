@@ -1,6 +1,8 @@
+"""A class that represents a Report."""
 from typing import cast
 from model.measurement import Measurement
 from model.subject import Subject
+from model.metric import Metric
 from server_utilities.type import Color, ReportId, Status
 
 
@@ -36,7 +38,7 @@ class Report(dict):
         """Return whether the metrics are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
 
-    def _subjects(self, subject_data) -> tuple[set, set]:
+    def _subjects(self, subject_data) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
         subjects = {}
         for subject_uuid, subject in subject_data.items():
@@ -47,14 +49,14 @@ class Report(dict):
 
         return subjects
 
-    def _metrics(self, subjects: list[Subject]) -> tuple[set, set]:
+    def _metrics(self, subjects: list[Subject]) -> dict[str, Metric]:
         """All metrics of all subjects of this report."""
         metrics = {}
         for subject in subjects:
             metrics.update(subject.metrics_dict)
         return metrics
 
-    def summarize(self, measurements: dict[str, Measurement] | None) -> dict:
+    def summarize(self, measurements: dict[str, list[Measurement]] | None) -> dict:
         """Create a summary dict of this report."""
 
         summary = dict(self)
@@ -65,8 +67,9 @@ class Report(dict):
         summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
 
         for metric in self.metrics:
-            latest_measurement = measurements[metric.uuid][-1] if metric.uuid in measurements else None
-            color = STATUS_COLOR_MAPPING.get(metric.status(latest_measurement), "white")
+            latest_measurement = measurements[metric.uuid][-1] if measurements and metric.uuid in measurements else None
+            metric_status = metric.status(latest_measurement)
+            color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
             summary["summary"][color] += 1
             summary["summary_by_subject"].setdefault(
                 metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)

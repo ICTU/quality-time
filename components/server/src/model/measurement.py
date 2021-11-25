@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import Optional, cast
+from typing import Any, Optional, cast
 
 from packaging.version import InvalidVersion, Version
 
@@ -231,7 +231,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def summarize(self, scale: Scale):
         """A dict with a long or short summary of this measurement."""
-        summary = {}
+        summary: dict[str, Any] = {}
         summary[scale] = {"value": self[scale].get("value", None)}
         summary["start"] = self["start"]
         summary["end"] = self["end"]
