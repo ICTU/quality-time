@@ -17,9 +17,11 @@ class MetricTest(unittest.TestCase):
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.datamodels.find_one.return_value = {"_id": "data_model_id", "metrics": {"metric_type": {}}}
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved."""
+        self.maxDiff = None
         self.assertEqual(
             {
                 METRIC_ID: dict(
@@ -43,6 +45,7 @@ class MetricTest(unittest.TestCase):
 
     def test_get_metrics_with_issue(self):
         """Test that the metrics can be retrieved and the issue tracker is included."""
+        self.maxDiff = None
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
         self.assertEqual(

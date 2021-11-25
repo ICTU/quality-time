@@ -4,7 +4,6 @@ import unittest
 from unittest.mock import Mock
 
 from database.measurements import (
-    latest_measurements_by_metric_uuid,
     measurements_by_metric,
     recent_measurements_by_metric_uuid,
 )
@@ -82,15 +81,3 @@ class MeasurementsByMetricTest(unittest.TestCase):
         self.assertEqual(len(recent_measurements[METRIC_ID]), 3)
         self.assertIn(METRIC_ID2, recent_measurements)
         self.assertEqual(len(recent_measurements[METRIC_ID2]), 3)
-
-    def test_latest_measurements_by_uuid_uuid_filter(self):
-        """Test that we get all measurements with all metric ids."""
-        self.database.measurements.find.return_value = [self.measurements[2], self.measurements[5]]
-        latest_measurements = latest_measurements_by_metric_uuid(
-            self.database, "", metric_uuids=[METRIC_ID, METRIC_ID2]
-        )
-        self.assertEqual(len(latest_measurements), 2)
-        self.assertIn(METRIC_ID, latest_measurements)
-        self.assertEqual(latest_measurements[METRIC_ID]["start"], "6")
-        self.assertIn(METRIC_ID2, latest_measurements)
-        self.assertEqual(latest_measurements[METRIC_ID2]["start"], "7")
