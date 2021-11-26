@@ -8,12 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.29.0-rc.1 - 2021-11-25
+## [Unreleased]
 
 ### Changed
 
 - More flexible parsing of Axe-core JSON files to account for the different ways people aggregate Axe-core output into one JSON file, for the 'source up-to-dateness' and 'version' metrics. Closes [#2910](https://github.com/ICTU/quality-time/issues/2910).
 - Upgrade MongoDB to version 4.4. Note that to upgrade to this version of *Quality-time* your previous version needs to be at least version 3.24.0. Closes [#2911](https://github.com/ICTU/quality-time/issues/2911).
+
+### Added
+
+- Support JMeter JSON output as source for the 'slow transactions' metric. Closes [#2766](https://github.com/ICTU/quality-time/issues/2766).
 
 ## v3.28.0 - 2021-11-22
 
