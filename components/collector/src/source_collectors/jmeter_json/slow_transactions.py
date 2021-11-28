@@ -1,5 +1,7 @@
 """JMeter JSON slow transactions collector."""
 
+from typing import cast
+
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
@@ -13,7 +15,7 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
         transactions_to_include = self._parameter("transactions_to_include")
         transactions_to_ignore = self._parameter("transactions_to_ignore")
         response_time_type_to_evaluate = self._parameter("response_time_to_evaluate")
-        target_response_time = float(self._parameter("target_response_time"))
+        target_response_time = float(cast(int, self._parameter("target_response_time")))
 
         def include(transaction) -> bool:
             """Return whether the transaction should be included."""
