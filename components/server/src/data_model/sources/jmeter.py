@@ -2,17 +2,36 @@
 
 from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
-from ..parameters import access_parameters
+from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter
 
 
 ALL_JMETER_METRICS = ["slow_transactions"]
+
+TRANSACTIONS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
+    name="Transactions to ignore (regular expressions or transaction names)",
+    short_name="transactions to ignore",
+    help="Transactions to ignore can be specified by transaction name or by regular expression.",
+    metrics=ALL_JMETER_METRICS,
+)
+
+TRANSACTIONS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
+    name="Transactions to include (regular expressions or transaction names)",
+    short_name="transactions to include",
+    help="Transactions to include can be specified by transaction name or by regular expression.",
+    placeholder="all",
+    metrics=ALL_JMETER_METRICS,
+)
 
 JMETER_JSON = Source(
     name="JMeter JSON",
     description="Apache JMeter application is open source software, a 100% pure Java application designed to load "
     "test functional behavior and measure performance.",
     url="https://jmeter.apache.org",
-    parameters=dict(**access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")),
+    parameters=dict(
+        transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
+        transactions_to_include=TRANSACTIONS_TO_INCLUDE,
+        **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")
+    ),
     entities=dict(
         slow_transactions=dict(
             name="slow transaction",

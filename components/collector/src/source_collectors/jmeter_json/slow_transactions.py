@@ -1,6 +1,7 @@
 """JMeter JSON slow transactions collector."""
 
 from base_collectors import JSONFileSourceCollector
+from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 
@@ -9,10 +10,20 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the JSON."""
+        transactions_to_include = self._parameter("transactions_to_include")
+        transactions_to_ignore = self._parameter("transactions_to_ignore")
+
+        def include(transaction) -> bool:
+            """Return whether the transaction should be included."""
+            name = transaction["transaction"]
+            if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
+                return False
+            return not match_string_or_regular_expression(name, transactions_to_ignore)
+
         entities = Entities()
         for response in responses:
             json = await response.json(content_type=None)
-            transactions = [value for key, value in json.items() if key != "Total"]
+            transactions = [transaction for key, transaction in json.items() if key != "Total" and include(transaction)]
             for transaction in transactions:
                 entities.append(
                     Entity(
