@@ -12,6 +12,8 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
         """Override to parse the security warnings from the JSON."""
         transactions_to_include = self._parameter("transactions_to_include")
         transactions_to_ignore = self._parameter("transactions_to_ignore")
+        response_time_type_to_evaluate = self._parameter("response_time_to_evaluate")
+        target_response_time = float(self._parameter("target_response_time"))
 
         def include(transaction) -> bool:
             """Return whether the transaction should be included."""
@@ -25,20 +27,20 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
             json = await response.json(content_type=None)
             transactions = [transaction for key, transaction in json.items() if key != "Total" and include(transaction)]
             for transaction in transactions:
-                entities.append(
-                    Entity(
-                        key=transaction["transaction"],
-                        name=transaction["transaction"],
-                        sample_count=transaction["sampleCount"],
-                        error_count=transaction["errorCount"],
-                        error_percentage=self.__round(transaction["errorPct"]),
-                        mean_response_time=self.__round(transaction["meanResTime"]),
-                        median_response_time=self.__round(transaction["medianResTime"]),
-                        min_response_time=self.__round(transaction["minResTime"]),
-                        max_response_time=self.__round(transaction["maxResTime"]),
-                        percentile_90_response_time=self.__round(transaction["pct1ResTime"]),
-                    )
+                entity = Entity(
+                    key=transaction["transaction"],
+                    name=transaction["transaction"],
+                    sample_count=transaction["sampleCount"],
+                    error_count=transaction["errorCount"],
+                    error_percentage=self.__round(transaction["errorPct"]),
+                    mean_response_time=self.__round(transaction["meanResTime"]),
+                    median_response_time=self.__round(transaction["medianResTime"]),
+                    min_response_time=self.__round(transaction["minResTime"]),
+                    max_response_time=self.__round(transaction["maxResTime"]),
+                    percentile_90_response_time=self.__round(transaction["pct1ResTime"]),
                 )
+                if entity[response_time_type_to_evaluate] > target_response_time:
+                    entities.append(entity)
         return entities
 
     @staticmethod

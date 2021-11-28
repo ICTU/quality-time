@@ -2,7 +2,7 @@
 
 from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter
+from ..parameters import IntegerParameter, access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter
 
 
 ALL_JMETER_METRICS = ["slow_transactions"]
@@ -22,12 +22,39 @@ TRANSACTIONS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
     metrics=ALL_JMETER_METRICS,
 )
 
+TARGET_RESPONSE_TIME = IntegerParameter(
+    name="Target response time",
+    short_name="target response time",
+    help="The response times of the transactions should be less than or equal to the target response time.",
+    default_value="200",
+    unit="milliseconds",
+    metrics=ALL_JMETER_METRICS,
+)
+
+RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
+    name="Response time type to evaluate against the target response time",
+    short_name="response time type to evaluate",
+    help="Which response time type to compare with the target response time to determine slow transactions.",
+    default_value="90th percentile",
+    values=["90th percentile", "mean", "median", "minimum", "maximum"],
+    api_values={
+        "90th percentile": "percentile_90_response_time",
+        "mean": "mean_response_time",
+        "median": "median_response_time",
+        "minimum": "min_response_time",
+        "maximum": "max_response_time",
+    },
+    metrics=ALL_JMETER_METRICS,
+)
+
 JMETER_JSON = Source(
     name="JMeter JSON",
     description="Apache JMeter application is open source software, a 100% pure Java application designed to load "
     "test functional behavior and measure performance.",
     url="https://jmeter.apache.org",
     parameters=dict(
+        target_response_time=TARGET_RESPONSE_TIME,
+        response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
         transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
         **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")
@@ -37,7 +64,7 @@ JMETER_JSON = Source(
             name="slow transaction",
             attributes=[
                 dict(name="Transactions", key="name"),
-                dict(name="Sample count"),
+                dict(name="Sample count", type=EntityAttributeType.INTEGER),
                 dict(name="Error count", type=EntityAttributeType.INTEGER),
                 dict(name="Error percentage", type=EntityAttributeType.FLOAT),
                 dict(name="Mean response time (ms)", key="mean_response_time", type=EntityAttributeType.FLOAT),

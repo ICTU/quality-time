@@ -63,6 +63,7 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
                 percentile_90_response_time=120.0,
             ),
         ]
+        self.set_source_parameter("target_response_time", "10")
 
     async def test_no_transactions(self):
         """Test that the number of slow transactions is 0 if there are no transactions in the JSON."""
@@ -84,3 +85,11 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
         """Test that a transaction can be included."""
         self.set_source_parameter("transactions_to_include", ["/api/foo"])
         response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
+
+    async def test_evaluate_different_response_time(self):
+        """Test that a transaction can be included."""
+        self.set_source_parameter("response_time_to_evaluate", "min_response_time")
+        self.set_source_parameter("target_response_time", "45")
+        response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
