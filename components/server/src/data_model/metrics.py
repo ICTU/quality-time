@@ -178,7 +178,8 @@ METRICS = Metrics.parse_obj(
             description="The number of transactions slower than their performance threshold.",
             unit=Unit.TRANSACTIONS,
             near_target="5",
-            sources=["manual_number", "performancetest_runner"],
+            default_source="jmeter_json",
+            sources=["manual_number", "jmeter_json", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         source_up_to_dateness=dict(
