@@ -8,9 +8,11 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
 
     METRIC_TYPE = "slow_transactions"
     SOURCE_TYPE = "jmeter_json"
+    API1 = "/api/foo"
+    API2 = "/api/bar"
     JMETER_JSON = json = dict(
         transaction1=dict(
-            transaction="/api/foo",
+            transaction=API1,
             sampleCount=123,
             errorCount=2,
             errorPct=2 / 123,
@@ -21,7 +23,7 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
             pct1ResTime=115.0,
         ),
         transaction2=dict(
-            transaction="/api/bar",
+            transaction=API2,
             sampleCount=125,
             errorCount=4,
             errorPct=4 / 125,
@@ -40,7 +42,7 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
         self.expected_entities = [
             dict(
                 key="-api-foo",
-                name="/api/foo",
+                name=self.API1,
                 sample_count=123,
                 error_count=2,
                 error_percentage=round(2 / 123, 1),
@@ -52,7 +54,7 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
             ),
             dict(
                 key="-api-bar",
-                name="/api/bar",
+                name=self.API2,
                 sample_count=125,
                 error_count=4,
                 error_percentage=round(4 / 125, 1),
@@ -77,13 +79,13 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
 
     async def test_ignore_transaction(self):
         """Test that a transaction can be ignored."""
-        self.set_source_parameter("transactions_to_ignore", ["/api/bar"])
+        self.set_source_parameter("transactions_to_ignore", [self.API2])
         response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
 
     async def test_include_transaction(self):
         """Test that a transaction can be included."""
-        self.set_source_parameter("transactions_to_include", ["/api/foo"])
+        self.set_source_parameter("transactions_to_include", [self.API1])
         response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
 

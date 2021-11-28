@@ -31,14 +31,16 @@ TARGET_RESPONSE_TIME = IntegerParameter(
     metrics=ALL_JMETER_METRICS,
 )
 
+PERCENTILE_90 = "90th percentile"
+
 RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     name="Response time type to evaluate against the target response time",
     short_name="response time type to evaluate",
     help="Which response time type to compare with the target response time to determine slow transactions.",
-    default_value="90th percentile",
-    values=["90th percentile", "mean", "median", "minimum", "maximum"],
+    default_value=PERCENTILE_90,
+    values=[PERCENTILE_90, "mean", "median", "minimum", "maximum"],
     api_values={
-        "90th percentile": "percentile_90_response_time",
+        PERCENTILE_90: "percentile_90_response_time",
         "mean": "mean_response_time",
         "median": "median_response_time",
         "minimum": "min_response_time",
