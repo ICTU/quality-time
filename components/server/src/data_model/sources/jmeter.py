@@ -26,7 +26,7 @@ TARGET_RESPONSE_TIME = IntegerParameter(
     name="Target response time",
     short_name="target response time",
     help="The response times of the transactions should be less than or equal to the target response time.",
-    default_value="200",
+    default_value="1000",
     unit="milliseconds",
     metrics=ALL_JMETER_METRICS,
 )
