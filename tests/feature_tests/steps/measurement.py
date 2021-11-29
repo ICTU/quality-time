@@ -15,7 +15,6 @@ def get_metrics(context):
 
 
 @given('the collector has measured "{number}"')
-@given('the collector has measured "{number} yesterday')
 @when('the collector measures "{number}"')
 @when('the collector measures "{number}" with total "{total}"')
 def measure(context, number, total="100"):
@@ -25,7 +24,7 @@ def measure(context, number, total="100"):
         for row in context.table:
             entity = {heading: row[heading] for heading in context.table.headings}
             entities.append(entity)
-    measurement_datetime = datetime.now() - timedelta(days=1 if "yesterday" in context.step.name else 0)
+    measurement_datetime = datetime.now()
     measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
     context.post(
         "measurements",
