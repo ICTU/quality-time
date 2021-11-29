@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.29.0-rc.2 - 2021-11-28
+## [Unreleased]
 
 ### Changed
 
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Support JMeter JSON output as source for the 'slow transactions' metric. Closes [#2766](https://github.com/ICTU/quality-time/issues/2766).
+- Support JMeter JSON output as source for the 'slow transactions' metric. Closes [#2766](https://github.com/ICTU/quality-time/issues/2766) and [#2936](https://github.com/ICTU/quality-time/issues/2936).
 
 ## v3.28.0 - 2021-11-22
 
