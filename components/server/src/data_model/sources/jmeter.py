@@ -31,6 +31,15 @@ TARGET_RESPONSE_TIME = IntegerParameter(
     metrics=ALL_JMETER_METRICS,
 )
 
+TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES = MultipleChoiceWithAdditionParameter(
+    name="Transaction-specific target response times (regular expressions or transaction names:target response time)",
+    short_name="transactions-specific target response times",
+    help="Transactions-specific target responses times (in milliseconds) can be specified by transaction name or by "
+    "regular expression, separated from the target response time by a colon, e.g.: '/api/v?/search/.*:1500'.",
+    placeholder="none",
+    metrics=ALL_JMETER_METRICS,
+)
+
 PERCENTILE_90 = "90th percentile"
 
 RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
@@ -55,8 +64,9 @@ JMETER_JSON = Source(
     "test functional behavior and measure performance.",
     url="https://jmeter.apache.org",
     parameters=dict(
-        target_response_time=TARGET_RESPONSE_TIME,
         response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
+        target_response_time=TARGET_RESPONSE_TIME,
+        transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
         transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
         **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")

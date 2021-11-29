@@ -90,8 +90,14 @@ class JMeterJSONSlowTransactionsTest(SourceCollectorTestCase):
         self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
 
     async def test_evaluate_different_response_time(self):
-        """Test that a transaction can be included."""
+        """Test that a different response time type can be evaluated against the target response time."""
         self.set_source_parameter("response_time_to_evaluate", "min_response_time")
         self.set_source_parameter("target_response_time", "45")
+        response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
+
+    async def test_transaction_specific_response_time_target(self):
+        """Test that a transaction specific target response time can be set."""
+        self.set_source_parameter("transaction_specific_target_response_times", [".*bar:150"])
         response = await self.collect(get_request_json_return_value=self.JMETER_JSON)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
