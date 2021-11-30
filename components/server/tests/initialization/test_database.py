@@ -45,7 +45,7 @@ class DatabaseInitTest(unittest.TestCase):
         """Test the initialization of an empty database."""
         self.init_database('{"change": "yes"}')
         self.database.datamodels.insert_one.assert_called_once()
-        self.database.reports_overviews.insert.assert_called_once()
+        self.database.reports_overviews.insert_one.assert_called_once()
 
     def test_init_initialized_database(self):
         """Test the initialization of an initialized database."""
@@ -58,14 +58,14 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.measurements.count_documents.return_value = 20
         self.init_database("{}")
         self.database.datamodels.insert_one.assert_not_called()
-        self.database.reports_overviews.insert.assert_not_called()
+        self.database.reports_overviews.insert_one.assert_not_called()
 
     def test_skip_loading_example_reports(self):
         """Test that loading example reports can be skipped."""
         with patch("src.initialization.database.os.environ.get", Mock(return_value="False")):
             self.init_database('{"change": "yes"}', False)
         self.database.datamodels.insert_one.assert_called_once()
-        self.database.reports_overviews.insert.assert_called_once()
+        self.database.reports_overviews.insert_one.assert_called_once()
 
     def test_add_last_flag_to_reports(self):
         """Test that the last flag is added to reports."""

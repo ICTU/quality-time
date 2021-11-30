@@ -50,17 +50,17 @@ class ReportInitTest(unittest.TestCase):
     def test_import(self):
         """Test that a report can be imported."""
         self.import_report(self.report_json)
-        self.database.reports.insert.assert_called_once()
+        self.database.reports.insert_one.assert_called_once()
 
     def test_import_is_skipped(self):
         """Test that a report isn't imported when it's already in the database."""
         self.database.reports.distinct.return_value = ["id"]
         self.import_report(self.report_json)
-        self.database.reports.insert.assert_not_called()
+        self.database.reports.insert_one.assert_not_called()
 
     def test_import_example_report(self):
         """Test that the example reports are imported."""
         with patch.object(pathlib.Path, "glob", Mock(return_value=[pathlib.Path("example-report.json")])):
             with patch.object(pathlib.Path, "open", mock_open(read_data=self.report_json)):
                 import_example_reports(self.database)
-        self.database.reports.insert.assert_called_once()
+        self.database.reports.insert_one.assert_called_once()

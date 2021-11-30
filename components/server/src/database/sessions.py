@@ -13,10 +13,13 @@ def upsert(
     database: Database, username: str, email: str, session_id: SessionId, session_expiration_datetime: datetime
 ) -> None:
     """Update the existing session for the user or insert a new session."""
-    database.sessions.update(
+    database.sessions.replace_one(
         dict(user=username),
         dict(
-            user=username, email=email, session_id=session_id, session_expiration_datetime=session_expiration_datetime
+            user=username,
+            email=email,
+            session_id=session_id,
+            session_expiration_datetime=session_expiration_datetime,
         ),
         upsert=True,
     )

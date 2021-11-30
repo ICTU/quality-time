@@ -80,14 +80,14 @@ def insert_new_report(database: Database, delta_description: str, uuids, *report
     if len(reports) > 1:
         database.reports.insert_many(reports, ordered=False)
     else:
-        database.reports.insert(reports[0])
+        database.reports.insert_one(reports[0])
     return dict(ok=True)
 
 
 def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
     _prepare_documents_for_insertion(database, delta_description, [reports_overview])
-    database.reports_overviews.insert(reports_overview)
+    database.reports_overviews.insert_one(reports_overview)
     return dict(ok=True)
 
 

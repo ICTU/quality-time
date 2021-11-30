@@ -34,7 +34,7 @@ class ReportsOverviewTest(unittest.TestCase):
 
     def assert_change_description(self, attribute: str, old_value=None, new_value=None) -> None:
         """Assert that a change description is added to the new reports overview."""
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        inserted = self.database.reports_overviews.insert_one.call_args_list[0][0][0]
         delta = f" from '{old_value}' to '{new_value}'" if old_value and new_value else ""
         description = f"jenny changed the {attribute} of the reports overview{delta}."
         self.assertEqual(dict(email=self.email, description=description), inserted["delta"])
@@ -51,7 +51,7 @@ class ReportsOverviewTest(unittest.TestCase):
         """Test that the reports overview title is not changed if the new value is equal to the old value."""
         request.json = dict(title="Reports")
         self.assertEqual(dict(ok=True), post_reports_overview_attribute("title", self.database))
-        self.database.reports_overviews.insert.assert_not_called()
+        self.database.reports_overviews.insert_one.assert_not_called()
 
     @patch("bottle.request")
     def test_change_layout(self, request):

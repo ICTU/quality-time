@@ -40,7 +40,7 @@ class PostReportAttributeTest(unittest.TestCase):
         """Test that the report title can be changed."""
         request.json = dict(title="New title")
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "title", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID],
@@ -54,7 +54,7 @@ class PostReportAttributeTest(unittest.TestCase):
         """Test that the report layout can be changed."""
         request.json = dict(layout=[dict(x=1, y=2)])
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "layout", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(uuids=[REPORT_ID], email=JOHN["email"], description="John changed the layout of report 'Title'."),
             self.report["delta"],
@@ -78,7 +78,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
         """Test that the issue tracker type can be changed."""
         request.json = dict(type="jira")
         self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "type", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID],
@@ -96,7 +96,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
         result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
         self.assertTrue(result["ok"])
         self.assertEqual(-1, result["availability"][0]["status_code"])
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID],
@@ -111,7 +111,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
         """Test that the issue tracker username can be changed."""
         request.json = dict(username="jodoe")
         self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "username", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID],
@@ -126,7 +126,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
         """Test that the issue tracker password can be changed."""
         request.json = dict(password="secret")
         self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
                 uuids=[REPORT_ID],
@@ -142,7 +142,7 @@ class ReportIssueTrackerTest(unittest.TestCase):
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(password="secret"))
         request.json = dict(password="secret")
         self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
-        self.database.reports.insert.assert_not_called()
+        self.database.reports.insert_one.assert_not_called()
         self.assertEqual(dict(type="jira", parameters=dict(password="secret")), self.report["issue_tracker"])
 
 
@@ -352,8 +352,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_add_report(self):
         """Test that a report can be added."""
         self.assertTrue(post_report_new(self.database)["ok"])
-        self.database.reports.insert.assert_called_once()
-        inserted = self.database.reports.insert.call_args_list[0][0][0]
+        self.database.reports.insert_one.assert_called_once()
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
         self.assertEqual(
             dict(uuids=[inserted[REPORT_ID]], email=JENNY["email"], description="Jenny created a new report."),
@@ -363,8 +363,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_copy_report(self):
         """Test that a report can be copied."""
         self.assertTrue(post_report_copy(REPORT_ID, self.database)["ok"])
-        self.database.reports.insert.assert_called_once()
-        inserted_report = self.database.reports.insert.call_args[0][0]
+        self.database.reports.insert_one.assert_called_once()
+        inserted_report = self.database.reports.insert_one.call_args[0][0]
         inserted_report_uuid = inserted_report[REPORT_ID]
         self.assertNotEqual(self.report[REPORT_ID], inserted_report_uuid)
         self.assertEqual(
@@ -445,7 +445,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_delete_report(self):
         """Test that the report can be deleted."""
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
-        inserted = self.database.reports.insert.call_args_list[0][0][0]
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual(
             dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny deleted the report 'Report'."),
             inserted["delta"],
@@ -460,7 +460,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         ] = asymmetric_encrypt(self.public_key, "test_message")
         request.json = mocked_report
         post_report_import(self.database)
-        inserted = self.database.reports.insert.call_args_list[0][0][0]
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual("Report", inserted["title"])
         self.assertNotEqual(REPORT_ID, inserted[REPORT_ID])
 
@@ -473,7 +473,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         ] = "unencrypted_password"
         request.json = mocked_report
         post_report_import(self.database)
-        inserted_report = self.database.reports.insert.call_args_list[0][0][0]
+        inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
         inserted_subject = list(inserted_report["subjects"].items())[0][1]
         inserted_metric = list(inserted_subject["metrics"].items())[0][1]
         inserted_source = list(inserted_metric["sources"].items())[0][1]
