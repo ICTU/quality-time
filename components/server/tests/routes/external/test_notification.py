@@ -38,7 +38,7 @@ class PostNotificationAttributesTest(NotificationTestCase):
         """Test changing the name of a notification destination."""
         request.json = dict(name="new name")
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta(
             description="Jenny changed the 'name' of notification destination 'notification_destination' "
             "in report 'Report' from 'notification_destination' to 'new name'."
@@ -48,13 +48,13 @@ class PostNotificationAttributesTest(NotificationTestCase):
         """Test changing the name of a notification destination."""
         request.json = dict(name="notification_destination")
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
-        self.database.reports.insert.assert_not_called()
+        self.database.reports.insert_one.assert_not_called()
 
     def test_post_multiple_notification_destination_attributes(self, request):
         """Test changing the name and url of a notification destination."""
         request.json = dict(name="new name", url="https://newurl")
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta(
             description="Jenny changed the 'name' and 'url' of notification destination 'notification_destination' "
             "in report 'Report' from 'notification_destination' and 'https://reporturl' to 'new name' and "

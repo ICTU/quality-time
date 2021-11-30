@@ -35,7 +35,7 @@ class SessionsTest(unittest.TestCase):
                 session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99),
             )
         )
-        self.database.sessions.update.assert_called_with(
+        self.database.sessions.update_one.assert_called_with(
             {"user": JENNY["user"]},
             JENNY | dict(session_id="6", session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99)),
             upsert=True,

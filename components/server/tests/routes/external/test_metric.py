@@ -89,14 +89,14 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that the metric name can be changed."""
         request.json = dict(name="ABC")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "name", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta("name of metric 'name' of subject 'Subject' in report 'Report' from 'name' to 'ABC'")
 
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed."""
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "type", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta("type of metric 'name' of subject 'Subject' in report 'Report' from 'old_type' to 'new_type'")
 
     def test_post_metric_target_without_measurements(self, request):
@@ -242,7 +242,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
         request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "comment", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta(
             "comment of metric 'name' of subject 'Subject' in report 'Report' from '' to 'Comment with script'"
         )
@@ -251,7 +251,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that urls in comments are transformed into anchors."""
         request.json = dict(comment="Comment with url https://google.com")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "comment", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta(
             """comment of metric 'name' of subject 'Subject' in report 'Report' from '' to '<p>Comment with url """
             """<a href="https://google.com">https://google.com</a></p>'"""
@@ -261,7 +261,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that a metric can be moved to the top of the list."""
         request.json = dict(position="first")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
         self.assert_delta(
             "position of metric 'name2' of subject 'Subject' in report 'Report' from '1' to '0'",
@@ -272,7 +272,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that a metric can be moved to the bottom of the list."""
         request.json = dict(position="last")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
         self.assert_delta("position of metric 'name' of subject 'Subject' in report 'Report' from '0' to '1'")
 
@@ -280,7 +280,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that a metric can be moved up."""
         request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
         self.assert_delta(
             "position of metric 'name2' of subject 'Subject' in report 'Report' from '1' to '0'",
@@ -291,7 +291,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that a metric can be moved down."""
         request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
         self.assert_delta("position of metric 'name' of subject 'Subject' in report 'Report' from '0' to '1'")
 
@@ -299,14 +299,14 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that moving the first metric up does nothing."""
         request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
-        self.database.reports.insert.assert_not_called()
+        self.database.reports.insert_one.assert_not_called()
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
     def test_post_position_last_next(self, request):
         """Test that moving the last metric down does nothing."""
         request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
-        self.database.reports.insert.assert_not_called()
+        self.database.reports.insert_one.assert_not_called()
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
 
@@ -353,8 +353,8 @@ class MetricTest(unittest.TestCase):
     def test_copy_metric(self):
         """Test that a metric can be copied."""
         self.assertTrue(post_metric_copy(METRIC_ID, SUBJECT_ID, self.database)["ok"])
-        self.database.reports.insert.assert_called_once()
-        inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
+        self.database.reports.insert_one.assert_called_once()
+        inserted_metrics = self.database.reports.insert_one.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
         self.assertEqual(2, len(inserted_metrics))
         self.assert_delta(
             "John copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject 'Subject' in report "
@@ -397,5 +397,5 @@ class MetricTest(unittest.TestCase):
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
         self.assertEqual(dict(ok=True), delete_metric(METRIC_ID, self.database))
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_delta("John deleted metric 'Metric' from subject 'Subject' in report 'Report'.")

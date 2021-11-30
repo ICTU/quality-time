@@ -19,9 +19,9 @@ class TestSecrets(unittest.TestCase):
         # A secret already exists
         self.database.secrets.find_one.return_value = True
         initialize_secrets(self.database)
-        self.assertFalse(self.database.secrets.insert.called)
+        self.assertFalse(self.database.secrets.insert_one.called)
 
         # no secret exists yet, should insert
         self.database.secrets.find_one.return_value = None
         initialize_secrets(self.database)
-        self.assertTrue(self.database.secrets.insert.called)
+        self.assertTrue(self.database.secrets.insert_one.called)
