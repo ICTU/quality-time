@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Support JMeter JSON output as source for the 'slow transactions' metric. Closes [#2766](https://github.com/ICTU/quality-time/issues/2766) and [#2936](https://github.com/ICTU/quality-time/issues/2936).
+- Support JMeter JSON output as source for the 'slow transactions' and 'tests' metrics. Closes [#2766](https://github.com/ICTU/quality-time/issues/2766), [#2936](https://github.com/ICTU/quality-time/issues/2936), and [#2950](https://github.com/ICTU/quality-time/issues/2950).
 
 ## v3.28.0 - 2021-11-22
 
