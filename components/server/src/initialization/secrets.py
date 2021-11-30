@@ -31,7 +31,7 @@ def initialize_secrets(database: Database) -> None:
         encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
 
-    database.secrets.insert(
+    database.secrets.insert_one(
         {
             "name": EXPORT_FIELDS_KEYS_NAME,
             "description": EXPORT_FIELDS_USAGE_DESCRIPTION,
