@@ -37,7 +37,7 @@ def set_entity_attribute(
     data_model = latest_datamodel(database)
     data = SourceData(data_model, latest_reports(database, data_model), source_uuid)
     metric = Metric(data.datamodel, data.metric, metric_uuid)
-    new_measurement = latest_measurement(database, metric).copy()
+    new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([str(entity[key]) for key in entity.keys() if key not in ("key", "url")])
