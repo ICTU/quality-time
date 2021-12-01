@@ -2,10 +2,16 @@
 
 from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
-from ..parameters import IntegerParameter, access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter
+from ..parameters import (
+    access_parameters,
+    IntegerParameter,
+    MultipleChoiceWithAdditionParameter,
+    SingleChoiceParameter,
+    TestResult,
+)
 
 
-ALL_JMETER_METRICS = ["slow_transactions"]
+ALL_JMETER_METRICS = ["slow_transactions", "tests"]
 
 TRANSACTIONS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     name="Transactions to ignore (regular expressions or transaction names)",
@@ -28,7 +34,7 @@ TARGET_RESPONSE_TIME = IntegerParameter(
     help="The response times of the transactions should be less than or equal to the target response time.",
     default_value="1000",
     unit="milliseconds",
-    metrics=ALL_JMETER_METRICS,
+    metrics=["slow_transactions"],
 )
 
 TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES = MultipleChoiceWithAdditionParameter(
@@ -37,7 +43,7 @@ TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES = MultipleChoiceWithAdditionParameter
     help="Transactions-specific target responses times (in milliseconds) can be specified by transaction name or by "
     "regular expression, separated from the target response time by a colon, e.g.: '/api/v?/search/.*:1500'.",
     placeholder="none",
-    metrics=ALL_JMETER_METRICS,
+    metrics=["slow_transactions"],
 )
 
 PERCENTILE_90 = "90th percentile"
@@ -55,7 +61,7 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
         "minimum": "min_response_time",
         "maximum": "max_response_time",
     },
-    metrics=ALL_JMETER_METRICS,
+    metrics=["slow_transactions"],
 )
 
 JMETER_JSON = Source(
@@ -64,6 +70,7 @@ JMETER_JSON = Source(
     "test functional behavior and measure performance.",
     url="https://jmeter.apache.org",
     parameters=dict(
+        test_result=TestResult(values=["failed", "success"]),
         response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
         target_response_time=TARGET_RESPONSE_TIME,
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,

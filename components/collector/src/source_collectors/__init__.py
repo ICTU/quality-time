@@ -82,6 +82,7 @@ from .jira.user_story_points import JiraUserStoryPoints
 from .jira.velocity import JiraVelocity
 
 from .jmeter_json.slow_transactions import JMeterJSONSlowTransactions
+from .jmeter_json.tests import JMeterJSONTests
 
 from .junit.source_up_to_dateness import JUnitSourceUpToDateness
 from .junit.test_cases import JUnitTestCases
