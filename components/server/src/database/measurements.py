@@ -29,7 +29,7 @@ def latest_measurements_by_metric_uuid(
     date_time_match: MatchType = {"start": {"$lte": date_time}} if date_time else {}
     latest_measurement_ids = database.measurements.aggregate(
         [
-            {"$match": metric_uuid_match | date_time_match},
+            {"$match": metric_uuid_match | date_time_match},  # skipcq: TYP-052
             {"$sort": {"metric_uuid": 1, "start": -1}},
             {"$group": {"_id": "$metric_uuid", "measurement_id": {"$first": "$_id"}}},
             {"$project": {"_id": False}},
