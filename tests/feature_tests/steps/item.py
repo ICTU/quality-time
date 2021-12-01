@@ -99,13 +99,12 @@ def get_item(context, item):
 
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
-    """Check that the item attribute equals value."""
-    if item == "reports_overview" and attribute == "permissions":  # parse json data
-        value = {} if value == "None" else json.loads(value)
+    """Check that the item attribute equals the expected value."""
+    if item == "reports_overview" and attribute == "permissions":  # parse JSON data
+        expected_value = {} if value == "None" else json.loads(value)
     else:
-        value = None if value == "None" else value
-
-    assert_equal(value, get_item(context, item)[attribute])
+        expected_value = None if value == "None" else value
+    assert_equal(expected_value, get_item(context, item)[attribute])
 
 
 @then("the {item} does not exist")

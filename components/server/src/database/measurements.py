@@ -1,6 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
+from typing import Union
 
 import pymongo
 from pymongo.database import Database
@@ -17,11 +18,18 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
-def latest_measurements_by_metric_uuid(database: Database, metric_uuids: list[str]) -> dict[str, Measurement] | None:
+MatchType = dict[str, dict[str, Union[list[str], str]]]
+
+
+def latest_measurements_by_metric_uuid(
+    database: Database, date_time: str, metric_uuids: list[str]
+) -> dict[str, Measurement] | None:
     """Return the latest measurements in a dict with metric_uuids as keys."""
+    metric_uuid_match: MatchType = {"metric_uuid": {"$in": metric_uuids}}
+    date_time_match: MatchType = {"start": {"$lte": date_time}} if date_time else {}
     latest_measurement_ids = database.measurements.aggregate(
         [
-            {"$match": {"metric_uuid": {"$in": metric_uuids}}},
+            {"$match": metric_uuid_match | date_time_match},  # skipcq: TYP-052
             {"$sort": {"metric_uuid": 1, "start": -1}},
             {"$group": {"_id": "$metric_uuid", "measurement_id": {"$first": "$_id"}}},
             {"$project": {"_id": False}},

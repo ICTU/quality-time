@@ -56,6 +56,12 @@ def time_travel_future(context):
     context.report_date = "3000-01-01T10:00:00.000Z"
 
 
+@when("the client resets the report date")
+def reset_report_date(context):
+    """Reset the report date."""
+    context.report_date = None
+
+
 @when("the client enters a report date that's not too old")
 def time_travel(context):
     """Set a time in the past, but after the report was created."""

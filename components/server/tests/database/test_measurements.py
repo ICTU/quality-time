@@ -86,7 +86,9 @@ class MeasurementsByMetricTest(unittest.TestCase):
     def test_latest_measurements_by_uuid_uuid_filter(self):
         """Test that we get all measurements with all metric ids."""
         self.database.measurements.find.return_value = [self.measurements[2], self.measurements[5]]
-        latest_measurements = latest_measurements_by_metric_uuid(self.database, metric_uuids=[METRIC_ID, METRIC_ID2])
+        latest_measurements = latest_measurements_by_metric_uuid(
+            self.database, "", metric_uuids=[METRIC_ID, METRIC_ID2]
+        )
         self.assertEqual(len(latest_measurements), 2)
         self.assertIn(METRIC_ID, latest_measurements)
         self.assertEqual(latest_measurements[METRIC_ID]["start"], "6")
