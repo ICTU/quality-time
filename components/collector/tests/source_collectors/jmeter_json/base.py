@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JMeterJSONTestCase(SourceCollectorTestCase):
+class JMeterJSONTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for JMeter JSON collector unit tests."""
 
     SOURCE_TYPE = "jmeter_json"
