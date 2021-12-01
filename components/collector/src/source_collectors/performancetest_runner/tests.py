@@ -10,7 +10,7 @@ from .base import PerformanceTestRunnerBaseClass
 
 
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
-    """Collector for the number of performance test transactions."""
+    """Collector for the number of (successful and/or failing) performance test transactions."""
 
     COLUMN_INDICES = dict(failed=7, success=1)
 
