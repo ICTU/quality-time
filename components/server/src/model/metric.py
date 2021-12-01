@@ -104,7 +104,6 @@ class Metric(dict):
 
     def summarize(self, measurements: list[Measurement] = None):
         """Add a summary of the metric to the report."""
-
         measurements = measurements if measurements is not None else []
         latest_measurement = measurements[-1] if measurements else None
 

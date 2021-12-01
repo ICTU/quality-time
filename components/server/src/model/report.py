@@ -61,7 +61,6 @@ class Report(dict):
 
     def summarize(self, measurements: dict[str, list[Measurement]] | None) -> dict:
         """Create a summary dict of this report."""
-
         summary = dict(self)
         summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
         summary["summary_by_subject"] = {}
