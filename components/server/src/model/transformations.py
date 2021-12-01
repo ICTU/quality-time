@@ -164,7 +164,7 @@ def summarize_report(report, database, data_model, date_time) -> None:
     report["summary_by_tag"] = {}
     metric_uuids = report_metrics_uuids(report)
     recent_measurements = recent_measurements_by_metric_uuid(data_model, database, date_time, metric_uuids=metric_uuids)
-    latest_measurements = latest_measurements_by_metric_uuid(database, metric_uuids)
+    latest_measurements = latest_measurements_by_metric_uuid(database, date_time, metric_uuids)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid in subject.get("metrics", {}):
             summarize_metric(data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid)

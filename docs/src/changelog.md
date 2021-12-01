@@ -8,7 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.29.0-rc.3 - 2021-11-29
+## [Unreleased]
+
+### Fixed
+
+- Time travel was broken: *Quality-time* would show the current measurement value regardless of the date selected. Fixes [#2958](https://github.com/ICTU/quality-time/issues/2958).
 
 ### Changed
 
