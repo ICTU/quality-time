@@ -39,7 +39,7 @@ class Report(dict):
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
-        return self.uuid == other.uuid  # pragma: no cover-behave
+        return self.uuid == other.uuid
 
     def _subjects(self, subject_data) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
