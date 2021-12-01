@@ -22,7 +22,6 @@ class Report(dict):
         subject_data = report_data.get("subjects", {})
         self.subjects_dict = self._subjects(subject_data)
         self.subjects = list(self.subjects_dict.values())
-        self.subject_uuids = list(self.subjects_dict.keys())
 
         self.metrics_dict = self._metrics()
         self.metrics = list(self.metrics_dict.values())
