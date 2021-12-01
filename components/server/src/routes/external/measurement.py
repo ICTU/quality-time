@@ -35,23 +35,20 @@ def set_entity_attribute(
 ) -> dict:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SourceData(data_model, reports, source_uuid)
+    data = SourceData(data_model, latest_reports(database, data_model), source_uuid)
     metric = Metric(data.datamodel, data.metric, metric_uuid)
-    old_measurement = cast(Measurement, latest_measurement(database, metric))
-    new_measurement = old_measurement.copy()
+    new_measurement = latest_measurement(database, metric).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([str(entity[key]) for key in entity.keys() if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
-    user = sessions.user(database)
     new_measurement["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
-        description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
+        description=f"{sessions.user(database)['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
         f"'{new_value}'.",
-        email=user["email"],
+        email=sessions.user(database)["email"],
     )
     return insert_new_measurement(database, new_measurement)
 
