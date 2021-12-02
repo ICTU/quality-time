@@ -560,6 +560,18 @@
                                 "transactions_to_ignore": [],
                                 "transactions_to_include": []
                             }
+                        },
+                        "4843538b-235f-4d10-9043-1fe637dc4eed": {
+                            "type": "jmeter_json",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/jmeter/jmeter.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
                         }
                     },
                     "name": "Number of performance tests",
@@ -582,6 +594,18 @@
                             "type": "performancetest_runner",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
+                        },
+                        "4843538b-235f-4c19-905a-1ee6e71c4dcd": {
+                            "type": "jmeter_json",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/jmeter/jmeter.json",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
