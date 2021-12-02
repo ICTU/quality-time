@@ -6,10 +6,10 @@ from typing import Any
 import pymongo
 from pymongo.database import Database
 
-from model.measurement import Measurement
-from model.metric import Metric
-from server_utilities.functions import iso_timestamp
-from server_utilities.type import MeasurementId, MetricId
+from external.model.measurement import Measurement
+from external.model.metric import Metric
+from external.server_utilities.functions import iso_timestamp
+from external.server_utilities.type import MeasurementId, MetricId
 
 
 def latest_measurement(database: Database, metric: Metric) -> Measurement | None:

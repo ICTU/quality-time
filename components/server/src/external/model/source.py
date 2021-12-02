@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import cast, Optional, TYPE_CHECKING
 
-from server_utilities.functions import days_ago, iso_timestamp
+from external.server_utilities.functions import days_ago, iso_timestamp
 
 
 if TYPE_CHECKING:

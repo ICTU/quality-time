@@ -8,8 +8,10 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from model.source import Source
-from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+from typing import TYPE_CHECKING
+
+from external.model.source import Source
+from external.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
 
 
 if TYPE_CHECKING:

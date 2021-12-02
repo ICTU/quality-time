@@ -6,7 +6,7 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from server_utilities.type import SessionId
+from external.server_utilities.type import SessionId
 
 
 def upsert(

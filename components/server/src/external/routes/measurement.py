@@ -8,22 +8,22 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from database import sessions
-from database.datamodels import latest_datamodel
-from database.measurements import (
+from external.database import sessions
+from external.database.datamodels import latest_datamodel
+from external.database.measurements import (
     measurements_by_metric,
     count_measurements,
     insert_new_measurement,
     latest_measurement,
 )
-from database.reports import latest_reports
-from model.data import SourceData
+from external.database.reports import latest_reports
+from external.model.data import SourceData
 
-from model.measurement import Measurement
-from model.metric import Metric
-from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION
-from server_utilities.functions import report_date_time
-from server_utilities.type import MetricId, SourceId
+from external.model.measurement import Measurement
+from external.model.metric import Metric
+from external.routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION
+from external.server_utilities.functions import report_date_time
+from external.server_utilities.type import MetricId, SourceId
 
 
 @bottle.post(

@@ -5,15 +5,15 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from database.datamodels import default_source_parameters, latest_datamodel
-from database.reports import insert_new_report, latest_reports
-from model.actions import copy_source, move_item
-from model.data import MetricData, SourceData
-from model.queries import is_password_parameter
-from model.transformations import change_source_parameter
-from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import check_url_availability, uuid
-from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
+from external.database.datamodels import default_source_parameters, latest_datamodel
+from external.database.reports import insert_new_report, latest_reports
+from external.model.actions import copy_source, move_item
+from external.model.data import MetricData, SourceData
+from external.model.queries import is_password_parameter
+from external.model.transformations import change_source_parameter
+from external.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from external.server_utilities.functions import check_url_availability, uuid
+from external.server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
 
 
 @bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

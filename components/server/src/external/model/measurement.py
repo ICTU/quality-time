@@ -8,10 +8,10 @@ from typing import Optional, cast
 
 from packaging.version import InvalidVersion, Version
 
-from model.metric import Metric
-from model.source import Source
-from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import Scale, Status
+from external.model.metric import Metric
+from external.model.source import Source
+from external.server_utilities.functions import iso_timestamp, percentage
+from external.server_utilities.type import Scale, Status
 
 
 class ScaleMeasurement(dict):  # lgtm [py/missing-equals]

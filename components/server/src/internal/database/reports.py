@@ -3,9 +3,9 @@
 import pymongo
 from pymongo.database import Database
 
-from model.metric import Metric
-from server_utilities.functions import iso_timestamp
-from server_utilities.type import MetricId
+from internal.model.metric import Metric
+from internal.server_utilities.functions import iso_timestamp
+from internal.server_utilities.type import MetricId
 from .filters import DOES_NOT_EXIST
 from .datamodels import latest_datamodel
 

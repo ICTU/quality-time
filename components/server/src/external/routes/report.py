@@ -7,22 +7,28 @@ import bottle
 import requests
 from pymongo.database import Database
 
-from database.datamodels import latest_datamodel
-from database.measurements import recent_measurements
-from database.reports import insert_new_report, latest_report, latest_reports
-from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
-from model.actions import copy_report
-from model.data import ReportData
-from model.report import Report
-from model.transformations import (
+from external.database.datamodels import latest_datamodel
+from external.database.measurements import recent_measurements
+from external.database.reports import insert_new_report, latest_report, latest_reports
+from external.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
+from external.model.actions import copy_report
+from external.model.data import ReportData
+from external.model.report import Report
+from external.model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
     hide_credentials,
     replace_report_uuids,
 )
-from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
-from server_utilities.type import ReportId
+from external.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from external.server_utilities.functions import (
+    DecryptionError,
+    check_url_availability,
+    iso_timestamp,
+    report_date_time,
+    uuid,
+)
+from external.server_utilities.type import ReportId
 
 
 @bottle.get("/api/v3/report", authentication_required=False)

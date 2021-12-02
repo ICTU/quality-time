@@ -5,10 +5,10 @@ from typing import Any, cast
 import pymongo
 from pymongo.database import Database
 
-from model.metric import Metric
-from model.report import Report
-from server_utilities.functions import iso_timestamp, unique
-from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from external.model.metric import Metric
+from external.model.report import Report
+from external.server_utilities.functions import iso_timestamp, unique
+from external.server_utilities.type import Change, MetricId, ReportId, SubjectId
 from .datamodels import latest_datamodel
 from .filters import DOES_EXIST, DOES_NOT_EXIST
 from . import sessions

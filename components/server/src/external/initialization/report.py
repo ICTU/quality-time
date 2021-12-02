@@ -6,7 +6,12 @@ import pathlib
 
 from pymongo.database import Database
 
-from database.reports import insert_new_report, insert_new_reports_overview, latest_reports_overview, report_exists
+from external.database.reports import (
+    insert_new_report,
+    insert_new_reports_overview,
+    latest_reports_overview,
+    report_exists,
+)
 
 
 def initialize_reports_overview(database: Database) -> None:

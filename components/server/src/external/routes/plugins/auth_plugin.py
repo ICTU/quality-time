@@ -4,9 +4,9 @@ import logging
 
 import bottle
 
-from database import sessions
-from database.reports import latest_reports_overview
-from model.session import Session
+from external.database import sessions
+from external.database.reports import latest_reports_overview
+from external.model.session import Session
 
 EDIT_REPORT_PERMISSION = "edit_reports"
 EDIT_ENTITY_PERMISSION = "edit_entities"

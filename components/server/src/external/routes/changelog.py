@@ -5,8 +5,8 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from database import measurements, reports
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
+from external.database import measurements, reports
+from external.server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 
 
 def _get_changelog(database: Database, nr_changes: str, **uuids: str):

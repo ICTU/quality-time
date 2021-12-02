@@ -16,3 +16,8 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     if denominator == 0:
         return 0 if direction == "<" else 100
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
+
+
+def days_ago(date_time: datetime) -> int:
+    """Return the days since the date/time."""
+    return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
