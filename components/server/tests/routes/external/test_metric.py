@@ -118,7 +118,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.find_one.return_value = None
         request.json = dict(target="10")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'", report=updated_report
         )
@@ -130,7 +130,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
         request.json = dict(target="invalid")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to 'invalid'",
             report=updated_report,
@@ -174,7 +174,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "target", self.database),
         )
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "target of metric 'name' of subject 'Subject' in report 'Report' from '1.2' to 'invalid'",
             report=updated_report,
@@ -196,7 +196,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "target", self.database),
         )
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'", report=updated_report
         )
@@ -224,7 +224,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "accept_debt", self.database),
         )
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'",
             report=updated_report,
@@ -255,7 +255,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "accept_debt", self.database),
         )
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'",
             report=updated_report,
@@ -270,7 +270,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         count = dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<")
         new_measurement = dict(end="2019-01-01", sources=[], start="2019-01-01", metric_uuid=METRIC_ID, count=count)
         self.assertEqual(new_measurement, post_metric_attribute(METRIC_ID, "debt_end_date", self.database))
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "debt_end_date of metric 'name' of subject 'Subject' in report 'Report' from '' to '2019-06-07'",
             report=updated_report,
@@ -341,7 +341,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        updated_report = self.database.reports.ininsert_oneert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
         self.assert_delta(
             "position of metric 'name' of subject 'Subject' in report 'Report' from '0' to '1'", report=updated_report
@@ -413,7 +413,7 @@ class MetricTest(unittest.TestCase):
     def test_add_metric(self):
         """Test that a metric can be added."""
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "John added a new metric to subject 'Subject' in report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]],
@@ -439,7 +439,7 @@ class MetricTest(unittest.TestCase):
         metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
         target_subject = self.report["subjects"][SUBJECT_ID2] = dict(name="Target", metrics={})
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual({}, updated_report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
         self.assert_delta(

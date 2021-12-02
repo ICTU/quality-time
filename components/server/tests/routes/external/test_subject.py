@@ -126,14 +126,12 @@ class PostSubjectAttributeTest(unittest.TestCase):
         request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "position", self.database))
         self.database.reports.insert_one.assert_not_called()
-        self.assertEqual([SUBJECT_ID, SUBJECT_ID2], list(self.report["subjects"].keys()))
 
     def test_post_position_last_next(self, request):
         """Test that moving the last subject down does nothing."""
         request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID2, "position", self.database))
         self.database.reports.insert_one.assert_not_called()
-        self.assertEqual([SUBJECT_ID, SUBJECT_ID2], list(self.report["subjects"].keys()))
 
 
 class SubjectTest(unittest.TestCase):
@@ -168,7 +166,7 @@ class SubjectTest(unittest.TestCase):
         self.assertTrue(result["ok"])
         self.assertIn("new_subject_uuid", result)
         subject_uuid = result["new_subject_uuid"]
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta("created a new subject in report 'Report'", [REPORT_ID, subject_uuid], report=updated_report)
 
     def test_copy_subject(self):
@@ -189,7 +187,7 @@ class SubjectTest(unittest.TestCase):
     def test_delete_subject(self):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject(SUBJECT_ID, self.database))
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta("deleted the subject 'Subject' from report 'Report'", [REPORT_ID, SUBJECT_ID], updated_report)
 
     def test_move_subject(self):

@@ -75,7 +75,7 @@ class NotificationDestinationTest(NotificationTestCase):
         """Test that a notification destination can be added."""
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
         notification_destinations_uuid = list(self.report["notification_destinations"].keys())[1]
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             description="Jenny created a new destination for notifications in report 'Report'.",
             uuids=[REPORT_ID, notification_destinations_uuid],
@@ -86,7 +86,7 @@ class NotificationDestinationTest(NotificationTestCase):
         """Test that a notification destination can be added."""
         del self.report["notification_destinations"]
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         notification_destinations_uuid = list(updated_report["notification_destinations"].keys())[0]
         self.assert_delta(
             description="Jenny created a new destination for notifications in report 'Report'.",
@@ -99,7 +99,7 @@ class NotificationDestinationTest(NotificationTestCase):
         self.assertEqual(
             dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         )
-        updated_report = self.database.reports.insert.call_args[0][0]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             description="Jenny deleted destination notification_destination from report 'Report'.",
             uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
