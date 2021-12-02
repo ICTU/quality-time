@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Popup, Table } from 'semantic-ui-react';
-import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target } from '../utils';
+import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target, get_metric_value } from '../utils';
 import { DataModel } from '../context/DataModel';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
@@ -16,7 +16,8 @@ function MeasurementValue({ metric }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
-    const value = metric.value && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
+    const metricValue = get_metric_value(metric)
+    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metricValue || "?";
     const valueText = <span>{value + metricUnit}</span>
     if (metric.latest_measurement) {
         return (
