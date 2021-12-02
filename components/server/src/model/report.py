@@ -1,5 +1,7 @@
-"""A class that represents a Report."""
+"""A class that represents a report."""
+
 from typing import cast
+
 from model.measurement import Measurement
 from model.subject import Subject
 from model.metric import Metric
@@ -16,7 +18,7 @@ class Report(dict):
     """Class representing a report."""
 
     def __init__(self, data_model, report_data: dict) -> None:
-        """Instantiate a Report."""
+        """Instantiate a report."""
         self.__data_model = data_model
 
         subject_data = report_data.get("subjects", {})
@@ -38,7 +40,7 @@ class Report(dict):
         return cast(ReportId, self["report_uuid"])  # pragma: no cover-behave
 
     def __eq__(self, other):
-        """Return whether the metrics are equal."""
+        """Return whether the reports are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
 
     def _subjects(self, subject_data) -> dict[str, Subject]:

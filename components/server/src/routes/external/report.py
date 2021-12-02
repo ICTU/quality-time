@@ -33,23 +33,23 @@ def get_report(database: Database, report_uuid: ReportId = None):
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, data_model, date_time)
-    summaries = []
+    summarized_reports = []
 
     if report_uuid and report_uuid.startswith("tag-"):
         report = tag_report(data_model, report_uuid[4:], reports)
         if len(report.subjects) > 0:
             measurements = recent_measurements(database, report.metrics_dict, date_time)
-            summaries.append(report.summarize(measurements))
+            summarized_reports.append(report.summarize(measurements))
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
                 measurements = recent_measurements(database, report.metrics_dict, date_time)
-                summaries.append(report.summarize(measurements))
+                summarized_reports.append(report.summarize(measurements))
             else:
-                summaries.append(report)
+                summarized_reports.append(report)
 
-    hide_credentials(data_model, *summaries)
-    return dict(reports=summaries)
+    hide_credentials(data_model, *summarized_reports)
+    return dict(reports=summarized_reports)
 
 
 @bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
@@ -220,13 +220,12 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
 
 
 def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
-    """Rreate a report for a tag."""
+    """Create a report for a tag."""
     subjects = {}
     for report in reports:
         for subject in report.subjects:
-            tag_subject = subject.tag_subject(tag)
-            if tag_subject is not None:
-                subjects[subject.uuid] = subject.tag_subject(tag)
+            if tag_subject := subject.tag_subject(tag):
+                subjects[subject.uuid] = tag_subject
 
     report = Report(
         data_model,

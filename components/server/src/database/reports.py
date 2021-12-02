@@ -9,8 +9,9 @@ from model.metric import Metric
 from model.report import Report
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from .datamodels import latest_datamodel
 from .filters import DOES_EXIST, DOES_NOT_EXIST
-from . import datamodels, sessions
+from . import sessions
 
 
 # Sort order:
@@ -57,7 +58,7 @@ def report_exists(database: Database, report_uuid: ReportId):
 
 def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
     """Return the latest metric with the specified metric uuid."""
-    data_model = datamodels.latest_datamodel(database)
+    data_model = latest_datamodel(database)
     for report in latest_reports(database, data_model):
         if metric_uuid in report.metric_uuids:
             return report.metrics_dict[metric_uuid]

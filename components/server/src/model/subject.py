@@ -1,19 +1,21 @@
-"""A class that represents a Subject."""
+"""A class that represents a subject."""
+
 from typing import TYPE_CHECKING, Optional
 
 from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.type import SubjectId
 
+
 if TYPE_CHECKING:
     from model.report import Report
 
 
 class Subject(dict):
-    """Class representing a report."""
+    """Class representing a subject."""
 
     def __init__(self, data_model, subject_data: dict, subject_uuid: SubjectId, report: Optional["Report"]) -> None:
-        """Instantiate a Subject."""
+        """Instantiate a subject."""
         self.__data_model = data_model
         self.uuid = subject_uuid
         self.report = report if report is not None else {}
@@ -26,7 +28,7 @@ class Subject(dict):
         super().__init__(subject_data)
 
     def __eq__(self, other):
-        """Return whether the metrics are equal."""
+        """Return whether the subjects are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
 
     def _instantiate_metrics(self, metric_data: dict) -> dict[str, Metric]:

@@ -1,4 +1,5 @@
 """Metric model class."""
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -9,6 +10,7 @@ from typing import TYPE_CHECKING
 
 from model.source import Source
 from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+
 
 if TYPE_CHECKING:
     from model.measurement import Measurement
@@ -31,16 +33,15 @@ class Metric(dict):
         """Return the type of the metric."""
         return str(self["type"]) if "type" in self else None
 
-    def status(self, last_measurement: dict | None) -> Status | None:
+    def status(self, last_measurement: Measurement | None) -> Status | None:
         """Determine the metric status."""
-        if last_measurement and last_measurement.get(self.scale(), {}).get("status", last_measurement.get("status")):
-            status = last_measurement.get(self.scale(), {}).get("status", last_measurement.get("status"))
-            return cast(Status, status)
+        if last_measurement and (status := last_measurement.status()):
+            return status
         debt_end_date = self.get("debt_end_date") or date.max.isoformat()
         return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
 
-    def issue_statuses(self, last_measurement: dict | None) -> list[dict]:
-        """Return the metric's issue  statuses."""
+    def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
+        """Return the metric's issue statuses."""
         last_issue_statuses = last_measurement.get("issue_status", []) if last_measurement else []
         return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
 
@@ -110,15 +111,10 @@ class Metric(dict):
         summary = dict(self)
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
+        summary["status_start"] = latest_measurement.status_start() if latest_measurement else None
         summary["latest_measurement"] = latest_measurement
         summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
-
         if latest_measurement:
             summary["issue_status"] = self.issue_statuses(latest_measurement)
-
-        summary["status_start"] = None
-        if latest_measurement and latest_measurement.get(self.scale(), {}).get("status_start"):
-            status_start = latest_measurement.get(self.scale(), {}).get("status_start")
-            summary["status_start"] = status_start
 
         return summary
