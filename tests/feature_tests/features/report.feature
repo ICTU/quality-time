@@ -155,12 +155,12 @@ Feature: report
     And the client creates a metric
     And the client creates a source
     And the collector measures "0"
-    Then the metric value is "0"
+    Then the metric latest_measurement.count.value is "0"
     When the client enters a report date that's not too old
     And the collector measures "100"
-    Then the metric value is "0"
+    Then the metric latest_measurement.count.value is "0"
     When the client resets the report date
-    Then the metric value is "100"
+    Then the metric latest_measurement.count.value is "100"
 
   Scenario: get non-existent report
     When the client gets a non-existing report
