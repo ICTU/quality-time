@@ -35,11 +35,11 @@ class Report(dict):
     @property
     def uuid(self):
         """Return the uuid of this report."""
-        return cast(ReportId, self["report_uuid"])
+        return cast(ReportId, self["report_uuid"])  # pragma: no cover-behave
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
-        return self.uuid == other.uuid
+        return self.uuid == other.uuid  # pragma: no cover-behave
 
     def _subjects(self, subject_data) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
