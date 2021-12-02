@@ -3,15 +3,15 @@
 import bottle
 from pymongo.database import Database
 
-from database.measurements import (
+from internal.database.measurements import (
     insert_new_measurement,
     latest_measurement,
     latest_successful_measurement,
     update_measurement_end,
 )
-from database.reports import latest_metric
+from internal.database.reports import latest_metric
 
-from model.measurement import Measurement
+from internal.model.measurement import Measurement
 
 
 @bottle.post("/internal-api/v3/measurements", authentication_required=False)

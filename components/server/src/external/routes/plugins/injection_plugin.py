@@ -25,9 +25,9 @@ class InjectionPlugin:
     def apply(self, callback, context):
         """Apply the plugin to the route."""
         # Override global configuration with route-specific values.
-        configuration = context.config.get('injection') or {}
-        value = configuration.get('value', self.value)
-        keyword = configuration.get('keyword', self.keyword)
+        configuration = context.config.get("injection") or {}
+        value = configuration.get("value", self.value)
+        keyword = configuration.get("keyword", self.keyword)
 
         # Test if the original callback accepts a keyword parameter.
         # Ignore it if it does not need a value.
