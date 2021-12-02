@@ -17,7 +17,7 @@ function MeasurementValue({ metric }) {
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
     const metricValue = get_metric_value(metric)
-    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metricValue || "?";
+    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
     const valueText = <span>{value + metricUnit}</span>
     if (metric.latest_measurement) {
         return (
