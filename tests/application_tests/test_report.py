@@ -43,7 +43,7 @@ class OpenReportTest(unittest.TestCase):
         for argument in "headless no-sandbox single-process disable-dev-shm-usage disable-gpu".split(" "):
             chrome_options.add_argument(f"--{argument}")
         # self.driver = webdriver.Chrome(options=chrome_options)
-        self.browser = webdriver.Remote("http://selenium:4444/wd/hub", options=chrome_options)
+        self.driver = webdriver.Remote("http://selenium:4444/wd/hub", options=chrome_options)
         self.driver.implicitly_wait(10)
         self.wait = WebDriverWait(self.driver, 10)
         self.driver.get("http://www:80")
