@@ -31,7 +31,7 @@ services:
     ports:
       - "9000:9000"
   selenium:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-firefox
     shm_size: 2gb
     ports:
       - "4444:4444"
