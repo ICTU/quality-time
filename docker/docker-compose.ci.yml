@@ -32,5 +32,6 @@ services:
       - "9000:9000"
   selenium:
     image: selenium/standalone-chrome
+    shm_size: 2gb
     ports:
       - "4444:4444"
