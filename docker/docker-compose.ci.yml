@@ -30,3 +30,7 @@ services:
     build: ../components/renderer
     ports:
       - "9000:9000"
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
