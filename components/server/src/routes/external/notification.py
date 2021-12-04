@@ -14,7 +14,9 @@ from server_utilities.type import ReportId, NotificationDestinationId
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
-    data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database, data_model)
+    data = ReportData(data_model, reports, report_uuid)
     if "notification_destinations" not in data.report:
         data.report["notification_destinations"] = {}
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
@@ -35,7 +37,9 @@ def delete_notification_destination(
     report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database
 ):
     """Delete a destination from a report."""
-    data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database, data_model)
+    data = ReportData(data_model, reports, report_uuid)
     destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
     del data.report["notification_destinations"][notification_destination_uuid]
     delta_description = f"{{user}} deleted destination {destination_name} from report '{data.report_name}'."
@@ -51,7 +55,9 @@ def post_notification_destination_attributes(
     report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database
 ):
     """Set specified notification destination attributes."""
-    data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database, data_model)
+    data = ReportData(data_model, reports, report_uuid)
     notification_destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
     attributes = dict(bottle.request.json)
     old_values = []

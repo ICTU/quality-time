@@ -34,10 +34,10 @@ def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
 ) -> dict:
     """Set an entity attribute."""
-    data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
+    data_model = latest_datamodel(database)
+    data = SourceData(data_model, latest_reports(database, data_model), source_uuid)
     metric = Metric(data.datamodel, data.metric, metric_uuid)
-    old_measurement = cast(Measurement, latest_measurement(database, metric))
-    new_measurement = old_measurement.copy()
+    new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([str(entity[key]) for key in entity.keys() if key not in ("key", "url")])

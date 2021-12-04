@@ -17,6 +17,7 @@ class MetricTest(unittest.TestCase):
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.datamodels.find_one.return_value = {"_id": "data_model_id", "metrics": {"metric_type": {}}}
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved."""
@@ -31,6 +32,11 @@ class MetricTest(unittest.TestCase):
                     tags=["security"],
                     target="0",
                     scales=["count", "percentage"],
+                    latest_measurement=None,
+                    recent_measurements=[],
+                    scale="count",
+                    status=None,
+                    status_start=None,
                     sources=dict(
                         source_uuid=dict(
                             name="Source", type="source_type", parameters=dict(url="https://url", password="password")
@@ -57,6 +63,11 @@ class MetricTest(unittest.TestCase):
                     target="0",
                     issue_ids=["FOO-42"],
                     issue_tracker=dict(type="jira", parameters=dict(url="https://jira")),
+                    latest_measurement=None,
+                    recent_measurements=[],
+                    scale="count",
+                    status=None,
+                    status_start=None,
                     scales=["count", "percentage"],
                     sources=dict(
                         source_uuid=dict(

@@ -8,16 +8,17 @@ import requests
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
+from database.measurements import recent_measurements
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
+from model.report import Report
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
     hide_credentials,
     replace_report_uuids,
-    summarize_report,
 )
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
@@ -31,21 +32,24 @@ def get_report(database: Database, report_uuid: ReportId = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, date_time)
+    reports = latest_reports(database, data_model, date_time)
+    summarized_reports = []
 
     if report_uuid and report_uuid.startswith("tag-"):
-        tag_report = get_tag_report(data_model, reports, report_uuid[4:])
-        reports = []
-        if tag_report is not None:
-            summarize_report(tag_report, database, data_model, date_time)
-            reports.append(tag_report)
+        report = tag_report(data_model, report_uuid[4:], reports)
+        if len(report.subjects) > 0:
+            measurements = recent_measurements(database, report.metrics_dict, date_time)
+            summarized_reports.append(report.summarize(measurements))
     else:
         for report in reports:
             if not report_uuid or report["report_uuid"] == report_uuid:
-                summarize_report(report, database, data_model, date_time)
+                measurements = recent_measurements(database, report.metrics_dict, date_time)
+                summarized_reports.append(report.summarize(measurements))
+            else:
+                summarized_reports.append(report)
 
-    hide_credentials(data_model, *reports)
-    return dict(reports=reports)
+    hide_credentials(data_model, *summarized_reports)
+    return dict(reports=summarized_reports)
 
 
 @bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
@@ -55,18 +59,12 @@ def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
     DEPRECATED use /api/v3/report/<report_uuid> instead.
     """
     date_time = report_date_time()
-    reports = latest_reports(database, date_time)
     data_model = latest_datamodel(database, date_time)
-    subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
-    tag_report = dict(
-        title=f'Report for tag "{tag}"',
-        subtitle="Note: tag reports are read-only",
-        report_uuid=f"tag-{tag}",
-        timestamp=iso_timestamp(),
-        subjects=subjects,
-    )
-    hide_credentials(data_model, tag_report)
-    summarize_report(tag_report, database, data_model, date_time)
+    reports = latest_reports(database, data_model, date_time)
+    report = tag_report(data_model, tag, reports)
+    measurements = recent_measurements(database, report.metrics_dict)
+    summary = report.summarize(measurements)
+    hide_credentials(data_model, summary)
     return tag_report
 
 
@@ -113,7 +111,7 @@ def post_report_new(database: Database):
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
     delta_description = f"{{user}} copied the report '{data.report_name}'."
@@ -147,7 +145,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
-    report = latest_report(database, report_uuid)
+    report = latest_report(database, data_model, report_uuid)
 
     # pylint doesn't seem to be able to see that bottle.request.query is dict(like) at runtime
     if "public_key" in bottle.request.query:  # pylint: disable=unsupported-membership-test
@@ -164,7 +162,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     data.report["deleted"] = "true"
     delta_description = f"{{user}} deleted the report '{data.report_name}'."
@@ -175,7 +173,7 @@ def delete_report(report_uuid: ReportId, database: Database):
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
     old_value = data.report.get(report_attribute) or ""
@@ -193,7 +191,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
     """Set the issue tracker attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
     new_value = dict(bottle.request.json)[tracker_attribute]
     if tracker_attribute == "type":
@@ -221,31 +219,22 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     return result
 
 
-def get_tag_report(data_model, reports, tag):
-    """Get a report with all metrics that have the specified tag."""
-    subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
-    if len(subjects) > 0:
-        tag_report = dict(
+def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
+    """Create a report for a tag."""
+    subjects = {}
+    for report in reports:
+        for subject in report.subjects:
+            if tag_subject := subject.tag_subject(tag):
+                subjects[subject.uuid] = tag_subject
+
+    report = Report(
+        data_model,
+        dict(
             title=f'Report for tag "{tag}"',
             subtitle="Note: tag reports are read-only",
             report_uuid=f"tag-{tag}",
             timestamp=iso_timestamp(),
             subjects=subjects,
-        )
-        return tag_report
-    return None
-
-
-def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):
-    """Return all subjects and metrics that have the tag."""
-    subjects = {}
-    for report in reports:
-        for subject_uuid, subject in list(report.get("subjects", {}).items()):
-            for metric_uuid, metric in list(subject.get("metrics", {}).items()):
-                if tag not in metric.get("tags", []):
-                    del subject["metrics"][metric_uuid]
-            if subject.get("metrics", {}):
-                subject_name = subject.get("name") or data_model["subjects"][subject["type"]]["name"]
-                subject["name"] = report["title"] + " ❯ " + subject_name
-                subjects[subject_uuid] = subject
-    return subjects
+        ),
+    )
+    return report

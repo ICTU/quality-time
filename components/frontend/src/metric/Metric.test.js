@@ -17,8 +17,8 @@ let report = {
                     type: "violations",
                     sources: {source_uuid1: {name: "Source 1"}, source_uuid2: {name: "Source 2"}},
                     status: "target_not_met",
-                    value: "50",
-                    latest_measurement: { sources: [{ source_uuid: "source_uuid1" }, {source_uuid: "source_uuid2"}] },
+                    scale: "count",
+                    latest_measurement: { sources: [{ source_uuid: "source_uuid1" }, {source_uuid: "source_uuid2"}],  count: {value: "50"}},
                     recent_measurements: []
                 },
                 stability: {
@@ -28,8 +28,8 @@ let report = {
                     type: "stability",
                     sources: {source_uuid: {name: "Source"}},
                     status: "target_not_met",
-                    value: "50",
-                    latest_measurement: { sources: [{ source_uuid: "source_uuid" }] },
+                    scale: "count",
+                    latest_measurement: { sources: [{ source_uuid: "source_uuid" }], count: {value: "50"}, percentage: {value: "50"}},
                     recent_measurements: []
                 }
             }

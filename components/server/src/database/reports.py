@@ -6,17 +6,19 @@ import pymongo
 from pymongo.database import Database
 
 from model.metric import Metric
+from model.report import Report
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from .datamodels import latest_datamodel
 from .filters import DOES_EXIST, DOES_NOT_EXIST
-from . import datamodels, sessions
+from . import sessions
 
 
 # Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def latest_reports(database: Database, max_iso_timestamp: str = ""):
+def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = "") -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection."""
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
         report_filter = dict(deleted=DOES_NOT_EXIST, timestamp={"$lt": max_iso_timestamp})
@@ -24,19 +26,20 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
         reports = []
         for report_uuid in report_uuids:
             report_filter["report_uuid"] = report_uuid
-            reports.append(database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING))
+            report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
+            report = Report(data_model, report_dict)
+            reports.append(report)
     else:
-        reports = list(database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
-    for report in reports:
-        report["_id"] = str(report["_id"])
+        report_dicts = database.reports.find({"last": True, "deleted": DOES_NOT_EXIST})
+        reports = [Report(data_model, report_dict) for report_dict in report_dicts]
     return reports
 
 
-def latest_report(database: Database, report_uuid: str):
+def latest_report(database: Database, data_model, report_uuid: str) -> Report:
     """Get latest report with this uuid."""
-    report = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    report["_id"] = str(report["_id"])
-    return report
+    return Report(
+        data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
+    )
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
@@ -55,11 +58,10 @@ def report_exists(database: Database, report_uuid: ReportId):
 
 def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
     """Return the latest metric with the specified metric uuid."""
-    for report in latest_reports(database):
-        for subject in report.get("subjects", {}).values():
-            metrics = subject.get("metrics", {})
-            if metric_uuid in metrics:
-                return Metric(datamodels.latest_datamodel(database), metrics[metric_uuid], metric_uuid)
+    data_model = latest_datamodel(database)
+    for report in latest_reports(database, data_model):
+        if metric_uuid in report.metric_uuids:
+            return report.metrics_dict[metric_uuid]
     return None
 
 

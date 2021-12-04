@@ -104,7 +104,13 @@ def check_item_attribute(context, item, attribute, value):
         expected_value = {} if value == "None" else json.loads(value)
     else:
         expected_value = None if value == "None" else value
-    assert_equal(expected_value, get_item(context, item)[attribute])
+
+    keys = attribute.split(".")
+    actual_value = get_item(context, item)
+    for key in keys:
+        actual_value = actual_value[key]
+
+    assert_equal(expected_value, actual_value)
 
 
 @then("the {item} does not exist")

@@ -3,20 +3,15 @@
 import json
 
 from collections.abc import Iterator
-from datetime import date
 from json.decoder import JSONDecodeError
-from typing import cast
-from database.measurements import latest_measurements_by_metric_uuid, recent_measurements_by_metric_uuid
 from server_utilities.functions import (
     DecryptionError,
     asymmetric_decrypt,
     asymmetric_encrypt,
-    report_metrics_uuids,
     unique,
     uuid,
 )
-from server_utilities.type import Color, EditScope, ItemId, Status
-
+from server_utilities.type import EditScope, ItemId
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
 
@@ -155,60 +150,3 @@ def _metrics_to_change(data, subject, scope: EditScope) -> Iterator:
 def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
     yield from {data.source_uuid: data.source}.items() if scope == "source" else metric["sources"].items()
-
-
-def summarize_report(report, database, data_model, date_time) -> None:
-    """Add a summary of the measurements to each subject."""
-    report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
-    report["summary_by_subject"] = {}
-    report["summary_by_tag"] = {}
-    metric_uuids = report_metrics_uuids(report)
-    recent_measurements = recent_measurements_by_metric_uuid(data_model, database, date_time, metric_uuids=metric_uuids)
-    latest_measurements = latest_measurements_by_metric_uuid(database, date_time, metric_uuids)
-    for subject_uuid, subject in report.get("subjects", {}).items():
-        for metric_uuid in subject.get("metrics", {}):
-            summarize_metric(data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid)
-
-
-STATUS_COLOR_MAPPING = cast(
-    dict[Status, Color],
-    dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
-)
-
-
-# disable too-many-arguments for now, until refactor of measurements functions
-def summarize_metric(
-    data_model, recent_measurements, latest_measurements, report, subject_uuid, metric_uuid
-):  # pylint: disable=too-many-arguments
-    """Add a summary of the metric to the report."""
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
-    latest_measurement = metric["latest_measurement"] = (
-        latest_measurements[metric_uuid] if metric_uuid in latest_measurements else {}
-    )
-    metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
-    scale = metric["scale"] = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-    metric["status"] = metric_status(metric, latest_measurement, scale)
-    if status_start := latest_measurement.get(scale, {}).get("status_start"):
-        metric["status_start"] = status_start
-    metric["value"] = latest_measurement.get(scale, {}).get("value", latest_measurement.get("value"))
-    if statuses := issue_statuses(metric, latest_measurement):
-        metric["issue_status"] = statuses
-    color = STATUS_COLOR_MAPPING.get(metric["status"], "white")
-    report["summary"][color] += 1
-    report["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-    for tag in metric.get("tags", []):
-        report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-
-
-def issue_statuses(metric, last_measurement) -> list[dict]:
-    """Return the metric's issue  statuses."""
-    last_issue_statuses = last_measurement.get("issue_status", [])
-    return [status for status in last_issue_statuses if status["issue_id"] in metric.get("issue_ids", [])]
-
-
-def metric_status(metric, last_measurement, scale) -> Status | None:
-    """Determine the metric status."""
-    if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
-        return cast(Status, status)
-    debt_end_date = metric.get("debt_end_date") or date.max.isoformat()
-    return "debt_target_met" if metric.get("accept_debt") and date.today().isoformat() <= debt_end_date else None

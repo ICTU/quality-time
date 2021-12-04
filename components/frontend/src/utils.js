@@ -27,7 +27,7 @@ export function get_metric_target(metric) {
 }
 
 export function get_metric_value(metric) {
-    return metric.value ?? '';
+    return metric?.latest_measurement?.[metric.scale]?.value ?? '';
 }
 
 export function get_metric_comment(metric) {

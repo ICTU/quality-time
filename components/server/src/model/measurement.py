@@ -202,6 +202,14 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
         return self.metric.accept_debt_expired() if any_debt_target else False
 
+    def status(self) -> Status:
+        """Return the status of the measurement."""
+        return cast(Status, self.get(self.metric.scale(), {}).get("status", self.get("status")))
+
+    def status_start(self):
+        """Return the start timestamp of the current status, if any."""
+        return self.get(self.metric.scale(), {}).get("status_start")
+
     def copy_entity_user_data(self, measurement: Measurement) -> None:
         """Copy the entity user data from the measurement to this measurement."""
         old_sources = {source["source_uuid"]: source for source in measurement.sources()}
@@ -228,3 +236,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
         return cast(Sequence[Source], self["sources"])
+
+    def summarize(self, scale: Scale):
+        """A dict with a summary of this measurement."""
+        return dict(scale=dict(value=self[scale].get("value")), start=self["start"], end=self["end"])

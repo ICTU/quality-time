@@ -6,6 +6,8 @@ from unittest.mock import Mock, patch
 
 import requests
 
+from model.report import Report
+
 from routes.external import (
     delete_source,
     post_move_source,
@@ -73,15 +75,19 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
         }
         self.database.datamodels.find_one.return_value = self.data_model
-        self.report = dict(
-            _id=REPORT_ID,
-            title="Report",
-            report_uuid=REPORT_ID,
-            subjects={
-                SUBJECT_ID: dict(
-                    name="Subject", metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)}
-                )
-            },
+        self.report = Report(
+            self.data_model,
+            dict(
+                _id=REPORT_ID,
+                title="Report",
+                report_uuid=REPORT_ID,
+                subjects={
+                    SUBJECT_ID: dict(
+                        name="Subject",
+                        metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)},
+                    )
+                },
+            ),
         )
         self.database.reports.find.return_value = [self.report]
 
@@ -98,16 +104,18 @@ class PostSourceAttributeTest(SourceTestCase):
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Extend to set up fixed parameters."""
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID] + (uuids or [SOURCE_ID])
-        super().assert_delta(f"Jenny changed the {description}.", uuids)
+        super().assert_delta(f"Jenny changed the {description}.", uuids, report)
 
     def test_name(self, request):
         """Test that the source name can be changed."""
         request.json = dict(name="New source name")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "name of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'Source' to "
-            "'New source name'"
+            "'New source name'",
+            report=updated_report,
         )
 
     def test_post_source_type(self, request):
@@ -115,9 +123,11 @@ class PostSourceAttributeTest(SourceTestCase):
         request.json = dict(type="new_source_type")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'source_type' to "
-            "'new_source_type'"
+            "'new_source_type'",
+            report=updated_report,
         )
 
     def test_post_position(self, request):
@@ -125,12 +135,14 @@ class PostSourceAttributeTest(SourceTestCase):
         request.json = dict(position="first")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID2, "position", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())
         )
         self.assert_delta(
             "position of source 'Source 2' of metric 'Metric' of subject 'Subject' in report 'Report' from '1' to '0'",
             [SOURCE_ID2],
+            report=updated_report,
         )
 
     def test_no_change(self, request):
@@ -180,8 +192,11 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={}, verify=False)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
+            report=updated_report,
         )
 
     @patch.object(requests, "get")
@@ -192,8 +207,11 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "RequestException")
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
+            report=updated_report,
         )
 
     @patch.object(requests, "get")
@@ -204,8 +222,11 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "[Errno 1234] Error message")
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
+            report=updated_report,
         )
 
     @patch.object(requests, "get")
@@ -216,8 +237,11 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "[Errno -2] Error message")
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        url = self.url
         self.assert_delta(
-            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{self.url}'"
+            f"url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '{url}'",
+            report=updated_report,
         )
 
     @patch.object(requests, "get")
@@ -279,8 +303,11 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "password of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from '' to '******'"
+            """password of source 'Source' of metric 'Metric' of subject """
+            """'Subject' in report 'Report' from '' to '******'""",
+            report=updated_report,
         )
 
     def test_no_change(self, request):
@@ -312,9 +339,11 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(response, dict(ok=True))
         self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["choices_with_addition"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "choices_with_addition of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
-            r"from '' to '['[\\w]{3}-[\\w]{3}-[\\w]{4}-[\\w]{3}\\/']'"
+            r"from '' to '['[\\w]{3}-[\\w]{3}-[\\w]{4}-[\\w]{3}\\/']'",
+            report=updated_report,
         )
 
 
@@ -350,16 +379,19 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.report["subjects"][SUBJECT_ID2] = dict(
             name="Subject 2", metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)}
         )
-        self.report2 = dict(
-            _id=REPORT_ID2,
-            title="Report 2",
-            report_uuid=REPORT_ID2,
-            subjects={
-                SUBJECT_ID3: dict(
-                    name="Subject 3",
-                    metrics={METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)},
-                )
-            },
+        self.report2 = Report(
+            self.data_model,
+            dict(
+                _id=REPORT_ID2,
+                title="Report 2",
+                report_uuid=REPORT_ID2,
+                subjects={
+                    SUBJECT_ID3: dict(
+                        name="Subject 3",
+                        metrics={METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)},
+                    )
+                },
+            ),
         )
         self.database.reports.find.return_value = [self.report, self.report2]
 
@@ -407,8 +439,11 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             SOURCE_ID6,
             SOURCE_ID7,
         ]
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids)
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids, self.report2)
+        updated_reports = self.database.reports.insert_many.call_args[0][0]
+        ipdated_report_1 = updated_reports[0]
+        ipdated_report_2 = updated_reports[1]
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids, ipdated_report_1)
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids, ipdated_report_2)
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""
@@ -429,7 +464,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             }
         )
         extra_uuids = [METRIC_ID2, SOURCE_ID5, SUBJECT_ID2, METRIC_ID3, SOURCE_ID6]
-        self.assert_delta("in report 'Report' from 'username' to 'new username'", extra_uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta("in report 'Report' from 'username' to 'new username'", extra_uuids, updated_report)
 
     def test_mass_edit_subject(self, request):
         """Test that a source parameter can be mass edited."""
@@ -445,7 +481,10 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             }
         )
         extra_uuids = [METRIC_ID2, SOURCE_ID5]
-        self.assert_delta("of subject 'Subject' in report 'Report' from 'username' to 'new username'", extra_uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "of subject 'Subject' in report 'Report' from 'username' to 'new username'", extra_uuids, updated_report
+        )
 
     def test_mass_edit_metric(self, request):
         """Test that a source parameter can be mass edited."""
@@ -460,8 +499,10 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
             }
         )
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to 'new username'"
+            "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to 'new username'",
+            report=updated_report,
         )
 
 
@@ -471,7 +512,7 @@ class SourceTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.report = create_report()
+        self.report = Report(None, create_report())
         self.database.reports.find.return_value = [self.report]
         self.target_metric_name = "Target metric"
 
@@ -482,7 +523,8 @@ class SourceTest(SourceTestCase):
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid]
         description = "Jenny added a new source to metric 'Metric' of subject 'Subject' in report 'Report'."
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_copy_source(self):
         """Test that a source can be copied."""
@@ -497,7 +539,8 @@ class SourceTest(SourceTestCase):
             "Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report 'Report' to metric "
             "'Metric' of subject 'Subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_within_subject(self):
         """Test that a source can be moved to a different metric in the same subject."""
@@ -513,7 +556,8 @@ class SourceTest(SourceTestCase):
             f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""
@@ -529,7 +573,8 @@ class SourceTest(SourceTestCase):
             f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Target subject' in report 'Report'."
         )
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_across_reports(self):
         """Test that a source can be moved to a different metric in a different report."""
@@ -549,8 +594,12 @@ class SourceTest(SourceTestCase):
             "report 'Target report'."
         )
         expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID]
-        self.assert_delta(expected_description, expected_uuids)
-        self.assert_delta(expected_description, expected_uuids, target_report)
+
+        updated_reports = self.database.reports.insert_many.call_args[0][0]
+        updated_target_report = updated_reports[0]
+        updated_source_report = updated_reports[1]
+        self.assert_delta(expected_description, expected_uuids, updated_source_report)
+        self.assert_delta(expected_description, expected_uuids, updated_target_report)
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
@@ -558,4 +607,5 @@ class SourceTest(SourceTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID]
         description = "Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report'."
-        self.assert_delta(description, uuids)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(description, uuids, updated_report)
