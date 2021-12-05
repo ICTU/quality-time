@@ -16,7 +16,7 @@ from .gitlab import GITLAB
 from .jacoco import JACOCO, JACOCO_JENKINS_PLUGIN
 from .jenkins import JENKINS, JENKINS_TEST_REPORT
 from .jira import JIRA
-from .jmeter import JMETER_JSON
+from .jmeter import JMETER_CSV, JMETER_JSON
 from .junit import JUNIT
 from .manual_number import MANUAL_NUMBER
 from .ncover import NCOVER
@@ -58,6 +58,7 @@ SOURCES = Sources.parse_obj(
         jenkins=JENKINS,
         jenkins_test_report=JENKINS_TEST_REPORT,
         jira=JIRA,
+        jmeter_csv=JMETER_CSV,
         jmeter_json=JMETER_JSON,
         junit=JUNIT,
         manual_number=MANUAL_NUMBER,

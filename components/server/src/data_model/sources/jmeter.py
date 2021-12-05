@@ -13,6 +13,13 @@ from ..parameters import (
 
 ALL_JMETER_METRICS = ["slow_transactions", "tests"]
 
+JMETER_URL = "https://jmeter.apache.org"
+
+JMETER_DESCRIPTION = (
+    "Apache JMeter application is open source software, a 100% pure Java application designed to "
+    "load test functional behavior and measure performance."
+)
+
 TRANSACTIONS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     name="Transactions to ignore (regular expressions or transaction names)",
     short_name="transactions to ignore",
@@ -64,11 +71,57 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     metrics=["slow_transactions"],
 )
 
+ENTITIES = dict(
+    slow_transactions=dict(
+        name="slow transaction",
+        attributes=[
+            dict(name="Transactions", key="name"),
+            dict(name="Sample count", type=EntityAttributeType.INTEGER),
+            dict(name="Error count", type=EntityAttributeType.INTEGER),
+            dict(name="Error percentage", type=EntityAttributeType.FLOAT),
+            dict(name="Mean response time (ms)", key="mean_response_time", type=EntityAttributeType.FLOAT),
+            dict(name="Median response time (ms)", key="median_response_time", type=EntityAttributeType.FLOAT),
+            dict(name="Minimum response time (ms)", key="min_response_time", type=EntityAttributeType.FLOAT),
+            dict(name="Maximum response time (ms)", key="max_response_time", type=EntityAttributeType.FLOAT),
+            dict(
+                name="90th percentile response time (ms)",
+                key="percentile_90_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+        ],
+    )
+)
+
+JMETER_CSV = Source(
+    name="JMeter CSV",
+    description=JMETER_DESCRIPTION,
+    url=JMETER_URL,
+    parameters=dict(
+        response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
+        target_response_time=TARGET_RESPONSE_TIME,
+        transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
+        transactions_to_ignore=MultipleChoiceWithAdditionParameter(
+            name="Transactions to ignore (regular expressions or transaction names)",
+            short_name="transactions to ignore",
+            help="Transactions to ignore can be specified by transaction name or by regular expression.",
+            metrics=["slow_transactions"],
+        ),
+        transactions_to_include=MultipleChoiceWithAdditionParameter(
+            name="Transactions to include (regular expressions or transaction names)",
+            short_name="transactions to include",
+            help="Transactions to include can be specified by transaction name or by regular expression.",
+            placeholder="all",
+            metrics=["slow_transactions"],
+        ),
+        **access_parameters(["slow_transactions"], source_type="JMeter report", source_type_format="CSV")
+    ),
+    entities=ENTITIES,
+)
+
 JMETER_JSON = Source(
     name="JMeter JSON",
-    description="Apache JMeter application is open source software, a 100% pure Java application designed to load "
-    "test functional behavior and measure performance.",
-    url="https://jmeter.apache.org",
+    description=JMETER_DESCRIPTION,
+    url=JMETER_URL,
     parameters=dict(
         test_result=TestResult(values=["failed", "success"]),
         response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
@@ -78,24 +131,5 @@ JMETER_JSON = Source(
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
         **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")
     ),
-    entities=dict(
-        slow_transactions=dict(
-            name="slow transaction",
-            attributes=[
-                dict(name="Transactions", key="name"),
-                dict(name="Sample count", type=EntityAttributeType.INTEGER),
-                dict(name="Error count", type=EntityAttributeType.INTEGER),
-                dict(name="Error percentage", type=EntityAttributeType.FLOAT),
-                dict(name="Mean response time (ms)", key="mean_response_time", type=EntityAttributeType.FLOAT),
-                dict(name="Median response time (ms)", key="median_response_time", type=EntityAttributeType.FLOAT),
-                dict(name="Minimum response time (ms)", key="min_response_time", type=EntityAttributeType.FLOAT),
-                dict(name="Maximum response time (ms)", key="max_response_time", type=EntityAttributeType.FLOAT),
-                dict(
-                    name="90th percentile response time (ms)",
-                    key="percentile_90_response_time",
-                    type=EntityAttributeType.FLOAT,
-                ),
-            ],
-        )
-    ),
+    entities=ENTITIES,
 )
