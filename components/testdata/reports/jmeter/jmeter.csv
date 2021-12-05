@@ -1,0 +1,6 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1635408789201,1596,https://test.example.org/home,404,Not Found,Thread Group 1-1,text,false,,1663,501,1,1,https://test.example.org/home,1595,0,1544
+1635408790917,3388,https://test.example.org/api/programmas/zoek,200,OK,Thread Group 1-1,text,true,,1216877,631,1,1,https://test.example.org/api/programmas/zoek,3001,0,0
+1635408794332,332,https://test.example.org/api/financiering/zoek,200,OK,Thread Group 1-1,text,true,,60160,478,1,1,https://test.example.org/api/financiering/zoek,304,0,0
+1635408794771,3452,https://test.example.org/api/programmas/filter-aantallen,200,OK,Thread Group 1-1,text,true,,2510,1636,1,1,https://test.example.org/api/programmas/filter-aantallen,3451,0,0
+1635408788921,8768,Test,,"Number of samples in transaction : 4, number of failing samples : 1",Thread Group 1-1,,false,,1281210,3246,1,1,null,8351,534,1544
