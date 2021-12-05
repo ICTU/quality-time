@@ -57,7 +57,7 @@ PERCENTILE_90 = "90th percentile"
 
 RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     name="Response time type to evaluate against the target response time",
-    short_name="response time type to evaluate",
+    short_name="response time types to evaluate",
     help="Which response time type to compare with the target response time to determine slow transactions.",
     default_value=PERCENTILE_90,
     values=[PERCENTILE_90, "mean", "median", "minimum", "maximum"],
