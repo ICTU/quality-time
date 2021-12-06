@@ -1,8 +1,9 @@
 """JMeter CSV slow transactions collector."""
 
 import csv
+import statistics
 from io import StringIO
-from typing import cast
+from typing import AsyncIterator, cast
 
 from base_collectors import CSVFileSourceCollector
 from model import Entities, SourceResponses
@@ -23,28 +24,44 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
             list[str], self._parameter("transaction_specific_target_response_times")
         )
         entities = Entities()
-        for response in responses:
-            csv_text = (await response.text()).strip()
-            rows = list(csv.DictReader(StringIO(csv_text, newline="")))
-            transactions = [transaction for key, transaction in json.items() if key != "Total"]
-            for transaction in transactions:
-                entity = TransactionEntity(
-                    key=transaction["transaction"],
-                    name=transaction["transaction"],
-                    sample_count=transaction["sampleCount"],
-                    error_count=transaction["errorCount"],
-                    error_percentage=self.__round(transaction["errorPct"]),
-                    mean_response_time=self.__round(transaction["meanResTime"]),
-                    median_response_time=self.__round(transaction["medianResTime"]),
-                    min_response_time=self.__round(transaction["minResTime"]),
-                    max_response_time=self.__round(transaction["maxResTime"]),
-                    percentile_90_response_time=self.__round(transaction["pct1ResTime"]),
-                )
-                if entity.is_to_be_included(transactions_to_include, transactions_to_ignore) and entity.is_slow(
-                    response_time_to_evaluate, target_response_time, transaction_specific_target_response_times
-                ):
-                    entities.append(entity)
+        async for samples in self.__samples(responses):
+            label = samples[0]["label"]
+            latencies = [int(sample["Latency"]) for sample in samples]
+            entity = TransactionEntity(
+                key=label,
+                name=label,
+                sample_count=(sample_count := len(samples)),
+                error_count=(error_count := len([sample for sample in samples if sample["success"] == "false"])),
+                error_percentage=self.__round(error_count / sample_count),
+                mean_response_time=self.__round(statistics.mean(latencies)),
+                median_response_time=self.__round(statistics.median(latencies)),
+                min_response_time=self.__round(min(latencies)),
+                max_response_time=self.__round(max(latencies)),
+                percentile_90_response_time=self.__round(statistics.quantiles(latencies, n=10)[-1]),
+            )
+            if entity.is_to_be_included(transactions_to_include, transactions_to_ignore) and entity.is_slow(
+                response_time_to_evaluate, target_response_time, transaction_specific_target_response_times
+            ):
+                entities.append(entity)
         return entities
+
+    @classmethod
+    async def __samples(cls, responses: SourceResponses) -> AsyncIterator[list[dict[str, str]]]:
+        """Yield the samples grouped by label."""
+        rows = await cls.__parse_csv(responses)
+        samples = [row for row in rows if not row["responseMessage"].startswith("Number of samples in transaction")]
+        labels = sorted(list(set(sample["label"] for sample in samples)))
+        for label in labels:
+            yield [sample for sample in samples if sample["label"] == label]
+
+    @staticmethod
+    async def __parse_csv(responses: SourceResponses) -> list[dict[str, str]]:
+        """Parse the CSV rows from the responses."""
+        rows = []
+        for response in responses:
+            csv_text = await response.text()
+            rows.extend(list(csv.DictReader(StringIO(csv_text.strip(), newline=""))))
+        return rows
 
     @staticmethod
     def __round(value: float | int) -> float:

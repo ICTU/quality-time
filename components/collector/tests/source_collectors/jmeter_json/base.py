@@ -1,4 +1,4 @@
-"""Base classes for JMeter collectos."""
+"""Base classes for JMeter JSON collectors."""
 
 from ..source_collector_test_case import SourceCollectorTestCase
 
@@ -9,7 +9,7 @@ class JMeterJSONTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     SOURCE_TYPE = "jmeter_json"
     API1 = "/api/foo"
     API2 = "/api/bar"
-    JMETER_JSON = json = dict(
+    JMETER_JSON = dict(
         transaction1=dict(
             transaction=API1,
             sampleCount=123,
