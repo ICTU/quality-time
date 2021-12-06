@@ -613,6 +613,18 @@
                                 "transactions_to_ignore": [],
                                 "transactions_to_include": []
                             }
+                        },
+                        "43436a85-235a-3b91-595a-1e36f11d49cd": {
+                            "type": "jmeter_csv",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/jmeter/jmeter.csv",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
                         }
                     },
                     "name": null,
