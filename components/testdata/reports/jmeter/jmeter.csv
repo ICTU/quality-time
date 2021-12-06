@@ -1,6 +1,61 @@
 timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1635408789201,1596,https://test.example.org/home,404,Not Found,Thread Group 1-1,text,false,,1663,501,1,1,https://test.example.org/home,1595,0,1544
-1635408790917,3388,https://test.example.org/api/programmas/zoek,200,OK,Thread Group 1-1,text,true,,1216877,631,1,1,https://test.example.org/api/programmas/zoek,3001,0,0
-1635408794332,332,https://test.example.org/api/financiering/zoek,200,OK,Thread Group 1-1,text,true,,60160,478,1,1,https://test.example.org/api/financiering/zoek,304,0,0
-1635408794771,3452,https://test.example.org/api/programmas/filter-aantallen,200,OK,Thread Group 1-1,text,true,,2510,1636,1,1,https://test.example.org/api/programmas/filter-aantallen,3451,0,0
-1635408788921,8768,Test,,"Number of samples in transaction : 4, number of failing samples : 1",Thread Group 1-1,,false,,1281210,3246,1,1,null,8351,534,1544
+1638325618779,57,/home,404,Not Found,Thread Group 1-1,text,true,,389,717,1,1,http://app.example.org/home,54,0,38
+1638325618839,114,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-1,text,false,,174,801,1,1,http://app.example.org/api/programmas/zoek,114,0,0
+1638325618956,9,/api/programmas/filter-aantallen,502,Bad Gateway,Thread Group 1-1,text,false,,137,1881,1,1,http://app.example.org/api/programmas/filter-aantallen,9,0,0
+1638325618967,360,/api/financiering/zoek,200,OK,Thread Group 1-1,text,true,,60221,726,1,1,http://app.example.org/api/financiering/zoek,359,0,0
+1638325619329,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-1,text,false,,417,2006,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325618694,544,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-1,,false,,61338,6131,1,1,null,540,96,38
+1638325624692,10,/home,404,Not Found,Thread Group 1-2,text,true,,389,717,1,1,http://app.example.org/home,10,0,4
+1638325624707,16,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-2,text,false,,174,797,1,1,http://app.example.org/api/programmas/zoek,16,0,0
+1638325624724,27,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-2,text,false,,174,1877,1,1,http://app.example.org/api/programmas/filter-aantallen,27,0,0
+1638325624752,1214,/api/financiering/zoek,200,OK,Thread Group 1-2,text,true,,274377,721,1,1,http://app.example.org/api/financiering/zoek,1207,0,0
+1638325625967,5,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-2,text,false,,417,2002,1,1,http://app.example.org/api/financiering/filter-aantallen,5,0,0
+1638325624689,1272,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-2,,false,,275531,6114,1,1,null,1265,11,4
+1638325630679,7,/home,404,Not Found,Thread Group 1-3,text,true,,389,717,1,1,http://app.example.org/home,7,0,3
+1638325630687,16,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-3,text,false,,174,799,1,1,http://app.example.org/api/programmas/zoek,16,0,0
+1638325630704,17,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-3,text,false,,174,1879,1,1,http://app.example.org/api/programmas/filter-aantallen,17,0,0
+1638325630722,1065,/api/financiering/zoek,200,OK,Thread Group 1-3,text,true,,225236,724,1,1,http://app.example.org/api/financiering/zoek,1057,0,0
+1638325631788,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-3,text,false,,417,2004,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325630676,1109,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-3,,false,,226390,6123,1,1,null,1101,8,3
+1638325636670,9,/home,404,Not Found,Thread Group 1-4,text,true,,389,717,1,1,http://app.example.org/home,9,0,4
+1638325636679,17,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-4,text,false,,174,803,1,1,http://app.example.org/api/programmas/zoek,17,0,0
+1638325636697,20,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-4,text,false,,174,1883,1,1,http://app.example.org/api/programmas/filter-aantallen,20,0,0
+1638325636718,27,/api/financiering/zoek,200,OK,Thread Group 1-4,text,true,,361,728,1,1,http://app.example.org/api/financiering/zoek,27,0,0
+1638325636746,6,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-4,text,false,,417,2008,1,1,http://app.example.org/api/financiering/filter-aantallen,5,0,0
+1638325636667,79,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-4,,false,,1515,6139,1,1,null,78,6,4
+1638325642666,8,/home,404,Not Found,Thread Group 1-5,text,true,,389,717,1,1,http://app.example.org/home,8,0,3
+1638325642676,16,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-5,text,false,,174,806,1,1,http://app.example.org/api/programmas/zoek,16,0,0
+1638325642693,16,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-5,text,false,,174,1886,1,1,http://app.example.org/api/programmas/filter-aantallen,16,0,0
+1638325642710,64,/api/financiering/zoek,200,OK,Thread Group 1-5,text,true,,3425,731,1,1,http://app.example.org/api/financiering/zoek,64,0,0
+1638325642776,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-5,text,false,,417,2011,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325642663,108,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-5,,false,,4579,6151,1,1,null,108,10,3
+1638325648667,8,/home,404,Not Found,Thread Group 1-6,text,true,,389,717,1,1,http://app.example.org/home,8,0,2
+1638325648676,17,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-6,text,false,,174,805,1,1,http://app.example.org/api/programmas/zoek,17,0,0
+1638325648694,17,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-6,text,false,,174,1885,1,1,http://app.example.org/api/programmas/filter-aantallen,17,0,0
+1638325648714,136,/api/financiering/zoek,200,OK,Thread Group 1-6,text,true,,23628,730,1,1,http://app.example.org/api/financiering/zoek,136,0,0
+1638325648852,5,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-6,text,false,,417,2010,1,1,http://app.example.org/api/financiering/filter-aantallen,5,0,0
+1638325648664,183,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-6,,false,,24782,6147,1,1,null,183,10,2
+1638325654665,7,/home,404,Not Found,Thread Group 1-7,text,true,,389,717,1,1,http://app.example.org/home,7,0,3
+1638325654674,15,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-7,text,false,,174,804,1,1,http://app.example.org/api/programmas/zoek,15,0,0
+1638325654690,14,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-7,text,false,,174,1884,1,1,http://app.example.org/api/programmas/filter-aantallen,14,0,0
+1638325654705,154,/api/financiering/zoek,200,OK,Thread Group 1-7,text,true,,23497,729,1,1,http://app.example.org/api/financiering/zoek,153,0,0
+1638325654860,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-7,text,false,,417,2009,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325654664,194,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-7,,false,,24651,6143,1,1,null,193,6,3
+1638325660662,11,/home,404,Not Found,Thread Group 1-8,text,true,,389,717,1,1,http://app.example.org/home,11,0,7
+1638325660674,16,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-8,text,false,,174,800,1,1,http://app.example.org/api/programmas/zoek,16,0,0
+1638325660691,15,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-8,text,false,,174,1880,1,1,http://app.example.org/api/programmas/filter-aantallen,15,0,0
+1638325660707,23,/api/financiering/zoek,200,OK,Thread Group 1-8,text,true,,361,725,1,1,http://app.example.org/api/financiering/zoek,23,0,0
+1638325660731,6,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-8,text,false,,417,2005,1,1,http://app.example.org/api/financiering/filter-aantallen,6,0,0
+1638325660659,71,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-8,,false,,1515,6127,1,1,null,71,8,7
+1638325666665,9,/home,404,Not Found,Thread Group 1-9,text,true,,389,717,1,1,http://app.example.org/home,9,0,3
+1638325666675,16,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-9,text,false,,174,799,1,1,http://app.example.org/api/programmas/zoek,16,0,0
+1638325666692,15,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-9,text,false,,174,1879,1,1,http://app.example.org/api/programmas/filter-aantallen,15,0,0
+1638325666708,612,/api/financiering/zoek,200,OK,Thread Group 1-9,text,true,,146696,724,1,1,http://app.example.org/api/financiering/zoek,607,0,0
+1638325667321,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-9,text,false,,417,2004,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325666662,656,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-9,,false,,147850,6123,1,1,null,651,7,3
+1638325672656,9,/home,404,Not Found,Thread Group 1-10,text,true,,389,717,1,1,http://app.example.org/home,9,0,3
+1638325672666,17,/api/programmas/zoek,500,Internal Server Error,Thread Group 1-10,text,false,,174,806,1,1,http://app.example.org/api/programmas/zoek,17,0,0
+1638325672684,17,/api/programmas/filter-aantallen,500,Internal Server Error,Thread Group 1-10,text,false,,174,1886,1,1,http://app.example.org/api/programmas/filter-aantallen,17,0,0
+1638325672702,23,/api/financiering/zoek,200,OK,Thread Group 1-10,text,true,,361,731,1,1,http://app.example.org/api/financiering/zoek,23,0,0
+1638325672726,4,/api/financiering/filter-aantallen,400,Bad Request,Thread Group 1-10,text,false,,417,2011,1,1,http://app.example.org/api/financiering/filter-aantallen,4,0,0
+1638325672655,70,Test,,"Number of samples in transaction : 5, number of failing samples : 3",Thread Group 1-10,,false,,1515,6151,1,1,null,70,5,3
