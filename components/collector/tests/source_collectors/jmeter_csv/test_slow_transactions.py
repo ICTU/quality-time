@@ -29,7 +29,7 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
                 name="/home",
                 sample_count=2,
                 error_count=1,
-                error_percentage=0.5,
+                error_percentage=50.0,
                 mean_response_time=(mean := round((10 + 54) / 2, 1)),
                 median_response_time=mean,  # median == mean due to small number of samples
                 min_response_time=10.0,

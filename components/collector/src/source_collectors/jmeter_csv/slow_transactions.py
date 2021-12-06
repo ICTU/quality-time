@@ -32,7 +32,7 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
                 name=label,
                 sample_count=(sample_count := len(samples)),
                 error_count=(error_count := len([sample for sample in samples if sample["success"] == "false"])),
-                error_percentage=self.__round(error_count / sample_count),
+                error_percentage=self.__round((error_count / sample_count) * 100),
                 mean_response_time=self.__round(statistics.mean(latencies)),
                 median_response_time=self.__round(statistics.median(latencies)),
                 min_response_time=self.__round(min(latencies)),
@@ -50,8 +50,8 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
         """Yield the samples grouped by label."""
         rows = await cls.__parse_csv(responses)
         samples = [row for row in rows if not row["responseMessage"].startswith("Number of samples in transaction")]
-        labels = sorted(list(set(sample["label"] for sample in samples)))
-        for label in labels:
+        labels = {sample["label"] for sample in samples}
+        for label in sorted(labels):
             yield [sample for sample in samples if sample["label"] == label]
 
     @staticmethod
