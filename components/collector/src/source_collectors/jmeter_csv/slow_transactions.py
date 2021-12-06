@@ -26,12 +26,14 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
         entities = Entities()
         async for samples in self.__samples(responses):
             label = samples[0]["label"]
+            sample_count = len(samples)
+            error_count = len([sample for sample in samples if sample["success"] == "false"])
             latencies = [int(sample["Latency"]) for sample in samples]
             entity = TransactionEntity(
                 key=label,
                 name=label,
-                sample_count=(sample_count := len(samples)),
-                error_count=(error_count := len([sample for sample in samples if sample["success"] == "false"])),
+                sample_count=sample_count,
+                error_count=error_count,
                 error_percentage=self.__round((error_count / sample_count) * 100),
                 mean_response_time=self.__round(statistics.mean(latencies)),
                 median_response_time=self.__round(statistics.median(latencies)),
