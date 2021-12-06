@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Support JMeter CSV output as source for the 'slow transactions' metric. Closes [#2966](https://github.com/ICTU/quality-time/issues/2966).
+
 ## v3.29.0 - 2021-12-03
 
 ### Fixed
