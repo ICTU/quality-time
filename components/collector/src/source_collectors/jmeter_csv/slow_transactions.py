@@ -28,7 +28,7 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
             label = samples[0]["label"]
             sample_count = len(samples)
             error_count = len([sample for sample in samples if sample["success"] == "false"])
-            latencies = [int(sample["Latency"]) for sample in samples]
+            latencies = [int(sample["elapsed"]) for sample in samples]
             entity = TransactionEntity(
                 key=label,
                 name=label,

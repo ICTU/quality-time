@@ -11,8 +11,8 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
     def setUp(self):
         """Extend to set the expected entities."""
         super().setUp()
-        search_endpoint_mean_response_time = search_endpoint_median_response_time = round((1207 + 359) / 2, 1)
-        home_endpoint_mean_response_time = home_endpoint_median_response_time = round((10 + 54) / 2, 1)
+        search_endpoint_mean_response_time = search_endpoint_median_response_time = round((360 + 1214) / 2, 1)
+        home_endpoint_mean_response_time = home_endpoint_median_response_time = round((57 + 10) / 2, 1)
         self.expected_entities = [
             dict(
                 key="-api-search",
@@ -22,9 +22,9 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
                 error_percentage=0.0,
                 mean_response_time=search_endpoint_mean_response_time,
                 median_response_time=search_endpoint_median_response_time,
-                min_response_time=359.0,
-                max_response_time=1207.0,
-                percentile_90_response_time=1800.6,
+                min_response_time=360.0,
+                max_response_time=1214.0,
+                percentile_90_response_time=1811.8,
             ),
             dict(
                 key="-home",
@@ -35,8 +35,8 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
                 mean_response_time=home_endpoint_mean_response_time,
                 median_response_time=home_endpoint_median_response_time,
                 min_response_time=10.0,
-                max_response_time=54.0,
-                percentile_90_response_time=84.8,
+                max_response_time=57.0,
+                percentile_90_response_time=89.9,
             ),
         ]
         self.set_source_parameter("target_response_time", "10")
