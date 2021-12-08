@@ -45,6 +45,7 @@ class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         )
         self.report = Report({}, create_report())
         self.database.reports.find.return_value = [self.report]
+        self.database.reports.find_one.return_value = self.report
         self.database.measurements.find.return_value = []
 
 
@@ -177,6 +178,7 @@ class ReportTest(ReportTestCase):
     def setUp(self):
         """Extend to set up a database with a report and a user session."""
         super().setUp()
+        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.measurements.find_one.return_value = {"sources": []}
         self.database.measurements.aggregate.return_value = []
         self.options = (
@@ -196,17 +198,13 @@ class ReportTest(ReportTestCase):
     def test_get_all_reports_with_time_travel(self, request):
         """Test that all reports can be retrieved."""
         request.query = dict(report_date=self.PAST_DATE)
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = create_report()
         self.assertEqual(1, len(get_report(self.database)["reports"]))
 
     @patch("bottle.request")
     def test_ignore_deleted_reports_when_time_traveling(self, request):
         """Test that deleted reports are not retrieved."""
         request.query = dict(report_date=self.PAST_DATE)
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = report = create_report()
-        report["deleted"] = "true"
+        self.report["deleted"] = "true"
         self.assertEqual(0, len(get_report(self.database)["reports"]))
 
     def test_get_report_and_info_about_other_reports(self):
@@ -223,8 +221,6 @@ class ReportTest(ReportTestCase):
     def test_get_old_report(self, request):
         """Test that an old report can be retrieved and credentials are hidden."""
         request.query = dict(report_date=self.PAST_DATE)
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = create_report()
         report = get_report(self.database, REPORT_ID)["reports"][0]
         self.assertEqual("this string replaces credentials", report["issue_tracker"]["parameters"]["password"])
         self.assertEqual(
@@ -247,8 +243,7 @@ class ReportTest(ReportTestCase):
         )
         self.database.measurements.aggregate.return_value = []
         self.database.measurements.find.return_value = [measurement]
-        self.database.reports.find.return_value = [report := create_report()]
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"] = ["FOO-42"]
         report = get_report(self.database, REPORT_ID)["reports"][0]
         self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"][0])
 
