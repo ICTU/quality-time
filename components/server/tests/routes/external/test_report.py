@@ -157,32 +157,6 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up a database with a report and a user session."""
-        self.private_key = """-----BEGIN PRIVATE KEY-----
-MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANdJVRdylaadsaau
-hRxNToIUIk/nSKMzfjjjP/20FEShkax1g4CYTwTdSMcuV+4blzzFSE+eDmMs1LNk
-jAPzfNAnHwJsjz2vt16JXDma+PuIPTCI5uobCbPUJty+6XlnzFyVjy36+SgeA8SM
-HHTprOxhwxU++O5cnzO7Jb4mjoOvAgMBAAECgYEAr9gMErzbE16Wroi53OYgDAua
-Ax3srLDwllK3/+fI7k3yCKVrpevCDz0XpulplOkgXNjfOXjmU4dYrLahztBgzrwt
-KzA7H8XylleIbuk7wUJ8jD+1dzxgu/ZB+iLzUla8r9/MmdhAzELmYBc9hIEWl6FW
-2BlQxmLNbOj2kh/aWoECQQD4GyLDzxEFVBPYYo+Ut3T05a0IlCnCSKU6saDSuFFG
-GhiM1HQMAnnuC3okgVpAOA7Rn2z9xMqLcdiv+Amnzh3hAkEA3iLgQUwMj6v97Jkb
-KFxQazzkOmgMKFGH2MbZGGwDDva1QlD9awjBW0aj4nUHNsUob6LVJCbCocQFSNDu
-eXgzjwJATSg7NoPFuk98YHW+SzSGZcarehiBqA7pe4hUCFQTymZBLkK/2CBJBPOC
-x6mGhKQqT5xxy7WQe68rAQZ1Ej9yYQJAbgd8aRuQRUH+HsmfyBghxVx99+g9zWLF
-FT05n30w7qKJGfYf8Hp/vAR7fNpW3mw+IT3YsXV5hsMfkvfah9RgRQJAVGysMIfp
-eX94CsogDhIWSaXreAfpcWQu1Dg5FCmpZTGRJps2x52CPq5icgBZeIODElIvkJbn
-JqqQtg8ZsTm6Pw==
------END PRIVATE KEY-----
-"""
-
-        self.public_key = """-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDXSVUXcpWmnbGmroUcTU6CFCJP
-50ijM3444z/9tBREoZGsdYOAmE8E3UjHLlfuG5c8xUhPng5jLNSzZIwD83zQJx8C
-bI89r7deiVw5mvj7iD0wiObqGwmz1Cbcvul5Z8xclY8t+vkoHgPEjBx06azsYcMV
-PvjuXJ8zuyW+Jo6DrwIDAQAB
------END PUBLIC KEY-----
-"""
-
         self.database = Mock()
         self.database.sessions.find_one.return_value = JENNY
         self.database.datamodels.find_one.return_value = dict(
@@ -199,7 +173,6 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         )
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
-        self.database.secrets.find_one.return_value = {"public_key": self.public_key, "private_key": self.private_key}
         self.database.measurements.find.return_value = []
         self.database.measurements.find_one.return_value = {"sources": []}
         self.database.measurements.aggregate.return_value = []
@@ -211,6 +184,27 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_report(self):
         """Test that a report can be retrieved."""
         self.assertEqual(REPORT_ID, get_report(self.database, REPORT_ID)["reports"][0][REPORT_ID])
+
+    def test_get_all_reports(self):
+        """Test that all reports can be retrieved."""
+        self.assertEqual(1, len(get_report(self.database)["reports"]))
+
+    @patch("bottle.request")
+    def test_get_all_reports_with_time_travel(self, request):
+        """Test that all reports can be retrieved."""
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = create_report()
+        self.assertEqual(1, len(get_report(self.database)["reports"]))
+
+    @patch("bottle.request")
+    def test_ignore_deleted_reports_when_time_traveling(self, request):
+        """Test that deleted reports are not retrieved."""
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = report = create_report()
+        report["deleted"] = "true"
+        self.assertEqual(0, len(get_report(self.database)["reports"]))
 
     def test_get_report_and_info_about_other_reports(self):
         """Test that a report can be retrieved, and that other reports are also returned."""
@@ -376,6 +370,74 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             f"http://renderer:9000/api/render?url=http%3A//www%3A80/{REPORT_ID}&{self.options}"
         )
 
+    @patch("requests.get")
+    def test_get_pdf_tag_report(self, requests_get):
+        """Test that a PDF version of a tag report can be retrieved."""
+        requests_get.return_value = Mock(content=b"PDF")
+        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security")))
+        requests_get.assert_called_once_with(
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/tag-security&{self.options}"
+        )
+
+    def test_delete_report(self):
+        """Test that the report can be deleted."""
+        self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertEqual(
+            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny deleted the report 'Report'."),
+            inserted["delta"],
+        )
+
+
+class ReportImportAndExportTest(unittest.TestCase):
+    """Unit tests for importing and exporting reports."""
+
+    def setUp(self):
+        """Override to set up a database with a report and a user session."""
+        self.private_key = """-----BEGIN PRIVATE KEY-----
+MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANdJVRdylaadsaau
+hRxNToIUIk/nSKMzfjjjP/20FEShkax1g4CYTwTdSMcuV+4blzzFSE+eDmMs1LNk
+jAPzfNAnHwJsjz2vt16JXDma+PuIPTCI5uobCbPUJty+6XlnzFyVjy36+SgeA8SM
+HHTprOxhwxU++O5cnzO7Jb4mjoOvAgMBAAECgYEAr9gMErzbE16Wroi53OYgDAua
+Ax3srLDwllK3/+fI7k3yCKVrpevCDz0XpulplOkgXNjfOXjmU4dYrLahztBgzrwt
+KzA7H8XylleIbuk7wUJ8jD+1dzxgu/ZB+iLzUla8r9/MmdhAzELmYBc9hIEWl6FW
+2BlQxmLNbOj2kh/aWoECQQD4GyLDzxEFVBPYYo+Ut3T05a0IlCnCSKU6saDSuFFG
+GhiM1HQMAnnuC3okgVpAOA7Rn2z9xMqLcdiv+Amnzh3hAkEA3iLgQUwMj6v97Jkb
+KFxQazzkOmgMKFGH2MbZGGwDDva1QlD9awjBW0aj4nUHNsUob6LVJCbCocQFSNDu
+eXgzjwJATSg7NoPFuk98YHW+SzSGZcarehiBqA7pe4hUCFQTymZBLkK/2CBJBPOC
+x6mGhKQqT5xxy7WQe68rAQZ1Ej9yYQJAbgd8aRuQRUH+HsmfyBghxVx99+g9zWLF
+FT05n30w7qKJGfYf8Hp/vAR7fNpW3mw+IT3YsXV5hsMfkvfah9RgRQJAVGysMIfp
+eX94CsogDhIWSaXreAfpcWQu1Dg5FCmpZTGRJps2x52CPq5icgBZeIODElIvkJbn
+JqqQtg8ZsTm6Pw==
+-----END PRIVATE KEY-----
+"""
+
+        self.public_key = """-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDXSVUXcpWmnbGmroUcTU6CFCJP
+50ijM3444z/9tBREoZGsdYOAmE8E3UjHLlfuG5c8xUhPng5jLNSzZIwD83zQJx8C
+bI89r7deiVw5mvj7iD0wiObqGwmz1Cbcvul5Z8xclY8t+vkoHgPEjBx06azsYcMV
+PvjuXJ8zuyW+Jo6DrwIDAQAB
+-----END PUBLIC KEY-----
+"""
+
+        self.database = Mock()
+        self.database.sessions.find_one.return_value = JENNY
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            scales=["count", "percentage"],
+            subjects=dict(subject_type=dict(name="Subject type")),
+            metrics=dict(
+                metric_type=dict(
+                    name="Metric type",
+                    scales=["count", "percentage"],
+                )
+            ),
+            sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
+        )
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
+        self.database.secrets.find_one.return_value = {"public_key": self.public_key, "private_key": self.private_key}
+
     def test_get_json_report(self):
         """Test that a JSON version of the report can be retrieved with encrypted credentials."""
         expected_report = copy.deepcopy(self.report)
@@ -421,24 +483,6 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertDictEqual(exported_report, expected_report)
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
-
-    @patch("requests.get")
-    def test_get_pdf_tag_report(self, requests_get):
-        """Test that a PDF version of a tag report can be retrieved."""
-        requests_get.return_value = Mock(content=b"PDF")
-        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security")))
-        requests_get.assert_called_once_with(
-            f"http://renderer:9000/api/render?url=http%3A//www%3A80/tag-security&{self.options}"
-        )
-
-    def test_delete_report(self):
-        """Test that the report can be deleted."""
-        self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
-        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny deleted the report 'Report'."),
-            inserted["delta"],
-        )
 
     @patch("bottle.request")
     def test_post_report_import(self, request):
