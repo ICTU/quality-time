@@ -21,18 +21,17 @@ TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = "") -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection."""
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter = dict(deleted=DOES_NOT_EXIST, timestamp={"$lt": max_iso_timestamp})
+        report_filter = dict(timestamp={"$lt": max_iso_timestamp})
         report_uuids = database.reports.distinct("report_uuid", report_filter)
-        reports = []
+        report_dicts = []
         for report_uuid in report_uuids:
             report_filter["report_uuid"] = report_uuid
             report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
-            report = Report(data_model, report_dict)
-            reports.append(report)
+            if "deleted" not in report_dict:
+                report_dicts.append(report_dict)
     else:
         report_dicts = database.reports.find({"last": True, "deleted": DOES_NOT_EXIST})
-        reports = [Report(data_model, report_dict) for report_dict in report_dicts]
-    return reports
+    return [Report(data_model, report_dict) for report_dict in report_dicts]
 
 
 def latest_report(database: Database, data_model, report_uuid: str) -> Report:

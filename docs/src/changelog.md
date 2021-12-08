@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Fixed
+
+- When time traveling, *Quality-time* would show deleted reports after their deletion date. Fixes [#2997](https://github.com/ICTU/quality-time/issues/2997).
+
 ### Added
 
 - Support JMeter CSV output as source for the 'slow transactions' metric. Closes [#2966](https://github.com/ICTU/quality-time/issues/2966).
