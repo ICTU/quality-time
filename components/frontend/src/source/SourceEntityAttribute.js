@@ -5,7 +5,7 @@ import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { format_minutes } from '../utils';
 
 export function SourceEntityAttribute({ entity, entity_attribute }) {
-    let cell_contents = entity[entity_attribute.key] || "";
+    let cell_contents = entity[entity_attribute.key] ?? "";
     cell_contents = cell_contents && entity_attribute.type === "datetime" ? <TimeAgoWithDate dateFirst date={cell_contents} /> : cell_contents;
     cell_contents = cell_contents && entity_attribute.type === "date" ? <TimeAgoWithDate dateFirst noTime date={cell_contents} /> : cell_contents;
     cell_contents = cell_contents && entity_attribute.type === "minutes" ? format_minutes(cell_contents) : cell_contents;

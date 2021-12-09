@@ -13,6 +13,16 @@ it('renders an empty string', () => {
     expect(screen.queryAllByText(/will not be shown/).length).toBe(0)
 })
 
+it('renders a float', () => {
+    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "float"})
+    expect(screen.getAllByText(/42/).length).toBe(1)
+})
+
+it('renders a zero float', () => {
+    renderSourceEntityAttribute({ number: 0.0 }, { key: "number", type: "float"})
+    expect(screen.getAllByText(/0/).length).toBe(1)
+})
+
 it('renders a datetime', () => {
     renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime"})
     expect(screen.getAllByText(/ago/).length).toBe(1)
