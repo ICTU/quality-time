@@ -10,7 +10,7 @@ Feature: source
   Scenario: add source
     When the client creates a source
     Then the source type is "axecsv"
-    And "components/server/src/routes/logos/axecsv.png" is returned as source logo
+    And "components/server/src/external/routes/logos/axecsv.png" is returned as source logo
 
   Scenario: delete source
     Given an existing source
