@@ -1,7 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Any, Union
+from typing import Any
 
 import pymongo
 from pymongo.database import Database
@@ -9,7 +9,7 @@ from pymongo.database import Database
 from external.model.measurement import Measurement
 from external.model.metric import Metric
 from external.server_utilities.functions import iso_timestamp
-from external.server_utilities.type import MetricId
+from external.server_utilities.type import MeasurementId, MetricId
 
 
 def latest_measurement(database: Database, metric: Metric) -> Measurement | None:
@@ -18,33 +18,15 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
-MatchType = dict[str, dict[str, Union[list[str], str]]]
-
-
-def latest_measurements_by_metric_uuid(
-    database: Database, date_time: str, metric_uuids: list[str]
-) -> dict[str, Measurement] | None:
-    """Return the latest measurements in a dict with metric_uuids as keys."""
-    metric_uuid_match: MatchType = {"metric_uuid": {"$in": metric_uuids}}
-    date_time_match: MatchType = {"start": {"$lte": date_time}} if date_time else {}
-    latest_measurement_ids = database.measurements.aggregate(
-        [
-            {"$match": metric_uuid_match | date_time_match},  # skipcq: TYP-052
-            {"$sort": {"metric_uuid": 1, "start": -1}},
-            {"$group": {"_id": "$metric_uuid", "measurement_id": {"$first": "$_id"}}},
-            {"$project": {"_id": False}},
-        ]
+def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
+    """Return the latest successful measurement."""
+    latest_successful = database.measurements.find_one(
+        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
     )
-    latest_measurements = database.measurements.find(
-        {"_id": {"$in": [measurement["measurement_id"] for measurement in latest_measurement_ids]}},
-        projection={"_id": False, "sources.entities": False, "entity_user_data": False},
-    )
-    return {measurement["metric_uuid"]: measurement for measurement in latest_measurements}
+    return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def recent_measurements_by_metric_uuid(
-    data_model: dict, database: Database, max_iso_timestamp: str = "", days=7, metric_uuids=None
-):
+def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max_iso_timestamp: str = "", days=7):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
@@ -92,6 +74,11 @@ def measurements_by_metric(
 def count_measurements(database: Database) -> int:
     """Return the number of measurements."""
     return int(database.measurements.estimated_document_count())
+
+
+def update_measurement_end(database: Database, measurement_id: MeasurementId):
+    """Set the end date and time of the measurement to the current date and time."""
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
 def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
