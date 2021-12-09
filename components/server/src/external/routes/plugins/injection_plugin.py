@@ -14,7 +14,7 @@ class InjectionPlugin:
     def __init__(self, value, keyword: str) -> None:
         self.value = value
         self.keyword = keyword
-        self.name = f"{keyword}-injection"
+        self.name = f"{keyword}-injection-external"
 
     def setup(self, app) -> None:
         """Make sure that other installed plugins don't use the same keyword argument."""
