@@ -572,6 +572,18 @@
                                 "transactions_to_ignore": [],
                                 "transactions_to_include": []
                             }
+                        },
+                        "484cdb85-945a-3b91-5447-ee86f01df075": {
+                            "type": "jmeter_csv",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/jmeter/jmeter.csv",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
                         }
                     },
                     "name": "Number of performance tests",

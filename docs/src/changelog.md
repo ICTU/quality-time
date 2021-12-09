@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Support JMeter CSV output as source for the 'slow transactions' metric. Closes [#2966](https://github.com/ICTU/quality-time/issues/2966).
+- Support JMeter CSV output as source for the 'slow transactions' and 'tests' metrics. Closes [#2966](https://github.com/ICTU/quality-time/issues/2966) and [#2967](https://github.com/ICTU/quality-time/issues/2967).
 
 ## v3.29.0 - 2021-12-03
 
