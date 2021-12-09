@@ -2,10 +2,10 @@
 
 from typing import cast
 
-from external.model.measurement import Measurement
-from external.model.subject import Subject
-from external.model.metric import Metric
-from external.server_utilities.type import Color, ReportId, Status
+from internal.model.measurement import Measurement
+from internal.model.subject import Subject
+from internal.model.metric import Metric
+from internal.server_utilities.type import Color, ReportId, Status
 
 
 STATUS_COLOR_MAPPING = cast(

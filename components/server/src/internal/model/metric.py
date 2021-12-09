@@ -6,25 +6,44 @@ from collections.abc import Sequence
 from datetime import date
 from typing import cast
 
-from internal.model.source import Source
-from internal.server_utilities.type import Direction, MetricId, Scale, TargetType
+from typing import TYPE_CHECKING
+
+from external.model.source import Source
+from external.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+
+
+if TYPE_CHECKING:
+    from model.measurement import Measurement
 
 
 class Metric(dict):
     """Class representing a metric."""
 
-    def __init__(self, data_model, metric_data, metric_uuid: MetricId) -> None:
+    def __init__(self, data_model, metric_data, metric_uuid: MetricId, subject_uuid: SubjectId = None) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid
+        self.subject_uuid = subject_uuid
         super().__init__(metric_data)
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
 
-    def type(self) -> str:
+    def type(self) -> str | None:
         """Return the type of the metric."""
-        return str(self["type"])
+        return str(self["type"]) if "type" in self else None
+
+    def status(self, last_measurement: Measurement | None) -> Status | None:
+        """Determine the metric status."""
+        if last_measurement and (status := last_measurement.status()):
+            return status
+        debt_end_date = self.get("debt_end_date") or date.max.isoformat()
+        return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
+
+    def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
+        """Return the metric's issue statuses."""
+        last_issue_statuses = last_measurement.get("issue_status", []) if last_measurement else []
+        return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
@@ -37,11 +56,12 @@ class Metric(dict):
 
     def scale(self) -> Scale:
         """Return the current metric scale."""
-        return cast(Scale, self.get("scale") or self.__data_model["metrics"][self.type()]["default_scale"])
+        return cast(Scale, self.get("scale") or self.__data_model["metrics"][self.type()].get("default_scale", "count"))
 
     def scales(self) -> Sequence[Scale]:
         """Return the scales supported by the metric."""
-        return cast(Sequence[Scale], self.__data_model["metrics"][self.type()]["scales"])
+        scales = self.__data_model.get("metrics", {}).get(self.type(), {}).get("scales", [])
+        return cast(Sequence[Scale], scales)
 
     def accept_debt(self) -> bool:
         """Return whether the metric has its technical debt accepted."""
@@ -82,3 +102,19 @@ class Metric(dict):
         """Look up the type of an entity attribute."""
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
+
+    def summarize(self, measurements: list[Measurement] = None):
+        """Add a summary of the metric to the report."""
+        measurements = measurements if measurements is not None else []
+        latest_measurement = measurements[-1] if measurements else None
+
+        summary = dict(self)
+        summary["scale"] = self.scale()
+        summary["status"] = self.status(latest_measurement)
+        summary["status_start"] = latest_measurement.status_start() if latest_measurement else None
+        summary["latest_measurement"] = latest_measurement
+        summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
+        if latest_measurement:
+            summary["issue_status"] = self.issue_statuses(latest_measurement)
+
+        return summary

@@ -8,8 +8,6 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from typing import TYPE_CHECKING
-
 from external.model.source import Source
 from external.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
 

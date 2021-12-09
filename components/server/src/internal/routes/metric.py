@@ -4,8 +4,8 @@ from typing import Any
 
 import bottle
 from pymongo.database import Database
-from database.datamodels import latest_datamodel
 
+from internal.database.datamodels import latest_datamodel
 from internal.database.reports import latest_reports
 
 

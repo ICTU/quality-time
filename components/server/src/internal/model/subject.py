@@ -2,9 +2,9 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from external.model.measurement import Measurement
-from external.model.metric import Metric
-from external.server_utilities.type import SubjectId
+from internal.model.measurement import Measurement
+from internal.model.metric import Metric
+from internal.server_utilities.type import SubjectId
 
 
 if TYPE_CHECKING:
