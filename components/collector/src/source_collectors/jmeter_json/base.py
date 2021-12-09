@@ -1,4 +1,4 @@
-"""Base classes for JMeter collectos."""
+"""Base classes for JMeter collectors."""
 
 from collector_utilities.functions import match_string_or_regular_expression
 from model import Entity

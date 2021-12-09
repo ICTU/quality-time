@@ -97,23 +97,13 @@ JMETER_CSV = Source(
     description=JMETER_DESCRIPTION,
     url=JMETER_URL,
     parameters=dict(
+        test_result=TestResult(values=["failed", "success"]),
         response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
         target_response_time=TARGET_RESPONSE_TIME,
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
-        transactions_to_ignore=MultipleChoiceWithAdditionParameter(
-            name="Transactions to ignore (regular expressions or transaction names)",
-            short_name="transactions to ignore",
-            help="Transactions to ignore can be specified by transaction name or by regular expression.",
-            metrics=["slow_transactions"],
-        ),
-        transactions_to_include=MultipleChoiceWithAdditionParameter(
-            name="Transactions to include (regular expressions or transaction names)",
-            short_name="transactions to include",
-            help="Transactions to include can be specified by transaction name or by regular expression.",
-            placeholder="all",
-            metrics=["slow_transactions"],
-        ),
-        **access_parameters(["slow_transactions"], source_type="JMeter report", source_type_format="CSV")
+        transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
+        transactions_to_include=TRANSACTIONS_TO_INCLUDE,
+        **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="CSV")
     ),
     entities=ENTITIES,
 )

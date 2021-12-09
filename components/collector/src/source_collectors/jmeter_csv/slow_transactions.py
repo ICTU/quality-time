@@ -1,17 +1,15 @@
 """JMeter CSV slow transactions collector."""
 
-import csv
 import statistics
-from io import StringIO
-from typing import AsyncIterator, cast
+from typing import cast
 
-from base_collectors import CSVFileSourceCollector
 from model import Entities, SourceResponses
 
+from .base import JMeterCSVCollector
 from ..jmeter_json.base import TransactionEntity
 
 
-class JMeterCSVSlowTransactions(CSVFileSourceCollector):
+class JMeterCSVSlowTransactions(JMeterCSVCollector):
     """Collector for the number of slow transactions in a JMeter CSV report."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
@@ -24,10 +22,10 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
             list[str], self._parameter("transaction_specific_target_response_times")
         )
         entities = Entities()
-        async for samples in self.__samples(responses):
+        async for samples in self._samples(responses):
             label = samples[0]["label"]
             sample_count = len(samples)
-            error_count = len([sample for sample in samples if sample["success"] == "false"])
+            error_count = self._error_count(samples)
             latencies = [int(sample["elapsed"]) for sample in samples]
             entity = TransactionEntity(
                 key=label,
@@ -46,24 +44,6 @@ class JMeterCSVSlowTransactions(CSVFileSourceCollector):
             ):
                 entities.append(entity)
         return entities
-
-    @classmethod
-    async def __samples(cls, responses: SourceResponses) -> AsyncIterator[list[dict[str, str]]]:
-        """Yield the samples grouped by label."""
-        rows = await cls.__parse_csv(responses)
-        samples = [row for row in rows if not row["responseMessage"].startswith("Number of samples in transaction")]
-        labels = {sample["label"] for sample in samples}
-        for label in sorted(labels):
-            yield [sample for sample in samples if sample["label"] == label]
-
-    @staticmethod
-    async def __parse_csv(responses: SourceResponses) -> list[dict[str, str]]:
-        """Parse the CSV rows from the responses."""
-        rows = []
-        for response in responses:
-            csv_text = await response.text()
-            rows.extend(list(csv.DictReader(StringIO(csv_text.strip(), newline=""))))
-        return rows
 
     @staticmethod
     def __round(value: float | int) -> float:
