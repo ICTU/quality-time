@@ -20,7 +20,7 @@ TYPE_DESCRIPTION = dict(
 def get_data_model():
     """Return the data model."""
     module_dir = pathlib.Path(__file__).resolve().parent
-    server_src_path = module_dir.parent.parent / "components" / "server" / "src"
+    server_src_path = module_dir.parent.parent / "components" / "server" / "src" / "external"
     sys.path.insert(0, str(server_src_path))
     from data_model import DATA_MODEL_JSON  # pylint: disable=import-error,import-outside-toplevel
 
