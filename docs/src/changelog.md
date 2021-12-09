@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - When time traveling, *Quality-time* would show deleted reports after their deletion date. Fixes [#2997](https://github.com/ICTU/quality-time/issues/2997).
+- Zero values were not shown in the measurement detail tables. Fixes [#3008](https://github.com/ICTU/quality-time/issues/3008).
 
 ### Added
 
