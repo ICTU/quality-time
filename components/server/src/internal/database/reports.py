@@ -4,7 +4,6 @@ import pymongo
 from pymongo.database import Database
 
 from internal.model.metric import Metric
-from internal.server_utilities.functions import iso_timestamp
 from internal.server_utilities.type import MetricId
 from .filters import DOES_NOT_EXIST
 from .datamodels import latest_datamodel
@@ -14,17 +13,9 @@ from .datamodels import latest_datamodel
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def latest_reports(database: Database, max_iso_timestamp: str = ""):
+def latest_reports(database: Database):
     """Return the latest, undeleted, reports in the reports collection."""
-    if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter = dict(deleted=DOES_NOT_EXIST, timestamp={"$lt": max_iso_timestamp})
-        report_uuids = database.reports.distinct("report_uuid", report_filter)
-        reports = []
-        for report_uuid in report_uuids:
-            report_filter["report_uuid"] = report_uuid
-            reports.append(database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING))
-    else:
-        reports = list(database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
+    reports = list(database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
     for report in reports:
         report["_id"] = str(report["_id"])
     return reports
