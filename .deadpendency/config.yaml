@@ -47,5 +47,6 @@ ignore-failures:
     - mypy-extensions
     - sphinxcontrib-jsmath
   javascript:
+    - enzyme  # https://github.com/ICTU/quality-time/issues/3003
     - semantic-ui-css
 
