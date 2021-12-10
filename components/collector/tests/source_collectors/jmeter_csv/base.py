@@ -1,4 +1,4 @@
-"""Base classes for JMeter CSV collectors."""
+"""Base classes for JMeter CSV collector test cases."""
 
 from ..source_collector_test_case import SourceCollectorTestCase
 

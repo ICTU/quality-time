@@ -15,6 +15,14 @@ class JMeterCSVCollector(CSVFileSourceCollector):
     """Base class for JMeter CSV file collectors."""
 
     @classmethod
+    async def _timestamps(cls, responses: SourceResponses) -> list[int]:
+        """Return all timestamps in the samples in the responses."""
+        timestamps = []
+        async for samples in cls._samples(responses):
+            timestamps.extend([int(sample["timeStamp"]) for sample in samples])
+        return timestamps
+
+    @classmethod
     async def _samples(cls, responses: SourceResponses) -> AsyncIterator[Samples]:
         """Yield the samples grouped by label."""
         rows = await cls.__parse_csv(responses)

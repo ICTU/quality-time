@@ -83,6 +83,7 @@ from .jira.velocity import JiraVelocity
 
 from .jmeter_csv.performancetest_duration import JMeterCSVPerformanceTestDuration
 from .jmeter_csv.slow_transactions import JMeterCSVSlowTransactions
+from .jmeter_csv.source_up_to_dateness import JMeterCSVSourceUpToDateness
 from .jmeter_csv.tests import JMeterCSVTests
 
 from .jmeter_json.slow_transactions import JMeterJSONSlowTransactions

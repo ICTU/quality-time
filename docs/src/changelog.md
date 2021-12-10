@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Support JMeter CSV output as source for the 'performance test duration', 'slow transactions' and 'tests' metrics. Closes [#2965](https://github.com/ICTU/quality-time/issues/2965), [#2966](https://github.com/ICTU/quality-time/issues/2966) and [#2967](https://github.com/ICTU/quality-time/issues/2967).
+- Support [JMeter CSV output](https://jmeter.apache.org/usermanual/generating-dashboard.html#saveservice_requirements) as source for the 'performance test duration', 'slow transactions', 'tests', and 'source up-to-dateness' metrics. Closes [#2965](https://github.com/ICTU/quality-time/issues/2965), [#2966](https://github.com/ICTU/quality-time/issues/2966), [#2967](https://github.com/ICTU/quality-time/issues/2967) and [#2010](https://github.com/ICTU/quality-time/issues/3010).
 
 ## v3.29.0 - 2021-12-03
 
