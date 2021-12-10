@@ -1,4 +1,4 @@
-FROM node:14.18.2-alpine3.14
+FROM node:16.13.1-alpine3.14
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time frontend"
