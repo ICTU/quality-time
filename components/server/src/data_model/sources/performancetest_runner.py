@@ -10,13 +10,12 @@ from ..parameters import (
 )
 
 
-ALL_PERFORMANCETEST_RUNNER_METRICS = [
+TRANSACTION_METRICS = ["slow_transactions", "tests"]
+ALL_PERFORMANCETEST_RUNNER_METRICS = TRANSACTION_METRICS + [
     "performancetest_duration",
     "performancetest_stability",
     "scalability",
-    "slow_transactions",
     "source_up_to_dateness",
-    "tests",
 ]
 
 PERFORMANCETEST_RUNNER = Source(
@@ -37,14 +36,14 @@ PERFORMANCETEST_RUNNER = Source(
             name="Transactions to ignore (regular expressions or transaction names)",
             short_name="transactions to ignore",
             help="Transactions to ignore can be specified by transaction name or by regular expression.",
-            metrics=["slow_transactions", "tests"],
+            metrics=TRANSACTION_METRICS,
         ),
         transactions_to_include=MultipleChoiceWithAdditionParameter(
             name="Transactions to include (regular expressions or transaction names)",
             short_name="transactions to include",
             help="Transactions to include can be specified by transaction name or by regular expression.",
             placeholder="all",
-            metrics=["slow_transactions", "tests"],
+            metrics=TRANSACTION_METRICS,
         ),
         **access_parameters(
             ALL_PERFORMANCETEST_RUNNER_METRICS,

@@ -137,7 +137,8 @@ METRICS = Metrics.parse_obj(
             direction=Direction.MORE_IS_BETTER,
             target="30",
             near_target="25",
-            sources=["manual_number", "performancetest_runner"],
+            default_source="jmeter_csv",
+            sources=["jmeter_csv", "manual_number", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         performancetest_stability=dict(
@@ -178,7 +179,7 @@ METRICS = Metrics.parse_obj(
             description="The number of transactions slower than their performance threshold.",
             unit=Unit.TRANSACTIONS,
             near_target="5",
-            default_source="jmeter_json",
+            default_source="jmeter_csv",
             sources=["manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
