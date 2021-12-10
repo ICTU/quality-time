@@ -11,7 +11,5 @@ class JMeterCSVPerformanceTestDuration(JMeterCSVCollector):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the timestamps from the samples and calculate the duration in minutes."""
-        timestamps = []
-        async for samples in self._samples(responses):
-            timestamps.extend([int(sample["timeStamp"]) for sample in samples])
+        timestamps = await self._timestamps(responses)
         return str(round((max(timestamps) - min(timestamps)) / 60_000)) if timestamps else "0"

@@ -206,6 +206,7 @@ METRICS = Metrics.parse_obj(
                 "jacoco_jenkins_plugin",
                 "jenkins",
                 "jenkins_test_report",
+                "jmeter_csv",
                 "junit",
                 "ncover",
                 "robot_framework",
