@@ -11,7 +11,8 @@ from ..parameters import (
 )
 
 
-ALL_JMETER_METRICS = ["slow_transactions", "tests"]
+TRANSACTION_METRICS = ["slow_transactions", "tests"]
+ALL_JMETER_METRICS = TRANSACTION_METRICS + ["performancetest_duration"]
 
 JMETER_URL = "https://jmeter.apache.org"
 
@@ -24,7 +25,7 @@ TRANSACTIONS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     name="Transactions to ignore (regular expressions or transaction names)",
     short_name="transactions to ignore",
     help="Transactions to ignore can be specified by transaction name or by regular expression.",
-    metrics=ALL_JMETER_METRICS,
+    metrics=TRANSACTION_METRICS,
 )
 
 TRANSACTIONS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
@@ -32,7 +33,7 @@ TRANSACTIONS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
     short_name="transactions to include",
     help="Transactions to include can be specified by transaction name or by regular expression.",
     placeholder="all",
-    metrics=ALL_JMETER_METRICS,
+    metrics=TRANSACTION_METRICS,
 )
 
 TARGET_RESPONSE_TIME = IntegerParameter(
@@ -119,7 +120,7 @@ JMETER_JSON = Source(
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
         transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
-        **access_parameters(ALL_JMETER_METRICS, source_type="JMeter report", source_type_format="JSON")
+        **access_parameters(TRANSACTION_METRICS, source_type="JMeter report", source_type_format="JSON")
     ),
     entities=ENTITIES,
 )
