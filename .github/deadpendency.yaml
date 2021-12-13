@@ -43,9 +43,12 @@ ignore-failures:
     - behave
     - bottle-mongo
     - flake8-polyfill 
+    - lockfile  # https://github.com/trailofbits/pip-audit/issues/203
     - mccabe
     - mypy-extensions
+    - requirements-parser  # https://github.com/trailofbits/pip-audit/issues/203
     - sphinxcontrib-jsmath
+    - webencodings  # https://github.com/trailofbits/pip-audit/issues/203
   javascript:
     - enzyme  # https://github.com/ICTU/quality-time/issues/3003
     - semantic-ui-css
