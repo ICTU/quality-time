@@ -126,7 +126,6 @@ it("displays a parse error in the popup", async () => {
 });
 
 it("displays nothing if the metric has no issue status", async () => {
-    const metric = {}
-    const { queryByText } = render(<IssueStatus metric={metric} />)
+    const { queryByText } = render(<IssueStatus metric={{}} />)
     expect(queryByText(/123/)).toBe(null)
 });

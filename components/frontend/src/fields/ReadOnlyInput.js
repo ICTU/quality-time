@@ -5,11 +5,11 @@ export function ReadOnlyInput({ label, placeholder, prefix, value }) {
     return (
         <Form.Input
             fluid
-            focus
             label={label}
             labelPosition="left"
             placeholder={placeholder}
             readOnly
+            tabIndex={-1}
             value={value}
         >
             {prefix ? <Label basic>{prefix}</Label> : null}
