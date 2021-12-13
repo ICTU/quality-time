@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
+import { ReadOnlyInput } from './ReadOnlyInput';
 
 function StringInputWithSuggestions(props) {
     let { editableLabel, error, options, required, requiredPermissions, set_value, value, warning, ...otherProps } = props;
@@ -30,8 +31,11 @@ function StringInputWithSuggestions(props) {
 
 export function StringInput(props) {
     const options = [...(props.options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
-
-    const input = <Input {...props} />;
-    const input_with_suggestions = <StringInputWithSuggestions {...props} options={options} />;
-    return options.length === 0 ? input : <ReadOnlyOrEditable requiredPermissions={props.requiredPermissions} readOnlyComponent={input} editableComponent={input_with_suggestions} />
+    const input = <Input {...props} />
+    const readOnlyInput = <Form><ReadOnlyInput {...props} /></Form>
+    const inputWithSuggestions = <StringInputWithSuggestions {...props} options={options} />;
+    return <ReadOnlyOrEditable
+        requiredPermissions={props.requiredPermissions}
+        readOnlyComponent={readOnlyInput}
+        editableComponent={options.length === 0 ? input : inputWithSuggestions} />
 }

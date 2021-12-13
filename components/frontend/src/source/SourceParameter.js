@@ -119,7 +119,7 @@ export function SourceParameter({
         return (<StringInput {...parameter_props} />)
     }
     if (parameter_type === "url") {
-        return (<StringInput {...parameter_props} warning={warning} />)
+        return (<StringInput {...parameter_props} error={warning} />)
     }
     if (parameter_type === "multiple_choice_with_addition") {
         return (<MultipleChoiceInput {...parameter_props} allowAdditions />)

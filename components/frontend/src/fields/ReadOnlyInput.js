@@ -1,9 +1,10 @@
 import React from 'react';
 import { Form, Label } from 'semantic-ui-react';
 
-export function ReadOnlyInput({ label, placeholder, prefix, value }) {
+export function ReadOnlyInput({ error, label, placeholder, prefix, required, value }) {
     return (
         <Form.Input
+            error={error || (required && value === "")}
             fluid
             label={label}
             labelPosition="left"
