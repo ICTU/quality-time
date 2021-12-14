@@ -27,7 +27,6 @@ function EditableIntegerInput(props) {
     }
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
-
             <Form.Input
                 {...otherProps}
                 error={!is_valid(value)}

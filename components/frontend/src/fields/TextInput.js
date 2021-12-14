@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
-import { accessGranted, Permissions } from '../context/Permissions';
+import { ReadOnlyOrEditable } from '../context/Permissions';
 
-export function TextInput(props) {
-    let { editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
+function ReadOnlyTextInput({ label, required, value }) {
+    return (
+        <Form>
+            <Form.TextArea
+                error={required && value === ""}
+                label={label}
+                readOnly
+                tabIndex={-1}
+                value={value}
+            />
+        </Form>
+    )
+}
+
+function EditableTextInput(props) {
+    let { editableLabel, label, required, set_value, ...otherProps } = props;
     const [text, setText] = useState(props.value || '');
-    function readOnly(permissions) {
-        return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
-    }
     function onChange(event) {
         setText(event.target.value)
     }
@@ -29,19 +40,26 @@ export function TextInput(props) {
     }
     return (
         <Form onSubmit={submit}>
-            <Permissions.Consumer>{(permissions) => (
-                <Form.TextArea
-                    {...otherProps}
-                    error={required && text === ""}
-                    label={readOnly(permissions) ? editableLabel || props.label : props.label}
-                    onBlur={submit}
-                    onChange={onChange}
-                    onKeyDown={onKeyDown}
-                    onKeyPress={onKeyPress}
-                    readOnly={readOnly(permissions)}
-                    value={text}
-                />)}
-            </Permissions.Consumer>
+            <Form.TextArea
+                {...otherProps}
+                error={required && text === ""}
+                label={editableLabel || label}
+                onBlur={submit}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                onKeyPress={onKeyPress}
+                value={text}
+            />
         </Form>
+    )
+}
+
+export function TextInput(props) {
+    let { requiredPermissions, ...otherProps } = props;
+    return (
+        <ReadOnlyOrEditable
+            requiredPermissions={requiredPermissions}
+            readOnlyComponent={<ReadOnlyTextInput {...otherProps} />}
+            editableComponent={<EditableTextInput {...otherProps} />} />
     )
 }
