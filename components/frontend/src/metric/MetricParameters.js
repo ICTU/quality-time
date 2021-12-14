@@ -168,6 +168,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
                         options={get_metric_issue_ids(metric)}
+                        placeholder={report.issue_tracker ? "Enter issue identifiers here" : "Enter issue identifiers here, but note that issue status cannot be reported until an issue tracker is configured"}
                         set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
                         value={get_metric_issue_ids(metric)}
                     />

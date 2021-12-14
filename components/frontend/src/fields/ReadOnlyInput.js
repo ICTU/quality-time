@@ -7,7 +7,7 @@ export function ReadOnlyInput({ error, label, placeholder, prefix, required, val
             error={error || (required && value === "")}
             fluid
             label={label}
-            labelPosition="left"
+            labelPosition={unit ? "right" : "left"}
             placeholder={placeholder}
             readOnly
             tabIndex={-1}

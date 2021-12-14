@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
-import { accessGranted, Permissions } from '../context/Permissions';
+import { ReadOnlyOrEditable } from '../context/Permissions';
+import { ReadOnlyInput } from './ReadOnlyInput';
 
-export function IntegerInput(props) {
-    let { editableLabel, prefix, set_value, unit, requiredPermissions, ...otherProps } = props;
+function EditableIntegerInput(props) {
+    let { editableLabel, label, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
 
-    function readOnly(permissions) {
-        return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
-    }
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
             return false
@@ -27,27 +25,38 @@ export function IntegerInput(props) {
             set_value(value)
         }
     }
-    const fixedProps = { fluid: true, focus: true, labelPosition: unit ? "right" : "left", type: "number", width: 16 }
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
-            <Permissions.Consumer>{(permissions) =>
-                <Form.Input
-                    {...otherProps}
-                    error={!is_valid(value)}
-                    label={readOnly(permissions) ? props.label : editableLabel || props.label}
-                    onBlur={() => { submit_if_changed_and_valid() }}
-                    onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
-                    onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}
-                    onSubmit={() => { submit_if_changed_and_valid() }}
-                    readOnly={readOnly(permissions)}
-                    value={value}
-                    {...fixedProps}
-                >
-                    {prefix ? <Label basic>{prefix}</Label> : null}
-                    <input />
-                    {unit ? <Label basic>{unit}</Label> : null}
-                </Form.Input>}
-            </Permissions.Consumer>
+
+            <Form.Input
+                {...otherProps}
+                error={!is_valid(value)}
+                fluid
+                focus
+                label={editableLabel || label}
+                labelPosition={unit ? "right" : "left"}
+                onBlur={() => { submit_if_changed_and_valid() }}
+                onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
+                onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}
+                onSubmit={() => { submit_if_changed_and_valid() }}
+                type="number"
+                value={value}
+                width={16}
+            >
+                {prefix ? <Label basic>{prefix}</Label> : null}
+                <input />
+                {unit ? <Label basic>{unit}</Label> : null}
+            </Form.Input>
         </Form>
+    )
+}
+
+export function IntegerInput(props) {
+    let { requiredPermissions, ...otherProps } = props;
+    return (
+        <ReadOnlyOrEditable
+            requiredPermissions={requiredPermissions}
+            readOnlyComponent={<Form><ReadOnlyInput {...otherProps} /></Form>}
+            editableComponent={<EditableIntegerInput {...otherProps} />} />
     )
 }
