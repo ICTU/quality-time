@@ -38,8 +38,8 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Column width={10}>
                         <StringInput
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            placeholder="url"
                             label={label}
+                            placeholder="https://example.webhook.office.com/webhook..."
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { webhook: value, url: window.location.href }, reload)
                             }}

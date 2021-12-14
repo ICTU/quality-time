@@ -60,7 +60,7 @@ it('edits multiple notification destination attributes when they are changed in 
     await act(async () => {
         render_notification_destinations(notification_destinations)
     });
-    userEvent.type(screen.getByPlaceholderText(/url/), 'new.webhook.com{enter}');
+    userEvent.type(screen.getByPlaceholderText(/https:\/\/example/), 'new.webhook.com{enter}');
 
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, { webhook: "new.webhook.com", url: "http://localhost/" });
 });
