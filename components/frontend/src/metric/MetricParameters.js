@@ -60,7 +60,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                         label="Metric name"
                         placeholder={metricType.name}
                         set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
-                        value={metric.name}
+                        value={metric.name ?? ""}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -93,7 +93,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                             { key: "0", text: `${fewer} is better`, value: "<" },
                             { key: "1", text: `${more} is better`, value: ">" }]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "direction", value, reload)}
-                        value={metric_direction || "<"}
+                        value={metric_direction ?? "<"}
                     />
                 </Grid.Column>
                 {metric_scale !== "version_number" &&
@@ -105,7 +105,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                             prefix={metric_scale === "percentage" ? "%" : ""}
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
-                            value={metric.unit}
+                            value={metric.unit ?? ""}
                         />
                     </Grid.Column>}
             </Grid.Row>
@@ -156,7 +156,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                         label="Technical debt end date"
                         placeholder="no end date"
                         set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
-                        value={metric.debt_end_date || ""}
+                        value={metric.debt_end_date ?? ""}
                     />
                 </Grid.Column>
             </Grid.Row>

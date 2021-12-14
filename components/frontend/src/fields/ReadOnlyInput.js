@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Label } from 'semantic-ui-react';
 
-export function ReadOnlyInput({ error, label, placeholder, prefix, required, value }) {
+export function ReadOnlyInput({ error, label, placeholder, prefix, required, value, type }) {
     return (
         <Form.Input
             error={error || (required && value === "")}
@@ -11,6 +11,7 @@ export function ReadOnlyInput({ error, label, placeholder, prefix, required, val
             placeholder={placeholder}
             readOnly
             tabIndex={-1}
+            type={type}
             value={value}
         >
             {prefix ? <Label basic>{prefix}</Label> : null}
