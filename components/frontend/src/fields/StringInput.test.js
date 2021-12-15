@@ -50,27 +50,41 @@ it('does not invoke the callback when the new value equals the old value', () =>
     expect(mockCallback).not.toHaveBeenCalled()
 });
 
+it('works without options', () => {
+    const mockCallback = jest.fn();
+    renderStringInput(mockCallback);
+    render(<StringInput set_value={mockCallback} />)
+    userEvent.type(screen.getByDisplayValue(""), '{selectall}New value{enter}')
+    expect(screen.getByDisplayValue(/New value/)).not.toBe(null)
+    expect(mockCallback).toHaveBeenCalledWith("New value")
+});
+
 it('shows an error for required empty fields', () => {
-    const { container } = render(<StringInput value="" required />)
-    expect(container.getElementsByTagName("input")[0]).toBeInvalid()
+    render(<StringInput options={["Option 1", "Option 2"]} required />)
+    expect(screen.getByRole("combobox")).toBeInvalid()
 });
 
 it('does not show an error for required non-empty fields', () => {
-    const { container } = render(<StringInput value="Hello" required />)
-    expect(container.getElementsByTagName("input")[0]).toBeValid()
+    render(<StringInput options={["Option 1", "Option 2"]} value="Hello" required />)
+    expect(screen.getByRole("combobox")).toBeValid()
 });
 
 it('does not show an error for non-required empty fields', () => {
-    const { container } = render(<StringInput value="" />)
-    expect(container.getElementsByTagName("input")[0]).toBeValid()
+    render(<StringInput options={["Option 1", "Option 2"]} value="" />)
+    expect(screen.getByRole("combobox")).toBeValid()
+});
+
+it('does not show an error for non-required non-empty fields', () => {
+    render(<StringInput options={["Option 1", "Option 2"]} value="Hello" />)
+    expect(screen.getByRole("combobox")).toBeValid()
 });
 
 it('shows an error', () => {
-    const { container } = render(<StringInput value="Hello" error />)
-    expect(container.getElementsByTagName("input")[0]).toBeInvalid()
+    render(<StringInput options={["Option 1", "Option 2"]} value="Hello" error />)
+    expect(screen.getByRole("combobox")).toBeInvalid()
 });
 
 it('shows a warning', () => {
-    const { container } = render(<StringInput value="Hello" warning />)
-    expect(container.getElementsByTagName("input")[0]).toBeInvalid()
+    render(<StringInput options={["Option 1", "Option 2"]} value="Hello" warning />)
+    expect(screen.getByRole("combobox")).toBeInvalid()
 });
