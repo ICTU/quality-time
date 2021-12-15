@@ -7,7 +7,8 @@ export function get_metric_direction(metric, data_model) {
 }
 
 export function format_metric_direction(direction) {
-    return { "<": "≦", ">": "≧" }[direction];
+    // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
+    return { "<": "≦", ">": "≧", "≦": "≦", "≧": "≧" }[direction];
 }
 
 export function get_metric_name(metric, datamodel) {
@@ -32,6 +33,10 @@ export function get_metric_value(metric) {
 
 export function get_metric_comment(metric) {
     return metric.comment ?? '';
+}
+
+export function getMetricScale(metric, dataModel) {
+    return metric.scale || dataModel.metrics[metric.type].default_scale || "count"
 }
 
 export function get_metric_status(metric) {
