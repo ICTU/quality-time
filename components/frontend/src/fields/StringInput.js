@@ -18,8 +18,8 @@ function StringInputWithSuggestions(props) {
             fluid
             label={editableLabel || label}
             onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
-            onChange={(event, { value }) => { if (value !== initialValue) { setSearchQuery(value); set_value(value) } }}
-            onSearchChange={(event, { searchQuery }) => { setSearchQuery(searchQuery) }}
+            onChange={(event, { value }) => { setSearchQuery(value); set_value(value) }}
+            onSearchChange={(event, data) => { setSearchQuery(data.searchQuery) }}
             options={string_options}
             search
             searchQuery={searchQuery}
