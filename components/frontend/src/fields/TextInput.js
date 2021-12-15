@@ -18,24 +18,23 @@ function ReadOnlyTextInput({ label, required, value }) {
 
 function EditableTextInput(props) {
     let { editableLabel, label, required, set_value, ...otherProps } = props;
-    const [text, setText] = useState(props.value || '');
-    function onChange(event) {
-        setText(event.target.value)
-    }
+    const initialValue = props.value || ""
+    const [text, setText] = useState(initialValue);
+
     function onKeyDown(event) {
         if (event.key === "Escape") {
-            setText(props.value || '')
+            setText(initialValue)
         }
     }
     function onKeyPress(event) {
-        if (event.key === "Enter" && event.shiftKey && text !== (props.value || '')) {
+        if (event.key === "Enter" && event.shiftKey) {
             event.preventDefault();
-            props.set_value(text);
+            submit()
         }
     }
     function submit() {
-        if (text !== (props.value || '')) {
-            props.set_value(text)
+        if (text !== initialValue) {
+            set_value(text)
         }
     }
     return (
@@ -45,7 +44,7 @@ function EditableTextInput(props) {
                 error={required && text === ""}
                 label={editableLabel || label}
                 onBlur={submit}
-                onChange={onChange}
+                onChange={(event) => setText(event.target.value)}
                 onKeyDown={onKeyDown}
                 onKeyPress={onKeyPress}
                 value={text}
