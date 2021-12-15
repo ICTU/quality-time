@@ -8,12 +8,12 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from external.model.source import Source
-from external.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+from internal.model.source import Source
+from internal.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
 
 
 if TYPE_CHECKING:
-    from model.measurement import Measurement
+    from internal.model.measurement import Measurement
 
 
 class Metric(dict):

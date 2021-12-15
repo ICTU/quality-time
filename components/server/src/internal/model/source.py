@@ -10,7 +10,7 @@ from internal.server_utilities.functions import days_ago, iso_timestamp
 
 
 if TYPE_CHECKING:
-    from model.metric import Metric
+    from internal.model.metric import Metric
 
 
 class Source(dict):  # lgtm [py/missing-equals]

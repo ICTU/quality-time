@@ -7,7 +7,7 @@ from typing import cast, Optional, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from model.metric import Metric
+    from external.model.metric import Metric
 
 
 class Source(dict):  # lgtm [py/missing-equals]

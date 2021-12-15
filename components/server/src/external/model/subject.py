@@ -8,7 +8,7 @@ from external.server_utilities.type import SubjectId
 
 
 if TYPE_CHECKING:
-    from model.report import Report
+    from external.model.report import Report
 
 
 class Subject(dict):

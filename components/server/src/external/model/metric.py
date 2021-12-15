@@ -13,7 +13,7 @@ from external.server_utilities.type import Direction, MetricId, Scale, Status, S
 
 
 if TYPE_CHECKING:
-    from model.measurement import Measurement
+    from external.model.measurement import Measurement
 
 
 class Metric(dict):
