@@ -12,7 +12,7 @@ import { Target } from './Target';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { get_metric_issue_ids, get_metric_tags } from '../utils';
+import { get_metric_direction, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -33,13 +33,12 @@ function metric_scale_options(metric_scales, datamodel) {
 export function MetricParameters({ report, metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
-    const metric_scale = metric.scale || metricType.default_scale || "count";
+    const metric_scale = getMetricScale(metric, dataModel);
     const metric_unit_without_percentage = metric.unit || metricType.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = { count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number" }[metric_scale];
     const more = { count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number" }[metric_scale];
-    // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || metricType.direction];
+    const metric_direction = get_metric_direction(metric, dataModel)
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
     const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
@@ -60,7 +59,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                         label="Metric name"
                         placeholder={metricType.name}
                         set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
-                        value={metric.name}
+                        value={metric.name ?? ""}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -93,7 +92,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                             { key: "0", text: `${fewer} is better`, value: "<" },
                             { key: "1", text: `${more} is better`, value: ">" }]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "direction", value, reload)}
-                        value={metric_direction || "<"}
+                        value={metric_direction ?? "<"}
                     />
                 </Grid.Column>
                 {metric_scale !== "version_number" &&
@@ -105,7 +104,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                             prefix={metric_scale === "percentage" ? "%" : ""}
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
                             set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
-                            value={metric.unit}
+                            value={metric.unit ?? ""}
                         />
                     </Grid.Column>}
             </Grid.Row>
@@ -154,9 +153,9 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                     <DateInput
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Technical debt end date"
-                        placeholder="no end date"
+                        placeholder="YYYY-MM-DD"
                         set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
-                        value={metric.debt_end_date || ""}
+                        value={metric.debt_end_date ?? ""}
                     />
                 </Grid.Column>
             </Grid.Row>

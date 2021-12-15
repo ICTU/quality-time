@@ -1,60 +1,56 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import { Permissions } from '../context/Permissions';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Input } from './Input';
 
-function input_wrapper(props) {
-    return mount(
-        <Permissions.Provider value={false}>
-            <Input {...props} />
-        </Permissions.Provider>
-    )
-}
-let mock_set_value;
+it('changes the value', () => {
+    const mockCallback = jest.fn();
+    render(<Input value="Hello" set_value={mockCallback} />)
+    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Bye{enter}')
+    expect(screen.getByDisplayValue(/Bye/)).not.toBe(null)
+    expect(mockCallback).toHaveBeenCalledWith("Bye")
+});
 
-describe("<Input />", () => {
-    beforeEach(() => { mock_set_value = jest.fn(); });
+it('changes the value when blurred', () => {
+    const mockCallback = jest.fn();
+    render(<><Input value="Hello" set_value={mockCallback} /><Input value="Bye" /></>)
+    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Ciao')
+    screen.getByDisplayValue(/Bye/).focus();  // blur
+    expect(mockCallback).toHaveBeenCalledWith("Ciao");
+});
 
-    it('renders the value read only', () => {
-        const wrapper = mount(<Input requiredPermissions={['test']} value="Hello" />);
-        expect(wrapper.find("FormInput").prop("value")).toStrictEqual("Hello");
-        expect(wrapper.find("FormInput").prop("readOnly")).toBe(true);
-    });
-    it('renders the editable value', () => {
-        const wrapper = input_wrapper({ value: "Hello" });
-        expect(wrapper.find("FormInput").prop("value")).toStrictEqual("Hello");
-        expect(wrapper.find("FormInput").prop("readOnly")).toBe(false);
-    });
-    it('renders in error state if a value is missing and required', () => {
-        const wrapper = input_wrapper({ value: "", required: true });
-        expect(wrapper.find("FormInput").prop("error")).toBe(true);
-    });
-    it('renders in error state if the warning props is true', () => {
-        const wrapper = input_wrapper({ value: "Hello", warning: true });
-        expect(wrapper.find("FormInput").prop("error")).toBe(true);
-    });
-    it('submits the value when changed', () => {
-        const wrapper = input_wrapper({ value: "Hello", set_value: mock_set_value });
-        wrapper.find("input").simulate("change", { target: { value: "Ciao" } });
-        wrapper.find("input").simulate("keydown", { key: "Enter" });
-        expect(mock_set_value).toHaveBeenCalled();
-    });
-    it('submits the value when blurred', () => {
-        const wrapper = input_wrapper({ value: "Hello", set_value: mock_set_value });
-        wrapper.find("input").simulate("change", { target: { value: "Ciao" } });
-        wrapper.find("input").simulate("blur");
-        expect(mock_set_value).toHaveBeenCalled();
-    });
-    it('does not submit the value when it is unchanged', () => {
-        const wrapper = input_wrapper({ value: "Hello", set_value: mock_set_value });
-        wrapper.find("input").simulate("keydown", { key: "Enter" });
-        expect(mock_set_value).toHaveBeenCalledTimes(0);
-    });
-    it('renders the initial value on escape and does not submit', () => {
-        const wrapper = input_wrapper({ value: "Hello", set_value: mock_set_value });
-        wrapper.find("input").simulate("change", { target: { value: "Ciao" } });
-        wrapper.find("input").simulate("keydown", { key: "Escape" });
-        expect(wrapper.find("FormInput").prop("value")).toStrictEqual("Hello");
-        expect(mock_set_value).toHaveBeenCalledTimes(0);
-    })
-})
+it('does not submit the value when it is unchanged', () => {
+    const mockCallback = jest.fn();
+    render(<Input value="Hello" set_value={mockCallback} />)
+    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Hello{enter}')
+    expect(screen.getByDisplayValue(/Hello/)).not.toBe(null)
+    expect(mockCallback).not.toHaveBeenCalled()
+});
+
+it('renders the initial value on escape and does not submit', () => {
+    const mockCallback = jest.fn();
+    render(<Input value="Hello" set_value={mockCallback} />)
+    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Bye{escape}')
+    expect(screen.getByDisplayValue(/Hello/)).not.toBe(null)
+    expect(mockCallback).not.toHaveBeenCalled()
+});
+
+it('shows an error for required empty fields', () => {
+    const { container } = render(<Input value="" required />)
+    expect(container.getElementsByTagName("input")[0]).toBeInvalid()
+});
+
+it('does not show an error for required non-empty fields', () => {
+    const { container } = render(<Input value="Hello" required />)
+    expect(container.getElementsByTagName("input")[0]).toBeValid()
+});
+
+it('does not show an error for non-required empty fields', () => {
+    const { container } = render(<Input value="" />)
+    expect(container.getElementsByTagName("input")[0]).toBeValid()
+});
+
+it('renders in error state if the warning props is true', () => {
+    const { container } = render(<Input value="" warning />)
+    expect(container.getElementsByTagName("input")[0]).toBeInvalid()
+});

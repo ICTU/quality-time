@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/Permissions';
+import { ReadOnlyInput } from './ReadOnlyInput';
 
 function sort_options(option_list) {
     let options = new Set();
@@ -38,7 +39,7 @@ export function MultipleChoiceInput(props) {
         <Form>
             <ReadOnlyOrEditable
                 requiredPermissions={requiredPermissions}
-                readOnlyComponent={<Form.Input value={value ? value.join(', ') : ''} {...otherProps} />}
+                readOnlyComponent={<ReadOnlyInput value={value ? value.join(', ') : ''} {...otherProps} />}
                 editableComponent={<Dropdown />} />
         </Form>
     )

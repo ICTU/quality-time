@@ -1,15 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render, screen } from '@testing-library/react';
 import { PasswordInput } from './PasswordInput';
 
-it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<PasswordInput />, div);
-    ReactDOM.unmountComponentAtNode(div);
+function renderPasswordInput({ placeholder = "", value = "" } = {}) {
+    return render(<PasswordInput placeholder={placeholder} value={value} />)
+}
+
+it("hides the password", () => {
+    renderPasswordInput({ value: "secret" });
+    expect(screen.queryByDisplayValue(/secret/)).toBe(null)
 });
 
-it('renders the value', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<PasswordInput value="Hello" />, div);
-    ReactDOM.unmountComponentAtNode(div);
+it("shows the placeholder", () => {
+    renderPasswordInput({ placeholder: "Enter password" });
+    expect(screen.queryByPlaceholderText(/Enter password/)).not.toBe(null)
 });

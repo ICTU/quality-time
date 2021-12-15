@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 
+- Don't show a cursor in input fields when they are read only, e.g. because the user hasn't logged in, is time traveling, or is viewing a tag report. Fixes [#2933](https://github.com/ICTU/quality-time/issues/2933).
 - When time traveling, *Quality-time* would show deleted reports after their deletion date. Fixes [#2997](https://github.com/ICTU/quality-time/issues/2997).
 - Zero values were not shown in the measurement detail tables. Fixes [#3008](https://github.com/ICTU/quality-time/issues/3008).
 
