@@ -12,7 +12,7 @@ import { Target } from './Target';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { get_metric_direction, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
+import { getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -38,7 +38,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = { count: `Fewer ${metric_unit}`, percentage: `A lower percentage of ${metric_unit_without_percentage}`, version_number: "A lower version number" }[metric_scale];
     const more = { count: `More ${metric_unit}`, percentage: `A higher percentage of ${metric_unit_without_percentage}`, version_number: "A higher version number" }[metric_scale];
-    const metric_direction = get_metric_direction(metric, dataModel)
+    const metric_direction = getMetricDirection(metric, dataModel)
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
     const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");

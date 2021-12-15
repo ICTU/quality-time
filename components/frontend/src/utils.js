@@ -2,13 +2,13 @@ import { parse, stringify } from 'query-string';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 
-export function get_metric_direction(metric, data_model) {
-    return format_metric_direction(metric.direction || data_model.metrics[metric.type].direction);
+export function getMetricDirection(metric, dataModel) {
+    // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
+    return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || dataModel.metrics[metric.type].direction];
 }
 
-export function format_metric_direction(direction) {
-    // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    return { "<": "≦", ">": "≧", "≦": "≦", "≧": "≧" }[direction];
+export function formatMetricDirection(metric, dataModel) {
+    return { "<": "≦", ">": "≧" }[getMetricDirection(metric, dataModel)];
 }
 
 export function get_metric_name(metric, datamodel) {
