@@ -9,7 +9,7 @@ from model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class MeasurementTestCase(unittest.TestCase):
+class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for measurement unit tests."""
 
     def setUp(self):
