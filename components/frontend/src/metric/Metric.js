@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Popup, Table } from 'semantic-ui-react';
-import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_tags, get_metric_target, get_metric_value } from '../utils';
+import { formatMetricScaleAndUnit, format_minutes, formatMetricDirection, get_metric_name, get_metric_tags, get_metric_target, get_metric_value } from '../utils';
 import { DataModel } from '../context/DataModel';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
@@ -34,7 +34,7 @@ function MeasurementTarget({ metric }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
-    const metric_direction = get_metric_direction(metric, dataModel)
+    const metric_direction = formatMetricDirection(metric, dataModel)
     let debt_end = "";
     if (metric.debt_end_date) {
         const end_date = new Date(metric.debt_end_date);
