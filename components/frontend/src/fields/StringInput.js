@@ -5,37 +5,39 @@ import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function StringInputWithSuggestions(props) {
-    let { editableLabel, error, options, required, requiredPermissions, set_value, value, warning, ...otherProps } = props;
+    let { editableLabel, label, error, options, required, set_value, value, warning, ...otherProps } = props;
     const [string_options, setOptions] = useState(options);
-    const [search_query, setSearchQuery] = useState(value || '');
+    const [searchQuery, setSearchQuery] = useState(value || '');
     return (
-        <Form>
-            <Form.Dropdown
-                {...otherProps}
-                allowAdditions
-                clearable
-                error={error || (required && search_query === "") || (warning !== undefined && props.warning)}
-                fluid
-                label={editableLabel || props.label}
-                onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
-                onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}
-                onSearchChange={(event, { searchQuery }) => { setSearchQuery(searchQuery) }}
-                options={string_options}
-                search
-                searchQuery={search_query}
-                selection
-            />
-        </Form>
+        <Form.Dropdown
+            {...otherProps}
+            allowAdditions
+            clearable
+            error={error || warning || (required && searchQuery === "")}
+            fluid
+            label={editableLabel || label}
+            onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
+            onChange={(event, { value }) => { setSearchQuery(value); if (value !== searchQuery) { set_value(value) } }}
+            onSearchChange={(event, { value }) => { setSearchQuery(value) }}
+            options={string_options}
+            search
+            searchQuery={searchQuery}
+            selection
+        />
     )
 }
 
 export function StringInput(props) {
-    const options = [...(props.options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
-    const input = <Input {...props} />
-    const readOnlyInput = <Form><ReadOnlyInput {...props} /></Form>
-    const inputWithSuggestions = <StringInputWithSuggestions {...props} options={options} />;
-    return <ReadOnlyOrEditable
-        requiredPermissions={props.requiredPermissions}
-        readOnlyComponent={readOnlyInput}
-        editableComponent={options.length === 0 ? input : inputWithSuggestions} />
+    const { requiredPermissions, options, ...otherProps } = props;
+    const optionMap = [...(options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
+    const input = <Input {...otherProps} />
+    const inputWithSuggestions = <StringInputWithSuggestions options={optionMap} {...otherProps} />;
+    return (
+        <Form>
+            <ReadOnlyOrEditable
+                requiredPermissions={requiredPermissions}
+                readOnlyComponent={<ReadOnlyInput {...otherProps} />}
+                editableComponent={optionMap.length === 0 ? input : inputWithSuggestions} />
+        </Form>
+    )
 }

@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
-import { accessGranted, Permissions } from '../context/Permissions';
 
 export function Input(props) {
-    let { editableLabel, error, prefix, required, requiredPermissions, set_value, warning, ...otherProps } = props;
+    let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props;
     const initialValue = props.value || "";
     const [value, setValue] = useState(initialValue);
 
-    function readOnly(permissions) {
-        return requiredPermissions ? !accessGranted(permissions, requiredPermissions) : false
-    }
     function submit_if_changed() {
         if (value !== initialValue) { set_value(value) }
     }
@@ -17,23 +13,21 @@ export function Input(props) {
         if (event.key === "Escape") { setValue(initialValue) }
         if (event.key === "Enter") { submit_if_changed() }
     }
-    const fixedProps = { ...otherProps, error: (required && value === "") || (warning !== undefined && props.warning), fluid: true, focus: true, labelPosition: "left", value: value }
     return (
-        <Form>
-            <Permissions.Consumer>{(permissions) => (
-                <Form.Input
-                    {...fixedProps}
-                    error={error || (required && value === "") || (warning !== undefined && props.warning)}
-                    label={readOnly(permissions) ? props.label : editableLabel || props.label}
-                    onBlur={() => { submit_if_changed() }}
-                    onChange={(event) => setValue(event.target.value)}
-                    onKeyDown={onKeyDown}
-                    readOnly={readOnly(permissions)}
-                >
-                    {prefix ? <Label basic>{prefix}</Label> : null}
-                    <input />
-                </Form.Input>)}
-            </Permissions.Consumer>
-        </Form>
+        <Form.Input
+            {...otherProps}
+            error={error || warning || (required && value === "")}
+            fluid
+            focus
+            label={editableLabel || label}
+            labelPosition="left"
+            onBlur={() => { submit_if_changed() }}
+            onChange={(event) => setValue(event.target.value)}
+            onKeyDown={onKeyDown}
+            value={value}
+        >
+            {prefix ? <Label basic>{prefix}</Label> : null}
+            <input />
+        </Form.Input>
     )
 }
