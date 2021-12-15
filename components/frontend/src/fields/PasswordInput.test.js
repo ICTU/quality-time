@@ -15,8 +15,3 @@ it("shows the placeholder", () => {
     renderPasswordInput({ placeholder: "Enter password" });
     expect(screen.queryByPlaceholderText(/Enter password/)).not.toBe(null)
 });
-
-it("hides the password in readonly modus", () => {
-    renderPasswordInput({ readOnly: true, value: "secret" });
-    expect(screen.queryByDisplayValue(/secret/)).toBe(null)
-});
