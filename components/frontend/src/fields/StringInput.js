@@ -5,20 +5,21 @@ import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function StringInputWithSuggestions(props) {
-    let { editableLabel, label, error, options, required, set_value, value, warning, ...otherProps } = props;
+    let { editableLabel, label, error, options, required, set_value, warning, ...otherProps } = props;
+    const initialValue = props.value || "";
     const [string_options, setOptions] = useState(options);
-    const [searchQuery, setSearchQuery] = useState(value || '');
+    const [searchQuery, setSearchQuery] = useState(initialValue);
     return (
         <Form.Dropdown
             {...otherProps}
             allowAdditions
             clearable
-            error={error || warning || (required && searchQuery === "")}
+            error={error || warning || (required && initialValue === "")}
             fluid
             label={editableLabel || label}
             onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
-            onChange={(event, { value }) => { setSearchQuery(value); if (value !== searchQuery) { set_value(value) } }}
-            onSearchChange={(event, { value }) => { setSearchQuery(value) }}
+            onChange={(event, { value }) => { if (value !== initialValue) { setSearchQuery(value); set_value(value) } }}
+            onSearchChange={(event, { searchQuery }) => { setSearchQuery(searchQuery) }}
             options={string_options}
             search
             searchQuery={searchQuery}
