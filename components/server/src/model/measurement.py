@@ -238,5 +238,5 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         return cast(Sequence[Source], self["sources"])
 
     def summarize(self, scale: Scale):
-        """A dict with a summary of this measurement."""
-        return dict(scale=dict(value=self[scale].get("value")), start=self["start"], end=self["end"])
+        """Return a summary of this measurement."""
+        return {scale: dict(value=self[scale].get("value")), "start": self["start"], "end": self["end"]}

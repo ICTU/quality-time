@@ -9,30 +9,15 @@ from model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class CalculateMeasurementValueTest(unittest.TestCase):
-    """Unit tests for calculating the measurement value from one or more source measurements."""
+class MeasurementTestCase(unittest.TestCase):
+    """Base class for measurement unit tests."""
 
     def setUp(self):
-        """Override to set up a metric fixture."""
+        """Override to set up the data model."""
         self.data_model = dict(
             metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
             sources=dict(
                 source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
-            ),
-        )
-        self.source_count = 0
-
-    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
-        """Create a source fixture."""
-        self.source_count += 1
-        return Source(
-            metric,
-            dict(
-                source_uuid=f"uuid-{self.source_count}",
-                connection_error=None,
-                parse_error=parse_error,
-                total=total,
-                value=value,
             ),
         )
 
@@ -52,6 +37,41 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         measurement = Measurement(metric, dict(sources=sources or []))
         measurement.update_measurement()
         return measurement
+
+
+class SummarizeMeasurementTest(MeasurementTestCase):
+    """Unit tests for the measurement summary."""
+
+    def test_summarize(self):
+        """Test the measurement summary."""
+        measurement = self.measurement(self.metric())
+        self.assertEqual(
+            dict(count=dict(value=None), start=measurement["start"], end=measurement["end"]),
+            measurement.summarize("count"),
+        )
+
+
+class CalculateMeasurementValueTest(MeasurementTestCase):
+    """Unit tests for calculating the measurement value from one or more source measurements."""
+
+    def setUp(self):
+        """Extend to reset the source counter."""
+        super().setUp()
+        self.source_count = 0
+
+    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
+        """Create a source fixture."""
+        self.source_count += 1
+        return Source(
+            metric,
+            dict(
+                source_uuid=f"uuid-{self.source_count}",
+                connection_error=None,
+                parse_error=parse_error,
+                total=total,
+                value=value,
+            ),
+        )
 
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""
