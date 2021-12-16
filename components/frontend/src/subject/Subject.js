@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, Segment } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 import { get_subject_measurements } from '../api/subject';
 import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
