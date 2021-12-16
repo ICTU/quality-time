@@ -2,7 +2,6 @@
 
 from typing import cast
 
-from internal.model.measurement import Measurement
 from internal.model.subject import Subject
 from internal.model.metric import Metric
 from internal.server_utilities.type import Color, ReportId, Status

@@ -9,7 +9,7 @@ from pymongo.database import Database
 from external.model.measurement import Measurement
 from external.model.metric import Metric
 from external.server_utilities.functions import iso_timestamp
-from external.server_utilities.type import MeasurementId, MetricId
+from external.server_utilities.type import MetricId
 
 
 def latest_measurement(database: Database, metric: Metric) -> Measurement | None:

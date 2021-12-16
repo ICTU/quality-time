@@ -6,14 +6,8 @@ from collections.abc import Sequence
 from datetime import date
 from typing import cast
 
-from typing import TYPE_CHECKING
-
 from internal.model.source import Source
 from internal.server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
-
-
-if TYPE_CHECKING:
-    from internal.model.measurement import Measurement
 
 
 class Metric(dict):

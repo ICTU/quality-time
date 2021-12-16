@@ -69,8 +69,6 @@ class UpdateMeasurementStatusTest(MeasurementTest):
         measurement.update_measurement()
         self.assertEqual(measurement["count"].status(), "debt_target_met")
 
-    """Test the private calculate_status method."""
-
     def test_status_start(self):
         """Test that we get status debt_target_met."""
         metric = self.metric()

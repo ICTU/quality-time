@@ -7,7 +7,7 @@ from internal.database.reports import latest_metric
 from internal.model.metric import Metric
 from internal.server_utilities.type import MetricId
 
-from ..fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
+from ..fixtures import METRIC_ID
 
 
 class MetricsTest(unittest.TestCase):

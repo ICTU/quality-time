@@ -2,7 +2,6 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from internal.model.measurement import Measurement
 from internal.model.metric import Metric
 from internal.server_utilities.type import SubjectId
 
