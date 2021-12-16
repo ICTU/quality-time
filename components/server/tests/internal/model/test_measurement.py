@@ -12,7 +12,7 @@ from ..fixtures import METRIC_ID
 class MeasurementMixin:
     """Shared functionality for all measurement tests."""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """Override to set up a metric fixture."""
         self.data_model = dict(
             metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
