@@ -29,8 +29,7 @@ class Report(dict):
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
 
-        if "_id" in report_data:
-            report_data["_id"] = str(report_data["_id"])
+        report_data["_id"] = str(report_data["_id"])
 
         super().__init__(report_data)
 
@@ -47,10 +46,7 @@ class Report(dict):
         """Instantiate subjects of this report."""
         subjects = {}
         for subject_uuid, subject in subject_data.items():
-            if isinstance(subject, Subject):
-                subjects[subject_uuid] = subject
-            else:
-                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
+            subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
 
         return subjects
 
@@ -60,25 +56,3 @@ class Report(dict):
         for subject in self.subjects:
             metrics.update(subject.metrics_dict)
         return metrics
-
-    def summarize(self, measurements: dict[str, list[Measurement]] | None) -> dict:
-        """Create a summary dict of this report."""
-        summary = dict(self)
-        summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
-        summary["summary_by_subject"] = {}
-        summary["summary_by_tag"] = {}
-
-        summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
-
-        for metric in self.metrics:
-            latest_measurement = measurements[metric.uuid][-1] if measurements and metric.uuid in measurements else None
-            metric_status = metric.status(latest_measurement)
-            color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
-            summary["summary"][color] += 1
-            summary["summary_by_subject"].setdefault(
-                metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)
-            )[color] += 1
-            for tag in metric.get("tags", []):
-                summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-
-        return summary

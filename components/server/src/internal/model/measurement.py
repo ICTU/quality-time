@@ -42,7 +42,13 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Set the status start date."""
         if (previous := self.__previous_scale_measurement) is None:
             return
-        if status_start := previous.status_start() if status == previous.status() else self._measurement["start"]:
+
+        if status == previous.status():
+            status_start = previous.status_start()
+        else:
+            status_start = self._measurement["start"]
+
+        if status_start:
             self["status_start"] = status_start
 
     def update_targets(self) -> None:

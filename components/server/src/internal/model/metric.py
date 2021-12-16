@@ -33,17 +33,10 @@ class Metric(dict):
         """Return the type of the metric."""
         return str(self["type"]) if "type" in self else None
 
-    def status(self, last_measurement: Measurement | None) -> Status | None:
+    def status(self) -> Status | None:
         """Determine the metric status."""
-        if last_measurement and (status := last_measurement.status()):
-            return status
         debt_end_date = self.get("debt_end_date") or date.max.isoformat()
         return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
-
-    def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
-        """Return the metric's issue statuses."""
-        last_issue_statuses = last_measurement.get("issue_status", []) if last_measurement else []
-        return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
@@ -103,18 +96,11 @@ class Metric(dict):
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
 
-    def summarize(self, measurements: list[Measurement] = None):
+    def summarize(self):
         """Add a summary of the metric to the report."""
-        measurements = measurements if measurements is not None else []
-        latest_measurement = measurements[-1] if measurements else None
 
         summary = dict(self)
         summary["scale"] = self.scale()
-        summary["status"] = self.status(latest_measurement)
-        summary["status_start"] = latest_measurement.status_start() if latest_measurement else None
-        summary["latest_measurement"] = latest_measurement
-        summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
-        if latest_measurement:
-            summary["issue_status"] = self.issue_statuses(latest_measurement)
+        summary["status"] = self.status()
 
         return summary

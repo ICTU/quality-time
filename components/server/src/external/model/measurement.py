@@ -186,22 +186,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self[item] = self.scale_measurement(item)
         return super().__getitem__(item)
 
-    def equals(self, other: Measurement) -> bool:
-        """Return whether this measurement is unchanged compared to an (older) measurement."""
-        return (
-            not other.debt_target_expired()
-            and other.sources() == self.sources()
-            and other.get("issue_status") == self.get("issue_status")
-        )
-
-    def debt_target_expired(self) -> bool:
-        """Return whether the technical debt target is expired.
-
-        Technical debt can expire because it was turned off or because the end date passed.
-        """
-        any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
-        return self.metric.accept_debt_expired() if any_debt_target else False
-
     def status(self) -> Status:
         """Return the status of the measurement."""
         return cast(Status, self.get(self.metric.scale(), {}).get("status", self.get("status")))
@@ -209,13 +193,6 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def status_start(self):
         """Return the start timestamp of the current status, if any."""
         return self.get(self.metric.scale(), {}).get("status_start")
-
-    def copy_entity_user_data(self, measurement: Measurement) -> None:
-        """Copy the entity user data from the measurement to this measurement."""
-        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
-        for new_source in self.sources():
-            if old_source := old_sources.get(new_source["source_uuid"]):
-                new_source.copy_entity_user_data(old_source)
 
     def update_measurement(self) -> None:
         """Update the measurement targets, values, and statuses."""

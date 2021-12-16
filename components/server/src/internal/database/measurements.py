@@ -30,8 +30,6 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
     """Insert a new measurement."""
     measurement.update_measurement()
-    if "_id" in measurement:
-        del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
