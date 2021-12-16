@@ -30,14 +30,14 @@ function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <SubjectType
-                        id="subject-type"
+                        id={`${subject_uuid}-type`}
                         set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
                         subject_type={subject.type}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
-                        id="subject-name"
+                        id={`${subject_uuid}-name`}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Subject name"
                         placeholder={subject_name}
@@ -49,6 +49,7 @@ function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
             <Grid.Row>
                 <Grid.Column>
                     <Comment
+                        id={`${subject_uuid}-comment`}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
                         value={subject.comment}

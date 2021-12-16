@@ -57,6 +57,13 @@ it('changes the subject name', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", { name: "New name" });
 });
 
+it('changes the subject comment', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await render_subject_title();
+    userEvent.type(screen.getByLabelText(/Comment/), '{selectall}{del}New comment{shift}{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/comment", { comment: "New comment" });
+});
+
 it('loads the changelog', async () => {
     await render_subject_title();
     await act(async () => {
