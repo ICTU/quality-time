@@ -46,7 +46,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
         """Test the measurement summary."""
         measurement = self.measurement(self.metric())
         self.assertEqual(
-            dict(count=dict(value=None), start=measurement["start"], end=measurement["end"]),
+            dict(count=dict(value=None, status=None), start=measurement["start"], end=measurement["end"]),
             measurement.summarize("count"),
         )
 
