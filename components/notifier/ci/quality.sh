@@ -8,11 +8,17 @@ set -e
 # Turn off dev mode until astroid gets fixed or there's a way to suppress warnings in third party code
 #export PYTHONDEVMODE=1
 
-mypy src
-pylint --rcfile=../../.pylintrc src tests
-isort **/*.py --check-only
-python -m flake8 --select=DUO src
-pip-audit --strict --progress-spinner=off
-safety check --bare --ignore 41002 -r requirements.txt -r requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
-bandit --quiet --recursive src/
-vulture --min-confidence 0 src/ tests/ .vulture_ignore_list.py
+run () {
+    header='\033[95m'
+    endstyle='\033[0m'
+    echo "${header}$*${endstyle}"
+    eval "$*"
+}
+
+run mypy src
+run pylint --rcfile=../../.pylintrc src tests
+run python -m flake8 --select=DUO src
+run pip-audit --strict --progress-spinner=off
+run safety check --bare --ignore 41002 -r requirements.txt -r requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
+run bandit --quiet --recursive src/
+run vulture --min-confidence 0 src/ tests/ .vulture_ignore_list.py
