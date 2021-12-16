@@ -28,6 +28,15 @@ Feature: measurement
     When the collector measures "100"
     Then the metric status is "target_not_met"
 
+  Scenario: the metric is measured and meets the dept target
+    Given an existing source
+    And an existing metric
+    When the client changes the metric accept_debt to "true"
+    And the client changes the metric target to "80"
+    And the client changes the metric dept target to "100"
+    And the collector measures "90"
+    Then the metric status is "debt_target_met"
+
   Scenario: the metric has a percentage scale
     Given an existing metric with type "scalability"
     And an existing source with type "performancetest_runner"
