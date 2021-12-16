@@ -9,7 +9,7 @@ from external.model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class MeasurementTest(unittest.TestCase):
+class MeasurementMixin:
     """Shared functionality for all measurement tests."""
 
     def setUp(self):
@@ -18,6 +18,21 @@ class MeasurementTest(unittest.TestCase):
             metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
             sources=dict(
                 source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
+            ),
+        )
+        self.source_count = 0
+
+    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
+        """Create a source fixture."""
+        self.source_count += 1
+        return Source(
+            metric,
+            dict(
+                source_uuid=f"uuid-{self.source_count}",
+                connection_error=None,
+                parse_error=parse_error,
+                total=total,
+                value=value,
             ),
         )
 
@@ -39,7 +54,7 @@ class MeasurementTest(unittest.TestCase):
         return measurement
 
 
-class SummarizeMeasurementTest(MeasurementTest):
+class SummarizeMeasurementTest(MeasurementMixin, unittest.TestCase):
     """Unit tests for the measurement summary."""
 
     def test_summarize(self):
@@ -50,8 +65,8 @@ class SummarizeMeasurementTest(MeasurementTest):
             measurement.summarize("count"),
         )
 
-       
-class UpdateMeasurementStatusTest(MeasurementTest):
+
+class UpdateMeasurementStatusTest(MeasurementMixin, unittest.TestCase):
     """Test the private calculate_status method."""
 
     def test_status_dept_target_met(self):
@@ -76,7 +91,7 @@ class UpdateMeasurementStatusTest(MeasurementTest):
         self.assertIsNone(measurement["count"].status_start())
 
 
-class CalculateMeasurementValueTest(MeasurementTest):
+class CalculateMeasurementValueTest(MeasurementMixin, unittest.TestCase):
     """Unit tests for calculating the measurement value from one or more source measurements."""
 
     def test_no_source_measurements(self):

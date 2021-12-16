@@ -9,7 +9,7 @@ from internal.model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class MeasurementTest(unittest.TestCase):
+class MeasurementMixin:
     """Shared functionality for all measurement tests."""
 
     def setUp(self):
@@ -54,7 +54,7 @@ class MeasurementTest(unittest.TestCase):
         return measurement
 
 
-class UpdateMeasurementStatusTest(MeasurementTest):
+class UpdateMeasurementStatusTest(MeasurementMixin, unittest.TestCase):
     """Test the private calculate_status method."""
 
     def test_status_dept_target_met(self):
@@ -79,7 +79,7 @@ class UpdateMeasurementStatusTest(MeasurementTest):
         self.assertIsNone(measurement["count"].status_start())
 
 
-class CalculateMeasurementValueTest(MeasurementTest):
+class CalculateMeasurementValueTest(MeasurementMixin, unittest.TestCase):
     """Unit tests for calculating the measurement value from one or more source measurements."""
 
     def test_no_source_measurements(self):
