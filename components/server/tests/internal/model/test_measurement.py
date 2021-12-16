@@ -9,8 +9,8 @@ from internal.model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class CalculateMeasurementValueTest(unittest.TestCase):
-    """Unit tests for calculating the measurement value from one or more source measurements."""
+class MeasurementTest(unittest.TestCase):
+    """Shared functionality for all measurement tests."""
 
     def setUp(self):
         """Override to set up a metric fixture."""
@@ -47,11 +47,42 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         return Metric(self.data_model, metric_data, METRIC_ID)
 
     @staticmethod
-    def measurement(metric: Metric, sources=None) -> Measurement:
+    def measurement(metric: Metric, sources=None, **kwargs) -> Measurement:
         """Create a measurement fixture."""
-        measurement = Measurement(metric, dict(sources=sources or []))
+        measurement = Measurement(metric, dict(sources=sources or []), **kwargs)
         measurement.update_measurement()
         return measurement
+
+
+class UpdateMeasurementStatusTest(MeasurementTest):
+    """Test the private calculate_status method."""
+
+    def test_status_dept_target_met(self):
+        """Test that we get status debt_target_met."""
+        metric = self.metric()
+        metric["accept_debt"] = True
+        metric["debt_target"] = 100
+        metric["target"] = 80
+        source = self.source(metric, value=90)
+        measurement = self.measurement(metric, [source])
+        measurement.scale_measurement("count")
+        measurement.update_measurement()
+        self.assertEqual(measurement["count"].status(), "debt_target_met")
+
+    """Test the private calculate_status method."""
+
+    def test_status_start(self):
+        """Test that we get status debt_target_met."""
+        metric = self.metric()
+        previous_measurement = self.measurement(metric)
+        measurement = self.measurement(metric, previous_measurement=previous_measurement)
+        measurement.scale_measurement("count")
+        measurement.update_measurement()
+        self.assertIsNone(measurement["count"].status_start())
+
+
+class CalculateMeasurementValueTest(MeasurementTest):
+    """Unit tests for calculating the measurement value from one or more source measurements."""
 
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""

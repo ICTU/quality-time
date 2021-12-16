@@ -98,9 +98,7 @@ class Metric(dict):
 
     def summarize(self):
         """Add a summary of the metric to the report."""
-
         summary = dict(self)
         summary["scale"] = self.scale()
         summary["status"] = self.status()
-
         return summary

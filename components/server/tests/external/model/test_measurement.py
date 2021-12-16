@@ -9,8 +9,8 @@ from external.model.source import Source
 from ..fixtures import METRIC_ID
 
 
-class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
-    """Base class for measurement unit tests."""
+class MeasurementTest(unittest.TestCase):
+    """Shared functionality for all measurement tests."""
 
     def setUp(self):
         """Override to set up the data model."""
@@ -32,14 +32,14 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         return Metric(self.data_model, metric_data, METRIC_ID)
 
     @staticmethod
-    def measurement(metric: Metric, sources=None) -> Measurement:
+    def measurement(metric: Metric, sources=None, **kwargs) -> Measurement:
         """Create a measurement fixture."""
-        measurement = Measurement(metric, dict(sources=sources or []))
+        measurement = Measurement(metric, dict(sources=sources or []), **kwargs)
         measurement.update_measurement()
         return measurement
 
 
-class SummarizeMeasurementTest(MeasurementTestCase):
+class SummarizeMeasurementTest(MeasurementTest):
     """Unit tests for the measurement summary."""
 
     def test_summarize(self):
@@ -50,28 +50,36 @@ class SummarizeMeasurementTest(MeasurementTestCase):
             measurement.summarize("count"),
         )
 
+       
+class UpdateMeasurementStatusTest(MeasurementTest):
+    """Test the private calculate_status method."""
 
-class CalculateMeasurementValueTest(MeasurementTestCase):
+    def test_status_dept_target_met(self):
+        """Test that we get status debt_target_met."""
+        metric = self.metric()
+        metric["accept_debt"] = True
+        metric["debt_target"] = 100
+        metric["target"] = 80
+        source = self.source(metric, value=90)
+        measurement = self.measurement(metric, [source])
+        measurement.scale_measurement("count")
+        measurement.update_measurement()
+        self.assertEqual(measurement["count"].status(), "debt_target_met")
+
+    """Test the private calculate_status method."""
+
+    def test_status_start(self):
+        """Test that we get status debt_target_met."""
+        metric = self.metric()
+        previous_measurement = self.measurement(metric)
+        measurement = self.measurement(metric, previous_measurement=previous_measurement)
+        measurement.scale_measurement("count")
+        measurement.update_measurement()
+        self.assertIsNone(measurement["count"].status_start())
+
+
+class CalculateMeasurementValueTest(MeasurementTest):
     """Unit tests for calculating the measurement value from one or more source measurements."""
-
-    def setUp(self):
-        """Extend to reset the source counter."""
-        super().setUp()
-        self.source_count = 0
-
-    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
-        """Create a source fixture."""
-        self.source_count += 1
-        return Source(
-            metric,
-            dict(
-                source_uuid=f"uuid-{self.source_count}",
-                connection_error=None,
-                parse_error=parse_error,
-                total=total,
-                value=value,
-            ),
-        )
 
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""

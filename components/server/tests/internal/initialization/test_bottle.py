@@ -20,5 +20,4 @@ class BottleInitTest(unittest.TestCase):
         """Test that bottle has been initialized."""
         init_bottle(Mock())
         self.assertEqual(1024 * 1024, bottle.BaseRequest.MEMFILE_MAX)
-        print(bottle.app().plugins)
         self.assertEqual([InjectionPlugin], [plugin.__class__ for plugin in bottle.app().plugins[-2:]])
