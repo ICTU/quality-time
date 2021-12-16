@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
+import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -42,6 +43,15 @@ function SubjectTypeAndName({ subject, subject_uuid, subject_name, reload }) {
                         placeholder={subject_name}
                         set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
                         value={subject.name}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    <Comment
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
+                        value={subject.comment}
                     />
                 </Grid.Column>
             </Grid.Row>

@@ -9,7 +9,7 @@ from database.measurements import measurements_by_metric
 from database.reports import insert_new_report, latest_reports, metrics_of_subject
 from model.actions import copy_subject, move_item
 from model.data import ReportData, SubjectData
-from server_utilities.functions import report_date_time, uuid
+from server_utilities.functions import report_date_time, sanitize_html, uuid
 from server_utilities.type import MetricId, ReportId, SubjectId
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -81,20 +81,22 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 )
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
+    new_value = dict(bottle.request.json)[subject_attribute]
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
     data = SubjectData(data_model, reports, subject_uuid)
-    value = dict(bottle.request.json)[subject_attribute]
+    if subject_attribute == "comment" and new_value:
+        new_value = sanitize_html(new_value)
     old_value = data.subject.get(subject_attribute) or ""
     if subject_attribute == "position":
-        old_value, value = move_item(data, value, "subject")
+        old_value, new_value = move_item(data, new_value, "subject")
     else:
-        data.subject[subject_attribute] = value
-    if old_value == value:
+        data.subject[subject_attribute] = new_value
+    if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     delta_description = (
         f"{{user}} changed the {subject_attribute} of subject "
-        f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'."
+        f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{new_value}'."
     )
     uuids = [data.report_uuid, subject_uuid]
     return insert_new_report(database, delta_description, uuids, data.report)

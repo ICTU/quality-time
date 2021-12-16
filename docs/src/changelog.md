@@ -21,6 +21,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - A bug in the Quality-time API would cause the sparkline graphs to draw the recent measurements as if they all happened on the current day and cause the notifier to send notifications to MS Teams every minute. Fixes [#3071](https://github.com/ICTU/quality-time/issues/3071) and [#3073](https://github.com/ICTU/quality-time/issues/3073).
 
+### Added
+
+- Allow for adding comments to subjects. Expand the subject title to enter comments. If a subject has comments, they are shown between the subject title and the table with metrics. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
+
 ## v3.30.1 - 2021-12-17
 
 ### Fixed
