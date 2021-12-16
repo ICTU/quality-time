@@ -18,14 +18,6 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
     return None if latest is None else Measurement(metric, latest)
 
 
-def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
-    """Return the latest successful measurement."""
-    latest_successful = database.measurements.find_one(
-        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
-    )
-    return None if latest_successful is None else Measurement(metric, latest_successful)
-
-
 def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max_iso_timestamp: str = "", days=7):
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
@@ -76,16 +68,10 @@ def count_measurements(database: Database) -> int:
     return int(database.measurements.estimated_document_count())
 
 
-def update_measurement_end(database: Database, measurement_id: MeasurementId):
-    """Set the end date and time of the measurement to the current date and time."""
-    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
-
-
 def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
     """Insert a new measurement."""
     measurement.update_measurement()
-    if "_id" in measurement:
-        del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
+    del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement

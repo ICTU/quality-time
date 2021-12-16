@@ -55,15 +55,6 @@ def report_exists(database: Database, report_uuid: ReportId):
     return report_uuid in database.reports.distinct("report_uuid")
 
 
-def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
-    """Return the latest metric with the specified metric uuid."""
-    data_model = latest_datamodel(database)
-    for report in latest_reports(database, data_model):
-        if metric_uuid in report.metric_uuids:
-            return report.metrics_dict[metric_uuid]
-    return None
-
-
 def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[MetricId]:
     """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
     report_filter: dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
