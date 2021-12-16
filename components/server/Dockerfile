@@ -16,7 +16,10 @@ FROM python:3.10.1-slim-buster
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
 
-RUN apt-get update && apt-get install --yes --no-install-recommends curl=7.64\*
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends curl=7.64\* && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home server
 WORKDIR /home/server
