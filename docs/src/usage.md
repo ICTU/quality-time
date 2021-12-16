@@ -110,6 +110,8 @@ Currently, changing the type of the subject does not affect what you can do with
 
 To change the name of the subject, simply type the new name in the "Subject name" field and hit enter.
 
+The "{index}`Comment <pair: Comment;Subject>`" field can be used to describe the subject, or any other information. HTML and URLs are supported. The entered comments are shown between the subject title and the table with metrics.
+
 #### Deleting subjects
 
 To delete a subject expand the subject header and click the "Delete subject" button. The subject and all its metrics is deleted.
@@ -157,7 +159,7 @@ If a metric doesn't meet the target value, but your team isn't able to fix the s
 
 The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to e.g. track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker.
 
-The "{index}`Comment`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supported.
+The "{index}`Comment <pair: Comment;Metric>`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supported.
 
 #### Reordering metrics
 
