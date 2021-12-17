@@ -162,9 +162,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         self.__previous_measurement: Measurement | None = kwargs.pop("previous_measurement", None)
         self.metric = metric
-        super().__init__(*args, **kwargs)
         self["start"] = self["end"] = iso_timestamp()
-        self["sources"] = [Source(self.metric, source) for source in self["sources"]]
+        super().__init__(*args, **kwargs)
+        self["sources"] = [Source(self.metric, source) for source in self.get("sources", [])]
 
     def scale_measurement(self, scale: Scale) -> ScaleMeasurement:
         """Create a measurement with a specific scale."""
