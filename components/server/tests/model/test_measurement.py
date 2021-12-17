@@ -1,5 +1,6 @@
 """Test the measurements collection."""
 
+from datetime import datetime, timedelta, timezone
 import unittest
 
 from model.measurement import Measurement
@@ -32,11 +33,21 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         return Metric(self.data_model, metric_data, METRIC_ID)
 
     @staticmethod
-    def measurement(metric: Metric, sources=None) -> Measurement:
+    def measurement(metric: Metric, **kwargs) -> Measurement:
         """Create a measurement fixture."""
-        measurement = Measurement(metric, dict(sources=sources or []))
+        measurement = Measurement(metric, **kwargs)
         measurement.update_measurement()
         return measurement
+
+
+class MeasurementTest(MeasurementTestCase):
+    """Unit tests for the measurement class."""
+
+    def test_copy(self):
+        """Test that the copy has new timestamps."""
+        timestamp = "2020-01-01"
+        measurement_copy = Measurement(self.metric(), start=timestamp, end=timestamp).copy()
+        self.assertNotIn(timestamp, measurement_copy["start"], measurement_copy["end"])
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):
@@ -47,6 +58,15 @@ class SummarizeMeasurementTest(MeasurementTestCase):
         measurement = self.measurement(self.metric())
         self.assertEqual(
             dict(count=dict(value=None, status=None), start=measurement["start"], end=measurement["end"]),
+            measurement.summarize("count"),
+        )
+
+    def test_summarize_with_non_default_start_date(self):
+        """Test the measurement summary when the measurement has a specific start date."""
+        timestamp = (datetime.now(timezone.utc) - timedelta(days=1)).replace(microsecond=0).isoformat()
+        measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
+        self.assertEqual(
+            dict(count=dict(value=None, status=None), start=timestamp, end=timestamp),
             measurement.summarize("count"),
         )
 
