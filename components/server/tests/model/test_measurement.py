@@ -45,8 +45,9 @@ class MeasurementTest(MeasurementTestCase):
 
     def test_copy(self):
         """Test that the copy has new timestamps."""
-        measurement_copy = Measurement(self.metric(), start="long ago", end="long ago").copy()
-        self.assertNotIn("long ago", measurement_copy["start"], measurement_copy["end"])
+        timestamp = "2020-01-01"
+        measurement_copy = Measurement(self.metric(), start=timestamp, end=timestamp).copy()
+        self.assertNotIn(timestamp, measurement_copy["start"], measurement_copy["end"])
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):
