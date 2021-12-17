@@ -158,9 +158,7 @@ imagesize==1.3.0 \
 isort==5.10.1 \
     --hash=sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7 \
     --hash=sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951
-    # via
-    #   -r docs/../requirements-dev.in
-    #   pylint
+    # via pylint
 jinja2==3.0.3 \
     --hash=sha256:077ce6014f7b40d03b47d1f1ca4b0fc8328a692bd284016f806ed0eaca390ad8 \
     --hash=sha256:611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7
@@ -408,9 +406,9 @@ mypy-extensions==0.4.3 \
     # via
     #   black
     #   mypy
-myst-parser==0.16.0 \
-    --hash=sha256:80fe8ed6dea7c8566699c9bbc36c36ead3cbdb63e9121f71e8b86f56d6afd8c3 \
-    --hash=sha256:be31e426d9f0698dbac879bb9a41afe555fa9c4a9e659a82887a1e1e195c9f92
+myst-parser==0.16.1 \
+    --hash=sha256:617a90ceda2162ebf81cd13ad17d879bd4f49e7fb5c4f177bb905272555a2268 \
+    --hash=sha256:a6473b9735c8c74959b49b36550725464f4aecc4481340c9a5f9153829191f83
     # via -r docs/requirements-dev.in
 packageurl-python==0.9.6 \
     --hash=sha256:676dcb8278721df952e2444bfcd8d7bf3518894498050f0c6a5faddbe0860cd0 \
