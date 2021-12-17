@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The notifier would crash. Fixes [#3065](https://github.com/ICTU/quality-time/issues/3065).
+
 ## v3.30.0 - 2021-12-16
 
 ### Fixed
