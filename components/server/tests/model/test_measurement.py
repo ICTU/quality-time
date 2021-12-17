@@ -40,6 +40,15 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         return measurement
 
 
+class MeasurementTest(MeasurementTestCase):
+    """Unit tests for the measurement class."""
+
+    def test_copy(self):
+        """Test that the copy has new timestamps."""
+        measurement_copy = Measurement(self.metric(), start="long ago", end="long ago").copy()
+        self.assertNotIn("long ago", measurement_copy["start"], measurement_copy["end"])
+
+
 class SummarizeMeasurementTest(MeasurementTestCase):
     """Unit tests for the measurement summary."""
 
@@ -54,9 +63,9 @@ class SummarizeMeasurementTest(MeasurementTestCase):
     def test_summarize_with_non_default_start_date(self):
         """Test the measurement summary when the measurement has a specific start date."""
         timestamp = (datetime.now(timezone.utc) - timedelta(days=1)).replace(microsecond=0).isoformat()
-        measurement = self.measurement(self.metric(), start=timestamp)
+        measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
-            dict(count=dict(value=None, status=None), start=timestamp, end=measurement["end"]),
+            dict(count=dict(value=None, status=None), start=timestamp, end=timestamp),
             measurement.summarize("count"),
         )
 
