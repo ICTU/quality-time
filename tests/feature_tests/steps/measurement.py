@@ -1,6 +1,6 @@
 """Step implementations for measurement."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 import time
 
 from asserts import assert_equal, assert_true
@@ -24,7 +24,7 @@ def measure(context, number, total="100"):
         for row in context.table:
             entity = {heading: row[heading] for heading in context.table.headings}
             entities.append(entity)
-    measurement_datetime = datetime.now()
+    measurement_datetime = datetime.now(timezone.utc)
     measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
     context.post(
         "measurements",
