@@ -34,7 +34,9 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
     def update_value_and_status(self) -> None:
         """Update the measurement value and status."""
         self["direction"] = self._metric.direction()
-        self["value"] = value = self._calculate_value() if self._measurement.sources_ok() else None
+        self["value"] = value = (
+            self._calculate_value() if self._measurement.sources_exist() and self._measurement.sources_ok() else None
+        )
         self["status"] = status = self.__calculate_status(value)
         self.__set_status_start(status)
 

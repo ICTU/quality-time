@@ -52,11 +52,12 @@ class Subject(dict):
         data["name"] = self.report.get("title", "") + " ❯ " + self.name()
         return Subject(self.__data_model, data, self.uuid, report)
 
-    def summarize(self, measurements: dict[str, list[Measurement]] | None):
+    def summarize(self, measurements: dict[str, list[Measurement]]):
         """Create a summary dict of this subject."""
         summary = dict(self)
         summary["metrics"] = {}
         for metric in self.metrics:
-            metric_measurements = measurements[metric.uuid] if measurements and metric.uuid in measurements else None
+            metric_measurements = measurements.get(metric.uuid, [])
+            metric_measurements = [measurement for measurement in metric_measurements if measurement.sources_exist()]
             summary["metrics"][metric.uuid] = metric.summarize(metric_measurements)
         return summary

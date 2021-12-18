@@ -40,6 +40,35 @@ Feature: metric
     When the client moves the metric to the subject
     Then the subject contains the metric
 
+  Scenario: change metric type
+    Given an existing metric
+    When the client changes the metric type to "violations"
+    Then the metric type is "violations"
+
+  Scenario: change metric type of metric with source
+    Given an existing metric
+    And an existing source
+    When the client changes the metric type to "violations"
+    Then the source does not exist
+
+  Scenario: change metric type of metric with source and measurement
+    Given an existing metric
+    And an existing source
+    When the collector measures "100"
+    Then the metric status is "target_not_met"
+    When the client changes the metric type to "violations"
+    Then the source does not exist
+    And the metric status is "None"
+
+  Scenario: change technical debt target after changing metric type of metric with source and measurement
+    Given an existing metric
+    And an existing source
+    When the collector measures "100"
+    Then the metric status is "target_not_met"
+    When the client changes the metric type to "violations"
+    And the client changes the metric accept_debt to "True"
+    Then the metric status is "debt_target_met"
+
   Scenario: change metric name
     Given an existing metric
     When the client changes the metric name to "New name"
@@ -71,29 +100,3 @@ Feature: metric
     Given an existing metric
     When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"
-
-  Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
-    Given an existing metric
-    And an existing source
-    When the client changes the metric issue_ids to "123"
-    And the client changes the report tracker_type to "jira"
-    And the client changes the report tracker_url to "https://jira"
-    And the client changes the report tracker_url to "https://jira"
-    And the collector gets the metrics to measure
-    And the collector measures issue '123' status 'Completed'
-    Then the issue status name is 'Completed'
-    And the issue status connection_error is 'None' 
-    And the issue status parse_error is 'None' 
-
-  Scenario: invalid issue tracker type
-    Given an existing metric
-    And an existing source
-    When the client changes the metric issue_ids to "123"
-    And the client changes the report tracker_type to "this-source-is-no-issue-tracker"
-    And the client changes the report tracker_url to "https://jira"
-    And the client changes the report tracker_username to "jadoe"
-    And the client changes the report tracker_password to "secret"
-    Then the issue status name is 'None'
-    And the issue status landing_url is 'None'
-    And the issue status connection_error is 'None' 
-    And the issue status parse_error is 'None' 
