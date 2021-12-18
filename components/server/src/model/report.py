@@ -61,7 +61,7 @@ class Report(dict):
             metrics.update(subject.metrics_dict)
         return metrics
 
-    def summarize(self, measurements: dict[str, list[Measurement]] | None) -> dict:
+    def summarize(self, measurements: dict[str, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
         summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)

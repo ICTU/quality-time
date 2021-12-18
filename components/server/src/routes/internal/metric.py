@@ -21,5 +21,5 @@ def get_metrics(database: Database):
             metric["report_uuid"] = report["report_uuid"]
             if has_issue_tracker and metric.get("issue_ids"):
                 metric["issue_tracker"] = issue_tracker
-            metrics[metric.uuid] = metric.summarize()
+            metrics[metric.uuid] = metric.summarize([])
     return metrics

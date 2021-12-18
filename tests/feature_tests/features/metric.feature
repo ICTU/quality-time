@@ -58,7 +58,7 @@ Feature: metric
     Then the metric status is "target_not_met"
     When the client changes the metric type to "violations"
     Then the source does not exist
-    And the metric status is "target_not_met"
+    And the metric status is "None"
 
   Scenario: change technical debt target after changing metric type of metric with source and measurement
     Given an existing metric
@@ -67,7 +67,7 @@ Feature: metric
     Then the metric status is "target_not_met"
     When the client changes the metric type to "violations"
     And the client changes the metric accept_debt to "True"
-    Then the metric status is "target_not_met"
+    Then the metric status is "debt_target_met"
 
   Scenario: change metric name
     Given an existing metric
