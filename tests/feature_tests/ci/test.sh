@@ -8,7 +8,7 @@
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
-docker-compose up -d database ldap renderer www
+docker compose up -d database ldap
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate
@@ -19,8 +19,9 @@ python tests/quality_time_server_under_coverage.py &> /tmp/quality_time_server.l
 deactivate
 cd ../..
 # We need to start a second server for the renderer. We start it after the server under
-# coverage so we can measure the coverage of the startup code.
-docker-compose up -d server
+# coverage so we can measure the coverage of the startup code, including the containers
+# that depend on server.
+docker compose up -d server renderer www
 cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
@@ -35,4 +36,4 @@ coverage combine . components/server
 coverage xml
 coverage html
 coverage report
-docker-compose down
+docker compose down
