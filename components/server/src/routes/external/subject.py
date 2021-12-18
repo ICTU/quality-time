@@ -1,6 +1,6 @@
 """Subject routes."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import bottle
 from pymongo.database import Database
 
@@ -104,7 +104,7 @@ def get_subject_measurements(subject_uuid: SubjectId, database: Database):
     """Return all measurements for the subjects within the last 28 weeks."""
     metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid)
 
-    report_timestamp = datetime.fromisoformat(report_date_time()) if report_date_time() != "" else datetime.now()
+    report_timestamp = datetime.fromisoformat(report_date_time()) if report_date_time() else datetime.now(timezone.utc)
     min_datetime = report_timestamp - timedelta(weeks=28)
     min_iso_timestamp = min_datetime.isoformat()
 
