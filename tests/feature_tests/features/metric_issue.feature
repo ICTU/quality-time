@@ -5,9 +5,8 @@ Feature: metric issues
     Given a logged-in client
     And an existing report
     And an existing subject
-    And an existing metric
+    And an existing metric with issue_ids "123"
     And an existing source
-    And the metric issue_ids is "123"
 
   Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
     When the client changes the report tracker_type to "jira"
