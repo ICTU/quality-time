@@ -30,6 +30,21 @@ Feature: report
     And the client changes the report title to "New title"
     Then the report title is "New title"
 
+  Scenario: add comment without html
+   Given an existing report
+   When the client changes the report comment to "Text"
+   Then the report comment is "Text"
+
+  Scenario: add comment with html
+    Given an existing report
+    When the client changes the report comment to "<b><i>Emphasized text</i></b>"
+    Then the report comment is "<b><i>Emphasized text</i></b>"
+
+  Scenario: add comment with dangerous html
+    Given an existing report
+    When the client changes the report comment to "Text<script>alert('Danger')</script>"
+    Then the report comment is "Text"
+
   Scenario: export report as pdf
     When the client creates a report
     And the client downloads the report as pdf

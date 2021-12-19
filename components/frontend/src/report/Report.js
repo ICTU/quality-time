@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
+import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
@@ -92,6 +93,7 @@ export function Report({
                 report_date={report_date}
                 reports={reports}
                 history={history} />
+            <CommentSegment comment={report.comment} />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 hideTags={hiddenColumns.includes("tags")}

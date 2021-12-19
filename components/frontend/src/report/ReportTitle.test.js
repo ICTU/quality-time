@@ -51,6 +51,15 @@ it('sets the subtitle', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
+it('sets the comment', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    userEvent.type(screen.getByLabelText(/Comment/), '{selectall}{del}New comment{shift}{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/comment", { comment: "New comment" });
+});
+
 it('sets the issue tracker type', async () => {
     await act(async () => {
         render_report_title();
