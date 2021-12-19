@@ -75,6 +75,8 @@ To add a new report, be sure to be logged in and click the "Add report" button o
 
 To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
 
+The "{index}`Comment <pair: Comment;Report>`" field can be used to describe the report, or any other information. HTML and URLs are supported. The entered comments are shown between the report title and the dashboard.
+
 ![Editing report screenshot](screenshots/editing_report.png)
 
 #### Deleting reports
@@ -108,7 +110,7 @@ To change the subject type and name expand the subject header if it's not alread
 Currently, changing the type of the subject does not affect what you can do with the subject.
 ```
 
-To change the name of the subject, simply type the new name in the "Subject name" field and hit enter.
+To change the title or subtitle of the subject, simply enter a new title and/or subtitle in their respective fields.
 
 The "{index}`Comment <pair: Comment;Subject>`" field can be used to describe the subject, or any other information. HTML and URLs are supported. The entered comments are shown between the subject title and the table with metrics.
 
@@ -119,6 +121,10 @@ To delete a subject expand the subject header and click the "Delete subject" but
 ```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
+
+#### Reordering subjects
+
+To reorder subjects, expand the subject title and use the buttons on the lower left-hand side to move the subject up or down, or to the first or last position in the report. The order is saved on the server.
 
 ```{index} Metric
 ```
@@ -207,6 +213,10 @@ To delete a metric's source, expand the metric in the metric table, select the "
 ```{danger}
 Be careful, there's no way to undo your action via the user interface.
 ```
+
+#### Reordering sources
+
+To reorder sources, expand the metric in the metric table and click the sources tab. Use the buttons on the lower left-hand side of each source to move the source up or down, or to the top or bottom of the list of sources. The order is saved on the server.
 
 ```{index} Entity
 ```
