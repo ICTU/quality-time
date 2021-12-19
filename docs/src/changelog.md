@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
+- Allow for adding comments to reports and subjects. Expand the report or subject title to enter comments. If a report or subject has comments, they are shown below the report or subject title. Simple HTML content (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
 - Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
 - The dependencies in OWASP Dependency Check reports do not always have unique keys. However, *Quality-time* needs dependencies to be uniquely identifiable to detect whether the dependencies change between measurements. If needed, *Quality-time* generates keys for dependencies itself, based on the dependencies' file paths. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions, when measuring 'dependencies' or 'security warnings' with OWASP Dependency Check as source. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
 
@@ -20,10 +21,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - A bug in the Quality-time API would cause the sparkline graphs to draw the recent measurements as if they all happened on the current day and cause the notifier to send notifications to MS Teams every minute. Fixes [#3071](https://github.com/ICTU/quality-time/issues/3071) and [#3073](https://github.com/ICTU/quality-time/issues/3073).
-
-### Added
-
-- Allow for adding comments to subjects. Expand the subject title to enter comments. If a subject has comments, they are shown between the subject title and the table with metrics. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
 
 ## v3.30.1 - 2021-12-17
 
