@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Allow for adding comments to reports and subjects. Expand the report or subject title to enter comments. If a report or subject has comments, they are shown below the report or subject title. Simple HTML content (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
+- Allow for adding comments to the report overview, to reports and to subjects. Expand the title of the report overwiew, report, or subject to enter comments. Entered comments are shown below the title of the report overview, report, or subject. Simple HTML (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
 - Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
 - The dependencies in OWASP Dependency Check reports do not always have unique keys. However, *Quality-time* needs dependencies to be uniquely identifiable to detect whether the dependencies change between measurements. If needed, *Quality-time* generates keys for dependencies itself, based on the dependencies' file paths. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions, when measuring 'dependencies' or 'security warnings' with OWASP Dependency Check as source. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
 

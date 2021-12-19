@@ -54,6 +54,13 @@ class ReportsOverviewTest(unittest.TestCase):
         self.database.reports_overviews.insert_one.assert_not_called()
 
     @patch("bottle.request")
+    def test_post_unsafe_comment(self, request):
+        """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
+        request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
+        self.assertEqual(dict(ok=True), post_reports_overview_attribute("comment", self.database))
+        self.assert_change_description("comment", "None", "Comment with script")
+
+    @patch("bottle.request")
     def test_change_layout(self, request):
         """Test that a reports overview layout can be changed."""
         request.json = dict(layout=[dict(x=1, y=2)])

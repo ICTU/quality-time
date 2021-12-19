@@ -2,32 +2,43 @@ import React from 'react';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { Grid, Icon, Menu, Tab } from 'semantic-ui-react';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
 
-function Title({ title, subtitle, reload }) {
+function ReportsOverviewConfiguration({ reports_overview, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <StringInput
-                        id="report_overview_title"
+                        id="reports-overview-title"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Report overview title"
                         set_value={(value) => set_reports_attribute("title", value, reload)}
-                        value={title}
+                        value={reports_overview.title}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
-                        id="report_overview_subtitle"
+                        id="reports-overview-subtitle"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Report overview subtitle"
                         set_value={(value) => set_reports_attribute("subtitle", value, reload)}
-                        value={subtitle}
+                        value={reports_overview.subtitle}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    <Comment
+                        id="reports-overview-comment"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_reports_attribute("comment", value, reload)}
+                        value={reports_overview.comment}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -75,14 +86,14 @@ function Permissions({ permissions, reload }) {
     )
 }
 
-export function ReportsOverviewTitle({ permissions, title, subtitle, reload }) {
+export function ReportsOverviewTitle({ reports_overview, reload }) {
     const panes = [
-        { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Title title={title} subtitle={subtitle} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={permissions} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={reports_overview.permissions ?? {}} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog /></Tab.Pane> }
     ]
     return (
-        <HeaderWithDetails level="h1" header={title} subheader={subtitle}>
+        <HeaderWithDetails level="h1" header={reports_overview.title} subheader={reports_overview.subtitle}>
             <Tab panes={panes} />
         </HeaderWithDetails>
     )

@@ -2,6 +2,7 @@ import React from 'react';
 import { Message, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
+import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
@@ -47,12 +48,8 @@ export function ReportsOverview({ reports, open_report, report_date, reports_ove
     }
     return (
         <div id="dashboard">
-            <ReportsOverviewTitle
-                permissions={reports_overview.permissions}
-                title={reports_overview.title}
-                subtitle={reports_overview.subtitle}
-                reload={reload}
-            />
+            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
+            <CommentSegment comment={reports_overview.comment} />
             <ReportsDashboard reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>

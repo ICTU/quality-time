@@ -82,12 +82,7 @@ class App extends Component {
                     this.setState({
                         loading: false,
                         datamodel: data_model,
-                        reports_overview: {
-                            layout: reports_overview.layout,
-                            subtitle: reports_overview.subtitle,
-                            title: reports_overview.title,
-                            permissions: reports_overview.permissions
-                        },
+                        reports_overview: reports_overview,
                         reports: reports.reports || [],
                         last_update: now
                     });

@@ -26,6 +26,13 @@ it('shows the reports overview', () => {
     expect(screen.getAllByText(/Overview/).length).toBe(1);
 });
 
+it('shows the comment', () => {
+    const reports = [{ summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
+    const reportsOverview= { title: "Overview", comment: "Commentary", permissions: {} }
+    render_reports_overview(reports, reportsOverview)
+    expect(screen.getAllByText(/Commentary/).length).toBe(1);
+});
+
 it('shows the report tag cards', () => {
     const reports= [{ summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: { Tag: { red: 1 } } }]
     const reportsOverview= { title: "Overview", permissions: {} }
