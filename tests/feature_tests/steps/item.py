@@ -58,7 +58,7 @@ def change_item_attribute(context, item, attribute, value):
     item_fragment = "reports_overview" if item == "reports_overview" else f"{item}/{context.uuid[item]}"
     if attribute in ("tags", "issue_ids"):  # convert comma separated values to lists
         value = value.split(", ")
-    elif attribute in ("permissions",):  # convert comma separated values to lists
+    elif attribute == "permissions":
         if value == "None":
             value = "{}"
         value = json.loads(value)
