@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.30.2-rc.2 - 2021-12-19
+## [Unreleased]
 
 ### Fixed
 
-- The sparkline graphs would draw the recent measurements as if they all happened on the current day. Fixes [#3071](https://github.com/ICTU/quality-time/issues/3071).
+- A bug in the Quality-time API would cause the sparkline graphs to draw the recent measurements as if they all happened on the current day and cause the notifier to send notifications to MS Teams every minute. Fixes [#3071](https://github.com/ICTU/quality-time/issues/3071) and [#3073](https://github.com/ICTU/quality-time/issues/3073).
 
 ## v3.30.1 - 2021-12-17
 
