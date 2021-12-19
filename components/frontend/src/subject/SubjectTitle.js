@@ -27,7 +27,7 @@ function SubjectHeader({ subject_type }) {
 function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
     return (
         <Grid stackable>
-            <Grid.Row columns={2}>
+            <Grid.Row columns={3}>
                 <Grid.Column>
                     <SubjectType
                         id={`${subject_uuid}-type`}
@@ -37,12 +37,21 @@ function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
-                        id={`${subject_uuid}-name`}
+                        id={`${subject_uuid}-title`}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Subject name"
+                        label="Subject title"
                         placeholder={subject_name}
                         set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
                         value={subject.name}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <StringInput
+                        id={`${subject_uuid}-subtitle`}
+                        label="Subject subtitle"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_subject_attribute(subject_uuid, "subtitle", value, reload)}
+                        value={subject.subtitle}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -82,7 +91,7 @@ export function SubjectTitle({ report, subject, subject_uuid, first_subject, las
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> }
     ];
     return (
-        <HeaderWithDetails level="h2" header={subject_name} style={{ marginTop: 50 }}>
+        <HeaderWithDetails level="h2" header={subject_name} subheader={subject.subtitle} style={{ marginTop: 50 }}>
             <SubjectHeader subject_type={current_subject_type} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
