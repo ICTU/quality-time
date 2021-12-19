@@ -50,11 +50,18 @@ it('deals with unknown subject types', async () => {
     expect(screen.getAllByText("Unknown subject type").length).toBe(2);
 });
 
-it('changes the subject name', async () => {
+it('changes the subject title', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await render_subject_title();
-    userEvent.type(screen.getByLabelText(/Subject name/), '{selectall}{del}New name{enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", { name: "New name" });
+    userEvent.type(screen.getByLabelText(/Subject title/), '{selectall}{del}New title{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", { name: "New title" });
+});
+
+it('changes the subject subtitle', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await render_subject_title();
+    userEvent.type(screen.getByLabelText(/Subject subtitle/), '{selectall}{del}New subtitle{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
 it('changes the subject comment', async () => {
