@@ -125,9 +125,7 @@ idna==3.3 \
 isort==5.10.1 \
     --hash=sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7 \
     --hash=sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951
-    # via
-    #   -r ../../requirements-dev.in
-    #   pylint
+    # via pylint
 lazy-object-proxy==1.6.0 \
     --hash=sha256:17e0967ba374fc24141738c69736da90e94419338fd4c7c7bef01ee26b339653 \
     --hash=sha256:1fee665d2638491f4d6e55bd483e15ef21f6c8c2095f235fef72601021e64f61 \
@@ -470,9 +468,9 @@ types-ipaddress==1.0.1 \
     --hash=sha256:9d0a642526c4a1f87ee9ae29d91b93f708508b891d038db2e1c9f06219383516 \
     --hash=sha256:dc5540c7fd8d4b3ffe8461bc01f27513c0abe5f2088e491218bd0a98a0b4584e
     # via types-cryptography
-types-requests==2.26.1 \
-    --hash=sha256:0893e112e1510bbb67f537941c92192de7472e51bf7f236e0e583866f0ed933e \
-    --hash=sha256:853571b3accc188976c0f4feffcaebf6cdfc170082b5e43f3358aa78de61f531
+types-requests==2.26.2 \
+    --hash=sha256:0e22d9cdeff4c3eb068eb883d59b127c98d80525f3d0412a1c4499c6ae1f711e \
+    --hash=sha256:fabe1acc784708ac798ced6373568465b93642c8aa1ebd33e2921b60d4e7aa29
     # via -r requirements-dev.in
 types-setuptools==57.4.4 \
     --hash=sha256:9fe4180548e5cbb44cc0d343a47e4dc1d6769c31e16447994788c28df169011f \
