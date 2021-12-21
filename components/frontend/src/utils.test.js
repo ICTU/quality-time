@@ -191,3 +191,12 @@ it('clears the array value', () => {
     expect(result.current[0]).toStrictEqual([])
     expect(history.location.search).toEqual("")
 })
+
+it('sets both a boolean and an integer parameter', () => {
+    const history = createMemoryHistory()
+    const hook1 = renderHook(() => useURLSearchQuery(history, "boolean_key", "boolean"))
+    act(() => { hook1.result.current[1](true) })
+    const hook2 = renderHook(() => useURLSearchQuery(history, "integer_key", "integer"))
+    act(() => { hook2.result.current[1](42) })
+    expect(history.location.search).toEqual("?boolean_key=true&integer_key=42")
+})

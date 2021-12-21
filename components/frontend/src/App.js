@@ -109,9 +109,13 @@ class App extends Component {
         const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
         const new_report_date_string = value === today_string ? '' : value;
         let parsed = new URLSearchParams(this.history.location.search);
-        parsed.set("report_date", new_report_date_string.split("-").reverse().join("-"));
+        if (new_report_date_string === "") {
+            parsed.delete("report_date")
+        } else {
+            parsed.set("report_date", new_report_date_string.split("-").reverse().join("-"));
+        }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
-        this.history.replace({ search: new_report_date_string.length > 0 ? "?" + search : "" })
+        this.history.replace({ search: search.length > 0 ? "?" + search : "" })
         this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
     }
 
