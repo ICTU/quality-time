@@ -57,7 +57,7 @@ export function DownloadAsPDFButton(props) {
     const [loading, setLoading] = useState(false);
     const { report_uuid, history, ...otherProps } = props;
     const query = new URLSearchParams(window.location.search);
-    query.set("report_url",  window.location.href);
+    query.set("report_url", window.location.href);
     return (
         <ActionButton
             action='Download'
