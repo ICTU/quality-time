@@ -1,4 +1,6 @@
-import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, format_minutes } from './utils';
+import { renderHook, act } from '@testing-library/react-hooks'
+import { createMemoryHistory } from 'history';
+import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, format_minutes, useURLSearchQuery } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
 it('rounds numbers nicely', () => {
@@ -100,3 +102,101 @@ it('gets the subject name', () => {
 it('gets the subject name from the data model if the subject has no name', () => {
     expect(get_subject_name({ type: "subject_type" }, { subjects: { "subject_type": { name: "subject" } } })).toStrictEqual("subject")
 });
+
+it('gets a boolean value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=true'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "boolean"))
+    expect(result.current[0]).toBe(true)
+})
+
+it('gets the default boolean value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "boolean", false))
+    expect(result.current[0]).toBe(false)
+})
+
+it('sets a boolean value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "boolean", false))
+    act(() => { result.current[1](true) })
+    expect(result.current[0]).toBe(true)
+    expect(history.location.search).toEqual("?key=true")
+})
+
+it('removes the boolean value when set to default value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "boolean", false))
+    act(() => { result.current[1](true) })
+    act(() => { result.current[1](false) })
+    expect(result.current[0]).toBe(false)
+    expect(history.location.search).toEqual("")
+})
+
+it('gets an integer value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=42'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "integer"))
+    expect(result.current[0]).toBe(42)
+})
+
+it('gets the default integer value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "integer", 7))
+    expect(result.current[0]).toBe(7)
+})
+
+it('sets an integer value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "integer", 0))
+    act(() => { result.current[1](42) })
+    expect(result.current[0]).toBe(42)
+    expect(history.location.search).toEqual("?key=42")
+})
+
+it('removes the integer value when set to the default value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=42'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "integer", 2))
+    act(() => { result.current[1](2) })
+    expect(history.location.search).toEqual("")
+})
+
+it('gets an array value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=a,b'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "array"))
+    expect(result.current[0]).toStrictEqual(["a", "b"])
+})
+
+it('sets an array value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "array"))
+    act(() => { result.current[1]("a") })
+    act(() => { result.current[1]("b") })
+    expect(result.current[0]).toStrictEqual(["a", "b"])
+    expect(history.location.search).toEqual("?key=a,b")
+})
+
+it('unsets an array value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=a'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "array"))
+    act(() => { result.current[1]("a") })
+    expect(result.current[0]).toStrictEqual([])
+    expect(history.location.search).toEqual("")
+})
+
+it('clears the array value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "array"))
+    act(() => { result.current[1]("a") })
+    act(() => { result.current[1]("b") })
+    act(() => { result.current[2]() })
+    expect(result.current[0]).toStrictEqual([])
+    expect(history.location.search).toEqual("")
+})
+
+it('sets both a boolean and an integer parameter', () => {
+    const history = createMemoryHistory()
+    const hook1 = renderHook(() => useURLSearchQuery(history, "boolean_key", "boolean"))
+    act(() => { hook1.result.current[1](true) })
+    const hook2 = renderHook(() => useURLSearchQuery(history, "integer_key", "integer"))
+    act(() => { hook2.result.current[1](42) })
+    expect(history.location.search).toEqual("?boolean_key=true&integer_key=42")
+})

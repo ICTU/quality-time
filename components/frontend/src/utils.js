@@ -1,4 +1,3 @@
-import { parse, stringify } from 'query-string';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 
@@ -114,24 +113,28 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
     const [state, setState] = useState(getState());
 
     function getState() {
-        const parsed_state = parseURLSearchQuery()[key];
+        const parsed_state = parseURLSearchQuery().get(key);
         if (state_type === "boolean") {
             return parsed_state === "true"
         } else if (state_type === "integer") {
             return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
         }
         // else state_type is "array"
-        return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
+        return parsed_state?.split(",") ?? []
     }
 
     function parseURLSearchQuery() {
-        return parse(history.location.search, { arrayFormat: 'comma' });
+        return new URLSearchParams(history.location.search)
     }
 
     function setURLSearchQuery(new_state) {
         let parsed = parseURLSearchQuery();
-        parsed[key] = new_state || "";
-        const search = stringify(parsed, { skipEmptyString: true, arrayFormat: 'comma' });
+        if ((state_type === "array" && new_state.length === 0) || (new_state === default_value)) {
+            parsed.delete(key)
+        } else {
+            parsed.set(key, new_state)
+        }
+        const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         history.replace({ search: search.length > 0 ? "?" + search : "" });
         setState(new_state);
     }

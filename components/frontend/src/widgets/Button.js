@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { parse, stringify } from 'query-string';
 import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
@@ -57,9 +56,8 @@ function download_pdf(report_uuid, query_string, callback) {
 export function DownloadAsPDFButton(props) {
     const [loading, setLoading] = useState(false);
     const { report_uuid, history, ...otherProps } = props;
-    const query = parse(window.location.search);
-    query["report_url"] = window.location.href;
-    const queryString = stringify(query);
+    const query = new URLSearchParams(window.location.search);
+    query.set("report_url", window.location.href);
     return (
         <ActionButton
             action='Download'
@@ -69,7 +67,7 @@ export function DownloadAsPDFButton(props) {
             onClick={() => {
                 if (!loading) {
                     setLoading(true);
-                    download_pdf(report_uuid, `?${queryString}`, () => { setLoading(false) })
+                    download_pdf(report_uuid, `?${query.toString()}`, () => { setLoading(false) })
                 }
             }}
             {...otherProps}

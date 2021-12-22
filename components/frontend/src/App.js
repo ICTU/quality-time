@@ -10,7 +10,6 @@ import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
-import { parse, stringify } from 'query-string';
 
 import { DataModel } from './context/DataModel';
 import { Permissions } from './context/Permissions';
@@ -43,7 +42,7 @@ class App extends Component {
     componentDidMount() {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        const report_date_iso_string = parse(this.history.location.search).report_date || "";
+        const report_date_iso_string = new URLSearchParams(this.history.location.search).get("report_date") || "";
         const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
         this.login_forwardauth();
         this.connect_to_nr_measurements_event_source();
@@ -109,9 +108,13 @@ class App extends Component {
         const today = new Date();
         const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
         const new_report_date_string = value === today_string ? '' : value;
-        let parsed = parse(this.history.location.search);
-        parsed.report_date = new_report_date_string.split("-").reverse().join("-");
-        const search = stringify(parsed, { skipEmptyString: true });
+        let parsed = new URLSearchParams(this.history.location.search);
+        if (new_report_date_string === "") {
+            parsed.delete("report_date")
+        } else {
+            parsed.set("report_date", new_report_date_string.split("-").reverse().join("-"));
+        }
+        const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         this.history.replace({ search: search.length > 0 ? "?" + search : "" })
         this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
     }
