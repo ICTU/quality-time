@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
+- The security warnings in OWASP Dependency Check reports do not always have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. If needed, *Quality-time* generates keys for OWASP Dependency Check security warnings itself, based on the file path. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
 
 ## v3.30.2 - 2021-12-19
 
