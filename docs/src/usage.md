@@ -438,21 +438,23 @@ The exported PDF report has the same metric table rows and columns hidden as in 
 
 ### Via the API
 
-If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
+If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
 
-The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
+The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
 
-To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`.
+To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`.
 
-To hide columns from the report, set the `hidden_columns` parameter, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, and `tags`.
+To hide columns from the report, set the `hidden_columns` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, `issues`, and `tags`.
 
-To expand metrics and set the active tab of the metric detail information, use the `tabs` parameter, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
+To expand metrics and set the active tab of the metric detail information, add the `tabs` parameter, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
 
-The use the subject trend table view instead of the default details view, use the `subject_trend_table` parameter and set it to true, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?subject_trend_table=true`.
+To use the subject trend table view instead of the default details view, add the `subject_trend_table` parameter and set it to true, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?subject_trend_table=true`.
 
 To change the number of dates and the time between dates shown in the trend table, use the `trend_table_nr_dates` and the `trend_table_interval` parameters. The number of dates should be an integer between 2 and 7. The interval should be an integer between 1 and 4 and is in weeks.
 
-To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
+To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
+
+Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/api/v3/report/<report_uuid>`.
 
 ```{index} Export report
 ```
@@ -469,31 +471,31 @@ A *Quality-time* report in JSON format contains the latest configuration of the 
 To use the import and export endpoints you need to be authenticated. For example, using curl:
 
 ```console
-curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' http://quality-time.example.org/api/v3/login
+curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://www.quality-time.example.org/api/v3/login
 ```
 
 ### Export API
 
-The exporting endpoint is available via `http://www.quality-time.example.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The exporting endpoint returns JSON content only.
+The exporting endpoint is available via `https://www.quality-time.example.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The exporting endpoint returns JSON content only.
 
 For example, using curl, and assuming you have logged in as shown above:
 
 ```console
-curl --cookie cookie.txt --output export.json http://quality-time.example.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json 
+curl --cookie cookie.txt --output export.json https://quality-time.example.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json
 ```
 
-The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
+The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
 
 The {index}`public key <Public key>` argument is optional. If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `www.quality-time.example.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
 
 ### Import API
 
-The importing endpoint is available via `http://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) for the format.
+The importing endpoint is available via `https://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) for the format.
 
 For example, using curl, and assuming you have logged in as shown above:
 
 ```console
-$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report-to-import.json http://quality-time.example.org/api/v3/report/import
+$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report-to-import.json https://www.quality-time.example.org/api/v3/report/import
 {"ok": true, "new_report_uuid": "97a3e341-44ce-4f2b-4471-36e5f2f34cf6"}
 ```
 
