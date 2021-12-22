@@ -1,5 +1,6 @@
 """OWASP Dependency Check dependencies collector."""
 
+import re
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
@@ -40,5 +41,12 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
         # We can only generate an entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
-        key = sha1 if sha1 else sha1_hash(file_path + file_name)
+        key = sha1 if sha1 else sha1_hash(self.__stable_file_path(file_path) + file_name)
         return Entity(key=key, file_path=file_path, file_name=file_name, url=entity_landing_url)
+
+    def __stable_file_path(self, file_path: str) -> str:
+        """Return a stable file path by excluding variable parts specified by the user."""
+        reg_exps = self._parameter("variable_file_path_regexp")
+        for reg_exp in reg_exps:
+            file_path = re.sub(reg_exp, "", file_path)
+        return file_path

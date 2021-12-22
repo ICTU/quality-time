@@ -1,5 +1,7 @@
 """Unit tests for the OWASP Dependency Check dependencies collector."""
 
+from collector_utilities.functions import sha1_hash
+
 from .base import OWASPDependencyCheckTestCase
 
 
@@ -15,6 +17,20 @@ class OWASPDependencyCheckDependenciesTest(OWASPDependencyCheckTestCase):
             dict(
                 key="12345",
                 url="https://owasp_dependency_check#l1_12345",
+                file_name=self.file_name,
+                file_path=self.file_path,
+            )
+        ]
+        self.assert_measurement(response, value="1", entities=expected_entities)
+
+    async def test_ignore_part_of_file_path(self):
+        """Test that parts of the file path can be ignored, if the secrity warning has no sha1."""
+        self.set_source_parameter("variable_file_path_regexp", ["/home/[a-z]+/"])
+        response = await self.collect(get_request_text=self.xml.replace("<sha1>12345</sha1>", ""))
+        expected_entities = [
+            dict(
+                key=sha1_hash(self.file_path[len("/home/jenkins/") :] + self.file_name),
+                url="",
                 file_name=self.file_name,
                 file_path=self.file_path,
             )
