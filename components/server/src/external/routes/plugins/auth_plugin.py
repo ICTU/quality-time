@@ -43,8 +43,9 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
             if not session.is_valid():
                 cls.abort(401, "%s-access to %s denied: session %s not authenticated", context, session_id)
 
+            permissions = latest_reports_overview(database).get("permissions", {})
             for permission in required_permissions:
-                authorized_users = latest_reports_overview(database).get("permissions", {}).get(permission, [])
+                authorized_users = permissions.get(permission, [])
                 if not session.is_authorized(authorized_users):
                     cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
 
