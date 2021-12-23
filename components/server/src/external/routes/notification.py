@@ -8,7 +8,7 @@ from database.reports import insert_new_report, latest_reports
 from model.data import ReportData
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, NotificationDestinationId
-from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])

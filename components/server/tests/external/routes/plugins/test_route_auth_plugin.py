@@ -8,7 +8,7 @@ from unittest.mock import Mock
 import bottle
 
 from external.routes.plugins import AuthPlugin
-from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from external.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from shared.routes.plugins import InjectionPlugin
 
 

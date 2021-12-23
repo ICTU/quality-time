@@ -13,7 +13,8 @@ from model.data import MetricData, SubjectData
 from model.metric import Metric
 from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
-from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.post("/api/v3/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

@@ -18,12 +18,12 @@ from database.measurements import (
 )
 from database.reports import latest_reports
 from model.data import SourceData
-
 from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
-from shared.routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION
+
+from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 
 
 @bottle.post(

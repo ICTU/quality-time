@@ -9,7 +9,8 @@ from database.measurements import recent_measurements
 from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
 from model.transformations import hide_credentials
 from server_utilities.functions import report_date_time
-from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.get("/api/v3/reports_overview", authentication_required=False)

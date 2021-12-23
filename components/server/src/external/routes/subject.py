@@ -11,7 +11,8 @@ from model.actions import copy_subject, move_item
 from model.data import ReportData, SubjectData
 from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import MetricId, ReportId, SubjectId
-from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.post("/api/v3/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
