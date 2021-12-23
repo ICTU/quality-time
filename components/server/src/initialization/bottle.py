@@ -3,7 +3,7 @@
 import bottle
 from pymongo.database import Database
 
-from routes.plugins import AuthPlugin, InjectionPlugin
+from shared.routes.plugins import AuthPlugin, InjectionPlugin
 
 # isort: off
 # pylint: disable=wildcard-import,unused-wildcard-import

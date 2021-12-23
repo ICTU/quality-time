@@ -20,9 +20,9 @@ from model.transformations import (
     hide_credentials,
     replace_report_uuids,
 )
-from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
+from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.get("/api/v3/report", authentication_required=False)

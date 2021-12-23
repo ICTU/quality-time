@@ -11,9 +11,9 @@ from model.actions import copy_source, move_item
 from model.data import MetricData, SourceData
 from model.queries import is_password_parameter
 from model.transformations import change_source_parameter
-from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from server_utilities.functions import check_url_availability, uuid
 from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
+from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
 @bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

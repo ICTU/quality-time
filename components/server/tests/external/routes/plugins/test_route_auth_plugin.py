@@ -7,8 +7,9 @@ from unittest.mock import Mock
 
 import bottle
 
-from shared.routes.plugins import AuthPlugin, InjectionPlugin
+from external.routes.plugins import AuthPlugin
 from shared.routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from shared.routes.plugins import InjectionPlugin
 
 
 class AuthPluginTest(unittest.TestCase):
@@ -19,6 +20,7 @@ class AuthPluginTest(unittest.TestCase):
         logging.disable()
         self.database = Mock()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.sessions.find_one.return_value = None
         self.success = dict(ok=True)
         self.session = dict(
             user="jadoe",
@@ -39,8 +41,8 @@ class AuthPluginTest(unittest.TestCase):
 
     def test_route_without_specified_auth(self):
         """Test that the auth plugin will crash."""
+        route = bottle.Route(bottle.app(), "/", "POST", self.route)
         with self.assertRaises(AttributeError):
-            route = bottle.Route(bottle.app(), "/", "POST", self.route)
             route.call()
 
     def test_valid_session(self):
@@ -61,7 +63,6 @@ class AuthPluginTest(unittest.TestCase):
 
     def test_missing_session(self):
         """Test that the session is invalid when it's missing."""
-        self.database.sessions.find_one.return_value = None
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
         self.assertRaises(bottle.HTTPError, route.call)
 
@@ -74,15 +75,15 @@ class AuthPluginTest(unittest.TestCase):
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertRaises(bottle.HTTPError, route.call)
 
-    def test_no_authorized_users_means_everybody_is_authorized(self):
-        """Test that an unauthorized user cannot post."""
+    def test_post_route_with_permissions_required_when_everyone_has_permission(self):
+        """Test that an authenticated user can post if permissions have not been restricted."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", permissions={})
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertEqual(self.success, route.call())
 
-    def test_authorized_session(self):
-        """Test that an authorized user can post."""
+    def test_post_route_with_permissions_required(self):
+        """Test that an authenticated user can post if they have the required permissions."""
         self.database.reports_overviews.find_one.return_value = dict(
             _id="id", permissions={EDIT_REPORT_PERMISSION: ["jadoe"]}
         )
@@ -90,14 +91,12 @@ class AuthPluginTest(unittest.TestCase):
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertEqual(self.success, route.call())
 
-    def test_non_protected_route(self):
-        """Test that the session is invalid when it's missing."""
-        self.database.sessions.find_one.return_value = None
+    def test_post_route_without_authentication_required(self):
+        """Test that unauthenticated users can POST if no authentication is required."""
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=False)
         self.assertEqual(self.success, route.call())
 
-    def test_http_get_routes(self):
-        """Test that session ids are not authenticated if no authentication is required."""
-        self.database.sessions.find_one.return_value = None
+    def test_get_route_without_authentication_required(self):
+        """Test that unauthenticated users can GET if no authentication is required."""
         route = bottle.Route(bottle.app(), "/", "GET", self.route, authentication_required=False)
         self.assertEqual(self.success, route.call())
