@@ -8,7 +8,7 @@ from routes.plugins import AuthPlugin, InjectionPlugin
 # isort: off
 # pylint: disable=wildcard-import,unused-wildcard-import
 from routes.external import *  # lgtm [py/unused-import]
-from routes.internal import *  # lgtm [py/unused-import]
+from internal.routes import *  # lgtm [py/unused-import]
 
 # isort: on
 

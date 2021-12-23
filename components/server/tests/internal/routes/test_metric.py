@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from routes.internal import get_metrics
+from internal.routes import get_metrics
 
 from ...fixtures import METRIC_ID, REPORT_ID, SUBJECT_ID, create_report
 

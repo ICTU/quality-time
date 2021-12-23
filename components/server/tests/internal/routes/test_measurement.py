@@ -4,7 +4,7 @@ import unittest
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
-from routes.internal import post_measurement
+from internal.routes import post_measurement
 
 from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
