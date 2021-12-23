@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.external import get_measurements, set_entity_attribute, stream_nr_measurements
+from external.routes import get_measurements, set_entity_attribute, stream_nr_measurements
 
 from ...fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 

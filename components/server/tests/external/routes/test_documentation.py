@@ -2,7 +2,7 @@
 
 import unittest
 
-from routes.external import get_api
+from external.routes import get_api
 
 
 class DocumentationTest(unittest.TestCase):

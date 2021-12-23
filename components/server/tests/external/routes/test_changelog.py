@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from routes.external import (
+from external.routes import (
     get_changelog,
     get_metric_changelog,
     get_report_changelog,

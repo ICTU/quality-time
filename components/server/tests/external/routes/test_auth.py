@@ -10,7 +10,7 @@ import ldap3
 from ldap3.core import exceptions
 
 from database import sessions
-from routes.external import login, logout, get_public_key
+from external.routes import login, logout, get_public_key
 
 USERNAME = "john-doe"
 PASSWORD = "secret"
@@ -92,7 +92,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
         self.assertIsInstance(logging_mock.call_args[0][1], exception)
 
-    @patch("routes.external.auth.datetime", MOCK_DATETIME)
+    @patch("external.routes.auth.datetime", MOCK_DATETIME)
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
         """Test successful login from forwarded authentication header."""
         connection_mock.return_value = None
@@ -114,7 +114,7 @@ class LoginTests(AuthTestCase):
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 
-    @patch("routes.external.auth.datetime", MOCK_DATETIME)
+    @patch("external.routes.auth.datetime", MOCK_DATETIME)
     def test_successful_login(self, connection_mock, connection_enter):
         """Test successful login."""
         connection_mock.return_value = None
@@ -125,7 +125,7 @@ class LoginTests(AuthTestCase):
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
 
-    @patch("routes.external.auth.datetime", MOCK_DATETIME)
+    @patch("external.routes.auth.datetime", MOCK_DATETIME)
     def test_successful_bind_login(self, connection_mock, connection_enter):
         """Test successful login if ldap server does not reveal password digest."""
         connection_mock.return_value = None

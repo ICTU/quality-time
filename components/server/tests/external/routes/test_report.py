@@ -6,7 +6,7 @@ from typing import cast
 from unittest.mock import Mock, patch
 import copy
 
-from routes.external import (
+from external.routes import (
     delete_report,
     export_report_as_json,
     export_report_as_pdf,
@@ -441,7 +441,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
-    @patch("routes.external.report.bottle.request")
+    @patch("external.routes.report.bottle.request")
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
         expected_report = copy.deepcopy(self.report)

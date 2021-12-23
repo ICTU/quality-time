@@ -8,7 +8,7 @@ import requests
 
 from model.report import Report
 
-from routes.external import (
+from external.routes import (
     delete_source,
     post_move_source,
     post_source_attribute,

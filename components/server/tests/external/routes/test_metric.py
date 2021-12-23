@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from model.report import Report
-from routes.external import delete_metric, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric
+from external.routes import delete_metric, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric
 
 from ...fixtures import (
     JOHN,

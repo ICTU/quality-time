@@ -2,7 +2,7 @@
 
 import unittest
 
-from routes.external import get_server, QUALITY_TIME_VERSION
+from external.routes import get_server, QUALITY_TIME_VERSION
 
 
 class ServerTest(unittest.TestCase):

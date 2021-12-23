@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.external import (
+from external.routes import (
     delete_subject,
     get_subject_measurements,
     post_move_subject,

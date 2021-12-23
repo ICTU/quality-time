@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from model.report import Report
-from routes.external import (
+from external.routes import (
     post_new_notification_destination,
     delete_notification_destination,
     post_notification_destination_attributes,

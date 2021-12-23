@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
-from routes.external import get_reports_overview, post_reports_overview_attribute
+from external.routes import get_reports_overview, post_reports_overview_attribute
 
 from ...fixtures import METRIC_ID, SOURCE_ID
 
