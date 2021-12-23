@@ -35,7 +35,8 @@ class AuthPluginTest(unittest.TestCase):
         bottle.uninstall(self.injection_plugin)
         logging.disable(logging.NOTSET)
 
-    def route(self, database):  # pylint: disable=unused-argument
+    @staticmethod
+    def route(database):  # pylint: disable=unused-argument
         """Route handler with database parameter."""
         return dict(ok=True)
 
