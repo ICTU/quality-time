@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import Mock, mock_open, patch
 
 from external.initialization.database import init_database
-from data_model import DATA_MODEL_JSON
+from external.data_model import DATA_MODEL_JSON
 
 
 class DatabaseInitTest(unittest.TestCase):
