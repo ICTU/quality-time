@@ -17,11 +17,6 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.fernet import Fernet
 
-# Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
-# and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
-# but we give autolink_html clean html, so ignore the warning:
-from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
-
 from server_utilities.type import Direction, ReportId, URL
 
 
@@ -56,16 +51,6 @@ def uuid() -> ReportId:
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
     return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
-
-
-def sanitize_html(html_text: str) -> str:
-    """Clean dangerous tags from the HTML and convert urls into anchors."""
-    sanitized_html = str(autolink_html(clean_html(html_text)))
-    # The clean_html function creates HTML elements. That means if the user enters a simple text string it gets
-    # enclosed in a <p> tag. Remove it to not confuse users that haven't entered any HTML:
-    if sanitized_html.count("<") == 2:
-        sanitized_html = re.sub("</?p>", "", sanitized_html)
-    return sanitized_html
 
 
 Item = TypeVar("Item")

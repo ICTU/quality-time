@@ -25,10 +25,11 @@ from server_utilities.functions import (
     check_url_availability,
     iso_timestamp,
     report_date_time,
-    sanitize_html,
     uuid,
 )
 from server_utilities.type import ReportId
+
+from ..utils.functions import sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 

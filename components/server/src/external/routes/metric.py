@@ -11,8 +11,10 @@ from database.reports import insert_new_report, latest_reports
 from model.actions import copy_metric, move_item
 from model.data import MetricData, SubjectData
 from model.metric import Metric
-from server_utilities.functions import sanitize_html, uuid
+from server_utilities.functions import uuid
 from server_utilities.type import MetricId, SubjectId
+
+from ..utils.functions import sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
