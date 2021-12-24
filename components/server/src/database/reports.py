@@ -5,7 +5,6 @@ from pymongo.database import Database
 
 from model.report import Report
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import ReportId
 
 from .filters import DOES_NOT_EXIST
 
@@ -44,8 +43,3 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     if overview:
         overview["_id"] = str(overview["_id"])
     return overview or {}
-
-
-def report_exists(database: Database, report_uuid: ReportId):
-    """Return whether a report with the specified report uuid exists."""
-    return report_uuid in database.reports.distinct("report_uuid")

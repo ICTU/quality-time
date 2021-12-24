@@ -8,7 +8,7 @@ from pymongo.database import Database
 from database.filters import DOES_EXIST
 
 from server_utilities.functions import unique, iso_timestamp
-from server_utilities.type import MetricId, SubjectId
+from server_utilities.type import MetricId, ReportId, SubjectId
 
 from ..database import sessions
 from ..utils.type import Change
@@ -100,3 +100,8 @@ def _prepare_documents_for_insertion(
             document["delta"]["uuids"] = sorted(list(set(uuids)))
         for key, value in extra_attributes.items():
             document[key] = value
+
+
+def report_exists(database: Database, report_uuid: ReportId):
+    """Return whether a report with the specified report uuid exists."""
+    return report_uuid in database.reports.distinct("report_uuid")

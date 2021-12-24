@@ -5,8 +5,9 @@ import logging
 
 from pymongo.database import Database
 
-from database.datamodels import insert_new_datamodel, latest_datamodel
+from database.datamodels import latest_datamodel
 
+from ..database.datamodels import insert_new_datamodel
 from ..data_model import DATA_MODEL_JSON
 
 

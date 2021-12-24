@@ -5,6 +5,7 @@ from typing import Any
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
+from server_utilities.functions import iso_timestamp
 
 
 def default_source_parameters(database: Database, metric_type: str, source_type: str):
@@ -44,3 +45,11 @@ def default_subject_attributes(database: Database) -> dict[str, Any]:
     subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
     return dict(type=subject_type, name=None, description=defaults["description"], metrics={})
+
+
+def insert_new_datamodel(database: Database, data_model):
+    """Insert a new data model in the data models collection."""
+    if "_id" in data_model:  # pragma: no cover-behave
+        del data_model["_id"]
+    data_model["timestamp"] = iso_timestamp()
+    return database.datamodels.insert_one(data_model)
