@@ -4,10 +4,10 @@ import unittest
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
-from database import sessions
+from external.database import sessions
 from server_utilities.type import SessionId
 
-from ..fixtures import JOHN, JENNY
+from ...fixtures import JOHN, JENNY
 
 
 class SessionsTest(unittest.TestCase):

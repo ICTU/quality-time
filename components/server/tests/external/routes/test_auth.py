@@ -9,7 +9,7 @@ import bottle
 import ldap3
 from ldap3.core import exceptions
 
-from database import sessions
+from external.database import sessions
 from external.routes import login, logout, get_public_key
 
 USERNAME = "john-doe"

@@ -8,7 +8,6 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import (
     measurements_by_metric,
@@ -17,6 +16,7 @@ from database.measurements import (
     latest_measurement,
 )
 from database.reports import latest_reports
+from external.database import sessions
 from model.data import SourceData
 from model.measurement import Measurement
 from model.metric import Metric

@@ -3,12 +3,13 @@
 import bottle
 from pymongo.database import Database
 
-from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements
 from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
 from model.transformations import hide_credentials
 from server_utilities.functions import report_date_time, sanitize_html
+
+from ..database import sessions
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
