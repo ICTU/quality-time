@@ -5,11 +5,9 @@ from typing import Any, cast
 import pymongo
 from pymongo.database import Database
 
-from model.metric import Metric
 from model.report import Report
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
-from .datamodels import latest_datamodel
 from .filters import DOES_EXIST, DOES_NOT_EXIST
 from . import sessions
 
@@ -53,15 +51,6 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 def report_exists(database: Database, report_uuid: ReportId):
     """Return whether a report with the specified report uuid exists."""
     return report_uuid in database.reports.distinct("report_uuid")
-
-
-def latest_metric(database: Database, metric_uuid: MetricId) -> Metric | None:
-    """Return the latest metric with the specified metric uuid."""
-    data_model = latest_datamodel(database)
-    for report in latest_reports(database, data_model):
-        if metric_uuid in report.metric_uuids:
-            return report.metrics_dict[metric_uuid]
-    return None
 
 
 def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[MetricId]:

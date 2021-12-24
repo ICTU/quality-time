@@ -9,7 +9,7 @@ from database.measurements import (
     latest_successful_measurement,
     update_measurement_end,
 )
-from database.reports import latest_metric
+from internal.database.reports import latest_metric
 
 from model.measurement import Measurement
 
