@@ -2,8 +2,9 @@
 
 from typing import Any, Literal
 
-from server_utilities.functions import uuid
 from server_utilities.type import Position
+
+from ..utils.functions import uuid
 
 
 def copy_item(item, **kwargs):

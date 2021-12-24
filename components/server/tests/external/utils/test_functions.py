@@ -16,7 +16,16 @@ from external.utils.functions import (
     asymmetric_encrypt,
     symmetric_decrypt,
     symmetric_encrypt,
+    uuid,
 )
+
+
+class UtilTests(unittest.TestCase):
+    """Unit tests for the utility methods."""
+
+    def test_uuid(self):
+        """Test the expected length of the uuid."""
+        self.assertEqual(36, len(uuid()))
 
 
 @patch("external.utils.functions.bottle.request")

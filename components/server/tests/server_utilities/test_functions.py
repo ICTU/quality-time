@@ -4,7 +4,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from server_utilities.functions import iso_timestamp, uuid
+from server_utilities.functions import iso_timestamp
 
 
 class UtilTests(unittest.TestCase):
@@ -16,7 +16,3 @@ class UtilTests(unittest.TestCase):
         with patch("server_utilities.functions.datetime") as date_time:
             date_time.now.return_value = datetime(2020, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
             self.assertEqual(expected_time_stamp, iso_timestamp())
-
-    def test_uuid(self):
-        """Test the expected length of the uuid."""
-        self.assertEqual(36, len(uuid()))

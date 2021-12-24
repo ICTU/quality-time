@@ -16,9 +16,9 @@ from ldap3.core import exceptions
 from pymongo.database import Database
 
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
-from server_utilities.functions import uuid
 
 from ..database import sessions
+from ..utils.functions import uuid
 from ..utils.type import SessionId
 
 

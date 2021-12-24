@@ -1,6 +1,7 @@
 """Utility functions."""
 
 import re
+import uuid as _uuid
 from base64 import b64decode, b64encode
 from typing import cast
 
@@ -18,7 +19,7 @@ from cryptography.fernet import Fernet
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import URL
+from server_utilities.type import URL, ReportId
 
 
 class DecryptionError(Exception):
@@ -140,3 +141,8 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: tuple[str, str]) ->
     message = symmetric_decrypt(decrypted_key, message_bytes)
 
     return message.decode()
+
+
+def uuid() -> ReportId:
+    """Return a UUID."""
+    return ReportId(str(_uuid.uuid4()))

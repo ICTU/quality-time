@@ -1,13 +1,12 @@
 """Utility functions."""
 
 import hashlib
-import uuid as _uuid
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import TypeVar
 
-from server_utilities.type import Direction, ReportId
+from server_utilities.type import Direction
 
 
 def iso_timestamp() -> str:
@@ -18,11 +17,6 @@ def iso_timestamp() -> str:
 def days_ago(date_time: datetime) -> int:
     """Return the days since the date/time."""
     return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
-
-
-def uuid() -> ReportId:
-    """Return a UUID."""
-    return ReportId(str(_uuid.uuid4()))
 
 
 def md5_hash(string: str) -> str:
