@@ -7,7 +7,7 @@ from unittest.mock import patch
 from external.utils.functions import report_date_time
 
 
-@patch("server_utilities.functions.bottle.request")
+@patch("external.utils.functions.bottle.request")
 class ReportDateTimeTest(unittest.TestCase):
     """Unit tests for the report_datetime method."""
 

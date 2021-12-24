@@ -22,13 +22,12 @@ from model.transformations import (
 )
 from server_utilities.functions import (
     DecryptionError,
-    check_url_availability,
     iso_timestamp,
     uuid,
 )
 from server_utilities.type import ReportId
 
-from ..utils.functions import report_date_time, sanitize_html
+from ..utils.functions import check_url_availability, report_date_time, sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
