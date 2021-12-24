@@ -27,10 +27,3 @@ def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str 
     else:
         report_dicts = database.reports.find({"last": True, "deleted": DOES_NOT_EXIST})
     return [Report(data_model, report_dict) for report_dict in report_dicts]
-
-
-def latest_report(database: Database, data_model, report_uuid: str) -> Report:
-    """Get latest report with this uuid."""
-    return Report(
-        data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    )

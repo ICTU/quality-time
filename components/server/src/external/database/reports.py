@@ -5,7 +5,8 @@ from typing import cast, Any
 import pymongo
 from pymongo.database import Database
 
-from database.filters import DOES_EXIST
+from database.filters import DOES_EXIST, DOES_NOT_EXIST
+from model.report import Report
 
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import MetricId, ReportId, SubjectId
@@ -101,6 +102,13 @@ def _prepare_documents_for_insertion(
             document["delta"]["uuids"] = sorted(list(set(uuids)))
         for key, value in extra_attributes.items():
             document[key] = value
+
+
+def latest_report(database: Database, data_model, report_uuid: str) -> Report:
+    """Get latest report with this uuid."""
+    return Report(
+        data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
+    )
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
