@@ -71,11 +71,6 @@ def measurements_by_metric(
     return list(all_measurements_stripped)[:-1] + [latest_measurement_complete]
 
 
-def count_measurements(database: Database) -> int:
-    """Return the number of measurements."""
-    return int(database.measurements.estimated_document_count())
-
-
 def update_measurement_end(database: Database, measurement_id: MeasurementId):
     """Set the end date and time of the measurement to the current date and time."""
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
@@ -89,13 +84,3 @@ def insert_new_measurement(database: Database, measurement: Measurement) -> Meas
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
-
-
-def changelog(database: Database, nr_changes: int, **uuids):
-    """Return the changelog for the measurements belonging to the items with the specific uuids."""
-    return database.measurements.find(
-        filter={"delta.uuids": {"$in": list(uuids.values())}},
-        sort=[("start", pymongo.DESCENDING)],
-        limit=nr_changes,
-        projection=["delta", "start"],
-    )

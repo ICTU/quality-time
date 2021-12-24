@@ -11,7 +11,6 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.measurements import (
     measurements_by_metric,
-    count_measurements,
     insert_new_measurement,
     latest_measurement,
 )
@@ -22,6 +21,7 @@ from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.type import MetricId, SourceId
 
+from ..database.measurements import count_measurements
 from ..utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
