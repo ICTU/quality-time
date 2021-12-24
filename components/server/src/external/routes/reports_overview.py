@@ -4,11 +4,11 @@ import bottle
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
-from database.reports import latest_reports, latest_reports_overview
+from database.reports import latest_reports
 
 from ..database import sessions
 from ..database.measurements import recent_measurements
-from ..database.reports import insert_new_reports_overview
+from ..database.reports import insert_new_reports_overview, latest_reports_overview
 from ..model.transformations import hide_credentials
 from ..utils.functions import report_date_time, sanitize_html
 

@@ -34,12 +34,3 @@ def latest_report(database: Database, data_model, report_uuid: str) -> Report:
     return Report(
         data_model, database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
     )
-
-
-def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
-    """Return the latest reports overview."""
-    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
-    overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
-    if overview:
-        overview["_id"] = str(overview["_id"])
-    return overview or {}

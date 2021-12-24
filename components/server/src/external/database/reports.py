@@ -102,6 +102,15 @@ def _prepare_documents_for_insertion(
             document[key] = value
 
 
+def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
+    """Return the latest reports overview."""
+    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
+    overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
+    if overview:
+        overview["_id"] = str(overview["_id"])
+    return overview or {}
+
+
 def report_exists(database: Database, report_uuid: ReportId):
     """Return whether a report with the specified report uuid exists."""
     return report_uuid in database.reports.distinct("report_uuid")
