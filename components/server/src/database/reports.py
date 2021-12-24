@@ -6,9 +6,10 @@ import pymongo
 from pymongo.database import Database
 
 from external.database import sessions
+from external.utils.type import Change
 from model.report import Report
 from server_utilities.functions import iso_timestamp, unique
-from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from server_utilities.type import MetricId, ReportId, SubjectId
 
 from .filters import DOES_EXIST, DOES_NOT_EXIST
 

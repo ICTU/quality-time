@@ -2,7 +2,7 @@
 
 from typing import Literal, NewType, Union
 
-Change = dict[str, Union[str, dict[str, str]]]
+
 Color = Literal["green", "grey", "red", "yellow", "white"]
 Direction = Literal["<", ">"]
 EditScope = Literal["source", "metric", "subject", "report", "reports"]
