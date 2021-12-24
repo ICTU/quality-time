@@ -7,7 +7,7 @@ import bottle
 
 from external.database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 from external.routes import get_data_model
-from server_utilities.functions import md5_hash
+from external.utils.functions import md5_hash
 
 
 class DataModelTest(unittest.TestCase):

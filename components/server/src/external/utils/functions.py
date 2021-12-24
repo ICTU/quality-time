@@ -1,5 +1,6 @@
 """Utility functions."""
 
+import hashlib
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
@@ -54,6 +55,11 @@ def _basic_auth_credentials(source_parameters) -> tuple[str, str] | None:
 def _headers(source_parameters) -> dict:
     """Return the headers for the url-check."""
     return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}
+
+
+def md5_hash(string: str) -> str:
+    """Return a md5 hash of the string."""
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
 
 
 def report_date_time() -> str:

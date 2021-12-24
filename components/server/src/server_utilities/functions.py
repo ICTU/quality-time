@@ -1,6 +1,5 @@
 """Utility functions."""
 
-import hashlib
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -15,11 +14,6 @@ def iso_timestamp() -> str:
 def days_ago(date_time: datetime) -> int:
     """Return the days since the date/time."""
     return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
-
-
-def md5_hash(string: str) -> str:
-    """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:
