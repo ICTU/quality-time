@@ -9,7 +9,6 @@ from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
 from database.reports import latest_report, latest_reports
-from model.data import ReportData
 from model.report import Report
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
@@ -18,6 +17,7 @@ from ..database.measurements import recent_measurements
 from ..database.reports import insert_new_report
 from ..initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from ..model.actions import copy_report
+from ..model.data import ReportData
 from ..model.transformations import (
     decrypt_credentials,
     encrypt_credentials,

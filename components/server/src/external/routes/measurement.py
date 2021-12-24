@@ -11,13 +11,13 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import latest_reports
-from model.data import SourceData
 from model.measurement import Measurement
 from model.metric import Metric
 from server_utilities.type import MetricId, SourceId
 
 from ..database import sessions
 from ..database.measurements import count_measurements, measurements_by_metric
+from ..model.data import SourceData
 from ..utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION

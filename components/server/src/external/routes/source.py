@@ -7,12 +7,12 @@ from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
 from database.reports import latest_reports
-from model.data import MetricData, SourceData
 from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
 
 from ..database.datamodels import default_source_parameters
 from ..database.reports import insert_new_report
 from ..model.actions import copy_source, move_item
+from ..model.data import MetricData, SourceData
 from ..model.queries import is_password_parameter
 from ..model.transformations import change_source_parameter
 from ..utils.functions import check_url_availability, uuid
