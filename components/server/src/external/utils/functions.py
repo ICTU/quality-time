@@ -14,6 +14,10 @@ from server_utilities.functions import iso_timestamp
 from server_utilities.type import URL
 
 
+class DecryptionError(Exception):
+    """Exception to be raised when decryption has failed."""
+
+
 def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, int | str]:
     """Check the availability of the URL."""
     credentials = _basic_auth_credentials(source_parameters)
