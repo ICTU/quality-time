@@ -3,7 +3,7 @@
 
 import unittest
 
-from model.actions import copy_metric, copy_report, copy_source, copy_subject
+from external.model.actions import copy_metric, copy_report, copy_source, copy_subject
 
 
 class CopySourceTest(unittest.TestCase):

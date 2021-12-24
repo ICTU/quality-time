@@ -6,7 +6,6 @@ from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
 from database.reports import insert_new_report, latest_reports
-from model.actions import copy_subject, move_item
 from model.data import ReportData, SubjectData
 from server_utilities.functions import uuid
 from server_utilities.type import MetricId, ReportId, SubjectId
@@ -14,6 +13,7 @@ from server_utilities.type import MetricId, ReportId, SubjectId
 from ..database.datamodels import default_subject_attributes
 from ..database.measurements import measurements_by_metric
 from ..database.reports import metrics_of_subject
+from ..model.actions import copy_subject, move_item
 from ..utils.functions import report_date_time, sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
