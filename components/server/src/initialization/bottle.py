@@ -3,14 +3,11 @@
 import bottle
 from pymongo.database import Database
 
-from routes.plugins import AuthPlugin, InjectionPlugin
-
-# isort: off
 # pylint: disable=wildcard-import,unused-wildcard-import
-from routes.external import *  # lgtm [py/unused-import]
-from routes.internal import *  # lgtm [py/unused-import]
-
-# isort: on
+from external.routes import *  # lgtm [py/unused-import]
+from external.routes.plugins import AuthPlugin
+from internal.routes import *  # lgtm [py/unused-import]
+from shared.routes.plugins import InjectionPlugin
 
 
 def init_bottle(database: Database) -> None:
