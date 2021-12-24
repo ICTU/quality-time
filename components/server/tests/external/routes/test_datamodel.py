@@ -5,7 +5,8 @@ from unittest.mock import Mock, patch
 
 import bottle
 
-from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
+from database.datamodels import insert_new_datamodel
+from external.database.datamodels import default_source_parameters, default_subject_attributes
 from external.routes import get_data_model
 from server_utilities.functions import md5_hash
 

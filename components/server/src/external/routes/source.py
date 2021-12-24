@@ -5,7 +5,7 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from database.datamodels import default_source_parameters, latest_datamodel
+from database.datamodels import latest_datamodel
 from database.reports import insert_new_report, latest_reports
 from model.actions import copy_source, move_item
 from model.data import MetricData, SourceData
@@ -14,6 +14,7 @@ from model.transformations import change_source_parameter
 from server_utilities.functions import uuid
 from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
 
+from ..database.datamodels import default_source_parameters
 from ..utils.functions import check_url_availability
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
