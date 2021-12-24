@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Tuple, TypeVar, cast
 
-import bottle
 import requests
 from cryptography.hazmat.backends import default_backend, openssl
 from cryptography.hazmat.primitives import serialization
@@ -27,15 +26,6 @@ class DecryptionError(Exception):
 def iso_timestamp() -> str:
     """Return the ISO-format version of the current UTC date and time without microseconds."""
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-
-
-def report_date_time() -> str:
-    """Return the report date requested as query parameter if it's in the past, else return an empty string."""
-    if report_date_string := dict(bottle.request.query).get("report_date"):
-        iso_report_date_string = str(report_date_string).replace("Z", "+00:00")
-        if iso_report_date_string < iso_timestamp():
-            return iso_report_date_string
-    return ""
 
 
 def days_ago(date_time: datetime) -> int:
