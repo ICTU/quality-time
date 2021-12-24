@@ -5,12 +5,13 @@ import bottle
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
-from database.reports import insert_new_report, latest_reports
+from database.reports import latest_reports
 from model.data import ReportData, SubjectData
 from server_utilities.type import MetricId, ReportId, SubjectId
 
 from ..database.datamodels import default_subject_attributes
 from ..database.measurements import measurements_by_metric
+from ..database.reports import insert_new_report
 from ..database.reports import metrics_of_subject
 from ..model.actions import copy_subject, move_item
 from ..utils.functions import report_date_time, sanitize_html, uuid
