@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from initialization.secrets import initialize_secrets
+from external.initialization.secrets import initialize_secrets
 
 
 class TestSecrets(unittest.TestCase):

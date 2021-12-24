@@ -5,8 +5,8 @@ import pathlib
 import unittest
 from unittest.mock import Mock, mock_open, patch
 
+from external.initialization.database import init_database
 from data_model import DATA_MODEL_JSON
-from initialization.database import init_database
 
 
 class DatabaseInitTest(unittest.TestCase):
@@ -59,7 +59,7 @@ class DatabaseInitTest(unittest.TestCase):
 
     def test_skip_loading_example_reports(self):
         """Test that loading example reports can be skipped."""
-        with patch("src.initialization.database.os.environ.get", Mock(return_value="False")):
+        with patch("src.external.initialization.database.os.environ.get", Mock(return_value="False")):
             self.init_database('{"change": "yes"}', False)
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert_one.assert_called_once()
