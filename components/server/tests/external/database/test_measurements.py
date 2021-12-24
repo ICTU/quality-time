@@ -3,13 +3,10 @@
 import unittest
 from unittest.mock import Mock
 
-from database.measurements import (
-    measurements_by_metric,
-    recent_measurements,
-)
+from external.database.measurements import measurements_by_metric, recent_measurements
 from model.metric import Metric
 
-from ..fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
+from ...fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 
 
 class MeasurementsByMetricTest(unittest.TestCase):

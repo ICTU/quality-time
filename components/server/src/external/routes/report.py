@@ -8,7 +8,6 @@ import requests
 from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
-from database.measurements import recent_measurements
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
@@ -27,6 +26,7 @@ from server_utilities.functions import (
 )
 from server_utilities.type import ReportId
 
+from ..database.measurements import recent_measurements
 from ..utils.functions import check_url_availability, report_date_time, sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
