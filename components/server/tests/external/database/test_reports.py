@@ -3,9 +3,9 @@
 import unittest
 from unittest.mock import Mock
 
-from database.reports import metrics_of_subject
+from external.database.reports import metrics_of_subject
 
-from ..fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
+from ...fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
 
 
 class MetricsForSubjectTest(unittest.TestCase):

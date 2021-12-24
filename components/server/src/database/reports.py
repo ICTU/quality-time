@@ -8,7 +8,7 @@ from pymongo.database import Database
 from external.database import sessions
 from model.report import Report
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import MetricId, ReportId, SubjectId
+from server_utilities.type import ReportId
 
 from .filters import DOES_EXIST, DOES_NOT_EXIST
 
@@ -52,15 +52,6 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 def report_exists(database: Database, report_uuid: ReportId):
     """Return whether a report with the specified report uuid exists."""
     return report_uuid in database.reports.distinct("report_uuid")
-
-
-def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[MetricId]:
-    """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
-    report_filter: dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
-    projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
-    report = database.reports.find_one(report_filter, projection=projection)
-
-    return list(report["subjects"][subject_uuid]["metrics"].keys())
 
 
 def insert_new_report(database: Database, delta_description: str, uuids, *reports) -> dict[str, Any]:

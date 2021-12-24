@@ -8,6 +8,7 @@ from pymongo.database import Database
 from database.filters import DOES_EXIST
 
 from server_utilities.functions import unique
+from server_utilities.type import MetricId, SubjectId
 
 from ..utils.type import Change
 
@@ -50,3 +51,11 @@ def _get_change_key(change: Change) -> str:
     changed_uuids = cast(dict[str, list[str]], change["delta"]).get("uuids", [])
     key = f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
     return key
+
+
+def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> list[MetricId]:
+    """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
+    report_filter: dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
+    projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
+    report = database.reports.find_one(report_filter, projection=projection)
+    return list(report["subjects"][subject_uuid]["metrics"].keys())
