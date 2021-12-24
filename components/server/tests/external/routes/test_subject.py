@@ -133,6 +133,18 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID2, "position", self.database))
         self.database.reports.insert_one.assert_not_called()
 
+    def test_post_unsafe_comment(self, request):
+        """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
+        request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
+        self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "comment", self.database))
+        self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "comment of subject 'subject1' in report 'Report' from '' to 'Comment with script'",
+            SUBJECT_ID,
+            updated_report,
+        )
+
 
 class SubjectTest(unittest.TestCase):
     """Unit tests for adding and deleting subjects."""

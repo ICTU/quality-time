@@ -42,6 +42,21 @@ Feature: subject
     When the client changes the subject name to "Subject"
     Then the subject name is "Subject"
 
+  Scenario: add comment without html
+    Given an existing subject
+    When the client changes the subject comment to "Text"
+    Then the subject comment is "Text"
+
+  Scenario: add comment with html
+    Given an existing subject
+    When the client changes the subject comment to "<b><i>Emphasized text</i></b>"
+    Then the subject comment is "<b><i>Emphasized text</i></b>"
+
+  Scenario: add comment with dangerous html
+    Given an existing subject
+    When the client changes the subject comment to "Text<script>alert('Danger')</script>"
+    Then the subject comment is "Text"
+
   Scenario: change subject position to first
     Given an existing subject with name "A"
     And an existing subject with name "B"

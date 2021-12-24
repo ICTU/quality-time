@@ -10,7 +10,7 @@ jest.mock("../api/fetch_server_api.js")
 function render_reports_title() {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsOverviewTitle permissions={{}} get_changelog={() => { /* Do nothing */ }} />
+            <ReportsOverviewTitle reports_overview={{}} />
         </Permissions.Provider>
     )
 }
@@ -33,6 +33,16 @@ it('sets the subtitle', async () => {
     });
     userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{selectall}{del}New subtitle{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" });
+});
+
+it('sets the comment', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => {
+        render_reports_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    userEvent.type(screen.getByLabelText(/Comment/), '{selectall}{del}New comment{shift}{enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", { comment: "New comment" });
 });
 
 it('sets the edit report permission', async () => {

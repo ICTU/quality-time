@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid, Header, Icon, Menu, Popup, Tab } from 'semantic-ui-react';
+import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -13,26 +14,36 @@ import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
 import { DataModel } from '../context/DataModel';
 
-function ReportAttributes({ report_uuid, title, subtitle, reload }) {
+function ReportConfiguration({ report, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
                 <Grid.Column>
                     <StringInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         id="report-title"
                         label="Report title"
-                        set_value={(value) => set_report_attribute(report_uuid, "title", value, reload)}
-                        value={title}
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_report_attribute(report.report_uuid, "title", value, reload)}
+                        value={report.title}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         id="report-subtitle"
                         label="Report subtitle"
-                        set_value={(value) => set_report_attribute(report_uuid, "subtitle", value, reload)}
-                        value={subtitle}
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_report_attribute(report.report_uuid, "subtitle", value, reload)}
+                        value={report.subtitle}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    <Comment
+                        id="report-comment"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        set_value={(value) => set_report_attribute(report.report_uuid, "comment", value, reload)}
+                        value={report.comment}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -162,7 +173,7 @@ function IssueTracker({ report_uuid, report, reload }) {
 export function ReportTitle({ report, go_home, history, reload }) {
     const report_uuid = report.report_uuid;
     const panes = [
-        { menuItem: <Menu.Item key="title"><Icon name="edit" /><FocusableTab>{"Title"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportAttributes report_uuid={report_uuid} reload={reload} title={report.title} subtitle={report.subtitle} /></Tab.Pane> },
+        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportConfiguration report={report} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> }

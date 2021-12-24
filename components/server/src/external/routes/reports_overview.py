@@ -8,7 +8,7 @@ from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements
 from database.reports import insert_new_reports_overview, latest_reports, latest_reports_overview
 from model.transformations import hide_credentials
-from server_utilities.functions import report_date_time
+from server_utilities.functions import report_date_time, sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -43,21 +43,23 @@ def get_reports(database: Database):  # pragma: no cover
 @bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_reports_overview_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
-    value = dict(bottle.request.json)[reports_attribute]
+    new_value = dict(bottle.request.json)[reports_attribute]
+    if reports_attribute == "comment" and new_value:
+        new_value = sanitize_html(new_value)
     overview = latest_reports_overview(database)
     old_value = overview.get(reports_attribute)
-    if value == old_value:
+    if new_value == old_value:
         return dict(ok=True)  # Nothing to do
 
     user = sessions.user(database)
 
-    if reports_attribute == "permissions" and EDIT_REPORT_PERMISSION in value:
-        report_editors = value[EDIT_REPORT_PERMISSION]
+    if reports_attribute == "permissions" and EDIT_REPORT_PERMISSION in new_value:
+        report_editors = new_value[EDIT_REPORT_PERMISSION]
         if len(report_editors) > 0 and user["user"] not in report_editors and user["email"] not in report_editors:
-            value[EDIT_REPORT_PERMISSION].append(user["user"])
+            new_value[EDIT_REPORT_PERMISSION].append(user["user"])
 
-    overview[reports_attribute] = value
-    value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
+    overview[reports_attribute] = new_value
+    value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{new_value}'"
     delta_description = f"{{user}} changed the {reports_attribute} of the reports overview{value_change_description}."
 
     return insert_new_reports_overview(database, delta_description, overview)

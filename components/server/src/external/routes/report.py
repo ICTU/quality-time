@@ -20,7 +20,14 @@ from model.transformations import (
     hide_credentials,
     replace_report_uuids,
 )
-from server_utilities.functions import DecryptionError, check_url_availability, iso_timestamp, report_date_time, uuid
+from server_utilities.functions import (
+    DecryptionError,
+    check_url_availability,
+    iso_timestamp,
+    report_date_time,
+    sanitize_html,
+    uuid,
+)
 from server_utilities.type import ReportId
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -176,10 +183,12 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
     data = ReportData(data_model, reports, report_uuid)
-    value = dict(bottle.request.json)[report_attribute]
+    new_value = dict(bottle.request.json)[report_attribute]
+    if report_attribute == "comment" and new_value:
+        new_value = sanitize_html(new_value)
     old_value = data.report.get(report_attribute) or ""
-    data.report[report_attribute] = value
-    value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
+    data.report[report_attribute] = new_value
+    value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{new_value}'"
     delta_description = (
         f"{{user}} changed the {report_attribute} of report '{data.report_name}'{value_change_description}."
     )

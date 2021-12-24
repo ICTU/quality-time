@@ -79,6 +79,21 @@ class PostReportAttributeTest(ReportTestCase):
             updated_report["delta"],
         )
 
+    def test_post_unsafe_comment(self, request):
+        """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
+        request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
+        self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "comment", self.database))
+        self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual(
+            dict(
+                uuids=[REPORT_ID],
+                email=JENNY["email"],
+                description="Jenny changed the comment of report 'Report' from '' to 'Comment with script'.",
+            ),
+            updated_report["delta"],
+        )
+
 
 @patch("bottle.request")
 class ReportIssueTrackerTest(ReportTestCase):

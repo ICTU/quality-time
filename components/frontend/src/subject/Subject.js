@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { get_subject_measurements } from '../api/subject';
 import { TrendTable } from '../trend_table/TrendTable';
+import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectDetails } from './SubjectDetails';
 import { SubjectTitle } from './SubjectTitle';
 
@@ -83,6 +84,7 @@ export function Subject({
                 first_subject={first_subject}
                 last_subject={last_subject}
                 reload={reload} />
+            <CommentSegment comment={subject.comment} />
             {subjectTrendTable ?
                 <TrendTable
                     changed_fields={changed_fields}
