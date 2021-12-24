@@ -3,7 +3,8 @@
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
-from typing import cast
+from collections.abc import Callable, Hashable, Iterable, Iterator
+from typing import cast, TypeVar
 
 import bottle
 import requests
@@ -141,6 +142,18 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: tuple[str, str]) ->
     message = symmetric_decrypt(decrypted_key, message_bytes)
 
     return message.decode()
+
+
+Item = TypeVar("Item")
+
+
+def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:
+    """Return the unique items in the list."""
+    seen: set[Hashable] = set()
+    for item in items:
+        if (key := get_key(item)) not in seen:
+            seen.add(key)
+            yield item
 
 
 def uuid() -> ReportId:

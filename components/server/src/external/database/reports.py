@@ -7,10 +7,11 @@ from pymongo.database import Database
 
 from database.filters import DOES_EXIST
 
-from server_utilities.functions import unique, iso_timestamp
+from server_utilities.functions import iso_timestamp
 from server_utilities.type import MetricId, ReportId, SubjectId
 
 from ..database import sessions
+from ..utils.functions import unique
 from ..utils.type import Change
 
 

@@ -1,10 +1,8 @@
 """Utility functions."""
 
 import hashlib
-from collections.abc import Callable, Hashable, Iterable, Iterator
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
-from typing import TypeVar
 
 from server_utilities.type import Direction
 
@@ -22,18 +20,6 @@ def days_ago(date_time: datetime) -> int:
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
     return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
-
-
-Item = TypeVar("Item")
-
-
-def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:
-    """Return the unique items in the list."""
-    seen: set[Hashable] = set()
-    for item in items:
-        if (key := get_key(item)) not in seen:
-            seen.add(key)
-            yield item
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:
