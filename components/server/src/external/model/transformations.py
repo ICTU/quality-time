@@ -12,8 +12,9 @@ from server_utilities.functions import (
     uuid,
 )
 from server_utilities.type import EditScope, ItemId
-from model.iterators import sources as iter_sources
 from model.queries import is_password_parameter
+
+from .iterators import sources as iter_sources
 
 
 def hide_credentials(data_model, *reports) -> None:
