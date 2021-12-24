@@ -5,9 +5,9 @@ import logging
 import bottle
 
 from database.reports import latest_reports_overview
-from model.session import Session
 
 from ...database import sessions
+from ...model.session import Session
 
 
 EDIT_REPORT_PERMISSION = "edit_reports"
