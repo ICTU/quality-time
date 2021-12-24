@@ -2,7 +2,7 @@
 
 from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
-from ..parameters import access_parameters, Severities
+from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, Severities
 
 
 ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
@@ -25,6 +25,14 @@ OWASP_DEPENDENCY_CHECK = Source(
     url="https://owasp.org/www-project-dependency-check/",
     parameters=dict(
         severities=Severities(values=["low", "moderate", "medium", "high", "critical"]),
+        variable_file_path_regexp=MultipleChoiceWithAdditionParameter(
+            name="Parts of file paths to ignore (regular expressions)",
+            short_name="parts of file paths to ignore",
+            help="Parts of file paths to ignore can be specified by regular expression. The parts of file paths that "
+            "match one or more of the regular expressions are removed. If, after applying the regular expressions, "
+            "multiple warnings are the same only one is reported.",
+            metrics=["dependencies", "security_warnings"],
+        ),
         **access_parameters(
             ALL_OWASP_DEPENDENCY_CHECK_METRICS, source_type="an OWASP Dependency Check report", source_type_format="XML"
         )
