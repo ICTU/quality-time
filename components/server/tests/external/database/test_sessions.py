@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 from external.database import sessions
-from server_utilities.type import SessionId
+from external.utils.type import SessionId
 
 from ...fixtures import JOHN, JENNY
 
