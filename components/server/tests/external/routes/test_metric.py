@@ -19,7 +19,7 @@ from ...fixtures import (
 )
 
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
+@patch("external.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
 @patch("bottle.request")
 class PostMetricAttributeTest(unittest.TestCase):
     """Unit tests for the post metric attribute route."""

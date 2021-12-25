@@ -5,11 +5,10 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from database.reports import latest_reports
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 
 from ..database.datamodels import default_source_parameters, latest_datamodel
-from ..database.reports import insert_new_report
+from ..database.reports import insert_new_report, latest_reports
 from ..model.actions import copy_source, move_item
 from ..model.data import MetricData, SourceData
 from ..model.queries import is_password_parameter

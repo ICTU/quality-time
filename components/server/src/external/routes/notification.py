@@ -3,11 +3,10 @@
 import bottle
 from pymongo.database import Database
 
-from database.reports import latest_reports
 from server_utilities.type import ReportId
 
 from ..database.datamodels import latest_datamodel
-from ..database.reports import insert_new_report
+from ..database.reports import insert_new_report, latest_reports
 from ..model.data import ReportData
 from ..utils.functions import uuid
 from ..utils.type import NotificationDestinationId

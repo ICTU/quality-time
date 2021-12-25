@@ -7,14 +7,13 @@ import bottle
 import requests
 from pymongo.database import Database
 
-from database.reports import latest_reports
 from shared.model.report import Report
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 
 from ..database.datamodels import latest_datamodel
 from ..database.measurements import recent_measurements
-from ..database.reports import insert_new_report, latest_report
+from ..database.reports import insert_new_report, latest_report, latest_reports
 from ..initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from ..model.actions import copy_report
 from ..model.data import ReportData

@@ -6,12 +6,11 @@ import bottle
 from pymongo.database import Database
 
 from database.measurements import insert_new_measurement, latest_measurement
-from database.reports import latest_reports
 from shared.model.metric import Metric
 from server_utilities.type import MetricId, SubjectId
 
 from ..database.datamodels import default_metric_attributes, latest_datamodel
-from ..database.reports import insert_new_report
+from ..database.reports import insert_new_report, latest_reports
 from ..model.actions import copy_metric, move_item
 from ..model.data import MetricData, SubjectData
 from ..utils.functions import sanitize_html, uuid
