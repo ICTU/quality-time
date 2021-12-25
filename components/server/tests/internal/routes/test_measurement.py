@@ -162,7 +162,7 @@ class PostMeasurementTests(unittest.TestCase):
             )
         )
 
-    @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
+    @patch("shared.utils.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities.
 

@@ -5,7 +5,7 @@ from typing import Any
 import pymongo
 from pymongo.database import Database
 
-from server_utilities.functions import iso_timestamp
+from shared.utils.functions import iso_timestamp
 
 
 def default_source_parameters(database: Database, metric_type: str, source_type: str):

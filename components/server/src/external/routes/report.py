@@ -8,7 +8,7 @@ import requests
 from pymongo.database import Database
 
 from shared.model.report import Report
-from server_utilities.functions import iso_timestamp
+from shared.utils.functions import iso_timestamp
 from server_utilities.type import ReportId
 
 from ..database.datamodels import latest_datamodel

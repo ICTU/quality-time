@@ -20,7 +20,7 @@ from cryptography.fernet import Fernet
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
 
-from server_utilities.functions import iso_timestamp
+from shared.utils.functions import iso_timestamp
 from server_utilities.type import ReportId
 
 from .type import URL
