@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import bottle
 
 from external.routes.plugins import AuthPlugin
-from initialization.bottle import init_bottle
+from shared.initialization import init_bottle
 from shared.routes.plugins import InjectionPlugin
 
 
