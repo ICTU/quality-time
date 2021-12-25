@@ -1,6 +1,6 @@
 """Quality-time specific types."""
 
-from typing import Literal, NewType, Union
+from typing import Literal, NewType
 
 
 Color = Literal["green", "grey", "red", "yellow", "white"]
@@ -15,5 +15,4 @@ MetricId = NewType("MetricId", str)
 ReportId = NewType("ReportId", str)
 SourceId = NewType("SourceId", str)
 SubjectId = NewType("SubjectId", str)
-ItemId = Union[ReportId, SubjectId, MetricId, SourceId]
 URL = NewType("URL", str)
