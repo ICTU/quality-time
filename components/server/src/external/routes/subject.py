@@ -4,11 +4,10 @@ from datetime import datetime, timedelta, timezone
 import bottle
 from pymongo.database import Database
 
-from database.datamodels import latest_datamodel
 from database.reports import latest_reports
 from server_utilities.type import MetricId, ReportId, SubjectId
 
-from ..database.datamodels import default_subject_attributes
+from ..database.datamodels import default_subject_attributes, latest_datamodel
 from ..database.measurements import measurements_by_metric
 from ..database.reports import insert_new_report
 from ..database.reports import metrics_of_subject
