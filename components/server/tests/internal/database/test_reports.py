@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock
 
 from internal.database.reports import latest_metric
-from model.metric import Metric
+from shared.model.metric import Metric
 from server_utilities.type import MetricId
 
 from ...fixtures import METRIC_ID

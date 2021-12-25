@@ -2,8 +2,8 @@
 
 from pymongo.database import Database
 
-from model.metric import Metric
 from server_utilities.type import MetricId
+from shared.model.metric import Metric
 from database.datamodels import latest_datamodel
 from database.reports import latest_reports
 

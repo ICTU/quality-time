@@ -10,8 +10,8 @@ from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID,
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
+@patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("shared.model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""

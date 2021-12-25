@@ -8,7 +8,7 @@ from pymongo.database import Database
 from database.datamodels import latest_datamodel
 from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import latest_reports
-from model.metric import Metric
+from shared.model.metric import Metric
 from server_utilities.type import MetricId, SubjectId
 
 from ..database.datamodels import default_metric_attributes

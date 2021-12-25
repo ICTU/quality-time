@@ -1,13 +1,13 @@
-"""Test the measurements collection."""
+"""Test the measurements model."""
 
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from model.measurement import Measurement
-from model.metric import Metric
-from model.source import Source
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
+from shared.model.source import Source
 
-from ..fixtures import METRIC_ID
+from ...fixtures import METRIC_ID
 
 
 class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046

@@ -2,10 +2,11 @@
 
 from typing import cast
 
-from model.measurement import Measurement
-from model.subject import Subject
-from model.metric import Metric
 from server_utilities.type import Color, ReportId, Status
+
+from .measurement import Measurement
+from .subject import Subject
+from .metric import Metric
 
 
 STATUS_COLOR_MAPPING = cast(

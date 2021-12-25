@@ -2,13 +2,14 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from model.measurement import Measurement
-from model.metric import Metric
 from server_utilities.type import SubjectId
+
+from .measurement import Measurement
+from .metric import Metric
 
 
 if TYPE_CHECKING:
-    from model.report import Report
+    from .report import Report
 
 
 class Subject(dict):

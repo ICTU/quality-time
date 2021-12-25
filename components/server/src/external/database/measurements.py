@@ -6,8 +6,8 @@ from typing import Any
 import pymongo
 from pymongo.database import Database
 
-from model.measurement import Measurement
-from model.metric import Metric
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import MetricId
 

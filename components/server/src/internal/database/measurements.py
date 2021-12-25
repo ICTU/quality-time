@@ -3,8 +3,8 @@
 import pymongo
 from pymongo.database import Database
 
-from model.measurement import Measurement
-from model.metric import Metric
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 
 
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:

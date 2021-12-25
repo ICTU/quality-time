@@ -8,7 +8,7 @@ from database.measurements import (
     latest_measurement,
     update_measurement_end,
 )
-from model.measurement import Measurement
+from shared.model.measurement import Measurement
 
 from ..database.measurements import latest_successful_measurement
 from ..database.reports import latest_metric

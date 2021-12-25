@@ -6,8 +6,6 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from model.report import Report
-
 from external.routes import (
     delete_source,
     post_move_source,
@@ -16,6 +14,7 @@ from external.routes import (
     post_source_new,
     post_source_parameter,
 )
+from shared.model.report import Report
 
 from ...fixtures import (
     METRIC_ID,

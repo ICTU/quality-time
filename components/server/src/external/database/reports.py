@@ -6,7 +6,7 @@ import pymongo
 from pymongo.database import Database
 
 from database.filters import DOES_EXIST, DOES_NOT_EXIST
-from model.report import Report
+from shared.model.report import Report
 
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import MetricId, ReportId, SubjectId
