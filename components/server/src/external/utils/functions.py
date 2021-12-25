@@ -21,7 +21,9 @@ from cryptography.fernet import Fernet
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import URL, ReportId
+from server_utilities.type import ReportId
+
+from .type import URL
 
 
 class DecryptionError(Exception):
