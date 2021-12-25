@@ -3,10 +3,11 @@
 import pymongo
 from pymongo.database import Database
 
-from server_utilities.type import MeasurementId
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
+
+from ..utils.type import MeasurementId
 
 
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
