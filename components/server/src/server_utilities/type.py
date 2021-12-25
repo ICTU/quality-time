@@ -5,7 +5,6 @@ from typing import Literal, NewType, Union
 
 Color = Literal["green", "grey", "red", "yellow", "white"]
 Direction = Literal["<", ">"]
-EditScope = Literal["source", "metric", "subject", "report", "reports"]
 Position = Literal["first", "last", "next", "previous"]
 Scale = Literal["count", "percentage", "version_number"]
 Status = Literal["target_met", "debt_target_met", "near_target_met", "target_not_met"]

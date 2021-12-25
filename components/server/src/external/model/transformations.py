@@ -4,9 +4,10 @@ import json
 
 from collections.abc import Iterator
 from json.decoder import JSONDecodeError
-from server_utilities.type import EditScope, ItemId
+from server_utilities.type import ItemId
 
 from ..utils.functions import asymmetric_decrypt, asymmetric_encrypt, unique, uuid, DecryptionError
+from ..utils.type import EditScope
 
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
