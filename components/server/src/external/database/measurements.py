@@ -46,6 +46,7 @@ def measurements_by_metric(
         return []
     all_measurements_stripped = database.measurements.find(
         measurement_filter,
+        sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False, "sources.entity_user_data": False, "issue_status": False},
     )
     return list(all_measurements_stripped)[:-1] + [latest_measurement_complete]
