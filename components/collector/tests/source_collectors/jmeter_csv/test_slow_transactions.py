@@ -25,6 +25,8 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
                 min_response_time=360.0,
                 max_response_time=1214.0,
                 percentile_90_response_time=1811.8,
+                percentile_95_response_time=1939.9,
+                percentile_99_response_time=2042.4,
             ),
             dict(
                 key="-home",
@@ -37,6 +39,8 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
                 min_response_time=10.0,
                 max_response_time=57.0,
                 percentile_90_response_time=89.9,
+                percentile_95_response_time=97.0,
+                percentile_99_response_time=102.6,
             ),
         ]
         self.set_source_parameter("target_response_time", "10")
