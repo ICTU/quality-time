@@ -5,14 +5,16 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from database.datamodels import default_source_parameters, latest_datamodel
-from database.reports import insert_new_report, latest_reports
-from model.actions import copy_source, move_item
-from model.data import MetricData, SourceData
-from model.queries import is_password_parameter
-from model.transformations import change_source_parameter
-from server_utilities.functions import check_url_availability, uuid
-from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
+
+from ..database.datamodels import default_source_parameters, latest_datamodel
+from ..database.reports import insert_new_report, latest_reports
+from ..model.actions import copy_source, move_item
+from ..model.data import MetricData, SourceData
+from ..model.queries import is_password_parameter
+from ..model.transformations import change_source_parameter
+from ..utils.functions import check_url_availability, uuid
+from ..utils.type import EditScope
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 

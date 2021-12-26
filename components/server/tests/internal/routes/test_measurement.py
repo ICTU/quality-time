@@ -9,9 +9,9 @@ from internal.routes import post_measurement
 from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
-@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
-@patch("model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
+@patch("internal.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("shared.model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""
@@ -162,7 +162,7 @@ class PostMeasurementTests(unittest.TestCase):
             )
         )
 
-    @patch("server_utilities.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
+    @patch("shared.utils.functions.datetime", new=Mock(now=Mock(return_value=datetime(2021, 1, 1))))
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities.
 

@@ -17,9 +17,9 @@ from external.routes import (
     post_report_new,
     post_report_issue_tracker_attribute,
 )
-from model.report import Report
-from server_utilities.functions import asymmetric_encrypt
-from server_utilities.type import ReportId
+from external.utils.functions import asymmetric_encrypt
+from shared.model.report import Report
+from shared.utils.type import ReportId
 
 from ...fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
@@ -262,7 +262,7 @@ class ReportTest(ReportTestCase):
         report = get_report(self.database, REPORT_ID)["reports"][0]
         self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"][0])
 
-    @patch("server_utilities.functions.datetime")
+    @patch("shared.utils.functions.datetime")
     def test_get_tag_report(self, date_time):
         """Test that a tag report can be retrieved."""
         date_time.now.return_value = now = datetime.now()
@@ -318,7 +318,7 @@ class ReportTest(ReportTestCase):
             get_report(self.database, "tag-tag"),
         )
 
-    @patch("server_utilities.functions.datetime")
+    @patch("shared.utils.functions.datetime")
     def test_no_empty_tag_report(self, date_time):
         """Test that empty tag reports are omitted."""
         date_time.now.return_value = datetime.now()
@@ -340,10 +340,7 @@ class ReportTest(ReportTestCase):
                 },
             )
         ]
-        self.assertDictEqual(
-            dict(reports=[]),
-            get_report(self.database, "tag-non-existing-tag"),
-        )
+        self.assertDictEqual(dict(reports=[]), get_report(self.database, "tag-non-existing-tag"))
 
     def test_add_report(self):
         """Test that a report can be added."""

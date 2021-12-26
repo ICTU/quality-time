@@ -4,9 +4,9 @@ from typing import Any
 
 import bottle
 from pymongo.database import Database
-from database.datamodels import latest_datamodel
 
-from database.reports import latest_reports
+from ..database.datamodels import latest_datamodel
+from ..database.reports import latest_reports
 
 
 @bottle.get("/internal-api/v3/metrics", authentication_required=False)

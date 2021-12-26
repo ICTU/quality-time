@@ -8,20 +8,17 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from database import sessions
-from database.datamodels import latest_datamodel
-from database.measurements import (
-    measurements_by_metric,
-    count_measurements,
-    insert_new_measurement,
-    latest_measurement,
-)
-from database.reports import latest_reports
-from model.data import SourceData
-from model.measurement import Measurement
-from model.metric import Metric
-from server_utilities.functions import report_date_time
-from server_utilities.type import MetricId, SourceId
+from shared.database.measurements import insert_new_measurement, latest_measurement
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
+from shared.utils.type import MetricId, SourceId
+
+from ..database import sessions
+from ..database.datamodels import latest_datamodel
+from ..database.measurements import count_measurements, measurements_by_metric
+from ..database.reports import latest_reports
+from ..model.data import SourceData
+from ..utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 

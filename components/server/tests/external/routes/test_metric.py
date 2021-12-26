@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from model.report import Report
 from external.routes import delete_metric, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric
+from shared.model.report import Report
 
 from ...fixtures import (
     JOHN,
@@ -19,7 +19,7 @@ from ...fixtures import (
 )
 
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
+@patch("external.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
 @patch("bottle.request")
 class PostMetricAttributeTest(unittest.TestCase):
     """Unit tests for the post metric attribute route."""
@@ -136,7 +136,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             report=updated_report,
         )
 
-    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_invalid_version_number_with_measurements(self, request):
         """Test that changing the target to an invalid version adds a new measurement if one or more exist."""
         sources = [dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="1.0")]
@@ -180,7 +180,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             report=updated_report,
         )
 
-    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
@@ -201,7 +201,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'", report=updated_report
         )
 
-    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_technical_debt(self, request):
         """Test that accepting technical debt also sets the technical debt value."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
@@ -230,7 +230,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             report=updated_report,
         )
 
-    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_technical_debt_without_sources(self, request):
         """Test that accepting technical debt when the metric has no sources also sets the status to debt target met."""
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = {}
@@ -261,7 +261,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             report=updated_report,
         )
 
-    @patch("model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])

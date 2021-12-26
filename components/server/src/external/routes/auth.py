@@ -15,10 +15,10 @@ from ldap3 import ALL, Connection, Server
 from ldap3.core import exceptions
 from pymongo.database import Database
 
-from database import sessions
-from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
-from server_utilities.functions import uuid
-from server_utilities.type import SessionId
+from ..database import sessions
+from ..initialization.secrets import EXPORT_FIELDS_KEYS_NAME
+from ..utils.functions import uuid
+from ..utils.type import SessionId
 
 
 def create_session(database: Database, username: str, email: str) -> datetime:
