@@ -11,8 +11,8 @@ from external.routes import (
     post_subject_attribute,
     post_subject_copy,
 )
-from server_utilities.type import SubjectId
 from shared.model.report import Report
+from shared.utils.type import SubjectId
 
 from ...fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 

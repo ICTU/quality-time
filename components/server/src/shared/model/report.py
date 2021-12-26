@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from server_utilities.type import Color, ReportId, Status
+from shared.utils.type import Color, ReportId, Status
 
 from .measurement import Measurement
 from .subject import Subject

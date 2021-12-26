@@ -2,7 +2,7 @@
 
 from pymongo.database import Database
 
-from server_utilities.type import MetricId
+from shared.utils.type import MetricId
 from shared.database.filters import DOES_NOT_EXIST
 from shared.model.metric import Metric
 from shared.model.report import Report

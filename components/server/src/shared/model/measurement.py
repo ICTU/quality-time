@@ -8,8 +8,8 @@ from typing import Optional, cast
 
 from packaging.version import InvalidVersion, Version
 
-from server_utilities.type import Scale, Status
 from shared.utils.functions import iso_timestamp, percentage
+from shared.utils.type import Scale, Status
 
 from .metric import Metric
 from .source import Source

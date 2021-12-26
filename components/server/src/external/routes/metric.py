@@ -5,9 +5,9 @@ from typing import Any
 import bottle
 from pymongo.database import Database
 
-from server_utilities.type import MetricId, SubjectId
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.metric import Metric
+from shared.utils.type import MetricId, SubjectId
 
 from ..database.datamodels import default_metric_attributes, latest_datamodel
 from ..database.reports import insert_new_report, latest_reports

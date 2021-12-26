@@ -9,7 +9,7 @@ from pymongo.database import Database
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
-from server_utilities.type import MetricId
+from shared.utils.type import MetricId
 
 
 def changelog(database: Database, nr_changes: int, **uuids):

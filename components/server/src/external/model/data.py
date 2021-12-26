@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Any, cast
 
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 
 @dataclass

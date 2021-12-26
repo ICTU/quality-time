@@ -5,7 +5,7 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 from ..database.datamodels import default_source_parameters, latest_datamodel
 from ..database.reports import insert_new_report, latest_reports

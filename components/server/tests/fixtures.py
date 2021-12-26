@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 from external.utils.type import NotificationDestinationId
 
 

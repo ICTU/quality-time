@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
-from server_utilities.type import ReportId
+from shared.utils.type import ReportId
 
 from ..database.datamodels import latest_datamodel
 from ..database.measurements import recent_measurements

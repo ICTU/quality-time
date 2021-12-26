@@ -18,8 +18,8 @@ from external.routes import (
     post_report_issue_tracker_attribute,
 )
 from external.utils.functions import asymmetric_encrypt
-from server_utilities.type import ReportId
 from shared.model.report import Report
+from shared.utils.type import ReportId
 
 from ...fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 

@@ -2,7 +2,7 @@
 
 from typing import Literal, NewType, Union
 
-from server_utilities.type import ReportId, SubjectId, MetricId, SourceId
+from shared.utils.type import ReportId, SubjectId, MetricId, SourceId
 
 Change = dict[str, Union[str, dict[str, str]]]
 EditScope = Literal["source", "metric", "subject", "report", "reports"]

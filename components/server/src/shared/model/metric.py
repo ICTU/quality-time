@@ -8,7 +8,7 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from server_utilities.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+from shared.utils.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
 
 from .source import Source
 

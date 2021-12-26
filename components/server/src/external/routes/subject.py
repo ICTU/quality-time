@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import bottle
 from pymongo.database import Database
 
-from server_utilities.type import MetricId, ReportId, SubjectId
+from shared.utils.type import MetricId, ReportId, SubjectId
 
 from ..database.datamodels import default_subject_attributes, latest_datamodel
 from ..database.measurements import measurements_by_metric

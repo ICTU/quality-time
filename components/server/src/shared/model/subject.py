@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from server_utilities.type import SubjectId
+from shared.utils.type import SubjectId
 
 from .measurement import Measurement
 from .metric import Metric

@@ -3,7 +3,7 @@
 from datetime import datetime, timezone
 from decimal import ROUND_HALF_UP, Decimal
 
-from server_utilities.type import Direction
+from .type import Direction
 
 
 def iso_timestamp() -> str:
