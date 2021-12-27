@@ -59,7 +59,7 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
                     <span>{entity_attribute.name}</span>
                     {
                         entity_attribute.help ?
-                        <Popup on={['hover', 'focus']} trigger={<span>&nbsp;<Icon tabIndex="0" name="help circle" /></span>} content={entity_attribute.help}/> : null
+                        <Popup on={['hover', 'focus']} trigger={<span>&nbsp;<Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" /></span>} content={entity_attribute.help}/> : null
                     }
                 </Table.HeaderCell>)
             }
