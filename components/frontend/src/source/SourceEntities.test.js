@@ -41,7 +41,7 @@ const source = {
             key: "1",
             integer: "1",
             float: "0.3",
-            text: "C",
+            text: "CCC",
             date: "01-01-2000",
             datetime: "2000-01-01T10:00:00Z",
             minutes: "1"
@@ -50,7 +50,7 @@ const source = {
             key: "2",
             integer: "3",
             float: "0.2",
-            text: "B",
+            text: "BBB",
             date: "01-01-2002",
             datetime: "2002-01-01T10:00:00Z",
             minutes: "2"
@@ -59,7 +59,7 @@ const source = {
             key: "3",
             integer: "2",
             float: "0.1",
-            text: "A",
+            text: "AAA",
             date: "01-01-2001",
             datetime: "2001-01-01T10:00:00Z",
             minutes: "3"
@@ -68,7 +68,7 @@ const source = {
 }
 
 function assertOrder(expected) {
-    const rows = screen.getAllByText(/[ABC]/)
+    const rows = screen.getAllByText(/[AAA|BBB|CCC]/)
     for (let index = 0; index < expected.length; index++) {
         expect(rows[index]).toHaveTextContent(expected[index])
     }
