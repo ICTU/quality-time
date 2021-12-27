@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Popup, Table } from 'semantic-ui-react';
+import { Button, Icon, Popup, Table } from 'semantic-ui-react';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
@@ -56,7 +56,11 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
                     key={entity_attribute.key} sorted={sorted(entity_attribute.key)} textAlign={alignment(entity_attribute.type)}
                     onClick={() => sort(entity_attribute.key, entity_attribute.type)}
                 >
-                    {entity_attribute.name}
+                    <span>{entity_attribute.name}</span>
+                    {
+                        entity_attribute.help ?
+                        <Popup on={['hover', 'focus']} trigger={<span>&nbsp;<Icon tabIndex="0" name="help circle" /></span>} content={entity_attribute.help}/> : null
+                    }
                 </Table.HeaderCell>)
             }
         </Table.Row>
