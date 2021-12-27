@@ -68,7 +68,7 @@ const source = {
 }
 
 function assertOrder(expected) {
-    const rows = screen.getAllByText(/[AAA|BBB|CCC]/)
+    const rows = screen.getAllByText(/AAA|BBB|CCC/)
     for (let index = 0; index < expected.length; index++) {
         expect(rows[index]).toHaveTextContent(expected[index].repeat(3))
     }
