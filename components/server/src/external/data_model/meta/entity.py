@@ -36,6 +36,7 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
     """Attributes of measurement entities."""
 
     key: Optional[str] = None
+    help: Optional[str] = None
     url: Optional[str] = None  # Which key to use to get the URL for this attribute
     color: Optional[dict[str, Color]] = None
     type: Optional[EntityAttributeType] = None

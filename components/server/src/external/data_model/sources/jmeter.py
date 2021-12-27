@@ -55,15 +55,19 @@ TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES = MultipleChoiceWithAdditionParameter
 )
 
 PERCENTILE_90 = "90th percentile"
+PERCENTILE_95 = "95th percentile"
+PERCENTILE_99 = "99th percentile"
 
 RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     name="Response time type to evaluate against the target response time",
     short_name="response time types to evaluate",
     help="Which response time type to compare with the target response time to determine slow transactions.",
     default_value=PERCENTILE_90,
-    values=[PERCENTILE_90, "mean", "median", "minimum", "maximum"],
+    values=[PERCENTILE_90, PERCENTILE_95, PERCENTILE_99, "mean", "median", "minimum", "maximum"],
     api_values={
         PERCENTILE_90: "percentile_90_response_time",
+        PERCENTILE_95: "percentile_95_response_time",
+        PERCENTILE_99: "percentile_99_response_time",
         "mean": "mean_response_time",
         "median": "median_response_time",
         "minimum": "min_response_time",
@@ -80,13 +84,46 @@ ENTITIES = dict(
             dict(name="Sample count", type=EntityAttributeType.INTEGER),
             dict(name="Error count", type=EntityAttributeType.INTEGER),
             dict(name="Error percentage", type=EntityAttributeType.FLOAT),
-            dict(name="Mean response time (ms)", key="mean_response_time", type=EntityAttributeType.FLOAT),
-            dict(name="Median response time (ms)", key="median_response_time", type=EntityAttributeType.FLOAT),
-            dict(name="Minimum response time (ms)", key="min_response_time", type=EntityAttributeType.FLOAT),
-            dict(name="Maximum response time (ms)", key="max_response_time", type=EntityAttributeType.FLOAT),
             dict(
-                name="90th percentile response time (ms)",
+                name="Mean",
+                help="Mean response time (milliseconds)",
+                key="mean_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="Median",
+                help="Median response time (milliseconds)",
+                key="median_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="Minimum",
+                help="Minimum response time (milliseconds)",
+                key="min_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="Maximum",
+                help="Maximum response time (milliseconds)",
+                key="max_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="90th percentile",
+                help="90th percentile response time (milliseconds)",
                 key="percentile_90_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="95th percentile",
+                help="95th percentile response time (milliseconds)",
+                key="percentile_95_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="99th percentile",
+                help="99th percentile response time (milliseconds)",
+                key="percentile_99_response_time",
                 type=EntityAttributeType.FLOAT,
             ),
         ],

@@ -36,6 +36,8 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
                     min_response_time=self.__round(transaction["minResTime"]),
                     max_response_time=self.__round(transaction["maxResTime"]),
                     percentile_90_response_time=self.__round(transaction["pct1ResTime"]),
+                    percentile_95_response_time=self.__round(transaction["pct2ResTime"]),
+                    percentile_99_response_time=self.__round(transaction["pct3ResTime"]),
                 )
                 if entity.is_to_be_included(transactions_to_include, transactions_to_ignore) and entity.is_slow(
                     response_time_to_evaluate, target_response_time, transaction_specific_target_response_times

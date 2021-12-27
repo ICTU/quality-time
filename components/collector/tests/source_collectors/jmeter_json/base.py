@@ -20,6 +20,8 @@ class JMeterJSONTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             minResTime=50.0,
             maxResTime=250.0000004,
             pct1ResTime=115.0,
+            pct2ResTime=135.0,
+            pct3ResTime=195.0,
         ),
         transaction2=dict(
             transaction=API2,
@@ -31,6 +33,8 @@ class JMeterJSONTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             minResTime=40.0,
             maxResTime=2500.03223,
             pct1ResTime=120.0,
+            pct2ResTime=150.0,
+            pct3ResTime=190.0,
         ),
         Total={},  # Total should be ignored
     )

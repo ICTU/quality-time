@@ -1,7 +1,8 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen, waitFor } from '@testing-library/react';
 import { SourceEntities } from './SourceEntities';
 import { DataModel } from '../context/DataModel';
+import userEvent from '@testing-library/user-event';
 
 const data_model = {
     sources: {
@@ -11,11 +12,12 @@ const data_model = {
                 {
                     name: "entity name",
                     attributes: [
-                        { key: "integer", type: "integer" },
-                        { key: "float", type: "float" },
-                        { key: "text", type: "text" },
-                        { key: "date", type: "date" },
-                        { key: "datetime", type: "datetime" }
+                        { key: "integer", type: "integer", name: "integer" },
+                        { key: "float", type: "float", name: "float" },
+                        { key: "text", type: "text", name: "text", help: "help text" },
+                        { key: "date", type: "date", name: "date only" },
+                        { key: "datetime", type: "datetime", name: "datetime" },
+                        { key: "minutes", type: "minutes", name: "minutes" }
                     ]
                 }
             }
@@ -39,65 +41,95 @@ const source = {
             key: "1",
             integer: "1",
             float: "0.3",
-            text: "C",
+            text: "CCC",
             date: "01-01-2000",
-            datetime: "2000-01-01T10:00:00Z"
+            datetime: "2000-01-01T10:00:00Z",
+            minutes: "1"
         },
         {
             key: "2",
             integer: "3",
             float: "0.2",
-            text: "B",
+            text: "BBB",
             date: "01-01-2002",
-            datetime: "2002-01-01T10:00:00Z"
+            datetime: "2002-01-01T10:00:00Z",
+            minutes: "2"
         },
         {
             key: "3",
             integer: "2",
             float: "0.1",
-            text: "A",
+            text: "AAA",
             date: "01-01-2001",
-            datetime: "2001-01-01T10:00:00Z"
+            datetime: "2001-01-01T10:00:00Z",
+            minutes: "3"
         }
     ]
 }
 
-describe('<SourceEntities />', () => {
-    it('renders', () => {
-        const wrapper = mount(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>);
-        expect(wrapper.find("TableRow").at(1).hasClass("status_unknown"))
-    });
-    it('sorts', () => {
-        function expectSorting(columnIndex, ascending, attributes) {
-            expect(wrapper.find("TableHeaderCell").at(columnIndex).prop("sorted")).toBe(ascending ? "ascending" : "descending");
-            Object.entries(attributes).forEach(([index, value]) => {
-                expect(wrapper.find("SourceEntityAttribute").at(index).text()).toBe(value);
-            }
-            );
-        }
-        function sortColumn(columnIndex) {
-            wrapper.find("TableHeaderCell").at(columnIndex).simulate("click");
-        }
-        const wrapper = mount(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>);
-        sortColumn(2);
-        expectSorting(2, true, { 0: "1", 5: "2", 10: "3" });
-        sortColumn(2);
-        expectSorting(2, false, { 0: "3", 5: "2", 10: "1" });
-        sortColumn(3);
-        expectSorting(3, false, { 1: "0.3", 6: "0.2", 11: "0.1" });
-        sortColumn(3);
-        expectSorting(3, true, { 1: "0.1", 6: "0.2", 11: "0.3" });
-        sortColumn(4);
-        expectSorting(4, true, { 2: "A", 7: "B", 12: "C" });
-        sortColumn(4);
-        expectSorting(4, false, { 2: "C", 7: "B", 12: "A" });
-        sortColumn(5);
-        expectSorting(5, false, { 0: "3", 5: "2", 10: "1" });
-        sortColumn(5);
-        expectSorting(5, true, { 0: "1", 5: "2", 10: "3" });
-        sortColumn(6);
-        expectSorting(6, true, { 0: "1", 5: "2", 10: "3" });
-        sortColumn(6);
-        expectSorting(6, false, { 0: "3", 5: "2", 10: "1" });
-    })
-});
+function assertOrder(expected) {
+    const rows = screen.getAllByText(/AAA|BBB|CCC/)
+    for (let index = 0; index < expected.length; index++) {
+        expect(rows[index]).toHaveTextContent(expected[index].repeat(3))
+    }
+}
+
+it('sorts the entities by integer', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/integer/))
+    assertOrder(["C", "A", "B"])
+    userEvent.click(screen.getByText(/integer/))
+    assertOrder(["B", "A", "C"])
+})
+
+it('sorts the entities by float', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/float/))
+    assertOrder(["A", "B", "C"])
+    userEvent.click(screen.getByText(/float/))
+    assertOrder(["C", "B", "A"])
+})
+
+it('sorts the entities by text', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/text/))
+    assertOrder(["A", "B", "C"])
+    userEvent.click(screen.getByText(/text/))
+    assertOrder(["C", "B", "A"])
+})
+
+it('sorts the entities by date', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/date only/))
+    assertOrder(["C", "A", "B"])
+    userEvent.click(screen.getByText(/date only/))
+    assertOrder(["B", "A", "C"])
+})
+
+it('sorts the entities by datetime', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/datetime/))
+    assertOrder(["C", "A", "B"])
+    userEvent.click(screen.getByText(/datetime/))
+    assertOrder(["B", "A", "C"])
+})
+
+it('sorts the entities by minutes', () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/minutes/))
+    assertOrder(["C", "B", "A"])
+    userEvent.click(screen.getByText(/minutes/))
+    assertOrder(["A", "B", "C"])
+})
+
+it('shows help', async () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    userEvent.hover(screen.queryByRole("tooltip", {name: /help/}))
+    await waitFor(() => { expect(screen.queryByText(/help text/)).not.toBe(null) })
+})

@@ -23,6 +23,8 @@ class JMeterJSONSlowTransactionsTest(JMeterJSONTestCase):
                 min_response_time=50.0,
                 max_response_time=250.0,
                 percentile_90_response_time=115.0,
+                percentile_95_response_time=135.0,
+                percentile_99_response_time=195.0,
             ),
             dict(
                 key="-api-bar",
@@ -35,6 +37,8 @@ class JMeterJSONSlowTransactionsTest(JMeterJSONTestCase):
                 min_response_time=40.0,
                 max_response_time=2500.0,
                 percentile_90_response_time=120.0,
+                percentile_95_response_time=150.0,
+                percentile_99_response_time=190.0,
             ),
         ]
         self.set_source_parameter("target_response_time", "10")
