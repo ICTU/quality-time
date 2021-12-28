@@ -19,6 +19,6 @@ class CxSASTSourceVersion(CxSASTBase, SourceVersionCollector):
         return await super()._get_source_responses(engine_servers_api, **kwargs)
 
     async def _parse_source_response_version(self, response: Response) -> Version:
-        """Override to parse the date and time of the most recent scan."""
+        """Override to get the Checkmarx version from the engine servers info."""
         engine_servers = await response.json()
         return Version(engine_servers[0]["cxVersion"])  # Assume all engine servers have the same Checkmarx version
