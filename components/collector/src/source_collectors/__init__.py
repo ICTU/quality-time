@@ -46,6 +46,8 @@ from .cxsast.security_warnings import CxSASTSecurityWarnings
 from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 from .cxsast.source_version import CxSASTSourceVersion
 
+from .gatling_json.slow_transactions import GatlingJSONSlowTransactions
+
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
 
 from .gitlab.failed_jobs import GitLabFailedJobs

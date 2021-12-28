@@ -13,7 +13,7 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
     """Collector for the number of slow transactions in a JMeter JSON report."""
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
-        """Override to parse the security warnings from the JSON."""
+        """Override to parse the transactions from the JSON."""
         transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
@@ -46,5 +46,5 @@ class JMeterJSONSlowTransactions(JSONFileSourceCollector):
 
     @staticmethod
     def __round(value: float | int) -> float:
-        """Round the value at exactly one decimal."""
+        """Round the value to exactly one decimal."""
         return round(float(value), 1)
