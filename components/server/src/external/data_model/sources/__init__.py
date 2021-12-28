@@ -11,6 +11,7 @@ from .cloc import CLOC
 from .cobertura import COBERTURA, COBERTURA_JENKINS_PLUGIN
 from .composer import COMPOSER
 from .cxsast import CXSAST
+from .gatling import GATLING_JSON
 from .generic_json import GENERIC_JSON
 from .gitlab import GITLAB
 from .jacoco import JACOCO, JACOCO_JENKINS_PLUGIN
@@ -51,6 +52,7 @@ SOURCES = Sources.parse_obj(
         cobertura_jenkins_plugin=COBERTURA_JENKINS_PLUGIN,
         composer=COMPOSER,
         cxsast=CXSAST,
+        gatling_json=GATLING_JSON,
         generic_json=GENERIC_JSON,
         gitlab=GITLAB,
         jacoco=JACOCO,
