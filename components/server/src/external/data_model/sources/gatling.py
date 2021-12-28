@@ -4,7 +4,13 @@ from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
 from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter
 
-from .jmeter import TARGET_RESPONSE_TIME, TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES, PERCENTILE_95, PERCENTILE_99
+from .jmeter import (
+    TARGET_RESPONSE_TIME,
+    TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
+    PERCENTILE_95,
+    PERCENTILE_99,
+    JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
+)
 
 
 GATLING_JSON_METRICS = ["slow_transactions"]
@@ -50,57 +56,32 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     metrics=["slow_transactions"],
 )
 
+GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES = JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES.copy()
+del GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES[8]  # Remove the 90th percentile attribute
+del GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES[5]  # Remove the median attribute
+GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES.insert(
+    7,
+    dict(
+        name="50th percentile",
+        help="50th percentile response time (milliseconds)",
+        key="percentile_50_response_time",
+        type=EntityAttributeType.FLOAT,
+    ),
+)
+GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES.insert(
+    8,
+    dict(
+        name="75 percentile",
+        help="75th percentile response time (milliseconds)",
+        key="percentile_75_response_time",
+        type=EntityAttributeType.FLOAT,
+    ),
+)
+
 ENTITIES = dict(
     slow_transactions=dict(
         name="slow transaction",
-        attributes=[
-            dict(name="Transactions", key="name"),
-            dict(name="Sample count", type=EntityAttributeType.INTEGER),
-            dict(name="Error count", type=EntityAttributeType.INTEGER),
-            dict(name="Error percentage", type=EntityAttributeType.FLOAT),
-            dict(
-                name="Mean",
-                help="Mean response time (milliseconds)",
-                key="mean_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="Minimum",
-                help="Minimum response time (milliseconds)",
-                key="min_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="Maximum",
-                help="Maximum response time (milliseconds)",
-                key="max_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="50th percentile",
-                help="50th percentile response time (milliseconds)",
-                key="percentile_50_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="75 percentile",
-                help="75th percentile response time (milliseconds)",
-                key="percentile_75_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="95th percentile",
-                help="95th percentile response time (milliseconds)",
-                key="percentile_95_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-            dict(
-                name="99th percentile",
-                help="99th percentile response time (milliseconds)",
-                key="percentile_99_response_time",
-                type=EntityAttributeType.FLOAT,
-            ),
-        ],
+        attributes=GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
     )
 )
 
