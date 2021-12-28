@@ -32,7 +32,7 @@ class GatlingJSONSlowTransactions(JSONFileSourceCollector):
                     name=transaction["name"],
                     sample_count=sample_count,
                     error_count=error_count,
-                    error_percentage=self.__round(float(error_count) / float(sample_count)),
+                    error_percentage=self.__round((float(error_count) / float(sample_count)) * 100),
                     mean_response_time=self.__round(transaction["meanResponseTime"]["total"]),
                     min_response_time=self.__round(transaction["minResponseTime"]["total"]),
                     max_response_time=self.__round(transaction["maxResponseTime"]["total"]),
