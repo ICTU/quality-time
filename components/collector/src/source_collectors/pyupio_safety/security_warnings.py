@@ -1,9 +1,13 @@
 """Pyup.io Safety security warnings collector."""
 
-from typing import Final
+from typing import cast, Final
 
 from base_collectors import JSONFileSourceCollector
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON
+from model import Entities, Entity
+
+
+JSONSafety = list[list[str]]
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
@@ -15,20 +19,17 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     VULNERABILITY: Final[int] = 3
     KEY: Final[int] = 4
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings from the JSON."""
-        entities = Entities()
-        for response in responses:
-            entities.extend(
-                [
-                    Entity(
-                        key=warning[self.KEY],
-                        package=warning[self.PACKAGE],
-                        installed=warning[self.INSTALLED],
-                        affected=warning[self.AFFECTED],
-                        vulnerability=warning[self.VULNERABILITY],
-                    )
-                    for warning in await response.json(content_type=None)
-                ]
-            )
-        return entities
+        return Entities(
+            [
+                Entity(
+                    key=warning[self.KEY],
+                    package=warning[self.PACKAGE],
+                    installed=warning[self.INSTALLED],
+                    affected=warning[self.AFFECTED],
+                    vulnerability=warning[self.VULNERABILITY],
+                )
+                for warning in cast(JSONSafety, json)
+            ]
+        )

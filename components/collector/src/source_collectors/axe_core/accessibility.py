@@ -5,7 +5,8 @@ from typing import Any
 
 from base_collectors import JSONFileSourceCollector, SourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON
+from model import Entities, Entity
 
 
 class AxeAccessibilityCollector(SourceCollector):
@@ -31,24 +32,23 @@ class AxeAccessibilityCollector(SourceCollector):
 class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
     """Collector class to get accessibility violations from Axe-core JSON output."""
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the violations."""
         entity_attributes = []
-        for response in responses:
-            for json in self.__parse_json(await response.json(content_type=None)):
-                violations = {result_type: json.get(result_type) for result_type in self._parameter("result_types")}
-                url = json.get("url", "")
-                entity_attributes.extend(self.__parse_violations(violations, url))
+        for test_result in self.__parse_test_results(json):
+            violations = {result_type: test_result.get(result_type) for result_type in self._parameter("result_types")}
+            url = test_result.get("url", "")
+            entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 
-    def __parse_json(self, json):
+    def __parse_test_results(self, json):
         """Yield dicts with test result (applicable/incomplete/violations/passes) as key and rules as values."""
         if isinstance(json, list):
             if json and "tags" in json[0]:
                 yield dict(violations=json)  # The items in the list are violated rules
             else:
                 for item in json:
-                    yield from self.__parse_json(item)  # Recursively parse the nested JSON
+                    yield from self.__parse_test_results(item)  # Recursively parse the nested JSON
         else:
             yield json  # JSON is a dict with result types as keys and rules as values
 

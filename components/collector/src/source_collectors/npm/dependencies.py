@@ -1,17 +1,17 @@
 """npm dependencies collector."""
 
+from typing import cast
+
 from base_collectors import JSONFileSourceCollector
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON, JSONDict
+from model import Entities, Entity
 
 
 class NpmDependencies(JSONFileSourceCollector):
     """npm collector for dependencies."""
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the dependencies from the JSOM."""
-        installed_dependencies: dict[str, dict[str, str]] = {}
-        for response in responses:
-            installed_dependencies.update(await response.json(content_type=None))
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
+        """Override to parse the dependencies from the JSON."""
         return Entities(
             Entity(
                 key=f'{dependency}@{versions.get("current", "?")}',
@@ -20,5 +20,5 @@ class NpmDependencies(JSONFileSourceCollector):
                 wanted=versions.get("wanted", "unknown"),
                 latest=versions.get("latest", "unknown"),
             )
-            for dependency, versions in installed_dependencies.items()
+            for dependency, versions in cast(JSONDict, json).items()
         )

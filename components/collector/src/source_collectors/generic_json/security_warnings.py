@@ -1,27 +1,28 @@
 """Generic metrics security warnings collector."""
 
+from typing import cast
+
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON, JSONDict
+from model import Entities, Entity
 
 
 class GenericJSONSecurityWarnings(JSONFileSourceCollector):
     """Generic collector for security warnings."""
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings from the JSON."""
         entities = Entities()
-        for response in responses:
-            json = await response.json(content_type=None)
-            vulnerabilities = json.get("vulnerabilities", [])
-            for vulnerability in vulnerabilities:
-                key = md5_hash(f'{vulnerability["title"]}:{vulnerability["description"]}')
-                entities.append(
-                    Entity(
-                        key=key,
-                        title=vulnerability["title"],
-                        description=vulnerability["description"],
-                        severity=vulnerability["severity"],
-                    )
+        vulnerabilities = cast(JSONDict, json).get("vulnerabilities", [])
+        for vulnerability in vulnerabilities:
+            key = md5_hash(f'{vulnerability["title"]}:{vulnerability["description"]}')
+            entities.append(
+                Entity(
+                    key=key,
+                    title=vulnerability["title"],
+                    description=vulnerability["description"],
+                    severity=vulnerability["severity"],
                 )
+            )
         return entities

@@ -11,7 +11,7 @@ from typing import Any, Coroutine, Final, NoReturn, cast
 import aiohttp
 
 from collector_utilities.functions import timer
-from collector_utilities.type import JSON, URL
+from collector_utilities.type import JSON, JSONDict, URL
 
 from .metric_collector import MetricCollector
 
@@ -57,7 +57,7 @@ class Collector:
         self.server_url: Final[URL] = URL(
             f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
         )
-        self.data_model: JSON = {}
+        self.data_model: JSONDict = {}
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
 
@@ -95,7 +95,7 @@ class Collector:
             )
             await asyncio.sleep(sleep_duration)
 
-    async def fetch_data_model(self, session: aiohttp.ClientSession) -> JSON:
+    async def fetch_data_model(self, session: aiohttp.ClientSession) -> JSONDict:
         """Fetch the data model."""
         # The first attempt is likely to fail because the collector starts up faster than the server,
         # so don't log tracebacks on the first attempt
@@ -105,7 +105,7 @@ class Collector:
             self.record_health()
             logging.info("Loading data model from %s...", data_model_url)
             if data_model := await get(session, data_model_url, log=not first_attempt):
-                return data_model
+                return cast(JSONDict, data_model)
             first_attempt = False
             logging.warning("Loading data model failed, trying again in %ss...", self.MAX_SLEEP_DURATION)
             await asyncio.sleep(self.MAX_SLEEP_DURATION)
@@ -115,7 +115,7 @@ class Collector:
         metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
-        for metric_uuid, metric in self.__sorted_by_edit_status(metrics):
+        for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
             if len(tasks) >= self.MEASUREMENT_LIMIT:
                 break
             if self.__can_and_should_collect(metric_uuid, metric):
@@ -135,7 +135,7 @@ class Collector:
             api_url = URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements")
             await post(session, api_url, measurement.as_dict())
 
-    def __sorted_by_edit_status(self, metrics: dict[str, Any]) -> list[tuple[str, Any]]:
+    def __sorted_by_edit_status(self, metrics: JSONDict) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""
         return sorted(metrics.items(), key=lambda item: bool(self.__previous_metrics.get(item[0]) == item[1]))
 

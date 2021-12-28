@@ -3,17 +3,17 @@
 import asyncio
 import io
 import itertools
-import json
 import zipfile
 from abc import ABC
 from http import HTTPStatus
+from json import loads
 from typing import cast
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup, Tag
 
 from collector_utilities.type import JSON, URL, Response, Responses
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .source_collector import SourceCollector
 
@@ -30,7 +30,7 @@ class FakeResponse:
 
     async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
         """Return the JSON version of the contents."""
-        return cast(JSON, json.loads(self.contents))
+        return cast(JSON, loads(self.contents))
 
     async def text(self) -> str:
         """Return the text version of the contents."""
@@ -91,6 +91,20 @@ class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
     """Base class for source collectors that retrieve JSON files."""
 
     file_extensions = ["json"]
+
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Override to parse the entities from the JSON in the responses."""
+        entities = Entities()
+        for response in responses:
+            filename = response.filename if hasattr(response, "filename") else ""  # Zipped responses have a filename
+            json = await response.json(content_type=None)
+            entities.extend(self._parse_json(json, filename))
+        return entities
+
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
+        """Parse the entities from the JSON."""
+        # pylint: disable=no-self-use,unused-argument
+        return Entities()  # pragma: no cover
 
 
 class XMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method

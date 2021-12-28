@@ -5,7 +5,7 @@ from typing import Coroutine
 
 import aiohttp
 
-from collector_utilities.type import JSON
+from collector_utilities.type import JSONDict
 from model import MetricMeasurement
 
 from .source_collector import SourceCollector, SourceParameters
@@ -14,9 +14,9 @@ from .source_collector import SourceCollector, SourceParameters
 class MetricCollector:
     """Collect measurements for a specific metric."""
 
-    subclasses: set[type["MetricCollector"]] = set()
+    subclasses: set[type["MetricCollector"]] = set()  # skipcq: TYP-067
 
-    def __init__(self, session: aiohttp.ClientSession, metric, data_model: JSON) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, data_model: JSONDict) -> None:
         self.__session = session
         self._metric = metric
         self.__data_model = data_model
@@ -29,7 +29,7 @@ class MetricCollector:
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, metric_type: str) -> type["MetricCollector"]:
+    def get_subclass(cls, metric_type: str) -> type["MetricCollector"]:  # skipcq: TYP-067
         """Return the subclass registered for the metric type. Return this class if no subclass is found."""
         for subclass in cls.subclasses:
             if subclass.__name__.lower() == metric_type.replace("_", ""):
