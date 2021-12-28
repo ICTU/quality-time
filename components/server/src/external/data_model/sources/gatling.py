@@ -1,5 +1,6 @@
 """Gatling sources."""
 
+from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
 from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter
 
@@ -49,6 +50,60 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
     metrics=["slow_transactions"],
 )
 
+ENTITIES = dict(
+    slow_transactions=dict(
+        name="slow transaction",
+        attributes=[
+            dict(name="Transactions", key="name"),
+            dict(name="Sample count", type=EntityAttributeType.INTEGER),
+            dict(name="Error count", type=EntityAttributeType.INTEGER),
+            dict(name="Error percentage", type=EntityAttributeType.FLOAT),
+            dict(
+                name="Mean",
+                help="Mean response time (milliseconds)",
+                key="mean_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="Minimum",
+                help="Minimum response time (milliseconds)",
+                key="min_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="Maximum",
+                help="Maximum response time (milliseconds)",
+                key="max_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="50th percentile",
+                help="50th percentile response time (milliseconds)",
+                key="percentile_50_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="75 percentile",
+                help="75th percentile response time (milliseconds)",
+                key="percentile_75_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="95th percentile",
+                help="95th percentile response time (milliseconds)",
+                key="percentile_95_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+            dict(
+                name="99th percentile",
+                help="99th percentile response time (milliseconds)",
+                key="percentile_99_response_time",
+                type=EntityAttributeType.FLOAT,
+            ),
+        ],
+    )
+)
+
 GATLING_JSON = Source(
     name="Gatling JSON",
     description=GATLING_DESCRIPTION,
@@ -61,4 +116,5 @@ GATLING_JSON = Source(
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
         **access_parameters(GATLING_JSON_METRICS, source_type="Gatling report", source_type_format="JSON")
     ),
+    entities=ENTITIES,
 )
