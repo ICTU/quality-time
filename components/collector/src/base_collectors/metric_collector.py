@@ -5,7 +5,7 @@ from typing import Coroutine
 
 import aiohttp
 
-from collector_utilities.type import JSON
+from collector_utilities.type import JSONDict
 from model import MetricMeasurement
 
 from .source_collector import SourceCollector, SourceParameters
@@ -16,7 +16,7 @@ class MetricCollector:
 
     subclasses: set[type["MetricCollector"]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, metric, data_model: JSON) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, data_model: JSONDict) -> None:
         self.__session = session
         self._metric = metric
         self.__data_model = data_model

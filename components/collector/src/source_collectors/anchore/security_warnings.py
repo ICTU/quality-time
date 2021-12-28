@@ -2,27 +2,25 @@
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON
+from model import Entities, Entity
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
     """Anchore collector for security warnings."""
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the Anchore security warnings."""
         severities = self._parameter("severities")
         entities = Entities()
-        for response in responses:
-            json = await response.json(content_type=None)
-            vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
-            filename = response.filename if hasattr(response, "filename") else ""  # Zipped responses have a filename
-            entities.extend(
-                [
-                    self._create_entity(vulnerability, filename)
-                    for vulnerability in vulnerabilities
-                    if vulnerability["severity"] in severities
-                ]
-            )
+        vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
+        entities.extend(
+            [
+                self._create_entity(vulnerability, filename)
+                for vulnerability in vulnerabilities
+                if vulnerability["severity"] in severities
+            ]
+        )
         return entities
 
     @staticmethod

@@ -1,10 +1,11 @@
 """Snyk metrics security warnings collector."""
 
 from collections.abc import Collection
-from typing import Literal
+from typing import cast, Literal
 
 from base_collectors import JSONFileSourceCollector
-from model import Entities, Entity, SourceResponses
+from collector_utilities.type import JSON, JSONDict
+from model import Entities, Entity
 
 
 Severity = Literal["low", "medium", "high"]
@@ -13,23 +14,21 @@ Severity = Literal["low", "medium", "high"]
 class SnykSecurityWarnings(JSONFileSourceCollector):
     """Snyk collector for security warnings."""
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Parse the direct dependencies with vulnerabilities from the responses."""
+    def _parse_json(self, json: JSON, filename: str) -> Entities:
+        """Parse the direct dependencies with vulnerabilities from the JSON."""
         selected_severities = self._parameter("severities")
         severities: dict[str, set[Severity]] = {}
         nr_vulnerabilities: dict[str, int] = {}
         example_vulnerability = {}
-        for response in responses:
-            json = await response.json(content_type=None)
-            vulnerabilities = json.get("vulnerabilities", [])
-            for vulnerability in vulnerabilities:
-                if (severity := vulnerability["severity"]) not in selected_severities:
-                    continue
-                dependency = vulnerability["from"][1] if len(vulnerability["from"]) > 1 else vulnerability["from"][0]
-                severities.setdefault(dependency, set()).add(severity)
-                nr_vulnerabilities[dependency] = nr_vulnerabilities.get(dependency, 0) + 1
-                path = " ➜ ".join(str(dependency) for dependency in vulnerability["from"])
-                example_vulnerability[dependency] = (vulnerability["id"], path)
+        vulnerabilities = cast(JSONDict, json).get("vulnerabilities", [])
+        for vulnerability in vulnerabilities:
+            if (severity := vulnerability["severity"]) not in selected_severities:
+                continue
+            dependency = vulnerability["from"][1] if len(vulnerability["from"]) > 1 else vulnerability["from"][0]
+            severities.setdefault(dependency, set()).add(severity)
+            nr_vulnerabilities[dependency] = nr_vulnerabilities.get(dependency, 0) + 1
+            path = " ➜ ".join(str(dependency) for dependency in vulnerability["from"])
+            example_vulnerability[dependency] = (vulnerability["id"], path)
 
         entities = Entities()
         for dependency, severity_set in severities.items():
