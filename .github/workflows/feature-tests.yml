@@ -8,7 +8,7 @@ jobs:
 
     services:
       ldap:
-        image: ictu/quality-time_testldap:v3:31:0-rc:1
+        image: ictu/quality-time_testldap:v3.31.0-rc.1
 
       renderer:
         image: ictu/quality-time_renderer:v3.31.0-rc.1
