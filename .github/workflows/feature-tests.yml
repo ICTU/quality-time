@@ -16,8 +16,8 @@ jobs:
         run: |
           ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
-        if: always()
         uses: actions/upload-artifact@v2
+        if: failure()
         with:
-          name: coverage
-          path: build/features-coverage
+          name: build-artifacts
+          path: build

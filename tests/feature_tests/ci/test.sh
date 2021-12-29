@@ -15,7 +15,7 @@ python3 -m venv venv
 pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
 coverage erase
 export RENDERER_HOST=localhost
-python tests/quality_time_server_under_coverage.py &> /tmp/quality_time_server.log &
+python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_server.log &
 deactivate
 cd ../..
 # We need to start a second server for the renderer. We start it after the server under
