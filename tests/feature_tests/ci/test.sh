@@ -8,7 +8,7 @@
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
-docker compose up -d database ldap
+docker compose up --quiet-pull -d database ldap
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate
@@ -21,7 +21,7 @@ cd ../..
 # We need to start a second server for the renderer. We start it after the server under
 # coverage so we can measure the coverage of the startup code, including the containers
 # that depend on server.
-docker compose up -d server renderer www
+docker compose up --quiet-pull -d server renderer www
 cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
