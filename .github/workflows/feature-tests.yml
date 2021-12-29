@@ -17,43 +17,13 @@ jobs:
         uses: actions/setup-python@v2.3.1
         with:
           python-version: '3.10'
-      - name: Install dependencies
-        run: |
-          cd components/server
-          mkdir -p /tmp/log
-          python -m venv venv
-          . venv/bin/activate
-          pip --quiet install --progress-bar off --upgrade pip
-          pip --quiet install --progress-bar off wheel
-          pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
-      - name: Run base containers
-        run: docker compose up -d database ldap renderer frontend
-      - name: Run server under coverage
-        env:
-          COVERAGE_RCFILE: ../../tests/feature_tests/.coveragerc
-        run: |
-          cd components/server
-          . venv/bin/activate
-          python tests/quality_time_server_under_coverage.py &
       - name: Run feature tests
-        env:
-          COVERAGE_RCFILE: tests/feature_tests/.coveragerc
         run: |
-          cd tests/feature_tests
-          python -m venv venv
-          . venv/bin/activate
-          pip --quiet install --progress-bar off -r requirements-dev.txt
-          cd ../..
-          coverage run -m behave --format progress tests/feature_tests
-          kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-          docker compose down
-          coverage combine . components/server
-          coverage html
-          coverage report
+          ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Results
           path: |
-            /tmp/log
+            /tmp/*.log
             build/features-coverage
