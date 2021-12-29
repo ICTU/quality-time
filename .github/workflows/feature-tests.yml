@@ -5,6 +5,10 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      RENDERER_HOST: localhost
+      PROXY_HOST: localhost
+      PROXY_PORT: 5000
 
     services:
       ldap:
@@ -37,25 +41,27 @@ jobs:
           mkdir -p /tmp/log
           python -m venv venv
           . venv/bin/activate
-          pip install --upgrade pip
-          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
+          pip --quiet install --progress-bar off --upgrade pip
+          pip --quiet install --progress-bar off wheel
+          pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
       - name: Run server under coverage
+        env:
+          COVERAGE_RCFILE: ../../tests/feature_tests/.coveragerc
         run: |
           cd components/server
           . venv/bin/activate
-          export RENDERER_HOST=localhost
-          export PROXY_HOST=localhost
-          export PROXY_PORT=5000
-          export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc
+          echo $COVERAGE_RCFILE
           python tests/quality_time_server_under_coverage.py &
       - name: Run feature tests
+        env:
+          COVERAGE_RCFILE: tests/feature_tests/.coveragerc
         run: |
           cd tests/feature_tests
           python -m venv venv
           . venv/bin/activate
           pip --quiet install --progress-bar off -r requirements-dev.txt
           cd ../..
-          export COVERAGE_RCFILE=tests/feature_tests/.coveragerc
+          echo $COVERAGE_RCFILE
           coverage run -m behave --format progress tests/feature_tests
           kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
           sleep 2  # Give the server time to write the coverage data
