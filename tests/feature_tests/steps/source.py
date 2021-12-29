@@ -45,14 +45,13 @@ def check_source_parameter_availability_status_code(context, status_code):
 
 @then('the availability status reason equals "{message1}"')
 @then('the availability status reason equals either "{message1}" or "{message2}"')
-def check_source_parameter_availability_reason(context, message1, message2=""):
+@then('the availability status reason equals either "{message1}" or "{message2}" or "{message3}"')
+def check_source_parameter_availability_reason(context, message1, message2="", message3=""):
     """Check the availability message."""
     post_response = context.post_response.json()
     reason = str(post_response["availability"][0]["reason"])
-    if message1 and message2:
-        assert_in(reason, (message1, message2))
-    else:
-        assert_equal(message1, reason)
+    messages = [message for message in (message1, message2, message3) if message]
+    assert_in(reason, messages)
 
 
 @then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')

@@ -87,7 +87,7 @@ Feature: source
     When the client sets the source parameter url to "https://i-dont-exist"
     Then the source parameter url equals "https://i-dont-exist"
     And the availability status code equals "-1"
-    And the availability status reason equals either "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
+    And the availability status reason equals either "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known" or "[Errno -3] Temporary failure in name resolution"
 
   Scenario: change multiple choice source parameter
     Given an existing metric with type "failed_jobs"
