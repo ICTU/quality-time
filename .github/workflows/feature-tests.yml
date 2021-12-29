@@ -15,9 +15,10 @@ jobs:
       - name: Run feature tests
         run: |
           ./tests/feature_tests/ci/test.sh
+          exit 0
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: failure()
+        if: always()
         with:
           name: build-artifacts
           path: build
