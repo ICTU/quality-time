@@ -38,7 +38,7 @@ jobs:
           python -m venv venv
           . venv/bin/activate
           pip install --upgrade pip
-          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &
+          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
       - name: Run server under coverage
         run: |
           cd components/server
