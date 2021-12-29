@@ -6,11 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      RENDERER_HOST: localhost
-      PROXY_HOST: localhost
-      PROXY_PORT: 5000
-
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Set up Python
@@ -24,7 +19,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: Results
-          path: |
-            /tmp/*.log
-            build/features-coverage
+          name: coverage
+          path: build/features-coverage
