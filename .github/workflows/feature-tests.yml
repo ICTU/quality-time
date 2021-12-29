@@ -5,29 +5,11 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
       RENDERER_HOST: localhost
       PROXY_HOST: localhost
       PROXY_PORT: 5000
-
-    services:
-      ldap:
-        image: ictu/quality-time_testldap:v3.31.0-rc.1
-
-      renderer:
-        image: ictu/quality-time_renderer:v3.31.0-rc.1
-        env:
-          ALLOW_HTTP: true
-          LC_ALL: en_GB.UTF-8
-
-      frontend:
-        image: ictu/quality-time_frontend:v3.31.0-rc.1
-
-      database:
-        image: ictu/quality-time_database:v3.31.0-rc.1
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: root
 
     steps:
       - uses: actions/checkout@v2.4.0
@@ -44,6 +26,8 @@ jobs:
           pip --quiet install --progress-bar off --upgrade pip
           pip --quiet install --progress-bar off wheel
           pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
+      - name: Run base containers
+        run: docker compose up -d database ldap renderer frontend
       - name: Run server under coverage
         env:
           COVERAGE_RCFILE: ../../tests/feature_tests/.coveragerc
@@ -62,7 +46,7 @@ jobs:
           cd ../..
           coverage run -m behave --format progress tests/feature_tests
           kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-          sleep 2  # Give the server time to write the coverage data
+          docker compose down
           coverage combine . components/server
           coverage html
           coverage report
