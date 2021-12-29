@@ -38,7 +38,7 @@ jobs:
           python -m venv venv
           . venv/bin/activate
           pip install --upgrade pip
-          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
+          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &
       - name: Run server under coverage
         run: |
           cd components/server
@@ -47,7 +47,7 @@ jobs:
           export PROXY_HOST=localhost
           export PROXY_PORT=5000
           export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc
-          python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
+          python tests/quality_time_server_under_coverage.py &
       - name: Run feature tests
         run: |
           cd tests/feature_tests
