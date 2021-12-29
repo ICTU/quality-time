@@ -95,7 +95,17 @@ GATLING_JSON = Source(
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
         transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
-        **access_parameters(GATLING_JSON_METRICS, source_type="Gatling report", source_type_format="JSON")
+        **access_parameters(
+            GATLING_JSON_METRICS,
+            source_type="Gatling report",
+            source_type_format="JSON",
+            kwargs=dict(
+                url=dict(
+                    help="The Gatling report in JSON format is a file called 'stats.json' located in the 'js' folder "
+                    "of a Gatling HTML report"
+                )
+            ),
+        )
     ),
     entities=ENTITIES,
 )
