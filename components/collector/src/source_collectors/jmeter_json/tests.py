@@ -2,10 +2,8 @@
 
 from typing import cast
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, TransactionEntity
 from model import SourceMeasurement, SourceResponses
-
-from .base import TransactionEntity
 
 
 class JMeterJSONTests(JSONFileSourceCollector):
