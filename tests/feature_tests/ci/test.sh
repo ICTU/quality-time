@@ -31,9 +31,8 @@ sleep 10  # Give server time to start up
 coverage erase
 coverage run -m behave --format progress "${1:-tests/feature_tests/features}"
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-sleep 2  # Give the server time to write the coverage data
+docker compose down
 coverage combine . components/server
 coverage xml
 coverage html
 coverage report
-docker compose down
