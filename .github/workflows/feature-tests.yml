@@ -34,7 +34,7 @@ jobs:
         run: |
           cd components/server
           . venv/bin/activate
-          python tests/quality_time_server_under_coverage.py
+          python tests/quality_time_server_under_coverage.py &
       - name: Run feature tests
         env:
           COVERAGE_RCFILE: tests/feature_tests/.coveragerc
