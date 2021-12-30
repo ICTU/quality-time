@@ -1,0 +1,22 @@
+name: Feature tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Set up Python
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: '3.10'
+      - name: Run feature tests
+        run: ./tests/feature_tests/ci/test.sh
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: build-artifacts
+          path: build
