@@ -1,0 +1,21 @@
+name: Application tests
+
+on: [push]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      QUALITY_TIME_VERSION: v3.31.0-rc.1
+      ENV: ci
+      COMPOSE_PATH_SEPARATOR: ":"
+      COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
+
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Run application tests
+        run: |
+          docker-compose build && docker-compose up -d
+          docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:docker_www_1 python:3.10.1-buster tests/application_tests/ci/test.sh
