@@ -7,7 +7,7 @@
 # so we can discover dead code in the tests.
 
 trap 'kill 0; exit $result' EXIT  # Kill server on Ctrl-C
-trap '' 15
+trap 'kill 0; exit $result' 15
 mkdir -p build
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 docker compose up --quiet-pull -d database ldap
@@ -43,6 +43,4 @@ then
   result=$?
 fi
 docker compose down
-docker ps
-ps -A
 exit $result
