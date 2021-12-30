@@ -43,3 +43,4 @@ then
   result=$?
 fi
 docker compose down
+exit $result
