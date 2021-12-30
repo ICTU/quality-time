@@ -6,13 +6,13 @@ import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Final
+from typing import Any, cast, Final
 
 import aiohttp
 from packaging.version import Version
 
 from collector_utilities.exceptions import CollectorException
-from collector_utilities.functions import days_ago, stable_traceback, tokenless
+from collector_utilities.functions import days_ago, match_string_or_regular_expression, stable_traceback, tokenless
 from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, IssueStatus, SourceParameters, SourceMeasurement, SourceResponses
 
@@ -269,3 +269,58 @@ class SourceVersionCollector(SourceCollector):
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Parse the version from the source."""
         raise NotImplementedError  # pragma: no cover
+
+
+class TransactionEntity(Entity):
+    """Entity representing a performance transaction."""
+
+    def is_to_be_included(self, transactions_to_include: list[str], transactions_to_ignore: list[str]) -> bool:
+        """Return whether the transaction should be included."""
+        name = self["name"]
+        if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
+            return False
+        return not match_string_or_regular_expression(name, transactions_to_ignore)
+
+    def is_slow(
+        self,
+        response_time_to_evaluate: str,
+        target_response_time: float,
+        transaction_specific_target_response_times: list[str],
+    ) -> bool:
+        """Return whether the transaction is slow."""
+        name, response_time = self["name"], self[response_time_to_evaluate]
+        for transaction_specific_target_response_time in transaction_specific_target_response_times:
+            re_or_name, target = transaction_specific_target_response_time.rsplit(":", maxsplit=1)
+            if match_string_or_regular_expression(name, [re_or_name]) and response_time <= float(target):
+                return False
+        return bool(response_time > target_response_time)
+
+
+class SlowTransactionsCollector(SourceCollector):
+    """Base class for slow transactions collectors."""
+
+    def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
+        """Extend to set up the parameters."""
+        super().__init__(session, source, data_model)
+        self.__transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
+        self.__transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
+        self.__response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
+        self.__target_response_time = float(cast(int, self._parameter("target_response_time")))
+        self.__transaction_specific_target_response_times = cast(
+            list[str], self._parameter("transaction_specific_target_response_times")
+        )
+
+    def _is_to_be_included_and_is_slow(self, entity: TransactionEntity) -> bool:
+        """Return whether the transaction entity is to be included and is slow."""
+        return entity.is_to_be_included(
+            self.__transactions_to_include, self.__transactions_to_ignore
+        ) and entity.is_slow(
+            self.__response_time_to_evaluate,
+            self.__target_response_time,
+            self.__transaction_specific_target_response_times,
+        )
+
+    @staticmethod
+    def _round(value: float | int) -> float:
+        """Round the value at exactly one decimal."""
+        return round(float(value), 1)

@@ -176,11 +176,11 @@ METRICS = Metrics.parse_obj(
         ),
         slow_transactions=dict(
             name="Slow transactions",
-            description="The number of transactions slower than their performance threshold.",
+            description="The number of transactions slower than their target response time.",
             unit=Unit.TRANSACTIONS,
             near_target="5",
             default_source="jmeter_csv",
-            sources=["manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
+            sources=["gatling_json", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         source_up_to_dateness=dict(

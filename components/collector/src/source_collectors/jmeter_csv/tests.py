@@ -2,10 +2,10 @@
 
 from typing import cast
 
+from base_collectors import TransactionEntity
 from model import SourceMeasurement, SourceResponses
 
 from .base import JMeterCSVCollector
-from ..jmeter_json.base import TransactionEntity
 
 
 class JMeterCSVTests(JMeterCSVCollector):
