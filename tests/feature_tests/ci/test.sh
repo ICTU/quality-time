@@ -6,10 +6,11 @@
 # We collect both the coverage of the server and of the tests themselves
 # so we can discover dead code in the tests.
 
-trap "kill 0" EXIT  # Kill server on Ctrl-C
+trap 'kill 0; exit $result' EXIT  # Kill server on Ctrl-C
+trap '' 15
 mkdir -p build
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
-docker compose up --quiet-pull --exit-code-from database -d database ldap
+docker compose up --quiet-pull -d database ldap
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate
@@ -30,9 +31,13 @@ cd ../..
 sleep 10  # Give server time to start up
 coverage erase
 coverage run -m behave --format progress "${1:-tests/feature_tests/features}"
+result=$?
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-docker compose stop
-coverage combine . components/server
-coverage xml
-coverage html
-coverage report
+if [[ "$result" -eq "0" ]]
+then
+  coverage combine . components/server
+  coverage xml
+  coverage html
+  coverage report
+  result=$?
+fi
