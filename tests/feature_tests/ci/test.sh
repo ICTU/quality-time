@@ -9,7 +9,7 @@
 trap "kill 0" EXIT  # Kill server on Ctrl-C
 mkdir -p build
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
-docker compose up --quiet-pull -d database ldap
+docker compose up --quiet-pull --exit-code-from database -d database ldap
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate

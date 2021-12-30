@@ -14,7 +14,7 @@ jobs:
           python-version: '3.10'
       - name: Run feature tests
         run: |
-          ./tests/feature_tests/ci/test.sh || true
+          ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         if: always()
