@@ -3,8 +3,12 @@ name: Application tests
 on: [push]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
+
+    env:
+      QUALITY_TIME_VERSION: v3.31.0-rc.1
 
     steps:
       - uses: actions/checkout@v2.4.0
