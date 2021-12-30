@@ -468,9 +468,9 @@ types-ipaddress==1.0.1 \
     --hash=sha256:9d0a642526c4a1f87ee9ae29d91b93f708508b891d038db2e1c9f06219383516 \
     --hash=sha256:dc5540c7fd8d4b3ffe8461bc01f27513c0abe5f2088e491218bd0a98a0b4584e
     # via types-cryptography
-types-requests==2.26.2 \
-    --hash=sha256:0e22d9cdeff4c3eb068eb883d59b127c98d80525f3d0412a1c4499c6ae1f711e \
-    --hash=sha256:fabe1acc784708ac798ced6373568465b93642c8aa1ebd33e2921b60d4e7aa29
+types-requests==2.26.3 \
+    --hash=sha256:ad18284931c5ddbf050ccdd138f200d18fd56f88aa3567019d8da9b2d4fe0344 \
+    --hash=sha256:d63fa617846dcefff5aa2d59e47ab4ffd806e4bb0567115f7adbb5e438302fe4
     # via -r requirements-dev.in
 types-setuptools==57.4.4 \
     --hash=sha256:9fe4180548e5cbb44cc0d343a47e4dc1d6769c31e16447994788c28df169011f \
