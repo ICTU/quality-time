@@ -33,6 +33,7 @@ coverage erase
 coverage run -m behave --format progress "${1:-tests/feature_tests/features}"
 result=$?
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
+sleep 2  # Give server time to write coverage data
 if [[ "$result" -eq "0" ]]
 then
   coverage combine . components/server
@@ -41,3 +42,4 @@ then
   coverage report
   result=$?
 fi
+docker compose down
