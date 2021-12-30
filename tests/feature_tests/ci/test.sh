@@ -43,4 +43,6 @@ then
   result=$?
 fi
 docker compose down
+docker ps
+ps -A
 exit $result
