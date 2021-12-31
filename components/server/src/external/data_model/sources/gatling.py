@@ -2,7 +2,7 @@
 
 from ..meta.entity import EntityAttributeType
 from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter
+from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, SingleChoiceParameter, TestResult
 
 from .jmeter import (
     TARGET_RESPONSE_TIME,
@@ -13,7 +13,7 @@ from .jmeter import (
 )
 
 
-GATLING_JSON_METRICS = ["slow_transactions"]
+GATLING_JSON_METRICS = ["slow_transactions", "tests"]
 GATLING_URL = "https://gatling.io"
 GATLING_DESCRIPTION = (
     "Gatling is an open-source load testing solution, designed for continuous load testing and development pipeline "
@@ -90,6 +90,7 @@ GATLING_JSON = Source(
     description=GATLING_DESCRIPTION,
     url=GATLING_URL,
     parameters=dict(
+        test_result=TestResult(values=["failed", "success"]),
         response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
         target_response_time=TARGET_RESPONSE_TIME,
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
