@@ -47,6 +47,7 @@ from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 from .cxsast.source_version import CxSASTSourceVersion
 
 from .gatling_json.slow_transactions import GatlingJSONSlowTransactions
+from .gatling_json.tests import GatlingJSONTests
 
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
 

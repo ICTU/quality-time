@@ -309,6 +309,7 @@ METRICS = Metrics.parse_obj(
             default_source="jenkins_test_report",
             sources=[
                 "azure_devops",
+                "gatling_json",
                 "jenkins_test_report",
                 "jmeter_csv",
                 "jmeter_json",
