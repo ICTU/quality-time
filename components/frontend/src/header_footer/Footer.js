@@ -71,11 +71,19 @@ function AboutReportColumn({ report, last_update }) {
 }
 
 function QuoteColumn() {
+    const quotes = [
+        ["If it hurts, do it more frequently,", "and bring the pain forward.", "Jez Humble"],
+        ["Quality without results is pointless.", "Results without quality is boring.", "Johan Cruyff"],
+        ["Quality is free,", "but only to those who are willing to pay heavily for it.", "DeMarco and Lister"],
+        ["Quality means doing it right", "even when no one is looking.", "Henry Ford"],
+        ["Quality... you know what it is,", "yet you don't know what it is.", "Robert M. Pirsig"]
+    ]
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
     return (
         <FooterCenterColumn>
-            <FooterItem><em>Quality without results is pointless.</em></FooterItem>
-            <FooterItem><em>Results without quality is boring.</em></FooterItem>
-            <FooterItem>Johan Cruyff</FooterItem>
+            <FooterItem><em>{randomQuote[0]}</em></FooterItem>
+            <FooterItem><em>{randomQuote[1]}</em></FooterItem>
+            <FooterItem>{randomQuote[2]}</FooterItem>
         </FooterCenterColumn>
     )
 }
