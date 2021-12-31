@@ -8,9 +8,9 @@ it('renders the report title when there is a report', () => {
     expect(screen.findByText("Report")).not.toBe(null)
 })
 
-it('renders the quote title when there is no report', () => {
+it('renders a quote when there is no report', () => {
     render(<Footer />);
-    expect(screen.findByText("Johan Cruyff")).not.toBe(null)
+    expect(screen.queryByText("Report")).toBe(null)
 })
 
 it('renders a link to the report url', () => {
