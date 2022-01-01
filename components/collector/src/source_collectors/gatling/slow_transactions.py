@@ -1,13 +1,15 @@
-"""Gatling JSON slow transactions collector."""
+"""Gatling slow transactions collector."""
 
 from typing import cast
 
-from base_collectors import JSONFileSourceCollector, SlowTransactionsCollector, TransactionEntity
+from base_collectors import SlowTransactionsCollector, TransactionEntity
 from collector_utilities.type import JSON, JSONDict
 from model import Entities
 
+from .base import GatlingJSONCollector
 
-class GatlingJSONSlowTransactions(JSONFileSourceCollector, SlowTransactionsCollector):
+
+class GatlingSlowTransactions(GatlingJSONCollector, SlowTransactionsCollector):
     """Collector for the number of slow transactions in a Gatling JSON (stats.json) report."""
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:

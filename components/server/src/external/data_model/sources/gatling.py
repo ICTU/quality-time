@@ -15,6 +15,7 @@ from .jmeter import (
 
 GATLING_JSON_METRICS = ["slow_transactions", "tests"]
 GATLING_LOG_METRICS = ["performancetest_duration"]
+GATLING_METRICS = GATLING_JSON_METRICS + GATLING_LOG_METRICS
 GATLING_URL = "https://gatling.io"
 GATLING_DESCRIPTION = (
     "Gatling is an open-source load testing solution, designed for continuous load testing and development pipeline "
@@ -86,8 +87,8 @@ ENTITIES = dict(
     )
 )
 
-GATLING_JSON = Source(
-    name="Gatling JSON",
+GATLING = Source(
+    name="Gatling",
     description=GATLING_DESCRIPTION,
     url=GATLING_URL,
     parameters=dict(
@@ -97,35 +98,7 @@ GATLING_JSON = Source(
         transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
         transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
         transactions_to_include=TRANSACTIONS_TO_INCLUDE,
-        **access_parameters(
-            GATLING_JSON_METRICS,
-            source_type="Gatling report",
-            source_type_format="JSON",
-            kwargs=dict(
-                url=dict(
-                    help="The Gatling report in JSON format is a file called 'stats.json' located in the 'js' folder "
-                    "of a Gatling HTML report"
-                )
-            ),
-        )
+        **access_parameters(GATLING_METRICS, source_type="Gatling report", source_type_format="HTML")
     ),
     entities=ENTITIES,
-)
-
-GATLING_LOG = Source(
-    name="Gatling log",
-    description=GATLING_DESCRIPTION,
-    url=GATLING_URL,
-    parameters=dict(
-        **access_parameters(
-            GATLING_LOG_METRICS,
-            source_type="Gatling log",
-            kwargs=dict(
-                url=dict(
-                    help="The Gatling log is a file called 'simulation.log' located next to the 'index.html' file "
-                    "in a Gatling HTML report"
-                )
-            ),
-        )
-    ),
 )

@@ -138,7 +138,7 @@ METRICS = Metrics.parse_obj(
             target="30",
             near_target="25",
             default_source="jmeter_csv",
-            sources=["gatling_log", "jmeter_csv", "manual_number", "performancetest_runner"],
+            sources=["gatling", "jmeter_csv", "manual_number", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         performancetest_stability=dict(
@@ -180,7 +180,7 @@ METRICS = Metrics.parse_obj(
             unit=Unit.TRANSACTIONS,
             near_target="5",
             default_source="jmeter_csv",
-            sources=["gatling_json", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
+            sources=["gatling", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         source_up_to_dateness=dict(
@@ -309,7 +309,7 @@ METRICS = Metrics.parse_obj(
             default_source="jenkins_test_report",
             sources=[
                 "azure_devops",
-                "gatling_json",
+                "gatling",
                 "jenkins_test_report",
                 "jmeter_csv",
                 "jmeter_json",

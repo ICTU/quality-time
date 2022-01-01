@@ -1,10 +1,10 @@
-"""Unit tests for the Gatling JSON tests collector."""
+"""Unit tests for the Gatling tests collector."""
 
-from .base import GatlingJSONTestCase
+from .base import GatlingTestCase
 
 
-class GatlingJSONTestsTest(GatlingJSONTestCase):
-    """Unit tests for the Gatling JSON tests collector."""
+class GatlingJSONTestsTest(GatlingTestCase):
+    """Unit tests for the Gatling tests collector."""
 
     METRIC_TYPE = "tests"
 

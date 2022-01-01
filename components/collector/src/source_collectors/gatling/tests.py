@@ -1,13 +1,15 @@
-"""Gatling JSON tests collector."""
+"""Gatling tests collector."""
 
 from typing import cast
 
-from base_collectors import JSONFileSourceCollector, TransactionEntity
+from base_collectors import TransactionEntity
 from collector_utilities.type import JSONDict
 from model import SourceMeasurement, SourceResponses
 
+from .base import GatlingJSONCollector
 
-class GatlingJSONTests(JSONFileSourceCollector):
+
+class GatlingTests(GatlingJSONCollector):
     """Collector for the number of (successful and/or failing) performance test transactions."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
