@@ -138,7 +138,7 @@ METRICS = Metrics.parse_obj(
             target="30",
             near_target="25",
             default_source="jmeter_csv",
-            sources=["jmeter_csv", "manual_number", "performancetest_runner"],
+            sources=["gatling_log", "jmeter_csv", "manual_number", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
         performancetest_stability=dict(
