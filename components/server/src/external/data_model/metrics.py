@@ -201,6 +201,7 @@ METRICS = Metrics.parse_obj(
                 "cobertura",
                 "cobertura_jenkins_plugin",
                 "cxsast",
+                "gatling",
                 "gitlab",
                 "jacoco",
                 "jacoco_jenkins_plugin",
