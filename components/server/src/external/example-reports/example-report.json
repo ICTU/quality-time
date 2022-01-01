@@ -584,6 +584,18 @@
                                 "transactions_to_ignore": [],
                                 "transactions_to_include": []
                             }
+                        },
+                        "284adba5-9aca-3a61-5847-eea6fb1d7070": {
+                            "type": "gatling",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/gatling",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
                         }
                     },
                     "name": "Number of performance tests",
@@ -630,6 +642,18 @@
                             "type": "jmeter_csv",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/jmeter/jmeter.csv",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
+                            }
+                        },
+                        "345acbb5-0ada-3262-5247-e2a6fb128970": {
+                            "type": "gatling",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/gatling",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -714,6 +738,18 @@
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
+                            }
+                        },
+                        "340acbb5-0ada-5262-53f7-eaa6f8128774": {
+                            "type": "gatling",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/gatling",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "thresholds": [],
+                                "transactions_to_ignore": [],
+                                "transactions_to_include": []
                             }
                         }
                     },

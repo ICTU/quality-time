@@ -1,4 +1,4 @@
-"""Base classes for JMeter collectors."""
+"""Base classes for JMeter CSV collectors."""
 
 import csv
 from io import StringIO
@@ -15,11 +15,11 @@ class JMeterCSVCollector(CSVFileSourceCollector):
     """Base class for JMeter CSV file collectors."""
 
     @classmethod
-    async def _timestamps(cls, responses: SourceResponses) -> list[int]:
+    async def _timestamps(cls, responses: SourceResponses) -> set[int]:
         """Return all timestamps in the samples in the responses."""
-        timestamps = []
+        timestamps = set()
         async for samples in cls._samples(responses):
-            timestamps.extend([int(sample["timeStamp"]) for sample in samples])
+            timestamps |= {int(sample["timeStamp"]) for sample in samples}
         return timestamps
 
     @classmethod

@@ -1,7 +1,10 @@
 """Base classes for Gatling collectors."""
 
+import re
+
 from base_collectors import JSONFileSourceCollector, SourceCollector
 from collector_utilities.type import URL
+from model import SourceResponses
 
 
 class GatlingJSONCollector(JSONFileSourceCollector):
@@ -22,3 +25,12 @@ class GatlingLogCollector(SourceCollector):
         api_url = await super()._api_url()
         api_url.removesuffix("/index.html")
         return URL(api_url + "/simulation.log")
+
+    @classmethod
+    async def _timestamps(cls, responses: SourceResponses) -> set[int]:
+        """Return the timestamps in the simulation.log."""
+        timestamps = set()
+        for response in responses:
+            text = await response.text()
+            timestamps |= {int(timestamp) for timestamp in re.findall(r"\d{13}", text)}
+        return timestamps
