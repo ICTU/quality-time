@@ -237,6 +237,7 @@ METRICS = Metrics.parse_obj(
                 "cloc",
                 "cobertura",
                 "cxsast",
+                "gatling",
                 "gitlab",
                 "jenkins",
                 "jira",

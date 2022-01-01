@@ -49,6 +49,7 @@ from .cxsast.source_version import CxSASTSourceVersion
 from .gatling.performancetest_duration import GatlingPerformanceTestDuration
 from .gatling.slow_transactions import GatlingSlowTransactions
 from .gatling.source_up_to_dateness import GatlingSourceUpToDateness
+from .gatling.source_version import GatlingLogCollector
 from .gatling.tests import GatlingTests
 
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
