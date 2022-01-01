@@ -19,15 +19,18 @@ function SourceParameterLabel({
     label,
 }) {
     const scope_options = [
-        { key: "source", value: "source", text: "source", description: `Change this ${source_type_name} only`, label: { color: 'grey', empty: true, circular: true } },
-        { key: "metric", value: "metric", text: "metric", description: `Change each ${source_type_name} of this metric that has the same ${parameter_short_name}`, label: { color: 'black', empty: true, circular: true } },
-        { key: "subject", value: "subject", text: "subject", description: `Change each ${source_type_name} in this subject that has the same ${parameter_short_name}`, label: { color: 'yellow', empty: true, circular: true } },
-        { key: "report", value: "report", text: "report", description: `Change each ${source_type_name} in this report that has the same ${parameter_short_name}`, label: { color: 'orange', empty: true, circular: true } },
-        { key: "reports", value: "reports", text: "all reports", description: `Change each ${source_type_name} in each report that has the same ${parameter_short_name}`, label: { color: 'red', empty: true, circular: true } }];
+        { key: "source", value: "source", text: "Apply change to source", description: `Change the ${parameter_short_name} of this ${source_type_name} source only`, label: { color: 'grey', empty: true, circular: true } },
+        { key: "metric", value: "metric", text: "Apply change to metric", description: `Change the ${parameter_short_name} of ${source_type_name} sources in this metric that have the same ${parameter_short_name}`, label: { color: 'black', empty: true, circular: true } },
+        { key: "subject", value: "subject", text: "Apply change to subject", description: `Change the ${parameter_short_name} of ${source_type_name} sources in this subject that have the same ${parameter_short_name}`, label: { color: 'yellow', empty: true, circular: true } },
+        { key: "report", value: "report", text: "Apply change to report", description: `Change the ${parameter_short_name} of ${source_type_name} sources in this report that have the same ${parameter_short_name}`, label: { color: 'orange', empty: true, circular: true } },
+        { key: "reports", value: "reports", text: "Apply change to all reports", description: `Change the ${parameter_short_name} of ${source_type_name} sources in all reports that have the same ${parameter_short_name}`, label: { color: 'red', empty: true, circular: true } }];
     return (
         <LabelWithDropdown
             color={{ source: "grey", metric: "black", subject: "gold", report: "orange", reports: "red" }[edit_scope]}
-            direction={index % 2 === 0 ? "right" : "left"} label={label} onChange={(event, data) => setEditScope(data.value)} options={scope_options} prefix="Apply change to"
+            direction={index % 2 === 0 ? "right" : "left"}
+            label={label}
+            onChange={(event, data) => setEditScope(data.value)}
+            options={scope_options}
             value={edit_scope} />
     )
 }
