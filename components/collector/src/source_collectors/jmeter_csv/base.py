@@ -1,4 +1,4 @@
-"""Base classes for JMeter collectors."""
+"""Base classes for JMeter CSV collectors."""
 
 import csv
 from io import StringIO
