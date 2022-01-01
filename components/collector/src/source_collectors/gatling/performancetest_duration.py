@@ -2,12 +2,13 @@
 
 import re
 
-from base_collectors import SourceCollector
 from collector_utilities.type import Value
 from model import SourceResponses
 
+from .base import GatlingLogCollector
 
-class GatlingPerformanceTestDuration(SourceCollector):
+
+class GatlingPerformanceTestDuration(GatlingLogCollector):
     """Collector for the performance test duration."""
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
