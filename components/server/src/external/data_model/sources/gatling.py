@@ -14,6 +14,7 @@ from .jmeter import (
 
 
 GATLING_JSON_METRICS = ["slow_transactions", "tests"]
+GATLING_LOG_METRICS = ["performancetest_duration"]
 GATLING_URL = "https://gatling.io"
 GATLING_DESCRIPTION = (
     "Gatling is an open-source load testing solution, designed for continuous load testing and development pipeline "
@@ -109,4 +110,22 @@ GATLING_JSON = Source(
         )
     ),
     entities=ENTITIES,
+)
+
+GATLING_LOG = Source(
+    name="Gatling log",
+    description=GATLING_DESCRIPTION,
+    url=GATLING_URL,
+    parameters=dict(
+        **access_parameters(
+            GATLING_LOG_METRICS,
+            source_type="Gatling log",
+            kwargs=dict(
+                url=dict(
+                    help="The Gatling log is a file called 'simulation.log' located next to the 'index.html' file "
+                    "in a Gatling HTML report"
+                )
+            ),
+        )
+    ),
 )
