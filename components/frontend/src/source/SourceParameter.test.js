@@ -2,6 +2,9 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SourceParameter } from './SourceParameter';
+import * as fetch_server_api from '../api/fetch_server_api';
+
+jest.mock("../api/fetch_server_api.js")
 
 const report = {
     "subjects": {
@@ -153,3 +156,18 @@ it('renders a help text', async () => {
     userEvent.hover(screen.queryByTestId("help-icon"))
     await waitFor(() => { expect(screen.queryAllByText(/Help text/).length).toBe(1) });
 });
+
+it('changes the value', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    renderSourceParameter({});
+    userEvent.type(screen.queryByText(/test/), "{selectall}new url{enter}")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "new url", edit_scope: "source" });
+})
+
+it('changes the value via mass edit', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    renderSourceParameter({});
+    userEvent.click(screen.queryByText(/Apply change to subject/))
+    userEvent.type(screen.queryByText(/test/), "{selectall}new url{enter}")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "new url", edit_scope: "subject" });
+})
