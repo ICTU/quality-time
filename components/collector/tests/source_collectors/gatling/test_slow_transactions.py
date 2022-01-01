@@ -1,10 +1,10 @@
-"""Unit tests for the Gatling JSON slow transactions collector."""
+"""Unit tests for the Gatling slow transactions collector."""
 
-from .base import GatlingJSONTestCase
+from .base import GatlingTestCase
 
 
-class GatlingJSONSlowTransactionsTest(GatlingJSONTestCase):
-    """Unit tests for the Gatling JSON slow transactions collector."""
+class GatlingSlowTransactionsTest(GatlingTestCase):
+    """Unit tests for the Gatling slow transactions collector."""
 
     METRIC_TYPE = "slow_transactions"
 

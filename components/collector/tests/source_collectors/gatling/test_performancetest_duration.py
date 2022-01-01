@@ -1,10 +1,10 @@
-"""Unit tests for the Gatling log performance test duration collector."""
+"""Unit tests for the Gatling performance test duration collector."""
 
-from .base import GatlingLogTestCase
+from .base import GatlingTestCase
 
 
-class GatlingLogPerformancetestDurationTest(GatlingLogTestCase):
-    """Unit tests for the Gatling log performancetest duration collector."""
+class GatlingPerformancetestDurationTest(GatlingTestCase):
+    """Unit tests for the Gatling performancetest duration collector."""
 
     METRIC_TYPE = "performancetest_duration"
 
@@ -14,6 +14,6 @@ class GatlingLogPerformancetestDurationTest(GatlingLogTestCase):
         self.assert_measurement(response, value="0")
 
     async def test_all_transactions(self):
-        """Test the performancetest duration of all transactions in the CSV."""
+        """Test the performancetest duration of all transactions in the log."""
         response = await self.collect(get_request_text=self.GATLING_LOG)
         self.assert_measurement(response, value="2")

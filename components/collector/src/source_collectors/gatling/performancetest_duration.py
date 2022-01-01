@@ -1,4 +1,4 @@
-"""Gatling log performancetest duration collector."""
+"""Gatling performancetest duration collector."""
 
 import re
 
@@ -7,7 +7,7 @@ from collector_utilities.type import Value
 from model import SourceResponses
 
 
-class GatlingLogPerformanceTestDuration(SourceCollector):
+class GatlingPerformanceTestDuration(SourceCollector):
     """Collector for the performance test duration."""
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
