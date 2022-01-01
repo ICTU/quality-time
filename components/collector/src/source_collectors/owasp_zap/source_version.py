@@ -12,4 +12,7 @@ class OWASPZAPSourceVersion(XMLFileSourceCollector, SourceVersionCollector):
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the XML."""
-        return Version((await parse_source_response_xml(response)).get("version") or "0")
+        version_text = (await parse_source_response_xml(response)).get("version") or "0"
+        if version_text.startswith("D-"):
+            version_text = version_text.removeprefix("D-").replace("-", ".")
+        return Version(version_text)
