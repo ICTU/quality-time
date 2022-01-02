@@ -75,7 +75,7 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def verify_user(username: str, password: str) -> tuple[bool, User]:
+def verify_user(username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
@@ -104,8 +104,9 @@ def verify_user(username: str, password: str) -> tuple[bool, User]:
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error: %s", reason)
         user.email = ""
-        return False, user
-    return True, user
+    else:
+        user.verified = True
+    return user
 
 
 @bottle.post("/api/v3/login", authentication_required=False)
@@ -114,15 +115,15 @@ def login(database: Database) -> dict[str, bool | str]:
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
-        verified, user = username is not None, User(username, username or "")
+        user = User(username, username or "", username is not None)
     else:
         username, password = get_credentials()
-        verified, user = verify_user(username, password)
-    if verified:
+        user = verify_user(username, password)
+    if user.verified:
         session_expiration_datetime = create_session(database, user)
     else:
         session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
-    return dict(ok=verified, email=user.email, session_expiration_datetime=session_expiration_datetime.isoformat())
+    return dict(ok=user.verified, email=user.email, session_expiration_datetime=session_expiration_datetime.isoformat())
 
 
 @bottle.post("/api/v3/logout", authentication_required=True)

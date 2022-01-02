@@ -20,3 +20,4 @@ class User:
 
     username: str
     email: str
+    verified: bool = False
