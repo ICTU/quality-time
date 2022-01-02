@@ -87,9 +87,9 @@ def _prepare_documents_for_insertion(
 ) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    user = sessions.user(database) or {}
-    email = user.get("email", "")
-    username = user.get("user", "An operator")
+    user = sessions.find_user(database)
+    email = user.email
+    username = user.username or "An operator"
     # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
     description = delta_description.replace("{user}", username, 1)
     for document in documents:

@@ -18,10 +18,10 @@ from pymongo.database import Database
 from ..database import sessions
 from ..initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from ..utils.functions import uuid
-from ..utils.type import SessionId
+from ..utils.type import SessionId, User
 
 
-def create_session(database: Database, username: str, email: str) -> datetime:
+def create_session(database: Database, user: User) -> datetime:
     """Create a new user session.
 
     Generate a new random, secret and unique session id and a session expiration datetime and add it to the
@@ -29,7 +29,7 @@ def create_session(database: Database, username: str, email: str) -> datetime:
     """
     session_id = cast(SessionId, uuid())
     session_expiration_datetime = datetime.now(timezone.utc) + timedelta(hours=24)
-    sessions.upsert(database, username, email, session_id, session_expiration_datetime)
+    sessions.upsert(database, user, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
     return session_expiration_datetime
 
@@ -123,7 +123,7 @@ def login(database: Database) -> dict[str, bool | str]:
         username, password = get_credentials()
         verified, email = verify_user(username, password)
     if verified:
-        session_expiration_datetime = create_session(database, username, email)
+        session_expiration_datetime = create_session(database, User(username, email))
     else:
         session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
     return dict(ok=verified, email=email, session_expiration_datetime=session_expiration_datetime.isoformat())

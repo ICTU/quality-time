@@ -41,12 +41,12 @@ def set_entity_attribute(
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
-    user = sessions.user(database)
+    user = sessions.find_user(database)
     new_measurement["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
-        description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
+        description=f"{user.username} changed the {attribute} of '{entity_description}' from '{old_value}' to "
         f"'{new_value}'.",
-        email=user["email"],
+        email=user.email,
     )
     return insert_new_measurement(database, new_measurement)
 
