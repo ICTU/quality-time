@@ -91,20 +91,18 @@ def verify_user(username: str, password: str) -> User:
                 raise exceptions.LDAPBindError
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "mail"])
             result = lookup_connection.entries[0]
-        user.username = result.entry_dn
-        user.email = result.mail.value or ""
         if salted_password := result.userPassword.value:
             if check_password(salted_password, password):
                 logging.info("LDAP salted password check for %s succeeded", user)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:  # pragma: no cover-behave
-            with Connection(ldap_server, user=user.username, password=password, auto_bind=True):
+            with Connection(ldap_server, user=result.entry_dn, password=password, auto_bind=True):
                 logging.info("LDAP bind for %s succeeded", user)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error: %s", reason)
-        user.email = ""
     else:
+        user.email = result.mail.value or ""
         user.verified = True
     return user
 
