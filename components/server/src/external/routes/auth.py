@@ -103,7 +103,7 @@ def verify_user(username: str, password: str) -> User:
         logging.warning("LDAP error: %s", reason)
     else:
         user.email = result.mail.value or ""
-        user.common_name = result.cn
+        user.common_name = result.cn.value
         user.verified = True
     return user
 

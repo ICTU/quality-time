@@ -44,7 +44,7 @@ def set_entity_attribute(
     user = sessions.find_user(database)
     new_measurement["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
-        description=f"{user.username} changed the {attribute} of '{entity_description}' from '{old_value}' to "
+        description=f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to "
         f"'{new_value}'.",
         email=user.email,
     )

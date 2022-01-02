@@ -22,3 +22,7 @@ class User:
     email: str = ""
     common_name: str = ""
     verified: bool = False
+
+    def name(self) -> str:
+        """Return the name of the user."""
+        return self.common_name or self.username

@@ -61,9 +61,12 @@ class LoginTests(AuthTestCase):
         """Extend to add a mock LDAP."""
         super().setUp()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
-        self.ldap_entry = Mock(entry_dn=self.USER_DN, cn=self.COMMON_NAME)
-        self.ldap_entry.userPassword = Mock()
-        self.ldap_entry.mail = Mock(value=self.USER_EMAIL)
+        self.ldap_entry = Mock(
+            entry_dn=self.USER_DN,
+            mail=Mock(value=self.USER_EMAIL),
+            cn=Mock(value=self.COMMON_NAME),
+            userPassword=Mock(),
+        )
         self.ldap_connection = Mock(bind=Mock(return_value=True), search=Mock(), entries=[self.ldap_entry])
         self.login_ok = dict(
             ok=True,
