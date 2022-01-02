@@ -51,6 +51,7 @@ class LoginTests(AuthTestCase):
     NOW = datetime(2021, 2, 21, 21, 8, 0, tzinfo=timezone.utc)
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
     USER_EMAIL = f"{USERNAME}@example.org"
+    COMMON_NAME = "John Doe"
     LDAP_ROOT_DN = "dc=example,dc=org"
     USER_DN = f"cn={USERNAME},{LDAP_ROOT_DN}"
     LOOKUP_USER_DN = f"cn=admin,{LDAP_ROOT_DN}"
@@ -60,21 +61,25 @@ class LoginTests(AuthTestCase):
         """Extend to add a mock LDAP."""
         super().setUp()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
-        self.ldap_entry = Mock(entry_dn=self.USER_DN)
+        self.ldap_entry = Mock(entry_dn=self.USER_DN, cn=self.COMMON_NAME)
         self.ldap_entry.userPassword = Mock()
         self.ldap_entry.mail = Mock(value=self.USER_EMAIL)
         self.ldap_connection = Mock(bind=Mock(return_value=True), search=Mock(), entries=[self.ldap_entry])
         self.login_ok = dict(
-            ok=True, email=self.USER_EMAIL, session_expiration_datetime=(self.NOW + timedelta(hours=24)).isoformat()
+            ok=True,
+            email=self.USER_EMAIL,
+            session_expiration_datetime=(self.NOW + timedelta(hours=24)).isoformat(),
         )
         self.login_nok = dict(
-            ok=False, email="", session_expiration_datetime=datetime.min.replace(tzinfo=timezone.utc).isoformat()
+            ok=False,
+            email="",
+            session_expiration_datetime=datetime.min.replace(tzinfo=timezone.utc).isoformat(),
         )
 
     def assert_ldap_connection_search_called(self):
         """Assert that the LDAP connection search method is called with the correct arguments."""
         self.ldap_connection.search.assert_called_with(
-            self.LDAP_ROOT_DN, f"(|(uid={USERNAME})(cn={USERNAME}))", attributes=["userPassword", "mail"]
+            self.LDAP_ROOT_DN, f"(|(uid={USERNAME})(cn={USERNAME}))", attributes=["userPassword", "cn", "mail"]
         )
 
     def assert_ldap_lookup_connection_created(self, connection_mock):

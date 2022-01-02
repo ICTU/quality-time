@@ -29,7 +29,7 @@ class SessionsTest(unittest.TestCase):
         self.assertIsNone(
             sessions.upsert(
                 database=self.database,
-                user=User(JENNY["user"], JENNY["email"]),
+                user=User(JENNY["user"], JENNY["email"], JENNY["common_name"]),
                 session_id=SessionId("6"),
                 session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99),
             )
@@ -50,5 +50,8 @@ class SessionsTest(unittest.TestCase):
         """Test user function."""
         bottle_mock.get_cookie.return_value = 4
         self.create_session()
-        self.assertEqual("John", sessions.find_user(database=self.database).username)
+        self.assertEqual(
+            User(JOHN["user"], JOHN["email"], JOHN["common_name"]),
+            sessions.find_user(database=self.database),
+        )
         self.database.sessions.find_one.assert_called_with({"session_id": 4})

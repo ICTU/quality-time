@@ -24,8 +24,8 @@ SUBJECT_ID = cast(SubjectId, "subject_uuid")
 SUBJECT_ID2 = cast(SubjectId, "subject_uuid2")
 SUBJECT_ID3 = cast(SubjectId, "subject_uuid3")
 
-JOHN = dict(user="John", email="john@example.org")
-JENNY = dict(user="Jenny", email="jenny@example.org")
+JOHN = dict(user="John", email="john@example.org", common_name="John Doe")
+JENNY = dict(user="Jenny", email="jenny@example.org", common_name="Jenny Doe")
 
 
 def create_report():

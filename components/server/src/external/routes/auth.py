@@ -83,13 +83,13 @@ def verify_user(username: str, password: str) -> User:
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
-    user = User(username, "")
+    user = User(username)
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no cover-behave
                 raise exceptions.LDAPBindError
-            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "mail"])
+            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "cn", "mail"])
             result = lookup_connection.entries[0]
         if salted_password := result.userPassword.value:
             if check_password(salted_password, password):
@@ -103,6 +103,7 @@ def verify_user(username: str, password: str) -> User:
         logging.warning("LDAP error: %s", reason)
     else:
         user.email = result.mail.value or ""
+        user.common_name = result.cn
         user.verified = True
     return user
 
@@ -113,7 +114,7 @@ def login(database: Database) -> dict[str, bool | str]:
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
-        user = User(username, username or "", username is not None)
+        user = User(username, username or "", "", username is not None)
     else:
         username, password = get_credentials()
         user = verify_user(username, password)

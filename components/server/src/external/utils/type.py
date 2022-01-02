@@ -19,5 +19,6 @@ class User:
     """Class representing a user."""
 
     username: str
-    email: str
+    email: str = ""
+    common_name: str = ""
     verified: bool = False
