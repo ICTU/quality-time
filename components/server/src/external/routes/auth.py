@@ -75,7 +75,7 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def verify_user(username: str, password: str) -> tuple[bool, str]:
+def verify_user(username: str, password: str) -> tuple[bool, User]:
     """Authenticate the user and return whether they are authorized to login and their email address."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
@@ -83,7 +83,7 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
-    email = ""
+    user = User(username, "")
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
@@ -91,20 +91,21 @@ def verify_user(username: str, password: str) -> tuple[bool, str]:
                 raise exceptions.LDAPBindError
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "mail"])
             result = lookup_connection.entries[0]
-        username, salted_password = result.entry_dn, result.userPassword.value
-        email = result.mail.value or ""
-        if salted_password:
+        user.username = result.entry_dn
+        user.email = result.mail.value or ""
+        if salted_password := result.userPassword.value:
             if check_password(salted_password, password):
-                logging.info("LDAP salted password check for %s succeeded", User(username, email))
+                logging.info("LDAP salted password check for %s succeeded", user)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:  # pragma: no cover-behave
-            with Connection(ldap_server, user=username, password=password, auto_bind=True):
-                logging.info("LDAP bind for %s succeeded", User(username, email))
+            with Connection(ldap_server, user=user.username, password=password, auto_bind=True):
+                logging.info("LDAP bind for %s succeeded", user)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error: %s", reason)
-        return False, ""
-    return True, email
+        user.email = ""
+        return False, user
+    return True, user
 
 
 @bottle.post("/api/v3/login", authentication_required=False)
@@ -113,15 +114,15 @@ def login(database: Database) -> dict[str, bool | str]:
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
-        verified, email = username is not None, username or ""
+        verified, user = username is not None, User(username, username or "")
     else:
         username, password = get_credentials()
-        verified, email = verify_user(username, password)
+        verified, user = verify_user(username, password)
     if verified:
-        session_expiration_datetime = create_session(database, User(username, email))
+        session_expiration_datetime = create_session(database, user)
     else:
         session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
-    return dict(ok=verified, email=email, session_expiration_datetime=session_expiration_datetime.isoformat())
+    return dict(ok=verified, email=user.email, session_expiration_datetime=session_expiration_datetime.isoformat())
 
 
 @bottle.post("/api/v3/logout", authentication_required=True)
