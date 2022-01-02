@@ -1,5 +1,6 @@
 """Quality-time specific types."""
 
+from dataclasses import dataclass
 from typing import Literal, NewType, Union
 
 from shared.utils.type import ReportId, SubjectId, MetricId, SourceId
@@ -11,3 +12,17 @@ NotificationDestinationId = NewType("NotificationDestinationId", str)
 Position = Literal["first", "last", "next", "previous"]
 SessionId = NewType("SessionId", str)
 URL = NewType("URL", str)
+
+
+@dataclass
+class User:
+    """Class representing a user."""
+
+    username: str
+    email: str = ""
+    common_name: str = ""
+    verified: bool = False
+
+    def name(self) -> str:
+        """Return the name of the user."""
+        return self.common_name or self.username

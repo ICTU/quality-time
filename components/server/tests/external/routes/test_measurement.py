@@ -100,7 +100,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         self.assertEqual(dict(attribute="value"), entity)
         self.assertEqual(
             dict(
-                description="John changed the attribute of 'entity title/foo/None' from '' to 'value'.",
+                description="John Doe changed the attribute of 'entity title/foo/None' from '' to 'value'.",
                 email=JOHN["email"],
                 uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
             ),

@@ -1,7 +1,7 @@
-dn: cn=john doe,dc=example,dc=org
+dn: cn=John Doe,dc=example,dc=org
 changetype: add
 uid: jodoe
-cn: john doe
+cn: John Doe
 sn: 3
 objectClass: top
 objectClass: posixAccount

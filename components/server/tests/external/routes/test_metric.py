@@ -89,7 +89,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Assert that the report delta contains the correct data."""
         report = report if report is not None else self.report
         uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
-        description = f"John changed the {description}."
+        description = f"John Doe changed the {description}."
         self.assertDictEqual(dict(uuids=uuids, email=email, description=description), report["delta"])
 
     def test_post_metric_name(self, request):
@@ -415,7 +415,7 @@ class MetricTest(unittest.TestCase):
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "John added a new metric to subject 'Subject' in report 'Report'.",
+            "John Doe added a new metric to subject 'Subject' in report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]],
             report=updated_report,
         )
@@ -428,8 +428,8 @@ class MetricTest(unittest.TestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(2, len(inserted_metrics))
         self.assert_delta(
-            "John copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject 'Subject' in report "
-            "'Report'.",
+            "John Doe copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject 'Subject' in "
+            "report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, list(inserted_metrics.keys())[1]],
             report=updated_report,
         )
@@ -443,8 +443,8 @@ class MetricTest(unittest.TestCase):
         self.assertEqual({}, updated_report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
         self.assert_delta(
-            "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
-            "'Report'.",
+            "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
+            "report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID],
             report=updated_report,
         )
@@ -462,8 +462,8 @@ class MetricTest(unittest.TestCase):
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
         expected_description = (
-            "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
-            "'Target'."
+            "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
+            "report 'Target'."
         )
         expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID]
 
@@ -476,5 +476,5 @@ class MetricTest(unittest.TestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "John deleted metric 'Metric' from subject 'Subject' in report 'Report'.", report=updated_report
+            "John Doe deleted metric 'Metric' from subject 'Subject' in report 'Report'.", report=updated_report
         )

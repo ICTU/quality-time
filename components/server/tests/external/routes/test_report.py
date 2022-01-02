@@ -63,7 +63,7 @@ class PostReportAttributeTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the title of report 'Report' from 'Report' to 'New title'.",
+                description="Jenny Doe changed the title of report 'Report' from 'Report' to 'New title'.",
             ),
             updated_report["delta"],
         )
@@ -75,7 +75,11 @@ class PostReportAttributeTest(ReportTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
-            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny changed the layout of report 'Report'."),
+            dict(
+                uuids=[REPORT_ID],
+                email=JENNY["email"],
+                description="Jenny Doe changed the layout of report 'Report'.",
+            ),
             updated_report["delta"],
         )
 
@@ -89,7 +93,7 @@ class PostReportAttributeTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the comment of report 'Report' from '' to 'Comment with script'.",
+                description="Jenny Doe changed the comment of report 'Report' from '' to 'Comment with script'.",
             ),
             updated_report["delta"],
         )
@@ -109,7 +113,7 @@ class ReportIssueTrackerTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the type of the issue tracker of report 'Report' from "
+                description="Jenny Doe changed the type of the issue tracker of report 'Report' from "
                 "'jira' to 'azure_devops'.",
             ),
             updated_report["delta"],
@@ -132,7 +136,8 @@ class ReportIssueTrackerTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the url of the issue tracker of report 'Report' from '' to 'https://jira'.",
+                description="Jenny Doe changed the url of the issue tracker of report 'Report' from '' to "
+                "'https://jira'.",
             ),
             updated_report["delta"],
         )
@@ -148,7 +153,7 @@ class ReportIssueTrackerTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the username of the issue tracker of report 'Report' from "
+                description="Jenny Doe changed the username of the issue tracker of report 'Report' from "
                 "'jadoe' to 'jodoe'.",
             ),
             updated_report["delta"],
@@ -167,7 +172,7 @@ class ReportIssueTrackerTest(ReportTestCase):
             dict(
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
-                description="Jenny changed the password of the issue tracker of report 'Report' from "
+                description="Jenny Doe changed the password of the issue tracker of report 'Report' from "
                 "'******' to '**************'.",
             ),
             updated_report["delta"],
@@ -349,7 +354,7 @@ class ReportTest(ReportTestCase):
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
         self.assertEqual(
-            dict(uuids=[inserted[REPORT_ID]], email=JENNY["email"], description="Jenny created a new report."),
+            dict(uuids=[inserted[REPORT_ID]], email=JENNY["email"], description="Jenny Doe created a new report."),
             inserted["delta"],
         )
 
@@ -364,7 +369,7 @@ class ReportTest(ReportTestCase):
             dict(
                 uuids=sorted([REPORT_ID, inserted_report_uuid]),
                 email=JENNY["email"],
-                description="Jenny copied the report 'Report'.",
+                description="Jenny Doe copied the report 'Report'.",
             ),
             inserted_report["delta"],
         )
@@ -394,7 +399,7 @@ class ReportTest(ReportTestCase):
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual(
-            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny deleted the report 'Report'."),
+            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny Doe deleted the report 'Report'."),
             inserted["delta"],
         )
 

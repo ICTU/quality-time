@@ -51,12 +51,12 @@ def post_reports_overview_attribute(reports_attribute: str, database: Database):
     if new_value == old_value:
         return dict(ok=True)  # Nothing to do
 
-    user = sessions.user(database)
+    user = sessions.find_user(database)
 
     if reports_attribute == "permissions" and EDIT_REPORT_PERMISSION in new_value:
         report_editors = new_value[EDIT_REPORT_PERMISSION]
-        if len(report_editors) > 0 and user["user"] not in report_editors and user["email"] not in report_editors:
-            new_value[EDIT_REPORT_PERMISSION].append(user["user"])
+        if len(report_editors) > 0 and user.username not in report_editors and user.email not in report_editors:
+            new_value[EDIT_REPORT_PERMISSION].append(user.username)
 
     overview[reports_attribute] = new_value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{new_value}'"

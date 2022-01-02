@@ -87,16 +87,15 @@ def _prepare_documents_for_insertion(
 ) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    user = sessions.user(database) or {}
-    email = user.get("email", "")
-    username = user.get("user", "An operator")
+    user = sessions.find_user(database)
+    username = user.name() or "An operator"
     # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
     description = delta_description.replace("{user}", username, 1)
     for document in documents:
         if "_id" in document:
             del document["_id"]
         document["timestamp"] = now
-        document["delta"] = dict(description=description, email=email)
+        document["delta"] = dict(description=description, email=user.email)
         if uuids:
             document["delta"]["uuids"] = sorted(list(set(uuids)))
         for key, value in extra_attributes.items():
