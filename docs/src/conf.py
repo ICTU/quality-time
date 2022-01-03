@@ -25,7 +25,7 @@ create_metrics_and_sources_md.main()
 # -- Project information -----------------------------------------------------
 
 project = "Quality-time"
-copyright = "2021, ICTU"  # pylint: disable=redefined-builtin
+copyright = "2021-2022, ICTU"  # pylint: disable=redefined-builtin
 author = "ICTU"
 
 
