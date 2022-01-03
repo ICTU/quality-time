@@ -13,10 +13,6 @@ sphinx:
 formats:
    - pdf
 
-# Docker image to use, we need testing for Python 3.9.
-build:
-  image: testing
-
 # Optionally set the version of Python and requirements required to build your docs
 python:
    version: "3.10"
