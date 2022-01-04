@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Feed, Form, Icon, Segment } from 'semantic-ui-react';
+import { Button, Feed, Form, Header, Icon, Segment } from 'semantic-ui-react';
 import { get_changelog } from '../api/changelog';
 import { Avatar } from '../widgets/Avatar';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
@@ -45,11 +45,10 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
 
     return (
         <Form>
-            <div className="field" style={{ marginBottom: "0pt" }}>
-                <label>
-                    {scope} (most recent first)
-                </label>
-            </div>
+            <Header size="small">
+                {scope}
+                <Header.Subheader>Most recent first</Header.Subheader>
+            </Header>
             <Segment>
                 <Feed size="small">
                     {changes.map(change =>
