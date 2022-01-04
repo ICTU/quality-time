@@ -5,7 +5,7 @@ import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { DeleteButton, DownloadAsPDFButton, PermLinkButton } from '../widgets/Button';
 import { delete_report, set_report_attribute, set_report_issue_tracker_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
@@ -51,7 +51,7 @@ function ReportConfiguration({ report, reload }) {
     )
 }
 
-function ButtonRow({report_uuid, go_home, history}) {
+function ButtonRow({ report_uuid, go_home, history }) {
     return (
         <>
             <DownloadAsPDFButton report_uuid={report_uuid} history={history} />
@@ -172,11 +172,21 @@ function IssueTracker({ report_uuid, report, reload }) {
 
 export function ReportTitle({ report, go_home, history, reload }) {
     const report_uuid = report.report_uuid;
+    const reportUrl = `${window.location}`;
     const panes = [
         { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportConfiguration report={report} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><IssueTracker report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> }
+        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane> },
+        {
+            menuItem: <Menu.Item key="share"><Icon name="share square" /><FocusableTab>{'Share'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <Header size="small">
+                    Report permanent link
+                </Header>
+                <PermLinkButton url={reportUrl} />
+            </Tab.Pane>
+        }
     ]
     return (
         <HeaderWithDetails level="h1" header={report.title} subheader={report.subtitle}>

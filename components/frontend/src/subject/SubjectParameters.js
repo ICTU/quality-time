@@ -6,7 +6,7 @@ import { SubjectType } from './SubjectType';
 import { set_subject_attribute } from '../api/subject';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 
-export function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
+export function SubjectParameters({ subject, subject_uuid, subject_name, reload }) {
     return (
         <Grid stackable>
             <Grid.Row columns={3}>
