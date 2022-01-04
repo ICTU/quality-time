@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
-import { Grid, Header, Icon, Menu, Tab } from 'semantic-ui-react';
-import { Comment } from '../fields/Comment';
-import { StringInput } from '../fields/StringInput';
-import { SubjectType } from './SubjectType';
+import { Header, Icon, Menu, Tab } from 'semantic-ui-react';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
@@ -10,6 +7,7 @@ import { delete_subject, set_subject_attribute } from '../api/subject';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
+import { SubjectConfiguration } from './SubjectConfiguration';
 
 function SubjectHeader({ subject_type }) {
     return (
@@ -21,51 +19,6 @@ function SubjectHeader({ subject_type }) {
                 </Header.Subheader>
             </Header.Content>
         </Header>
-    )
-}
-
-function SubjectConfiguration({ subject, subject_uuid, subject_name, reload }) {
-    return (
-        <Grid stackable>
-            <Grid.Row columns={3}>
-                <Grid.Column>
-                    <SubjectType
-                        id={`${subject_uuid}-type`}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
-                        subject_type={subject.type}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id={`${subject_uuid}-title`}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Subject title"
-                        placeholder={subject_name}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
-                        value={subject.name}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id={`${subject_uuid}-subtitle`}
-                        label="Subject subtitle"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "subtitle", value, reload)}
-                        value={subject.subtitle}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Comment
-                        id={`${subject_uuid}-comment`}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
-                        value={subject.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
     )
 }
 
