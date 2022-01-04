@@ -2,5 +2,5 @@
 asserts==0.11.1
 behave==1.2.6
 gevent==21.12.0
-requests==2.26.0
+requests==2.27.0
 sseclient==0.0.27
