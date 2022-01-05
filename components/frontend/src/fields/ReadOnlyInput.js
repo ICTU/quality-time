@@ -12,7 +12,7 @@ export function ReadOnlyInput({ error, label, placeholder, prefix, required, val
             readOnly
             tabIndex={-1}
             type={type}
-            value={value}
+            value={value || ""}
         >
             {prefix ? <Label basic>{prefix}</Label> : null}
             <input />
