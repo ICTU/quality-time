@@ -1,17 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
+import { Icon, Label, Menu, Tab } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
-import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
-import { ChangeLog } from '../changelog/ChangeLog';
 import { get_source_name } from '../utils';
+import { MetricConfiguration } from './MetricConfiguration';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stop_sort, reload }) {
     return (
@@ -33,38 +32,6 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
                 setMeasurements(json.measurements);
             }
         })
-}
-
-function MetricConfiguration({ metric, metric_uuid, report, reload }) {
-    const dataModel = useContext(DataModel)
-    const metricType = dataModel.metrics[metric.type]
-    const panes = [
-        {
-            menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane>
-                <MetricParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
-            </Tab.Pane>
-        },
-        {
-            menuItem: <Menu.Item key='changelog'><Icon name="history" /><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane>
-                <ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />
-            </Tab.Pane>
-        }
-    ];
-    return (
-        <>
-            <Header>
-                <Header.Content>
-                    {metricType.name}
-                    <Header.Subheader>
-                        {metricType.description}
-                    </Header.Subheader>
-                </Header.Content>
-            </Header>
-            <Tab panes={panes} />
-        </>
-    )
 }
 
 export function MetricDetails({

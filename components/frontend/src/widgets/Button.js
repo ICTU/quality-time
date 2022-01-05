@@ -151,3 +151,21 @@ export function MoveButton(props) {
         <ActionAndItemPickerButton {...props} action="Move" icon="shuffle" />
     )
 }
+
+export function PermLinkButton( {url}) {
+    return (
+        <Button
+            basic
+            color='blue'
+            content='Copy'
+            icon='copy'
+            label={{ basic: true, color: "blue", content: url }}
+            labelPosition='left'
+            onClick={() => navigator.clipboard.writeText(url).then(function () {
+                show_message("success", 'Copied URL to clipboard')
+            }, function () {
+                show_message("error", 'Failed to copy URL to clipboard')
+            })}
+        />
+    )
+}

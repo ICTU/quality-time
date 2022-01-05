@@ -154,13 +154,20 @@ it('loads the changelog', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/report/report_uuid/5");
 });
 
+it('shows the share tab', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    fireEvent.click(screen.getByText(/Share/));
+    expect(screen.getAllByText(/Report permanent link/).length).toBe(1);
+})
+
 it('shows the notification destinations', async () => {
     await act(async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Notifications/));
-    });
+    fireEvent.click(screen.getByText(/Notifications/));
     expect(screen.getAllByText(/No notification destinations/).length).toBe(2);
 });

@@ -1,7 +1,8 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
+import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
+import * as toast from './toast';
 
 test('AddButton has the correct label', () => {
     render(<AddButton item_type="foo" />);
@@ -25,7 +26,9 @@ test('DeleteButton has the correct label', () => {
         await act(async () => {
             fireEvent.click(screen.getByText(new RegExp(`Copy ${item_type}`)));
         });
-        fireEvent.click(screen.getByText(/Item/));
+        await act(async () => {
+            fireEvent.click(screen.getByText(/Item/));
+        });
         expect(mockCallBack).toHaveBeenCalledWith("1");
     });
 
@@ -54,7 +57,9 @@ test('DeleteButton has the correct label', () => {
         await act(async () => {
             fireEvent.click(screen.getByText(new RegExp(`Move ${item_type}`)));
         });
-        fireEvent.click(screen.getByText(/Item/));
+        await act(async () => {
+            fireEvent.click(screen.getByText(/Item/));
+        });
         expect(mockCallBack).toHaveBeenCalledWith("1");
     });
 });
@@ -64,8 +69,6 @@ test("DownloadAsPDFButton has the correct label", () => {
     expect(screen.getAllByText(/report as pdf/).length).toBe(1);
 
 });
-
-jest.mock("../api/fetch_server_api.js")
 
 const test_report = { report_uuid: "report_uuid" };
 const history = { location: { search: "" } };
@@ -110,10 +113,12 @@ test("DownloadAsPDFButton stops loading after receiving error", async () => {
 });
 
 ["first", "last", "previous", "next"].forEach((direction) => {
-    test("ReorderButtonGroup calls the callback on click direction", () => {
+    test("ReorderButtonGroup calls the callback on click direction", async () => {
         const mockCallBack = jest.fn();
         render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />);
-        fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`));
+        await act(async () => {
+            fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`));
+        })
         expect(mockCallBack).toHaveBeenCalledWith(direction);
     });
 
@@ -123,4 +128,31 @@ test("DownloadAsPDFButton stops loading after receiving error", async () => {
         fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`));
         expect(mockCallBack).not.toHaveBeenCalled();
     });
+});
+
+test('PermLinkButton copies url to clipboard', () => {
+    Object.assign(navigator, { clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) } });
+    render(<PermLinkButton url="https://example.org" />)
+    fireEvent.click(screen.getByText(/example.org/));
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("https://example.org")
+});
+
+test("PermLinkButton shows success message", async () => {
+    toast.show_message = jest.fn();
+    Object.assign(navigator, { clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) } });
+    render(<PermLinkButton url="https://example.org" />)
+    await act(async () => {
+        fireEvent.click(screen.getByText(/example.org/));
+    })
+    expect(toast.show_message).toHaveBeenCalledWith("success", "Copied URL to clipboard")
+});
+
+test("PermLinkButton shows error message", async () => {
+    toast.show_message = jest.fn();
+    Object.assign(navigator, { clipboard: { writeText: jest.fn().mockImplementation(() => Promise.reject()) } });
+    render(<PermLinkButton url="https://example.org" />)
+    await act(async () => {
+        fireEvent.click(screen.getByText(/example.org/));
+    })
+    expect(toast.show_message).toHaveBeenCalledWith("error", "Failed to copy URL to clipboard")
 });
