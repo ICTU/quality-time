@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { Header, Icon, Menu, Tab } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { MetricParameters } from './MetricParameters';
-import { PermLinkButton } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { Share } from '../share/Share';
 
 export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
     const dataModel = useContext(DataModel)
@@ -25,12 +25,7 @@ export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
         },
         {
             menuItem: <Menu.Item key="share"><Icon name="share square" /><FocusableTab>{'Share'}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane>
-                <Header size="small">
-                    Metric permanent link
-                </Header>
-                <PermLinkButton url={metricUrl} />
-            </Tab.Pane>
+            render: () => <Tab.Pane><Share title="Metric permanent link" url={metricUrl} /></Tab.Pane>
         }
     ];
     return (

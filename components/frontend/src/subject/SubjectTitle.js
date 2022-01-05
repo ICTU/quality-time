@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { Header, Icon, Menu, Tab } from 'semantic-ui-react';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { DeleteButton, PermLinkButton, ReorderButtonGroup } from '../widgets/Button';
+import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { Share } from '../share/Share';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
@@ -41,16 +42,17 @@ export function SubjectTitle({ report, subject, subject_uuid, first_subject, las
     const subject_name = subject.name || current_subject_type.name;
     const subjectUrl = `${window.location}#${subject_uuid}`
     const panes = [
-        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><SubjectParameters subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane> },
+        {
+            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><SubjectParameters subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} /></Tab.Pane>
+        },
         {
             menuItem: <Menu.Item key="share"><Icon name="share square" /><FocusableTab>{'Share'}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane>
-                <Header size="small">
-                    Subject permanent link
-                </Header>
-                <PermLinkButton url={subjectUrl} />
-            </Tab.Pane>
+            render: () => <Tab.Pane><Share title="Subject permanent link" url={subjectUrl} /></Tab.Pane>
         }
     ];
     return (
