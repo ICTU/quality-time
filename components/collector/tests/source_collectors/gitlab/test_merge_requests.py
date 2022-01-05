@@ -127,3 +127,16 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         entities = [self.create_entity(1, approved="yes")]
         response = await self.collect_merge_requests(execute)
         self.assert_measurement(response, value="1", total="2", entities=entities, landing_url=self.LANDING_URL)
+
+    async def test_insufficient_permissions(self):
+        """Test that the collector returns a helpful error message if no merge request info is returned."""
+        merge_requests_json = dict(data=dict(project=None))
+        merge_request_fields_response = AsyncMock()
+        merge_requests_response = AsyncMock()
+        execute = AsyncMock(side_effect=[merge_request_fields_response, merge_requests_response])
+        merge_request_fields_response.json = AsyncMock(return_value=self.merge_request_fields_json(True))
+        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
+        response = await self.collect_merge_requests(execute)
+        self.assert_measurement(
+            response, landing_url=self.LANDING_URL, connection_error="Could not retrieve merge request info"
+        )

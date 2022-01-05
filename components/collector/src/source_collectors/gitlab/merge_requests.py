@@ -5,6 +5,7 @@ from typing import cast
 import aiohttp
 from aiogqlc import GraphQLClient
 
+from collector_utilities.exceptions import CollectorException
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
@@ -99,8 +100,14 @@ class GitLabMergeRequests(GitLabBase):
         merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
         response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
         json = await response.json()
-        page_info = json["data"]["project"]["mergeRequests"]["pageInfo"]
-        return response, page_info["hasNextPage"], page_info.get("endCursor", "")
+        if project := json["data"]["project"]:
+            page_info = project["mergeRequests"]["pageInfo"]
+            return response, page_info["hasNextPage"], page_info.get("endCursor", "")
+        raise CollectorException(
+            f'Could not retrieve merge request info for project \'{self._parameter("project")}\'. '
+            "Please check if the project (name with namespace or id) and private token (with read_api scope) are "
+            "configured correctly."
+        )
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests."""
