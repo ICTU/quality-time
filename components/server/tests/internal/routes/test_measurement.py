@@ -44,6 +44,7 @@ class PostMeasurementTests(unittest.TestCase):
             },
         )
         self.database.reports.find.return_value = [self.report]
+        self.database.reports.find_one.return_value = self.report
         self.data_model = dict(
             _id="",
             metrics=dict(metric_type=dict(direction="<", scales=["count"])),
