@@ -89,6 +89,7 @@ export function Subject({
                 <TrendTable
                     changed_fields={changed_fields}
                     hiddenColumns={hiddenColumns}
+                    toggleHiddenColumn={toggleHiddenColumn}
                     reportDate={report_date}
                     metrics={metrics}
                     measurements={measurements}

@@ -50,6 +50,7 @@ describe("MeasurementRow", () => {
                             measurements={measurements}
                             dates={dates}
                             reportDate={null}
+                            hiddenColumns={[]}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
                         />

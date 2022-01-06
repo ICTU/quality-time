@@ -27,6 +27,7 @@ function renderTrendTable(trendTableInterval) {
         <DataModel.Provider value={datamodel}>
             <TrendTable
                 reportDate={reportDate}
+                report={{}}
                 measurements={[]}
                 metrics={{ 1: metric, 2: metric2 }}
                 subject={{metrics: {1: metric, 2: metric2}}}
@@ -34,6 +35,7 @@ function renderTrendTable(trendTableInterval) {
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}
                 setTrendTableNrDates={() => {/*Dummy implementation*/ }}
+                hiddenColumns={[]}
                 visibleDetailsTabs={[]}
             />
         </DataModel.Provider>

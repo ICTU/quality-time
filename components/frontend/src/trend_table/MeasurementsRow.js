@@ -20,6 +20,7 @@ export function MeasurementsRow(
         reportDate,
         reports,
         subject_uuid,
+        hiddenColumns,
         visibleDetailsTabs,
         toggleVisibleDetailsTab,
         reload
@@ -76,7 +77,7 @@ export function MeasurementsRow(
             <Table.Cell style={style}>{metricName}</Table.Cell>
             {measurementCells}
             <Table.Cell style={style}>{unit}</Table.Cell>
-            <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>
+            {!hiddenColumns.includes("issues") && <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
         </TableRowWithDetails>
     )
 }
