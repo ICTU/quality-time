@@ -30,6 +30,7 @@ def measure(context, number, total="100"):
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
+            report_uuid=context.uuid["report"],
             has_error=False,
             sources=[
                 dict(
@@ -55,6 +56,7 @@ def measure_issue_status(context, issue_id, name):
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
+            report_uuid=context.uuid["report"],
             has_error=False,
             sources=[
                 dict(

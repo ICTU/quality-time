@@ -42,5 +42,9 @@ class MetricsTest(unittest.TestCase):
 
     def test_no_latest_metrics(self):
         """Test that None is returned for missing metrics."""
-        self.database.measurements.find.return_value = []
-        self.assertEqual(None, latest_metric(self.database, "report_uuid", MetricId("non-existing")))
+        self.assertIsNone(latest_metric(self.database, "report_uuid", MetricId("non-existing")))
+
+    def test_no_latest_report(self):
+        """Test that None is returned for missing metrics."""
+        self.database.reports.find_one.return_value = None
+        self.assertIsNone(latest_metric(self.database, "report_uuid", METRIC_ID))
