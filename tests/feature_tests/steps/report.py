@@ -5,7 +5,7 @@ import time
 import urllib
 from datetime import datetime, timezone
 
-from asserts import assert_equal, assert_is_none, assert_not_in
+from asserts import assert_equal, assert_not_in
 from behave import then, when
 
 
