@@ -21,6 +21,7 @@ def latest_report(database: Database, data_model, report_uuid: str) -> Report | 
     report_dict = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
     if report_dict:
         return Report(data_model, report_dict)
+    return None
 
 
 def latest_metric(database: Database, report_uuid: ReportId, metric_uuid: MetricId) -> Metric | None:
@@ -29,3 +30,4 @@ def latest_metric(database: Database, report_uuid: ReportId, metric_uuid: Metric
     report = latest_report(database, data_model, report_uuid)
     if report and metric_uuid in report.metric_uuids:
         return report.metrics_dict[metric_uuid]
+    return None

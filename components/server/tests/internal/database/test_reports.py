@@ -37,10 +37,10 @@ class MetricsTest(unittest.TestCase):
         ]
         self.assertEqual(
             Metric(self.data_model, dict(tags=[], type="metric_type"), METRIC_ID),
-            latest_metric(self.database, METRIC_ID),
+            latest_metric(self.database, "report_uuid", METRIC_ID),
         )
 
     def test_no_latest_metrics(self):
         """Test that None is returned for missing metrics."""
         self.database.measurements.find.return_value = []
-        self.assertEqual(None, latest_metric(self.database, MetricId("non-existing")))
+        self.assertEqual(None, latest_metric(self.database, "report_uuid", MetricId("non-existing")))
