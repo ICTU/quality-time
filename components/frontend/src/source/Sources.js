@@ -6,6 +6,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
+import { show_message } from '../widgets/toast';
 
 function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     const dataModel = useContext(DataModel);
@@ -51,6 +52,14 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         dataModel.metrics[metric.type].sources.includes(metric.sources[sourceUuid].type)
     );
+
+    const reload_source = (json) => {
+        if (json.affected !== undefined) {
+            show_message("success", `${json.affected} source(s) affected.`)
+        }
+        reload(json)
+    }
+
     const lastIndex = sourceUuids.length - 1;
     const sourceSegments = sourceUuids.map((sourceUuid, index) => {
         return (
@@ -63,7 +72,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
                 last_index={lastIndex}
                 measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 changed_fields={changed_fields}
-                reload={reload}
+                reload={reload_source}
             />
         )
     });
