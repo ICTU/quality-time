@@ -108,13 +108,15 @@ def change_source_parameter(data, parameter_key: str, old_value, new_value, scop
     Return the ids of the changed reports, subjects, metrics, and sources.
     """
     changed_ids: list[ItemId] = []
+    changed_source_uuids: set[ItemId] = set()
     for source, uuids in _sources_to_change(data, scope):
         if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
             old_value or None
         ):
             source["parameters"][parameter_key] = new_value
             changed_ids.extend(uuids)
-    return list(unique(changed_ids))
+            changed_source_uuids.add(uuids[-1])
+    return list(unique(changed_ids)), changed_source_uuids
 
 
 def _sources_to_change(data, scope: EditScope) -> Iterator:
