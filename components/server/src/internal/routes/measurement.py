@@ -14,9 +14,6 @@ from ..database.reports import latest_metric
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
-    from pprint import pprint
-
-    pprint(measurement_data)
     metric_uuid = measurement_data["metric_uuid"]
     if (metric := latest_metric(database, metric_uuid)) is None:
         return  # Metric does not exist, must've been deleted while being measured
