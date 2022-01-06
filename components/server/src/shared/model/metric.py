@@ -104,7 +104,7 @@ class Metric(dict):
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
 
-    def summarize(self, measurements: list[Measurement]):
+    def summarize(self, measurements: list[Measurement], **kwargs):
         """Add a summary of the metric to the report."""
         latest_measurement = measurements[-1] if measurements else None
         summary = dict(self)
@@ -115,4 +115,5 @@ class Metric(dict):
         summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
         if latest_measurement:
             summary["issue_status"] = self.issue_statuses(latest_measurement)
+        summary.update(kwargs)
         return summary
