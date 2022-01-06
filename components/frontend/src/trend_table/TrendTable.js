@@ -20,6 +20,7 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 export function TrendTable({
     changed_fields,
+    hiddenColumns,
     reportDate,
     metrics,
     measurements,
@@ -45,6 +46,7 @@ export function TrendTable({
             <TrendTableHeader
                 extraHamburgerItems={extraHamburgerItems}
                 columnDates={dates}
+                hiddenColumns={hiddenColumns}
                 trendTableInterval={trendTableInterval}
                 setTrendTableInterval={setTrendTableInterval}
                 trendTableNrDates={trendTableNrDates}

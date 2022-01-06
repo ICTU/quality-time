@@ -2,7 +2,7 @@ import { Dropdown, Table } from "semantic-ui-react";
 import { HamburgerMenu } from "../widgets/HamburgerMenu";
 import { pluralize } from "../utils";
 
-export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval }) {
+export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColumns, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval }) {
     return (
         <Table.Header>
             <Table.Row>
@@ -33,6 +33,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableN
                 <Table.HeaderCell>Metric</Table.HeaderCell>
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 <Table.HeaderCell>Unit</Table.HeaderCell>
+                {!hiddenColumns.includes("issues") && <Table.HeaderCell>Issues</Table.HeaderCell>}
             </Table.Row>
         </Table.Header>
     )

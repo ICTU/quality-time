@@ -12,7 +12,7 @@ export function SubjectFooter({ subject, subjectUuid, reload, reports, resetSort
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Table.Footer>
                 <Table.Row>
-                    <Table.HeaderCell colSpan='10'>
+                    <Table.HeaderCell colSpan='11'>
                         <AddButton item_type="metric" onClick={() => {
                             resetSortColumn()
                             add_metric(subjectUuid, reload);

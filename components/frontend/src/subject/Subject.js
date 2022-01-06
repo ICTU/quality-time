@@ -88,6 +88,7 @@ export function Subject({
             {subjectTrendTable ?
                 <TrendTable
                     changed_fields={changed_fields}
+                    hiddenColumns={hiddenColumns}
                     reportDate={report_date}
                     metrics={metrics}
                     measurements={measurements}
