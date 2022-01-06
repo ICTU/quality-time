@@ -37,7 +37,6 @@ class MetricTest(unittest.TestCase):
 
         measurement_timestamp = iso_timestamp()
         measurement = Measurement(metric, count={"value": 1, "start": measurement_timestamp})
-        self.maxDiff = None
 
         result = metric.summarize([measurement])
         self.assertDictEqual(
