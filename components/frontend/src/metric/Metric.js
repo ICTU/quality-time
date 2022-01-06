@@ -19,10 +19,9 @@ function MeasurementValue({ metric }) {
     const metricValue = get_metric_value(metric)
     const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
     const valueText = <span>{value + metricUnit}</span>
-    console.log(metric)
     if (metric.latest_measurement) {
         return (
-            <Popup trigger={valueText} flowing hoverable>
+            <Popup  data-testid="value-popup" trigger={valueText} flowing hoverable>
                 <TimeAgoWithDate date={metric.latest_measurement.end}>{metric.status ? "Metric was last measured":"Last measurement attempt"}</TimeAgoWithDate><br />
                 <TimeAgoWithDate date={metric.latest_measurement.start}>{metric.status ? "Value was first measured":"Value unknown since"}</TimeAgoWithDate>
             </Popup>
