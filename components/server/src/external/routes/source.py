@@ -142,15 +142,16 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
-    changed_ids, changed_source_ids = change_source_parameter(data, parameter_key, old_value, new_value, edit_scope)
+    changed_ids_and_source_ids = change_source_parameter(data, parameter_key, old_value, new_value, edit_scope)
 
     if is_password_parameter(data.datamodel, data.source["type"], parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
-    delta_description = f"{{user}} changed the {parameter_key} of {_source_description(data, edit_scope, parameter_key, old_value)} from '{old_value}' to '{new_value}'."
-    reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
-    result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
-    result["affected"] = len(changed_source_ids)
+    description = _source_description(data, edit_scope, parameter_key, old_value)
+    delta_description = f"{{user}} changed the {parameter_key} of {description} from '{old_value}' to '{new_value}'."
+    reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids_and_source_ids[0]]
+    result = insert_new_report(database, delta_description, changed_ids_and_source_ids[0], *reports_to_insert)
+    result["affected"] = len(changed_ids_and_source_ids[1])
 
     if availability_checks := _availability_checks(data, parameter_key):
         result["availability"] = availability_checks
