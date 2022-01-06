@@ -147,10 +147,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     if is_password_parameter(data.datamodel, data.source["type"], parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
-    source_description = _source_description(data, edit_scope, parameter_key, old_value)
-    delta_description = (
-        f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
-    )
+    delta_description = f"{{user}} changed the {parameter_key} of {_source_description(data, edit_scope, parameter_key, old_value)} from '{old_value}' to '{new_value}'."
     reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
     result["affected"] = len(changed_source_ids)
