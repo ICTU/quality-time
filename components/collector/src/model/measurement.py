@@ -57,6 +57,7 @@ class MetricMeasurement:  # pylint: disable=too-few-public-methods
         self.issue_statuses = issue_statuses
         self.has_error = any(source.has_error() for source in sources)
         self.metric_uuid: str | None = None
+        self.report_uuid: str | None = None
 
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""
@@ -64,6 +65,7 @@ class MetricMeasurement:  # pylint: disable=too-few-public-methods
             sources=[source.as_dict() for source in self.sources],
             has_error=self.has_error,
             metric_uuid=self.metric_uuid,
+            report_uuid=self.report_uuid,
         )
         if self.issue_statuses:
             measurement["issue_status"] = [issue_status.as_dict() for issue_status in self.issue_statuses]
