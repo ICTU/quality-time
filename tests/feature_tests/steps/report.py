@@ -88,7 +88,7 @@ def check_json(context):
 
 
 @then("the client receives no json")
-def check_json(context):
+def check_no_json(context):
     """Check the json."""
     assert_equal(404, context.response.status_code)
 
