@@ -160,6 +160,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
 
         encrypt_credentials(data_model, public_key, report)
         return report
+    bottle.response.status = 404
     return None
 
 

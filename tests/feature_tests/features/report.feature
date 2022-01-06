@@ -62,6 +62,10 @@ Feature: report
     And the client downloads the report as json
     Then the client receives the json
 
+  Scenario: export nonexisting report as json
+    When the client downloads the report non_existing_report_uuid as json
+    Then the client receives no json
+
   Scenario: export report as json with own public key
     When the client creates a report
     And the client creates a subject
