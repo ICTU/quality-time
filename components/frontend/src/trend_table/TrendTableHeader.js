@@ -1,14 +1,21 @@
 import { Dropdown, Table } from "semantic-ui-react";
-import { HamburgerMenu } from "../widgets/HamburgerMenu";
+import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
 import { pluralize } from "../utils";
 
-export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval }) {
+export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColumns, toggleHiddenColumn, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval }) {
     return (
         <Table.Header>
             <Table.Row>
                 <Table.HeaderCell textAlign="center">
                     <HamburgerMenu>
                         {extraHamburgerItems}
+                        <Dropdown.Item key="columns">
+                            <Dropdown text="Toggle visibility of columns">
+                                <Dropdown.Menu>
+                                    <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Dropdown.Item>
                         <Dropdown.Item key="nr_dates">
                             <Dropdown text="Number of dates">
                                 <Dropdown.Menu>
@@ -33,6 +40,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableN
                 <Table.HeaderCell>Metric</Table.HeaderCell>
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 <Table.HeaderCell>Unit</Table.HeaderCell>
+                {!hiddenColumns.includes("issues") && <Table.HeaderCell>Issues</Table.HeaderCell>}
             </Table.Row>
         </Table.Header>
     )

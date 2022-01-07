@@ -20,6 +20,8 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 export function TrendTable({
     changed_fields,
+    hiddenColumns,
+    toggleHiddenColumn,
     reportDate,
     metrics,
     measurements,
@@ -45,6 +47,8 @@ export function TrendTable({
             <TrendTableHeader
                 extraHamburgerItems={extraHamburgerItems}
                 columnDates={dates}
+                hiddenColumns={hiddenColumns}
+                toggleHiddenColumn={toggleHiddenColumn}
                 trendTableInterval={trendTableInterval}
                 setTrendTableInterval={setTrendTableInterval}
                 trendTableNrDates={trendTableNrDates}
@@ -64,6 +68,7 @@ export function TrendTable({
                             reports={reports}
                             subject_uuid={subject_uuid}
                             measurements={measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)}
+                            hiddenColumns={hiddenColumns}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             reload={reload}

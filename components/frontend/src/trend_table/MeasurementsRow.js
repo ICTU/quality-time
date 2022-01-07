@@ -1,10 +1,11 @@
+import { useContext } from "react";
 import { Table } from "semantic-ui-react";
-import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
+import { DataModel } from "../context/DataModel";
 import { MetricDetails } from '../metric/MetricDetails';
+import { IssueStatus } from '../metric/IssueStatus';
+import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { formatMetricScale, formatMetricUnit, format_minutes, get_metric_name } from "../utils";
 import './TrendTable.css';
-import { useContext } from "react";
-import { DataModel } from "../context/DataModel";
 
 export function MeasurementsRow(
     {
@@ -19,6 +20,7 @@ export function MeasurementsRow(
         reportDate,
         reports,
         subject_uuid,
+        hiddenColumns,
         visibleDetailsTabs,
         toggleVisibleDetailsTab,
         reload
@@ -75,6 +77,7 @@ export function MeasurementsRow(
             <Table.Cell style={style}>{metricName}</Table.Cell>
             {measurementCells}
             <Table.Cell style={style}>{unit}</Table.Cell>
+            {!hiddenColumns.includes("issues") && <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
         </TableRowWithDetails>
     )
 }
