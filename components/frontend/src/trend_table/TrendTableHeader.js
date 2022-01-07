@@ -21,8 +21,9 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, trendTableN
                         <Dropdown.Item key="time_between_dates">
                             <Dropdown text="Time between dates">
                                 <Dropdown.Menu>
-                                    {[1, 2, 3, 4].map((nr) =>
-                                        <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr} ${pluralize("week", nr)}`}</Dropdown.Item>
+                                    <Dropdown.Item key={1} active={1 === trendTableInterval} onClick={() => setTrendTableInterval(1)}>1 day</Dropdown.Item>
+                                    {[7, 14, 21, 28].map((nr) =>
+                                        <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr/7} ${pluralize("week", nr/7)}`}</Dropdown.Item>
                                     )}
                                 </Dropdown.Menu>
                             </Dropdown>
