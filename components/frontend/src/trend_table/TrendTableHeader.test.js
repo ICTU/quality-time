@@ -6,7 +6,7 @@ import { TrendTableHeader } from './TrendTableHeader';
 function renderTrendTableHeader(setTrendTableInterval) {
     return render(
         <Table>
-            <TrendTableHeader columnDates={[]} setTrendTableInterval={setTrendTableInterval} />
+            <TrendTableHeader hiddenColumns={[]} columnDates={[]} setTrendTableInterval={setTrendTableInterval} />
         </Table>
     )
 }
