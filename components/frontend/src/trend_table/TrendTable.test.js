@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { TrendTable } from '../trend_table/TrendTable';
 import { DataModel } from '../context/DataModel';
 
@@ -22,83 +22,53 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-it('calculates weekly column dates correctly', () => {
-    const { queryAllByText } = render(
-        <DataModel.Provider value={datamodel}>
-            <TrendTable
-                reportDate={reportDate}
-                measurements={[]}
-                metrics={{ 1: metric }}
-                subject={{metrics: {1: metric}}}
-                trendTableInterval={7}
-                trendTableNrDates={3}
-                setTrendTableInterval={() => {/*Dummy implementation*/ }}
-                setTrendTableNrDates={() => {/*Dummy implementation*/ }}
-                visibleDetailsTabs={[]}
-            />
-        </DataModel.Provider>
-
-    );
-
-    const expectedDates = [
-        new Date("2020-01-01T00:00:00+00:00"),
-        new Date("2020-01-08T00:00:00+00:00"),
-        new Date("2020-01-15T00:00:00+00:00"),
-    ]
-
-    expectedDates.forEach(date => {
-        expect(queryAllByText(date.toLocaleDateString()).length).toBe(1)
-    })
-});
-
-it('calculates daily column dates correctly', () => {
-    const { queryAllByText } = render(
-        <DataModel.Provider value={datamodel}>
-            <TrendTable
-                reportDate={reportDate}
-                measurements={[]}
-                metrics={{ 1: metric }}
-                subject={{metrics: {1: metric}}}
-                trendTableInterval={1}
-                trendTableNrDates={3}
-                setTrendTableInterval={() => {/*Dummy implementation*/ }}
-                setTrendTableNrDates={() => {/*Dummy implementation*/ }}
-                visibleDetailsTabs={[]}
-            />
-        </DataModel.Provider>
-
-    );
-
-    const expectedDates = [
-        new Date("2020-01-13T00:00:00+00:00"),
-        new Date("2020-01-14T00:00:00+00:00"),
-        new Date("2020-01-15T00:00:00+00:00"),
-    ]
-
-    expectedDates.forEach(date => {
-        expect(queryAllByText(date.toLocaleDateString()).length).toBe(1)
-    })
-});
-
-it('displays all the metrics', () => {
-    const { queryAllByText } = render(
+function renderTrendTable(trendTableInterval) {
+    return render(
         <DataModel.Provider value={datamodel}>
             <TrendTable
                 reportDate={reportDate}
                 measurements={[]}
                 metrics={{ 1: metric, 2: metric2 }}
                 subject={{metrics: {1: metric, 2: metric2}}}
-                trendTableInterval={7}
+                trendTableInterval={trendTableInterval}
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}
                 setTrendTableNrDates={() => {/*Dummy implementation*/ }}
                 visibleDetailsTabs={[]}
             />
         </DataModel.Provider>
-    );
 
+    );
+}
+
+it('calculates weekly column dates correctly', () => {
+    renderTrendTable(7)
+    const expectedDates = [
+        new Date("2020-01-01T00:00:00+00:00"),
+        new Date("2020-01-08T00:00:00+00:00"),
+        new Date("2020-01-15T00:00:00+00:00"),
+    ]
+    expectedDates.forEach(date => {
+        expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
+    })
+});
+
+it('calculates daily column dates correctly', () => {
+    renderTrendTable(1)
+    const expectedDates = [
+        new Date("2020-01-13T00:00:00+00:00"),
+        new Date("2020-01-14T00:00:00+00:00"),
+        new Date("2020-01-15T00:00:00+00:00"),
+    ]
+    expectedDates.forEach(date => {
+        expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
+    })
+});
+
+it('displays all the metrics', () => {
+    renderTrendTable(7)
     const metricNames = ["name_1", "name_2"]
     metricNames.forEach(metricName => {
-        expect(queryAllByText(metricName).length).toBe(1)
+        expect(screen.queryAllByText(metricName).length).toBe(1)
     })
 });
