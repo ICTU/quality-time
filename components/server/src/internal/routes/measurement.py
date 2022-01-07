@@ -15,7 +15,7 @@ def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
     metric_uuid = measurement_data["metric_uuid"]
-    report_uuid = measurement_data.get("report_uuid", "")
+    report_uuid = measurement_data["report_uuid"]
     if (metric := latest_metric(database, report_uuid, metric_uuid)) is None:
         return  # Metric does not exist, must've been deleted while being measured
     latest = latest_measurement(database, metric)

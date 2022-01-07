@@ -64,7 +64,7 @@ class PostMeasurementTests(unittest.TestCase):
             sources=[self.source(value="0"), self.source(source_uuid=SOURCE_ID2)],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
-        self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
+        self.posted_measurement = dict(report_uuid=REPORT_ID, metric_uuid=METRIC_ID, sources=[])
 
     @staticmethod
     def source(*, source_uuid=SOURCE_ID, value="1", entities=None, entity_user_data=None, connection_error=None):
@@ -82,7 +82,9 @@ class PostMeasurementTests(unittest.TestCase):
     @staticmethod
     def measurement(*, metric_uuid=METRIC_ID, sources=None, start="2019-01-01", end="2019-01-01", **scales):
         """Return a measurement."""
-        return dict(metric_uuid=metric_uuid, sources=sources or [], start=start, end=end, **scales)
+        return dict(
+            report_uuid=REPORT_ID, metric_uuid=metric_uuid, sources=sources or [], start=start, end=end, **scales
+        )
 
     @staticmethod
     def scale_measurement(
