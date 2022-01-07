@@ -4,8 +4,10 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Sources } from './Sources';
 import * as fetch_server_api from '../api/fetch_server_api';
+import * as toast from '../widgets/toast';
 
 jest.mock("../api/fetch_server_api.js")
+jest.mock("../widgets/toast.js")
 
 const dataModel = {
     metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },
@@ -129,4 +131,27 @@ it('moves a source', async () => {
         fireEvent.click(screen.getByText(/Source 2/))
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/other_source_uuid/move/metric_uuid", {});
+})
+
+it('updates a parameter of a source', async () => {
+    const metric = { type: "metric_type", sources: { source_uuid: { name: "Source 1", type: "source_type1", parameters: {url: "http://test.nl" } } } }
+    reports[0].subjects.subject_uuid.metrics.metric_uuid = metric
+    dataModel.sources.source_type1.parameters = {url: {type: "url", metrics: ["metric_type"]}}
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_updated: 1 });
+    render_sources(
+        {
+            metric_uuid: "metric_uuid",
+            metric: metric,
+            reports: reports,
+            report: reports[0]
+        }
+    )
+    await act(async () => {
+        fireEvent.change(screen.getByDisplayValue('http://test.nl'), {target: {value: 'some other url'}})
+    })
+    await act(async () => {
+        fireEvent.click(screen.getByDisplayValue('Source 1 '))
+    })
+    expect(screen.getAllByDisplayValue('some other url').length).toBe(1)
+    expect(toast.show_message).toHaveBeenCalledTimes(1)
 })
