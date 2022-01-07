@@ -22,7 +22,7 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-it('calculates column dates correctly', () => {
+it('calculates weekly column dates correctly', () => {
     const { queryAllByText } = render(
         <DataModel.Provider value={datamodel}>
             <TrendTable
@@ -43,6 +43,35 @@ it('calculates column dates correctly', () => {
     const expectedDates = [
         new Date("2020-01-01T00:00:00+00:00"),
         new Date("2020-01-08T00:00:00+00:00"),
+        new Date("2020-01-15T00:00:00+00:00"),
+    ]
+
+    expectedDates.forEach(date => {
+        expect(queryAllByText(date.toLocaleDateString()).length).toBe(1)
+    })
+});
+
+it('calculates daily column dates correctly', () => {
+    const { queryAllByText } = render(
+        <DataModel.Provider value={datamodel}>
+            <TrendTable
+                reportDate={reportDate}
+                measurements={[]}
+                metrics={{ 1: metric }}
+                subject={{metrics: {1: metric}}}
+                trendTableInterval={1}
+                trendTableNrDates={3}
+                setTrendTableInterval={() => {/*Dummy implementation*/ }}
+                setTrendTableNrDates={() => {/*Dummy implementation*/ }}
+                visibleDetailsTabs={[]}
+            />
+        </DataModel.Provider>
+
+    );
+
+    const expectedDates = [
+        new Date("2020-01-13T00:00:00+00:00"),
+        new Date("2020-01-14T00:00:00+00:00"),
         new Date("2020-01-15T00:00:00+00:00"),
     ]
 
