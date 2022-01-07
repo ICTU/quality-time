@@ -1,6 +1,6 @@
 """Step implementations for sources."""
 
-from asserts import assert_equal, assert_false, assert_not_equal, assert_in, assert_true
+from asserts import assert_equal, assert_not_equal, assert_in, assert_true
 from behave import then, when
 
 from item import get_item
