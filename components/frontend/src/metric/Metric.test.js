@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Metric } from './Metric';
 import { DataModel } from '../context/DataModel';
 
@@ -83,4 +83,23 @@ it('renders the minutes as percentage', () => {
     render_metric("stability");
     expect(screen.getAllByText(/50% minutes/).length).toBe(1);
     expect(screen.getAllByText(/≦ 0% minutes/).length).toBe(1);
+});
+
+it('renders correct popups with status', async () => {
+    render_metric("violations");
+    fireEvent.mouseOver(screen.getByText(/50 violations/));
+
+    await waitFor(() => screen.getByText(/Metric was last measured/))
+    expect(screen.getAllByText(/Metric was last measured/).length).toBe(1);
+    expect(screen.getAllByText(/Value was first measured/).length).toBe(1);
+});
+
+it('renders correct popups without status', async () => {
+    report.subjects.subject_uuid.metrics.violations.status = null;
+    render_metric("violations");
+    fireEvent.mouseOver(screen.getByText(/50 violations/));
+
+    await waitFor(() => screen.getByText(/Last measurement attempt/))
+    expect(screen.getAllByText(/Last measurement attempt/).length).toBe(1);
+    expect(screen.getAllByText(/Value unknown since/).length).toBe(1);
 });

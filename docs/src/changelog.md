@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Changed
 
 - Use users' full name instead of their username in the change log so it's easier to see who changed what. Closes [#2930](https://github.com/ICTU/quality-time/issues/2930).
+- Improved tooltips for the measurement column in the metrics details table. Closes [#3171](https://github.com/ICTU/quality-time/issues/3171).
 
 ### Added
 
