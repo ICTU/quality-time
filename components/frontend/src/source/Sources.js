@@ -54,7 +54,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     );
 
     const reload_source = (json) => {
-        if (json.affected !== undefined) {
+        if (json.nr_sources_updated !== undefined) {
             show_message("success", `${json.affected} source(s) affected.`)
         }
         reload(json)

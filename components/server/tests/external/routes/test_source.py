@@ -174,7 +174,7 @@ class PostSourceParameterTest(SourceTestCase):
         availability = dict(
             status_code=status_code, reason=status_code_reason, source_uuid=SOURCE_ID, parameter_key="url"
         )
-        self.assertEqual(dict(ok=True, availability=[availability], affected=1), response)
+        self.assertEqual(dict(ok=True, availability=[availability], nr_sources_updated=1), response)
 
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Extend to set up fixed parameters."""
@@ -262,7 +262,7 @@ class PostSourceParameterTest(SourceTestCase):
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assertEqual(response, dict(ok=True, affected=1))
+        self.assertEqual(response, dict(ok=True, nr_sources_updated=1))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_not_called()
 
@@ -271,7 +271,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = dict(url="")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assertEqual(response, dict(ok=True, affected=1))
+        self.assertEqual(response, dict(ok=True, nr_sources_updated=1))
         self.database.reports.insert_one.assert_called_once_with(self.report)
 
     @patch.object(requests, "get")
@@ -300,7 +300,7 @@ class PostSourceParameterTest(SourceTestCase):
         """Test that the password can be changed and is not logged."""
         request.json = dict(url="unimportant", password="secret")
         response = post_source_parameter(SOURCE_ID, "password", self.database)
-        self.assertEqual(response, dict(ok=True, affected=1))
+        self.assertEqual(response, dict(ok=True, nr_sources_updated=1))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
@@ -323,7 +323,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(["D"], parameters["choices"])
         request.json = dict(choices=["A", "D"])
         response = post_source_parameter(SOURCE_ID, "choices", self.database)
-        self.assertEqual(response, dict(ok=True, affected=1))
+        self.assertEqual(response, dict(ok=True, nr_sources_updated=1))
         self.assertEqual(["A"], parameters["choices"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
 
@@ -335,7 +335,7 @@ class PostSourceParameterTest(SourceTestCase):
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
         request.json = dict(choices_with_addition=[r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"])
         response = post_source_parameter(SOURCE_ID, "choices_with_addition", self.database)
-        self.assertEqual(response, dict(ok=True, affected=1))
+        self.assertEqual(response, dict(ok=True, nr_sources_updated=1))
         self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["choices_with_addition"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
@@ -412,7 +412,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = dict(username=self.NEW_VALUE, edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual(dict(ok=True, affected=5), response)
+        self.assertEqual(dict(ok=True, nr_sources_updated=5), response)
         self.database.reports.insert_many.assert_called_once_with((self.report, self.report2), ordered=False)
         self.assert_value(
             {
@@ -448,7 +448,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = dict(username=self.NEW_VALUE, edit_scope="report")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual(dict(ok=True, affected=4), response)
+        self.assertEqual(dict(ok=True, nr_sources_updated=4), response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
@@ -470,7 +470,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = dict(username=self.NEW_VALUE, edit_scope="subject")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual(dict(ok=True, affected=3), response)
+        self.assertEqual(dict(ok=True, nr_sources_updated=3), response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
@@ -489,7 +489,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = dict(username=self.NEW_VALUE, edit_scope="metric")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual(dict(ok=True, affected=2), response)
+        self.assertEqual(dict(ok=True, nr_sources_updated=2), response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
