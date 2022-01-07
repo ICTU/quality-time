@@ -8,13 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.31.0-rc.5 - 2022-01-06
+## [Unreleased]
 
 ### Fixed
 
 - The dropdown menu for determining the scope of parameter changes (Apply change to source/metric/etc.) would not appear when clicking the "Apply change to" part of the label. Fixes [#3112](https://github.com/ICTU/quality-time/issues/3112).
 - OWASP ZAP uses a non-standard versioning scheme (D-year-month-day) for its weekly versions, be prepared. Fixes [#3117](https://github.com/ICTU/quality-time/issues/3117).
 - Show a more informative error message if no merge request information can be retrieved from GitLab for the 'merge requests' metric. Fixes [#3166](https://github.com/ICTU/quality-time/issues/3166).
+- When sorting metrics by status, order by how urgent action is required: 'unknown' (white), 'target not met' (red), 'near target met' (yellow), 'technical debt accepted' (grey), 'target met' (green). Fixes [#3184](https://github.com/ICTU/quality-time/issues/3184).
 
 ### Changed
 
