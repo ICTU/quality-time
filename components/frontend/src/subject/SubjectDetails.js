@@ -68,7 +68,7 @@ function SubjectTableHeader({ hiddenColumns, toggleHiddenColumn, sortColumn, sor
 }
 
 function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
-    const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
+    const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4" };
     const sorters = {
         name: (m1, m2) => {
             const attribute1 = get_metric_name(m1[1], datamodel);
