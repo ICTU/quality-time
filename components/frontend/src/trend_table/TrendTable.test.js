@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { TrendTable } from '../trend_table/TrendTable';
 import { DataModel } from '../context/DataModel';
+import { TrendTable } from './TrendTable';
 
 const metric = {
     unit: "testUnit",
