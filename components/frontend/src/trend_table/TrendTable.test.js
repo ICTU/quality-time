@@ -30,7 +30,7 @@ it('calculates column dates correctly', () => {
                 measurements={[]}
                 metrics={{ 1: metric }}
                 subject={{metrics: {1: metric}}}
-                trendTableInterval={1}
+                trendTableInterval={7}
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}
                 setTrendTableNrDates={() => {/*Dummy implementation*/ }}
@@ -59,7 +59,7 @@ it('displays all the metrics', () => {
                 measurements={[]}
                 metrics={{ 1: metric, 2: metric2 }}
                 subject={{metrics: {1: metric, 2: metric2}}}
-                trendTableInterval={1}
+                trendTableInterval={7}
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}
                 setTrendTableNrDates={() => {/*Dummy implementation*/ }}

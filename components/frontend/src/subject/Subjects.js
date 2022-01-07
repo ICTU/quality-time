@@ -25,7 +25,7 @@ export function Subjects({
     const [visibleDetailsTabs, toggleVisibleDetailsTab] = useURLSearchQuery(history, "tabs", "array");
     const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean", false)
     const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
-    const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 1);
+    const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 7);
     const last_index = Object.keys(report.subjects).length - 1;
     return (
         <>

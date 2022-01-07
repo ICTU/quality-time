@@ -7,7 +7,7 @@ import { TrendTableHeader } from './TrendTableHeader';
 
 function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
     const baseDate = report_date ? new Date(report_date) : new Date();
-    const intervalLength = trendTableInterval * 7;  // trendTableInterval is in weeks, convert to days
+    const intervalLength = trendTableInterval;  // trendTableInterval is in days
     const columnDates = []
     for (let offset = 0; offset < trendTableNrDates * intervalLength; offset += intervalLength) {
         let date = new Date(baseDate.getTime());
