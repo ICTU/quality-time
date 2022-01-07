@@ -21,7 +21,7 @@ function MeasurementValue({ metric }) {
     const valueText = <span>{value + metricUnit}</span>
     if (metric.latest_measurement) {
         return (
-            <Popup  data-testid="value-popup" trigger={valueText} flowing hoverable>
+            <Popup trigger={valueText} flowing hoverable>
                 <TimeAgoWithDate date={metric.latest_measurement.end}>{metric.status ? "Metric was last measured":"Last measurement attempt"}</TimeAgoWithDate><br />
                 <TimeAgoWithDate date={metric.latest_measurement.start}>{metric.status ? "Value was first measured":"Value unknown since"}</TimeAgoWithDate>
             </Popup>
