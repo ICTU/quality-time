@@ -1,6 +1,6 @@
 """Step implementations for sources."""
 
-from asserts import assert_equal, assert_false, assert_not_equal, assert_in
+from asserts import assert_equal, assert_false, assert_not_equal, assert_in, assert_true
 from behave import then, when
 
 from item import get_item
@@ -38,7 +38,9 @@ def check_source_parameter_availability_status_code(context, status_code):
     """Check the availability status code."""
     post_response = context.post_response.json()
     if status_code == "None":
-        assert_false("availability" in post_response)
+        assert_true("availability" not in post_response)
+    elif status_code == "[]":
+        assert_equal(len(post_response["availability"]), 0)
     else:
         assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
 
