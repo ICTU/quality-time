@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Dropdown, Table } from 'semantic-ui-react';
+import { Dropdown, Icon, Table } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { Metric } from '../metric/Metric';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
@@ -12,18 +12,17 @@ function HamburgerHeader({ hiddenColumns, toggleHiddenColumn, extraHamburgerItem
             <HamburgerMenu>
                 {extraHamburgerItems}
                 <Dropdown.Item key="columns">
-                    <Dropdown text="Toggle visibility of columns">
-                        <Dropdown.Menu>
-                            <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
+                    <Dropdown.Menu>
+                        <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                        <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    </Dropdown.Menu>
                 </Dropdown.Item>
             </HamburgerMenu>
         </Table.HeaderCell>

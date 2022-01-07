@@ -1,4 +1,4 @@
-import { Dropdown, Table } from "semantic-ui-react";
+import { Dropdown, Icon, Table } from "semantic-ui-react";
 import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
 import { pluralize } from "../utils";
 
@@ -17,23 +17,21 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                             </Dropdown>
                         </Dropdown.Item>
                         <Dropdown.Item key="nr_dates">
-                            <Dropdown text="Number of dates">
-                                <Dropdown.Menu>
-                                    {[2, 3, 4, 5, 6, 7].map((nr) =>
-                                        <Dropdown.Item key={nr} active={nr === trendTableNrDates} onClick={() => setTrendTableNrDates(nr)}>{nr}</Dropdown.Item>
-                                    )}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <Icon name='dropdown' /><span className='text'>Numer of dates</span>
+                            <Dropdown.Menu>
+                                {[2, 3, 4, 5, 6, 7].map((nr) =>
+                                    <Dropdown.Item key={nr} active={nr === trendTableNrDates} onClick={() => setTrendTableNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Dropdown.Item>
+                                )}
+                            </Dropdown.Menu>
                         </Dropdown.Item>
                         <Dropdown.Item key="time_between_dates">
-                            <Dropdown text="Time between dates">
-                                <Dropdown.Menu>
-                                    <Dropdown.Item key={1} active={1 === trendTableInterval} onClick={() => setTrendTableInterval(1)}>1 day</Dropdown.Item>
-                                    {[7, 14, 21, 28].map((nr) =>
-                                        <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr/7} ${pluralize("week", nr/7)}`}</Dropdown.Item>
-                                    )}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <Icon name='dropdown' /><span className='text'>Time between dates</span>
+                            <Dropdown.Menu>
+                                <Dropdown.Item key={1} active={1 === trendTableInterval} onClick={() => setTrendTableInterval(1)}>1 day</Dropdown.Item>
+                                {[7, 14, 21, 28].map((nr) =>
+                                    <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr/7} ${pluralize("week", nr/7)}`}</Dropdown.Item>
+                                )}
+                            </Dropdown.Menu>
                         </Dropdown.Item>
                     </HamburgerMenu>
                 </Table.HeaderCell>

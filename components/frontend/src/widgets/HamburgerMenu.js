@@ -12,7 +12,7 @@ export function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 
 export function HamburgerMenu({ children }) {
     return (
-        <Dropdown className="HamburgerMenu" openOnFocus={false} item icon='sidebar'>
+        <Dropdown className="HamburgerMenu" item icon='sidebar' simple>
             <Dropdown.Menu>
                 {children}
             </Dropdown.Menu>
