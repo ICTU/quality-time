@@ -1,2 +1,0 @@
-requests==2.27.1  # Dependencies of requests can't be hashed?
-selenium==4.1.0
