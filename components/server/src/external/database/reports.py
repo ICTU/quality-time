@@ -105,9 +105,7 @@ def _prepare_documents_for_insertion(
 def latest_report(database: Database, data_model, report_uuid: str) -> Report | None:
     """Get latest report with this uuid."""
     report_dict = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    if report_dict:
-        return Report(data_model, report_dict)
-    return None
+    return Report(data_model, report_dict) if report_dict else None
 
 
 # Sort order:
