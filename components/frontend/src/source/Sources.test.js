@@ -135,7 +135,7 @@ it('moves a source', async () => {
 })
 
 it('updates a parameter of a source', async () => {
-    const metric = { type: "metric_type", sources: { source_uuid: { name: "Source 1", type: "source_type1", parameters: {url: "http://test.nl" } } } }
+    const metric = { type: "metric_type", sources: { source_uuid: { name: "Source 1", type: "source_type1", parameters: {url: "https://test.nl" } } } }
     reports[0].subjects.subject_uuid.metrics.metric_uuid = metric
     dataModel.sources.source_type1.parameters = {url: {type: "url", metrics: ["metric_type"]}}
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 });
