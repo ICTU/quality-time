@@ -10,11 +10,10 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                     <HamburgerMenu>
                         {extraHamburgerItems}
                         <Dropdown.Item key="columns">
-                            <Dropdown text="Toggle visibility of columns">
-                                <Dropdown.Menu>
-                                    <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
+                            <Dropdown.Menu>
+                                <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                            </Dropdown.Menu>
                         </Dropdown.Item>
                         <Dropdown.Item key="nr_dates">
                             <Icon name='dropdown' /><span className='text'>Numer of dates</span>
@@ -29,7 +28,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                             <Dropdown.Menu>
                                 <Dropdown.Item key={1} active={1 === trendTableInterval} onClick={() => setTrendTableInterval(1)}>1 day</Dropdown.Item>
                                 {[7, 14, 21, 28].map((nr) =>
-                                    <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr/7} ${pluralize("week", nr/7)}`}</Dropdown.Item>
+                                    <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Dropdown.Item>
                                 )}
                             </Dropdown.Menu>
                         </Dropdown.Item>
