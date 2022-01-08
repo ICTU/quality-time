@@ -16,9 +16,12 @@ def download_report_as_pdf(context):
 
 
 @when("the client downloads the report as json")
-def download_report_as_json(context):
+@when("the client downloads the report {report_uuid} as json")
+def download_report_as_json(context, report_uuid=None):
     """Download the report as json."""
-    report = context.get(f"report/{context.uuid['report']}/json")
+    if report_uuid is None:
+        report_uuid = context.uuid["report"]
+    report = context.get(f"report/{report_uuid}/json")
     context.exported_report = report
 
 
@@ -82,6 +85,12 @@ def check_json(context):
     assert_equal(200, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
     assert_not_in("secret", context.response.text)
+
+
+@then("the client receives no json")
+def check_no_json(context):
+    """Check the json."""
+    assert_equal(404, context.response.status_code)
 
 
 @when("the client gets a non-existing report")

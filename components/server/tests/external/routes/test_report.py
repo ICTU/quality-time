@@ -458,6 +458,14 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
+    def test_get_nonexisting_json_report(self):
+        """Test that None is returned if report doesn't exist."""
+        self.database.reports.find_one.return_value = None
+
+        # Without provided public key
+        exported_report = export_report_as_json(self.database, "non_existing_report")
+        self.assertIsNone(exported_report)
+
     @patch("external.routes.report.bottle.request")
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
