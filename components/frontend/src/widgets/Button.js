@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
+import { Button, Dropdown, Icon, Input, Popup } from 'semantic-ui-react';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
@@ -152,20 +152,53 @@ export function MoveButton(props) {
     )
 }
 
-export function PermLinkButton( {url}) {
-    return (
-        <Button
-            basic
-            color='blue'
-            content='Copy'
-            icon='copy'
-            label={{ basic: true, color: "blue", content: url }}
-            labelPosition='left'
-            onClick={() => navigator.clipboard.writeText(url).then(function () {
-                show_message("success", 'Copied URL to clipboard')
-            }, function () {
-                show_message("error", 'Failed to copy URL to clipboard')
-            })}
-        />
-    )
+export function PermLinkButton({ url }) {
+    if (navigator.clipboard) {
+        // Frontend runs in a secure context (https) so we can use the Clipboard API
+        return (
+            <Button
+                basic
+                color='blue'
+                content='Copy'
+                icon='copy'
+                label={{ basic: true, color: "blue", content: url }}
+                labelPosition='right'
+                onClick={() => navigator.clipboard.writeText(url).then(function () {
+                    show_message("success", 'Copied URL to clipboard')
+                }, function () {
+                    show_message("error", 'Failed to copy URL to clipboard')
+                })}
+            />
+        )
+    } else {
+        // Frontend does not run in a secure context (https) so we cannot use the Clipboard API, and have
+        // to use the deprecated Document.execCommand. As document.exeCommand expects selected text, we also
+        // cannot use the Label component but have to use a (read only) input element so we can select the URL
+        // before copying it to the clipboard.
+        return (
+            <Input
+                action
+                actionPosition='left'
+                color="blue"
+                defaultValue={url}
+                fluid
+                readOnly
+            >
+                <Button
+                    basic
+                    color="blue"
+                    content="Copy"
+                    icon="copy"
+                    onClick={() => {
+                        let urlText = document.querySelector("#permlink")
+                        urlText.select()
+                        document.execCommand("copy")
+                        show_message("success", 'Copied URL to clipboard')
+                    }}
+                    style={{fontWeight: "bold"}}
+                />
+                <input id="permlink" style={{border: "1px solid #0E6EB8", color: "#0E6EB8", fontWeight: "bold" }}/>
+            </Input>
+        )
+    }
 }
