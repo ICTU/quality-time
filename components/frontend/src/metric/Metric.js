@@ -7,9 +7,9 @@ import { Tag } from '../widgets/Tag';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { IssueStatus } from './IssueStatus';
 import { MetricDetails } from './MetricDetails';
-import { SourceStatus } from './SourceStatus';
 import { StatusIcon } from './StatusIcon';
 import { TrendSparkline } from './TrendSparkline';
+import { MeasurementSources } from './MeasurementSources';
 import "./Metric.css";
 
 function MeasurementValue({ metric }) {
@@ -46,13 +46,6 @@ function MeasurementTarget({ metric }) {
         target = format_minutes(target)
     }
     return `${metric_direction} ${target}${metricUnit}${debt}`
-}
-
-function MeasurementSources({ metric }) {
-    const sources = metric.latest_measurement?.sources ?? [];
-    return sources.map(
-        (source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} metric={metric} measurement_source={source} />]
-    );
 }
 
 export function Metric({
