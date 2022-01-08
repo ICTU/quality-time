@@ -135,6 +135,7 @@ it('mass updates a parameter of a source', async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Apply change to subject/))
     })
+    expect(screen.getAllByText(/Apply change to subject/).length).toBe(2)
     userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), '{selectall}https://other{enter}')
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue('Source 1'))
@@ -142,5 +143,5 @@ it('mass updates a parameter of a source', async () => {
     expect(screen.getAllByDisplayValue('https://other').length).toBe(1)
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", { edit_scope: "subject", url: "https://other" });
     expect(toast.show_message).toHaveBeenCalledTimes(1)
-    expect(screen.getAllByText(/Apply change to source/).length).toBe(1)
+    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
 })

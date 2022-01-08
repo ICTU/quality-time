@@ -101,7 +101,7 @@ export function SourceParameter({
         required: required,
         set_value: ((value) => {
             set_source_parameter(source_uuid, parameter_key, value, edit_scope, reload)
-            //setEditScope("source")
+            setEditScope("source")  // Reset the edit scope of the parameter to source only
         }),
         value: parameter_value
     };
