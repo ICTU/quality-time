@@ -7,6 +7,7 @@ import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
 import { source_options } from '../widgets/menu_options';
 import { show_message } from '../widgets/toast';
+import { pluralize } from '../utils';
 
 function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     const dataModel = useContext(DataModel);
@@ -54,8 +55,9 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     );
 
     const reload_source = (json) => {
-        if (json.nr_sources_updated !== undefined) {
-            show_message("success", `${json.nr_sources_updated} source(s) affected.`)
+        const nr_sources = json.nr_sources_mass_edited
+        if (nr_sources > 0) {
+            show_message("info", `Changed ${nr_sources} ${pluralize("source", nr_sources)}`)
         }
         reload(json)
     }

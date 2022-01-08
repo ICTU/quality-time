@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Sources } from './Sources';
@@ -137,20 +138,19 @@ it('updates a parameter of a source', async () => {
     const metric = { type: "metric_type", sources: { source_uuid: { name: "Source 1", type: "source_type1", parameters: {url: "http://test.nl" } } } }
     reports[0].subjects.subject_uuid.metrics.metric_uuid = metric
     dataModel.sources.source_type1.parameters = {url: {type: "url", metrics: ["metric_type"]}}
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_updated: 1 });
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 });
     render_sources(
         {
             metric_uuid: "metric_uuid",
             metric: metric,
             reports: reports,
-            report: reports[0]
+            report: reports[0],
+            reload: () => {/* Dummy implemention */ }
         }
     )
+    userEvent.type(screen.getByDisplayValue(/http:\/\/test.nl/), '{selectall}some other url{enter}')
     await act(async () => {
-        fireEvent.change(screen.getByDisplayValue('http://test.nl'), {target: {value: 'some other url'}})
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByDisplayValue('Source 1 '))
+        fireEvent.click(screen.getByDisplayValue('Source 1'))
     })
     expect(screen.getAllByDisplayValue('some other url').length).toBe(1)
     expect(toast.show_message).toHaveBeenCalledTimes(1)

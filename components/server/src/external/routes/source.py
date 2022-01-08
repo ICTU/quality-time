@@ -153,7 +153,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     )
     reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
-    result["nr_sources_updated"] = len(changed_source_ids)
+    result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
     result["availability"] = _availability_checks(data, parameter_key)
     return result
 
