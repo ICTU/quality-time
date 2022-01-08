@@ -142,4 +142,5 @@ it('mass updates a parameter of a source', async () => {
     expect(screen.getAllByDisplayValue('https://other').length).toBe(1)
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", { edit_scope: "subject", url: "https://other" });
     expect(toast.show_message).toHaveBeenCalledTimes(1)
+    expect(screen.getAllByText(/Apply change to source/).length).toBe(1)
 })

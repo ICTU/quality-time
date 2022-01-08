@@ -99,7 +99,10 @@ export function SourceParameter({
         label: label,
         placeholder: placeholder,
         required: required,
-        set_value: ((value) => set_source_parameter(source_uuid, parameter_key, value, edit_scope, reload)),
+        set_value: ((value) => {
+            set_source_parameter(source_uuid, parameter_key, value, edit_scope, reload)
+            //setEditScope("source")
+        }),
         value: parameter_value
     };
     if (parameter_type === "date") {
