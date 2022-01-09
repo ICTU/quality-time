@@ -13,6 +13,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                             <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
                             <Dropdown.Menu>
                                 <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                                <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                             </Dropdown.Menu>
@@ -40,6 +41,7 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 <Table.HeaderCell>Unit</Table.HeaderCell>
                 {!hiddenColumns.includes("source") && <Table.HeaderCell>Source</Table.HeaderCell>}
+                {!hiddenColumns.includes("comment") && <Table.HeaderCell>Comment</Table.HeaderCell>}
                 {!hiddenColumns.includes("issues") && <Table.HeaderCell>Issues</Table.HeaderCell>}
                 {!hiddenColumns.includes("tags") && <Table.HeaderCell>Tags</Table.HeaderCell>}
             </Table.Row>
