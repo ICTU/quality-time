@@ -22,7 +22,7 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-function renderTrendTable(trendTableInterval) {
+function renderTrendTable(trendTableInterval, hiddenColumns) {
     return render(
         <DataModel.Provider value={datamodel}>
             <TrendTable
@@ -35,7 +35,7 @@ function renderTrendTable(trendTableInterval) {
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}
                 setTrendTableNrDates={() => {/*Dummy implementation*/ }}
-                hiddenColumns={[]}
+                hiddenColumns={hiddenColumns ?? []}
                 visibleDetailsTabs={[]}
             />
         </DataModel.Provider>
@@ -74,3 +74,33 @@ it('displays all the metrics', () => {
         expect(screen.queryAllByText(metricName).length).toBe(1)
     })
 });
+
+it('shows the source column', () => {
+    renderTrendTable(7)
+    expect(screen.queryAllByText(/Source/).length).toBe(1)
+})
+
+it('hides the source column', () => {
+    renderTrendTable(7, ["source"])
+    expect(screen.queryAllByText(/Source/).length).toBe(0)
+})
+
+it('shows the issue column', () => {
+    renderTrendTable(7)
+    expect(screen.queryAllByText(/Issues/).length).toBe(1)
+})
+
+it('hides the issue column', () => {
+    renderTrendTable(7, ["issues"])
+    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+})
+
+it('shows the tags column', () => {
+    renderTrendTable(7)
+    expect(screen.queryAllByText(/Tags/).length).toBe(1)
+})
+
+it('hides the tags column', () => {
+    renderTrendTable(7, ["tags"])
+    expect(screen.queryAllByText(/Tags/).length).toBe(0)
+})
