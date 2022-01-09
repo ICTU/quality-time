@@ -123,10 +123,9 @@ export function SubjectDetails({
     subject_uuid,
     metrics,
     changed_fields,
+    handleSort,
     sortColumn,
-    setSortColumn,
     sortDirection,
-    setSortDirection,
     visibleDetailsTabs,
     toggleVisibleDetailsTab,
     hiddenColumns,
@@ -139,16 +138,6 @@ export function SubjectDetails({
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
-    }
-    function handleSort(column) {
-        if (sortColumn === column) {
-            if (sortDirection === 'descending') {
-                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
-            }
-            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
-        } else {
-            setSortColumn(column)
-        }
     }
     const subject = report.subjects[subject_uuid];
     const last_index = Object.entries(subject.metrics).length - 1;
@@ -173,7 +162,7 @@ export function SubjectDetails({
                         metric_uuid={metric_uuid}
                         first_metric={index === 0}
                         last_metric={index === last_index}
-                        stop_sort={() => setSortColumn(null)}
+                        stop_sort={() => handleSort(null)}
                         changed_fields={changed_fields}
                         visibleDetailsTabs={visibleDetailsTabs}
                         toggleVisibleDetailsTab={toggleVisibleDetailsTab}
@@ -187,7 +176,7 @@ export function SubjectDetails({
                 subject={report.subjects[subject_uuid]}
                 reload={reload}
                 reports={reports}
-                resetSortColumn={() => { setSortColumn(null) }} />
+                resetSortColumn={() => { handleSort(null) }} />
         </Table>
     )
 }

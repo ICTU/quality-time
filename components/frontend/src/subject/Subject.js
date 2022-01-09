@@ -70,6 +70,21 @@ export function Subject({
         // eslint-disable-next-line
     }, [subjectTrendTable]);
 
+    function handleSort(column) {
+        if (sortColumn === null) {
+            setSortColumn(null)  // Stop sorting
+            return
+        }
+        if (sortColumn === column) {
+            if (sortDirection === 'descending') {
+                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+            }
+            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
+        } else {
+            setSortColumn(column)
+        }
+    }
+
     const hamburgerItems = <HamburgerItems
         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
         subjectTrendTable={subjectTrendTable}
@@ -118,9 +133,8 @@ export function Subject({
                     subject_uuid={subject_uuid}
                     metrics={metrics}
                     sortColumn={sortColumn}
-                    setSortColumn={(column) => setSortColumn(column)}
                     sortDirection={sortDirection}
-                    setSortDirection={(direction) => setSortDirection(direction)}
+                    handleSort={(column) => handleSort(column)}
                     visibleDetailsTabs={visibleDetailsTabs}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                     toggleHiddenColumn={toggleHiddenColumn}
