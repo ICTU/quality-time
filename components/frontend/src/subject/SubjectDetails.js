@@ -123,6 +123,8 @@ export function SubjectDetails({
     subject_uuid,
     metrics,
     changed_fields,
+    sortDirection,
+    setSortDirection,
     visibleDetailsTabs,
     toggleVisibleDetailsTab,
     hiddenColumns,
@@ -131,7 +133,6 @@ export function SubjectDetails({
     reload
 }) {
     const dataModel = useContext(DataModel)
-    const [sortDirection, setSortDirection] = useState('ascending');
     const [sortColumn, setSortColumn] = useState(null);
 
     let metricEntries = Object.entries(metrics);
