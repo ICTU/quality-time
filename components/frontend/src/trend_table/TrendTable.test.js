@@ -86,6 +86,16 @@ it('hides the source column', () => {
     expect(screen.queryAllByText(/Source/).length).toBe(0)
 })
 
+it('shows the comment column', () => {
+    renderTrendTable(7)
+    expect(screen.queryAllByText(/Comment/).length).toBe(1)
+})
+
+it('hides the source column', () => {
+    renderTrendTable(7, ["comment"])
+    expect(screen.queryAllByText(/Comment/).length).toBe(0)
+})
+
 it('shows the issue column', () => {
     renderTrendTable(7)
     expect(screen.queryAllByText(/Issues/).length).toBe(1)
