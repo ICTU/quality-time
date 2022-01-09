@@ -9,7 +9,7 @@ function renderSubjectDetails(handleSort, sortColumn, setSortColumn, sortDirecti
         <DataModel.Provider value={datamodel}>
             <SubjectDetails
                 subject_uuid="subject_uuid"
-                metrics={report.subjects.subject_uuid.metrics}
+                metricEntries={Object.entries(report.subjects.subject_uuid.metrics)}
                 report={report}
                 hiddenColumns={[]}
                 visibleDetailsTabs={[]}

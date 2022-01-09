@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
+import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
 import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
@@ -27,6 +28,64 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
         metrics[metric_uuid] = metric
     })
     return metrics
+}
+
+function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
+    const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4" };
+    const sorters = {
+        name: (m1, m2) => {
+            const attribute1 = get_metric_name(m1[1], datamodel);
+            const attribute2 = get_metric_name(m2[1], datamodel);
+            return attribute1.localeCompare(attribute2)
+        },
+        measurement: (m1, m2) => {
+            const attribute1 = get_metric_value(m1[1]);
+            const attribute2 = get_metric_value(m2[1]);
+            return attribute1.localeCompare(attribute2)
+        },
+        target: (m1, m2) => {
+            const attribute1 = get_metric_target(m1[1]);
+            const attribute2 = get_metric_target(m2[1]);
+            return attribute1.localeCompare(attribute2)
+        },
+        comment: (m1, m2) => {
+            const attribute1 = get_metric_comment(m1[1]);
+            const attribute2 = get_metric_comment(m2[1]);
+            return attribute1.localeCompare(attribute2)
+        },
+        status: (m1, m2) => {
+            const attribute1 = status_order[get_metric_status(m1[1])];
+            const attribute2 = status_order[get_metric_status(m2[1])];
+            return attribute1.localeCompare(attribute2)
+        },
+        source: (m1, m2) => {
+            let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
+            m1_sources.sort();
+            let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
+            m2_sources.sort();
+            const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
+            const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
+            return attribute1.localeCompare(attribute2)
+        },
+        issues: (m1, m2) => {
+            let m1_issues = get_metric_issue_ids(m1[1]);
+            let m2_issues = get_metric_issue_ids(m2[1]);
+            const attribute1 = m1_issues.length > 0 ? m1_issues[0] : '';
+            const attribute2 = m2_issues.length > 0 ? m2_issues[0] : '';
+            return attribute1.localeCompare(attribute2)
+        },
+        tags: (m1, m2) => {
+            let m1_tags = get_metric_tags(m1[1]);
+            let m2_tags = get_metric_tags(m2[1]);
+            const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
+            const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
+            return attribute1.localeCompare(attribute2)
+        }
+    }
+    metrics.sort(sorters[sortColumn]);
+    if (sortDirection === 'descending') {
+        metrics.reverse()
+    }
 }
 
 export function Subject({
@@ -85,6 +144,13 @@ export function Subject({
         }
     }
 
+    const dataModel = useContext(DataModel)
+
+    let metricEntries = Object.entries(metrics);
+    if (sortColumn !== null) {
+        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
+    }
+
     const hamburgerItems = <HamburgerItems
         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
         subjectTrendTable={subjectTrendTable}
@@ -131,7 +197,7 @@ export function Subject({
                     reports={reports}
                     report_date={report_date}
                     subject_uuid={subject_uuid}
-                    metrics={metrics}
+                    metricEntries={metricEntries}
                     sortColumn={sortColumn}
                     sortDirection={sortDirection}
                     handleSort={(column) => handleSort(column)}
