@@ -4,8 +4,9 @@ import { DataModel } from "../context/DataModel";
 import { MetricDetails } from '../metric/MetricDetails';
 import { IssueStatus } from '../metric/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
+import { Tag } from '../widgets/Tag';
 import { MeasurementSources } from '../metric/MeasurementSources';
-import { formatMetricScale, formatMetricUnit, format_minutes, get_metric_name } from "../utils";
+import { formatMetricScale, formatMetricUnit, format_minutes, get_metric_name, get_metric_tags } from "../utils";
 import './TrendTable.css';
 
 export function MeasurementsRow(
@@ -80,6 +81,7 @@ export function MeasurementsRow(
             <Table.Cell style={style}>{unit}</Table.Cell>
             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
+            {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
         </TableRowWithDetails>
     )
 }

@@ -11,7 +11,7 @@ import { set_report_attribute } from '../api/report';
 import { get_subject_name, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
-function ReportDashboard({report, onClick, hideTags, setTags, tags, reload}) {
+function ReportDashboard({report, onClick, setTags, tags, reload}) {
     const dataModel = useContext(DataModel)
     function subject_cards() {
         return Object.entries(report.summary_by_subject).map(([subject_uuid, summary]) =>
@@ -24,7 +24,7 @@ function ReportDashboard({report, onClick, hideTags, setTags, tags, reload}) {
         );
     }
     function tag_cards() {
-        return hideTags ? [] : Object.entries(report.summary_by_tag).map(([tag, summary]) =>
+        return Object.entries(report.summary_by_tag).map(([tag, summary]) =>
             <MetricSummaryCard
                 header={<Tag tag={tag} color={tags.includes(tag) ? "blue" : null} />}
                 key={tag}
@@ -96,7 +96,6 @@ export function Report({
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                hideTags={hiddenColumns.includes("tags")}
                 setTags={setTags}
                 tags={tags}
                 report={report}
