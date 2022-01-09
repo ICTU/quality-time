@@ -7,7 +7,8 @@ const metric = {
     unit: "testUnit",
     scale: "count",
     type: "metric_type",
-    name: "name_1"
+    name: "name_1",
+    tags: ["Tag 1"]
 }
 const metric2 = {
     unit: "tests",
@@ -98,9 +99,11 @@ it('hides the issue column', () => {
 it('shows the tags column', () => {
     renderTrendTable(7)
     expect(screen.queryAllByText(/Tags/).length).toBe(1)
+    expect(screen.queryAllByText(/Tag 1/).length).toBe(1)
 })
 
 it('hides the tags column', () => {
     renderTrendTable(7, ["tags"])
     expect(screen.queryAllByText(/Tags/).length).toBe(0)
+    expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
 })
