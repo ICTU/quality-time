@@ -55,6 +55,7 @@ export function Subject({
     const subject = report.subjects[subject_uuid];
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
 
+    const [sortColumn, setSortColumn] = useState(null);
     const [sortDirection, setSortDirection] = useState('ascending');
     const [measurements, setMeasurements] = useState([]);
 
@@ -116,6 +117,8 @@ export function Subject({
                     report_date={report_date}
                     subject_uuid={subject_uuid}
                     metrics={metrics}
+                    sortColumn={sortColumn}
+                    setSortColumn={(column) => setSortColumn(column)}
                     sortDirection={sortDirection}
                     setSortDirection={(direction) => setSortDirection(direction)}
                     visibleDetailsTabs={visibleDetailsTabs}

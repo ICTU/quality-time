@@ -4,7 +4,7 @@ import { datamodel, report } from "../__fixtures__/fixtures";
 import { DataModel } from '../context/DataModel';
 import { SubjectDetails } from './SubjectDetails';
 
-function renderSubjectDetails(setSortDirection) {
+function renderSubjectDetails(sortColumn, setSortColumn, sortDirection, setSortDirection) {
     return render(
         <DataModel.Provider value={datamodel}>
             <SubjectDetails
@@ -13,7 +13,9 @@ function renderSubjectDetails(setSortDirection) {
                 report={report}
                 hiddenColumns={[]}
                 visibleDetailsTabs={[]}
-                sortDirection="ascending"
+                sortColumn={sortColumn}
+                setSortColumn={(column) => setSortColumn(column)}
+                sortDirection={sortDirection}
                 setSortDirection={(direction) => setSortDirection(direction)}
                 />
         </DataModel.Provider>
@@ -26,11 +28,18 @@ it('displays one row per metric', () => {
     expect(screen.queryAllByText("M2").length).toBe(1)
 })
 
-
 it('changes the sort direction when a column header is clicked', () => {
+    const setSortColumn = jest.fn()
     const setSortDirection = jest.fn()
-    renderSubjectDetails(setSortDirection)
-    fireEvent.click(screen.queryByText(/Metric/))
+    renderSubjectDetails("name", setSortColumn, "ascending", setSortDirection)
     fireEvent.click(screen.queryByText(/Metric/))
     expect(setSortDirection).toHaveBeenCalledWith("descending")
+});
+
+it('changes the sort column when a column header is clicked', () => {
+    const setSortColumn = jest.fn()
+    const setSortDirection = jest.fn()
+    renderSubjectDetails("tags", setSortColumn, "ascending", setSortDirection)
+    fireEvent.click(screen.queryByText(/Metric/))
+    expect(setSortColumn).toHaveBeenCalledWith("name")
 });
