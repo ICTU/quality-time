@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown, Icon, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
 import { ColumnMenuItem, HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectFooter } from './SubjectFooter';
 

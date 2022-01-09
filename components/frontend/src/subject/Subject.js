@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
 import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectDetails } from './SubjectDetails';
@@ -130,7 +131,7 @@ export function Subject({
     }, [subjectTrendTable]);
 
     function handleSort(column) {
-        if (sortColumn === null) {
+        if (column === null) {
             setSortColumn(null)  // Stop sorting
             return
         }
