@@ -109,7 +109,7 @@ export function formatMetricScaleAndUnit(metricType, metric, withMultiple = true
 }
 
 export function useURLSearchQuery(history, key, state_type, default_value) {
-    // state_type can either be "boolean", "integer", or "array"
+    // state_type can either be "boolean", "integer", "string", or "array"
     const [state, setState] = useState(getState());
 
     function getState() {
@@ -118,6 +118,8 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
             return parsed_state === "true"
         } else if (state_type === "integer") {
             return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
+        } else if(state_type === "string") {
+            return parsed_state ?? default_value
         }
         // else state_type is "array"
         return parsed_state?.split(",") ?? []

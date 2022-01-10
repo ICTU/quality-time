@@ -20,6 +20,8 @@ export function Subjects({
         history}) {
     const visible = useDelayedRender();
     const dataModel = useContext(DataModel)
+    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
+    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     // eslint-disable-next-line
     const [visibleDetailsTabs, toggleVisibleDetailsTab] = useURLSearchQuery(history, "tabs", "array");
@@ -27,6 +29,22 @@ export function Subjects({
     const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
     const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 7);
     const last_index = Object.keys(report.subjects).length - 1;
+
+    function handleSort(column) {
+        if (column === null) {
+            setSortColumn(null)  // Stop sorting
+            return
+        }
+        if (sortColumn === column) {
+            if (sortDirection === 'descending') {
+                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+            }
+            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
+        } else {
+            setSortColumn(column)
+        }
+    }
+
     return (
         <>
             {Object.keys(report.subjects).map((subject_uuid, index) =>
@@ -34,6 +52,7 @@ export function Subjects({
                     <Subject
                         changed_fields={changed_fields}
                         first_subject={index === 0}
+                        handleSort={(column) => handleSort(column)}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         key={subject_uuid}
@@ -45,6 +64,8 @@ export function Subjects({
                         setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
                         setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
+                        sortColumn={sortColumn}
+                        sortDirection={sortDirection}
                         subject_uuid={subject_uuid}
                         subjectTrendTable={subjectTrendTable}
                         tags={tags}

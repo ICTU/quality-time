@@ -200,3 +200,30 @@ it('sets both a boolean and an integer parameter', () => {
     act(() => { hook2.result.current[1](42) })
     expect(history.location.search).toEqual("?boolean_key=true&integer_key=42")
 })
+
+it('gets a string value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=value'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "string"))
+    expect(result.current[0]).toBe("value")
+})
+
+it('gets the default string value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "string", "default"))
+    expect(result.current[0]).toBe("default")
+})
+
+it('sets a string value', () => {
+    const history = createMemoryHistory()
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "string", ""))
+    act(() => { result.current[1]("value") })
+    expect(result.current[0]).toBe("value")
+    expect(history.location.search).toEqual("?key=value")
+})
+
+it('removes the string value when set to the default value', () => {
+    const history = createMemoryHistory({ initialEntries: ['?key=value'] })
+    const { result } = renderHook(() => useURLSearchQuery(history, "key", "string", "default"))
+    act(() => { result.current[1]("default") })
+    expect(history.location.search).toEqual("")
+})

@@ -92,6 +92,7 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 export function Subject({
     changed_fields,
     first_subject,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     last_subject,
@@ -102,6 +103,8 @@ export function Subject({
     setSubjectTrendTable,
     setTrendTableInterval,
     setTrendTableNrDates,
+    sortColumn,
+    sortDirection,
     subject_uuid,
     subjectTrendTable,
     tags,
@@ -115,8 +118,6 @@ export function Subject({
     const subject = report.subjects[subject_uuid];
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
 
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('ascending');
     const [measurements, setMeasurements] = useState([]);
 
     useEffect(() => {
@@ -129,21 +130,6 @@ export function Subject({
         }
         // eslint-disable-next-line
     }, [subjectTrendTable]);
-
-    function handleSort(column) {
-        if (column === null) {
-            setSortColumn(null)  // Stop sorting
-            return
-        }
-        if (sortColumn === column) {
-            if (sortDirection === 'descending') {
-                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
-            }
-            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
-        } else {
-            setSortColumn(column)
-        }
-    }
 
     const dataModel = useContext(DataModel)
 
