@@ -481,9 +481,9 @@ types-ipaddress==1.0.1 \
     --hash=sha256:9d0a642526c4a1f87ee9ae29d91b93f708508b891d038db2e1c9f06219383516 \
     --hash=sha256:dc5540c7fd8d4b3ffe8461bc01f27513c0abe5f2088e491218bd0a98a0b4584e
     # via types-cryptography
-types-requests==2.26.3 \
-    --hash=sha256:ad18284931c5ddbf050ccdd138f200d18fd56f88aa3567019d8da9b2d4fe0344 \
-    --hash=sha256:d63fa617846dcefff5aa2d59e47ab4ffd806e4bb0567115f7adbb5e438302fe4
+types-requests==2.27.5 \
+    --hash=sha256:9c9390b18b222956155af6678570f452edafa3bb94bd5a4efe67da1105aa128c \
+    --hash=sha256:a67dc1a8512312b8cb89f3ba95f9a0e69ef3436ae77c9bd4f328cd88f17adda2
     # via -r requirements-dev.in
 types-setuptools==57.4.4 \
     --hash=sha256:9fe4180548e5cbb44cc0d343a47e4dc1d6769c31e16447994788c28df169011f \
@@ -493,6 +493,10 @@ types-toml==0.10.1 \
     --hash=sha256:5c1f8f8d57692397c8f902bf6b4d913a0952235db7db17d2908cc110e70610cb \
     --hash=sha256:8cdfd2b7c89bed703158b042dd5cf04255dae77096db66f4a12ca0a93ccb07a5
     # via cyclonedx-python-lib
+types-urllib3==1.26.2 \
+    --hash=sha256:c21997c160dcdfb3018a7b28e31df88d326d30485833fadd79ad3d00c61e5108 \
+    --hash=sha256:fab03aa961be4d43290b13362a9f9801e2025ada33cbfbfaa9146efea6ab9496
+    # via types-requests
 typing-extensions==4.0.0 \
     --hash=sha256:2cdf80e4e04866a9b3689a51869016d36db0814d84b8d8a568d22781d45d27ed \
     --hash=sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9
