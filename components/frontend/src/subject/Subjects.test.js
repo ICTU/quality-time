@@ -104,6 +104,8 @@ it('sorts the metrics by name', () => {
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
     fireEvent.click(screen.getAllByText(/Metric/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
 })
 
 it('sorts the metrics by status', () => {
@@ -133,6 +135,15 @@ it('sorts the metrics by target value', () => {
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
 })
 
+it('sorts the metrics by source', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Source/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Source/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
 it('sorts the metrics by comment', () => {
     renderSubjects();
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
@@ -157,5 +168,16 @@ it('sorts the metrics by tags', () => {
     fireEvent.click(screen.getAllByText(/Tags/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
     fireEvent.click(screen.getAllByText(/Tags/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('keeps sort direction when sorting another column', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+    fireEvent.click(screen.getAllByText(/Status/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
 })
