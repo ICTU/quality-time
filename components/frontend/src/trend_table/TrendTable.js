@@ -20,41 +20,48 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 export function TrendTable({
     changed_fields,
-    hiddenColumns,
-    toggleHiddenColumn,
-    reportDate,
-    metrics,
-    measurements,
     extraHamburgerItems,
-    trendTableInterval,
-    setTrendTableInterval,
-    trendTableNrDates,
-    setTrendTableNrDates,
-    subject_uuid,
-    subject,
+    handleSort,
+    hiddenColumns,
+    measurements,
+    metricEntries,
+    reload,
     report,
     reports,
-    visibleDetailsTabs,
+    reportDate,
+    setTrendTableInterval,
+    setTrendTableNrDates,
+    sortDirection,
+    sortColumn,
+    subject,
+    subject_uuid,
+    toggleHiddenColumn,
     toggleVisibleDetailsTab,
-    reload
+    trendTableInterval,
+    trendTableNrDates,
+    visibleDetailsTabs
 }) {
 
     const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
-        <Table>
+        <Table sortable>
             <TrendTableHeader
-                extraHamburgerItems={extraHamburgerItems}
                 columnDates={dates}
+                extraHamburgerItems={extraHamburgerItems}
+                handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                toggleHiddenColumn={toggleHiddenColumn}
-                trendTableInterval={trendTableInterval}
                 setTrendTableInterval={setTrendTableInterval}
+                setTrendTableNrDates={setTrendTableNrDates}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                toggleHiddenColumn={toggleHiddenColumn}
                 trendTableNrDates={trendTableNrDates}
-                setTrendTableNrDates={setTrendTableNrDates} />
+                trendTableInterval={trendTableInterval}
+            />
             <Table.Body>
-                {Object.entries(metrics).map(([metric_uuid, metric], index) => {
+                {metricEntries.map(([metric_uuid, metric], index) => {
                     return (
                         <MeasurementsRow key={metric_uuid}
                             changed_fields={changed_fields}

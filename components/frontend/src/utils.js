@@ -26,6 +26,11 @@ export function get_metric_target(metric) {
     return (metric.accept_debt ? metric.debt_target : metric.target) || "0";
 }
 
+export function getMetricUnit(metric, dataModel) {
+    const metricType = dataModel.metrics[metric.type];
+    return formatMetricUnit(metricType, metric)
+}
+
 export function get_metric_value(metric) {
     return metric?.latest_measurement?.[metric.scale]?.value ?? '';
 }

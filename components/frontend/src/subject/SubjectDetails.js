@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, Icon, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { ColumnMenuItem, HamburgerMenu } from '../widgets/HamburgerMenu';
+import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 import { SubjectFooter } from './SubjectFooter';
 
 function HamburgerHeader({ hiddenColumns, toggleHiddenColumn, extraHamburgerItems }) {
@@ -27,30 +28,21 @@ function HamburgerHeader({ hiddenColumns, toggleHiddenColumn, extraHamburgerItem
     )
 }
 
-function SortableHeader({ column, sortColumn, sortDirection, handleSort, label, textAlign }) {
-    const sorted = sortColumn === column ? sortDirection : null;
-    return (
-        <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
-            {label}
-        </Table.HeaderCell>
-    )
-}
-
 function SubjectTableHeader({ hiddenColumns, toggleHiddenColumn, sortColumn, sortDirection, handleSort, extraHamburgerItems }) {
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     return (
         <Table.Header>
             <Table.Row>
                 <HamburgerHeader hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} extraHamburgerItems={extraHamburgerItems} />
-                <SortableHeader column='name' label='Metric' {...sortProps} />
+                <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
                 {!hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
-                {!hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' {...sortProps} />}
-                {!hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' {...sortProps} />}
-                {!hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' {...sortProps} />}
-                {!hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' {...sortProps} />}
-                {!hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' {...sortProps} />}
-                {!hiddenColumns.includes("issues") && <SortableHeader column='issues' label='Issues' {...sortProps} />}
-                {!hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' {...sortProps} />}
+                {!hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' {...sortProps} />}
+                {!hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' {...sortProps} />}
+                {!hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' {...sortProps} />}
+                {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Source' {...sortProps} />}
+                {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' {...sortProps} />}
+                {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' {...sortProps} />}
+                {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' {...sortProps} />}
             </Table.Row>
         </Table.Header>
     )

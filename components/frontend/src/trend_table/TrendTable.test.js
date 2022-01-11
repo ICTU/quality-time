@@ -30,8 +30,8 @@ function renderTrendTable(trendTableInterval, hiddenColumns) {
                 reportDate={reportDate}
                 report={{}}
                 measurements={[]}
-                metrics={{ 1: metric, 2: metric2 }}
-                subject={{metrics: {1: metric, 2: metric2}}}
+                metricEntries={Object.entries({ 1: metric, 2: metric2 })}
+                subject={{ metrics: { 1: metric, 2: metric2 } }}
                 trendTableInterval={trendTableInterval}
                 trendTableNrDates={3}
                 setTrendTableInterval={() => {/*Dummy implementation*/ }}

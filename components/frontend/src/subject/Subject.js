@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectDetails } from './SubjectDetails';
@@ -81,6 +81,11 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
             const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
             const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
             return attribute1.localeCompare(attribute2)
+        },
+        unit: (m1, m2) => {
+            let attribute1 = getMetricUnit(m1[1], datamodel);
+            let attribute2 = getMetricUnit(m2[1], datamodel);
+            return attribute1.localeCompare(attribute2)
         }
     }
     metrics.sort(sorters[sortColumn]);
@@ -119,6 +124,7 @@ export function Subject({
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
 
     const [measurements, setMeasurements] = useState([]);
+    const dataModel = useContext(DataModel)
 
     useEffect(() => {
         if (subjectTrendTable) {
@@ -130,8 +136,6 @@ export function Subject({
         }
         // eslint-disable-next-line
     }, [subjectTrendTable]);
-
-    const dataModel = useContext(DataModel)
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
@@ -158,41 +162,44 @@ export function Subject({
             {subjectTrendTable ?
                 <TrendTable
                     changed_fields={changed_fields}
-                    hiddenColumns={hiddenColumns}
-                    toggleHiddenColumn={toggleHiddenColumn}
-                    reportDate={report_date}
-                    metrics={metrics}
-                    measurements={measurements}
                     extraHamburgerItems={hamburgerItems}
-                    trendTableInterval={trendTableInterval}
-                    setTrendTableInterval={setTrendTableInterval}
-                    trendTableNrDates={trendTableNrDates}
-                    setTrendTableNrDates={setTrendTableNrDates}
-                    subject_uuid={subject_uuid}
-                    subject={subject}
+                    handleSort={handleSort}
+                    hiddenColumns={hiddenColumns}
+                    measurements={measurements}
+                    metricEntries={metricEntries}
                     reload={reload}
                     report={report}
+                    reportDate={report_date}
                     reports={reports}
-                    visibleDetailsTabs={visibleDetailsTabs}
+                    setTrendTableInterval={setTrendTableInterval}
+                    setTrendTableNrDates={setTrendTableNrDates}
+                    sortDirection={sortDirection}
+                    sortColumn={sortColumn}
+                    subject={subject}
+                    subject_uuid={subject_uuid}
+                    toggleHiddenColumn={toggleHiddenColumn}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                    trendTableInterval={trendTableInterval}
+                    trendTableNrDates={trendTableNrDates}
+                    visibleDetailsTabs={visibleDetailsTabs}
                 />
                 :
                 <SubjectDetails
                     changed_fields={changed_fields}
+                    extraHamburgerItems={hamburgerItems}
+                    handleSort={handleSort}
                     hiddenColumns={hiddenColumns}
+                    metricEntries={metricEntries}
+                    reload={reload}
+                    report_date={report_date}
                     report={report}
                     reports={reports}
-                    report_date={report_date}
-                    subject_uuid={subject_uuid}
-                    metricEntries={metricEntries}
                     sortColumn={sortColumn}
                     sortDirection={sortDirection}
-                    handleSort={(column) => handleSort(column)}
-                    visibleDetailsTabs={visibleDetailsTabs}
+                    subject_uuid={subject_uuid}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                     toggleHiddenColumn={toggleHiddenColumn}
-                    extraHamburgerItems={hamburgerItems}
-                    reload={reload}
+                    visibleDetailsTabs={visibleDetailsTabs}
                 />
             }
         </div>
