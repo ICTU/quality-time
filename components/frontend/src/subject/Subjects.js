@@ -23,7 +23,6 @@ export function Subjects({
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
-    // eslint-disable-next-line
     const [visibleDetailsTabs, toggleVisibleDetailsTab] = useURLSearchQuery(history, "tabs", "array");
     const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean", false)
     const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
