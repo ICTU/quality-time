@@ -162,7 +162,10 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
 
 export function useDelayedRender() {
     const [visible, setVisible] = useState(false);
-    useEffect(() => { setTimeout(setVisible, 50, true) }, []);
+    useEffect(() => {
+        const timeout = setTimeout(setVisible, 50, true);
+        return () => clearTimeout(timeout)
+    }, []);
     return visible;
 }
 

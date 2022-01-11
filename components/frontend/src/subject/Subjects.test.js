@@ -1,12 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen } from "@testing-library/react";
-import userEvent from '@testing-library/user-event';
-import { mount } from 'enzyme';
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
+import { datamodel, report } from "../__fixtures__/fixtures";
 
 jest.mock('../api/subject', () => {
     const originalModule = jest.requireActual('../api/subject');
@@ -36,58 +35,7 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-const datamodel = {
-    subjects: {
-        subject_type: {
-            name: "Subject type"
-        }
-    },
-    metrics: {
-        metric_type: {
-            tags: []
-        }
-    }
-}
-
-const report = {
-    subjects: {
-        subject_uuid: {
-            type: "subject_type",
-            name: "Subject title",
-            metrics: {
-                metric_uuid: {
-                    type: "metric_type",
-                    tags: [],
-                    recent_measurements: [],
-                    sources: {}
-                }
-            }
-        }
-    }
-};
-
-let mockHistory = {};
-
-function subjects() {
-    return (
-        mount(
-            <DataModel.Provider value={datamodel}>
-                <Subjects
-                    hiddenColumns={[]}
-                    history={mockHistory}
-                    reports={[report]}
-                    report={report}
-                    subject_uuid="subject_uuid"
-                    tags={[]}
-                    toggleHiddenColumn={() => {/*Dummy implementation*/ }}
-                    report_date={new Date()}
-                />
-            </DataModel.Provider>
-        )
-    )
-}
-
-function render_subjects(permissions = []) {
+function renderSubjects(permissions = []) {
     return render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={datamodel}>
@@ -103,81 +51,111 @@ function render_subjects(permissions = []) {
     )
 }
 
-
 it("shows the subjects", () => {
-    render_subjects();
-    expect(screen.getAllByText(/Subject/).length).toBe(1);
+    renderSubjects();
+    expect(screen.getAllByText(/Subject/).length).toBe(2);
 })
 
 it("shows the add subject button when editable", () => {
-    render_subjects([EDIT_REPORT_PERMISSION]);
+    renderSubjects([EDIT_REPORT_PERMISSION]);
     expect(screen.getAllByText(/Add subject/).length).toBe(1);
 })
 
 it("does not show the add subject button when not editable", () => {
-    render_subjects();
-    expect(screen.queryByText(/Add[ \r\n]+subject/)).toBeNull();
+    renderSubjects();
+    expect(screen.queryByText(/Add subject/)).toBeNull();
 })
 
-it("adds a subject", () => {
-    render_subjects([EDIT_REPORT_PERMISSION]);
-    userEvent.click(screen.getByText(/Add[ \r\n]+subject/))
+it("adds a subject", async () => {
+    renderSubjects([EDIT_REPORT_PERMISSION]);
+    await act(async () => fireEvent.click(screen.getByText(/Add subject/)))
     expect(add_subject.mock.calls.length).toBe(1);
 });
 
-it("copies a subject", () => {
-    render_subjects([EDIT_REPORT_PERMISSION]);
-    userEvent.click(screen.getByText("Copy subject"))
+it("copies a subject", async () => {
+    renderSubjects([EDIT_REPORT_PERMISSION]);
+    await act(async () => fireEvent.click(screen.getByText("Copy subject")))
     expect(subject_options.mock.calls.length).toBe(1);
-    userEvent.click(screen.getByText("dummy option 1"))
+    await act(async () => fireEvent.click(screen.getByText("dummy option 1")))
     expect(copy_subject.mock.calls.length).toBe(1)
 });
 
-it("moves a subject", () => {
-    render_subjects([EDIT_REPORT_PERMISSION]);
-    userEvent.click(screen.getByText("Move subject"))
+it("moves a subject", async () => {
+    renderSubjects([EDIT_REPORT_PERMISSION])
+    await act(async () => fireEvent.click(screen.getByText("Move subject")))
     expect(subject_options.mock.calls.length).toBe(1);
-    userEvent.click(screen.getByText("dummy option 2"))
+    await act(async () => fireEvent.click(screen.getByText("dummy option 2")))
     expect(move_subject.mock.calls.length).toBe(1)
 });
 
 it("hides metrics not requiring action", () => {
-    render_subjects();
-    expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
-    fireEvent.click(screen.getByText(/Hide metrics not requiring action/));
-    expect(screen.queryByText(/Hide metrics not requiring action/)).toBeNull()
-    fireEvent.click(screen.getByText(/Show all metrics/));
-    expect(screen.getByText(/Hide metrics not requiring action/)).not.toBeNull()
+    renderSubjects();
+    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(2)
+    fireEvent.click(screen.getAllByText(/Hide metrics not requiring action/)[0]);
+    expect(screen.queryAllByText(/Hide metrics not requiring action/).length).toBe(0)
+    fireEvent.click(screen.getAllByText(/Show all metrics/)[0]);
+    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(2)
 })
 
-describe("<Subjects />", () => {
-    beforeEach(() => { mockHistory["replace"] = jest.fn(); mockHistory.location = {} });
-    it('hides metrics not requiring action on load', () => {
-        mockHistory.location.search = "?hide_metrics_not_requiring_action=true"
-        const wrapper = subjects();
-        expect(wrapper.find("Subjects").find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
-    });
-    it('shows metrics not requiring action on load', () => {
-        mockHistory.location.search = "?hide_metrics_not_requiring_action=false"
-        const wrapper = subjects();
-        expect(wrapper.find("Subjects").find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-    });
-    it('toggles tabs', () => {
-        const wrapper = subjects();
-        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("TableCell").at(0).simulate("click");
-        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
-        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("MetricDetails").find("Tab").find("Menu").find("MenuItem").at(1).find("a").simulate("click");
-        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
-        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("Metric").find("TableRowWithDetails").find("TableCell").at(0).simulate("click");
-        expect(wrapper.find("Subjects").find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-    });
-    it('toggles subject trend table', () => {
-        const wrapper = subjects();
-        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
-        wrapper.find("Subjects").find("Subject").find("SubjectDetails").find("SubjectTableHeader").find("HamburgerHeader").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
-        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(true);
-        wrapper.find("Subjects").find("Subject").find("TrendTable").find("TrendTableHeader").find("HamburgerMenu").find("HamburgerItems").find("DropdownItem").at(0).simulate("click");
-        expect(wrapper.find("Subjects").find("Subject").prop("subjectTrendTable")).toBe(false);
-    })
-});
+it('sorts the metrics by name', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by status', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Status/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Status/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by measurement value', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Measurement/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Measurement/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by target value', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Target/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Target/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by comment', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Comment/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Comment/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by issues', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Issues/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Issues/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by tags', () => {
+    renderSubjects();
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Tags/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Tags/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
