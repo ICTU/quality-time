@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { createMemoryHistory } from 'history';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
@@ -35,13 +36,19 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-function renderSubjects(permissions = []) {
+function renderSubjects(permissions = [], initialEntries = []) {
+    let history
+    if (initialEntries.length > 0) {
+        history = createMemoryHistory({ initialEntries: initialEntries })
+    } else {
+        history = createMemoryHistory()
+    }
     return render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={datamodel}>
                 <Subjects
                     hiddenColumns={[]}
-                    history={{ location: {}, replace: () => {/* Dummy implementation */ } }}
+                    history={history}
                     report={report}
                     reports={[report]}
                     tags={[]}
@@ -168,6 +175,15 @@ it('sorts the metrics by tags', () => {
     fireEvent.click(screen.getAllByText(/Tags/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
     fireEvent.click(screen.getAllByText(/Tags/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+})
+
+it('sorts the metrics by unit', () => {
+    renderSubjects([], ["?subject_trend_table=true"]);
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Unit/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Unit/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
 })
 
