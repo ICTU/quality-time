@@ -181,3 +181,13 @@ it('keeps sort direction when sorting another column', () => {
     fireEvent.click(screen.getAllByText(/Status/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
 })
+
+it('stops sorting when add metric is clicked', async () => {
+    renderSubjects([EDIT_REPORT_PERMISSION]);
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+    await act(async () => fireEvent.click(screen.getAllByText(/Add metric/)[0]))
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+})
