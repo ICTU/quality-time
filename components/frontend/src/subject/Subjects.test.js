@@ -4,22 +4,10 @@ import { createMemoryHistory } from 'history';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from './Subjects';
-import { add_subject, copy_subject, move_subject } from '../api/subject';
-import { subject_options } from '../widgets/menu_options';
 import { datamodel, report } from "../__fixtures__/fixtures";
+import * as fetch_server_api from '../api/fetch_server_api';
 
-jest.mock('../api/subject', () => {
-    const originalModule = jest.requireActual('../api/subject');
-
-    //Mock the default export and named export 'foo'
-    return {
-        __esModule: true,
-        ...originalModule,
-        add_subject: jest.fn(),
-        copy_subject: jest.fn(),
-        move_subject: jest.fn(),
-    };
-});
+jest.mock("../api/fetch_server_api.js")
 
 jest.mock('../widgets/menu_options', () => {
     const originalModule = jest.requireActual('../api/subject');
@@ -74,25 +62,26 @@ it("does not show the add subject button when not editable", () => {
 })
 
 it("adds a subject", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([EDIT_REPORT_PERMISSION]);
     await act(async () => fireEvent.click(screen.getByText(/Add subject/)))
-    expect(add_subject.mock.calls.length).toBe(1);
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/new/undefined", { });
 });
 
 it("copies a subject", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([EDIT_REPORT_PERMISSION]);
     await act(async () => fireEvent.click(screen.getByText("Copy subject")))
-    expect(subject_options.mock.calls.length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText("dummy option 1")))
-    expect(copy_subject.mock.calls.length).toBe(1)
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/copy/undefined", { });
 });
 
 it("moves a subject", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([EDIT_REPORT_PERMISSION])
     await act(async () => fireEvent.click(screen.getByText("Move subject")))
-    expect(subject_options.mock.calls.length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText("dummy option 2")))
-    expect(move_subject.mock.calls.length).toBe(1)
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/move/undefined", { });
 });
 
 it("hides metrics not requiring action", () => {
@@ -179,6 +168,7 @@ it('sorts the metrics by tags', () => {
 })
 
 it('sorts the metrics by unit', () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([], ["?subject_trend_table=true"]);
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
     fireEvent.click(screen.getAllByText(/Unit/)[0])
@@ -206,4 +196,16 @@ it('stops sorting when add metric is clicked', async () => {
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
     await act(async () => fireEvent.click(screen.getAllByText(/Add metric/)[0]))
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+})
+
+it('stops sorting when metrics are reordered', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    renderSubjects([EDIT_REPORT_PERMISSION]);
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
+    fireEvent.click(screen.getAllByText(/Metric/)[0])
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
+    await act(async () => fireEvent.click(screen.getAllByTitle(/expand/)[1]))
+    await act(async () => fireEvent.click(screen.getAllByRole("button", {text: "Move metric to the last row"})[0]))
+    expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M2", "M1"])
 })

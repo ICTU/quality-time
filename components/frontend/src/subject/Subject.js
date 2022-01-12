@@ -35,57 +35,51 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
     const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4" };
     const sorters = {
         name: (m1, m2) => {
-            const attribute1 = get_metric_name(m1[1], datamodel);
-            const attribute2 = get_metric_name(m2[1], datamodel);
-            return attribute1.localeCompare(attribute2)
+            const m1_name = get_metric_name(m1[1], datamodel);
+            const m2_name = get_metric_name(m2[1], datamodel);
+            return m1_name.localeCompare(m2_name)
         },
         measurement: (m1, m2) => {
-            const attribute1 = get_metric_value(m1[1]);
-            const attribute2 = get_metric_value(m2[1]);
-            return attribute1.localeCompare(attribute2)
+            const m1_measurement = get_metric_value(m1[1]);
+            const m2_measurement = get_metric_value(m2[1]);
+            return m1_measurement.localeCompare(m2_measurement)
         },
         target: (m1, m2) => {
-            const attribute1 = get_metric_target(m1[1]);
-            const attribute2 = get_metric_target(m2[1]);
-            return attribute1.localeCompare(attribute2)
+            const m1_target = get_metric_target(m1[1]);
+            const m2_target = get_metric_target(m2[1]);
+            return m1_target.localeCompare(m2_target)
         },
         comment: (m1, m2) => {
-            const attribute1 = get_metric_comment(m1[1]);
-            const attribute2 = get_metric_comment(m2[1]);
-            return attribute1.localeCompare(attribute2)
+            const m1_comment = get_metric_comment(m1[1]);
+            const m2_comment = get_metric_comment(m2[1]);
+            return m1_comment.localeCompare(m2_comment)
         },
         status: (m1, m2) => {
-            const attribute1 = status_order[get_metric_status(m1[1])];
-            const attribute2 = status_order[get_metric_status(m2[1])];
-            return attribute1.localeCompare(attribute2)
+            const m1_status = status_order[get_metric_status(m1[1])];
+            const m2_status = status_order[get_metric_status(m2[1])];
+            return m1_status.localeCompare(m2_status)
         },
         source: (m1, m2) => {
             let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
-            m1_sources.sort();
+            m1_sources = m1_sources.sort().join();
             let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
-            m2_sources.sort();
-            const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
-            const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
-            return attribute1.localeCompare(attribute2)
+            m2_sources = m2_sources.sort().join();
+            return m1_sources.localeCompare(m2_sources)
         },
         issues: (m1, m2) => {
-            let m1_issues = get_metric_issue_ids(m1[1]);
-            let m2_issues = get_metric_issue_ids(m2[1]);
-            const attribute1 = m1_issues.length > 0 ? m1_issues[0] : '';
-            const attribute2 = m2_issues.length > 0 ? m2_issues[0] : '';
-            return attribute1.localeCompare(attribute2)
+            const m1_issues = get_metric_issue_ids(m1[1]).join();
+            const m2_issues = get_metric_issue_ids(m2[1]).join();
+            return m1_issues.localeCompare(m2_issues)
         },
         tags: (m1, m2) => {
-            let m1_tags = get_metric_tags(m1[1]);
-            let m2_tags = get_metric_tags(m2[1]);
-            const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
-            const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
-            return attribute1.localeCompare(attribute2)
+            const m1_tags = get_metric_tags(m1[1]).join();
+            const m2_tags = get_metric_tags(m2[1]).join();
+            return m1_tags.localeCompare(m2_tags)
         },
         unit: (m1, m2) => {
-            let attribute1 = getMetricUnit(m1[1], datamodel);
-            let attribute2 = getMetricUnit(m2[1], datamodel);
-            return attribute1.localeCompare(attribute2)
+            const m1_unit = getMetricUnit(m1[1], datamodel);
+            const m2_unit = getMetricUnit(m2[1], datamodel);
+            return m1_unit.localeCompare(m2_unit)
         }
     }
     metrics.sort(sorters[sortColumn]);
