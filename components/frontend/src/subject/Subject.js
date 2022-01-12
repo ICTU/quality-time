@@ -61,10 +61,10 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
         },
         source: (m1, m2) => {
             let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
-            m1_sources = m1_sources.sort().join();
+            m1_sources.sort();
             let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
-            m2_sources = m2_sources.sort().join();
-            return m1_sources.localeCompare(m2_sources)
+            m2_sources.sort();
+            return m1_sources.join().localeCompare(m2_sources.join())
         },
         issues: (m1, m2) => {
             const m1_issues = get_metric_issue_ids(m1[1]).join();
