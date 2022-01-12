@@ -6,7 +6,7 @@ import { IssueStatus } from '../metric/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
 import { MeasurementSources } from '../metric/MeasurementSources';
-import { formatMetricScale, formatMetricUnit, format_minutes, get_metric_name, get_metric_tags } from "../utils";
+import { formatMetricScale, format_minutes, get_metric_name, get_metric_tags, getMetricUnit } from "../utils";
 import './TrendTable.css';
 
 export function MeasurementsRow(
@@ -30,7 +30,7 @@ export function MeasurementsRow(
 ) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
-    const unit = formatMetricUnit(metricType, metric)
+    const unit = getMetricUnit(metric, dataModel)
     const measurementCells = []
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     measurements.sort((m1, m2) => m1.start < m2.start ? 1 : -1)

@@ -1,8 +1,23 @@
 import { Dropdown, Icon, Table } from "semantic-ui-react";
 import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
+import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 import { pluralize } from "../utils";
 
-export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColumns, toggleHiddenColumn, trendTableNrDates, setTrendTableNrDates, trendTableInterval, setTrendTableInterval }) {
+export function TrendTableHeader(
+    {
+        columnDates,
+        extraHamburgerItems,
+        handleSort,
+        hiddenColumns,
+        setTrendTableInterval,
+        setTrendTableNrDates,
+        sortColumn,
+        sortDirection,
+        toggleHiddenColumn,
+        trendTableInterval,
+        trendTableNrDates
+    }) {
+    const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     return (
         <Table.Header>
             <Table.Row>
@@ -37,13 +52,13 @@ export function TrendTableHeader({ extraHamburgerItems, columnDates, hiddenColum
                         </Dropdown.Item>
                     </HamburgerMenu>
                 </Table.HeaderCell>
-                <Table.HeaderCell>Metric</Table.HeaderCell>
+                <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
-                <Table.HeaderCell>Unit</Table.HeaderCell>
-                {!hiddenColumns.includes("source") && <Table.HeaderCell>Source</Table.HeaderCell>}
-                {!hiddenColumns.includes("comment") && <Table.HeaderCell>Comment</Table.HeaderCell>}
-                {!hiddenColumns.includes("issues") && <Table.HeaderCell>Issues</Table.HeaderCell>}
-                {!hiddenColumns.includes("tags") && <Table.HeaderCell>Tags</Table.HeaderCell>}
+                <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />
+                {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Source' {...sortProps} />}
+                {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' {...sortProps} />}
+                {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' {...sortProps} />}
+                {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' {...sortProps} />}
             </Table.Row>
         </Table.Header>
     )

@@ -15,7 +15,7 @@ export const report = {
                     name: "M1", type: "metric_type", tags: [], sources: {}, recent_measurements: []
                 },
                 metric_uuidi2: {
-                    name: "M2", type: "metric_type", tags: [], sources: {}, recent_measurements: []
+                    name: "M2", type: "metric_type", tags: ["tag"], issue_ids: ["ABC-42"], sources: {source_uuid: {name: "Source"}}, recent_measurements: []
                 }
             }
         },
@@ -27,4 +27,4 @@ export const report = {
             }
         }
     }
-};
+}

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'semantic-ui-react';
+import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectDetails } from './SubjectDetails';
@@ -29,9 +31,67 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     return metrics
 }
 
+function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
+    const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4" };
+    const sorters = {
+        name: (m1, m2) => {
+            const m1_name = get_metric_name(m1[1], datamodel);
+            const m2_name = get_metric_name(m2[1], datamodel);
+            return m1_name.localeCompare(m2_name)
+        },
+        measurement: (m1, m2) => {
+            const m1_measurement = get_metric_value(m1[1]);
+            const m2_measurement = get_metric_value(m2[1]);
+            return m1_measurement.localeCompare(m2_measurement)
+        },
+        target: (m1, m2) => {
+            const m1_target = get_metric_target(m1[1]);
+            const m2_target = get_metric_target(m2[1]);
+            return m1_target.localeCompare(m2_target)
+        },
+        comment: (m1, m2) => {
+            const m1_comment = get_metric_comment(m1[1]);
+            const m2_comment = get_metric_comment(m2[1]);
+            return m1_comment.localeCompare(m2_comment)
+        },
+        status: (m1, m2) => {
+            const m1_status = status_order[get_metric_status(m1[1])];
+            const m2_status = status_order[get_metric_status(m2[1])];
+            return m1_status.localeCompare(m2_status)
+        },
+        source: (m1, m2) => {
+            let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
+            m1_sources.sort();
+            let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
+            m2_sources.sort();
+            return m1_sources.join().localeCompare(m2_sources.join())
+        },
+        issues: (m1, m2) => {
+            const m1_issues = get_metric_issue_ids(m1[1]).join();
+            const m2_issues = get_metric_issue_ids(m2[1]).join();
+            return m1_issues.localeCompare(m2_issues)
+        },
+        tags: (m1, m2) => {
+            const m1_tags = get_metric_tags(m1[1]).join();
+            const m2_tags = get_metric_tags(m2[1]).join();
+            return m1_tags.localeCompare(m2_tags)
+        },
+        unit: (m1, m2) => {
+            const m1_unit = getMetricUnit(m1[1], datamodel);
+            const m2_unit = getMetricUnit(m2[1], datamodel);
+            return m1_unit.localeCompare(m2_unit)
+        }
+    }
+    metrics.sort(sorters[sortColumn]);
+    if (sortDirection === 'descending') {
+        metrics.reverse()
+    }
+}
+
 export function Subject({
     changed_fields,
     first_subject,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     last_subject,
@@ -42,6 +102,8 @@ export function Subject({
     setSubjectTrendTable,
     setTrendTableInterval,
     setTrendTableNrDates,
+    sortColumn,
+    sortDirection,
     subject_uuid,
     subjectTrendTable,
     tags,
@@ -56,6 +118,7 @@ export function Subject({
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
 
     const [measurements, setMeasurements] = useState([]);
+    const dataModel = useContext(DataModel)
 
     useEffect(() => {
         if (subjectTrendTable) {
@@ -67,6 +130,11 @@ export function Subject({
         }
         // eslint-disable-next-line
     }, [subjectTrendTable]);
+
+    let metricEntries = Object.entries(metrics);
+    if (sortColumn !== null) {
+        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
+    }
 
     const hamburgerItems = <HamburgerItems
         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
@@ -88,38 +156,44 @@ export function Subject({
             {subjectTrendTable ?
                 <TrendTable
                     changed_fields={changed_fields}
-                    hiddenColumns={hiddenColumns}
-                    toggleHiddenColumn={toggleHiddenColumn}
-                    reportDate={report_date}
-                    metrics={metrics}
-                    measurements={measurements}
                     extraHamburgerItems={hamburgerItems}
-                    trendTableInterval={trendTableInterval}
-                    setTrendTableInterval={setTrendTableInterval}
-                    trendTableNrDates={trendTableNrDates}
-                    setTrendTableNrDates={setTrendTableNrDates}
-                    subject_uuid={subject_uuid}
-                    subject={subject}
+                    handleSort={handleSort}
+                    hiddenColumns={hiddenColumns}
+                    measurements={measurements}
+                    metricEntries={metricEntries}
                     reload={reload}
                     report={report}
+                    reportDate={report_date}
                     reports={reports}
-                    visibleDetailsTabs={visibleDetailsTabs}
+                    setTrendTableInterval={setTrendTableInterval}
+                    setTrendTableNrDates={setTrendTableNrDates}
+                    sortDirection={sortDirection}
+                    sortColumn={sortColumn}
+                    subject={subject}
+                    subject_uuid={subject_uuid}
+                    toggleHiddenColumn={toggleHiddenColumn}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                    trendTableInterval={trendTableInterval}
+                    trendTableNrDates={trendTableNrDates}
+                    visibleDetailsTabs={visibleDetailsTabs}
                 />
                 :
                 <SubjectDetails
                     changed_fields={changed_fields}
+                    extraHamburgerItems={hamburgerItems}
+                    handleSort={handleSort}
                     hiddenColumns={hiddenColumns}
+                    metricEntries={metricEntries}
+                    reload={reload}
+                    report_date={report_date}
                     report={report}
                     reports={reports}
-                    report_date={report_date}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
                     subject_uuid={subject_uuid}
-                    metrics={metrics}
-                    visibleDetailsTabs={visibleDetailsTabs}
                     toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                     toggleHiddenColumn={toggleHiddenColumn}
-                    extraHamburgerItems={hamburgerItems}
-                    reload={reload}
+                    visibleDetailsTabs={visibleDetailsTabs}
                 />
             }
         </div>

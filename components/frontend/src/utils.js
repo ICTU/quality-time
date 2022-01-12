@@ -26,6 +26,11 @@ export function get_metric_target(metric) {
     return (metric.accept_debt ? metric.debt_target : metric.target) || "0";
 }
 
+export function getMetricUnit(metric, dataModel) {
+    const metricType = dataModel.metrics[metric.type];
+    return formatMetricUnit(metricType, metric)
+}
+
 export function get_metric_value(metric) {
     return metric?.latest_measurement?.[metric.scale]?.value ?? '';
 }
@@ -109,7 +114,7 @@ export function formatMetricScaleAndUnit(metricType, metric, withMultiple = true
 }
 
 export function useURLSearchQuery(history, key, state_type, default_value) {
-    // state_type can either be "boolean", "integer", or "array"
+    // state_type can either be "boolean", "integer", "string", or "array"
     const [state, setState] = useState(getState());
 
     function getState() {
@@ -118,6 +123,8 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
             return parsed_state === "true"
         } else if (state_type === "integer") {
             return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
+        } else if(state_type === "string") {
+            return parsed_state ?? default_value
         }
         // else state_type is "array"
         return parsed_state?.split(",") ?? []
@@ -155,7 +162,10 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
 
 export function useDelayedRender() {
     const [visible, setVisible] = useState(false);
-    useEffect(() => { setTimeout(setVisible, 50, true) }, []);
+    useEffect(() => {
+        const timeout = setTimeout(setVisible, 50, true);
+        return () => clearTimeout(timeout)
+    }, []);
     return visible;
 }
 
