@@ -481,9 +481,9 @@ types-ipaddress==1.0.1 \
     --hash=sha256:9d0a642526c4a1f87ee9ae29d91b93f708508b891d038db2e1c9f06219383516 \
     --hash=sha256:dc5540c7fd8d4b3ffe8461bc01f27513c0abe5f2088e491218bd0a98a0b4584e
     # via types-cryptography
-types-requests==2.27.5 \
-    --hash=sha256:9c9390b18b222956155af6678570f452edafa3bb94bd5a4efe67da1105aa128c \
-    --hash=sha256:a67dc1a8512312b8cb89f3ba95f9a0e69ef3436ae77c9bd4f328cd88f17adda2
+types-requests==2.27.6 \
+    --hash=sha256:5e0dc681e9bfadb5c1d17f63d29f6d13d29ef2897d30cb9c79285b34a1655fd7 \
+    --hash=sha256:8f8a3cf66c525247750b0a0e6ffef4a210d7c8637065a1e7a3cb5769b1eb82a4
     # via -r requirements-dev.in
 types-setuptools==57.4.4 \
     --hash=sha256:9fe4180548e5cbb44cc0d343a47e4dc1d6769c31e16447994788c28df169011f \
