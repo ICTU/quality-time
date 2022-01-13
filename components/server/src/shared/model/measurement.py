@@ -233,9 +233,8 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         return bool(sources) and not any(source["parse_error"] or source["connection_error"] for source in sources)
 
     def sources_exist(self) -> bool:
-        """Return whether the measurement has sources and they exist in the metric."""
-        sources = self.sources()
-        return bool(sources) and all(source["source_uuid"] in self.metric.sources() for source in sources)
+        """Return whether all measurement sources exist in the metric."""
+        return all(source["source_uuid"] in self.metric.sources() for source in self.sources())
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""

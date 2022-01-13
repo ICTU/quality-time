@@ -12,6 +12,7 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to create sources and a metric of type METRIC_TYPE."""
         super().setUp()
         self.url = "https://jira"
+        self.set_source_parameter("jql", "project = abc")
         self.set_source_parameter("story_points_field", "field")
         self.set_source_parameter("manual_test_execution_frequency_field", "desired_test_frequency")
         self.set_source_parameter("manual_test_duration_field", "field")

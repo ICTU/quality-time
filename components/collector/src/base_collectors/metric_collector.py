@@ -52,6 +52,8 @@ class MetricCollector:
         """Create the source collectors for the metric."""
         collectors = []
         for source in self._metric["sources"].values():
+            if not self.__has_all_mandatory_parameters(source):
+                return []
             if collector_class := SourceCollector.get_subclass(source["type"], self._metric["type"]):
                 collectors.append(collector_class(self.__session, source, self.__data_model).collect())
         return collectors
@@ -67,3 +69,16 @@ class MetricCollector:
                 for issue_id in self._metric.get("issue_ids", [])
             ]
         return []
+
+    def __has_all_mandatory_parameters(self, source) -> bool:
+        """Return whether the user has specified all mandatory parameters for the source."""
+        parameters = self.__data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
+        for parameter_key, parameter in parameters.items():
+            if (
+                parameter.get("mandatory")
+                and self._metric["type"] in parameter.get("metrics")
+                and not source.get("parameters", {}).get(parameter_key)
+                and not parameter.get("default_value")
+            ):
+                return False
+        return True

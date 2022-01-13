@@ -14,6 +14,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.url = "https://azure_devops/org/project"
         self.work_item_url = "https://work_item"
         self.set_source_parameter("url", self.url)
+        self.set_source_parameter("wiql", "wiql")
         self.work_item = dict(
             id="id",
             url=self.work_item_url,

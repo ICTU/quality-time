@@ -118,7 +118,7 @@ class Collector:
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
             if len(tasks) >= self.MEASUREMENT_LIMIT:
                 break
-            if self.__can_and_should_collect(metric_uuid, metric):
+            if self.__should_collect(metric_uuid, metric):
                 tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
         await asyncio.gather(*tasks)
 
@@ -139,25 +139,6 @@ class Collector:
     def __sorted_by_edit_status(self, metrics: JSONDict) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""
         return sorted(metrics.items(), key=lambda item: bool(self.__previous_metrics.get(item[0]) == item[1]))
-
-    def __can_and_should_collect(self, metric_uuid: str, metric: dict) -> bool:
-        """Return whether the metric can and needs to be measured."""
-        return self.__should_collect(metric_uuid, metric) if self.__can_collect(metric) else False
-
-    def __can_collect(self, metric: dict) -> bool:
-        """Return whether the user has specified all mandatory parameters for all sources."""
-        sources = metric.get("sources", {})
-        for source in sources.values():
-            parameters = self.data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
-            for parameter_key, parameter in parameters.items():
-                if (
-                    parameter.get("mandatory")
-                    and metric["type"] in parameter.get("metrics")
-                    and not source.get("parameters", {}).get(parameter_key)
-                    and not parameter.get("default_value")
-                ):
-                    return False
-        return bool(sources)
 
     def __should_collect(self, metric_uuid: str, metric: dict) -> bool:
         """Return whether the metric should be collected.
