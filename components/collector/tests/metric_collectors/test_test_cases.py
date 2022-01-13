@@ -91,14 +91,14 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_no_test_report(self):
         """Test missing test report."""
-        measurement = await self.collect(dict(jira=dict(type="jira", parameters=dict(url=self.jira_url))))
+        measurement = await self.collect(dict(jira=dict(type="jira", parameters=dict(url=self.jira_url, jql="jql"))))
         self.assertDictEqual(self.jira_entity(), measurement.sources[0].entities[0])
         self.assertEqual("2", measurement.sources[0].value)
 
     async def test_matching_test_case_testng(self):
         """Test one matching test case."""
         self.response.text = AsyncMock(return_value=self.TESTNG_XML)
-        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        jira = dict(type="jira", parameters=dict(url=self.jira_url, jql="jql"))
         testng = dict(type="testng", parameters=dict(url=self.test_report_url))
         measurement = await self.collect(dict(jira=jira, testng=testng))
         self.assertListEqual(
@@ -110,7 +110,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
     async def test_matching_test_case_junit(self):
         """Test one matching test case."""
         self.response.text = AsyncMock(return_value=self.JUNIT_XML)
-        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        jira = dict(type="jira", parameters=dict(url=self.jira_url, jql="jql"))
         junit = dict(type="junit", parameters=dict(url=self.test_report_url))
         measurement = await self.collect(dict(jira=jira, junit=junit))
         self.assertListEqual(
@@ -122,7 +122,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
     async def test_matching_test_case_robot_framework(self):
         """Test one matching test case."""
         self.response.text = AsyncMock(return_value=self.ROBOT_FRAMEWORK_XML_V4)
-        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        jira = dict(type="jira", parameters=dict(url=self.jira_url, jql="jql"))
         robot_framework = dict(type="robot_framework", parameters=dict(url=self.test_report_url))
         measurement = await self.collect(dict(jira=jira, robot_framework=robot_framework))
         self.assertListEqual(
@@ -146,7 +146,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
             ],
         )
         self.response.json = AsyncMock(side_effect=[[], jenkins_json, self.test_cases_json, self.test_cases_json])
-        jira = dict(type="jira", parameters=dict(url=self.jira_url))
+        jira = dict(type="jira", parameters=dict(url=self.jira_url, jql="jql"))
         jenkins_test_report = dict(type="jenkins_test_report", parameters=dict(url=self.test_report_url))
         measurement = await self.collect(dict(jira=jira, jenkins_test_report=jenkins_test_report))
         self.assertListEqual(
@@ -158,7 +158,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
     async def test_filter_by_test_result(self):
         """Test that test cases can be filtered by test result."""
         self.response.text = AsyncMock(return_value=self.TESTNG_XML)
-        jira = dict(type="jira", parameters=dict(url=self.jira_url, test_result=["untested"]))
+        jira = dict(type="jira", parameters=dict(url=self.jira_url, jql="jql", test_result=["untested"]))
         testng = dict(type="testng", parameters=dict(url=self.test_report_url))
         measurement = await self.collect(dict(jira=jira, testng=testng))
         self.assertListEqual([self.jira_entity("key-2")], measurement.sources[0].entities)

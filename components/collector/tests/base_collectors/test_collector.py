@@ -116,18 +116,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
         )
 
-    async def test_fetch_with_empty_sources(self):
-        """Test fetching measurement for a metric with empty sources dict."""
-        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
-        mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = metrics
-        with self._patched_post() as post:
-            await self._fetch_measurements(mock_async_get_request)
-        post.assert_not_called()
-
     async def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
-        metrics = dict(metric_uuid=dict(type="metric", addition="sum"))
+        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
         with self._patched_post() as post:

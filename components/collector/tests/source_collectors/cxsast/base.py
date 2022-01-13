@@ -12,3 +12,5 @@ class CxSASTTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to add a CxSAST source fixture."""
         super().setUp()
         self.set_source_parameter("project", "project")
+        self.set_source_parameter("username", "username")
+        self.set_source_parameter("password", "password")
