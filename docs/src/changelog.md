@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 
-- If a metric did not have sources (with all mandatory parameters configured), the status of issues would not be collected. Fixes [#3321](https://github.com/ICTU/quality-time/issues/3321).
+- If a metric did not have sources (with all mandatory parameters configured), the status of issues would not be collected. Fixes [#3221](https://github.com/ICTU/quality-time/issues/3221).
 
 ## v3.31.0 - 2022-01-13
 
