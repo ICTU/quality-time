@@ -34,6 +34,6 @@ it('calls the expand callback when clicked', () => {
 it('calls the expand callback on keypress', () => {
     const onExpand = jest.fn()
     renderTableRowWithDetails(false, onExpand)
-    userEvent.type(screen.getByRole("button"), " ")
+    userEvent.type(screen.getByRole("button"), "x")
     expect(onExpand).toHaveBeenCalledWith(true)
 });
