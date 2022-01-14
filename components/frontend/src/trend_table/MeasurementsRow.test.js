@@ -79,23 +79,17 @@ describe("MeasurementRow", () => {
         expect(queryAllByText("hours").length).toBe(1)
     });
 
-    it('expands and collapses the metric', () => {
-        const { queryAllByText } = render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
-        const expand = screen.getByRole("button");
-        fireEvent.click(expand);
-        expect(queryAllByText("Configuration").length).toBe(1)
-        fireEvent.click(expand);
-        expect(queryAllByText("Configuration").length).toBe(0)
+    it('expands and collapses the metric via the props', () => {
+        render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
+        expect(screen.queryAllByText("Configuration").length).toBe(0)
+        visibleDetailsTabs.push("metric_uuid:0")
+        render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
+        expect(screen.queryAllByText("Configuration").length).toBe(1)
     });
 
-    it('expands and collapses the metric and toggles tab visibility', () => {
-        const { queryAllByText } = render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
-        const expand = screen.getByRole("button");
-        visibleDetailsTabs.push("metric_uuid:0")
-        visibleDetailsTabs.push("metric_uuid:1")
-        fireEvent.click(expand);
-        expect(queryAllByText("Configuration").length).toBe(1)
-        expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("metric_uuid:0");
+    it('expands and collapses the metric via the button', () => {
+        render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
+        const expand = screen.getAllByRole("button")[0];
         fireEvent.click(expand);
         expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("metric_uuid:0");
     });

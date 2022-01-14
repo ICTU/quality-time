@@ -23,7 +23,7 @@ export function Subjects({
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab] = useURLSearchQuery(history, "tabs", "array");
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
     const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean", false)
     const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
     const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 7);
@@ -50,6 +50,7 @@ export function Subjects({
                 visible || index < 3 ?
                     <Subject
                         changed_fields={changed_fields}
+                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         first_subject={index === 0}
                         handleSort={(column) => handleSort(column)}
                         hiddenColumns={hiddenColumns}
