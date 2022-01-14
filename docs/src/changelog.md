@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- If a metric did not have sources (with all mandatory parameters configured), the status of issues would not be collected. Fixes [#3221](https://github.com/ICTU/quality-time/issues/3221).
+
 ## v3.31.0 - 2022-01-13
 
 ### Fixed
