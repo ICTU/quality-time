@@ -36,9 +36,9 @@ def init_database() -> Database:  # pragma: no cover-behave
 def set_feature_compatibility_version(admin_database: Database) -> None:
     """Set the feature compatibility version to the current MongoDB version to prepare for upgrade to the next version.
 
-    See https://docs.mongodb.com/manual/release-notes/4.4-upgrade-standalone/
+    See https://docs.mongodb.com/manual/reference/command/setFeatureCompatibilityVersion/
     """
-    admin_database.command("setFeatureCompatibilityVersion", "4.2")
+    admin_database.command("setFeatureCompatibilityVersion", "4.4")
 
 
 def create_indexes(database: Database) -> None:
