@@ -42,6 +42,7 @@ ignore-failures:
     - alabaster
     - behave
     - bottle-mongo
+    - filecache
     - flake8-polyfill 
     - lockfile  # https://github.com/trailofbits/pip-audit/issues/203
     - mccabe
