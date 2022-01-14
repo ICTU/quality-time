@@ -89,7 +89,7 @@ export function TrendTable({
                 subject={subject}
                 reload={reload}
                 reports={reports}
-                resetSortColumn={() => {/* Trend table is not sortable (yet) */ }} />
+                resetSortColumn={() => handleSort(null)} />
         </Table>
     )
 }
