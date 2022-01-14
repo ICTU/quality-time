@@ -8,11 +8,14 @@ import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectDetails } from './SubjectDetails';
 import { SubjectTitle } from './SubjectTitle';
 
-function HamburgerItems({ hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, }) {
+function HamburgerItems({ clearVisibleDetailsTabs, hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, visibleDetailsTabs }) {
     return (
         <>
             <Dropdown.Item key="view" onClick={() => setSubjectTrendTable(!subjectTrendTable)}>
                 {subjectTrendTable ? "Show metric details" : "Show metric trend"}
+            </Dropdown.Item>
+            <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
+                Collapse all metrics
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
                 {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
@@ -90,6 +93,7 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 
 export function Subject({
     changed_fields,
+    clearVisibleDetailsTabs,
     first_subject,
     handleSort,
     hiddenColumns,
@@ -137,10 +141,12 @@ export function Subject({
     }
 
     const hamburgerItems = <HamburgerItems
+        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
         subjectTrendTable={subjectTrendTable}
         setSubjectTrendTable={setSubjectTrendTable}
         setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+        visibleDetailsTabs={visibleDetailsTabs}
     />
 
     return (
