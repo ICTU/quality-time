@@ -1,24 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dropdown } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
-
-function HamburgerItems({ clearVisibleDetailsTabs, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction, visibleDetailsTabs }) {
-    return (
-        <>
-            <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
-                Collapse all metrics
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
-                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-            </Dropdown.Item>
-        </>
-    )
-}
 
 function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     const metrics = {}
@@ -134,13 +120,6 @@ export function Subject({
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
     }
 
-    const hamburgerItems = <HamburgerItems
-        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-        visibleDetailsTabs={visibleDetailsTabs}
-    />
-
     return (
         <div id={subject_uuid}>
             <SubjectTitle
@@ -153,15 +132,17 @@ export function Subject({
             <CommentSegment comment={subject.comment} />
             <SubjectTable
                 changed_fields={changed_fields}
-                extraHamburgerItems={hamburgerItems}
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 measurements={measurements}
                 metricEntries={metricEntries}
                 reload={reload}
                 report={report}
                 reportDate={report_date}
                 reports={reports}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                 setTrendTableInterval={setTrendTableInterval}
                 setTrendTableNrDates={setTrendTableNrDates}
                 sortDirection={sortDirection}

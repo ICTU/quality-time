@@ -20,15 +20,17 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 export function SubjectTable({
     changed_fields,
-    extraHamburgerItems,
+    clearVisibleDetailsTabs,
     handleSort,
     hiddenColumns,
+    hideMetricsNotRequiringAction,
     measurements,
     metricEntries,
     reload,
     report,
     reports,
     reportDate,
+    setHideMetricsNotRequiringAction,
     setTrendTableInterval,
     setTrendTableNrDates,
     sortDirection,
@@ -48,10 +50,12 @@ export function SubjectTable({
     return (
         <Table sortable>
             <SubjectTableHeader
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                 columnDates={dates}
-                extraHamburgerItems={extraHamburgerItems}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                 setTrendTableInterval={setTrendTableInterval}
                 setTrendTableNrDates={setTrendTableNrDates}
                 sortColumn={sortColumn}
@@ -59,6 +63,7 @@ export function SubjectTable({
                 toggleHiddenColumn={toggleHiddenColumn}
                 trendTableNrDates={trendTableNrDates}
                 trendTableInterval={trendTableInterval}
+                visibleDetailsTabs={visibleDetailsTabs}
             />
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {

@@ -6,7 +6,12 @@ import { SubjectTableHeader } from './SubjectTableHeader';
 function renderSubjectTableHeader(setTrendTableInterval) {
     return render(
         <Table>
-            <SubjectTableHeader hiddenColumns={[]} columnDates={[]} setTrendTableInterval={setTrendTableInterval} />
+            <SubjectTableHeader
+                columnDates={[]}
+                hiddenColumns={[]}
+                setTrendTableInterval={setTrendTableInterval}
+                visibleDetailsTabs={[]}
+            />
         </Table>
     )
 }

@@ -5,17 +5,20 @@ import { pluralize } from "../utils";
 
 export function SubjectTableHeader(
     {
+        clearVisibleDetailsTabs,
         columnDates,
-        extraHamburgerItems,
         handleSort,
         hiddenColumns,
+        hideMetricsNotRequiringAction,
+        setHideMetricsNotRequiringAction,
         setTrendTableInterval,
         setTrendTableNrDates,
         sortColumn,
         sortDirection,
         toggleHiddenColumn,
         trendTableInterval,
-        trendTableNrDates
+        trendTableNrDates,
+        visibleDetailsTabs
     }) {
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     return (
@@ -23,7 +26,12 @@ export function SubjectTableHeader(
             <Table.Row>
                 <Table.HeaderCell className="unsortable" textAlign="center">
                     <HamburgerMenu>
-                        {extraHamburgerItems}
+                        <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
+                            Collapse all metrics
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
+                            {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
+                        </Dropdown.Item>
                         <Dropdown.Item key="columns">
                             <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
                             <Dropdown.Menu>
