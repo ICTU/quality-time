@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusIcon } from '../metric/StatusIcon';
+import { StatusIcon } from '../measurement/StatusIcon';
 import { HyperLink } from '../widgets/HyperLink';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { format_minutes } from '../utils';

@@ -1,52 +1,17 @@
 import { useContext } from "react";
-import { Popup, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import { DataModel } from "../context/DataModel";
 import { MetricDetails } from '../metric/MetricDetails';
-import { IssueStatus } from '../metric/IssueStatus';
+import { IssueStatus } from '../measurement/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
-import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { MeasurementSources } from '../metric/MeasurementSources';
-import { StatusIcon } from '../metric/StatusIcon';
-import { TrendSparkline } from '../metric/TrendSparkline';
-import { formatMetricScale, formatMetricScaleAndUnit, format_minutes, formatMetricDirection, get_metric_name, get_metric_tags, get_metric_target, get_metric_value, getMetricUnit } from '../utils';
+import { MeasurementSources } from '../measurement/MeasurementSources';
+import { StatusIcon } from '../measurement/StatusIcon';
+import { TrendSparkline } from '../measurement/TrendSparkline';
+import { MeasurementTarget } from '../measurement/MeasurementTarget';
+import { MeasurementValue } from '../measurement/MeasurementValue';
+import { formatMetricScale, format_minutes, get_metric_name, get_metric_tags, getMetricUnit } from '../utils';
 import './SubjectTableRow.css';
-
-function MeasurementValue({ metric }) {
-    const dataModel = useContext(DataModel)
-    const metricType = dataModel.metrics[metric.type];
-    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
-    const metricValue = get_metric_value(metric)
-    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
-    const valueText = <span>{value + metricUnit}</span>
-    if (metric.latest_measurement) {
-        return (
-            <Popup trigger={valueText} flowing hoverable>
-                <TimeAgoWithDate date={metric.latest_measurement.end}>{metric.status ? "Metric was last measured":"Last measurement attempt"}</TimeAgoWithDate><br />
-                <TimeAgoWithDate date={metric.latest_measurement.start}>{metric.status ? "Value was first measured":"Value unknown since"}</TimeAgoWithDate>
-            </Popup>
-        )
-    }
-    return valueText;
-}
-
-function MeasurementTarget({ metric }) {
-    const dataModel = useContext(DataModel)
-    const metricType = dataModel.metrics[metric.type];
-    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
-    const metric_direction = formatMetricDirection(metric, dataModel)
-    let debt_end = "";
-    if (metric.debt_end_date) {
-        const end_date = new Date(metric.debt_end_date);
-        debt_end = ` until ${end_date.toLocaleDateString()}`;
-    }
-    const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
-    let target = get_metric_target(metric);
-    if (target && metricType.unit === "minutes" && metric.scale !== "percentage") {
-        target = format_minutes(target)
-    }
-    return `${metric_direction} ${target}${metricUnit}${debt}`
-}
 
 export function SubjectTableRow(
     {
