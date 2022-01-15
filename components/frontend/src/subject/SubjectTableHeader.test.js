@@ -3,13 +3,13 @@ import { Table } from 'semantic-ui-react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { SubjectTableHeader } from './SubjectTableHeader';
 
-function renderSubjectTableHeader(setTrendTableInterval) {
+function renderSubjectTableHeader(setDateInterval) {
     return render(
         <Table>
             <SubjectTableHeader
                 columnDates={[]}
                 hiddenColumns={[]}
-                setTrendTableInterval={setTrendTableInterval}
+                setDateInterval={setDateInterval}
                 visibleDetailsTabs={[]}
             />
         </Table>

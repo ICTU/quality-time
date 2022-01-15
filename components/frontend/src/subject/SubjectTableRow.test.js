@@ -50,7 +50,7 @@ describe("MeasurementRow", () => {
                             measurements={measurements}
                             dates={dates}
                             reportDate={null}
-                            trendTableNrDates={1}
+                            nrDates={1}
                             hiddenColumns={[]}
                             toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
                             visibleDetailsTabs={visibleDetailsTabs}

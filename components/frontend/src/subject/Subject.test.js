@@ -4,7 +4,7 @@ import * as fetch_server_api from '../api/fetch_server_api';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(trendTableNrDates) {
+function renderSubject(nrDates) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
@@ -12,7 +12,7 @@ function renderSubject(trendTableNrDates) {
                 subject_uuid="subject_uuid"
                 tags={[]}
                 hiddenColumns={[]}
-                trendTableNrDates={trendTableNrDates}
+                nrDates={nrDates}
                 visibleDetailsTabs={[]} />
         </DataModel.Provider>
     )

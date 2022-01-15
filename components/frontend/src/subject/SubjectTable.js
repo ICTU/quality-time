@@ -5,11 +5,11 @@ import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';
 
 
-function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
-    const baseDate = report_date ? new Date(report_date) : new Date();
-    const intervalLength = trendTableInterval;  // trendTableInterval is in days
+function getColumnDates(reportDate, dateInterval, nrDates) {
+    const baseDate = reportDate ? new Date(reportDate) : new Date();
+    const intervalLength = dateInterval;  // dateInterval is in days
     const columnDates = []
-    for (let offset = 0; offset < trendTableNrDates * intervalLength; offset += intervalLength) {
+    for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
         let date = new Date(baseDate.getTime());
         date.setDate(date.getDate() - offset);
         columnDates.push(date)
@@ -21,30 +21,30 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 export function SubjectTable({
     changed_fields,
     clearVisibleDetailsTabs,
+    dateInterval,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     measurements,
     metricEntries,
+    nrDates,
     reload,
     report,
     reports,
     reportDate,
+    setDateInterval,
     setHideMetricsNotRequiringAction,
-    setTrendTableInterval,
-    setTrendTableNrDates,
+    setNrDates,
     sortDirection,
     sortColumn,
     subject,
     subject_uuid,
     toggleHiddenColumn,
     toggleVisibleDetailsTab,
-    trendTableInterval,
-    trendTableNrDates,
     visibleDetailsTabs
 }) {
 
-    const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
+    const dates = getColumnDates(reportDate, dateInterval, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
@@ -56,13 +56,13 @@ export function SubjectTable({
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                setTrendTableInterval={setTrendTableInterval}
-                setTrendTableNrDates={setTrendTableNrDates}
+                setDateInterval={setDateInterval}
+                setNrDates={setNrDates}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 toggleHiddenColumn={toggleHiddenColumn}
-                trendTableNrDates={trendTableNrDates}
-                trendTableInterval={trendTableInterval}
+                nrDates={nrDates}
+                dateInterval={dateInterval}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
             <Table.Body>
@@ -83,7 +83,7 @@ export function SubjectTable({
                             hiddenColumns={hiddenColumns}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                            trendTableNrDates={trendTableNrDates}
+                            nrDates={nrDates}
                             reload={reload}
                         />
                     )

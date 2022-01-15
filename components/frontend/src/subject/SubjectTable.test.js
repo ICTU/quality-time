@@ -23,7 +23,7 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-function renderSubjectTable(trendTableInterval, hiddenColumns) {
+function renderSubjectTable(dateInterval, hiddenColumns) {
     return render(
         <DataModel.Provider value={datamodel}>
             <SubjectTable
@@ -32,10 +32,10 @@ function renderSubjectTable(trendTableInterval, hiddenColumns) {
                 measurements={[]}
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                 subject={{ metrics: { 1: metric, 2: metric2 } }}
-                trendTableInterval={trendTableInterval}
-                trendTableNrDates={3}
-                setTrendTableInterval={() => {/*Dummy implementation*/ }}
-                setTrendTableNrDates={() => {/*Dummy implementation*/ }}
+                dateInterval={dateInterval}
+                nrDates={3}
+                setDateInterval={() => {/*Dummy implementation*/ }}
+                setNrDates={() => {/*Dummy implementation*/ }}
                 hiddenColumns={hiddenColumns ?? []}
                 visibleDetailsTabs={[]}
             />

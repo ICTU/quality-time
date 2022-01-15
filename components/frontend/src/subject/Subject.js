@@ -85,16 +85,16 @@ export function Subject({
     report_date,
     reports,
     setHideMetricsNotRequiringAction,
-    setTrendTableInterval,
-    setTrendTableNrDates,
+    setDateInterval,
+    setNrDates,
     sortColumn,
     sortDirection,
     subject_uuid,
     tags,
     toggleHiddenColumn,
     toggleVisibleDetailsTab,
-    trendTableInterval,
-    trendTableNrDates,
+    dateInterval,
+    nrDates,
     visibleDetailsTabs,
     reload
 }) {
@@ -105,7 +105,7 @@ export function Subject({
     const dataModel = useContext(DataModel)
 
     useEffect(() => {
-        if (trendTableNrDates > 1) {
+        if (nrDates > 1) {
             get_subject_measurements(subject_uuid, report_date).then(json => {
                 if (json.ok !== false) {
                     setMeasurements(json.measurements)
@@ -113,7 +113,7 @@ export function Subject({
             })
         }
         // eslint-disable-next-line
-    }, [trendTableNrDates]);
+    }, [nrDates]);
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
@@ -143,16 +143,16 @@ export function Subject({
                 reportDate={report_date}
                 reports={reports}
                 setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                setTrendTableInterval={setTrendTableInterval}
-                setTrendTableNrDates={setTrendTableNrDates}
+                setDateInterval={setDateInterval}
+                setNrDates={setNrDates}
                 sortDirection={sortDirection}
                 sortColumn={sortColumn}
                 subject={subject}
                 subject_uuid={subject_uuid}
                 toggleHiddenColumn={toggleHiddenColumn}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                trendTableInterval={trendTableInterval}
-                trendTableNrDates={trendTableNrDates}
+                dateInterval={dateInterval}
+                nrDates={nrDates}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>

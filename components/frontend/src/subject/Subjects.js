@@ -24,8 +24,8 @@ export function Subjects({
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 1);
-    const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 7);
+    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
+    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
     const last_index = Object.keys(report.subjects).length - 1;
 
     function handleSort(column) {
@@ -60,16 +60,16 @@ export function Subjects({
                         report_date={report_date}
                         reports={reports}
                         setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
-                        setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
-                        setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
+                        setDateInterval={(interval) => setDateInterval(interval)}
+                        setNrDates={(nr) => setNrDates(nr)}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}
                         tags={tags}
                         toggleHiddenColumn={toggleHiddenColumn}
                         toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
-                        trendTableInterval={trendTableInterval}
-                        trendTableNrDates={trendTableNrDates}
+                        dateInterval={dateInterval}
+                        nrDates={nrDates}
                         visibleDetailsTabs={visibleDetailsTabs}
                         reload={reload}
                     /> : null
