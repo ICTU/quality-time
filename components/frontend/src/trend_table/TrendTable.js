@@ -78,6 +78,7 @@ export function TrendTable({
                             hiddenColumns={hiddenColumns}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                            trendTableNrDates={trendTableNrDates}
                             reload={reload}
                         />
                     )

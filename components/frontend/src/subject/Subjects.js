@@ -24,8 +24,7 @@ export function Subjects({
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(history, "subject_trend_table", "boolean", false)
-    const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 7);
+    const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(history, "trend_table_nr_dates", "integer", 1);
     const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(history, "trend_table_interval", "integer", 7);
     const last_index = Object.keys(report.subjects).length - 1;
 
@@ -61,13 +60,11 @@ export function Subjects({
                         report_date={report_date}
                         reports={reports}
                         setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
-                        setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
                         setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
                         setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}
-                        subjectTrendTable={subjectTrendTable}
                         tags={tags}
                         toggleHiddenColumn={toggleHiddenColumn}
                         toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}

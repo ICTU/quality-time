@@ -21,12 +21,16 @@ export function TrendTableHeader(
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell textAlign="center">
+                <Table.HeaderCell className="unsortable" textAlign="center">
                     <HamburgerMenu>
                         {extraHamburgerItems}
                         <Dropdown.Item key="columns">
                             <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
                             <Dropdown.Menu>
+                                <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                                <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                                <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                                <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
@@ -36,7 +40,7 @@ export function TrendTableHeader(
                         <Dropdown.Item key="nr_dates">
                             <Icon name='dropdown' /><span className='text'>Numer of dates</span>
                             <Dropdown.Menu>
-                                {[2, 3, 4, 5, 6, 7].map((nr) =>
+                                {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
                                     <Dropdown.Item key={nr} active={nr === trendTableNrDates} onClick={() => setTrendTableNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Dropdown.Item>
                                 )}
                             </Dropdown.Menu>
@@ -53,8 +57,12 @@ export function TrendTableHeader(
                     </HamburgerMenu>
                 </Table.HeaderCell>
                 <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
-                {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
-                <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />
+                {trendTableNrDates > 1 && columnDates.map(date => <Table.HeaderCell key={date} className="unsortable" textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
+                {trendTableNrDates > 1 && <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />}
+                {trendTableNrDates === 1 && !hiddenColumns.includes("trend") && <Table.HeaderCell className="unsortable" width="2">Trend (7 days)</Table.HeaderCell>}
+                {trendTableNrDates === 1 && !hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' {...sortProps} />}
+                {trendTableNrDates === 1 && !hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' {...sortProps} />}
+                {trendTableNrDates === 1 && !hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' {...sortProps} />}
                 {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Source' {...sortProps} />}
                 {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' {...sortProps} />}
                 {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' {...sortProps} />}

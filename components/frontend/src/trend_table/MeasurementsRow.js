@@ -1,13 +1,52 @@
 import { useContext } from "react";
-import { Table } from "semantic-ui-react";
+import { Popup, Table } from "semantic-ui-react";
 import { DataModel } from "../context/DataModel";
 import { MetricDetails } from '../metric/MetricDetails';
 import { IssueStatus } from '../metric/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
+import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { MeasurementSources } from '../metric/MeasurementSources';
-import { formatMetricScale, format_minutes, get_metric_name, get_metric_tags, getMetricUnit } from "../utils";
+import { StatusIcon } from '../metric/StatusIcon';
+import { TrendSparkline } from '../metric/TrendSparkline';
+import { formatMetricScale, formatMetricScaleAndUnit, format_minutes, formatMetricDirection, get_metric_name, get_metric_tags, get_metric_target, get_metric_value, getMetricUnit } from '../utils';
 import './TrendTable.css';
+
+function MeasurementValue({ metric }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
+    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
+    const metricValue = get_metric_value(metric)
+    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
+    const valueText = <span>{value + metricUnit}</span>
+    if (metric.latest_measurement) {
+        return (
+            <Popup trigger={valueText} flowing hoverable>
+                <TimeAgoWithDate date={metric.latest_measurement.end}>{metric.status ? "Metric was last measured":"Last measurement attempt"}</TimeAgoWithDate><br />
+                <TimeAgoWithDate date={metric.latest_measurement.start}>{metric.status ? "Value was first measured":"Value unknown since"}</TimeAgoWithDate>
+            </Popup>
+        )
+    }
+    return valueText;
+}
+
+function MeasurementTarget({ metric }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
+    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
+    const metric_direction = formatMetricDirection(metric, dataModel)
+    let debt_end = "";
+    if (metric.debt_end_date) {
+        const end_date = new Date(metric.debt_end_date);
+        debt_end = ` until ${end_date.toLocaleDateString()}`;
+    }
+    const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
+    let target = get_metric_target(metric);
+    if (target && metricType.unit === "minutes" && metric.scale !== "percentage") {
+        target = format_minutes(target)
+    }
+    return `${metric_direction} ${target}${metricUnit}${debt}`
+}
 
 export function MeasurementsRow(
     {
@@ -25,6 +64,7 @@ export function MeasurementsRow(
         hiddenColumns,
         visibleDetailsTabs,
         toggleVisibleDetailsTab,
+        trendTableNrDates,
         reload
     }
 ) {
@@ -73,12 +113,17 @@ export function MeasurementsRow(
         }
     }
 
-    const style = { background: "#f9fafb" }
+    const style = trendTableNrDates > 1 ? { background: "#f9fafb" } : {}
+    const className = trendTableNrDates === 1 ? metric.status : ""
     return (
-        <TableRowWithDetails style={style} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
+        <TableRowWithDetails id={metric_uuid} className={className} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
             <Table.Cell style={style}>{metricName}</Table.Cell>
-            {measurementCells}
-            <Table.Cell style={style}>{unit}</Table.Cell>
+            {trendTableNrDates > 1 && measurementCells}
+            {trendTableNrDates > 1 && <Table.Cell style={style}>{unit}</Table.Cell>}
+            {trendTableNrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
+            {trendTableNrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
+            {trendTableNrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} /></Table.Cell>}
+            {trendTableNrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}
