@@ -78,9 +78,9 @@ export function MeasurementsRow(
     dates.forEach((date) => {
         const iso_date_string = date.toISOString().split("T")[0];
         const measurement = measurements?.find((m) => { return m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-        let metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
+        let metric_value = measurement?.[metric.scale]?.value ?? "?";
         metric_value = metric_value !== "?" && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric_value) : metric_value;
-        const status = !measurement?.[metric.scale]?.status ? "unknown" : measurement[metric.scale].status;
+        const status = measurement?.[metric.scale]?.status ?? "unknown";
         measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
     })
 

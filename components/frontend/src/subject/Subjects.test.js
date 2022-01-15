@@ -169,7 +169,7 @@ it('sorts the metrics by tags', () => {
 
 it('sorts the metrics by unit', () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    renderSubjects([], ["?subject_trend_table=true"]);
+    renderSubjects([], ["?trend_table_nr_dates=2"]);
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])
     fireEvent.click(screen.getAllByText(/Unit/)[0])
     expect(screen.queryAllByText(/M[12]/).map((element) => element.innerHTML)).toMatchObject(["M1", "M2"])

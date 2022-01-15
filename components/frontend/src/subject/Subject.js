@@ -7,7 +7,7 @@ import { TrendTable } from '../trend_table/TrendTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
 
-function HamburgerItems({ clearVisibleDetailsTabs, hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, visibleDetailsTabs }) {
+function HamburgerItems({ clearVisibleDetailsTabs, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction, visibleDetailsTabs }) {
     return (
         <>
             <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
