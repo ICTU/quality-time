@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { SubjectFooter } from '../subject/SubjectFooter';
-import { MeasurementsRow } from './MeasurementsRow';
-import { TrendTableHeader } from './TrendTableHeader';
+import { SubjectTableFooter } from './SubjectTableFooter';
+import { SubjectTableRow } from './SubjectTableRow';
+import { SubjectTableHeader } from './SubjectTableHeader';
 
 
 function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
@@ -18,7 +18,7 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 }
 
 
-export function TrendTable({
+export function SubjectTable({
     changed_fields,
     extraHamburgerItems,
     handleSort,
@@ -47,7 +47,7 @@ export function TrendTable({
 
     return (
         <Table sortable>
-            <TrendTableHeader
+            <SubjectTableHeader
                 columnDates={dates}
                 extraHamburgerItems={extraHamburgerItems}
                 handleSort={handleSort}
@@ -63,7 +63,7 @@ export function TrendTable({
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {
                     return (
-                        <MeasurementsRow key={metric_uuid}
+                        <SubjectTableRow key={metric_uuid}
                             changed_fields={changed_fields}
                             first_metric={index === 0}
                             last_metric={index === last_index}
@@ -85,7 +85,7 @@ export function TrendTable({
                 })
                 }
             </Table.Body>
-            <SubjectFooter
+            <SubjectTableFooter
                 subjectUuid={subject_uuid}
                 subject={subject}
                 reload={reload}

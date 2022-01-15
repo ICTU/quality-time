@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { DataModel } from '../context/DataModel';
-import { TrendTable } from './TrendTable';
+import { SubjectTable } from './SubjectTable';
 
 const metric = {
     unit: "testUnit",
@@ -23,10 +23,10 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-function renderTrendTable(trendTableInterval, hiddenColumns) {
+function renderSubjectTable(trendTableInterval, hiddenColumns) {
     return render(
         <DataModel.Provider value={datamodel}>
-            <TrendTable
+            <SubjectTable
                 reportDate={reportDate}
                 report={{}}
                 measurements={[]}
@@ -45,7 +45,7 @@ function renderTrendTable(trendTableInterval, hiddenColumns) {
 }
 
 it('calculates weekly column dates correctly', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     const expectedDates = [
         new Date("2020-01-01T00:00:00+00:00"),
         new Date("2020-01-08T00:00:00+00:00"),
@@ -57,7 +57,7 @@ it('calculates weekly column dates correctly', () => {
 });
 
 it('calculates daily column dates correctly', () => {
-    renderTrendTable(1)
+    renderSubjectTable(1)
     const expectedDates = [
         new Date("2020-01-13T00:00:00+00:00"),
         new Date("2020-01-14T00:00:00+00:00"),
@@ -69,7 +69,7 @@ it('calculates daily column dates correctly', () => {
 });
 
 it('displays all the metrics', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     const metricNames = ["name_1", "name_2"]
     metricNames.forEach(metricName => {
         expect(screen.queryAllByText(metricName).length).toBe(1)
@@ -77,43 +77,43 @@ it('displays all the metrics', () => {
 });
 
 it('shows the source column', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     expect(screen.queryAllByText(/Source/).length).toBe(1)
 })
 
 it('hides the source column', () => {
-    renderTrendTable(7, ["source"])
+    renderSubjectTable(7, ["source"])
     expect(screen.queryAllByText(/Source/).length).toBe(0)
 })
 
 it('shows the comment column', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     expect(screen.queryAllByText(/Comment/).length).toBe(1)
 })
 
 it('hides the source column', () => {
-    renderTrendTable(7, ["comment"])
+    renderSubjectTable(7, ["comment"])
     expect(screen.queryAllByText(/Comment/).length).toBe(0)
 })
 
 it('shows the issue column', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     expect(screen.queryAllByText(/Issues/).length).toBe(1)
 })
 
 it('hides the issue column', () => {
-    renderTrendTable(7, ["issues"])
+    renderSubjectTable(7, ["issues"])
     expect(screen.queryAllByText(/Issues/).length).toBe(0)
 })
 
 it('shows the tags column', () => {
-    renderTrendTable(7)
+    renderSubjectTable(7)
     expect(screen.queryAllByText(/Tags/).length).toBe(1)
     expect(screen.queryAllByText(/Tag 1/).length).toBe(1)
 })
 
 it('hides the tags column', () => {
-    renderTrendTable(7, ["tags"])
+    renderSubjectTable(7, ["tags"])
     expect(screen.queryAllByText(/Tags/).length).toBe(0)
     expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
 })

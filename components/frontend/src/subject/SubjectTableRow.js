@@ -10,7 +10,7 @@ import { MeasurementSources } from '../metric/MeasurementSources';
 import { StatusIcon } from '../metric/StatusIcon';
 import { TrendSparkline } from '../metric/TrendSparkline';
 import { formatMetricScale, formatMetricScaleAndUnit, format_minutes, formatMetricDirection, get_metric_name, get_metric_tags, get_metric_target, get_metric_value, getMetricUnit } from '../utils';
-import './TrendTable.css';
+import './SubjectTableRow.css';
 
 function MeasurementValue({ metric }) {
     const dataModel = useContext(DataModel)
@@ -48,7 +48,7 @@ function MeasurementTarget({ metric }) {
     return `${metric_direction} ${target}${metricUnit}${debt}`
 }
 
-export function MeasurementsRow(
+export function SubjectTableRow(
     {
         changed_fields,
         first_metric,

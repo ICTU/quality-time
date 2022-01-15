@@ -3,7 +3,7 @@ import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
 import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 import { pluralize } from "../utils";
 
-export function TrendTableHeader(
+export function SubjectTableHeader(
     {
         columnDates,
         extraHamburgerItems,

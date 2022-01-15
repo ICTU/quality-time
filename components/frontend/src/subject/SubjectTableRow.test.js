@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MeasurementsRow } from './MeasurementsRow';
+import { SubjectTableRow } from './SubjectTableRow';
 import { DataModel } from '../context/DataModel';
 
 describe("MeasurementRow", () => {
@@ -42,7 +42,7 @@ describe("MeasurementRow", () => {
             <table>
                 <tbody>
                     <DataModel.Provider value={dataModel}>
-                        <MeasurementsRow
+                        <SubjectTableRow
                             metric_uuid="metric_uuid"
                             metric={metric}
                             report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}

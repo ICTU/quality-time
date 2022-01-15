@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Table } from "semantic-ui-react";
 import { DataModel } from "../context/DataModel";
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
-import { SubjectFooter } from "./SubjectFooter";
+import { SubjectTableFooter } from "./SubjectTableFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
 
@@ -17,7 +17,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Table>
-                    <SubjectFooter
+                    <SubjectTableFooter
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
                         resetSortColumn={resetSort} />
@@ -40,7 +40,7 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={datamodel}>
                     <Table>
-                        <SubjectFooter
+                        <SubjectTableFooter
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}
@@ -62,7 +62,7 @@ it('moves a metric when the move button is clicked and a metric is selected', as
             <DataModel.Provider value={datamodel}>
                 <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <Table>
-                        <SubjectFooter
+                        <SubjectTableFooter
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}

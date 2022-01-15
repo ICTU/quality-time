@@ -3,7 +3,7 @@ import { Dropdown } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
-import { TrendTable } from '../trend_table/TrendTable';
+import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
 
@@ -151,7 +151,7 @@ export function Subject({
                 last_subject={last_subject}
                 reload={reload} />
             <CommentSegment comment={subject.comment} />
-            <TrendTable
+            <SubjectTable
                 changed_fields={changed_fields}
                 extraHamburgerItems={hamburgerItems}
                 handleSort={handleSort}

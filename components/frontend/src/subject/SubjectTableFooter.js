@@ -6,7 +6,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { AddButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
 
-export function SubjectFooter({ subject, subjectUuid, reload, reports, resetSortColumn }) {
+export function SubjectTableFooter({ subject, subjectUuid, reload, reports, resetSortColumn }) {
     const dataModel = useContext(DataModel)
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
