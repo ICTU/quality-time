@@ -39,7 +39,7 @@ const data_model = {
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
 }
 
-async function render_metric_details(stopSorting, connection_error) {
+async function renderMetricDetails(stopSorting, connection_error) {
     measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
         ok: true,
         measurements: [
@@ -75,47 +75,47 @@ async function render_metric_details(stopSorting, connection_error) {
 }
 
 it('switches tabs', async () => {
-    await render_metric_details();
+    await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Sources/)))
     expect(screen.getAllByText(/Source name/).length).toBe(1);
 });
 
 it('switches tabs to measurement entities', async () => {
-    await render_metric_details();
+    await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/The source/)))
     expect(screen.getAllByText(/Attribute status/).length).toBe(1);
 })
 
 it('switches tabs to the trend graph', async () => {
-    await render_metric_details();
+    await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
     expect(screen.getAllByText(/Time/).length).toBe(1);
 })
 
 it('displays whether sources have errors', async () => {
-    await render_metric_details(null, "Connection error");
+    await renderMetricDetails(null, "Connection error");
     expect(screen.getByText(/Sources/)).toHaveClass("red label");
 });
 
 it('calls the callback on click', async () => {
     const mockCallback = jest.fn();
-    await render_metric_details(mockCallback);
+    await renderMetricDetails(mockCallback);
     await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)));
     expect(mockCallback).toHaveBeenCalled();
     expect(measurement_api.get_measurements).toHaveBeenCalled();
 })
 
 it('loads the changelog', async () => {
-    await render_metric_details();
+    await renderMetricDetails();
     await act(async () => fireEvent.click(screen.getByText(/Changelog/)));
     expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid" });
 });
 
 it('calls the callback on delete', async () => {
-    await render_metric_details();
+    await renderMetricDetails();
     await act(async () => fireEvent.click(screen.getByText(/Delete metric/)));
     expect(metric_api.delete_metric).toHaveBeenCalled();
 })
