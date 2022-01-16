@@ -4,7 +4,7 @@ import * as fetch_server_api from '../api/fetch_server_api';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(trend) {
+function renderSubject(nrDates) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
@@ -12,17 +12,24 @@ function renderSubject(trend) {
                 subject_uuid="subject_uuid"
                 tags={[]}
                 hiddenColumns={[]}
-                subjectTrendTable={trend}
+                nrDates={nrDates}
                 visibleDetailsTabs={[]} />
         </DataModel.Provider>
     )
 }
 
-it('fetches measurements', async () => {
+it('fetches measurements if nr dates > 0', async () => {
     jest.mock("../api/fetch_server_api.js")
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, measurements: [] });
-    await act(async () => { renderSubject(true) });
+    await act(async () => { renderSubject(2) });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "subject/subject_uuid/measurements", undefined);
+})
+
+it('does not fetch measurements if nr dates == 0', async () => {
+    jest.mock("../api/fetch_server_api.js")
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, measurements: [] });
+    await act(async () => { renderSubject(0) });
+    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled();
 })
 
 it('shows the subject title', async () => {

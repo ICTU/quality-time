@@ -2,35 +2,33 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Table } from "semantic-ui-react";
 import { DataModel } from "../context/DataModel";
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
-import { SubjectFooter } from "./SubjectFooter";
+import { SubjectTableFooter } from "./SubjectTableFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-const resetSort = jest.fn()
+const stopSorting = jest.fn()
 
 jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 
 it('shows the add metric button and adds a metric when clicked', async () => {
-
     const { queryAllByText, getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Table>
-                    <SubjectFooter
+                    <SubjectTableFooter
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
-                        resetSortColumn={resetSort} />
+                        stopSorting={stopSorting} />
                 </Table>
             </DataModel.Provider>
         </Permissions.Provider>
     );
     expect(queryAllByText("Add metric").length).toBe(1);
-
     await act(async () => {
         fireEvent.click(getByText("Add metric"))
     });
-    expect(resetSort).toBeCalled()
+    expect(stopSorting).toBeCalled()
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {});
 });
 
@@ -40,11 +38,11 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={datamodel}>
                     <Table>
-                        <SubjectFooter
+                        <SubjectTableFooter
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}
-                            resetSortColumn={resetSort} />
+                            stopSorting={stopSorting} />
                     </Table>
                 </DataModel.Provider>
             </Permissions.Provider>);
@@ -62,11 +60,11 @@ it('moves a metric when the move button is clicked and a metric is selected', as
             <DataModel.Provider value={datamodel}>
                 <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                     <Table>
-                        <SubjectFooter
+                        <SubjectTableFooter
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}
-                            resetSortColumn={resetSort} />
+                            stopSorting={stopSorting} />
                     </Table>
                 </Permissions.Provider>
             </DataModel.Provider>)

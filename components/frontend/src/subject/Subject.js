@@ -1,28 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dropdown } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
-import { TrendTable } from '../trend_table/TrendTable';
+import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
-import { SubjectDetails } from './SubjectDetails';
 import { SubjectTitle } from './SubjectTitle';
-
-function HamburgerItems({ clearVisibleDetailsTabs, hideMetricsNotRequiringAction, subjectTrendTable, setHideMetricsNotRequiringAction, setSubjectTrendTable, visibleDetailsTabs }) {
-    return (
-        <>
-            <Dropdown.Item key="view" onClick={() => setSubjectTrendTable(!subjectTrendTable)}>
-                {subjectTrendTable ? "Show metric details" : "Show metric trend"}
-            </Dropdown.Item>
-            <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
-                Collapse all metrics
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
-                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-            </Dropdown.Item>
-        </>
-    )
-}
 
 function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     const metrics = {}
@@ -103,18 +85,16 @@ export function Subject({
     report_date,
     reports,
     setHideMetricsNotRequiringAction,
-    setSubjectTrendTable,
-    setTrendTableInterval,
-    setTrendTableNrDates,
+    setDateInterval,
+    setNrDates,
     sortColumn,
     sortDirection,
     subject_uuid,
-    subjectTrendTable,
     tags,
     toggleHiddenColumn,
     toggleVisibleDetailsTab,
-    trendTableInterval,
-    trendTableNrDates,
+    dateInterval,
+    nrDates,
     visibleDetailsTabs,
     reload
 }) {
@@ -125,7 +105,7 @@ export function Subject({
     const dataModel = useContext(DataModel)
 
     useEffect(() => {
-        if (subjectTrendTable) {
+        if (nrDates > 1) {
             get_subject_measurements(subject_uuid, report_date).then(json => {
                 if (json.ok !== false) {
                     setMeasurements(json.measurements)
@@ -133,21 +113,12 @@ export function Subject({
             })
         }
         // eslint-disable-next-line
-    }, [subjectTrendTable]);
+    }, [nrDates]);
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
     }
-
-    const hamburgerItems = <HamburgerItems
-        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-        subjectTrendTable={subjectTrendTable}
-        setSubjectTrendTable={setSubjectTrendTable}
-        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-        visibleDetailsTabs={visibleDetailsTabs}
-    />
 
     return (
         <div id={subject_uuid}>
@@ -159,49 +130,31 @@ export function Subject({
                 last_subject={last_subject}
                 reload={reload} />
             <CommentSegment comment={subject.comment} />
-            {subjectTrendTable ?
-                <TrendTable
-                    changed_fields={changed_fields}
-                    extraHamburgerItems={hamburgerItems}
-                    handleSort={handleSort}
-                    hiddenColumns={hiddenColumns}
-                    measurements={measurements}
-                    metricEntries={metricEntries}
-                    reload={reload}
-                    report={report}
-                    reportDate={report_date}
-                    reports={reports}
-                    setTrendTableInterval={setTrendTableInterval}
-                    setTrendTableNrDates={setTrendTableNrDates}
-                    sortDirection={sortDirection}
-                    sortColumn={sortColumn}
-                    subject={subject}
-                    subject_uuid={subject_uuid}
-                    toggleHiddenColumn={toggleHiddenColumn}
-                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                    trendTableInterval={trendTableInterval}
-                    trendTableNrDates={trendTableNrDates}
-                    visibleDetailsTabs={visibleDetailsTabs}
-                />
-                :
-                <SubjectDetails
-                    changed_fields={changed_fields}
-                    extraHamburgerItems={hamburgerItems}
-                    handleSort={handleSort}
-                    hiddenColumns={hiddenColumns}
-                    metricEntries={metricEntries}
-                    reload={reload}
-                    report_date={report_date}
-                    report={report}
-                    reports={reports}
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    subject_uuid={subject_uuid}
-                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                    toggleHiddenColumn={toggleHiddenColumn}
-                    visibleDetailsTabs={visibleDetailsTabs}
-                />
-            }
+            <SubjectTable
+                changed_fields={changed_fields}
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                handleSort={handleSort}
+                hiddenColumns={hiddenColumns}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                measurements={measurements}
+                metricEntries={metricEntries}
+                reload={reload}
+                report={report}
+                reportDate={report_date}
+                reports={reports}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                setDateInterval={setDateInterval}
+                setNrDates={setNrDates}
+                sortDirection={sortDirection}
+                sortColumn={sortColumn}
+                subject={subject}
+                subject_uuid={subject_uuid}
+                toggleHiddenColumn={toggleHiddenColumn}
+                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                dateInterval={dateInterval}
+                nrDates={nrDates}
+                visibleDetailsTabs={visibleDetailsTabs}
+            />
         </div>
     )
 }

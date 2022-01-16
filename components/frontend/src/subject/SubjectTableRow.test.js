@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MeasurementsRow } from './MeasurementsRow';
+import { SubjectTableRow } from './SubjectTableRow';
 import { DataModel } from '../context/DataModel';
 
 describe("MeasurementRow", () => {
@@ -42,7 +42,7 @@ describe("MeasurementRow", () => {
             <table>
                 <tbody>
                     <DataModel.Provider value={dataModel}>
-                        <MeasurementsRow
+                        <SubjectTableRow
                             metric_uuid="metric_uuid"
                             metric={metric}
                             report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
@@ -50,9 +50,10 @@ describe("MeasurementRow", () => {
                             measurements={measurements}
                             dates={dates}
                             reportDate={null}
+                            nrDates={1}
                             hiddenColumns={[]}
-                            visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
+                            visibleDetailsTabs={visibleDetailsTabs}
                         />
                     </DataModel.Provider>
                 </tbody>
@@ -63,20 +64,13 @@ describe("MeasurementRow", () => {
     it('renders one single row with metric name, measurement values and unit', () => {
         const { queryAllByText } = render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
         expect(queryAllByText("testName").length).toBe(1) // measurement name cell
-        expect(queryAllByText("?").length).toBe(1) // first date before first measurement
-        expect(queryAllByText("0").length).toBe(1) // two cells with measurements
-        expect(queryAllByText("1").length).toBe(1) // two cells with measurements
-        expect(queryAllByText("testUnit").length).toBe(1)
+        expect(queryAllByText("? testUnit").length).toBe(1) // first date before first measurement
     });
 
     it('renders one single row with metric name, measurement values and minutes unit', () => {
         dataModel.metrics.metricType.unit = "minutes"
-        const { queryAllByText } = render_measurements_row({ type: "metricType", unit: "", scale: "count", recent_measurements: [] })
-        expect(queryAllByText("testName").length).toBe(1) // measurement name cell
-        expect(queryAllByText("?").length).toBe(1) // first date before first measurement
-        expect(queryAllByText("0:00").length).toBe(1) // two cells with measurements
-        expect(queryAllByText("0:01").length).toBe(1) // two cells with measurements
-        expect(queryAllByText("hours").length).toBe(1)
+        render_measurements_row({ type: "metricType", unit: "", scale: "count", recent_measurements: [] })
+        expect(screen.queryAllByText(/0:00 hours/).length).toBe(1)
     });
 
     it('expands and collapses the metric via the props', () => {
@@ -93,5 +87,4 @@ describe("MeasurementRow", () => {
         fireEvent.click(expand);
         expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("metric_uuid:0");
     });
-
 })

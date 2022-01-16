@@ -1,20 +1,20 @@
-td.target_met {
+td.target_met, tr.target_met {
     background-color: rgb(30, 148, 78, 0.15) !important;
 }
 
-td.target_not_met {
+td.target_not_met, tr.target_not_met {
     background-color: rgb(211, 59, 55, 0.2) !important;
 }
 
-td.near_target_met {
+td.near_target_met, tr.near_target_met {
     background-color: rgb(253, 197, 54, 0.15) !important;
 }
 
-td.debt_target_met {
+td.debt_target_met, tr.debt_target_met {
     background-color: rgb(150, 150, 150, 0.2) !important;
 }
 
-td.unknown {
+td.unknown, tr.unknown {
     background-color: rgb(245, 245, 245, 0.15) !important;
 }
 
@@ -22,8 +22,7 @@ td > a {
     color: rgb(0, 88, 176) !important;
 }
 
-.ui.sortable.table thead th:hover {
-    /* Tables nested in a sortabe table are sortable automatically, but TrendTables aren't sortable
-       so revert the style */
+.ui.sortable.table thead th.unsortable:hover {
+    /* Allow for specifying that some columns in a sortable table aren't sortable */
     background: #f9fafb;
 }

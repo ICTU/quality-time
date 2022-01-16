@@ -1,15 +1,15 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { SubjectFooter } from '../subject/SubjectFooter';
-import { MeasurementsRow } from './MeasurementsRow';
-import { TrendTableHeader } from './TrendTableHeader';
+import { SubjectTableFooter } from './SubjectTableFooter';
+import { SubjectTableRow } from './SubjectTableRow';
+import { SubjectTableHeader } from './SubjectTableHeader';
 
 
-function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
-    const baseDate = report_date ? new Date(report_date) : new Date();
-    const intervalLength = trendTableInterval;  // trendTableInterval is in days
+function getColumnDates(reportDate, dateInterval, nrDates) {
+    const baseDate = reportDate ? new Date(reportDate) : new Date();
+    const intervalLength = dateInterval;  // dateInterval is in days
     const columnDates = []
-    for (let offset = 0; offset < trendTableNrDates * intervalLength; offset += intervalLength) {
+    for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
         let date = new Date(baseDate.getTime());
         date.setDate(date.getDate() - offset);
         columnDates.push(date)
@@ -18,52 +18,57 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 }
 
 
-export function TrendTable({
+export function SubjectTable({
     changed_fields,
-    extraHamburgerItems,
+    clearVisibleDetailsTabs,
+    dateInterval,
     handleSort,
     hiddenColumns,
+    hideMetricsNotRequiringAction,
     measurements,
     metricEntries,
+    nrDates,
     reload,
     report,
     reports,
     reportDate,
-    setTrendTableInterval,
-    setTrendTableNrDates,
+    setDateInterval,
+    setHideMetricsNotRequiringAction,
+    setNrDates,
     sortDirection,
     sortColumn,
     subject,
     subject_uuid,
     toggleHiddenColumn,
     toggleVisibleDetailsTab,
-    trendTableInterval,
-    trendTableNrDates,
     visibleDetailsTabs
 }) {
 
-    const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
+    const dates = getColumnDates(reportDate, dateInterval, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
         <Table sortable>
-            <TrendTableHeader
+            <SubjectTableHeader
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                 columnDates={dates}
-                extraHamburgerItems={extraHamburgerItems}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                setTrendTableInterval={setTrendTableInterval}
-                setTrendTableNrDates={setTrendTableNrDates}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                setDateInterval={setDateInterval}
+                setNrDates={setNrDates}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 toggleHiddenColumn={toggleHiddenColumn}
-                trendTableNrDates={trendTableNrDates}
-                trendTableInterval={trendTableInterval}
+                nrDates={nrDates}
+                dateInterval={dateInterval}
+                visibleDetailsTabs={visibleDetailsTabs}
             />
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {
                     return (
-                        <MeasurementsRow key={metric_uuid}
+                        <SubjectTableRow key={metric_uuid}
                             changed_fields={changed_fields}
                             first_metric={index === 0}
                             last_metric={index === last_index}
@@ -78,18 +83,20 @@ export function TrendTable({
                             hiddenColumns={hiddenColumns}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                            nrDates={nrDates}
                             reload={reload}
+                            stopSorting={() => handleSort(null)}
                         />
                     )
                 })
                 }
             </Table.Body>
-            <SubjectFooter
+            <SubjectTableFooter
                 subjectUuid={subject_uuid}
                 subject={subject}
                 reload={reload}
                 reports={reports}
-                resetSortColumn={() => {/* Trend table is not sortable (yet) */ }} />
+                stopSorting={() => handleSort(null)} />
         </Table>
     )
 }
