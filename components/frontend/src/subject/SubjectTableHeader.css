@@ -1,0 +1,19 @@
+.ui.sortable.table > thead.sticky > tr > th {
+    position: sticky;  /* Make thead sticky by positioning the th's */
+    top: 60px;  /* Leave room for the menu bar */
+    z-index: 1;
+}
+
+/* Remove opacity from the th background, otherwise the rows underneath are visible. */
+
+.ui.sortable.table thead.sticky th.sorted {
+    background: rgba(242,242,242,1);
+}
+
+.ui.sortable.table thead.sticky th:hover {
+    background: rgba(242,242,242,1);
+}
+
+.ui.sortable.table thead.sticky th.unsortable {
+    background: rgba(249,250,251,1);  /* Don't highlight unsortable columns */
+}
