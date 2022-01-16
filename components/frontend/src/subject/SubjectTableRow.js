@@ -30,7 +30,8 @@ export function SubjectTableRow(
         visibleDetailsTabs,
         toggleVisibleDetailsTab,
         nrDates,
-        reload
+        reload,
+        stopSorting
     }
 ) {
     const dataModel = useContext(DataModel)
@@ -62,7 +63,7 @@ export function SubjectTableRow(
             changed_fields={changed_fields}
             visibleDetailsTabs={visibleDetailsTabs}
             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-            stop_sort={() => {/* Dummy implementation */ }}
+            stopSorting={stopSorting}
             reload={reload} />
     )
 

@@ -6,7 +6,7 @@ import { SubjectTableFooter } from "./SubjectTableFooter";
 import * as fetch_server_api from '../api/fetch_server_api';
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-const resetSort = jest.fn()
+const stopSorting = jest.fn()
 
 jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
@@ -20,7 +20,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
                     <SubjectTableFooter
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
-                        resetSortColumn={resetSort} />
+                        stopSorting={stopSorting} />
                 </Table>
             </DataModel.Provider>
         </Permissions.Provider>
@@ -30,7 +30,7 @@ it('shows the add metric button and adds a metric when clicked', async () => {
     await act(async () => {
         fireEvent.click(getByText("Add metric"))
     });
-    expect(resetSort).toBeCalled()
+    expect(stopSorting).toBeCalled()
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {});
 });
 
@@ -44,7 +44,7 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}
-                            resetSortColumn={resetSort} />
+                            stopSorting={stopSorting} />
                     </Table>
                 </DataModel.Provider>
             </Permissions.Provider>);
@@ -66,7 +66,7 @@ it('moves a metric when the move button is clicked and a metric is selected', as
                             subjectUuid="subject_uuid"
                             subject={report.subjects.subject_uuid}
                             reports={[report]}
-                            resetSortColumn={resetSort} />
+                            stopSorting={stopSorting} />
                     </Table>
                 </Permissions.Provider>
             </DataModel.Provider>)

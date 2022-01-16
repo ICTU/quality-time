@@ -39,7 +39,7 @@ const data_model = {
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
 }
 
-async function render_metric_details(stop_sort, connection_error) {
+async function render_metric_details(stopSorting, connection_error) {
     measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
         ok: true,
         measurements: [
@@ -63,7 +63,7 @@ async function render_metric_details(stop_sort, connection_error) {
                         metric_uuid="metric_uuid"
                         report={report}
                         reports={[report]}
-                        stop_sort={stop_sort}
+                        stopSorting={stopSorting}
                         subject_uuid="subject_uuid"
                         visibleDetailsTabs={[]}
                         toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}

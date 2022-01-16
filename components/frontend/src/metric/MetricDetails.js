@@ -12,13 +12,13 @@ import { get_measurements } from '../api/measurement';
 import { get_source_name } from '../utils';
 import { MetricConfiguration } from './MetricConfiguration';
 
-function Buttons({ metric_uuid, first_metric, last_metric, stop_sort, reload }) {
+function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <div style={{ marginTop: "20px" }}>
                 <ReorderButtonGroup
                     first={first_metric} last={last_metric} moveable="metric" slot="row"
-                    onClick={(direction) => { stop_sort(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
+                    onClick={(direction) => { stopSorting(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
                 <DeleteButton item_type="metric" onClick={() => delete_metric(metric_uuid, reload)} />
             </div>}
         />
@@ -42,7 +42,7 @@ export function MetricDetails({
     metric_uuid,
     first_metric,
     last_metric,
-    stop_sort,
+    stopSorting,
     changed_fields,
     visibleDetailsTabs,
     toggleVisibleDetailsTab,
@@ -120,7 +120,7 @@ export function MetricDetails({
     return (
         <>
             <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
-            <Buttons metric_uuid={metric_uuid} first_metric={first_metric} last_metric={last_metric} stop_sort={stop_sort} reload={reload} />
+            <Buttons metric_uuid={metric_uuid} first_metric={first_metric} last_metric={last_metric} stopSorting={stopSorting} reload={reload} />
         </>
     );
 }

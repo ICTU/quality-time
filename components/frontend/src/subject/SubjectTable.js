@@ -85,6 +85,7 @@ export function SubjectTable({
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             nrDates={nrDates}
                             reload={reload}
+                            stopSorting={() => handleSort(null)}
                         />
                     )
                 })
@@ -95,7 +96,7 @@ export function SubjectTable({
                 subject={subject}
                 reload={reload}
                 reports={reports}
-                resetSortColumn={() => handleSort(null)} />
+                stopSorting={() => handleSort(null)} />
         </Table>
     )
 }

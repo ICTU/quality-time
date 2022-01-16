@@ -6,7 +6,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { AddButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
 
-export function SubjectTableFooter({ subject, subjectUuid, reload, reports, resetSortColumn }) {
+export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stopSorting }) {
     const dataModel = useContext(DataModel)
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
@@ -14,14 +14,14 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, rese
                 <Table.Row>
                     <Table.HeaderCell colSpan='99'>
                         <AddButton item_type="metric" onClick={() => {
-                            resetSortColumn()
+                            stopSorting()
                             add_metric(subjectUuid, reload);
                         }}
                         />
                         <CopyButton
                             item_type="metric"
                             onChange={(source_metric_uuid) => {
-                                resetSortColumn()
+                                stopSorting()
                                 copy_metric(source_metric_uuid, subjectUuid, reload);
                             }}
                             get_options={() => metric_options(reports, dataModel, subject.type)}
@@ -29,7 +29,7 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, rese
                         <MoveButton
                             item_type="metric"
                             onChange={(source_metric_uuid) => {
-                                resetSortColumn()
+                                stopSorting()
                                 move_metric(source_metric_uuid, subjectUuid, reload);
                             }}
                             get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
