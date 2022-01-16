@@ -21,6 +21,7 @@ it('renders multiple recent measurements', () => {
     render(
         <TrendSparkline
             measurements={[
+                { count: { value: null }, start: "2019-09-27", end: "2019-09-28" },
                 { count: { value: "1" }, start: "2019-09-28", end: "2019-09-29" },
                 { count: { value: "2" }, start: "2019-09-29", end: "2019-09-30" }
             ]}
