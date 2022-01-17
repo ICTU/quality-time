@@ -4,7 +4,6 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';
 
-
 function getColumnDates(reportDate, dateInterval, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date();
     const intervalLength = dateInterval;  // dateInterval is in days
@@ -16,7 +15,6 @@ function getColumnDates(reportDate, dateInterval, nrDates) {
     }
     return columnDates
 }
-
 
 export function SubjectTable({
     changed_fields,
