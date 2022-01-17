@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
@@ -8,6 +8,7 @@ import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
 
 export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload }) {
+    const [expanded, setExpanded] = useState(false);
     const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(status);
     if (hide_ignored_entities && ignored_entity) {
         return null;
@@ -38,7 +39,7 @@ export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_en
             </Table.Cell>)}
     </>;
     return (
-        <TableRowWithDetails className={statusClassName} details={details} key={entity.key}>
+        <TableRowWithDetails className={statusClassName} details={details} key={entity.key} expanded={expanded} onExpand={setExpanded}>
             {entityCells}
         </TableRowWithDetails>
     );

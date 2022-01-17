@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SourceEntity } from './SourceEntity';
 
 function renderSourceEntity({ status = "unconfirmed", hide_ignored_entities = false }) {
@@ -12,6 +12,7 @@ function renderSourceEntity({ status = "unconfirmed", hide_ignored_entities = fa
                     hide_ignored_entities={hide_ignored_entities}
                     entity_attributes={[{key: "attr1"}, {key: "attr2", color: {bad: "warning"}}]}
                     entity={{ attr1: "good", attr2: "bad" }}
+                    entity_name="entity"
                 />
             </Table.Body>
         </Table>
@@ -20,6 +21,7 @@ function renderSourceEntity({ status = "unconfirmed", hide_ignored_entities = fa
 
 it('renders the unconfirmed status', () => {
     renderSourceEntity({ });
+    fireEvent.click(screen.getByRole("button"))
     expect(screen.getAllByText(/Unconfirmed/).length).toBe(1);
     expect(screen.getByText(/Unconfirmed/).closest("tr").className).toContain("warning_status")
 })
