@@ -12,7 +12,7 @@ export function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 
 export function HamburgerMenu({ children }) {
     return (
-        <Popup on={["click", "focus", "hover"]} hoverable position="bottom left" trigger={<Icon tabIndex="0" className="HamburgerMenu" name="sidebar"/>}>
+        <Popup on={["click", "focus", "hover"]} hoverable position="bottom left" trigger={<Icon tabIndex="0" data-testid="HamburgerMenu" className="HamburgerMenu" name="sidebar"/>}>
             <Menu text vertical>
                 {children}
             </Menu>

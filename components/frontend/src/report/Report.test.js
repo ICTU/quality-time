@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 
@@ -50,27 +50,30 @@ it('shows an error message if there was no report', () => {
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
 });
 
-it('hides columns', () => {
-    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>);
+it('hides columns', async () => {
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} report_date={new Date("2020-01-01")} /></DataModel.Provider>);
     expect(screen.getAllByText(/Status/).length).toBe(1)
-    fireEvent.click(screen.getByText(/Hide status column/));
+    await act(async () => fireEvent.click(screen.getByTestId("HamburgerMenu")))
+    await act(async () => fireEvent.click(screen.getByText(/Hide status column/)))
     expect(screen.queryByText(/Status/)).toBe(null)
 });
 
-it('hides columns on load', () => {
+it('hides columns on load', async () => {
     mockHistory.location.search = "?hidden_columns=status"
     render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
-    fireEvent.click(screen.getByText(/Show status column/));
+    await act(async () => fireEvent.click(screen.getByTestId("HamburgerMenu")))
+    await act(async () => fireEvent.click(screen.getByText(/Show status column/)))
     expect(screen.getAllByText(/Status/).length).toBe(1)
 });
 
-it('hides multiple columns on load', () => {
+it('hides multiple columns on load', async () => {
     mockHistory.location.search = "?hidden_columns=status,tags"
-    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} /></DataModel.Provider>)
+    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} report_date={new Date("2020-01-01")} /></DataModel.Provider>)
     expect(screen.queryByText(/Status/)).toBe(null)
     expect(screen.queryByText(/Tags/)).toBe(null)
-    fireEvent.click(screen.getByText(/Show status column/));
+    await act(async () => fireEvent.click(screen.getByTestId("HamburgerMenu")))
+    await act(async () => fireEvent.click(screen.getByText(/Show status column/)))
     expect(screen.getAllByText(/Status/).length).toBe(1)
 });
 
