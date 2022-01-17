@@ -46,7 +46,7 @@ export function SubjectTableHeader(
                             </Dropdown.Menu>
                         </Dropdown.Item>
                         <Dropdown.Item key="nr_dates">
-                            <Icon name='dropdown' /><span className='text'>Numer of dates</span>
+                            <Icon name='dropdown' /><span className='text'>Number of dates</span>
                             <Dropdown.Menu>
                                 {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
                                     <Dropdown.Item key={nr} active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Dropdown.Item>
