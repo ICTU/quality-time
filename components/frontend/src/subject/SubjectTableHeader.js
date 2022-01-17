@@ -1,4 +1,4 @@
-import { Dropdown, Icon, Table } from "semantic-ui-react";
+import { Menu, Table } from "semantic-ui-react";
 import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
 import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 import { pluralize } from "../utils";
@@ -27,15 +27,15 @@ export function SubjectTableHeader(
             <Table.Row>
                 <Table.HeaderCell className="unsortable" textAlign="center">
                     <HamburgerMenu>
-                        <Dropdown.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
+                        <Menu.Item key="collapse_metrics" disabled={visibleDetailsTabs.length === 0} onClick={() => clearVisibleDetailsTabs()}>
                             Collapse all metrics
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
+                        </Menu.Item>
+                        <Menu.Item onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}>
                             {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-                        </Dropdown.Item>
-                        <Dropdown.Item key="columns">
-                            <Icon name='dropdown' /><span className='text'>Toggle visibility of columns</span>
-                            <Dropdown.Menu>
+                        </Menu.Item>
+                        <Menu.Item key="hide_columns">
+                            <Menu.Header>Toggle visibility of columns</Menu.Header>
+                            <Menu.Menu>
                                 <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
@@ -44,25 +44,25 @@ export function SubjectTableHeader(
                                 <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                                 <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            </Dropdown.Menu>
-                        </Dropdown.Item>
-                        <Dropdown.Item key="nr_dates">
-                            <Icon name='dropdown' /><span className='text'>Number of dates</span>
-                            <Dropdown.Menu>
+                            </Menu.Menu>
+                        </Menu.Item>
+                        <Menu.Item key="nr_dates">
+                            <Menu.Header>Number of dates</Menu.Header>
+                            <Menu.Menu>
                                 {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                                    <Dropdown.Item key={nr} active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Dropdown.Item>
+                                    <Menu.Item key={nr} active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                                 )}
-                            </Dropdown.Menu>
-                        </Dropdown.Item>
-                        <Dropdown.Item key="time_between_dates">
-                            <Icon name='dropdown' /><span className='text'>Time between dates</span>
-                            <Dropdown.Menu>
-                                <Dropdown.Item key={1} active={1 === dateInterval} onClick={() => setDateInterval(1)}>1 day</Dropdown.Item>
+                            </Menu.Menu>
+                        </Menu.Item>
+                        <Menu.Item key="time_between_dates">
+                            <Menu.Header>Time between dates</Menu.Header>
+                            <Menu.Menu>
+                                <Menu.Item key={1} active={1 === dateInterval} onClick={() => setDateInterval(1)}>1 day</Menu.Item>
                                 {[7, 14, 21, 28].map((nr) =>
-                                    <Dropdown.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Dropdown.Item>
+                                    <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Menu.Item>
                                 )}
-                            </Dropdown.Menu>
-                        </Dropdown.Item>
+                            </Menu.Menu>
+                        </Menu.Item>
                     </HamburgerMenu>
                 </Table.HeaderCell>
                 <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />

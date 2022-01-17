@@ -1,21 +1,21 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react';
+import { Icon, Menu, Popup } from 'semantic-ui-react';
 import './HamburgerMenu.css';
 
 export function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
-        <Dropdown.Item onClick={() => toggleHiddenColumn(column)}>
+        <Menu.Item onClick={() => toggleHiddenColumn(column)}>
             {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
-        </Dropdown.Item>
+        </Menu.Item>
     )
 }
 
 export function HamburgerMenu({ children }) {
     return (
-        <Dropdown className="HamburgerMenu" item icon='sidebar' simple>
-            <Dropdown.Menu>
+        <Popup on={["click", "focus", "hover"]} hoverable position="bottom left" trigger={<Icon tabIndex="0" className="HamburgerMenu" name="sidebar"/>}>
+            <Menu text vertical>
                 {children}
-            </Dropdown.Menu>
-        </Dropdown>
+            </Menu>
+        </Popup>
     )
 }
