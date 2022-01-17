@@ -84,13 +84,14 @@ it("moves a subject", async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/move/undefined", { });
 });
 
-it("hides metrics not requiring action", () => {
+it("hides metrics not requiring action", async () => {
     renderSubjects();
-    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(2)
-    fireEvent.click(screen.getAllByText(/Hide metrics not requiring action/)[0]);
+    await act(async () => fireEvent.click(screen.getAllByTestId("HamburgerMenu")[0]));
+    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(1)
+    await act(async () => fireEvent.click(screen.getAllByText(/Hide metrics not requiring action/)[0]));
     expect(screen.queryAllByText(/Hide metrics not requiring action/).length).toBe(0)
-    fireEvent.click(screen.getAllByText(/Show all metrics/)[0]);
-    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(2)
+    await act(async () => fireEvent.click(screen.getAllByText(/Show all metrics/)[0]))
+    expect(screen.getAllByText(/Hide metrics not requiring action/).length).toBe(1)
 })
 
 it('sorts the metrics by name', () => {
