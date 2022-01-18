@@ -56,7 +56,7 @@ export function SubjectTitle({ report, subject, subject_uuid, first_subject, las
         }
     ];
     return (
-        <HeaderWithDetails level="h2" header={subject_name} subheader={subject.subtitle} style={{ marginTop: 50 }}>
+        <HeaderWithDetails className="sticky" level="h2" header={subject_name} subheader={subject.subtitle} style={{ marginTop: 50 }}>
             <SubjectHeader subject_type={current_subject_type} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>

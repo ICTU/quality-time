@@ -5,6 +5,7 @@ import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_s
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
+import './Subject.css'
 
 function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     const metrics = {}
@@ -122,13 +123,16 @@ export function Subject({
 
     return (
         <div id={subject_uuid}>
-            <SubjectTitle
-                report={report}
-                subject={subject}
-                subject_uuid={subject_uuid}
-                first_subject={first_subject}
-                last_subject={last_subject}
-                reload={reload} />
+            <div className="sticky">
+                <SubjectTitle
+                    report={report}
+                    subject={subject}
+                    subject_uuid={subject_uuid}
+                    first_subject={first_subject}
+                    last_subject={last_subject}
+                    reload={reload}
+                />
+            </div>
             <CommentSegment comment={subject.comment} />
             <SubjectTable
                 changed_fields={changed_fields}

@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.32.0-rc.2 - 2022-01-18
+## [Unreleased]
 
 ### Fixed
 
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Changed
 
 - Use the 'number of dates' menu in the hamburger menu to switch between what used to called 'trend' view (multiple dates) and 'details' view (one date). If you export PDFs via the API, you may need to change the URL parameters: `trend_table_nr_dates` is now called `nr_dates` and `trend_table_internal` is now called `date_interval`. Also, `trend_table_interval` was a number of weeks, `date_interval` is in days. See the [documention on PDF-exports via the API](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api). Closes [#3206](https://github.com/ICTU/quality-time/issues/3206).
-- Make the header row of subject tables 'sticky', meaning that the header rows stay visible until the whole table scrolls off-screen. This also required a different layout of the hambuger menu. Closes [#3219](https://github.com/ICTU/quality-time/issues/3219).
+- Make the subject title and header row of subject tables 'sticky', meaning that the title and header rows stay visible until the whole table scrolls off-screen. This also required a different layout of the hambuger menu. Closes [#3219](https://github.com/ICTU/quality-time/issues/3219).
 
 ### Added
 

@@ -2,7 +2,6 @@ import { Menu, Table } from "semantic-ui-react";
 import { ColumnMenuItem, HamburgerMenu } from "../widgets/HamburgerMenu";
 import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 import { pluralize } from "../utils";
-import './SubjectTableHeader.css'
 
 export function SubjectTableHeader(
     {
@@ -23,7 +22,7 @@ export function SubjectTableHeader(
     }) {
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     return (
-        <Table.Header className="sticky">
+        <Table.Header>
             <Table.Row>
                 <Table.HeaderCell className="unsortable" textAlign="center">
                     <HamburgerMenu>
