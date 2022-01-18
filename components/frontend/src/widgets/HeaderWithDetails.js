@@ -5,7 +5,7 @@ import './HeaderWithDetails.css';
 export function HeaderWithDetails(props) {
     const [show_details, setShowDetails] = useState(false);
     return (
-        <div aria-expanded={show_details}>
+        <Segment basic aria-expanded={show_details} className={props.className} style={{ backgroundColor: "white", paddingLeft: "0px", paddingRight: "0px" }}>
             <Header
                 as={props.level}
                 onClick={() => setShowDetails(!show_details)}
@@ -20,6 +20,6 @@ export function HeaderWithDetails(props) {
                 </Header.Content>
             </Header>
             {show_details && <Segment>{props.children}</Segment>}
-        </div>
+        </Segment>
     )
 }

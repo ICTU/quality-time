@@ -1,0 +1,5 @@
+div.sticky {
+    position: sticky;  /* Make thead sticky by positioning the th's */
+    top: 15px;  /* The menu bar is about 60px high, move the top margin under it */
+    z-index: 2;
+}

@@ -3,6 +3,7 @@ import { Table } from 'semantic-ui-react';
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';
+import "./SubjectTable.css"
 
 function getColumnDates(reportDate, dateInterval, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date();
@@ -46,7 +47,7 @@ export function SubjectTable({
     const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
-        <Table sortable>
+        <Table sortable className="stickyHeader" style={{marginTop: "0px"}}>
             <SubjectTableHeader
                 clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                 columnDates={dates}
