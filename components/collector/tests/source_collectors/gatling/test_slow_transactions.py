@@ -77,3 +77,15 @@ class GatlingSlowTransactionsTest(GatlingTestCase):
         self.set_source_parameter("transaction_specific_target_response_times", ["[Bb]ar:150"])
         response = await self.collect(get_request_json_return_value=self.GATLING_JSON)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
+
+    async def test_api_url_ending_with_index_html(self):
+        """Test that an API URL that ends with index.html is transformed to an URL that end with js/stats.json."""
+        self.set_source_parameter("url", "https://gatling/index.html")
+        response = await self.collect(get_request_json_return_value={})
+        self.assert_measurement(response, api_url="https://gatling/js/stats.json")
+
+    async def test_api_url_not_ending_with_index_html(self):
+        """Test that an API URL that ends with index.html is transformed to an URL that end with js/stats.json."""
+        self.set_source_parameter("url", "https://gatling/report/")
+        response = await self.collect(get_request_json_return_value={})
+        self.assert_measurement(response, api_url="https://gatling/report")
