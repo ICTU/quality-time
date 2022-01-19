@@ -1,8 +1,6 @@
 """File source collector base classes."""
 
-import asyncio
 import io
-import itertools
 import zipfile
 from abc import ABC
 from http import HTTPStatus
@@ -45,9 +43,13 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to unzip any zipped responses."""
         responses = await super()._get_source_responses(*urls)
-        if urlparse(str(urls[0])).path.endswith(".zip"):
-            unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
-            responses[:] = list(itertools.chain(*unzipped_responses))
+        unzipped_responses = []
+        for url, response in zip(urls, responses):
+            if self.__is_zipped(url, response):
+                unzipped_responses.extend(await self.__unzip(response))
+            else:
+                unzipped_responses.append(response)
+        responses[:] = unzipped_responses
         return responses
 
     def _headers(self) -> dict[str, str]:
@@ -68,6 +70,11 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
                 raise LookupError(f"Zipfile contains no files with extension {' or '.join(cls.file_extensions)}")
             responses = [FakeResponse(response_zipfile.read(name), name) for name in names]
         return cast(Responses, responses)
+
+    @staticmethod
+    def __is_zipped(url: URL, response: Response) -> bool:
+        """Return whether the responses are zipped."""
+        return urlparse(str(url)).path.endswith(".zip") or response.content_type == "application/zip"
 
 
 class CSVFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
