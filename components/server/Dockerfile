@@ -1,4 +1,4 @@
-FROM python:3.10.1-buster AS compile-image
+FROM python:3.10.2-buster AS compile-image
 
 RUN useradd --create-home server
 WORKDIR /home/server
@@ -11,7 +11,7 @@ RUN python -m pip install wheel
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
-FROM python:3.10.1-slim-buster
+FROM python:3.10.2-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
