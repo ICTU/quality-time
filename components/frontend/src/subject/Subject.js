@@ -4,6 +4,7 @@ import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
+import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectTitle } from './SubjectTitle';
 import './Subject.css'
 
@@ -136,27 +137,35 @@ export function Subject({
             <CommentSegment comment={subject.comment} />
             <SubjectTable
                 changed_fields={changed_fields}
-                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                dateInterval={dateInterval}
+                hamburgerMenu={
+                    <HamburgerMenu
+                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                        dateInterval={dateInterval}
+                        hiddenColumns={hiddenColumns}
+                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        nrDates={nrDates}
+                        setDateInterval={setDateInterval}
+                        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                        setNrDates={setNrDates}
+                        toggleHiddenColumn={toggleHiddenColumn}
+                        visibleDetailsTabs={visibleDetailsTabs}
+                    />
+                }
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 measurements={measurements}
                 metricEntries={metricEntries}
+                nrDates={nrDates}
                 reload={reload}
                 report={report}
                 reportDate={report_date}
                 reports={reports}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                setDateInterval={setDateInterval}
-                setNrDates={setNrDates}
                 sortDirection={sortDirection}
                 sortColumn={sortColumn}
                 subject={subject}
                 subject_uuid={subject_uuid}
-                toggleHiddenColumn={toggleHiddenColumn}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                dateInterval={dateInterval}
-                nrDates={nrDates}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>

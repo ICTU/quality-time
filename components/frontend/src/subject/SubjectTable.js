@@ -19,26 +19,21 @@ function getColumnDates(reportDate, dateInterval, nrDates) {
 
 export function SubjectTable({
     changed_fields,
-    clearVisibleDetailsTabs,
     dateInterval,
+    hamburgerMenu,
     handleSort,
     hiddenColumns,
-    hideMetricsNotRequiringAction,
     measurements,
     metricEntries,
     nrDates,
     reload,
     report,
-    reports,
     reportDate,
-    setDateInterval,
-    setHideMetricsNotRequiringAction,
-    setNrDates,
+    reports,
     sortDirection,
     sortColumn,
     subject,
     subject_uuid,
-    toggleHiddenColumn,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -49,20 +44,13 @@ export function SubjectTable({
     return (
         <Table sortable className="stickyHeader" style={{marginTop: "0px"}}>
             <SubjectTableHeader
-                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                 columnDates={dates}
+                hamburgerMenu={hamburgerMenu}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                setDateInterval={setDateInterval}
-                setNrDates={setNrDates}
+                nrDates={nrDates}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
-                toggleHiddenColumn={toggleHiddenColumn}
-                nrDates={nrDates}
-                dateInterval={dateInterval}
-                visibleDetailsTabs={visibleDetailsTabs}
             />
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {

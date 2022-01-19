@@ -1,42 +1,21 @@
 import { Table } from "semantic-ui-react";
-import { HamburgerMenu } from "../widgets/HamburgerMenu";
 import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 
 export function SubjectTableHeader(
     {
-        clearVisibleDetailsTabs,
         columnDates,
+        hamburgerMenu,
         handleSort,
         hiddenColumns,
-        hideMetricsNotRequiringAction,
-        setHideMetricsNotRequiringAction,
-        setDateInterval,
-        setNrDates,
+        nrDates,
         sortColumn,
         sortDirection,
-        toggleHiddenColumn,
-        dateInterval,
-        nrDates,
-        visibleDetailsTabs
     }) {
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell className="unsortable" textAlign="center">
-                    <HamburgerMenu
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                        dateInterval={dateInterval}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        nrDates={nrDates}
-                        setDateInterval={setDateInterval}
-                        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                        setNrDates={setNrDates}
-                        toggleHiddenColumn={toggleHiddenColumn}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    />
-                </Table.HeaderCell>
+                <Table.HeaderCell className="unsortable" textAlign="center">{hamburgerMenu}</Table.HeaderCell>
                 <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
                 {nrDates > 1 && columnDates.map(date => <Table.HeaderCell key={date} className="unsortable" textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 {nrDates > 1 && <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />}
