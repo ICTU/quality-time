@@ -309,7 +309,9 @@ lxml==4.7.1 \
     --hash=sha256:f76dbe44e31abf516114f6347a46fa4e7c2e8bceaa4b6f7ee3a0a03c8eba3c17 \
     --hash=sha256:fc15874816b9320581133ddc2096b644582ab870cf6a6ed63684433e7af4b0d3 \
     --hash=sha256:fc9fb11b65e7bc49f7f75aaba1b700f7181d95d4e151cf2f24d51bfd14410b77
-    # via -r ../../requirements-dev.in
+    # via
+    #   -r ../../requirements-dev.in
+    #   unittest-xml-reporting
 mccabe==0.6.1 \
     --hash=sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42 \
     --hash=sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f
@@ -596,9 +598,9 @@ typing-extensions==4.0.0 \
     #   black
     #   mypy
     #   pydantic
-unittest-xml-reporting==3.0.4 \
-    --hash=sha256:7bf515ea8cb244255a25100cd29db611a73f8d3d0aaf672ed3266307e14cc1ca \
-    --hash=sha256:984cebba69e889401bfe3adb9088ca376b3a1f923f0590d005126c1bffd1a695
+unittest-xml-reporting==3.1.0 \
+    --hash=sha256:c6178ad2d782c5c21d129758f089fd26da2cba8428cf2905994aa105a13fb317 \
+    --hash=sha256:d16fe30ba6914ac01ee3d338f457ef602003bf33af9d2523b884de4535a1c375
     # via -r ../../requirements-dev.in
 urllib3==1.26.7 \
     --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
