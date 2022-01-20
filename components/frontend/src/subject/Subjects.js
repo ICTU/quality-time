@@ -12,6 +12,7 @@ export function Subjects({
     changed_fields,
     dateInterval,
     hamburgerMenu,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     nrDates,
@@ -37,7 +38,7 @@ export function Subjects({
                         changed_fields={changed_fields}
                         first_subject={index === 0}
                         hamburgerMenu={hamburgerMenu}
-                        handleSort={(column) => handleSort(column)}
+                        handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         key={subject_uuid}
@@ -49,7 +50,7 @@ export function Subjects({
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}
                         tags={tags}
-                        toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
+                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                         dateInterval={dateInterval}
                         nrDates={nrDates}
                         visibleDetailsTabs={visibleDetailsTabs}
