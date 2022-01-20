@@ -469,9 +469,9 @@ tomli==1.2.2 \
     #   black
     #   mypy
     #   pep517
-types-python-dateutil==2.8.7 \
-    --hash=sha256:0e3b96fc79d3e58e011a9446ec85be080e2d2a8840dfe124ce30f4e53dbca9e5 \
-    --hash=sha256:f34bae3c8e83c67f7cbf407fc9d6ee889d7708b42270a496b6026a5537e80482
+types-python-dateutil==2.8.8 \
+    --hash=sha256:efe0207836d3b09e3a2986064a5c7f36e79ea423ab9b6676a62bf5dd51fb261b \
+    --hash=sha256:f704c2b7981e140eac7d626424e6232c1594d392c57c252d81a90fe53c2be896
     # via -r requirements-dev.in
 types-setuptools==57.4.4 \
     --hash=sha256:9fe4180548e5cbb44cc0d343a47e4dc1d6769c31e16447994788c28df169011f \
