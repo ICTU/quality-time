@@ -4,7 +4,6 @@ import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
-import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectTitle } from './SubjectTitle';
 import './Subject.css'
 
@@ -77,8 +76,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 
 export function Subject({
     changed_fields,
-    clearVisibleDetailsTabs,
     first_subject,
+    hamburgerMenu,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -86,14 +85,10 @@ export function Subject({
     report,
     report_date,
     reports,
-    setHideMetricsNotRequiringAction,
-    setDateInterval,
-    setNrDates,
     sortColumn,
     sortDirection,
     subject_uuid,
     tags,
-    toggleHiddenColumn,
     toggleVisibleDetailsTab,
     dateInterval,
     nrDates,
@@ -138,20 +133,7 @@ export function Subject({
             <SubjectTable
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
-                hamburgerMenu={
-                    <HamburgerMenu
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                        dateInterval={dateInterval}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        nrDates={nrDates}
-                        setDateInterval={setDateInterval}
-                        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                        setNrDates={setNrDates}
-                        toggleHiddenColumn={toggleHiddenColumn}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    />
-                }
+                hamburgerMenu={hamburgerMenu}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 measurements={measurements}
