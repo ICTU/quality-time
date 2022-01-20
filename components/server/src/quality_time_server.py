@@ -25,4 +25,5 @@ def serve() -> None:  # pragma: no cover-behave
 
 
 if __name__ == "__main__":  # pragma: no cover-behave
+
     serve()

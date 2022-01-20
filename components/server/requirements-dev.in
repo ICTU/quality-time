@@ -1,3 +1,4 @@
 -r ../../requirements-dev.in
 types-cryptography==3.3.15
 types-requests==2.27.8
+-e file:../shared_python#egg=shared_python
