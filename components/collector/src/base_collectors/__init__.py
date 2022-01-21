@@ -4,6 +4,7 @@ from .api_source_collector import JenkinsPluginCollector, JenkinsPluginSourceUpT
 from .collector import Collector
 from .file_source_collector import (
     CSVFileSourceCollector,
+    FileSourceCollector,
     HTMLFileSourceCollector,
     JSONFileSourceCollector,
     XMLFileSourceCollector,
