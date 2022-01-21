@@ -598,9 +598,9 @@ typing-extensions==4.0.0 \
     #   black
     #   mypy
     #   pydantic
-unittest-xml-reporting==3.1.0 \
-    --hash=sha256:c6178ad2d782c5c21d129758f089fd26da2cba8428cf2905994aa105a13fb317 \
-    --hash=sha256:d16fe30ba6914ac01ee3d338f457ef602003bf33af9d2523b884de4535a1c375
+unittest-xml-reporting==3.2.0 \
+    --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
+    --hash=sha256:f3d7402e5b3ac72a5ee3149278339db1a8f932ee405f48bcb9c681372f2717d5
     # via -r ../../requirements-dev.in
 urllib3==1.26.7 \
     --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
