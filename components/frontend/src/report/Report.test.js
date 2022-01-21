@@ -86,6 +86,14 @@ it('sorts the column descending', async () => {
     expect(replace).toHaveBeenCalledWith({ search: "?sort_column=tags&sort_direction=descending" })
 });
 
+it('stops sorting', async () => {
+    let replace = jest.fn()
+    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: replace };
+    renderReport(report, {history: history})
+    fireEvent.click(screen.getByText(/Tags/))
+    expect(replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
+});
+
 it('sorts another column', async () => {
     let replace = jest.fn()
     let history = { location: { search: "?sort_column=tags" }, replace: replace };
