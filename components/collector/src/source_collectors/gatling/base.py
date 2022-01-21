@@ -2,7 +2,7 @@
 
 import re
 
-from base_collectors import JSONFileSourceCollector, SourceCollector
+from base_collectors import FileSourceCollector, JSONFileSourceCollector, SourceCollector
 from collector_utilities.type import URL
 from model import SourceResponses
 
@@ -27,9 +27,10 @@ class GatlingJSONCollector(JSONFileSourceCollector, GatlingCollector):
     FILEPATH = "/js/stats.json"
 
 
-class GatlingLogCollector(GatlingCollector):
+class GatlingLogCollector(FileSourceCollector, GatlingCollector):
     """Base class for Gatling collectors that read the simulation.log file."""
 
+    file_extensions = ["log"]
     FILEPATH = "/simulation.log"
 
     @classmethod
