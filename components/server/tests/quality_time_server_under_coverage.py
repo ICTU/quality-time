@@ -2,11 +2,13 @@
 
 import signal
 import sys
+import os
 
 import coverage
 
 
 sys.path.insert(0, "src")
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../shared_python")))
 
 cov = coverage.Coverage()
 
