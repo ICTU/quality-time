@@ -12,7 +12,9 @@ services:
   notifier:
     build: ../components/notifier
   server:
-    build: ../components/server
+    build: 
+      context: ../components
+      dockerfile: server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:
