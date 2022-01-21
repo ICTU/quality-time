@@ -20,8 +20,8 @@ jobs:
           python -m venv venv
           . venv/bin/activate
           pip install wheel
-          pip install --progress-bar off -r requirements-dev.txt
           pip install --progress-bar off -r requirements.txt 
+          pip install --progress-bar off -r requirements-dev.txt
           ci/unittest.sh
           ci/quality.sh
 
@@ -102,8 +102,8 @@ jobs:
             mkdir -p /tmp/log
             python3 -m venv venv
             . venv/bin/activate
-            pip install --progress-bar off -r requirements-dev.txt &>> /tmp/log/pip-dev.log
             pip install --progress-bar off -r requirements.txt &>> /tmp/log/pip.log
+            pip install --progress-bar off -r requirements-dev.txt &>> /tmp/log/pip-dev.log
       - run:
           background: true
           working_directory: components/server
