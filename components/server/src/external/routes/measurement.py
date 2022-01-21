@@ -29,7 +29,7 @@ from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 )
 def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
-) -> dict:
+) -> Measurement:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
     data = SourceData(data_model, latest_reports(database, data_model), source_uuid)
