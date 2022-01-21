@@ -2,6 +2,7 @@ FROM python:3.10.2-buster AS compile-image
 
 RUN useradd --create-home server
 WORKDIR /home/server
+USER server
 
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
@@ -10,7 +11,6 @@ RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
-USER server
 
 FROM python:3.10.2-buster
 
