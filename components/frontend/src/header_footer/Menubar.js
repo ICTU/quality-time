@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
+import { Button, Checkbox, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, Portal } from 'semantic-ui-react';
 import { login, logout } from '../api/auth';
 import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
@@ -50,27 +50,43 @@ function Logout({ user, email, set_user }) {
     )
 }
 
-export function Menubar({ go_home, email, user, set_user, onDate, report_date_string }) {
+export function Menubar({ go_home, email, user, set_user, onDate, report_date_string, panel }) {
+    const [panelVisible, setPanelVisible] = useState(false)
     return (
-        <Menu className="Menubar" fixed='top' inverted>
-            <Container fluid>
-                <Popup content="Go to reports overview" trigger={
-                    <Menu.Item header onClick={() => go_home()} tabIndex={0}>
-                        <>
-                            <Image size='mini' src='/favicon.ico' alt="Go home" />
-                            <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
-                        </>
-                    </Menu.Item>}
-                />
+        <>
+            <Menu fluid className="Menubar" inverted fixed="top">
+                <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={0}>
+                    <Popup content="Go to reports overview" trigger={
+                        <Menu.Item header onClick={() => go_home()}>
+                            <>
+                                <Image size='mini' src='/favicon.ico' alt="Go home" />
+                                <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
+                            </>
+                        </Menu.Item>}
+                    />
+                </div>
+                <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0} style={{ display: "flex", alignItems: "center" }}>
+                    <Popup content={`${panelVisible ? "Hide" : "Show"} settings panel`} trigger={
+                        <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
+                            <Checkbox toggle onChange={() => setPanelVisible(!panelVisible)} checked={panelVisible} />
+                            <span>&nbsp;&nbsp;Settings</span>
+                        </Menu.Item>}
+                    />
+                </div>
                 <Menu.Menu position='right'>
-                    <Menu.Item>
-                        <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
-                    </Menu.Item>
+                    <Popup content="Show the report as it was on the selected date" trigger={
+                        <Menu.Item>
+                            <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
+                        </Menu.Item>}
+                    />
                     <Menu.Item>
                         {(user !== null) ? <Logout email={email} user={user} set_user={set_user} /> : <Login set_user={set_user} />}
                     </Menu.Item>
                 </Menu.Menu>
-            </Container>
-        </Menu>
+            </Menu>
+            <Portal open={panelVisible}>
+                {panel}
+            </Portal>
+        </>
     )
 }

@@ -9,7 +9,7 @@ it('logs in', async () => {
     auth.login = jest.fn().mockResolvedValue({ ok: true, email: "user@example.org", session_expiration_datetime: "2021-02-24T13:10:00+00:00" });
     const set_user = jest.fn();
     await act(async () => {
-        render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
+        render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} panel={"dummy"}/>);
         fireEvent.click(screen.getByText(/Login/));
     });
     await act(async () => {
@@ -24,7 +24,7 @@ it('logs out', async () => {
     auth.logout = jest.fn().mockResolvedValue({ ok: true });
     const set_user = jest.fn();
     await act(async () => {
-        render(<Menubar user={"jadoe"} set_user={set_user} />);
+        render(<Menubar user={"jadoe"} set_user={set_user} panel={"dummy"} />);
         fireEvent.click(screen.getByText(/Logout/));
     });
     expect(auth.logout).toHaveBeenCalled()
@@ -34,7 +34,7 @@ it('logs out', async () => {
 it('goes to home page', async () => {
     const go_home = jest.fn();
     await act(async () => {
-        render(<Menubar go_home={go_home} />);
+        render(<Menubar go_home={go_home} panel={"dummy"} />);
         fireEvent.click(screen.getByAltText(/Go home/));
     });
     expect(go_home).toHaveBeenCalled();

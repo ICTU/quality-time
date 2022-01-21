@@ -4,7 +4,6 @@ import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 export function SubjectTableHeader(
     {
         columnDates,
-        hamburgerMenu,
         handleSort,
         hiddenColumns,
         nrDates,
@@ -15,7 +14,7 @@ export function SubjectTableHeader(
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell className="unsortable" textAlign="center">{hamburgerMenu}</Table.HeaderCell>
+                <Table.HeaderCell className="unsortable" />
                 <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
                 {nrDates > 1 && columnDates.map(date => <Table.HeaderCell key={date} className="unsortable" textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 {nrDates > 1 && <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />}

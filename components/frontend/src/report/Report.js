@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { CommentSegment } from '../widgets/CommentSegment';
-import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
@@ -56,14 +55,21 @@ function ReportErrorMessage({ report_date }) {
 }
 
 export function Report({
-    go_home,
-    nr_measurements,
-    report,
     changed_fields,
+    dateInterval,
+    go_home,
+    hiddenColumns,
+    hideMetricsNotRequiringAction,
+    history,
+    nrDates,
+    nr_measurements,
     reload,
+    report,
     report_date,
     reports,
-    history }) {
+    toggleVisibleDetailsTab,
+    visibleDetailsTabs
+}) {
 
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
@@ -77,13 +83,8 @@ export function Report({
         setTags(prev_tags => prev_tags.filter(tag => Object.keys(report.summary_by_tag || {}).includes(tag)))
     }, [report]);
 
-    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
-    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
 
     function handleSort(column) {
         if (column === null) {
@@ -125,20 +126,6 @@ export function Report({
             <Subjects
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
-                hamburgerMenu={
-                    <HamburgerMenu
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                        dateInterval={dateInterval}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        nrDates={nrDates}
-                        setDateInterval={(interval) => setDateInterval(interval)}
-                        setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
-                        setNrDates={(nr) => setNrDates(nr)}
-                        toggleHiddenColumn={toggleHiddenColumn}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    />
-                }
                 handleSort={(column) => handleSort(column)}
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}

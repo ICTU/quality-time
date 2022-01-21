@@ -77,7 +77,6 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 export function Subject({
     changed_fields,
     first_subject,
-    hamburgerMenu,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -133,7 +132,6 @@ export function Subject({
             <SubjectTable
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
-                hamburgerMenu={hamburgerMenu}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 measurements={measurements}

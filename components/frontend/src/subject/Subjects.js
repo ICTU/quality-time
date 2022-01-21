@@ -11,7 +11,6 @@ import { useDelayedRender } from '../utils';
 export function Subjects({
     changed_fields,
     dateInterval,
-    hamburgerMenu,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -37,7 +36,6 @@ export function Subjects({
                     <Subject
                         changed_fields={changed_fields}
                         first_subject={index === 0}
-                        hamburgerMenu={hamburgerMenu}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}

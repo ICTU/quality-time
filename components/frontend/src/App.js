@@ -18,14 +18,19 @@ import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
-import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
+import { ViewPanel } from './header_footer/ViewPanel';
+import { getUserPermissions, isValidDate_YYYYMMDD, useURLSearchQuery } from './utils'
 
 function PageContent({
     changed_fields,
     current_report,
+    dateInterval,
+    hiddenColumns,
+    hideMetricsNotRequiringAction,
     history,
     loading,
     go_home,
+    nrDates,
     nr_measurements,
     open_report,
     reload,
@@ -33,6 +38,8 @@ function PageContent({
     report_uuid,
     reports,
     reports_overview,
+    toggleVisibleDetailsTab,
+    visibleDetailsTabs
 }) {
     return (
         <Container fluid className="MainContainer">
@@ -42,13 +49,19 @@ function PageContent({
                 report_uuid ?
                     <Report
                         changed_fields={changed_fields}
+                        dateInterval={dateInterval}
                         go_home={go_home}
+                        hiddenColumns={hiddenColumns}
+                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         history={history}
+                        nrDates={nrDates}
                         nr_measurements={nr_measurements}
                         reload={reload}
                         report={current_report}
                         reports={reports}
                         report_date={report_date}
+                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                        visibleDetailsTabs={visibleDetailsTabs}
                     />
                     :
                     <ReportsOverview
@@ -87,6 +100,11 @@ function AppUI({
         user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
+    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
+    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
+    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
             <HashLinkObserver />
@@ -97,6 +115,18 @@ function AppUI({
                 report_date_string={report_date_string}
                 set_user={set_user}
                 user={user}
+                panel={<ViewPanel
+                    clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                    dateInterval={dateInterval}
+                    hiddenColumns={hiddenColumns}
+                    hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                    nrDates={nrDates}
+                    setDateInterval={setDateInterval}
+                    setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                    setNrDates={setNrDates}
+                    toggleHiddenColumn={toggleHiddenColumn}
+                    visibleDetailsTabs={visibleDetailsTabs}
+                />}
             />
             <ToastContainer theme="colored" />
             <Permissions.Provider value={user_permissions}>
@@ -104,9 +134,13 @@ function AppUI({
                     <PageContent
                         changed_fields={changed_fields}
                         current_report={current_report}
+                        dateInterval={dateInterval}
+                        go_home={go_home}
+                        hiddenColumns={hiddenColumns}
+                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         history={history}
                         loading={loading}
-                        go_home={go_home}
+                        nrDates={nrDates}
                         nr_measurements={nr_measurements}
                         open_report={open_report}
                         reload={reload}
@@ -114,6 +148,8 @@ function AppUI({
                         report_uuid={report_uuid}
                         reports={reports}
                         reports_overview={reports_overview}
+                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                        visibleDetailsTabs={visibleDetailsTabs}
                     />
                 </DataModel.Provider>
             </Permissions.Provider>

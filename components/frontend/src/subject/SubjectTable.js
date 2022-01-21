@@ -20,7 +20,6 @@ function getColumnDates(reportDate, dateInterval, nrDates) {
 export function SubjectTable({
     changed_fields,
     dateInterval,
-    hamburgerMenu,
     handleSort,
     hiddenColumns,
     measurements,
@@ -45,7 +44,6 @@ export function SubjectTable({
         <Table sortable className="stickyHeader" style={{marginTop: "0px"}}>
             <SubjectTableHeader
                 columnDates={dates}
-                hamburgerMenu={hamburgerMenu}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 nrDates={nrDates}
