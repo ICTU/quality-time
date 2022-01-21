@@ -1,4 +1,9 @@
 """Quality-time server."""
+import os  # skipcq: FLK-E402
+import sys
+
+print(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../shared_python")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../shared_python")))
 
 from gevent import monkey  # pylint: disable=import-error
 
@@ -7,7 +12,8 @@ monkey.patch_all()
 # pylint: disable=wrong-import-order,wrong-import-position
 
 import logging
-import os  # skipcq: FLK-E402
+
+# import os  # skipcq: FLK-E402
 
 import bottle  # skipcq: FLK-E402
 
@@ -25,5 +31,4 @@ def serve() -> None:  # pragma: no cover-behave
 
 
 if __name__ == "__main__":  # pragma: no cover-behave
-
     serve()

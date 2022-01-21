@@ -8,8 +8,6 @@ ENV PATH="/home/server/venv/bin:$PATH"
 RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
-ADD shared_python /shared_python
-RUN pip install --no-cache-dir /shared_python
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
 USER server
@@ -32,6 +30,7 @@ HEALTHCHECK CMD curl -f http://localhost:${SERVER_PORT:-5001}/api/health || exit
 
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY server/src /home/server
+COPY shared_python /shared_python
 
 ENV PATH="/home/server/venv/bin:$PATH"
 CMD ["python", "/home/server/quality_time_server.py"]
