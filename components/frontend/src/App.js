@@ -41,39 +41,36 @@ function PageContent({
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
-    return (
-        <Container fluid className="MainContainer">
-            {loading ?
-                <Segment basic placeholder loading size="massive" />
-                :
-                report_uuid ?
-                    <Report
-                        changed_fields={changed_fields}
-                        dateInterval={dateInterval}
-                        go_home={go_home}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        history={history}
-                        nrDates={nrDates}
-                        nr_measurements={nr_measurements}
-                        reload={reload}
-                        report={current_report}
-                        reports={reports}
-                        report_date={report_date}
-                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    />
-                    :
-                    <ReportsOverview
-                        open_report={open_report}
-                        reload={reload}
-                        reports={reports}
-                        reports_overview={reports_overview}
-                        report_date={report_date}
-                    />
-            }
-        </Container>
-    )
+    let content;
+    if (loading) {
+        content = <Segment basic placeholder loading size="massive" />
+    } else if (report_uuid) {
+        content = <Report
+            changed_fields={changed_fields}
+            dateInterval={dateInterval}
+            go_home={go_home}
+            hiddenColumns={hiddenColumns}
+            hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+            history={history}
+            nrDates={nrDates}
+            nr_measurements={nr_measurements}
+            reload={reload}
+            report={current_report}
+            reports={reports}
+            report_date={report_date}
+            toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+            visibleDetailsTabs={visibleDetailsTabs}
+        />
+    } else {
+        content = <ReportsOverview
+            open_report={open_report}
+            reload={reload}
+            reports={reports}
+            reports_overview={reports_overview}
+            report_date={report_date}
+        />
+    }
+    return <Container fluid className="MainContainer">{content}</Container>
 }
 
 function AppUI({

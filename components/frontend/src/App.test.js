@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { Action } from 'history';
 import App from './App';
 
