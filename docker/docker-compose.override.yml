@@ -13,7 +13,9 @@ services:
   notifier:
     build: ../components/notifier
   server:
-    build: ../components/server
+    build:
+      context: ../components
+      dockerfile: server/Dockerfile
     depends_on:
       - ldap
       - renderer
