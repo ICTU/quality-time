@@ -2,7 +2,7 @@
 
 from .api_source_collector import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
 from .collector import Collector
-from .file_source_collector import (  # noqa: PY-W2000
+from .file_source_collector import (  # skipcq: PY-W2000
     CSVFileSourceCollector,
     FileSourceCollector,
     HTMLFileSourceCollector,
