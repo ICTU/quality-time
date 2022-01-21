@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 
-let mockHistory = { location: {}, replace: () => {/* No implementatin needed */} };
+let mockHistory = { location: {}, replace: () => {/* No implementatin needed */ } };
 const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
 const report = {
     report_uuid: "report_uuid",
@@ -34,64 +34,62 @@ const report = {
     }
 };
 
-it('shows the report', () => {
+function renderReport(report, { report_date = null, hiddenColumns = [], history = mockHistory } = {}) {
     render(
-        <DataModel.Provider value={datamodel}><Report history={mockHistory} reports={[report]} report={report} hiddenColumns={[]} visibleDetailsTabs={[]} /></DataModel.Provider>);
+        <DataModel.Provider value={datamodel}>
+            <Report
+                history={history}
+                reports={[report]}
+                report={report}
+                report_date={report_date}
+                hiddenColumns={hiddenColumns}
+                visibleDetailsTabs={[]}
+            />
+        </DataModel.Provider>
+    );
+}
+
+it('shows the report', () => {
+    renderReport(report)
     expect(screen.getAllByText(/Subject title/).length).toBe(2)  // Once as dashboard card and once as subject header
 });
 
 it('shows an error message if there is no report', () => {
-    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} /></DataModel.Provider>);
+    renderReport(null)
     expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
 });
 
 it('shows an error message if there was no report', () => {
-    render(<DataModel.Provider value={datamodel}><Report history={mockHistory} report_date={new Date("2020-01-01")} /></DataModel.Provider>);
+    renderReport(null, { report_date: new Date("2020-01-01") })
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
 });
 
 it('hides columns on load', async () => {
     mockHistory.location.search = "?hidden_columns=status"
-    render(
-        <DataModel.Provider value={datamodel}>
-            <Report history={mockHistory} datamodel={datamodel} reports={[report]} report={report} hiddenColumns={["status"]} visibleDetailsTabs={[]} />
-        </DataModel.Provider>
-    )
+    renderReport(report, { hiddenColumns: ["status"]})
     expect(screen.queryByText(/Status/)).toBe(null)
 });
 
 it('sorts the column', async () => {
     let replace = jest.fn()
     let history = { location: {}, replace: replace };
-    render(
-        <DataModel.Provider value={datamodel}>
-            <Report history={history} datamodel={datamodel} reports={[report]} report={report} hiddenColumns={[]} visibleDetailsTabs={[]} />
-        </DataModel.Provider>
-    )
+    renderReport(report, {history: history})
     fireEvent.click(screen.getByText(/Tags/))
-    expect(replace).toHaveBeenCalledWith({search: "?sort_column=tags"})
+    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=tags" })
 });
 
 it('sorts the column descending', async () => {
     let replace = jest.fn()
-    let history = { location: {search: "?sort_column=tags"}, replace: replace };
-    render(
-        <DataModel.Provider value={datamodel}>
-            <Report history={history} datamodel={datamodel} reports={[report]} report={report} hiddenColumns={[]} visibleDetailsTabs={[]} />
-        </DataModel.Provider>
-    )
+    let history = { location: { search: "?sort_column=tags" }, replace: replace };
+    renderReport(report, {history: history})
     fireEvent.click(screen.getByText(/Tags/))
-    expect(replace).toHaveBeenCalledWith({search: "?sort_column=tags&sort_direction=descending"})
+    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=tags&sort_direction=descending" })
 });
 
 it('sorts another column', async () => {
     let replace = jest.fn()
-    let history = { location: {search: "?sort_column=tags"}, replace: replace };
-    render(
-        <DataModel.Provider value={datamodel}>
-            <Report history={history} datamodel={datamodel} reports={[report]} report={report} hiddenColumns={[]} visibleDetailsTabs={[]} />
-        </DataModel.Provider>
-    )
+    let history = { location: { search: "?sort_column=tags" }, replace: replace };
+    renderReport(report, {history: history})
     fireEvent.click(screen.getByText(/Comment/))
-    expect(replace).toHaveBeenCalledWith({search: "?sort_column=comment"})
+    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=comment" })
 });
