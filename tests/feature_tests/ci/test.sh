@@ -14,7 +14,6 @@ python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements.txt
 pip --quiet install --progress-bar off -r requirements-dev.txt
-pip list
 coverage erase
 RENDERER_HOST=localhost python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_server.log &
 deactivate
