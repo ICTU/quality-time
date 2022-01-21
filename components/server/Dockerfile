@@ -11,7 +11,6 @@ RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
-
 FROM python:3.10.2-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
