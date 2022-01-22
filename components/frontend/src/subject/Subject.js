@@ -76,7 +76,6 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 
 export function Subject({
     changed_fields,
-    clearVisibleDetailsTabs,
     first_subject,
     handleSort,
     hiddenColumns,
@@ -85,14 +84,10 @@ export function Subject({
     report,
     report_date,
     reports,
-    setHideMetricsNotRequiringAction,
-    setDateInterval,
-    setNrDates,
     sortColumn,
     sortDirection,
     subject_uuid,
     tags,
-    toggleHiddenColumn,
     toggleVisibleDetailsTab,
     dateInterval,
     nrDates,
@@ -136,27 +131,21 @@ export function Subject({
             <CommentSegment comment={subject.comment} />
             <SubjectTable
                 changed_fields={changed_fields}
-                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                dateInterval={dateInterval}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 measurements={measurements}
                 metricEntries={metricEntries}
+                nrDates={nrDates}
                 reload={reload}
                 report={report}
                 reportDate={report_date}
                 reports={reports}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                setDateInterval={setDateInterval}
-                setNrDates={setNrDates}
                 sortDirection={sortDirection}
                 sortColumn={sortColumn}
                 subject={subject}
                 subject_uuid={subject_uuid}
-                toggleHiddenColumn={toggleHiddenColumn}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                dateInterval={dateInterval}
-                nrDates={nrDates}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>

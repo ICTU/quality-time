@@ -11,7 +11,7 @@ import { set_report_attribute } from '../api/report';
 import { get_subject_name, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
-function ReportDashboard({report, onClick, setTags, tags, reload}) {
+function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     const dataModel = useContext(DataModel)
     function subject_cards() {
         return Object.entries(report.summary_by_subject).map(([subject_uuid, summary]) =>
@@ -55,14 +55,21 @@ function ReportErrorMessage({ report_date }) {
 }
 
 export function Report({
-        go_home,
-        nr_measurements,
-        report,
-        changed_fields,
-        reload,
-        report_date,
-        reports,
-        history}) {
+    changed_fields,
+    dateInterval,
+    go_home,
+    hiddenColumns,
+    hideMetricsNotRequiringAction,
+    history,
+    nrDates,
+    nr_measurements,
+    reload,
+    report,
+    report_date,
+    reports,
+    toggleVisibleDetailsTab,
+    visibleDetailsTabs
+}) {
 
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
@@ -76,8 +83,23 @@ export function Report({
         setTags(prev_tags => prev_tags.filter(tag => Object.keys(report.summary_by_tag || {}).includes(tag)))
     }, [report]);
 
-    // eslint-disable-next-line
-    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
+    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
+    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
+
+    function handleSort(column) {
+        if (column === null) {
+            setSortColumn(null)  // Stop sorting
+            return
+        }
+        if (sortColumn === column) {
+            if (sortDirection === 'descending') {
+                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+            }
+            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
+        } else {
+            setSortColumn(column)
+        }
+    }
 
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
@@ -102,15 +124,21 @@ export function Report({
                 reload={reload}
             />
             <Subjects
-                hiddenColumns={hiddenColumns}
-                tags={tags}
-                toggleHiddenColumn={toggleHiddenColumn}
-                report={report}
-                report_date={report_date}
                 changed_fields={changed_fields}
+                dateInterval={dateInterval}
+                handleSort={(column) => handleSort(column)}
+                hiddenColumns={hiddenColumns}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                nrDates={nrDates}
                 reload={reload}
+                report={report}
                 reports={reports}
-                history={history}
+                report_date={report_date}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                tags={tags}
+                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>
     )

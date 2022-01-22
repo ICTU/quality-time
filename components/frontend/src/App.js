@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Segment } from 'semantic-ui-react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import { createBrowserHistory, Action } from 'history';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-import { Report } from './report/Report';
-import { ReportsOverview } from './report/ReportsOverview';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
+import { ViewPanel } from './header_footer/ViewPanel';
 
 import { DataModel } from './context/DataModel';
 import { Permissions } from './context/Permissions';
@@ -18,7 +16,91 @@ import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
-import { getUserPermissions, isValidDate_YYYYMMDD } from './utils'
+import {PageContent} from './PageContent';
+import { getUserPermissions, isValidDate_YYYYMMDD, useURLSearchQuery } from './utils'
+
+function AppUI({
+    changed_fields,
+    datamodel,
+    email,
+    go_home,
+    handleDateChange,
+    history,
+    last_update,
+    loading,
+    nr_measurements,
+    open_report,
+    reload,
+    report_date,
+    report_date_string,
+    report_uuid,
+    reports,
+    reports_overview,
+    set_user,
+    user
+}) {
+    const user_permissions = getUserPermissions(
+        user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
+    )
+    const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
+    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
+    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
+    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
+    return (
+        <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+            <HashLinkObserver />
+            <Menubar
+                current_report={current_report}
+                email={email}
+                go_home={go_home}
+                onDate={handleDateChange}
+                report_date_string={report_date_string}
+                set_user={set_user}
+                user={user}
+                panel={<ViewPanel
+                    clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                    dateInterval={dateInterval}
+                    hiddenColumns={hiddenColumns}
+                    hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                    nrDates={nrDates}
+                    setDateInterval={setDateInterval}
+                    setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                    setNrDates={setNrDates}
+                    toggleHiddenColumn={toggleHiddenColumn}
+                    visibleDetailsTabs={visibleDetailsTabs}
+                />}
+            />
+            <ToastContainer theme="colored" />
+            <Permissions.Provider value={user_permissions}>
+                <DataModel.Provider value={datamodel}>
+                    <PageContent
+                        changed_fields={changed_fields}
+                        current_report={current_report}
+                        dateInterval={dateInterval}
+                        go_home={go_home}
+                        hiddenColumns={hiddenColumns}
+                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        history={history}
+                        loading={loading}
+                        nrDates={nrDates}
+                        nr_measurements={nr_measurements}
+                        open_report={open_report}
+                        reload={reload}
+                        report_date={report_date}
+                        report_uuid={report_uuid}
+                        reports={reports}
+                        reports_overview={reports_overview}
+                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                        visibleDetailsTabs={visibleDetailsTabs}
+                    />
+                </DataModel.Provider>
+            </Permissions.Provider>
+            <Footer last_update={last_update} report={current_report} />
+        </div>
+    )
+}
 
 class App extends Component {
     constructor(props) {
@@ -184,52 +266,28 @@ class App extends Component {
 
     render() {
         const report_date = this.report_date();
-        const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
-        const permissions = this.state.reports_overview.permissions || {};
-        const user_permissions = getUserPermissions(this.state.user, this.state.email, this.current_report_is_tag_report(), report_date, permissions)
+
         return (
-            <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
-                <HashLinkObserver />
-                <Menubar
-                    email={this.state.email}
-                    go_home={() => this.go_home()}
-                    onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-                    report_date_string={this.state.report_date_string}
-                    set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
-                    user={this.state.user}
-                />
-                <ToastContainer theme="colored" />
-                <Permissions.Provider value={user_permissions}>
-                    <DataModel.Provider value={this.state.datamodel}>
-                      <Container fluid className="MainContainer">
-                          {this.state.loading ?
-                              <Segment basic placeholder loading size="massive" />
-                              :
-                              this.state.report_uuid === "" ?
-                                  <ReportsOverview
-                                      reports={this.state.reports}
-                                      open_report={(e, r) => this.open_report(e, r)}
-                                      report_date={report_date}
-                                      reports_overview={this.state.reports_overview}
-                                      reload={(json) => this.reload(json)}
-                                  />
-                                  :
-                                  <Report
-                                      go_home={() => this.go_home()}
-                                      nr_measurements={this.state.nr_measurements}
-                                      report={current_report}
-                                      changed_fields={this.changed_fields}
-                                      reload={(json) => this.reload(json)}
-                                      report_date={report_date}
-                                      reports={this.state.reports}
-                                      history={this.history}
-                                  />
-                          }
-                      </Container>
-                    </DataModel.Provider>
-                </Permissions.Provider>
-                <Footer last_update={this.state.last_update} report={current_report} />
-            </div>
+            <AppUI
+                changed_fields={this.changed_fields}
+                datamodel={this.state.datamodel}
+                email={this.state.email}
+                go_home={() => this.go_home()}
+                handleDateChange={(e, { name, value }) => this.handleDateChange(e, { name, value })}
+                history={this.history}
+                last_update={this.state.last_update}
+                loading={this.state.loading}
+                nr_measurements={this.state.nr_measurements}
+                open_report={(e, r) => this.open_report(e, r)}
+                reload={(json) => this.reload(json)}
+                report_date={report_date}
+                report_date_string={this.state.report_date_string}
+                report_uuid={this.state.report_uuid}
+                reports={this.state.reports}
+                reports_overview={this.state.reports_overview}
+                set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
+                user={this.state.user}
+            />
         );
     }
 }

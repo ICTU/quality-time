@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Menubar } from './Menubar';
 import * as auth from '../api/auth';
 
@@ -9,7 +10,7 @@ it('logs in', async () => {
     auth.login = jest.fn().mockResolvedValue({ ok: true, email: "user@example.org", session_expiration_datetime: "2021-02-24T13:10:00+00:00" });
     const set_user = jest.fn();
     await act(async () => {
-        render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
+        render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} panel={"dummy"} />);
         fireEvent.click(screen.getByText(/Login/));
     });
     await act(async () => {
@@ -24,18 +25,60 @@ it('logs out', async () => {
     auth.logout = jest.fn().mockResolvedValue({ ok: true });
     const set_user = jest.fn();
     await act(async () => {
-        render(<Menubar user={"jadoe"} set_user={set_user} />);
+        render(<Menubar user={"jadoe"} set_user={set_user} panel={"dummy"} />);
         fireEvent.click(screen.getByText(/Logout/));
     });
     expect(auth.logout).toHaveBeenCalled()
     expect(set_user).toHaveBeenCalledWith(null)
 });
 
-it('goes to home page', async () => {
+it('does not go to home page if on reports overview', async () => {
     const go_home = jest.fn();
     await act(async () => {
-        render(<Menubar go_home={go_home} />);
+        render(<Menubar go_home={go_home} panel={"dummy"} />);
+        fireEvent.click(screen.getByAltText(/Go home/));
+    });
+    expect(go_home).not.toHaveBeenCalled();
+});
+
+it('goes to home page if on report', async () => {
+    const go_home = jest.fn();
+    await act(async () => {
+        render(<Menubar current_report={{}} go_home={go_home} panel={"dummy"} />);
         fireEvent.click(screen.getByAltText(/Go home/));
     });
     expect(go_home).toHaveBeenCalled();
 });
+
+it('goes to home page on keypress', async () => {
+    const go_home = jest.fn();
+    await act(async () => {
+        render(<Menubar go_home={go_home} panel={"dummy"} />);
+        userEvent.type(screen.getByAltText(/Go home/), "{Enter}");
+    });
+    expect(go_home).toHaveBeenCalled();
+});
+
+it('shows the view panel on menu item click', async () => {
+    await act(async () => {
+        render(<Menubar panel={<div>{"Hello"}</div>} />);
+        fireEvent.click(screen.getByText(/Settings/));
+    });
+    expect(screen.getAllByText("Hello").length).toBe(1)
+})
+
+it('shows the view panel on enter', async () => {
+    await act(async () => {
+        render(<Menubar panel={<div>{"Hello"}</div>} />);
+        userEvent.type(screen.getByText(/Settings/), "{Enter}");
+    });
+    expect(screen.getAllByText("Hello").length).toBe(1)
+})
+
+it('hides the view panel on click', async () => {
+    await act(async () => { render(<Menubar panel={<div>{"Hello"}</div>} />) });
+    fireEvent.click(screen.getByText(/Settings/));
+    expect(screen.getAllByText("Hello").length).toBe(1)
+    fireEvent.click(screen.getByText(/Settings/));
+    expect(screen.queryAllByText("Hello").length).toBe(0)
+})
