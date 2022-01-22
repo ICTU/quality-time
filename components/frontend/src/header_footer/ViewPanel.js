@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Grid, Menu, Segment } from 'semantic-ui-react';
 import { pluralize } from "../utils";
+import './ViewPanel.css';
 
 export function ViewPanel({
     clearVisibleDetailsTabs,
@@ -17,6 +18,7 @@ export function ViewPanel({
     return (
         <Segment.Group
             horizontal
+            className='equal width'
             style={{
                 border: "0px",
                 left: "0px",

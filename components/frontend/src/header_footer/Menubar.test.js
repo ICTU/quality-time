@@ -32,10 +32,19 @@ it('logs out', async () => {
     expect(set_user).toHaveBeenCalledWith(null)
 });
 
-it('goes to home page', async () => {
+it('does not go to home page if on reports overview', async () => {
     const go_home = jest.fn();
     await act(async () => {
         render(<Menubar go_home={go_home} panel={"dummy"} />);
+        fireEvent.click(screen.getByAltText(/Go home/));
+    });
+    expect(go_home).not.toHaveBeenCalled();
+});
+
+it('goes to home page if on report', async () => {
+    const go_home = jest.fn();
+    await act(async () => {
+        render(<Menubar current_report={{}} go_home={go_home} panel={"dummy"} />);
         fireEvent.click(screen.getByAltText(/Go home/));
     });
     expect(go_home).toHaveBeenCalled();

@@ -52,6 +52,7 @@ function AppUI({
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
             <HashLinkObserver />
             <Menubar
+                current_report={current_report}
                 email={email}
                 go_home={go_home}
                 onDate={handleDateChange}
