@@ -67,14 +67,6 @@ it('shows the view panel on menu item click', async () => {
     expect(screen.getAllByText("Hello").length).toBe(1)
 })
 
-it('shows the view panel on checkbox click', async () => {
-    await act(async () => {
-        render(<Menubar panel={<div>{"Hello"}</div>} />);
-        fireEvent.click(screen.getByRole("checkbox"));
-    });
-    expect(screen.getAllByText("Hello").length).toBe(1)
-})
-
 it('shows the view panel on enter', async () => {
     await act(async () => {
         render(<Menubar panel={<div>{"Hello"}</div>} />);

@@ -34,21 +34,21 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={visibleDetailsTabs.length === 0}
-                                onClick={() => clearVisibleDetailsTabs()}
+                                onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}
                                 inverted
                             >
-                                Collapse all metrics
+                                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}
+                                disabled={visibleDetailsTabs.length === 0}
+                                onClick={() => clearVisibleDetailsTabs()}
                                 inverted
                             >
-                                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
+                                Collapse all metrics
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
@@ -77,7 +77,7 @@ export function ViewPanel({
                         <Menu.Header>Number of dates</Menu.Header>
                         <Menu.Menu>
                             {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                                <Menu.Item key={nr} active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                                <Menu.Item key={nr} active={nr === nrDates} tabIndex={0} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                             )}
                         </Menu.Menu>
                     </Menu.Item>
@@ -88,9 +88,9 @@ export function ViewPanel({
                     <Menu.Item>
                         <Menu.Header>Time between dates</Menu.Header>
                         <Menu.Menu>
-                            <Menu.Item key={1} active={1 === dateInterval} onClick={() => setDateInterval(1)}>1 day</Menu.Item>
+                            <Menu.Item key={1} active={1 === dateInterval} tabIndex={0} onClick={() => setDateInterval(1)}>1 day</Menu.Item>
                             {[7, 14, 21, 28].map((nr) =>
-                                <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Menu.Item>
+                                <Menu.Item key={nr} active={nr === dateInterval} tabIndex={0} onClick={() => setDateInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Menu.Item>
                             )}
                         </Menu.Menu>
                     </Menu.Item>
@@ -102,7 +102,7 @@ export function ViewPanel({
 
 function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
-        <Menu.Item onClick={() => toggleHiddenColumn(column)}>
+        <Menu.Item onClick={() => toggleHiddenColumn(column)} tabIndex={0}>
             {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
         </Menu.Item>
     )
