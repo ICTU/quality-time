@@ -81,21 +81,21 @@ it('sorts the column', async () => {
 });
 
 it('sorts the column descending', async () => {
-    let history = { location: { search: "?sort_column=tags" }, replace: jest.fn() };
+    let history = { location: { search: "?sort_column=comment" }, replace: jest.fn() };
     renderReport(report, { history: history })
-    fireEvent.click(screen.getByText(/Tags/))
-    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_column=tags&sort_direction=descending" })
+    fireEvent.click(screen.getByText(/Comment/))
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_column=comment&sort_direction=descending" })
 });
 
 it('stops sorting', async () => {
-    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: jest.fn() };
+    let history = { location: { search: "?sort_column=issues&sort_direction=descending" }, replace: jest.fn() };
     renderReport(report, { history: history })
-    fireEvent.click(screen.getByText(/Tags/))
+    fireEvent.click(screen.getByText(/Issues/))
     expect(history.replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
 });
 
 it('stop sorting on add metric', async () => {
-    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: jest.fn() };
+    let history = { location: { search: "?sort_column=measurement&sort_direction=descending" }, replace: jest.fn() };
     renderReport(report, { history: history })
     await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
     expect(history.replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
