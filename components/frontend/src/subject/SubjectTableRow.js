@@ -82,7 +82,7 @@ export function SubjectTableRow(
     const style = nrDates > 1 ? { background: "#f9fafb" } : {}
     const className = nrDates === 1 ? metric.status : ""
     return (
-        <TableRowWithDetails id={metric_uuid} className={className} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
+        <TableRowWithDetails id={metric_uuid} className={className} details={details} style={style} expanded={expanded} onExpand={(state) => onExpand(state)}>
             <Table.Cell style={style}>{metricName}</Table.Cell>
             {nrDates > 1 && measurementCells}
             {nrDates > 1 && <Table.Cell style={style}>{unit}</Table.Cell>}
