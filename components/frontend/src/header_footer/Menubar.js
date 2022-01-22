@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, Portal } from 'semantic-ui-react';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';

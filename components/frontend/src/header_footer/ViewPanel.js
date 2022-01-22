@@ -77,7 +77,9 @@ export function ViewPanel({
                         <Menu.Header>Number of dates</Menu.Header>
                         <Menu.Menu>
                             {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                                <Menu.Item key={nr} active={nr === nrDates} tabIndex={0} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                                <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
+                                    <Menu.Item active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                                </div>
                             )}
                         </Menu.Menu>
                     </Menu.Item>
@@ -88,9 +90,8 @@ export function ViewPanel({
                     <Menu.Item>
                         <Menu.Header>Time between dates</Menu.Header>
                         <Menu.Menu>
-                            <Menu.Item key={1} active={1 === dateInterval} tabIndex={0} onClick={() => setDateInterval(1)}>1 day</Menu.Item>
-                            {[7, 14, 21, 28].map((nr) =>
-                                <Menu.Item key={nr} active={nr === dateInterval} tabIndex={0} onClick={() => setDateInterval(nr)}>{`${nr / 7} ${pluralize("week", nr / 7)}`}</Menu.Item>
+                            <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} setDateInterval={setDateInterval} />
+                            {[7, 14, 21, 28].map((nr) => <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} setDateInterval={setDateInterval} />
                             )}
                         </Menu.Menu>
                     </Menu.Item>
@@ -102,8 +103,20 @@ export function ViewPanel({
 
 function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
-        <Menu.Item onClick={() => toggleHiddenColumn(column)} tabIndex={0}>
-            {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
-        </Menu.Item>
+        <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
+            <Menu.Item onClick={() => toggleHiddenColumn(column)}>
+                {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+            </Menu.Item>
+        </div>
+    )
+}
+
+function DateIntervalMenuItem({nr, dateInterval, setDateInterval}) {
+    return (
+        <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
+            <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>
+                {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
+            </Menu.Item>
+        </div>
     )
 }
