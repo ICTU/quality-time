@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ViewPanel } from './ViewPanel';
 
 it("clears the visible details tabs", async () => {
@@ -109,7 +110,23 @@ it("sets the number of dates", async () => {
     expect(setNrDates).toHaveBeenCalledWith(7)
 })
 
-it("set the date interval to weeks", async () => {
+it("sets the number of dates by keypress", async () => {
+    const setNrDates = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                nrDates={1}
+                setNrDates={setNrDates}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/5 dates/), "{Enter}")
+    });
+    expect(setNrDates).toHaveBeenCalledWith(5)
+})
+
+it("setss the date interval to weeks", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
         render(
@@ -125,7 +142,7 @@ it("set the date interval to weeks", async () => {
     expect(setDateInterval).toHaveBeenCalledWith(14)
 })
 
-it("set the date interval to one day", async () => {
+it("sets the date interval to one day", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
         render(
@@ -137,6 +154,22 @@ it("set the date interval to one day", async () => {
             />
         )
         fireEvent.click(screen.getByText(/1 day/))
+    });
+    expect(setDateInterval).toHaveBeenCalledWith(1)
+})
+
+it("sets the date interval by keypress", async () => {
+    const setDateInterval = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                dateInterval={7}
+                setDateInterval={setDateInterval}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/1 day/), "{Enter}")
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
