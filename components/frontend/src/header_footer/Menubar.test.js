@@ -50,10 +50,18 @@ it('goes to home page on keypress', async () => {
     expect(go_home).toHaveBeenCalled();
 });
 
-it('shows the view panel on click', async () => {
+it('shows the view panel on menu item click', async () => {
     await act(async () => {
         render(<Menubar panel={<div>{"Hello"}</div>} />);
         fireEvent.click(screen.getByText(/Settings/));
+    });
+    expect(screen.getAllByText("Hello").length).toBe(1)
+})
+
+it('shows the view panel on checkbox click', async () => {
+    await act(async () => {
+        render(<Menubar panel={<div>{"Hello"}</div>} />);
+        fireEvent.click(screen.getByRole("checkbox"));
     });
     expect(screen.getAllByText("Hello").length).toBe(1)
 })

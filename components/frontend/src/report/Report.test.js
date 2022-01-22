@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
 let mockHistory = { location: {}, replace: () => {/* No implementatin needed */ } };
 const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
@@ -34,18 +35,20 @@ const report = {
     }
 };
 
-function renderReport(report, { report_date = null, hiddenColumns = [], history = mockHistory } = {}) {
+function renderReport(reportToRender, { report_date = null, hiddenColumns = [], history = mockHistory } = {}) {
     render(
-        <DataModel.Provider value={datamodel}>
-            <Report
-                history={history}
-                reports={[report]}
-                report={report}
-                report_date={report_date}
-                hiddenColumns={hiddenColumns}
-                visibleDetailsTabs={[]}
-            />
-        </DataModel.Provider>
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <DataModel.Provider value={datamodel}>
+                <Report
+                    history={history}
+                    reports={[reportToRender]}
+                    report={reportToRender}
+                    report_date={report_date}
+                    hiddenColumns={hiddenColumns}
+                    visibleDetailsTabs={[]}
+                />
+            </DataModel.Provider>
+        </Permissions.Provider>
     );
 }
 
@@ -66,38 +69,41 @@ it('shows an error message if there was no report', () => {
 
 it('hides columns on load', async () => {
     mockHistory.location.search = "?hidden_columns=status"
-    renderReport(report, { hiddenColumns: ["status"]})
+    renderReport(report, { hiddenColumns: ["status"] })
     expect(screen.queryByText(/Status/)).toBe(null)
 });
 
 it('sorts the column', async () => {
-    let replace = jest.fn()
-    let history = { location: {}, replace: replace };
-    renderReport(report, {history: history})
+    let history = { location: {}, replace: jest.fn() };
+    renderReport(report, { history: history })
     fireEvent.click(screen.getByText(/Tags/))
-    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=tags" })
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_column=tags" })
 });
 
 it('sorts the column descending', async () => {
-    let replace = jest.fn()
-    let history = { location: { search: "?sort_column=tags" }, replace: replace };
-    renderReport(report, {history: history})
+    let history = { location: { search: "?sort_column=tags" }, replace: jest.fn() };
+    renderReport(report, { history: history })
     fireEvent.click(screen.getByText(/Tags/))
-    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=tags&sort_direction=descending" })
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_column=tags&sort_direction=descending" })
 });
 
 it('stops sorting', async () => {
-    let replace = jest.fn()
-    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: replace };
-    renderReport(report, {history: history})
+    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: jest.fn() };
+    renderReport(report, { history: history })
     fireEvent.click(screen.getByText(/Tags/))
-    expect(replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
 });
 
+it('stop sorting on add metric', async () => {
+    let history = { location: { search: "?sort_column=tags&sort_direction=descending" }, replace: jest.fn() };
+    renderReport(report, { history: history })
+    await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_direction=descending" })
+})
+
 it('sorts another column', async () => {
-    let replace = jest.fn()
-    let history = { location: { search: "?sort_column=tags" }, replace: replace };
-    renderReport(report, {history: history})
+    let history = { location: { search: "?sort_column=tags" }, replace: jest.fn() };
+    renderReport(report, { history: history })
     fireEvent.click(screen.getByText(/Comment/))
-    expect(replace).toHaveBeenCalledWith({ search: "?sort_column=comment" })
+    expect(history.replace).toHaveBeenCalledWith({ search: "?sort_column=comment" })
 });

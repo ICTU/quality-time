@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Segment } from 'semantic-ui-react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import { createBrowserHistory, Action } from 'history';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-import { Report } from './report/Report';
-import { ReportsOverview } from './report/ReportsOverview';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
+import { ViewPanel } from './header_footer/ViewPanel';
 
 import { DataModel } from './context/DataModel';
 import { Permissions } from './context/Permissions';
@@ -18,60 +16,8 @@ import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
-import { ViewPanel } from './header_footer/ViewPanel';
+import {PageContent} from './PageContent';
 import { getUserPermissions, isValidDate_YYYYMMDD, useURLSearchQuery } from './utils'
-
-function PageContent({
-    changed_fields,
-    current_report,
-    dateInterval,
-    hiddenColumns,
-    hideMetricsNotRequiringAction,
-    history,
-    loading,
-    go_home,
-    nrDates,
-    nr_measurements,
-    open_report,
-    reload,
-    report_date,
-    report_uuid,
-    reports,
-    reports_overview,
-    toggleVisibleDetailsTab,
-    visibleDetailsTabs
-}) {
-    let content;
-    if (loading) {
-        content = <Segment basic placeholder loading size="massive" />
-    } else if (report_uuid) {
-        content = <Report
-            changed_fields={changed_fields}
-            dateInterval={dateInterval}
-            go_home={go_home}
-            hiddenColumns={hiddenColumns}
-            hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-            history={history}
-            nrDates={nrDates}
-            nr_measurements={nr_measurements}
-            reload={reload}
-            report={current_report}
-            reports={reports}
-            report_date={report_date}
-            toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-            visibleDetailsTabs={visibleDetailsTabs}
-        />
-    } else {
-        content = <ReportsOverview
-            open_report={open_report}
-            reload={reload}
-            reports={reports}
-            reports_overview={reports_overview}
-            report_date={report_date}
-        />
-    }
-    return <Container fluid className="MainContainer">{content}</Container>
-}
 
 function AppUI({
     changed_fields,
