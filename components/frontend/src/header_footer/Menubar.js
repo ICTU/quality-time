@@ -55,7 +55,7 @@ export function Menubar({ current_report, go_home, email, user, set_user, onDate
     const [panelVisible, setPanelVisible] = useState(false)
     return (
         <>
-            <Menu tabular fluid className="Menubar" inverted fixed="top">
+            <Menu fluid className="Menubar" inverted fixed="top">
                 <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
                     <Popup
                         content="Go to reports overview"
@@ -70,14 +70,12 @@ export function Menubar({ current_report, go_home, email, user, set_user, onDate
                         }
                     />
                 </div>
-                <FocusLock group="panel" disabled={!panelVisible}>
-                    <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0} style={{ display: "flex", alignItems: "center" }}>
-                        <Popup content={`${panelVisible ? "Hide" : "Show"} settings panel`} trigger={
-                            <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
-                                <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
-                                Settings
-                            </Menu.Item>}
-                        />
+                <FocusLock group="panel" disabled={!panelVisible} className="item">
+                    <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
+                        <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
+                            <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
+                            Settings
+                        </Menu.Item>
                     </div>
                 </FocusLock>
                 <Menu.Menu position='right'>
