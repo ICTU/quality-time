@@ -79,6 +79,21 @@ it("hides a column", async () => {
     expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
 })
 
+it("hides a column by keypress", async () => {
+    const toggleHiddenColumn = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                toggleHiddenColumn={toggleHiddenColumn}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/Hide comment column/), "{Enter}")
+    });
+    expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
+})
+
 it("shows a column", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
