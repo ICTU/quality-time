@@ -111,7 +111,7 @@ function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     )
 }
 
-function DateIntervalMenuItem({nr, dateInterval, setDateInterval}) {
+function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
             <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>

@@ -49,6 +49,7 @@ function AppUI({
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
     const [panelVisible, setPanelVisible] = useState(false)
+    window.addEventListener('keypress', (event) => { if (event.key === "Escape") { setPanelVisible(false) } })
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
             <HashLinkObserver />
