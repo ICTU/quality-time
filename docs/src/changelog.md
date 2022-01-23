@@ -26,7 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add a menu item to the settings panel to collapse all expanded metrics at once. Closes [#3133](https://github.com/ICTU/quality-time/issues/3133).
 - Allow for zooming (by scrolling) and panning (by dragging) trend graphs. Closes [#3246](https://github.com/ICTU/quality-time/issues/3246).
-- Show the key of OWASP Dependency Check security warnings in the measurement entity details to allow for verification of the regular expression used to remove variable parts from file paths. Closes [#3259](https://github.com/ICTU/quality-time/issues/3259).
+- Show the key of OWASP Dependency Check security warnings in the measurement entity details to allow for verification of the regular expressions used to remove variable parts from file paths. Closes [#3259](https://github.com/ICTU/quality-time/issues/3259).
 
 ## v3.31.0 - 2022-01-13
 

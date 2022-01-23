@@ -14,7 +14,7 @@ ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
 
 DEPENDENCY_ATTRIBUTES: list[object] = [
     dict(name="File path", url="url"),
-    dict(name="File path after applying regular expreassion", key="file_path_after_regexp"),
+    dict(name="File path after applying regular expressions", key="file_path_after_regexp"),
     dict(name="File name"),
 ]
 SECURITY_WARNING_ATTRIBUTES = [
