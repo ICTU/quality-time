@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack, VictoryZoomContainer } from 'victory';
+import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack } from 'victory';
 import { DataModel } from "../context/DataModel";
 import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, scaled_number } from '../utils';
 
@@ -93,7 +93,6 @@ export function TrendGraph({ metric, measurements }) {
     const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
     return (
         <VictoryChart
-            containerComponent={<VictoryZoomContainer />}
             height={250}
             scale={{ x: "time", y: "linear" }}
             style={{ parent: { height: "100%", background: "white" } }}
