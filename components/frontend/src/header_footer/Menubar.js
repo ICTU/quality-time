@@ -70,29 +70,29 @@ export function Menubar({
 
     return (
         <>
-            <Menu fluid className="Menubar" inverted fixed="top">
-                <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
+            <Menu fluid className="menubar" inverted fixed="top">
+                <Menu.Menu position="left">
                     <Popup
                         content="Go to reports overview"
                         disabled={!current_report}
                         trigger={
-                            <Menu.Item header onClick={current_report ? () => go_home() : null}>
-                                <>
+                            <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
+                                <Menu.Item header onClick={current_report ? () => go_home() : null}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
-                                </>
-                            </Menu.Item>
+                                </Menu.Item>
+                            </div>
                         }
                     />
-                </div>
-                <FocusLock group="panel" disabled={!panelVisible} className="item">
-                    <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
-                        <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
-                            <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
-                            Settings
-                        </Menu.Item>
-                    </div>
-                </FocusLock>
+                    <FocusLock group="panel" disabled={!panelVisible} className="center">
+                        <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
+                            <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
+                                <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
+                                Settings
+                            </Menu.Item>
+                        </div>
+                    </FocusLock>
+                </Menu.Menu>
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" trigger={
                         <Menu.Item>

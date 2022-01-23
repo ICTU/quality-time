@@ -23,6 +23,7 @@ export function ViewPanel({
                 border: "0px",
                 left: "0px",
                 margin: "0px",
+                opacity: "0.98",
                 position: "fixed",
                 top: "64px",
                 width: "100%",
