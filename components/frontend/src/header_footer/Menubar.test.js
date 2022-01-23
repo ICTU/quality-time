@@ -60,26 +60,25 @@ it('goes to home page on keypress', async () => {
 });
 
 it('shows the view panel on menu item click', async () => {
-    const setPanelVisible = jest.fn()
     await act(async () => {
-        render(<Menubar setPanelVisible={setPanelVisible} />);
+        render(<Menubar panel={<div>Hello</div>}/>);
         fireEvent.click(screen.getByText(/Settings/));
     });
-    expect(setPanelVisible).toHaveBeenCalledWith(true)
+    expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
 
 it('shows the view panel on enter', async () => {
-    const setPanelVisible = jest.fn()
     await act(async () => {
-        render(<Menubar setPanelVisible={setPanelVisible} />);
+        render(<Menubar panel={<div>Hello</div>} />);
         userEvent.type(screen.getByText(/Settings/), "{Enter}");
     });
-    expect(setPanelVisible).toHaveBeenCalledWith(true)
+    expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
 
 it('hides the view panel on click', async () => {
-    const setPanelVisible = jest.fn()
-    await act(async () => { render(<Menubar panelVisible={true} setPanelVisible={setPanelVisible}/>) });
+    await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
     fireEvent.click(screen.getByText(/Settings/));
-    expect(setPanelVisible).toHaveBeenCalledWith(false)
+    expect(screen.getAllByText(/Hello/).length).toBe(1)
+    fireEvent.click(screen.getByText(/Settings/));
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })

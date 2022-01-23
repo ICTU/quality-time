@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import { createBrowserHistory, Action } from 'history';
@@ -48,8 +48,6 @@ function AppUI({
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [panelVisible, setPanelVisible] = useState(false)
-    window.addEventListener('keypress', (event) => { if (event.key === "Escape") { setPanelVisible(false) } })
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
             <HashLinkObserver />
@@ -58,9 +56,7 @@ function AppUI({
                 email={email}
                 go_home={go_home}
                 onDate={handleDateChange}
-                panelVisible={panelVisible}
                 report_date_string={report_date_string}
-                setPanelVisible={setPanelVisible}
                 set_user={set_user}
                 user={user}
                 panel={<ViewPanel

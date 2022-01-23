@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, Portal } from 'semantic-ui-react';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
@@ -57,12 +57,17 @@ export function Menubar({
     go_home,
     onDate,
     panel,
-    panelVisible,
     report_date_string,
-    setPanelVisible,
     set_user,
     user,
 }) {
+    const [panelVisible, setPanelVisible] = useState(false)
+    useEffect(() => {
+        function closePanel(event) { if (event.key === "Escape") { setPanelVisible(false) } }
+        window.addEventListener('keypress', closePanel)
+        return () => { window.removeEventListener('keypress', closePanel) };
+    }, []);
+
     return (
         <>
             <Menu fluid className="Menubar" inverted fixed="top">
