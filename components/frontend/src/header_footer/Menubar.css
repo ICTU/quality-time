@@ -8,7 +8,7 @@
     opacity: 0.98;
 }
 
-.center {
+.menu .center {
     display: grid;
     place-content: center;
 }

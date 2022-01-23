@@ -74,7 +74,7 @@ export function Report({
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
-        window.scrollBy(0, 55);  // Correct for menubar and subject title margin
+        window.scrollBy(0, 163);  // Correct for menubar and subject title margin
     }
 
     const [tags, setTags] = useState([]);
