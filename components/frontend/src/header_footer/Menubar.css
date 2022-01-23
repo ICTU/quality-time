@@ -1,5 +1,14 @@
 @media print {
-    .Menubar {
+    .menubar {
         display: none !important;
     }
+}
+
+.menubar {
+    opacity: 0.98;
+}
+
+.center {
+    display: grid;
+    place-content: center;
 }

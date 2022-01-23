@@ -74,7 +74,7 @@ it("hides a column", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Hide trend column/))
+        fireEvent.click(screen.getByText(/Trend/))
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
 })
@@ -89,7 +89,7 @@ it("hides a column by keypress", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        userEvent.type(screen.getByText(/Hide comment column/), "{Enter}")
+        userEvent.type(screen.getByText(/Comment/), "{Enter}")
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
 })
@@ -104,7 +104,7 @@ it("shows a column", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Show trend column/))
+        fireEvent.click(screen.getByText(/Trend/))
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
 })

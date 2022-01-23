@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, Portal } from 'semantic-ui-react';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
@@ -51,33 +51,48 @@ function Logout({ user, email, set_user }) {
     )
 }
 
-export function Menubar({ current_report, go_home, email, user, set_user, onDate, report_date_string, panel }) {
+export function Menubar({
+    current_report,
+    email,
+    go_home,
+    onDate,
+    panel,
+    report_date_string,
+    set_user,
+    user,
+}) {
     const [panelVisible, setPanelVisible] = useState(false)
+    useEffect(() => {
+        function closePanel(event) { if (event.key === "Escape") { setPanelVisible(false) } }
+        window.addEventListener('keypress', closePanel)
+        return () => { window.removeEventListener('keypress', closePanel) };
+    }, []);
+
     return (
         <>
-            <Menu fluid className="Menubar" inverted fixed="top">
-                <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
+            <Menu fluid className="menubar" inverted fixed="top">
+                <Menu.Menu position="left">
                     <Popup
                         content="Go to reports overview"
                         disabled={!current_report}
                         trigger={
-                            <Menu.Item header onClick={current_report ? () => go_home() : null}>
-                                <>
+                            <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
+                                <Menu.Item header onClick={current_report ? () => go_home() : null}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
-                                </>
-                            </Menu.Item>
+                                </Menu.Item>
+                            </div>
                         }
                     />
-                </div>
-                <FocusLock group="panel" disabled={!panelVisible} className="item">
-                    <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
-                        <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
-                            <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
-                            Settings
-                        </Menu.Item>
-                    </div>
-                </FocusLock>
+                    <FocusLock group="panel" disabled={!panelVisible} className="center">
+                        <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
+                            <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
+                                <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
+                                Settings
+                            </Menu.Item>
+                        </div>
+                    </FocusLock>
+                </Menu.Menu>
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" trigger={
                         <Menu.Item>

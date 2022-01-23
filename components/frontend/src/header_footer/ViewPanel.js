@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Grid, Menu, Segment } from 'semantic-ui-react';
-import { pluralize } from "../utils";
+import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
 export function ViewPanel({
@@ -23,6 +23,7 @@ export function ViewPanel({
                 border: "0px",
                 left: "0px",
                 margin: "0px",
+                opacity: "0.98",
                 position: "fixed",
                 top: "64px",
                 width: "100%",
@@ -55,46 +56,35 @@ export function ViewPanel({
                 </Grid>
             </Segment>
             <Segment inverted color="black">
-                <Menu text vertical inverted size="large">
-                    <Menu.Item>
-                        <Menu.Header>Columns</Menu.Header>
-                        <Menu.Menu>
-                            <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                            <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                        </Menu.Menu>
-                    </Menu.Item>
+                <Header size='small'>Visible columns</Header>
+                <Menu vertical inverted size="small">
+                    <ColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <ColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Menu text vertical inverted size="large">
-                    <Menu.Item>
-                        <Menu.Header>Number of dates</Menu.Header>
-                        <Menu.Menu>
-                            {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                                <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
-                                    <Menu.Item active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
-                                </div>
-                            )}
-                        </Menu.Menu>
-                    </Menu.Item>
+                <Header size='small'>Number of dates</Header>
+                <Menu vertical inverted size="small">
+                    {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
+                        <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
+                            <Menu.Item active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                        </div>
+                    )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Menu text vertical inverted size="large">
-                    <Menu.Item>
-                        <Menu.Header>Time between dates</Menu.Header>
-                        <Menu.Menu>
-                            <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} setDateInterval={setDateInterval} />
-                            {[7, 14, 21, 28].map((nr) => <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} setDateInterval={setDateInterval} />
-                            )}
-                        </Menu.Menu>
-                    </Menu.Item>
+                <Header size='small'>Time between dates</Header>
+                <Menu vertical inverted size="small">
+                    <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} setDateInterval={setDateInterval} />
+                    {[7, 14, 21, 28].map((nr) =>
+                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} setDateInterval={setDateInterval} />
+                    )}
                 </Menu>
             </Segment>
         </Segment.Group>
@@ -104,14 +94,14 @@ export function ViewPanel({
 function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item onClick={() => toggleHiddenColumn(column)}>
-                {hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+            <Menu.Item active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
+                {capitalize(column)}
             </Menu.Item>
         </div>
     )
 }
 
-function DateIntervalMenuItem({nr, dateInterval, setDateInterval}) {
+function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
             <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>
