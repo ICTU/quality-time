@@ -21,6 +21,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 nr_vulnerabilities="2",
                 file_name=self.file_name,
                 file_path=self.file_path,
+                file_path_after_regexp=self.file_path,
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
@@ -51,6 +52,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 nr_vulnerabilities="1",
                 file_name=self.file_name,
                 file_path=self.file_path,
+                file_path_after_regexp=self.file_path,
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
@@ -83,6 +85,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 </dependency>
             </analysis>"""
         response = await self.collect(get_request_text=xml)
+        expected_file_path = "packages.config"
         expected_entities = [
             dict(
                 key="498ac4bf0c766490ad58cd04a71e07a439b97fc8",
@@ -90,7 +93,8 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 file_name="CuttingEdge.Conditions:1.2.0.0",
                 highest_severity="Low",
                 nr_vulnerabilities="1",
-                file_path="packages.config",
+                file_path=expected_file_path,
+                file_path_after_regexp=expected_file_path,
             ),
             dict(
                 key="7f5f471406d316dfeb580de2738db563f3c7ac97",
@@ -98,7 +102,8 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
                 file_name="IdentityModel:1.13.1",
                 highest_severity="Low",
                 nr_vulnerabilities="1",
-                file_path="packages.config",
+                file_path=expected_file_path,
+                file_path_after_regexp=expected_file_path,
             ),
         ]
         self.assert_measurement(response, value="2", entities=expected_entities)
