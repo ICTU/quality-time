@@ -12,7 +12,11 @@ ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
     "source_version",
 ]
 
-DEPENDENCY_ATTRIBUTES: list[object] = [dict(name="File path", url="url"), dict(name="File name")]
+DEPENDENCY_ATTRIBUTES: list[object] = [
+    dict(name="File path", url="url"),
+    dict(name="File path after applying regular expreassion", key="file_path_after_regexp"),
+    dict(name="File name"),
+]
 SECURITY_WARNING_ATTRIBUTES = [
     dict(name="Highest severity", color=dict(Critical=Color.NEGATIVE, High=Color.NEGATIVE, Medium=Color.WARNING)),
     dict(name="Number of vulnerabilities", key="nr_vulnerabilities", type=EntityAttributeType.INTEGER),

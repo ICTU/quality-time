@@ -36,13 +36,20 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     ) -> Entity:
         """Parse the entity from the dependency."""
         file_path = dependency.findtext("ns:filePath", default="", namespaces=namespaces)
+        stable_file_path = self.__stable_file_path(file_path.strip())
         file_name = dependency.findtext("ns:fileName", default="", namespaces=namespaces)
         sha1 = dependency.findtext("ns:sha1", namespaces=namespaces)
         # We can only generate an entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
-        key = sha1 if sha1 else sha1_hash(self.__stable_file_path(file_path) + file_name)
-        return Entity(key=key, file_path=file_path, file_name=file_name, url=entity_landing_url)
+        key = sha1 if sha1 else sha1_hash(stable_file_path + file_name)
+        return Entity(
+            key=key,
+            file_path=file_path,
+            file_path_after_regexp=stable_file_path,
+            file_name=file_name,
+            url=entity_landing_url,
+        )
 
     def __stable_file_path(self, file_path: str) -> str:
         """Return a stable file path by excluding variable parts specified by the user."""

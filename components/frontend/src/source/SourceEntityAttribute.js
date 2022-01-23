@@ -11,6 +11,6 @@ export function SourceEntityAttribute({ entity, entity_attribute }) {
     cell_contents = cell_contents && entity_attribute.type === "minutes" ? format_minutes(cell_contents) : cell_contents;
     cell_contents = cell_contents && entity_attribute.type === "status" ? <StatusIcon status={cell_contents} /> : cell_contents;
     cell_contents = entity[entity_attribute.url] ? <HyperLink url={entity[entity_attribute.url]}>{cell_contents}</HyperLink> : cell_contents;
-    cell_contents = entity_attribute.pre ? <pre data-testid="pre-wrapped" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{cell_contents}</pre> : cell_contents;
+    cell_contents = entity_attribute.pre ? <pre data-testid="pre-wrapped" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{cell_contents}</pre> : <div style={{wordBreak: 'break-word'}}>{cell_contents}</div>;
     return (cell_contents);
 }
