@@ -14,8 +14,7 @@ export function SubjectTableHeader(
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell className="unsortable" />
-                <SortableTableHeaderCell column='name' label='Metric' {...sortProps} />
+                <SortableTableHeaderCell colSpan="2" column='name' label='Metric' {...sortProps} />
                 {nrDates > 1 && columnDates.map(date => <Table.HeaderCell key={date} className="unsortable" textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 {nrDates > 1 && <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />}
                 {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.HeaderCell className="unsortable" width="2">Trend (7 days)</Table.HeaderCell>}
