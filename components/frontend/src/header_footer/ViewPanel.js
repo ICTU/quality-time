@@ -99,7 +99,6 @@ function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
         </div>
     )
 }
-                /*{hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}*/
 
 function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
     return (
