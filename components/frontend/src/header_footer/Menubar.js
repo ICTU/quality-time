@@ -51,8 +51,18 @@ function Logout({ user, email, set_user }) {
     )
 }
 
-export function Menubar({ current_report, go_home, email, user, set_user, onDate, report_date_string, panel }) {
-    const [panelVisible, setPanelVisible] = useState(false)
+export function Menubar({
+    current_report,
+    email,
+    go_home,
+    onDate,
+    panel,
+    panelVisible,
+    report_date_string,
+    setPanelVisible,
+    set_user,
+    user,
+}) {
     return (
         <>
             <Menu fluid className="Menubar" inverted fixed="top">
