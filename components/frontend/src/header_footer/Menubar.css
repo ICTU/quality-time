@@ -12,3 +12,14 @@
     display: grid;
     place-content: center;
 }
+
+.panel {
+    border: 0px;
+    left: 0px;
+    margin: 0px;
+    opacity: 0.98;
+    position: fixed;
+    top: 64px;
+    width: 100%;
+    z-index: 2;
+}

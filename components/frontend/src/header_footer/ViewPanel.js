@@ -20,17 +20,10 @@ export function ViewPanel({
     return (
         <Segment.Group
             horizontal
+            color="black"
+            inverted
             className='equal width'
-            style={{
-                border: "0px",
-                left: "0px",
-                margin: "0px",
-                opacity: "0.98",
-                position: "fixed",
-                top: "64px",
-                width: "100%",
-                zIndex: 2,
-            }}
+            style={{margin: "0px", border: "0px"}}
         >
             <Segment inverted color="black">
                 <Grid padded>
