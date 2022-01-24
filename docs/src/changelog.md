@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Add a setting to the settings panel to allow for reversing the order of the date columns in the metric tables. Closes [#2928](https://github.com/ICTU/quality-time/issues/2928).
+
 ## v3.32.0 - 2022-01-24
 
 ### Fixed
