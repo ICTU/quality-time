@@ -382,8 +382,8 @@ pycparser==2.21 \
     --hash=sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9 \
     --hash=sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206
     # via cffi
-pymsteams==0.2.0 \
-    --hash=sha256:2be16138892ca89d2003e5db6c61ccb37a03466323cf2556119380e60bf392e6
+pymsteams==0.2.1 \
+    --hash=sha256:e56566365e6cd1a6b518cf0a1828694b6883b952057cf40f9ebddf8d99353ce4
     # via -r requirements.in
 requests==2.26.0 \
     --hash=sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24 \
