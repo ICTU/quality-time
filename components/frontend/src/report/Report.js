@@ -57,6 +57,7 @@ function ReportErrorMessage({ report_date }) {
 export function Report({
     changed_fields,
     dateInterval,
+    dateOrder,
     go_home,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -126,6 +127,7 @@ export function Report({
             <Subjects
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
+                dateOrder={dateOrder}
                 handleSort={(column) => handleSort(column)}
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}

@@ -6,10 +6,12 @@ import './ViewPanel.css';
 export function ViewPanel({
     clearVisibleDetailsTabs,
     dateInterval,
+    dateOrder,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     nrDates,
     setDateInterval,
+    setDateOrder,
     setHideMetricsNotRequiringAction,
     setNrDates,
     toggleHiddenColumn,
@@ -73,7 +75,7 @@ export function ViewPanel({
                 <Menu vertical inverted size="small">
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
                         <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
-                            <Menu.Item active={nr === nrDates} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                            <Menu.Item active={nr === nrDates} color="blue" onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                         </div>
                     )}
                 </Menu>
@@ -87,6 +89,13 @@ export function ViewPanel({
                     )}
                 </Menu>
             </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Date order</Header>
+                <Menu vertical inverted size="small">
+                    <DateOrderMenuItem order="ascending" dateOrder={dateOrder} setDateOrder={setDateOrder} />
+                    <DateOrderMenuItem order="descending" dateOrder={dateOrder} setDateOrder={setDateOrder} />
+                </Menu>
+            </Segment>
         </Segment.Group>
     )
 }
@@ -94,7 +103,7 @@ export function ViewPanel({
 function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
+            <Menu.Item color="blue" active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
                 {capitalize(column)}
             </Menu.Item>
         </div>
@@ -104,8 +113,20 @@ function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
-            <Menu.Item key={nr} active={nr === dateInterval} onClick={() => setDateInterval(nr)}>
+            <Menu.Item key={nr} active={nr === dateInterval} color="blue" onClick={() => setDateInterval(nr)}>
                 {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
+            </Menu.Item>
+        </div>
+    )
+}
+
+function DateOrderMenuItem({ order, dateOrder, setDateOrder }) {
+    let new_old = ["new", "old"];
+    if (order === "ascending") {new_old.reverse()}
+    return (
+        <div key={order} onKeyPress={(event) => { event.preventDefault(); setDateOrder(order) }} tabIndex={0}>
+            <Menu.Item active={dateOrder === order} color="blue" onClick={() => setDateOrder(order)}>
+                {capitalize(order)}
             </Menu.Item>
         </div>
     )

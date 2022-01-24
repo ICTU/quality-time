@@ -11,6 +11,7 @@ import { useDelayedRender } from '../utils';
 export function Subjects({
     changed_fields,
     dateInterval,
+    dateOrder,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
@@ -35,6 +36,8 @@ export function Subjects({
                 visible || index < 3 ?
                     <Subject
                         changed_fields={changed_fields}
+                        dateInterval={dateInterval}
+                        dateOrder={dateOrder}
                         first_subject={index === 0}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
@@ -49,7 +52,6 @@ export function Subjects({
                         subject_uuid={subject_uuid}
                         tags={tags}
                         toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                        dateInterval={dateInterval}
                         nrDates={nrDates}
                         visibleDetailsTabs={visibleDetailsTabs}
                         reload={reload}

@@ -76,6 +76,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 
 export function Subject({
     changed_fields,
+    dateInterval,
+    dateOrder,
     first_subject,
     handleSort,
     hiddenColumns,
@@ -89,7 +91,6 @@ export function Subject({
     subject_uuid,
     tags,
     toggleVisibleDetailsTab,
-    dateInterval,
     nrDates,
     visibleDetailsTabs,
     reload
@@ -132,6 +133,7 @@ export function Subject({
             <SubjectTable
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
+                dateOrder={dateOrder}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 measurements={measurements}

@@ -38,6 +38,7 @@ export function AppUI({
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
     const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
+    const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", "descending");
     const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
@@ -56,10 +57,12 @@ export function AppUI({
                 panel={<ViewPanel
                     clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                     dateInterval={dateInterval}
+                    dateOrder={dateOrder}
                     hiddenColumns={hiddenColumns}
                     hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                     nrDates={nrDates}
                     setDateInterval={setDateInterval}
+                    setDateOrder={setDateOrder}
                     setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                     setNrDates={setNrDates}
                     toggleHiddenColumn={toggleHiddenColumn}
@@ -73,6 +76,7 @@ export function AppUI({
                         changed_fields={changed_fields}
                         current_report={current_report}
                         dateInterval={dateInterval}
+                        dateOrder={dateOrder}
                         go_home={go_home}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}

@@ -5,7 +5,7 @@ import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
-function getColumnDates(reportDate, dateInterval, nrDates) {
+function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date();
     const intervalLength = dateInterval;  // dateInterval is in days
     const columnDates = []
@@ -14,12 +14,14 @@ function getColumnDates(reportDate, dateInterval, nrDates) {
         date.setDate(date.getDate() - offset);
         columnDates.push(date)
     }
+    if (dateOrder === "ascending") { columnDates.reverse() }
     return columnDates
 }
 
 export function SubjectTable({
     changed_fields,
     dateInterval,
+    dateOrder,
     handleSort,
     hiddenColumns,
     measurements,
@@ -37,7 +39,7 @@ export function SubjectTable({
     visibleDetailsTabs
 }) {
 
-    const dates = getColumnDates(reportDate, dateInterval, nrDates)
+    const dates = getColumnDates(reportDate, dateInterval, dateOrder, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
 
     return (
