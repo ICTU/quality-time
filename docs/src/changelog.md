@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Changed
+
+- Color selected menu items in the settings panel blue for better contrast.
+- Use a menu instead of a button in the settings panel to hide metrics that don't require action.
+
 ### Added
 
 - Add a setting to the settings panel to allow for reversing the order of the date columns in the metric tables. Closes [#2928](https://github.com/ICTU/quality-time/issues/2928).

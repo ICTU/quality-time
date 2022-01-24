@@ -43,7 +43,7 @@ it("hides the metrics not requiring action", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Hide metrics not requiring action/))
+        fireEvent.click(screen.getByText(/Metrics requiring action/))
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(true)
 })
@@ -59,7 +59,7 @@ it("shows the metrics not requiring action", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Show all metrics/))
+        fireEvent.click(screen.getByText(/All metrics/))
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })

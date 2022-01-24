@@ -37,16 +37,6 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}
-                                inverted
-                            >
-                                {hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-                            </Button>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Button
                                 disabled={visibleDetailsTabs.length === 0}
                                 onClick={() => clearVisibleDetailsTabs()}
                                 inverted
@@ -56,6 +46,13 @@ export function ViewPanel({
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+            </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Visible metrics</Header>
+                <Menu vertical inverted size="small">
+                    <MetricMenuItem hide={true} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
+                    <MetricMenuItem hide={false} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
+                </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible columns</Header>
@@ -125,6 +122,16 @@ function DateOrderMenuItem({ order, dateOrder, setDateOrder }) {
         <div key={order} onKeyPress={(event) => { event.preventDefault(); setDateOrder(order) }} tabIndex={0}>
             <Menu.Item active={dateOrder === order} color="blue" onClick={() => setDateOrder(order)}>
                 {capitalize(order)}
+            </Menu.Item>
+        </div>
+    )
+}
+
+function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
+    return (
+        <div key={hide} onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
+            <Menu.Item active={hideMetricsNotRequiringAction === hide} color="blue" onClick={() => setHideMetricsNotRequiringAction(hide)}>
+                {hide ? 'Metrics requiring action' : 'All metrics'}
             </Menu.Item>
         </div>
     )
