@@ -188,3 +188,35 @@ it("sets the date interval by keypress", async () => {
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
+
+it("sorts the dates descending", async () => {
+    const setDateOrder = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                dateOrder="ascending"
+                setDateOrder={setDateOrder}
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Descending/))
+    });
+    expect(setDateOrder).toHaveBeenCalledWith("descending")
+})
+
+it("sorts the dates ascending by keypress", async () => {
+    const setDateOrder = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                dateOrder="descending"
+                setDateOrder={setDateOrder}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/Ascending/), "{Enter}")
+    });
+    expect(setDateOrder).toHaveBeenCalledWith("ascending")
+})
