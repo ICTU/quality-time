@@ -64,6 +64,22 @@ it("shows the metrics not requiring action", async () => {
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })
 
+it("shows the metrics not requiring action by keypress", async () => {
+    const setHideMetricsNotRequiringAction = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={true}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/All metrics/), "{Enter}")
+    });
+    expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+})
+
 it("hides a column", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
