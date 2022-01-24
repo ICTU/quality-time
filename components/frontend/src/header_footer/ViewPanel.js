@@ -121,8 +121,6 @@ function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
 }
 
 function DateOrderMenuItem({ order, dateOrder, setDateOrder }) {
-    let new_old = ["new", "old"];
-    if (order === "ascending") {new_old.reverse()}
     return (
         <div key={order} onKeyPress={(event) => { event.preventDefault(); setDateOrder(order) }} tabIndex={0}>
             <Menu.Item active={dateOrder === order} color="blue" onClick={() => setDateOrder(order)}>
