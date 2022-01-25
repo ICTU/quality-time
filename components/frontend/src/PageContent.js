@@ -7,6 +7,7 @@ export function PageContent({
     changed_fields,
     current_report,
     dateInterval,
+    dateOrder,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     history,
@@ -30,6 +31,7 @@ export function PageContent({
         content = <Report
             changed_fields={changed_fields}
             dateInterval={dateInterval}
+            dateOrder={dateOrder}
             go_home={go_home}
             hiddenColumns={hiddenColumns}
             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}

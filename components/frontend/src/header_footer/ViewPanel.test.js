@@ -43,7 +43,7 @@ it("hides the metrics not requiring action", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Hide metrics not requiring action/))
+        fireEvent.click(screen.getByText(/Metrics requiring action/))
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(true)
 })
@@ -59,7 +59,23 @@ it("shows the metrics not requiring action", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Show all metrics/))
+        fireEvent.click(screen.getByText(/All metrics/))
+    });
+    expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+})
+
+it("shows the metrics not requiring action by keypress", async () => {
+    const setHideMetricsNotRequiringAction = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={true}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/All metrics/), "{Enter}")
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })
@@ -187,4 +203,36 @@ it("sets the date interval by keypress", async () => {
         userEvent.type(screen.getByText(/1 day/), "{Enter}")
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
+})
+
+it("sorts the dates descending", async () => {
+    const setDateOrder = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                dateOrder="ascending"
+                setDateOrder={setDateOrder}
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Descending/))
+    });
+    expect(setDateOrder).toHaveBeenCalledWith("descending")
+})
+
+it("sorts the dates ascending by keypress", async () => {
+    const setDateOrder = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                dateOrder="descending"
+                setDateOrder={setDateOrder}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/Ascending/), "{Enter}")
+    });
+    expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })

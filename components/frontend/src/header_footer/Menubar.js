@@ -106,7 +106,9 @@ export function Menubar({
             </Menu>
             <Portal open={panelVisible}>
                 <FocusLock group="panel">
-                    {panel}
+                    <div className="panel">
+                        {panel}
+                    </div>
                 </FocusLock>
             </Portal>
         </>

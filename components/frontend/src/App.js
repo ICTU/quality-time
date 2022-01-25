@@ -1,106 +1,14 @@
 import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
-import HashLinkObserver from "react-hash-link";
 import { createBrowserHistory, Action } from 'history';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
-
-import { Menubar } from './header_footer/Menubar';
-import { Footer } from './header_footer/Footer';
-import { ViewPanel } from './header_footer/ViewPanel';
-
-import { DataModel } from './context/DataModel';
-import { Permissions } from './context/Permissions';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
-import {PageContent} from './PageContent';
-import { getUserPermissions, isValidDate_YYYYMMDD, useURLSearchQuery } from './utils'
-
-function AppUI({
-    changed_fields,
-    datamodel,
-    email,
-    go_home,
-    handleDateChange,
-    history,
-    last_update,
-    loading,
-    nr_measurements,
-    open_report,
-    reload,
-    report_date,
-    report_date_string,
-    report_uuid,
-    reports,
-    reports_overview,
-    set_user,
-    user
-}) {
-    const user_permissions = getUserPermissions(
-        user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
-    )
-    const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
-    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
-    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
-    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    return (
-        <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
-            <HashLinkObserver />
-            <Menubar
-                current_report={current_report}
-                email={email}
-                go_home={go_home}
-                onDate={handleDateChange}
-                report_date_string={report_date_string}
-                set_user={set_user}
-                user={user}
-                panel={<ViewPanel
-                    clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                    dateInterval={dateInterval}
-                    hiddenColumns={hiddenColumns}
-                    hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                    nrDates={nrDates}
-                    setDateInterval={setDateInterval}
-                    setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                    setNrDates={setNrDates}
-                    toggleHiddenColumn={toggleHiddenColumn}
-                    visibleDetailsTabs={visibleDetailsTabs}
-                />}
-            />
-            <ToastContainer theme="colored" />
-            <Permissions.Provider value={user_permissions}>
-                <DataModel.Provider value={datamodel}>
-                    <PageContent
-                        changed_fields={changed_fields}
-                        current_report={current_report}
-                        dateInterval={dateInterval}
-                        go_home={go_home}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        history={history}
-                        loading={loading}
-                        nrDates={nrDates}
-                        nr_measurements={nr_measurements}
-                        open_report={open_report}
-                        reload={reload}
-                        report_date={report_date}
-                        report_uuid={report_uuid}
-                        reports={reports}
-                        reports_overview={reports_overview}
-                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    />
-                </DataModel.Provider>
-            </Permissions.Provider>
-            <Footer last_update={last_update} report={current_report} />
-        </div>
-    )
-}
+import { isValidDate_YYYYMMDD } from './utils'
+import { AppUI } from './AppUI';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
 
 class App extends Component {
     constructor(props) {

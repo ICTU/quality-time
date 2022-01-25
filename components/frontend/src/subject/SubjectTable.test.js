@@ -23,16 +23,17 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-function renderSubjectTable(dateInterval, hiddenColumns) {
+function renderSubjectTable(dateInterval, dateOrder, hiddenColumns) {
     return render(
         <DataModel.Provider value={datamodel}>
             <SubjectTable
+                dateInterval={dateInterval}
+                dateOrder={dateOrder}
                 reportDate={reportDate}
                 report={{}}
                 measurements={[]}
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                 subject={{ metrics: { 1: metric, 2: metric2 } }}
-                dateInterval={dateInterval}
                 nrDates={3}
                 setDateInterval={() => {/*Dummy implementation*/ }}
                 setNrDates={() => {/*Dummy implementation*/ }}
@@ -57,14 +58,28 @@ it('calculates weekly column dates correctly', () => {
 });
 
 it('calculates daily column dates correctly', () => {
-    renderSubjectTable(1)
+    renderSubjectTable(1, "ascending")
     const expectedDates = [
         new Date("2020-01-13T00:00:00+00:00"),
         new Date("2020-01-14T00:00:00+00:00"),
         new Date("2020-01-15T00:00:00+00:00"),
     ]
-    expectedDates.forEach(date => {
-        expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
+    const actualDates = screen.queryAllByText(/2020/);
+    expectedDates.forEach((expectedDate, index) => {
+        expect(actualDates[index]).toHaveTextContent(expectedDate.toLocaleDateString())
+    })
+});
+
+it('sorts the column dates descending', () => {
+    renderSubjectTable(1, "descending")
+    const expectedDates = [
+        new Date("2020-01-15T00:00:00+00:00"),
+        new Date("2020-01-14T00:00:00+00:00"),
+        new Date("2020-01-13T00:00:00+00:00"),
+    ]
+    const actualDates = screen.queryAllByText(/2020/);
+    expectedDates.forEach((expectedDate, index) => {
+        expect(actualDates[index]).toHaveTextContent(expectedDate.toLocaleDateString())
     })
 });
 
@@ -82,7 +97,7 @@ it('shows the source column', () => {
 })
 
 it('hides the source column', () => {
-    renderSubjectTable(7, ["source"])
+    renderSubjectTable(7, "ascending", ["source"])
     expect(screen.queryAllByText(/Source/).length).toBe(0)
 })
 
@@ -92,7 +107,7 @@ it('shows the comment column', () => {
 })
 
 it('hides the source column', () => {
-    renderSubjectTable(7, ["comment"])
+    renderSubjectTable(7, "ascending", ["comment"])
     expect(screen.queryAllByText(/Comment/).length).toBe(0)
 })
 
@@ -102,7 +117,7 @@ it('shows the issue column', () => {
 })
 
 it('hides the issue column', () => {
-    renderSubjectTable(7, ["issues"])
+    renderSubjectTable(7, "ascending", ["issues"])
     expect(screen.queryAllByText(/Issues/).length).toBe(0)
 })
 
@@ -113,7 +128,7 @@ it('shows the tags column', () => {
 })
 
 it('hides the tags column', () => {
-    renderSubjectTable(7, ["tags"])
+    renderSubjectTable(7, "ascending", ["tags"])
     expect(screen.queryAllByText(/Tags/).length).toBe(0)
     expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
 })
