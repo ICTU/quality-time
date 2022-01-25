@@ -20,8 +20,6 @@ export function ViewPanel({
     return (
         <Segment.Group
             horizontal
-            color="black"
-            inverted
             className='equal width'
             style={{margin: "0px", border: "0px"}}
         >
