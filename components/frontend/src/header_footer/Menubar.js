@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, Portal } from 'semantic-ui-react';
+import { Button, Dropdown, Form, Header, Icon, Image, Menu, Message, Modal, Popup, TransitionablePortal } from 'semantic-ui-react';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { DatePicker } from '../widgets/DatePicker';
@@ -104,13 +104,13 @@ export function Menubar({
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
-            <Portal open={panelVisible}>
-                <FocusLock group="panel">
-                    <div className="panel">
+            <TransitionablePortal open={panelVisible} transition={{ animation: "fade down", duration: 200 }} unmountOnHide>
+                <div className="panel">
+                    <FocusLock group="panel">
                         {panel}
-                    </div>
-                </FocusLock>
-            </Portal>
+                    </FocusLock>
+                </div>
+            </TransitionablePortal>
         </>
     )
 }
