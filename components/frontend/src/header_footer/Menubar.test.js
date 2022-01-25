@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Menubar } from './Menubar';
 import * as auth from '../api/auth';
@@ -80,7 +80,7 @@ it('hides the view panel on click', async () => {
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     fireEvent.click(screen.getByText(/Settings/));
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    await waitForElementToBeRemoved(() => screen.queryByText(/Hello/))
 })
 
 it('hides the view panel on escape', async () => {
@@ -88,7 +88,7 @@ it('hides the view panel on escape', async () => {
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     await act(async() => {fireEvent.keyPress(screen.getByText(/Hello/), { key: 'Escape', code: 'Escape' })})
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    await waitForElementToBeRemoved(() => screen.queryByText(/Hello/))
 })
 
 it('does not hide the view panel on another key', async () => {
