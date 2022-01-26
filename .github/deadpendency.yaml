@@ -41,19 +41,18 @@ additional-deps:
       repo: PyCQA/bandit
     - name: bottle
       repo: bottlepy/bottle
+    - name: furo
+      repo: pradyunsg/furo
     - name: mypy
       repo: python/mypy
+    - name: selenium
+      repo: SeleniumHQ/selenium
+    - name: typing_extensions
+      repo: python/typing
 
 ignore-failures:
   python:
-    - alabaster
     - behave
     - bottle-mongo
-    - flake8-polyfill
-    - lockfile  # https://github.com/trailofbits/pip-audit/issues/203
-    - mypy-extensions
-    - requirements-parser  # https://github.com/trailofbits/pip-audit/issues/203
-    - sphinxcontrib-jsmath
-    - webencodings  # https://github.com/trailofbits/pip-audit/issues/203
   javascript:
     - enzyme  # https://github.com/ICTU/quality-time/issues/3003
