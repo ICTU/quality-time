@@ -1,6 +1,6 @@
 bandit==1.7.2
 black==21.12b0
-coverage==6.2
+coverage==6.3
 dlint==0.12.0
 lxml==4.7.1  # Needed to be able to run mypy with `--html-report`.
 mypy==0.931
