@@ -1,3 +1,6 @@
+disable-auto-file-load:
+  - python
+
 additional-dependency-files:
   - type: pip-requirements-txt
     path: components/collector/requirements.in
@@ -17,6 +20,8 @@ additional-dependency-files:
   - type: pip-requirements-txt
     path: tests/application_tests/requirements-dev.in
   - type: pip-requirements-txt
+    path: tests/application_tests/requirements.txt
+  - type: pip-requirements-txt
     path: tests/feature_tests/requirements-dev.in
 
   - type: pip-requirements-txt
@@ -24,6 +29,8 @@ additional-dependency-files:
 
   - type: pip-requirements-txt
     path: docs/requirements-dev.in
+  - type: npm-package-json
+    path: docs/package.json
 
   - type: npm-package-json
     path: components/frontend/package.json
@@ -42,15 +49,11 @@ ignore-failures:
     - alabaster
     - behave
     - bottle-mongo
-    - filecache
-    - flake8-polyfill 
+    - flake8-polyfill
     - lockfile  # https://github.com/trailofbits/pip-audit/issues/203
-    - mccabe
     - mypy-extensions
     - requirements-parser  # https://github.com/trailofbits/pip-audit/issues/203
     - sphinxcontrib-jsmath
     - webencodings  # https://github.com/trailofbits/pip-audit/issues/203
   javascript:
     - enzyme  # https://github.com/ICTU/quality-time/issues/3003
-    - semantic-ui-css
-
