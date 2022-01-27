@@ -85,11 +85,11 @@ export function SubjectTableRow(
         <TableRowWithDetails id={metric_uuid} className={className} details={details} style={style} expanded={expanded} onExpand={(state) => onExpand(state)}>
             <Table.Cell style={style}>{metricName}</Table.Cell>
             {nrDates > 1 && measurementCells}
-            {nrDates > 1 && <Table.Cell style={style}>{unit}</Table.Cell>}
             {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
             {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue metric={metric} /></Table.Cell>}
-            {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell><MeasurementTarget metric={metric} /></Table.Cell>}
+            {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} /></Table.Cell>}
+            {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
+            {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
             {!hiddenColumns.includes("issues") && <Table.Cell style={style}><IssueStatus metric={metric} issueTracker={report.issue_tracker} /></Table.Cell>}

@@ -23,7 +23,7 @@ it('shows the column dates and unit', () => {
     )
 })
 
-it('does not show the column dates and unit', () => {
+it('does not show the column dates', () => {
     const date1 = new Date("2022-02-02")
     const date2 = new Date("2022-02-03")
     render(
@@ -35,10 +35,10 @@ it('does not show the column dates and unit', () => {
             />
         </Table>
     );
-    [date1.toLocaleDateString(), date2.toLocaleDateString(), "Unit"].forEach(
+    [date1.toLocaleDateString(), date2.toLocaleDateString()].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(0)
     );
-    ["Trend (7 days)", "Status", "Measurement", "Target", "Source", "Comment", "Issues", "Tags"].forEach(
+    ["Trend (7 days)", "Status", "Measurement", "Target", "Unit", "Source", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(1)
     );
 })
