@@ -11,18 +11,14 @@
 
 /* Remove opacity from the th background, otherwise the rows underneath are visible. */
 
-.ui.sortable.table.stickyHeader th.sorted {
+.ui.sortable.table:not(.basic)>thead>tr>th.sorted {
     background: rgba(242,242,242,1);
 }
 
-.ui.sortable.table.stickyHeader th:hover {
+.ui.sortable.table:not(.basic)>thead>tr>th:not(.unsortable):hover {
     background: rgba(242,242,242,1);
 }
 
-.ui.sortable.table.stickyHeader th.unsortable {
+.ui.sortable.table:not(.basic)>thead>tr>th.unsortable:hover {
     background: rgba(249,250,251,1);  /* Don't highlight unsortable columns */
-}
-
-.ui.sortable.table.stickyHeader th.sorted:hover {
-    background: rgba(242,242,242,1);
 }
