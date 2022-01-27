@@ -64,13 +64,15 @@ describe("MeasurementRow", () => {
     it('renders one single row with metric name, measurement values and unit', () => {
         const { queryAllByText } = render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
         expect(queryAllByText("testName").length).toBe(1) // measurement name cell
-        expect(queryAllByText("? testUnit").length).toBe(1) // first date before first measurement
+        expect(queryAllByText("?").length).toBe(1) // measurement value
+        expect(queryAllByText("testUnit").length).toBe(1) // measurement unit
     });
 
     it('renders one single row with metric name, measurement values and minutes unit', () => {
         dataModel.metrics.metricType.unit = "minutes"
         render_measurements_row({ type: "metricType", unit: "", scale: "count", recent_measurements: [] })
-        expect(screen.queryAllByText(/0:00 hours/).length).toBe(1)
+        expect(screen.queryAllByText(/0:00/).length).toBe(1)
+        expect(screen.queryAllByText(/hours/).length).toBe(1)
     });
 
     it('expands and collapses the metric via the props', () => {

@@ -8,7 +8,8 @@ export function MeasurementValue({ metric }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricValue = get_metric_value(metric)
-    const value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
+    let value = metricValue && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metricValue) : metricValue || "?";
+    if (metric.scale === "percentage") { value += "%"}
     if (metric.latest_measurement) {
         return (
             <Popup trigger={<span>{value}</span>} flowing hoverable>

@@ -16,5 +16,5 @@ export function MeasurementTarget({ metric }) {
     if (target && metricType.unit === "minutes" && metric.scale !== "percentage") {
         target = format_minutes(target)
     }
-    return `${metric_direction} ${target}${debt}`
+    return `${metric_direction} ${target}${metric.scale === "percentage" ? "%" : ""}${debt}`
 }
