@@ -161,7 +161,7 @@ it("sets the number of dates", async () => {
         render(
             <ViewPanel
                 hiddenColumns={[]}
-                nrDates={1}
+                nrDates={2}
                 setNrDates={setNrDates}
                 visibleDetailsTabs={[]}
             />
