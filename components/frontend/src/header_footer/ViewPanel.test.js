@@ -32,6 +32,36 @@ it("doesn't clear the visible details tabs if there are none", async () => {
     expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
 })
 
+it('resets the settings', async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    const clearHiddenColumns = jest.fn();
+    const setDateInterval = jest.fn();
+    const setDateOrder = jest.fn();
+    const setHideMetricsNotRequiringAction = jest.fn();
+    const setNrDates = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                clearHiddenColumns={clearHiddenColumns}
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                hiddenColumns={["trend"]}
+                setDateInterval={setDateInterval}
+                setDateOrder={setDateOrder}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                setNrDates={setNrDates}
+                visibleDetailsTabs={["tab"]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Reset all settings/))
+    });
+    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
+    expect(clearHiddenColumns).toHaveBeenCalled()
+    expect(setDateInterval).toHaveBeenCalled()
+    expect(setDateOrder).toHaveBeenCalled()
+    expect(setNrDates).toHaveBeenCalled()
+    expect(setHideMetricsNotRequiringAction).toHaveBeenCalled()
+})
+
 it("hides the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
