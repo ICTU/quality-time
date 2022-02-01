@@ -80,7 +80,7 @@ it('hides the view panel on click', async () => {
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     fireEvent.click(screen.getByText(/Settings/));
-    await waitForElementToBeRemoved(() => screen.queryByText(/Hello/))
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
 
 it('hides the view panel on escape', async () => {
@@ -88,7 +88,7 @@ it('hides the view panel on escape', async () => {
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     await act(async() => {fireEvent.keyPress(screen.getByText(/Hello/), { key: 'Escape', code: 'Escape' })})
-    await waitForElementToBeRemoved(() => screen.queryByText(/Hello/))
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
 
 it('does not hide the view panel on another key', async () => {
