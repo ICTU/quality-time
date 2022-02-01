@@ -4,6 +4,7 @@ import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
 export function ViewPanel({
+    clearHiddenColumns,
     clearVisibleDetailsTabs,
     dateInterval,
     dateOrder,
@@ -21,7 +22,7 @@ export function ViewPanel({
         <Segment.Group
             horizontal
             className='equal width'
-            style={{margin: "0px", border: "0px"}}
+            style={{ margin: "0px", border: "0px" }}
         >
             <Segment inverted color="black">
                 <Grid padded>
@@ -33,6 +34,32 @@ export function ViewPanel({
                                 inverted
                             >
                                 Collapse all metrics
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button
+                                disabled={
+                                    visibleDetailsTabs.length === 0 &&
+                                    !hideMetricsNotRequiringAction &&
+                                    hiddenColumns.length === 0 &&
+                                    nrDates === 1 &&
+                                    dateInterval === 7 &&
+                                    dateOrder === "descending"
+
+                                }
+                                onClick={() => {
+                                    clearVisibleDetailsTabs();
+                                    setHideMetricsNotRequiringAction(false);
+                                    clearHiddenColumns();
+                                    setNrDates(1);
+                                    setDateInterval(7);
+                                    setDateOrder("descending");
+                                }}
+                                inverted
+                            >
+                                Reset all settings
                             </Button>
                         </Grid.Column>
                     </Grid.Row>

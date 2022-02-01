@@ -39,7 +39,7 @@ export function AppUI({
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
     const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
     const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", "descending");
-    const [hiddenColumns, toggleHiddenColumn] = useURLSearchQuery(history, "hidden_columns", "array");
+    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array");
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
@@ -55,6 +55,7 @@ export function AppUI({
                 set_user={set_user}
                 user={user}
                 panel={<ViewPanel
+                    clearHiddenColumns={clearHiddenColumns}
                     clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                     dateInterval={dateInterval}
                     dateOrder={dateOrder}

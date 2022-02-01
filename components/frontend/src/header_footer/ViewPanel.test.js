@@ -32,6 +32,74 @@ it("doesn't clear the visible details tabs if there are none", async () => {
     expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
 })
 
+it('resets the settings', async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    const clearHiddenColumns = jest.fn();
+    const setDateInterval = jest.fn();
+    const setDateOrder = jest.fn();
+    const setHideMetricsNotRequiringAction = jest.fn();
+    const setNrDates = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                clearHiddenColumns={clearHiddenColumns}
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                dateInterval={14}
+                dateOrder="ascending"
+                hiddenColumns={["trend"]}
+                hideMetricsNotRequiringAction={true}
+                nrDates={7}
+                setDateInterval={setDateInterval}
+                setDateOrder={setDateOrder}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                setNrDates={setNrDates}
+                visibleDetailsTabs={["tab"]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Reset all settings/))
+    });
+    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
+    expect(clearHiddenColumns).toHaveBeenCalled()
+    expect(setDateInterval).toHaveBeenCalled()
+    expect(setDateOrder).toHaveBeenCalled()
+    expect(setNrDates).toHaveBeenCalled()
+    expect(setHideMetricsNotRequiringAction).toHaveBeenCalled()
+})
+
+it('does not reset the settings when all have the default value', async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    const clearHiddenColumns = jest.fn();
+    const setDateInterval = jest.fn();
+    const setDateOrder = jest.fn();
+    const setHideMetricsNotRequiringAction = jest.fn();
+    const setNrDates = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                clearHiddenColumns={clearHiddenColumns}
+                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                dateInterval={7}
+                dateOrder="descending"
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={false}
+                nrDates={1}
+                setDateInterval={setDateInterval}
+                setDateOrder={setDateOrder}
+                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                setNrDates={setNrDates}
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Reset all settings/))
+    });
+    expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
+    expect(clearHiddenColumns).not.toHaveBeenCalled()
+    expect(setDateInterval).not.toHaveBeenCalled()
+    expect(setDateOrder).not.toHaveBeenCalled()
+    expect(setNrDates).not.toHaveBeenCalled()
+    expect(setHideMetricsNotRequiringAction).not.toHaveBeenCalled()
+})
+
 it("hides the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
@@ -131,7 +199,7 @@ it("sets the number of dates", async () => {
         render(
             <ViewPanel
                 hiddenColumns={[]}
-                nrDates={1}
+                nrDates={2}
                 setNrDates={setNrDates}
                 visibleDetailsTabs={[]}
             />
