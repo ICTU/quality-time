@@ -23,49 +23,49 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push Database to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/database
           tags: ictu/quality-time_database:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Renderer to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/renderer
           tags: ictu/quality-time_renderer:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Proxy to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/proxy
           tags: ictu/quality-time_proxy:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Collector to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/collector
           tags: ictu/quality-time_collector:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Notifier to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/notifier
           tags: ictu/quality-time_notifier:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Server to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/server
           tags: ictu/quality-time_server:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Frontend to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/frontend
           tags: ictu/quality-time_frontend:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push test LDAP to Docker Hub
-        uses: docker/build-push-action@v2.8.0
+        uses: docker/build-push-action@v2.9.0
         with:
           context: components/ldap
           tags: ictu/quality-time_testldap:${{ steps.get_version.outputs.version }}
