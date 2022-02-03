@@ -1,5 +1,8 @@
 """Source collectors."""
 
+# Ignore DeepSource complaining that "Imported name is not used anywhere in the module"
+# skipcq: PY-W2000
+
 from .anchore.security_warnings import AnchoreSecurityWarnings
 from .anchore.time_passed import AnchoreTimePassed
 
