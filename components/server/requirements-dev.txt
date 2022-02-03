@@ -486,9 +486,9 @@ tomli==1.2.2 \
     #   black
     #   mypy
     #   pep517
-types-cryptography==3.3.14 \
-    --hash=sha256:be07857ab3e52f254bf5559f8019d85b2200391c3e1f008b98f26ebedac027a8 \
-    --hash=sha256:c90ec0031c3d5262660990b62d9ec076bf5ed55eebfbe0011a53778e8aa62b9d
+types-cryptography==3.3.15 \
+    --hash=sha256:a7983a75a7b88a18f88832008f0ef140b8d1097888ec1a0824ec8fb7e105273b \
+    --hash=sha256:d9b0dd5465d7898d400850e7f35e5518aa93a7e23d3e11757cd81b4777089046
     # via -r requirements-dev.in
 types-enum34==1.1.1 \
     --hash=sha256:55c44c44f193636ed82f1cb68a9a632e1ea7096724f024c25e015976809df339 \

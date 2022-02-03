@@ -1,3 +1,3 @@
 -r ../../requirements-dev.in
-types-cryptography==3.3.14
+types-cryptography==3.3.15
 types-requests==2.27.8
