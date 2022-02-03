@@ -224,6 +224,17 @@ METRICS = Metrics.parse_obj(
             ],
             tags=[Tag.CI],
         ),
+        time_remaining=dict(
+            name="Time remaining",
+            description="The number of days until a date in the future, e.g. when a security test is due or a "
+            "policy expires.",
+            unit=Unit.DAYS,
+            addition=Addition.MIN,
+            direction=Direction.MORE_IS_BETTER,
+            target="30",
+            near_target="60",
+            sources=["calendar"],
+        ),
         source_version=dict(
             name="Source version",
             description="The version number of the source.",

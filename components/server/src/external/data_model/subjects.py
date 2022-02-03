@@ -28,6 +28,7 @@ SUBJECTS = Subjects.parse_obj(
                 "merge_requests",
                 "sentiment",
                 "time_passed",
+                "time_remaining",
                 "unmerged_branches",
                 "user_story_points",
                 "velocity",
