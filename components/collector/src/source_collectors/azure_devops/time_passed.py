@@ -50,7 +50,7 @@ class AzureDevopsJobTimePassed(TimePassedCollector, AzureDevopsJobs):  # lgtm [p
 
 
 class AzureDevopsTimePassed(SourceCollector, ABC):
-    """Factory class to create a collector to get the time passed of when either jobs or files were last changed."""
+    """Factory class to create a collector to get the time passed since either jobs or files were last changed."""
 
     def __new__(cls, session: aiohttp.ClientSession, source, data_model):
         """Create an instance of either the file time passed collector or the jobs time passed collector."""

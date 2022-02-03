@@ -185,7 +185,8 @@ METRICS = Metrics.parse_obj(
         ),
         time_passed=dict(
             name="Time passed",
-            description="The number of days since a date in the past, e.g. when a test was last run or a document last updated.",
+            description="The number of days since a date in the past, e.g. when a test was last run or a document "
+            "last updated.",
             unit=Unit.DAYS,
             addition=Addition.MAX,
             target="3",
