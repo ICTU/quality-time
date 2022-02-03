@@ -21,8 +21,8 @@ from ..parameters import (
 ALL_GITLAB_METRICS = [
     "failed_jobs",
     "merge_requests",
-    "source_up_to_dateness",
     "source_version",
+    "time_passed",
     "unmerged_branches",
     "unused_jobs",
 ]
@@ -65,7 +65,7 @@ GITLAB = Source(
             metrics=[
                 "failed_jobs",
                 "merge_requests",
-                "source_up_to_dateness",
+                "time_passed",
                 "unmerged_branches",
                 "unused_jobs",
             ],
@@ -80,7 +80,7 @@ GITLAB = Source(
             short_name="path",
             mandatory=True,
             help_url="https://docs.gitlab.com/ee/api/repository_files.html",
-            metrics=["source_up_to_dateness"],
+            metrics=["time_passed"],
         ),
         branch=Branch(help_url=GITLAB_BRANCH_HELP_URL),
         branches_to_ignore=BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),

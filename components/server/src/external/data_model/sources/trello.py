@@ -5,7 +5,7 @@ from ..meta.source import Source
 from ..parameters import Days, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, StringParameter, URL
 
 
-ALL_TRELLO_METRICS = ["issues", "source_up_to_dateness"]
+ALL_TRELLO_METRICS = ["issues", "time_passed"]
 
 ISSUE_ENTITY = dict(
     name="issue",

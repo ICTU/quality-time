@@ -14,7 +14,7 @@ from .jmeter import (
 
 
 GATLING_JSON_METRICS = ["slow_transactions", "tests"]
-GATLING_LOG_METRICS = ["performancetest_duration", "source_up_to_dateness", "source_version"]
+GATLING_LOG_METRICS = ["performancetest_duration", "source_version", "time_passed"]
 GATLING_METRICS = GATLING_JSON_METRICS + GATLING_LOG_METRICS
 GATLING_URL = "https://gatling.io"
 GATLING_DESCRIPTION = (

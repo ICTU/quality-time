@@ -9,7 +9,7 @@ from ..parameters import (
 )
 
 
-ALL_OWASP_ZAP_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
+ALL_OWASP_ZAP_METRICS = ["security_warnings", "source_version", "time_passed"]
 
 OWASP_ZAP = Source(
     name="OWASP ZAP",

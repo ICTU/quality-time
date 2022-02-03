@@ -4,7 +4,7 @@ from ..meta.source import Source
 from ..parameters import access_parameters, Severities, StringParameter
 
 
-ALL_CXSAST_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
+ALL_CXSAST_METRICS = ["security_warnings", "source_version", "time_passed"]
 
 CXSAST = Source(
     name="Checkmarx CxSAST",
@@ -16,7 +16,7 @@ CXSAST = Source(
             name="Project (name or id)",
             short_name="project",
             mandatory=True,
-            metrics=["security_warnings", "source_up_to_dateness"],
+            metrics=["security_warnings", "time_passed"],
         ),
         severities=Severities(values=["info", "low", "medium", "high"]),
         **access_parameters(

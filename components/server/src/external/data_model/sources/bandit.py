@@ -5,7 +5,7 @@ from ..meta.source import Source
 from ..parameters import access_parameters, MultipleChoiceParameter, Severities
 
 
-ALL_BANDIT_METRICS = ["security_warnings", "source_up_to_dateness"]
+ALL_BANDIT_METRICS = ["security_warnings", "time_passed"]
 
 BANDIT = Source(
     name="Bandit",

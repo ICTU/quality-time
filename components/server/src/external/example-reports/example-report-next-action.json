@@ -277,7 +277,7 @@
                     ]
                 },
                 "070c6abe-e16f-4360-8234-93cc58948017": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "b27f6df6-90ee-4fac-905d-5d81d5a721ad": {
                             "type": "sonarqube",
@@ -303,7 +303,7 @@
                     ]
                 },
                 "517ef73e-6ba0-47fa-ab2b-345d12e63b85": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "5e3759af-89f0-4854-bdf8-efd7273d79ed": {
                             "type": "gitlab",

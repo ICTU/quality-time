@@ -5,7 +5,7 @@ from ..meta.source import Source
 from ..parameters import access_parameters, Severities
 
 
-ALL_OPENVAS_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
+ALL_OPENVAS_METRICS = ["security_warnings", "source_version", "time_passed"]
 
 OPENVAS = Source(
     name="OpenVAS",

@@ -4,7 +4,7 @@ from ..meta.source import Source
 from ..parameters import access_parameters
 
 
-ALL_NCOVER_METRICS = ["source_up_to_dateness", "uncovered_branches", "uncovered_lines"]
+ALL_NCOVER_METRICS = ["uncovered_branches", "uncovered_lines", "time_passed"]
 
 NCOVER = Source(
     name="NCover",

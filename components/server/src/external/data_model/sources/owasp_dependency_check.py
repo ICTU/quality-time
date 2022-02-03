@@ -8,8 +8,8 @@ from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter,
 ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
     "dependencies",
     "security_warnings",
-    "source_up_to_dateness",
     "source_version",
+    "time_passed",
 ]
 
 DEPENDENCY_ATTRIBUTES: list[object] = [

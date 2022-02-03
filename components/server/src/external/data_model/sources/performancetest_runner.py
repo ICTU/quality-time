@@ -15,7 +15,7 @@ ALL_PERFORMANCETEST_RUNNER_METRICS = TRANSACTION_METRICS + [
     "performancetest_duration",
     "performancetest_stability",
     "scalability",
-    "source_up_to_dateness",
+    "time_passed",
 ]
 
 PERFORMANCETEST_RUNNER = Source(

@@ -6,7 +6,7 @@ from ..parameters import access_parameters
 from .jenkins import jenkins_access_parameters
 
 
-ALL_JACOCO_METRICS = ["source_up_to_dateness", "uncovered_branches", "uncovered_lines"]
+ALL_JACOCO_METRICS = ["time_passed", "uncovered_branches", "uncovered_lines"]
 
 JACOCO = Source(
     name="JaCoCo",

@@ -183,9 +183,9 @@ METRICS = Metrics.parse_obj(
             sources=["gatling", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
             tags=[Tag.PERFORMANCE],
         ),
-        source_up_to_dateness=dict(
-            name="Source up-to-dateness",
-            description="The number of days since the source was last updated.",
+        time_passed=dict(
+            name="Time passed",
+            description="The number of days since a date in the past, e.g. when a test was last run or a document last updated.",
             unit=Unit.DAYS,
             addition=Addition.MAX,
             target="3",

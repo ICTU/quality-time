@@ -100,7 +100,7 @@
                     ]
                 },
                 "41b76e57-a3d8-4a65-9814-3df900f2f2ba": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "713ce91a-979c-47d2-876f-3f5f85d48f97": {
                             "type": "junit",
@@ -251,7 +251,7 @@
                     ]
                 },
                 "848f2641-b170-4b55-8b7e-14f1ff283f1a": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "740e0270-65b4-4f20-a52a-6b55186ab752": {
                             "type": "jacoco",
@@ -439,7 +439,7 @@
                     ]
                 },
                 "fa330b0f-4775-4b5f-bf5b-aea9d13da3be": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "8413bbe3-68f0-42fa-a7e4-e7017acd90c7": {
                             "type": "owasp_dependency_check",
@@ -496,7 +496,7 @@
                     ]
                 },
                 "d551f09b-f89b-4b4d-a257-b9ae0bbbaf0d": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "08f703ba-65f7-441e-b9e2-b60b8bb1c945": {
                             "type": "calendar",
@@ -767,7 +767,7 @@
                     ]
                 },
                 "8865c5fc-6269-44b9-8924-095371fe537d": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "9dd68d9f-5c64-4238-960b-0c76e1bf4935": {
                             "type": "performancetest_runner",
@@ -847,7 +847,7 @@
                     ]
                 },
                 "e3edc109-2f71-40cf-8825-0d9e8665bc0f": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "36724d22-baf6-4830-a277-b72c8c1fadb7": {
                             "type": "axe_core",

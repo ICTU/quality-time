@@ -277,7 +277,7 @@
                     ]
                 },
                 "79528152-36cc-4dfe-88db-18b021f0130f": {
-                    "type": "source_up_to_dateness",
+                    "type": "time_passed",
                     "sources": {
                         "5ec44756-4f01-442d-b1e6-1c6ef9025914": {
                             "type": "sonarqube",

@@ -5,7 +5,11 @@ from ..meta.source import Source
 from ..parameters import access_parameters, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter
 
 
-ALL_AXE_CORE_METRICS = ["accessibility", "source_up_to_dateness", "source_version"]
+ALL_AXE_CORE_METRICS = [
+    "accessibility",
+    "source_version",
+    "time_passed",
+]
 
 
 IMPACT = MultipleChoiceParameter(

@@ -24,7 +24,7 @@ def jenkins_access_parameters(*args, **kwargs):
     return access_parameters(*args, **kwargs)
 
 
-ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
+ALL_JENKINS_METRICS = ["failed_jobs", "source_version", "time_passed", "unused_jobs"]
 
 JOB_ENTITY = dict(
     name="job",
@@ -56,14 +56,14 @@ JENKINS = Source(
             help="Jobs to include can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             placeholder="all",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "time_passed", "unused_jobs"],
         ),
         jobs_to_ignore=MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "time_passed", "unused_jobs"],
         ),
         result_type=MultipleChoiceParameter(
             name="Build result types",
@@ -71,7 +71,7 @@ JENKINS = Source(
             help="Limit which build result types to include.",
             placeholder="all result types",
             values=["Aborted", "Failure", "Not built", "Success", "Unstable"],
-            metrics=["source_up_to_dateness"],
+            metrics=["time_passed"],
         ),
         failure_type=FailureType(values=["Aborted", "Failure", "Not built", "Unstable"]),
         **jenkins_access_parameters(
@@ -85,10 +85,10 @@ JENKINS = Source(
             ),
         )
     ),
-    entities=dict(failed_jobs=JOB_ENTITY, source_up_to_dateness=JOB_ENTITY, unused_jobs=JOB_ENTITY),
+    entities=dict(failed_jobs=JOB_ENTITY, time_passed=JOB_ENTITY, unused_jobs=JOB_ENTITY),
 )
 
-ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
+ALL_JENKINS_TEST_REPORT_METRICS = ["test_cases", "tests", "time_passed"]
 
 TEST_ENTITIES = dict(
     name="test",

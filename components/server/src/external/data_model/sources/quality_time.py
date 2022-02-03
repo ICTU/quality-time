@@ -5,7 +5,7 @@ from ..meta.source import Source
 from ..parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, URL
 
 
-ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_up_to_dateness", "source_version"]
+ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_version", "time_passed"]
 
 QUALITY_TIME = Source(
     name="Quality-time",
@@ -42,7 +42,7 @@ QUALITY_TIME = Source(
             name="Report names or identifiers",
             short_name="reports",
             placeholder="all reports",
-            metrics=["metrics", "source_up_to_dateness", "missing_metrics"],
+            metrics=["metrics", "missing_metrics", "time_passed"],
         ),
         metric_type=MultipleChoiceParameter(
             name="Metric types",
@@ -71,13 +71,13 @@ QUALITY_TIME = Source(
                 "Security warnings",
                 "Size (LOC)",
                 "Slow transactions",
-                "Source up-to-dateness",
                 "Source version",
                 "Suppressed violations",
                 "Test branch coverage",
                 "Test line coverage",
                 "Test cases",
                 "Tests",
+                "Time passed",
                 "Unmerged branches",
                 "Unused CI-jobs",
                 "User story points",
@@ -107,13 +107,13 @@ QUALITY_TIME = Source(
                 "Security warnings": "security_warnings",
                 "Size (LOC)": "loc",
                 "Slow transactions": "slow_transactions",
-                "Source up-to-dateness": "source_up_to_dateness",
                 "Source version": "source_version",
                 "Suppressed violations": "suppressed_violations",
                 "Test branch coverage": "uncovered_branches",
                 "Test line coverage": "uncovered_lines",
                 "Test cases": "test_cases",
                 "Tests": "tests",
+                "Time passed": "time_passed",
                 "Unmerged branches": "unmerged_branches",
                 "Unused CI-jobs": "unused_jobs",
                 "User story points": "user_story_points",

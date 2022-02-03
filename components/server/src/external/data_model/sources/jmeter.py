@@ -12,7 +12,7 @@ from ..parameters import (
 
 
 JMETER_JSON_METRICS = ["slow_transactions", "tests"]
-JMETER_CSV_METRICS = JMETER_JSON_METRICS + ["performancetest_duration", "source_up_to_dateness"]
+JMETER_CSV_METRICS = JMETER_JSON_METRICS + ["performancetest_duration", "time_passed"]
 
 JMETER_URL = "https://jmeter.apache.org"
 

@@ -24,8 +24,8 @@ ALL_AZURE_DEVOPS_METRICS = [
     "issues",
     "merge_requests",
     "user_story_points",
-    "source_up_to_dateness",
     "tests",
+    "time_passed",
     "unmerged_branches",
     "unused_jobs",
 ]
@@ -71,17 +71,16 @@ AZURE_DEVOPS = Source(
         file_path=StringParameter(
             name="File or folder path",
             short_name="path",
-            help="Use the date and time the path was last changed to determine the up-to-dateness. Note that if a "
-            "pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is "
-            "ignored.",
+            help="Use the date and time the path was last changed to determine the time passed. Note that if a "
+            "pipeline is specified, the pipeline is used to determine the time passed, and the path is ignored.",
             placeholder="none",
-            metrics=["source_up_to_dateness"],
+            metrics=["time_passed"],
         ),
         repository=StringParameter(
             name="Repository (name or id)",
             short_name="repository",
             placeholder="default repository",
-            metrics=["merge_requests", "source_up_to_dateness", "unmerged_branches"],
+            metrics=["merge_requests", "unmerged_branches", "time_passed"],
         ),
         branch=Branch(),
         branches_to_ignore=BranchesToIgnore(
@@ -135,14 +134,14 @@ AZURE_DEVOPS = Source(
             help="Pipelines to include can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             placeholder="all",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "unused_jobs", "time_passed"],
         ),
         jobs_to_ignore=MultipleChoiceWithAdditionParameter(
             name="Pipelines to ignore (regular expressions or pipeline names)",
             short_name="pipelines to ignore",
             help="Pipelines to ignore can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "unused_jobs", "time_passed"],
         ),
         failure_type=FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],

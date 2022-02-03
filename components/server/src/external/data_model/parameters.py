@@ -146,7 +146,7 @@ class Branch(StringParameter):  # pylint: disable=too-few-public-methods
 
     name: str = "Branch"
     default_value: Union[str, list[str]] = "master"
-    metrics: list[str] = ["source_up_to_dateness"]
+    metrics: list[str] = ["time_passed"]
 
 
 class BranchesToIgnore(MultipleChoiceWithAdditionParameter):  # pylint: disable=too-few-public-methods

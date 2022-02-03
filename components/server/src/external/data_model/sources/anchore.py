@@ -9,7 +9,7 @@ from ..parameters import access_parameters, Severities, URL
 from .jenkins import jenkins_access_parameters
 
 
-ALL_ANCHORE_METRICS = ["security_warnings", "source_up_to_dateness"]
+ALL_ANCHORE_METRICS = ["security_warnings", "time_passed"]
 
 SEVERITIES = Severities(values=["Unknown", "Negligible", "Low", "Medium", "High", "Critical"])
 
@@ -31,7 +31,7 @@ ANCHORE = Source(
         details_url=URL(
             name="URL to an Anchore details report in JSON format or "
             "to a zip with Anchore details reports in JSON format",
-            metrics=["source_up_to_dateness"],
+            metrics=["time_passed"],
         ),
         severities=SEVERITIES,
         **access_parameters(

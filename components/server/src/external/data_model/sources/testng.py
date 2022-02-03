@@ -5,7 +5,7 @@ from ..meta.source import Source
 from ..parameters import access_parameters, TestResult
 
 
-ALL_TESTNG_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
+ALL_TESTNG_METRICS = ["test_cases", "tests", "time_passed"]
 
 TEST_ENTITIES = dict(
     name="test",

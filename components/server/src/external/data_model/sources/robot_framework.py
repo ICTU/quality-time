@@ -7,7 +7,7 @@ from ..parameters import access_parameters, TestResult
 from .jenkins import jenkins_access_parameters
 
 
-ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "test_cases", "tests"]
+ALL_ROBOT_FRAMEWORK_METRICS = ["source_version", "test_cases", "tests", "time_passed"]
 
 ROBOT_FRAMEWORK = Source(
     name="Robot Framework",
@@ -29,7 +29,7 @@ ROBOT_FRAMEWORK = Source(
     ),
 )
 
-ALL_ROBOT_FRAMEWORK_JENKINS_PLUGIN_METRICS = ["source_up_to_dateness", "tests"]
+ALL_ROBOT_FRAMEWORK_JENKINS_PLUGIN_METRICS = ["tests", "time_passed"]
 
 ROBOT_FRAMEWORK_JENKINS_PLUGIN = Source(
     name="Robot Framework Jenkins plugin",
