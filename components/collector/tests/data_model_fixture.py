@@ -1,6 +1,6 @@
 """Load the data model."""
 
-from datetime import date
+from datetime import datetime
 import json
 import pathlib
 import sys
@@ -12,4 +12,4 @@ from external.data_model import DATA_MODEL_JSON  # pylint: disable=import-error,
 
 DATA_MODEL = json.loads(DATA_MODEL_JSON)
 
-CALENDAR_DEFAULT_DATE = date.fromisoformat(DATA_MODEL["sources"]["calendar"]["parameters"]["date"]["default_value"])
+CALENDAR_DEFAULT_DATE = datetime.fromisoformat(DATA_MODEL["sources"]["calendar"]["parameters"]["date"]["default_value"])

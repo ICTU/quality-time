@@ -12,7 +12,13 @@ import aiohttp
 from packaging.version import Version
 
 from collector_utilities.exceptions import CollectorException
-from collector_utilities.functions import days_ago, match_string_or_regular_expression, stable_traceback, tokenless
+from collector_utilities.functions import (
+    days_ago,
+    days_to_go,
+    match_string_or_regular_expression,
+    stable_traceback,
+    tokenless,
+)
 from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, IssueStatus, SourceParameters, SourceMeasurement, SourceResponses
 
@@ -237,13 +243,18 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         """Return the landing url of the branch."""
 
 
-class TimePassedCollector(SourceCollector):
-    """Base class for time passed collectors."""
+class TimeCollector(SourceCollector):
+    """Base class for time collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Override to get the datetime from the parse data time method that subclasses should implement."""
+        """Override to get the datetime from the parse date time method that subclasses should implement."""
         date_times = await self._parse_source_response_date_times(responses)
-        return SourceMeasurement(value=str(days_ago(min(date_times))))
+        return SourceMeasurement(value=str(self.days(min(date_times))))
+
+    @staticmethod
+    def days(date_time: datetime) -> int:
+        """Return the number of days between the given date time and the current date time."""
+        raise NotImplementedError  # pragma: no cover
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Parse the source update datetimes from the responses and return the datetimes."""
@@ -252,6 +263,24 @@ class TimePassedCollector(SourceCollector):
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the datetime from the source."""
         raise NotImplementedError  # pragma: no cover
+
+
+class TimePassedCollector(TimeCollector):
+    """Base class for time passed collectors."""
+
+    @staticmethod
+    def days(date_time: datetime) -> int:
+        """Override to return the number of days passed since the given date time."""
+        return days_ago(date_time)
+
+
+class TimeRemainingCollector(TimeCollector):
+    """Base class for time remaining collectors."""
+
+    @staticmethod
+    def days(date_time: datetime) -> int:
+        """Override to return the number of days remaining until the given date time."""
+        return days_to_go(date_time)
 
 
 class SourceVersionCollector(SourceCollector):

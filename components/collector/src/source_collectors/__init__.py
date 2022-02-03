@@ -30,6 +30,7 @@ from .bandit.security_warnings import BanditSecurityWarnings
 from .bandit.time_passed import BanditTimePassed
 
 from .calendar.time_passed import CalendarTimePassed
+from .calendar.time_remaining import CalendarTimeRemaining
 
 from .cloc.loc import ClocLOC
 from .cloc.source_version import ClocSourceVersion

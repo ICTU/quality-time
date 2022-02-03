@@ -16,6 +16,7 @@ from .source_collector import (
     SourceMeasurement,
     SourceVersionCollector,
     TimePassedCollector,
+    TimeRemainingCollector,
     TransactionEntity,
     UnmergedBranchesSourceCollector,
 )

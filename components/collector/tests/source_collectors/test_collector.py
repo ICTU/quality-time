@@ -1,6 +1,6 @@
 """Unit tests for the Collector class."""
 
-from datetime import date
+from datetime import datetime
 from unittest.mock import Mock, patch
 
 import aiohttp
@@ -79,4 +79,4 @@ class CollectorTest(SourceCollectorTestCase):
         sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
         self.metric = dict(type="time_passed", addition="max", sources=sources)
         response = await self.collect()
-        self.assert_measurement(response, value=str((date.today() - CALENDAR_DEFAULT_DATE).days))
+        self.assert_measurement(response, value=str((datetime.now() - CALENDAR_DEFAULT_DATE).days))
