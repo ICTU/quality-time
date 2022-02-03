@@ -237,8 +237,8 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         """Return the landing url of the branch."""
 
 
-class SourceUpToDatenessCollector(SourceCollector):
-    """Base class for source up-to-dateness collectors."""
+class TimePassedCollector(SourceCollector):
+    """Base class for time passed collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the datetime from the parse data time method that subclasses should implement."""

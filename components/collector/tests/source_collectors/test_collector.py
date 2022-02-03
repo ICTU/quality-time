@@ -1,6 +1,6 @@
 """Unit tests for the Collector class."""
 
-from datetime import datetime
+from datetime import date
 from unittest.mock import Mock, patch
 
 import aiohttp
@@ -9,6 +9,7 @@ from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import SourceResponses
 
+from ..data_model_fixture import CALENDAR_DEFAULT_DATE
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -76,6 +77,6 @@ class CollectorTest(SourceCollectorTestCase):
     async def test_default_parameter_value_supersedes_empty_string(self):
         """Test that a parameter default value takes precedence over an empty string."""
         sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
-        self.metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
+        self.metric = dict(type="time_passed", addition="max", sources=sources)
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime.today() - datetime(2021, 1, 1)).days))
+        self.assert_measurement(response, value=str((date.today() - CALENDAR_DEFAULT_DATE).days))

@@ -6,7 +6,7 @@ from datetime import datetime
 from collector_utilities.type import URL, Response
 
 from model import SourceResponses
-from .source_collector import SourceCollector, SourceUpToDatenessCollector
+from .source_collector import SourceCollector, TimePassedCollector
 
 
 class JenkinsPluginCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
@@ -25,8 +25,8 @@ class JenkinsPluginCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/{self.plugin}")
 
 
-class JenkinsPluginSourceUpToDatenessCollector(SourceUpToDatenessCollector):
-    """Base class for Jenkins plugin source up-to-dateness collectors."""
+class JenkinsPluginTimePassedCollector(TimePassedCollector):
+    """Base class for Jenkins plugin time passed collectors."""
 
     async def _api_url(self) -> URL:
         """Extend to return the API URL for the job."""
