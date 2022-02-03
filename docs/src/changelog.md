@@ -15,12 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Color selected menu items in the settings panel blue for better contrast.
 - Use a menu instead of a button in the settings panel to hide metrics that don't require action.
 - Use a separate unit column in the metrics tables, regardless of how many dates are shown. This makes the one-date and multiple-dates views more similar. It also saves screen real estate as the unit is no longer repeated in both the measurement and target column. Closes [#3268](https://github.com/ICTU/quality-time/issues/3268).
-- Rename the 'source up-to-dateness' metric to 'time passed' in preparation of adding a 'time remaining' metric. Partially implements [#3366](https://github.com/ICTU/quality-time/issues/3366).
+- Rename the 'source up-to-dateness' metric to 'time passed' to be consistent with the new 'time remaining' metric, see below. Partially implements [#3366](https://github.com/ICTU/quality-time/issues/3366).
 
 ### Added
 
 - Add a setting to the settings panel to allow for reversing the order of the date columns in the metric tables. Closes [#2928](https://github.com/ICTU/quality-time/issues/2928).
 - Add a button to the settings panel to reset all settings to their default values. Closes [#3183](https://github.com/ICTU/quality-time/issues/3183).
+- Add a 'time remaining' metric to measure the number of days remaining until some date in the future. Currently, only the 'calendar date' source supports this metric. Closes [#3366](https://github.com/ICTU/quality-time/issues/3366).
 
 ## v3.32.0 - 2022-01-24
 
