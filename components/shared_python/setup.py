@@ -3,6 +3,6 @@ from setuptools import setup, find_packages
 
 setup(
     name="shared-python",
-    version="3.32.0-rc.4",
+    version="3.32.0",
     packages=find_packages(include=["shared", "shared.*"]),
 )
