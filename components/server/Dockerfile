@@ -8,8 +8,8 @@ ENV PATH="/home/server/venv/bin:$PATH"
 RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
-ADD shared_python /shared_python
-RUN pip install --no-cache-dir /shared_python
+COPY shared_python /shared_python/
+RUN pip install -e --no-cache-dir /shared_python
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
 USER server
