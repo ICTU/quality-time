@@ -9,7 +9,7 @@ RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
 COPY shared_python /shared_python/
-RUN pip install -e --no-cache-dir /shared_python
+RUN pip install --no-cache-dir /shared_python
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
 USER server
