@@ -77,7 +77,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Determine the status of the measurement if there is no measurement value."""
         # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
-        return None if self._metric.accept_debt_expired() or self._metric.sources() else "debt_target_met"
+        return None if self._metric.accept_debt_expired() or self._metric.sources else "debt_target_met"
 
     @abstractmethod
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -234,7 +234,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def sources_exist(self) -> bool:
         """Return whether all measurement sources exist in the metric."""
-        return all(source["source_uuid"] in self.metric.sources() for source in self.sources())
+        return all(source["source_uuid"] in self.metric.sources for source in self.sources())
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
