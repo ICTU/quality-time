@@ -12,7 +12,7 @@ bandit==1.7.3 \
     --hash=sha256:3ce9b4e6a4f7f41aa966c9543e635dd35e52a793a47e746f0c55c7ecfc69d7e8 \
     --hash=sha256:58772ca951bf1129dda8a280d351547de832720bf7b5c29fac3103927980b8a6
     # via -r ../../requirements-dev.in
-black==21.1.0
+black==22.1.0
     # via -r ../../requirements-dev.in
 cachecontrol[filecache]==0.12.10
     # via pip-audit
@@ -280,7 +280,7 @@ wrapt==1.13.3
     # via astroid
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==22.0.2
+pip==22.0.3
     # via
     #   -r ../../requirements-dev.in
     #   pip-api
