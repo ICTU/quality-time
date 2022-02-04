@@ -3,12 +3,13 @@
 import unittest
 from unittest.mock import Mock, patch
 
+from shared.model.report import Report
+
 from external.routes import (
     post_new_notification_destination,
     delete_notification_destination,
     post_notification_destination_attributes,
 )
-from shared.model.report import Report
 
 from ...fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 

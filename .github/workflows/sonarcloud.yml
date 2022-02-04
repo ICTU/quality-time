@@ -52,7 +52,8 @@ jobs:
       if: env.SONAR_TOKEN != null
       working-directory: components/server
       run: |
-        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -r requirements.txt 
+        pip install -r requirements-dev.txt
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
