@@ -24,11 +24,24 @@ class Metric(dict):
         self.__data_model = data_model
         self.uuid = metric_uuid
         self.subject_uuid = subject_uuid
+
+        source_data = metric_data.get("sources", {})
+        self.sources_dict = self._instantiate_sources(source_data)
+        self.sources = list(self.sources_dict.values())
+        self.source_uuids = list(self.sources_dict.keys())
+
         super().__init__(metric_data)
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave
+
+    def _instantiate_sources(self, source_data: dict) -> dict[str, Source]:
+        """Create sources from source_data."""
+        sources = {}
+        for source_uuid, source_dict in source_data.items():
+            sources[source_uuid] = Source(self.__data_model, source_dict, source_uuid, self.uuid)
+        return sources
 
     def type(self) -> str | None:
         """Return the type of the metric."""
