@@ -328,6 +328,7 @@ METRICS = Metrics.parse_obj(
         time_remaining=dict(
             name="Time remaining",
             description="The number of days remaining until a date in the future.",
+            direction=Direction.MORE_IS_BETTER,
             unit=Unit.DAYS,
             addition=Addition.MIN,
             target="28",

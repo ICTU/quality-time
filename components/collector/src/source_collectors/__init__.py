@@ -27,6 +27,7 @@ from .bandit.security_warnings import BanditSecurityWarnings
 from .bandit.source_up_to_dateness import BanditSourceUpToDateness
 
 from .calendar.source_up_to_dateness import CalendarSourceUpToDateness
+from .calendar.time_remaining import CalendarTimeRemaining
 
 from .cloc.loc import ClocLOC
 from .cloc.source_version import ClocSourceVersion

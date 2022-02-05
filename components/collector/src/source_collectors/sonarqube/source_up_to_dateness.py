@@ -4,14 +4,14 @@ from datetime import datetime
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceUpToDatenessCollector
+from base_collectors import TimePassedCollector
 from collector_utilities.type import URL, Response
 from model import SourceResponses
 
 from .base import SonarQubeCollector
 
 
-class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollector):
+class SonarQubeSourceUpToDateness(SonarQubeCollector, TimePassedCollector):
     """SonarQube source up-to-dateness."""
 
     async def _api_url(self) -> URL:

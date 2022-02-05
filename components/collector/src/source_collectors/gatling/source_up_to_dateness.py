@@ -2,14 +2,14 @@
 
 from datetime import datetime, timezone
 
-from base_collectors import SourceUpToDatenessCollector
+from base_collectors import TimePassedCollector
 from collector_utilities.type import Response
 from model import SourceResponses
 
 from .base import GatlingLogCollector
 
 
-class GatlingSourceUpToDateness(GatlingLogCollector, SourceUpToDatenessCollector):
+class GatlingSourceUpToDateness(GatlingLogCollector, TimePassedCollector):
     """Collector for the performance test report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:

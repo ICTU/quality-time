@@ -1,16 +1,16 @@
-"""Calendar source up-to-dateness collector."""
+"""Calendar time remaining collector."""
 
 from collections.abc import Sequence
 from datetime import datetime
 from typing import cast
 
-from base_collectors import TimePassedCollector
+from base_collectors import TimeRemainingCollector
 from collector_utilities.type import Response
 from model import SourceResponses
 
 
-class CalendarSourceUpToDateness(TimePassedCollector):
-    """Collector class to get the number of days since a user-specified date."""
+class CalendarTimeRemaining(TimeRemainingCollector):
+    """Collector class to get the number of days remaining until a user-specified date."""
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Override to return the date from the user-supplied date parameter."""

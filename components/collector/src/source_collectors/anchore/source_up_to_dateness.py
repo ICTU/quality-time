@@ -5,11 +5,11 @@ from typing import cast
 
 from dateutil.parser import parse
 
-from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import JSONFileSourceCollector, TimePassedCollector
 from collector_utilities.type import Response, URL
 
 
-class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):
+class AnchoreSourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):
     """Anchore collector for source up-to-dateness."""
 
     async def _api_url(self) -> URL:
