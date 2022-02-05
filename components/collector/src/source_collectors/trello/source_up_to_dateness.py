@@ -4,13 +4,13 @@ from datetime import datetime
 
 from dateutil.parser import parse
 
-from base_collectors import SourceUpToDatenessCollector
+from base_collectors import TimePassedCollector
 from collector_utilities.type import Response
 
 from .base import TrelloBase
 
 
-class TrelloSourceUpToDateness(TrelloBase, SourceUpToDatenessCollector):
+class TrelloSourceUpToDateness(TrelloBase, TimePassedCollector):
     """Collector to measure how up-to-date a Trello board is."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:

@@ -12,7 +12,13 @@ import aiohttp
 from packaging.version import Version
 
 from collector_utilities.exceptions import CollectorException
-from collector_utilities.functions import days_ago, match_string_or_regular_expression, stable_traceback, tokenless
+from collector_utilities.functions import (
+    days_ago,
+    days_to_go,
+    match_string_or_regular_expression,
+    stable_traceback,
+    tokenless,
+)
 from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, IssueStatus, SourceParameters, SourceMeasurement, SourceResponses
 
@@ -237,13 +243,13 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         """Return the landing url of the branch."""
 
 
-class SourceUpToDatenessCollector(SourceCollector):
-    """Base class for source up-to-dateness collectors."""
+class TimeCollector(SourceCollector):
+    """Base class for time collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the datetime from the parse data time method that subclasses should implement."""
         date_times = await self._parse_source_response_date_times(responses)
-        return SourceMeasurement(value=str(days_ago(min(date_times))))
+        return SourceMeasurement(value=str(self.days(min(date_times))))
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Parse the source update datetimes from the responses and return the datetimes."""
@@ -252,6 +258,29 @@ class SourceUpToDatenessCollector(SourceCollector):
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the datetime from the source."""
         raise NotImplementedError  # pragma: no cover
+
+    @staticmethod
+    def days(date_time) -> int:
+        """Return the time between the current date time and the specified date time."""
+        raise NotImplementedError  # pragma: no cover
+
+
+class TimePassedCollector(TimeCollector):
+    """Base class for source up-to-dateness collectors."""
+
+    @staticmethod
+    def days(date_time) -> int:
+        """Override to return the number of days since the date time."""
+        return days_ago(date_time)
+
+
+class TimeRemainingCollector(TimeCollector):
+    """Base class for time remaining collectors."""
+
+    @staticmethod
+    def days(date_time) -> int:
+        """Override to return the number of days until the date time."""
+        return days_to_go(date_time)
 
 
 class SourceVersionCollector(SourceCollector):

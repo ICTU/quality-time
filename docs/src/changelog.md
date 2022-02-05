@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add a setting to the settings panel to allow for reversing the order of the date columns in the metric tables. Closes [#2928](https://github.com/ICTU/quality-time/issues/2928).
 - Add a button to the settings panel to reset all settings to their default values. Closes [#3183](https://github.com/ICTU/quality-time/issues/3183).
+- Add a 'time remaining' metric that measures the number of days remaining until a future date. Use the 'calendar date' source to set that date. Closes [#3366](https://github.com/ICTU/quality-time/issues/3366).
 
 ## v3.32.0 - 2022-01-24
 

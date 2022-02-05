@@ -5,13 +5,13 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
-from base_collectors import SourceUpToDatenessCollector
+from base_collectors import TimePassedCollector
 from collector_utilities.type import Response, URL
 
 from .base import QualityTimeCollector
 
 
-class QualityTimeSourceUpToDateness(QualityTimeCollector, SourceUpToDatenessCollector):
+class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
     """Collector to get the "source up-to-dateness" metric from Quality-time."""
 
     async def _api_url(self) -> URL:

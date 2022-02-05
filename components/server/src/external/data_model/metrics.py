@@ -325,6 +325,16 @@ METRICS = Metrics.parse_obj(
             ],
             tags=[Tag.TEST_QUALITY],
         ),
+        time_remaining=dict(
+            name="Time remaining",
+            description="The number of days remaining until a date in the future.",
+            direction=Direction.MORE_IS_BETTER,
+            unit=Unit.DAYS,
+            addition=Addition.MIN,
+            target="28",
+            near_target="14",
+            sources=["calendar"],
+        ),
         uncovered_branches=dict(
             name="Test branch coverage",
             description="The amount of code branches not covered by tests.",

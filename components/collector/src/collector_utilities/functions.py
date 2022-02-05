@@ -73,7 +73,12 @@ def sha1_hash(string: str) -> str:
 
 def days_ago(date_time: datetime) -> int:
     """Return the days since the date/time."""
-    return max(0, (datetime.now(tz=date_time.tzinfo) - date_time).days)
+    return (datetime.now(tz=date_time.tzinfo) - date_time).days
+
+
+def days_to_go(date_time: datetime) -> int:
+    """Return the days remaining until the date/time."""
+    return (date_time - datetime.now(tz=date_time.tzinfo)).days
 
 
 def is_regexp(string: str) -> bool:

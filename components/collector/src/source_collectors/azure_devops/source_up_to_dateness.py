@@ -6,14 +6,14 @@ from datetime import datetime
 import aiohttp
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
 from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
 
 
-class AzureDevopsFileUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepositoryBase):
+class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     async def _api_url(self) -> URL:
@@ -39,7 +39,7 @@ class AzureDevopsFileUpToDateness(SourceUpToDatenessCollector, AzureDevopsReposi
         return parse(json_value[0]["committer"]["date"])
 
 
-class AzureDevopsJobUpToDateness(SourceUpToDatenessCollector, AzureDevopsJobs):  # lgtm [py/conflicting-attributes]
+class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm [py/conflicting-attributes]
     """Collector class to measure the up-to-dateness of a job/pipeline."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:

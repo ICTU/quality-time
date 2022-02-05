@@ -27,6 +27,7 @@ SUBJECTS = Subjects.parse_obj(
                 "manual_test_execution",
                 "merge_requests",
                 "source_up_to_dateness",
+                "time_remaining",
                 "unmerged_branches",
                 "user_story_points",
                 "velocity",
