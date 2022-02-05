@@ -2,13 +2,12 @@
 
 from datetime import datetime
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from .base import CalendarTestCase
 
 
-class CalendarTimeRemainingTest(SourceCollectorTestCase):
+class CalendarTimeRemainingTest(CalendarTestCase):
     """Unit tests for the calendar time remaining collector."""
 
-    SOURCE_TYPE = "calendar"
     METRIC_TYPE = "time_remaining"
 
     async def test_time_remaining(self):

@@ -2,13 +2,12 @@
 
 from datetime import datetime
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from .base import CalendarTestCase
 
 
-class CalendarSourceUpToDatenessTest(SourceCollectorTestCase):
+class CalendarSourceUpToDatenessTest(CalendarTestCase):
     """Unit tests for the calendar source up-to-dateness collector."""
 
-    SOURCE_TYPE = "calendar"
     METRIC_TYPE = "source_up_to_dateness"
 
     async def test_source_up_to_dateness(self):
