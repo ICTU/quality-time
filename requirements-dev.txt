@@ -338,9 +338,9 @@ pip-audit==1.1.2 \
     --hash=sha256:374e8528a1376145cbe0f0ec4a7b6a5ebfd6152f665d274498ea49d8bffef24c \
     --hash=sha256:48325027b803376bee22ca273f8a1b477324c10663c6218a5acebfdc4a107328
     # via -r requirements-dev.in
-pip-tools==6.4.0 \
-    --hash=sha256:65553a15b1ba34be5e43889345062e38fb9b219ffa23b084ca0d4c4039b6f53b \
-    --hash=sha256:bb2c3272bc229b4a6d25230ebe255823aba1aa466a0d698c48ab7eb5ab7efdc9
+pip-tools==6.5.0 \
+    --hash=sha256:9cf69a020e3c208a7a1bcc78cbfd436dab323efc187919df6182eca98efbe3f2 \
+    --hash=sha256:d14ea4fc2c118db2a6af65a4345a8b9b355e792aedad6bf64dd3eb97c5fc5fee
     # via -r requirements-dev.in
 platformdirs==2.4.0 \
     --hash=sha256:367a5e80b3d04d2428ffa76d33f124cf11e8fff2acdaa9b43d545f5c7d661ef2 \
