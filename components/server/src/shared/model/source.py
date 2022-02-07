@@ -78,7 +78,15 @@ class Source(dict):  # lgtm [py/missing-equals]
 
     def _entities_to_ignore(self) -> Sequence[dict[str, str]]:
         """Return the entities to ignore."""
-        statuses_to_ignore = ("fixed", "false_positive", "wont_fix")
         user_data = self.get("entity_user_data", {})
         entities = self.get("entities", [])
-        return [entity for entity in entities if user_data.get(entity["key"], {}).get("status") in statuses_to_ignore]
+        return [entity for entity in entities if self._entity_to_be_ignored(user_data.get(entity["key"], {}))]
+
+    @staticmethod
+    def _entity_to_be_ignored(entity) -> bool:
+        """Return whether to ignore the entity."""
+        statuses_to_ignore = ("fixed", "false_positive", "wont_fix")
+        if status_end_date := entity.get("status_end_date"):
+            if datetime.fromisoformat(status_end_date) < datetime.now():
+                return False
+        return entity.get("status") in statuses_to_ignore

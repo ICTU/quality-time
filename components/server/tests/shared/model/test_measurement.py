@@ -127,11 +127,11 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         source["entities"] = [dict(key="entity1"), dict(key="entity2"), dict(key="entity3"), dict(key="entity4")]
         source["entity_user_data"] = dict(
             entity1=dict(status="fixed"),
-            entity2=dict(status="wont_fix"),
-            entity3=dict(status="false_positive"),
+            entity2=dict(status="wont_fix", status_end_date="3000-01-01"),
+            entity3=dict(status="false_positive", status_end_date="2022-02-05"),
         )
         measurement = self.measurement(metric, sources=[source])
-        self.assertEqual("7", measurement["count"]["value"])
+        self.assertEqual("8", measurement["count"]["value"])
 
     def test_value_ignored_entities(self):
         """Test that the summed value of ignored entities is subtracted, if an entity attribute should be used."""
