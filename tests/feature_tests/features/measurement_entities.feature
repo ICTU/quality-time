@@ -103,6 +103,7 @@ Feature: measurement entities
     Then the metric status is "target_met"
     When the client waits a second
     When the client sets the status of entity 1 to "false_positive"
+    And the client sets the status_end_date of entity 1 to "3000-01-01"
     Then the metric status is "target_not_met"
     When the client waits a second
     When the collector measures "120"
@@ -110,6 +111,25 @@ Feature: measurement entities
       | 1   | 100          |
       | 2   | 20           |
     Then the metric status is "target_not_met"
+
+  Scenario: mark an entity as false positive with status end date in the past
+    Given an existing metric with type "user_story_points"
+    And an existing source with type "azure_devops"
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    Then the metric status is "target_met"
+    When the client waits a second
+    When the client sets the status of entity 1 to "false_positive"
+    And the client sets the status_end_date of entity 1 to "2022-02-02"
+    Then the metric status is "target_met"
+    When the client waits a second
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    Then the metric status is "target_met"
 
   Scenario: an entity marked as false positive disappears on the next measurement
     Given an existing metric with type "user_story_points"

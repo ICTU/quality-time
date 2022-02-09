@@ -28,7 +28,7 @@ pip --quiet install --progress-bar off -r requirements-dev.txt
 cd ../..
 sleep 10  # Give server time to start up
 coverage erase
-coverage run -m behave --format progress "${1:-tests/feature_tests/features}"
+coverage run -m behave --format pretty "${1:-tests/feature_tests/features}"
 result=$?
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give server time to write coverage data
