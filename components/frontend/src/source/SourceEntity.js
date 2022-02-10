@@ -7,13 +7,21 @@ import { source_entity_status_name } from './source_entity_status';
 import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
 
-export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload }) {
+function entityCanBeIgnored(status, status_end_date) {
+    const statusEndDate = new Date(status_end_date);
+    const now = new Date();
+    if (statusEndDate < now) { return false}
+    return ["wont_fix", "fixed", "false_positive"].includes(status);
+}
+
+export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload, status, status_end_date }) {
     const [expanded, setExpanded] = useState(false);
-    const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(status);
-    if (hide_ignored_entities && ignored_entity) {
+
+    const ignoredEntity = entityCanBeIgnored(status, status_end_date)
+    if (hide_ignored_entities && ignoredEntity) {
         return null;
     }
-    const style = ignored_entity ? { textDecoration: "line-through" } : {};
+    const style = ignoredEntity ? { textDecoration: "line-through" } : {};
     var statusClassName = "unknown_status";
     for (let entity_attribute of entity_attributes) {
         let cell_contents = entity[entity_attribute.key];
@@ -30,9 +38,12 @@ export function SourceEntity({ metric_uuid, source_uuid, status, hide_ignored_en
         reload={reload}
         source_uuid={source_uuid}
         status={status}
+        status_end_date={status_end_date}
     />;
+    let statusLabel = source_entity_status_name[status]
+    if (status !== "unconfirmed" && status_end_date) { statusLabel += ` (status accepted until ${status_end_date})`}
     const entityCells = <>
-        <Table.Cell style={style}>{source_entity_status_name[status]}</Table.Cell>
+        <Table.Cell style={style}>{statusLabel}</Table.Cell>
         {entity_attributes.map((entity_attribute, col_index) =>
             <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)} style={style}>
                 <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />

@@ -88,12 +88,9 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
             key={entity.key}
             metric_uuid={metric_uuid}
             reload={reload}
-            status={
-                source.entity_user_data && source.entity_user_data[entity.key] &&
-                    source.entity_user_data[entity.key].status ? source.entity_user_data[entity.key].status : "unconfirmed"}
-            rationale={
-                source.entity_user_data && source.entity_user_data[entity.key] &&
-                    source.entity_user_data[entity.key].rationale ? source.entity_user_data[entity.key].rationale : ""}
+            status={source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"}
+            status_end_date={source.entity_user_data?.[entity.key]?.status_end_date ?? ""}
+            rationale={source.entity_user_data?.[entity.key]?.rationale ?? ""}
             source_uuid={source.source_uuid}
         />);
     return (
