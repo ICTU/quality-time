@@ -57,7 +57,7 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                         value={rationale}
                     />
                 </Grid.Column>
-            </Grid.Row >
-        </Grid >
+            </Grid.Row>
+        </Grid>
     );
 }

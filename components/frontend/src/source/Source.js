@@ -87,7 +87,7 @@ function Parameters({ metric, source, source_uuid, connection_error, parse_error
             </Grid.Row>
             {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
             {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
-        </Grid >
+        </Grid>
     )
 }
 
