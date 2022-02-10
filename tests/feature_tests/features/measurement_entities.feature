@@ -121,8 +121,8 @@ Feature: measurement entities
       | 2   | 20           |
     Then the metric status is "target_met"
     When the client waits a second
-    When the client sets the status of entity 1 to "false_positive"
     And the client sets the status_end_date of entity 1 to "2022-02-02"
+    And the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_met"
     When the client waits a second
     When the collector measures "120"
