@@ -49,3 +49,12 @@ it('does not submit the value when the value is not changed', async () => {
     expect(screen.getByDisplayValue(date)).not.toBe(null)
     expect(set_value).not.toHaveBeenCalled()
 })
+
+it('does not submit the value when the value is not valid', async () => {
+    let set_value = jest.fn()
+    const date = "2022-02-10"
+    renderDateInput({ value: date, set_value: set_value })
+    await act(async () => fireEvent.change(screen.getByDisplayValue(date), {target: {value: "invalid"}}))
+    expect(screen.getByDisplayValue("invalid")).not.toBe(null)
+    expect(set_value).not.toHaveBeenCalled()
+})
