@@ -64,8 +64,8 @@ export function Menubar({
     const [panelVisible, setPanelVisible] = useState(false)
     useEffect(() => {
         function closePanel(event) { if (event.key === "Escape") { setPanelVisible(false) } }
-        window.addEventListener('keypress', closePanel)
-        return () => { window.removeEventListener('keypress', closePanel) };
+        window.addEventListener('keydown', closePanel)
+        return () => { window.removeEventListener('keydown', closePanel) };
     }, []);
 
     return (

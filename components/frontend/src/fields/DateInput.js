@@ -16,8 +16,8 @@ function EditableDateInput({ label, placeholder, required, set_value, value }) {
             dateFormat="YYYY-MM-DD"
             error={(required && !isValidDate_YYYYMMDD(date)) || (date !== "" && !isValidDate_YYYYMMDD(date))}
             label={label}
-            onChange={(event) => {
-                const newDate = event.target.value;
+            onChange={(event, { value: newDate }) => {
+                if (!event) { return }
                 if ((date !== newDate) && isValidDate_YYYYMMDD(newDate)) {
                     set_value(newDate)
                 }

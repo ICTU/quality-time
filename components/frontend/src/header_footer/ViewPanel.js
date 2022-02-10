@@ -3,6 +3,8 @@ import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
+const activeColor = "grey"
+
 export function ViewPanel({
     clearHiddenColumns,
     clearVisibleDetailsTabs,
@@ -91,7 +93,7 @@ export function ViewPanel({
                 <Menu vertical inverted size="small">
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
                         <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
-                            <Menu.Item active={nr === nrDates} color="blue" onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                            <Menu.Item active={nr === nrDates} color={activeColor} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                         </div>
                     )}
                 </Menu>
@@ -119,7 +121,7 @@ export function ViewPanel({
 function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item color="blue" active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
+            <Menu.Item color={activeColor} active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
                 {capitalize(column)}
             </Menu.Item>
         </div>
@@ -129,7 +131,7 @@ function ColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
-            <Menu.Item key={nr} active={nr === dateInterval} color="blue" onClick={() => setDateInterval(nr)}>
+            <Menu.Item key={nr} active={nr === dateInterval} color={activeColor} onClick={() => setDateInterval(nr)}>
                 {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
             </Menu.Item>
         </div>
@@ -139,7 +141,7 @@ function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
 function DateOrderMenuItem({ order, dateOrder, setDateOrder }) {
     return (
         <div key={order} onKeyPress={(event) => { event.preventDefault(); setDateOrder(order) }} tabIndex={0}>
-            <Menu.Item active={dateOrder === order} color="blue" onClick={() => setDateOrder(order)}>
+            <Menu.Item active={dateOrder === order} color={activeColor} onClick={() => setDateOrder(order)}>
                 {capitalize(order)}
             </Menu.Item>
         </div>
@@ -149,7 +151,7 @@ function DateOrderMenuItem({ order, dateOrder, setDateOrder }) {
 function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
     return (
         <div key={hide} onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
-            <Menu.Item active={hideMetricsNotRequiringAction === hide} color="blue" onClick={() => setHideMetricsNotRequiringAction(hide)}>
+            <Menu.Item active={hideMetricsNotRequiringAction === hide} color={activeColor} onClick={() => setHideMetricsNotRequiringAction(hide)}>
                 {hide ? 'Metrics requiring action' : 'All metrics'}
             </Menu.Item>
         </div>

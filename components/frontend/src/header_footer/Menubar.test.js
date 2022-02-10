@@ -87,7 +87,7 @@ it('hides the view panel on escape', async () => {
     await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await act(async() => {fireEvent.keyPress(screen.getByText(/Hello/), { key: 'Escape', code: 'Escape' })})
+    await act(async() => {fireEvent.keyDown(screen.getByText(/Hello/), { key: 'Escape', code: 'Escape' })})
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
 

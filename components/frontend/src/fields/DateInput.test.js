@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event';
 import { Permissions } from '../context/Permissions';
 import { DateInput } from './DateInput';
 
@@ -46,6 +47,16 @@ it('does not submit the value when the value is not changed', async () => {
     const date = "2022-02-10"
     renderDateInput({ value: date, set_value: set_value })
     await act(async () => fireEvent.change(screen.getByDisplayValue(date), {target: {value: date}}))
+    expect(screen.getByDisplayValue(date)).not.toBe(null)
+    expect(set_value).not.toHaveBeenCalled()
+})
+
+it('does not submit the value when the value is not changed even on enter', async () => {
+    let set_value = jest.fn()
+    const date = "2022-02-10"
+    renderDateInput({ value: date, set_value: set_value })
+    await act(async () => fireEvent.click(screen.getByDisplayValue(date)))
+    await act(async () => userEvent.type(screen.getByDisplayValue(date), "{enter}"))
     expect(screen.getByDisplayValue(date)).not.toBe(null)
     expect(set_value).not.toHaveBeenCalled()
 })
