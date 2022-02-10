@@ -37,6 +37,11 @@ it('renders the status end date', () => {
     expect(screen.getAllByText(/Will be fixed \(status accepted until 3000-01-01\)/).length).toBe(1);
 })
 
+it('renders the status past end date', () => {
+    renderSourceEntity({ status: "fixed", status_end_date: "2000-01-01", hide_ignored_entities: true });
+    expect(screen.getAllByText(/Will be fixed \(status accepted until 2000-01-01\)/).length).toBe(1);
+})
+
 it('renders nothing if the status is to be ignored', () => {
     renderSourceEntity({ status: "fixed", hide_ignored_entities: true });
     expect(screen.queryAllByText(/Will be fixed/).length).toBe(0);

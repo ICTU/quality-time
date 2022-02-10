@@ -16,7 +16,13 @@ function EditableDateInput({ label, placeholder, required, set_value, value }) {
             dateFormat="YYYY-MM-DD"
             error={(required && !isValidDate_YYYYMMDD(date)) || (date !== "" && !isValidDate_YYYYMMDD(date))}
             label={label}
-            onChange={(event, { value }) => { if ((date !== value) && isValidDate_YYYYMMDD(value)) { set_value(value) }; setDate(value) }}
+            onChange={(event) => {
+                const newDate = event.target.value;
+                if ((date !== newDate) && isValidDate_YYYYMMDD(newDate)) {
+                    set_value(newDate)
+                }
+                setDate(newDate)
+            }}
             onClear={() => { setDate(""); set_value("") }}
             placeholder={placeholder}
             value={date}
