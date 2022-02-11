@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Menubar } from './Menubar';
 import * as auth from '../api/auth';

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Dropdown, Icon, Input, Popup } from 'semantic-ui-react';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
+import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
@@ -56,8 +57,10 @@ function download_pdf(report_uuid, query_string, callback) {
 export function DownloadAsPDFButton(props) {
     const [loading, setLoading] = useState(false);
     const { report_uuid, history, ...otherProps } = props;
-    const query = new URLSearchParams(window.location.search);
-    query.set("report_url", window.location.href);
+    // Make sure the report_url contains only registered query parameters
+    const query = registeredURLSearchParams(history);
+    const queryString = query.toString() ? ("?" + query.toString()) : ""
+    query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash);
     return (
         <ActionButton
             action='Download'

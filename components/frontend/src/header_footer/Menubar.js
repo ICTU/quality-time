@@ -76,8 +76,8 @@ export function Menubar({
                         content="Go to reports overview"
                         disabled={!current_report}
                         trigger={
-                            <div onKeyPress={(event) => { event.preventDefault(); go_home() }} tabIndex={current_report ? 0 : -1}>
-                                <Menu.Item header onClick={current_report ? () => go_home() : null}>
+                            <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={current_report ? 0 : -1}>
+                                <Menu.Item header onClick={current_report ? () => { setPanelVisible(false); go_home() } : null}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
@@ -86,7 +86,7 @@ export function Menubar({
                     />
                     <FocusLock group="panel" disabled={!panelVisible} className="center">
                         <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
-                            <Menu.Item onClick={() => setPanelVisible(!panelVisible)}>
+                            <Menu.Item onClick={(event) => { event.stopPropagation(); setPanelVisible(!panelVisible) }}>
                                 <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
                                 Settings
                             </Menu.Item>
@@ -94,7 +94,7 @@ export function Menubar({
                     </FocusLock>
                 </Menu.Menu>
                 <Menu.Menu position='right'>
-                    <Popup content="Show the report as it was on the selected date" trigger={
+                    <Popup content="Show the report as it was on the selected date" position="left center" trigger={
                         <Menu.Item>
                             <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
                         </Menu.Item>}
@@ -104,7 +104,7 @@ export function Menubar({
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
-            <Portal open={panelVisible} unmountOnHide>
+            <Portal closeOnTriggerClick={true} open={panelVisible} onClose={(event) => { event.stopPropagation(); setPanelVisible(false) }} unmountOnHide>
                 <div className="panel">
                     <FocusLock group="panel">
                         {panel}

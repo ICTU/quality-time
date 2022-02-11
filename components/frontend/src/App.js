@@ -5,7 +5,7 @@ import { get_reports, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
-import { isValidDate_YYYYMMDD } from './utils'
+import { isValidDate_YYYYMMDD, registeredURLSearchParams } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -32,7 +32,7 @@ class App extends Component {
     componentDidMount() {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        const report_date_iso_string = new URLSearchParams(this.history.location.search).get("report_date") || "";
+        const report_date_iso_string = registeredURLSearchParams(this.history).get("report_date") || "";
         const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
         this.login_forwardauth();
         this.connect_to_nr_measurements_event_source();
@@ -93,7 +93,7 @@ class App extends Component {
         const today = new Date();
         const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
         const new_report_date_string = value === today_string ? '' : value;
-        let parsed = new URLSearchParams(this.history.location.search);
+        let parsed = registeredURLSearchParams(this.history);
         if (new_report_date_string === "") {
             parsed.delete("report_date")
         } else {
@@ -106,15 +106,20 @@ class App extends Component {
 
     go_home() {
         if (this.history.location.pathname !== "/") {
-            this.history.push("/");
+            this.history_push("/")
             this.setState({ report_uuid: "", loading: true }, () => this.reload());
         }
     }
 
     open_report(event, report_uuid) {
         event.preventDefault();
+        this.history_push(report_uuid)
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
-        this.history.push(report_uuid);
+    }
+
+    history_push(target) {
+        const search = registeredURLSearchParams(this.history).toString().replace(/%2C/g, ",")  // No need to encode commas
+        this.history.push(target + (search.length > 0 ? "?" + search : ""));
     }
 
     connect_to_nr_measurements_event_source() {
