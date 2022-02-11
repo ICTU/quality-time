@@ -57,8 +57,10 @@ function download_pdf(report_uuid, query_string, callback) {
 export function DownloadAsPDFButton(props) {
     const [loading, setLoading] = useState(false);
     const { report_uuid, history, ...otherProps } = props;
+    // Make sure the report_url contains only registered query parameters
     const query = registeredURLSearchParams(history);
-    query.set("report_url", window.location.href);
+    const queryString = query.toString() ? ("?" + query.toString()) : ""
+    query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash);
     return (
         <ActionButton
             action='Download'
