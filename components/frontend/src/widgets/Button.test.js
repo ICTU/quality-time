@@ -76,14 +76,26 @@ const test_report = { report_uuid: "report_uuid" };
 
 test("DownloadAsPDFButton indicates loading on click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<DownloadAsPDFButton report={test_report} history={history} />);
+    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" history={history} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
     expect(screen.getByText(/Download/).className).toContain("loading")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/pdf?report_url=http%3A%2F%2Flocalhost%2F", {}, "application/pdf")
 });
 
-test("DownloadAsPDFButton ignotes a second click", async () => {
+test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    history.location.search = "unregister_key=value&nr_dates=4"
+    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" history={history} />);
+    await act(async () => {
+        fireEvent.click(screen.getByText(new RegExp(/Download/)));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/pdf?nr_dates=4&report_url=http%3A%2F%2Flocalhost%2F%3Fnr_dates%3D4", {}, "application/pdf")
+});
+
+
+test("DownloadAsPDFButton ignores a second click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<DownloadAsPDFButton report={test_report} history={history} />);
     await act(async () => {
