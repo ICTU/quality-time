@@ -8,7 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.33.0-rc.2 - 2022-02-10
+## [Unreleased]
+
+### Fixed
+
+- Don't reset settings such as the visible columns and the current report date when navigating between reports. Fixes [#3410](https://github.com/ICTU/quality-time/issues/3410).
 
 ### Changed
 

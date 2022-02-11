@@ -106,7 +106,7 @@ class App extends Component {
 
     go_home() {
         if (this.history.location.pathname !== "/") {
-            this.history.push("/");
+            this.history.push("/" + this.history.location.search);
             this.setState({ report_uuid: "", loading: true }, () => this.reload());
         }
     }
@@ -114,7 +114,7 @@ class App extends Component {
     open_report(event, report_uuid) {
         event.preventDefault();
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
-        this.history.push(report_uuid);
+        this.history.push(report_uuid + this.history.location.search);
     }
 
     connect_to_nr_measurements_event_source() {

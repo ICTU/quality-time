@@ -94,7 +94,7 @@ export function Menubar({
                     </FocusLock>
                 </Menu.Menu>
                 <Menu.Menu position='right'>
-                    <Popup content="Show the report as it was on the selected date" trigger={
+                    <Popup content="Show the report as it was on the selected date" position="left center" trigger={
                         <Menu.Item>
                             <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
                         </Menu.Item>}
