@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Use a menu instead of a button in the settings panel to hide metrics that don't require action.
 - Use a separate unit column in the metrics tables, regardless of how many dates are shown. This makes the one-date and multiple-dates views more similar. It also saves screen real estate as the unit is no longer repeated in both the measurement and target column. Closes [#3268](https://github.com/ICTU/quality-time/issues/3268).
+- Close the settings panel when it loses focus. Closes [#3381](https://github.com/ICTU/quality-time/issues/3381).
 
 ### Added
 
