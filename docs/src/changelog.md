@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Add a button to the settings panel to reset all settings to their default values. Closes [#3183](https://github.com/ICTU/quality-time/issues/3183).
 - Allow for adding an end date to the status of measurement entities. After the end date passes, the measurement entity is considered to be 'Unconfirmed' again. This makes it possible to mark an entity as e.g. won't fix for a certain period of time. Closes [#3332](https://github.com/ICTU/quality-time/issues/3332).
 - Add a 'time remaining' metric that measures the number of days remaining until a future date. Use the 'calendar date' source to set that date. Closes [#3366](https://github.com/ICTU/quality-time/issues/3366).
+- Add the metric sort column to the settings panel so that the button to reset all settinga also resets the sort column. Closes [#3412](https://github.com/ICTU/quality-time/issues/3412).
 
 ## v3.32.0 - 2022-01-24
 

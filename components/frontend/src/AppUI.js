@@ -42,7 +42,25 @@ export function AppUI({
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array");
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
+    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
+    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
+
+    function handleSort(column) {
+        if (column === null) {
+            setSortColumn(null)  // Stop sorting
+            return
+        }
+        if (sortColumn === column) {
+            if (sortDirection === 'descending') {
+                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+            }
+            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
+        } else {
+            setSortColumn(column)
+        }
+    }
+
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
             <HashLinkObserver />
@@ -66,6 +84,10 @@ export function AppUI({
                     setDateOrder={setDateOrder}
                     setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                     setNrDates={setNrDates}
+                    setSortColumn={setSortColumn}
+                    setSortDirection={setSortDirection}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
                     toggleHiddenColumn={toggleHiddenColumn}
                     visibleDetailsTabs={visibleDetailsTabs}
                 />}
@@ -79,6 +101,7 @@ export function AppUI({
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
                         go_home={go_home}
+                        handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         history={history}
@@ -91,6 +114,8 @@ export function AppUI({
                         report_uuid={report_uuid}
                         reports={reports}
                         reports_overview={reports_overview}
+                        sortColumn={sortColumn}
+                        sortDirection={sortDirection}
                         toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                         visibleDetailsTabs={visibleDetailsTabs}
                     />

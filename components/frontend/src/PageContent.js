@@ -8,6 +8,7 @@ export function PageContent({
     current_report,
     dateInterval,
     dateOrder,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     history,
@@ -21,6 +22,8 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
+    sortColumn,
+    sortDirection,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -33,6 +36,7 @@ export function PageContent({
             dateInterval={dateInterval}
             dateOrder={dateOrder}
             go_home={go_home}
+            handleSort={handleSort}
             hiddenColumns={hiddenColumns}
             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
             history={history}
@@ -42,6 +46,8 @@ export function PageContent({
             report={current_report}
             reports={reports}
             report_date={report_date}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
             visibleDetailsTabs={visibleDetailsTabs}
         />

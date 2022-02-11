@@ -8,7 +8,7 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { set_report_attribute } from '../api/report';
-import { get_subject_name, useURLSearchQuery } from '../utils';
+import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard({ report, onClick, setTags, tags, reload }) {
@@ -59,6 +59,7 @@ export function Report({
     dateInterval,
     dateOrder,
     go_home,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     history,
@@ -68,6 +69,8 @@ export function Report({
     report,
     report_date,
     reports,
+    sortColumn,
+    sortDirection,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -83,24 +86,6 @@ export function Report({
         // Make sure we only filter by tags that are actually used in this report
         setTags(prev_tags => prev_tags.filter(tag => Object.keys(report.summary_by_tag || {}).includes(tag)))
     }, [report]);
-
-    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null)
-    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending")
-
-    function handleSort(column) {
-        if (column === null) {
-            setSortColumn(null)  // Stop sorting
-            return
-        }
-        if (sortColumn === column) {
-            if (sortDirection === 'descending') {
-                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
-            }
-            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
-        } else {
-            setSortColumn(column)
-        }
-    }
 
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
@@ -128,7 +113,7 @@ export function Report({
                 changed_fields={changed_fields}
                 dateInterval={dateInterval}
                 dateOrder={dateOrder}
-                handleSort={(column) => handleSort(column)}
+                handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 nrDates={nrDates}

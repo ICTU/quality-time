@@ -39,6 +39,8 @@ it('resets the settings', async () => {
     const setDateOrder = jest.fn();
     const setHideMetricsNotRequiringAction = jest.fn();
     const setNrDates = jest.fn();
+    const setSortColumn = jest.fn();
+    const setSortDirection = jest.fn();
     await act(async () => {
         render(
             <ViewPanel
@@ -53,6 +55,10 @@ it('resets the settings', async () => {
                 setDateOrder={setDateOrder}
                 setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                 setNrDates={setNrDates}
+                setSortColumn={setSortColumn}
+                setSortDirection={setSortDirection}
+                sortColumn="status"
+                sortDirection="descending"
                 visibleDetailsTabs={["tab"]}
             />
         )
@@ -64,6 +70,8 @@ it('resets the settings', async () => {
     expect(setDateOrder).toHaveBeenCalled()
     expect(setNrDates).toHaveBeenCalled()
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalled()
+    expect(setSortColumn).toHaveBeenCalledWith(null)
+    expect(setSortDirection).toHaveBeenCalledWith("ascending")
 })
 
 it('does not reset the settings when all have the default value', async () => {
@@ -73,6 +81,8 @@ it('does not reset the settings when all have the default value', async () => {
     const setDateOrder = jest.fn();
     const setHideMetricsNotRequiringAction = jest.fn();
     const setNrDates = jest.fn();
+    const setSortColumn = jest.fn();
+    const setSortDirection = jest.fn();
     await act(async () => {
         render(
             <ViewPanel
@@ -87,6 +97,8 @@ it('does not reset the settings when all have the default value', async () => {
                 setDateOrder={setDateOrder}
                 setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                 setNrDates={setNrDates}
+                sortColumn={null}
+                sortDirection="ascending"
                 visibleDetailsTabs={[]}
             />
         )
@@ -98,6 +110,8 @@ it('does not reset the settings when all have the default value', async () => {
     expect(setDateOrder).not.toHaveBeenCalled()
     expect(setNrDates).not.toHaveBeenCalled()
     expect(setHideMetricsNotRequiringAction).not.toHaveBeenCalled()
+    expect(setSortColumn).not.toHaveBeenCalled()
+    expect(setSortDirection).not.toHaveBeenCalled()
 })
 
 it("hides the metrics not requiring action", async () => {
@@ -173,7 +187,7 @@ it("hides a column by keypress", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        userEvent.type(screen.getByText(/Comment/), "{Enter}")
+        userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
 })
@@ -284,7 +298,7 @@ it("sorts the dates descending", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Descending/))
+        fireEvent.click(screen.getAllByText(/Descending/)[1])
     });
     expect(setDateOrder).toHaveBeenCalledWith("descending")
 })
@@ -300,7 +314,7 @@ it("sorts the dates ascending by keypress", async () => {
                 visibleDetailsTabs={[]}
             />
         )
-        userEvent.type(screen.getByText(/Ascending/), "{Enter}")
+        userEvent.type(screen.getAllByText(/Ascending/)[1], "{Enter}")
     });
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })
