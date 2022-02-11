@@ -113,9 +113,12 @@ export function formatMetricScaleAndUnit(metricType, metric, withMultiple = true
     return `${scale}${sep}${unit}`;
 }
 
+const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
+
 export function useURLSearchQuery(history, key, state_type, default_value) {
     // state_type can either be "boolean", "integer", "string", or "array"
     const [state, setState] = useState(getState());
+    registeredURLSearchQueryKeys.add(key);
 
     function getState() {
         const parsed_state = parseURLSearchQuery().get(key);
@@ -123,7 +126,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
             return parsed_state === "true"
         } else if (state_type === "integer") {
             return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
-        } else if(state_type === "string") {
+        } else if (state_type === "string") {
             return parsed_state ?? default_value
         }
         // else state_type is "array"
@@ -158,6 +161,15 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
     }
 
     return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
+}
+
+export function registeredURLSearchParams(history) {
+    // Return registered URL search parameters only; to prevent CodeQL js/client-side-unvalidated-url-redirection
+    let parsed = new URLSearchParams(history.location.search)
+    for (var key of parsed.keys()) {
+        if (!registeredURLSearchQueryKeys.has(key)) { parsed.delete(key) }
+    }
+    return parsed
 }
 
 export function useDelayedRender() {

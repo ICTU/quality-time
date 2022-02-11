@@ -64,14 +64,15 @@ test('DeleteButton has the correct label', () => {
     });
 });
 
+const history = { location: { search: "" } };
+
 test("DownloadAsPDFButton has the correct label", () => {
-    render(<DownloadAsPDFButton />);
+    render(<DownloadAsPDFButton history={history} />);
     expect(screen.getAllByText(/report as pdf/).length).toBe(1);
 
 });
 
 const test_report = { report_uuid: "report_uuid" };
-const history = { location: { search: "" } };
 
 test("DownloadAsPDFButton indicates loading on click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });

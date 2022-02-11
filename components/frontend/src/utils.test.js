@@ -1,6 +1,8 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
-import { getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number, scaled_number, format_minutes, useURLSearchQuery } from './utils';
+import {
+    getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number,
+    scaled_number, format_minutes, registeredURLSearchParams, useURLSearchQuery } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
 it('rounds numbers nicely', () => {
@@ -226,4 +228,10 @@ it('removes the string value when set to the default value', () => {
     const { result } = renderHook(() => useURLSearchQuery(history, "key", "string", "default"))
     act(() => { result.current[1]("default") })
     expect(history.location.search).toEqual("")
+})
+
+it('returns registered URL search parameters only', () => {
+    const history = createMemoryHistory({ initialEntries: ['?unregistered_key=value&report_date=2022-02-11'] })
+    const expected = new URLSearchParams("?report_date=2022-02-11")
+    expect(registeredURLSearchParams(history).toString()).toEqual(expected.toString())
 })
