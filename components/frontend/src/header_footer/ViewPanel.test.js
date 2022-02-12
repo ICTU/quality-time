@@ -184,14 +184,44 @@ it("shows a column", async () => {
     await act(async () => {
         render(
             <ViewPanel
-                hiddenColumns={["trend"]}
+                hiddenColumns={[]}
                 toggleHiddenColumn={toggleHiddenColumn}
                 visibleDetailsTabs={[]}
             />
         )
-        fireEvent.click(screen.getByText(/Trend/))
+        fireEvent.click(screen.getAllByText(/Status/)[0])
     });
-    expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
+    expect(toggleHiddenColumn).toHaveBeenCalledWith("status")
+})
+
+it("sorts a column", async () => {
+    const setSortColumn = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                setSortColumn={setSortColumn}
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getAllByText(/Comment/)[1])
+    });
+    expect(setSortColumn).toHaveBeenCalledWith("comment")
+})
+
+it("sorts a column by keypress", async () => {
+    const setSortColumn = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                setSortColumn={setSortColumn}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+    });
+    expect(setSortColumn).toHaveBeenCalledWith("comment")
 })
 
 it("sets the number of dates", async () => {

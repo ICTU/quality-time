@@ -20,7 +20,7 @@ export function accessGranted(permissions, requiredPermissions) {
 export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {
     return (
       <Permissions.Consumer>
-        {(permissions) => (accessGranted(permissions, requiredPermissions) ? editableComponent : readOnlyComponent)}
+        {(permissions) => ( accessGranted(permissions, requiredPermissions) ? editableComponent : readOnlyComponent)}
       </Permissions.Consumer>
     )
 }

@@ -66,7 +66,7 @@ it("adds a subject", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([EDIT_REPORT_PERMISSION]);
     await act(async () => fireEvent.click(screen.getByText(/Add subject/)))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/new/undefined", { });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/new/report_uuid", { });
 });
 
 it("copies a subject", async () => {
@@ -74,7 +74,7 @@ it("copies a subject", async () => {
     renderSubjects([EDIT_REPORT_PERMISSION]);
     await act(async () => fireEvent.click(screen.getByText("Copy subject")))
     await act(async () => fireEvent.click(screen.getByText("dummy option 1")))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/copy/undefined", { });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/copy/report_uuid", { });
 });
 
 it("moves a subject", async () => {
@@ -82,5 +82,5 @@ it("moves a subject", async () => {
     renderSubjects([EDIT_REPORT_PERMISSION])
     await act(async () => fireEvent.click(screen.getByText("Move subject")))
     await act(async () => fireEvent.click(screen.getByText("dummy option 2")))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/move/undefined", { });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/undefined/move/report_uuid", { });
 });
