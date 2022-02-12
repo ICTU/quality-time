@@ -157,9 +157,10 @@ function VisibleColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
 }
 
 function SortColumnMenuItem({ column, sortColumn, setSortColumn }) {
+    const newColumn = sortColumn === column ? null : column
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setSortColumn(column) }} tabIndex={0}>
-            <Menu.Item color={activeColor} active={sortColumn === column} onClick={() => setSortColumn(sortColumn === column ? null : column)}>
+        <div onKeyPress={(event) => { event.preventDefault(); setSortColumn(newColumn) }} tabIndex={0}>
+            <Menu.Item color={activeColor} active={sortColumn === column} onClick={() => setSortColumn(newColumn)}>
                 {capitalize(column === "name" ? "metric" : column)}
             </Menu.Item>
         </div>

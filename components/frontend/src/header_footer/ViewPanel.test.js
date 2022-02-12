@@ -209,6 +209,22 @@ it("sorts a column", async () => {
     expect(setSortColumn).toHaveBeenCalledWith("comment")
 })
 
+it("unsorts a column", async () => {
+    const setSortColumn = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                setSortColumn={setSortColumn}
+                sortColumn="comment"
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getAllByText(/Comment/)[1])
+    });
+    expect(setSortColumn).toHaveBeenCalledWith(null)
+})
+
 it("sorts a column by keypress", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
@@ -222,6 +238,22 @@ it("sorts a column by keypress", async () => {
         userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(setSortColumn).toHaveBeenCalledWith("comment")
+})
+
+it("unsorts a column by keypress", async () => {
+    const setSortColumn = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                setSortColumn={setSortColumn}
+                sortColumn="comment"
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+    });
+    expect(setSortColumn).toHaveBeenCalledWith(null)
 })
 
 it("sets the number of dates", async () => {
