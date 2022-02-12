@@ -8,6 +8,9 @@ export const datamodel = {
 }
 
 export const report = {
+    report_uuid: "report_uuid",
+    summary_by_subject: {},
+    summary_by_tag: {},
     subjects: {
         subject_uuid: {
             type: "subject_type", name: "Subject 1 title", metrics: {
