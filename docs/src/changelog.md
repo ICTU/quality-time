@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Highlight metrics on hover to make it easier to indicate which metric is being discussed in online meetings. Closes [#3132](https://github.com/ICTU/quality-time/issues/3132).
+
 ## v3.33.0 - 2022-02-13
 
 ### Fixed

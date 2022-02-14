@@ -80,7 +80,7 @@ export function SubjectTableRow(
     }
 
     const style = nrDates > 1 ? { background: "#f9fafb" } : {}
-    const className = nrDates === 1 ? metric.status : ""
+    const className = nrDates === 1 ? metric.status || "unknown" : ""
     return (
         <TableRowWithDetails id={metric_uuid} className={className} details={details} style={style} expanded={expanded} onExpand={(state) => onExpand(state)}>
             <Table.Cell style={style}>{metricName}</Table.Cell>
