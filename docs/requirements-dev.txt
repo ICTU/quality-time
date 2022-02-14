@@ -423,9 +423,9 @@ mypy-extensions==0.4.3 \
     # via
     #   black
     #   mypy
-myst-parser==0.16.1 \
-    --hash=sha256:617a90ceda2162ebf81cd13ad17d879bd4f49e7fb5c4f177bb905272555a2268 \
-    --hash=sha256:a6473b9735c8c74959b49b36550725464f4aecc4481340c9a5f9153829191f83
+myst-parser==0.17.0 \
+    --hash=sha256:555ec2950aba5ae5dac5c162c7e9a43ad4a7291cfac644d8f5f84da8efa6f356 \
+    --hash=sha256:d412347a5cacb77ebc03d7f7ffef050cd61957d46f234313d350e84e24972260
     # via -r docs/requirements-dev.in
 packageurl-python==0.9.6 \
     --hash=sha256:676dcb8278721df952e2444bfcd8d7bf3518894498050f0c6a5faddbe0860cd0 \
@@ -625,7 +625,7 @@ sphinx-copybutton==0.5.0 \
     --hash=sha256:9684dec7434bd73f0eea58dda93f9bb879d24bff2d8b187b1f2ec08dfe7b5f48 \
     --hash=sha256:a0c059daadd03c27ba750da534a92a63e7a36a7736dcf684f26ee346199787f6
     # via -r docs/requirements-dev.in
-sphinx_panels==0.6.0 \
+sphinx-panels==0.6.0 \
     --hash=sha256:bd64afaf85c07f8096d21c8247fc6fd757e339d1be97832c8832d6ae5ed2e61d \
     --hash=sha256:d36dcd26358117e11888f7143db4ac2301ebe90873ac00627bf1fe526bf0f058
     # via -r docs/requirements-dev.in
@@ -685,6 +685,7 @@ typing-extensions==4.0.0 \
     --hash=sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9
     # via
     #   mypy
+    #   myst-parser
     #   pydantic
 unittest-xml-reporting==3.2.0 \
     --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
