@@ -41,7 +41,9 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
     const metric_direction = getMetricDirection(metric, dataModel)
     const tags = Object.keys(report.summary_by_tag || {});
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
-    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : " Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab.");
+    const issue_tracker_instruction = "Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab."
+    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
+    const metric_issue_ids = get_metric_issue_ids(metric);
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -166,12 +168,19 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                         id="issue-identifiers"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-                        options={get_metric_issue_ids(metric)}
+                        options={metric_issue_ids}
                         set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-                        value={get_metric_issue_ids(metric)}
+                        value={metric_issue_ids}
                     />
                 </Grid.Column>
             </Grid.Row>
+            {(metric_issue_ids.length > 0 && !report?.issue_tracker?.type) &&
+                <Grid.Row>
+                    <Grid.Column width={16}>
+                        <ErrorMessage title="No issue tracker configured" message={issue_tracker_instruction} />
+                    </Grid.Column>
+                </Grid.Row>
+            }
             {(metric.issue_status ?? []).filter((issue_status => issue_status.connection_error)).map((issue_status) =>
                 <Grid.Row key={issue_status.issue_id}>
                     <Grid.Column width={16}>

@@ -15,14 +15,12 @@ const data_model = {
     }
 };
 
-const report = { summary_by_tag: {} }
-
-function render_metric_parameters(scale = "count") {
+function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={data_model}>
                 <MetricParameters
-                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale }}
+                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids }}
                     metric_uuid="metric_uuid"
                     reload={() => {/* Dummy implementation */ }}
                     report={report}
@@ -55,9 +53,29 @@ it('sets the metric unit field for metrics with the percentage scale', async () 
 
 it('skips the metric unit field for metrics with the version number scale', () => {
     render(<DataModel.Provider value={data_model}><MetricParameters
-        report={report}
+        report={{}}
         metric={{ type: "source_version", tags: [], accept_debt: false }}
         metric_uuid="metric_uuid"
     /></DataModel.Provider>);
     expect(screen.queryAllByText(/Metric unit/).length).toBe(0);
+});
+
+it('does not show an error message if the metric has no issues and no issue tracker is configured', async () => {
+    await act(async () => { render_metric_parameters() });
+    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
+});
+
+it('does not show an error message if the metric has no issues and an issue tracker is configured', async () => {
+    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira" } }) });
+    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
+});
+
+it('does not show an error message if the metric has issues and an issue tracker is configured', async () => {
+    await act(async () => { render_metric_parameters("count", ["BAR-42"], { issue_tracker: { type: "Jira" } }) });
+    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
+});
+
+it('shows an error message if the metric has issues but no issue tracker is configured', async () => {
+    await act(async () => { render_metric_parameters("count", ["FOO-42"]) });
+    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1);
 });
