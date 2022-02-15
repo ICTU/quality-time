@@ -5,6 +5,19 @@ import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import TimeAgo from 'react-timeago';
 
 export function IssueStatus({ metric, issueTracker }) {
+    if (!issueTracker && metric.issue_ids?.length > 0) {
+        const issues = metric.issue_ids.map((issueId) => {
+            return (
+                <Popup
+                    key={issueId}
+                    content={"Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab."}
+                    header={"No issue tracker configured"}
+                    trigger={<Label color="red">{issueId}</Label>}
+                />
+            )
+        })
+        return <>{issues}</>
+    }
     const issueStatuses = metric.issue_status || [];
     const statuses = issueStatuses.map((issueStatus) => {
         let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
@@ -14,10 +27,10 @@ export function IssueStatus({ metric, issueTracker }) {
         const basic = popupContent ? false : true;
         let labelDetails = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
         if (issueStatus.created && issueTracker?.parameters?.show_issue_creation_date) {
-            labelDetails.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created}/></Label.Detail>)
+            labelDetails.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created} /></Label.Detail>)
         }
         if (issueStatus.updated && issueTracker?.parameters?.show_issue_update_date) {
-            labelDetails.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated}/></Label.Detail>)
+            labelDetails.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated} /></Label.Detail>)
         }
         let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails}</Label>
         if (issueStatus.landing_url) {
