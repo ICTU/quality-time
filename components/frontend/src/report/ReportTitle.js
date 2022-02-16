@@ -42,7 +42,6 @@ function ReportConfiguration({ report, reload }) {
                 <Grid.Column>
                     <Comment
                         id="report-comment"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_report_attribute(report.report_uuid, "comment", value, reload)}
                         value={report.comment}
                     />

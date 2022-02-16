@@ -36,7 +36,6 @@ function ReportsOverviewConfiguration({ reports_overview, reload }) {
                 <Grid.Column>
                     <Comment
                         id="reports-overview-comment"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_reports_attribute("comment", value, reload)}
                         value={reports_overview.comment}
                     />

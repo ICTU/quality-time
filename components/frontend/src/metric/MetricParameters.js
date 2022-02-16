@@ -43,7 +43,8 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
     )
 }
 
-function Tags({ metric, metric_uuid, reload, tags }) {
+function Tags({ metric, metric_uuid, reload, report }) {
+    const tags = Object.keys(report.summary_by_tag || {});
     return (
         <MultipleChoiceInput
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -105,14 +106,53 @@ function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
     )
 }
 
+function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
+    return (
+        <SingleChoiceInput
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
+            value={metric.accept_debt || false}
+            options={[
+                { key: true, text: "Yes", value: true },
+                { key: false, text: "No", value: false }]}
+            set_value={(value) => set_metric_attribute(metric_uuid, "accept_debt", value, reload)}
+        />
+    )
+}
+
+function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
+    return (
+        <DateInput
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            label="Technical debt end date"
+            placeholder="YYYY-MM-DD"
+            set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
+            value={metric.debt_end_date ?? ""}
+        />
+    )
+}
+
+function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
+    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
+    const metric_issue_ids = get_metric_issue_ids(metric);
+    return (
+        <MultipleChoiceInput
+            allowAdditions
+            id="issue-identifiers"
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            options={metric_issue_ids}
+            set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
+            value={metric_issue_ids}
+        />
+    )
+}
+
 export function MetricParameters({ report, metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
-    const tags = Object.keys(report.summary_by_tag || {});
-    const issue_tracker_instruction = "Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab."
-    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
-    const metric_issue_ids = get_metric_issue_ids(metric);
+    const issue_tracker_instruction = "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -123,7 +163,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
                     <MetricName metric={metric} metricType={metricType} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} tags={tags} />
+                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
@@ -140,69 +180,29 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <Target
-                        label="Metric target"
-                        target_type="target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
+                    <Target label="Metric target" target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target
-                        label="Metric near target"
-                        target_type="near_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
+                    <Target label="Metric near target" target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <SingleChoiceInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
-                        value={metric.accept_debt || false}
-                        options={[
-                            { key: true, text: "Yes", value: true },
-                            { key: false, text: "No", value: false }]}
-                        set_value={(value) => set_metric_attribute(metric_uuid, "accept_debt", value, reload)}
-                    />
+                    <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target
-                        label="Accepted technical debt"
-                        target_type="debt_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
+                    <Target label="Accepted technical debt" target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <DateInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Technical debt end date"
-                        placeholder="YYYY-MM-DD"
-                        set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
-                        value={metric.debt_end_date ?? ""}
-                    />
+                    <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width={16}>
-                    <MultipleChoiceInput
-                        allowAdditions
-                        id="issue-identifiers"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-                        options={metric_issue_ids}
-                        set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-                        value={metric_issue_ids}
-                    />
+                    <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>
-            {(metric_issue_ids.length > 0 && !report?.issue_tracker?.type) &&
+            {(get_metric_issue_ids(metric).length > 0 && !report?.issue_tracker?.type) &&
                 <Grid.Row>
                     <Grid.Column width={16}>
                         <ErrorMessage title="No issue tracker configured" message={issue_tracker_instruction} />
@@ -226,7 +226,6 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
             <Grid.Row>
                 <Grid.Column width={16}>
                     <Comment
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
                         value={metric.comment}
                     />

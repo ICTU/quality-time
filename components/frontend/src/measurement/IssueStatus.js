@@ -7,7 +7,7 @@ import TimeAgo from 'react-timeago';
 function IssueWithoutTracker({ issueId }) {
     return (
         <Popup
-            content={"Please configure an issue tracker by expanding the report title and selecting the 'Issue tracker' tab."}
+            content={"Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."}
             header={"No issue tracker configured"}
             trigger={<Label color="red">{issueId}</Label>}
         />

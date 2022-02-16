@@ -41,7 +41,6 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                 <Grid.Column>
                     <Comment
                         id={`${subject_uuid}-comment`}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
                         value={subject.comment}
                     />
