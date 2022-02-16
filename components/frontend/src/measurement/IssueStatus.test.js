@@ -5,14 +5,18 @@ import { IssueStatus } from './IssueStatus';
 
 function renderIssueStatus(
     {
-        status = "in progress",
-        landingUrl = "https://issue",
-        showIssueCreationDate = false,
-        showIssueUpdateDate = false,
-        created = true,
-        updated = false,
         connectionError = false,
-        parseError = false
+        created = true,
+        issueTracker = {
+            parameters: {
+                show_issue_creation_date: false,
+                show_issue_update_date: false
+            }
+        },
+        landingUrl = "https://issue",
+        parseError = false,
+        status = "in progress",
+        updated = false,
     } = {}
 ) {
     let creationDate = new Date();
@@ -20,6 +24,7 @@ function renderIssueStatus(
     let updateDate = new Date();
     updateDate.setDate(updateDate.getDate() - 2);
     const metric = {
+        issue_ids: ["123"],
         issue_status: [
             {
                 issue_id: "123",
@@ -31,12 +36,6 @@ function renderIssueStatus(
                 parse_error: parseError ? "error" : null,
             }
         ]
-    }
-    const issueTracker = {
-        parameters: {
-            show_issue_creation_date: showIssueCreationDate,
-            show_issue_update_date: showIssueUpdateDate
-        }
     }
     return render(<IssueStatus metric={metric} issueTracker={issueTracker} />)
 }
@@ -67,12 +66,12 @@ it("displays a question mark as status if the issue has no status", () => {
 });
 
 it("displays the creation date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueCreationDate: true })
+    const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_creation_date: true } } })
     expect(queryByText(/4 days ago/)).not.toBe(null)
 });
 
 it("does not display the creation date in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueCreationDate: false })
+    const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_creation_date: false } } })
     expect(queryByText(/4 days ago/)).toBe(null)
 });
 
@@ -86,12 +85,12 @@ it("displays the creation date in the popup", async () => {
 });
 
 it("displays the update date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueUpdateDate: true, updated: true })
+    const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_update_date: true } }, updated: true })
     expect(queryByText(/2 days ago/)).not.toBe(null)
 });
 
 it("does not display the update date in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueUpdateDate: false, updated: true })
+    const { queryByText } = renderIssueStatus({ issueTrakcer: { parameters: { show_issue_update_date: false } }, updated: true })
     expect(queryByText(/2 days ago/)).toBe(null)
 });
 
@@ -129,3 +128,9 @@ it("displays nothing if the metric has no issue status", async () => {
     const { queryByText } = render(<IssueStatus metric={{}} />)
     expect(queryByText(/123/)).toBe(null)
 });
+
+it("displays an error message if the metric has issue ids but the report has no issue tracker", async () => {
+    const { queryByText } = renderIssueStatus({ issueTracker: null})
+    userEvent.hover(queryByText(/123/))
+    await waitFor(() => { expect(queryByText(/No issue tracker configured/)).not.toBe(null) })
+})
