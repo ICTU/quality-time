@@ -9,7 +9,7 @@ RUN python -m pip install --upgrade pip
 RUN python -m pip install wheel
 COPY server/requirements.txt /requirements.txt
 COPY server/requirements-internal.txt /requirements-internal.txt
-COPY shared_python /shared_python/
+COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
