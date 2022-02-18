@@ -21,7 +21,9 @@ jobs:
           . venv/bin/activate
           pip install wheel
           pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
-          pip install -r requirements-internal.txt
+          if [ -f "requirements-internal.txt" ]; then
+            pip install --progress-bar off -r requirements-internal.txt
+          fi
           ci/unittest.sh
           ci/quality.sh
 
