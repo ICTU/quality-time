@@ -4,7 +4,6 @@ import unittest
 
 import bottle
 
-from external.routes.plugins import AuthPlugin
 from shared.routes.plugins import InjectionPlugin
 
 
@@ -17,7 +16,6 @@ class RouteInjectionPluginTest(unittest.TestCase):
 
     def test_install_plugin(self):
         """Test that setup raises an error when the same keyword is used by another plugin."""
-        bottle.install(AuthPlugin())  # Totally different plugin, should be ignored
         plugin = InjectionPlugin("value", "keyword1")
         bottle.install(plugin)
         plugin_with_different_keyword = InjectionPlugin("value", "keyword2")

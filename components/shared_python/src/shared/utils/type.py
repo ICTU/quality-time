@@ -11,5 +11,4 @@ TargetType = Literal["target", "near_target", "debt_target"]
 
 MetricId = NewType("MetricId", str)
 ReportId = NewType("ReportId", str)
-SourceId = NewType("SourceId", str)
 SubjectId = NewType("SubjectId", str)
