@@ -4,10 +4,6 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes
 #
-# WARNING: pip install will require the following package to be hashed.
-# Consider using a hashable URL like https://github.com/jazzband/pip-tools/archive/SOMECOMMIT.zip
--e file:../shared_python#egg=shared_python
-    # via -r requirements-internal.txt
 bottle==0.12.19 \
     --hash=sha256:a9d73ffcbc6a1345ca2d7949638db46349f5b2b77dac65d6494d45c23628da2c \
     --hash=sha256:f6b8a34fe9aa406f9813c02990db72ca69ce6a158b5b156d2c41f345016a723d
