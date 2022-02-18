@@ -18,7 +18,7 @@ run () {
 run mypy src
 run pylint --rcfile=../../.pylintrc src tests
 run python -m flake8 --select=DUO src
-run pip-audit --strict --progress-spinner=off
+run pip-audit --strict --progress-spinner=off -r requirements.txt -r requirements-dev.txt
 run safety check --bare --ignore 41002 -r requirements.txt -r requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
 run bandit --quiet --recursive src/
 run vulture --min-confidence 0 src/ tests/ .vulture_ignore_list.py
