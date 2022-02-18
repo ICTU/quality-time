@@ -234,7 +234,11 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def sources_exist(self) -> bool:
         """Return whether all measurement sources exist in the metric."""
+<<<<<<< HEAD
         return all(source["source_uuid"] in self.metric.source_uuids for source in self.sources())
+=======
+        return all(source["source_uuid"] in self.metric.sources() for source in self.sources())
+>>>>>>> 51527c9c (move shared code into module)
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""

@@ -89,13 +89,24 @@ class Metric(dict):
         target = self.get(target_type)
         return str(target) if target else None
 
+<<<<<<< HEAD
+=======
+    def sources(self) -> dict:
+        """Return the metric sources."""
+        return cast(dict, self.get("sources", {}))
+
+>>>>>>> 51527c9c (move shared code into module)
     def get_measured_attribute(self, source: Source) -> tuple[str | None, str]:
         """Return the attribute of the source entities that is used to measure the value, and its type.
 
         For example, when using Jira as source for user story points, the points of user stories (the source entities)
         are summed to arrive at the total number of user story points.
         """
+<<<<<<< HEAD
         source_type = self.sources_dict[source["source_uuid"]]["type"]
+=======
+        source_type = self.sources()[source["source_uuid"]]["type"]
+>>>>>>> 51527c9c (move shared code into module)
         entity_type = self.__data_model["sources"][source_type]["entities"].get(self.type(), {})
         attribute = entity_type.get("measured_attribute")
         measured_attribute = None if attribute is None else str(attribute)
