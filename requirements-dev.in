@@ -2,7 +2,7 @@ bandit==1.7.2
 black==22.1.0
 coverage==6.3.1
 dlint==0.12.0
-lxml==4.7.1  # Needed to be able to run mypy with `--html-report`.
+lxml==4.8.0  # Needed to be able to run mypy with `--html-report`.
 mypy==0.931
 pep8-naming==0.12.1
 pip==22.0.3
