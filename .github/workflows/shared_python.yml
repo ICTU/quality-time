@@ -1,4 +1,4 @@
-name: Server
+name: Shared Python
 
 on: [push]
 
@@ -18,7 +18,6 @@ jobs:
         cd components/shared_python
         python -m pip install --upgrade pip
         pip install -r requirements.txt -r requirements-dev.txt
-        pip install -r requirements-internal.txt
     - name: Test
       run: |
         cd components/shared_python

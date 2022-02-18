@@ -11,3 +11,4 @@ tag_subject  # unused method (/Users/werk/Projects/ictu/quality-time/components/
 api  # unused variable (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/routes/plugins/injection_plugin.py:12)
 setup  # unused method (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/routes/plugins/injection_plugin.py:19)
 apply  # unused method (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/routes/plugins/injection_plugin.py:25)
+SourceId  # unused variable (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/utils/type.py:15)
