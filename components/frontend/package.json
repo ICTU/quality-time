@@ -15,7 +15,7 @@
     "react-timeago": "^6.2.1",
     "react-toastify": "^8.2.0",
     "semantic-ui-calendar-react-17": "^0.16.1",
-    "semantic-ui-react": "^2.1.1",
+    "semantic-ui-react": "^2.1.2",
     "victory": "^36.3.0"
   },
   "scripts": {
