@@ -1,3 +1,4 @@
+-r requirements-internal.txt
 bottle==0.12.19
 bottle-mongo==0.3.0
 gevent==21.12.0
