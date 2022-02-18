@@ -1,1 +1,1 @@
--e file:../shared_python#egg=shared_python
+-e ../shared_python
