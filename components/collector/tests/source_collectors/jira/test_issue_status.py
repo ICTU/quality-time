@@ -7,6 +7,8 @@ class JiraIssuesTest(JiraTestCase):
     """Unit tests for the Jira issue status collector."""
 
     METRIC_TYPE = "issue_status"
+    ISSUE_NAME = "Issue name"
+    CREATED = "1970-01-01T00:00:00.000+0000"
 
     def setUp(self):
         """Extend to add an issue tracker to the metric."""
@@ -29,8 +31,8 @@ class JiraIssuesTest(JiraTestCase):
                 self.assertIn(parse_error, issue_status["parse_error"])
                 self.assertNotIn("connection_error", issue_status)
         else:
-            self.assertEqual("Issue name", issue_status["name"])
-            self.assertEqual("1970-01-01T00:00:00.000+0000", issue_status["created"])
+            self.assertEqual(self.ISSUE_NAME, issue_status["name"])
+            self.assertEqual(self.CREATED, issue_status["created"])
             self.assertNotIn("connection_error", issue_status)
             self.assertNotIn("parse_error", issue_status)
         self.assertEqual(
@@ -40,14 +42,14 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_issue_status(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(fields=dict(status=dict(name="Issue name"), created="1970-01-01T00:00:00.000+0000"))
+        issue_status_json = dict(fields=dict(status=dict(name=self.ISSUE_NAME), created=self.CREATED))
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response)
 
     async def test_issue_summary(self):
         """Test that the issue summary is returned."""
         issue_status_json = dict(
-            fields=dict(status=dict(name="Issue name"), summary="Issue summary", created="1970-01-01T00:00:00.000+0000")
+            fields=dict(status=dict(name=self.ISSUE_NAME), summary="Issue summary", created=self.CREATED)
         )
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, summary="Issue summary")

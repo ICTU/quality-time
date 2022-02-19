@@ -18,12 +18,7 @@ function IssuesWithoutTracker({ issueIds }) {
     return <>{issueIds.map((issueId) => <IssueWithoutTracker key={issueId} issueId={issueId} />)}</>
 }
 
-function IssueWithTracker({ issueStatus, issueTracker }) {
-    let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
-    if (issueStatus.connection_error) { popupContent = "Connection error" }
-    if (issueStatus.parse_error) { popupContent = "Parse error" }
-    const color = popupContent ? "red" : "blue";
-    const basic = popupContent ? false : true;
+function labelDetails(issueStatus, issueTracker) {
     let labelDetails = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
     if (issueStatus.summary && issueTracker?.parameters?.show_issue_summary) {
         labelDetails.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
@@ -34,7 +29,16 @@ function IssueWithTracker({ issueStatus, issueTracker }) {
     if (issueStatus.updated && issueTracker?.parameters?.show_issue_update_date) {
         labelDetails.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated} /></Label.Detail>)
     }
-    let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails}</Label>
+    return labelDetails
+}
+
+function IssueWithTracker({ issueStatus, issueTracker }) {
+    let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
+    if (issueStatus.connection_error) { popupContent = "Connection error" }
+    if (issueStatus.parse_error) { popupContent = "Parse error" }
+    const color = popupContent ? "red" : "blue";
+    const basic = popupContent ? false : true;
+    let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, issueTracker)}</Label>
     if (issueStatus.landing_url) {
         // Without the span, the popup doesn't work
         label = <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
