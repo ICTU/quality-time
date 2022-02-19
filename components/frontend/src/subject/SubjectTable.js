@@ -41,9 +41,9 @@ export function SubjectTable({
 
     const dates = getColumnDates(reportDate, dateInterval, dateOrder, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
-
+    const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
     return (
-        <Table sortable className="stickyHeader" style={{marginTop: "0px"}}>
+        <Table sortable className={className} style={{marginTop: "0px"}}>
             <SubjectTableHeader
                 columnDates={dates}
                 handleSort={handleSort}

@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Fixed
+
+- Subject subtitles would partly obscure the header of their subject's metrics table. Fixes [#3443](https://github.com/ICTU/quality-time/issues/3443).
+
 ### Added
 
 - Highlight metrics on hover to make it easier to indicate which metric is being discussed in online meetings. Closes [#3132](https://github.com/ICTU/quality-time/issues/3132).
