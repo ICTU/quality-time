@@ -113,6 +113,21 @@ it('sets the issue tracker username', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/password", { password: "secret" });
 });
 
+it('sets the issue summary visibility', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Issue tracker/));
+    });
+    await act(async () => {
+        const dropdown = document.getElementById("issue-summary")
+        fireEvent.click(within(dropdown).getByText(/Yes/));
+    });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/show_issue_summary", { show_issue_summary: true });
+});
+
 it('sets the issue creation date visibility', async () => {
     await act(async () => {
         render_report_title();

@@ -28,11 +28,13 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         name: str = None,
         created: str = None,
         updated: str = None,
+        summary: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
         self.issue = Issue(issue_id, created, updated)
         self.name = name
+        self.summary = summary
         self.parse_error = parse_error
         self.connection_error = connection_error
         self.api_url: URL | None = None
@@ -42,6 +44,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         """Return the issue status as dict."""
         status = dict(
             name=self.name,
+            summary=self.summary,
             parse_error=self.parse_error,
             connection_error=self.connection_error,
             api_url=self.api_url,
