@@ -29,6 +29,7 @@ function renderIssueStatus(
             {
                 issue_id: "123",
                 name: status,
+                summary: "Issue summary",
                 created: created ? creationDate.toISOString() : null,
                 updated: updated ? updateDate.toISOString() : null,
                 landing_url: landingUrl,
@@ -65,6 +66,11 @@ it("displays a question mark as status if the issue has no status", () => {
     expect(queryByText(/\?/)).not.toBe(null)
 });
 
+it("displays the issue summary in the label if configured", async () => {
+    const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_summary: true } } })
+    expect(queryByText(/summary/)).not.toBe(null)
+});
+
 it("displays the creation date in the label if configured", async () => {
     const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_creation_date: true } } })
     expect(queryByText(/4 days ago/)).not.toBe(null)
@@ -73,6 +79,14 @@ it("displays the creation date in the label if configured", async () => {
 it("does not display the creation date in the label if not configured", async () => {
     const { queryByText } = renderIssueStatus({ issueTracker: { parameters: { show_issue_creation_date: false } } })
     expect(queryByText(/4 days ago/)).toBe(null)
+});
+
+it("displays the issue summary in the popup", async () => {
+    const { queryByText } = renderIssueStatus()
+    userEvent.hover(queryByText(/123/))
+    await waitFor(() => {
+        expect(queryByText("Issue summary")).not.toBe(null)
+    })
 });
 
 it("displays the creation date in the popup", async () => {

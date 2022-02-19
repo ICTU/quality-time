@@ -25,6 +25,9 @@ function IssueWithTracker({ issueStatus, issueTracker }) {
     const color = popupContent ? "red" : "blue";
     const basic = popupContent ? false : true;
     let labelDetails = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
+    if (issueStatus.summary && issueTracker?.parameters?.show_issue_summary) {
+        labelDetails.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
+    }
     if (issueStatus.created && issueTracker?.parameters?.show_issue_creation_date) {
         labelDetails.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created} /></Label.Detail>)
     }
@@ -43,7 +46,7 @@ function IssueWithTracker({ issueStatus, issueTracker }) {
         }
     }
     if (popupContent) {
-        label = <Popup content={popupContent} flowing hoverable trigger={label} />
+        label = <Popup header={issueStatus.summary} content={popupContent} flowing hoverable trigger={label} />
     }
     return label
 }
