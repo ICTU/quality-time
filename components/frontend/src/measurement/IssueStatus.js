@@ -19,17 +19,17 @@ function IssuesWithoutTracker({ issueIds }) {
 }
 
 function labelDetails(issueStatus, issueTracker) {
-    let labelDetails = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
+    let details = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
     if (issueStatus.summary && issueTracker?.parameters?.show_issue_summary) {
-        labelDetails.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
+        details.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
     }
     if (issueStatus.created && issueTracker?.parameters?.show_issue_creation_date) {
-        labelDetails.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created} /></Label.Detail>)
+        details.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created} /></Label.Detail>)
     }
     if (issueStatus.updated && issueTracker?.parameters?.show_issue_update_date) {
-        labelDetails.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated} /></Label.Detail>)
+        details.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated} /></Label.Detail>)
     }
-    return labelDetails
+    return details
 }
 
 function IssueWithTracker({ issueStatus, issueTracker }) {
