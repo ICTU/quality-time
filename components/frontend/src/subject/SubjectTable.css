@@ -1,7 +1,16 @@
-.ui.sortable.table.stickyHeader > thead > tr > th {
+.ui.sortable.table.stickyHeader > thead {
     position: sticky;  /* Make thead sticky by positioning the th's */
     top: 129px;  /* Leave room for the menu bar and the subject title */
     z-index: 1;
+}
+
+.ui.sortable.table.stickyHeader.subjectHasSubTitle > thead {
+    position: sticky;  /* Make thead sticky by positioning the th's */
+    top: 142px;  /* Leave room for the menu bar, the subject title, and the subtitle */
+    z-index: 1;
+}
+
+.ui.sortable.table.stickyHeader > thead > tr > th {
     border-top: 1px solid rgba(34,36,38,.15);  /* Apply the top table border to the th as the table border scrolls out of view */
 }
 
