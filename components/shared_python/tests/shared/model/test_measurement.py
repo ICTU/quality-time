@@ -82,7 +82,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status_start="yesterday",
         )
-        status_start = s_m.status_start()
+        status_start = s_m.status_start()  # pylint: disable=protected-access
         self.assertEqual(status_start, "yesterday")
 
     def test_status_start_empty(self):
@@ -107,7 +107,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status_start="today",
         )
-        s_m._ScaleMeasurement__set_status_start("target_met")
+        s_m._ScaleMeasurement__set_status_start(
+            "target_met"
+        )  # pylint: disable=protected-access
         self.assertEqual(s_m.status_start(), "yesterday")
 
     def test_set_status_start_changed(self):
@@ -123,7 +125,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m = ScaleMeasurement(
             previous_scale_measurement=previous_s_m, measurement=measurement
         )
-        s_m._ScaleMeasurement__set_status_start("target_not_met")
+        s_m._ScaleMeasurement__set_status_start(
+            "target_not_met"
+        )  # pylint: disable=protected-access
         self.assertEqual(s_m.status_start(), measurement["start"])
 
     def test_set_status_start_no_status_start(self):
@@ -138,7 +142,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m = ScaleMeasurement(
             previous_scale_measurement=previous_s_m, measurement=measurement
         )
-        s_m._ScaleMeasurement__set_status_start("target_met")
+        s_m._ScaleMeasurement__set_status_start(
+            "target_met"
+        )  # pylint: disable=protected-access
         self.assertIs(s_m.status_start(), None)
 
     def test_calculate_status_debt_target(self):
@@ -158,7 +164,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
                     near_target=2,
                     debt_target=3,
                 )
-                status = s_m._ScaleMeasurement__calculate_status(2.5)
+                status = s_m._ScaleMeasurement__calculate_status(
+                    2.5
+                )  # pylint: disable=protected-access
                 self.assertEqual(status, "debt_target_met")
 
     def test_calculate_status_near_target(self):
@@ -178,7 +186,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
                     near_target=2,
                     debt_target=3,
                 )
-                status = s_m._ScaleMeasurement__calculate_status(2)
+                status = s_m._ScaleMeasurement__calculate_status(
+                    2
+                )  # pylint: disable=protected-access
                 self.assertEqual(status, "near_target_met")
 
 
@@ -191,7 +201,7 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
         vn_s_m = VersionNumberScaleMeasurement(
             previous_scale_measurement=None, measurement=measurement
         )
-        value = vn_s_m._calculate_value()
+        value = vn_s_m._calculate_value()  # pylint: disable=protected-access
         self.assertEqual(value, "0")
 
     def test_better_or_equal(self):
@@ -200,7 +210,9 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
         vn_s_m = VersionNumberScaleMeasurement(
             previous_scale_measurement=None, measurement=measurement, direction="<"
         )
-        better_or_equal = vn_s_m._better_or_equal("0", "1")
+        better_or_equal = vn_s_m._better_or_equal(
+            "0", "1"
+        )  # pylint: disable=protected-access
         self.assertTrue(better_or_equal)
 
     def test_parse_version(self):
