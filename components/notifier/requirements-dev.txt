@@ -99,9 +99,9 @@ coverage==6.3.1 \
     --hash=sha256:f5a4551dfd09c3bd12fca8144d47fe7745275adf3229b7223c2f9e29a975ebda \
     --hash=sha256:fac0bcc5b7e8169bffa87f0dcc24435446d329cbc2b5486d155c2e0f3b493ae1
     # via -r ../../requirements-dev.in
-cyclonedx-python-lib==0.12.2 \
-    --hash=sha256:7730651c5a27618b0417898a5f4edad8e4b4f342fa2b870504cfe7099312478b \
-    --hash=sha256:942ffc4e9c0ca903adc269124654d59d330755c2d156544afff04600424ddc02
+cyclonedx-python-lib==1.3.0 \
+    --hash=sha256:2b8b1250f6b22b4836bfb86b87381a228377e4d329d6d6d7488a2cdfbc073049 \
+    --hash=sha256:8793fcf6a4735835bda33cda461a9a60c63faf0a8f9c58fc1fc4312e8f307164
     # via pip-audit
 dlint==0.12.0 \
     --hash=sha256:344823d299439aa94fe276b2b3b90733026787d25713c664e137cf5f7d0645f7
@@ -331,13 +331,13 @@ pep8-naming==0.12.1 \
     --hash=sha256:4a8daeaeb33cfcde779309fc0c9c0a68a3bbe2ad8a8308b763c5068f86eb9f37 \
     --hash=sha256:bb2455947757d162aa4cad55dba4ce029005cd1692f2899a21d51d8630ca7841
     # via -r ../../requirements-dev.in
-pip-api==0.0.26 \
-    --hash=sha256:b24e94e5d5d3f161a2db49653798e6a4c1f0ed6b379e511b45a8fa57c185d711 \
-    --hash=sha256:d1266be311f1cd1ddd0d501e99275c7f6ff1fd0ec6db46d521f56e747d9286e5
+pip-api==0.0.27 \
+    --hash=sha256:354825f2fa89b9b1c56e943be32823c09590e13055a57af5590456ff7d6524bd \
+    --hash=sha256:da0a10870b9105bc7ff7f347793db885c5c30102032de9112a6118b7af645478
     # via pip-audit
-pip-audit==1.1.2 \
-    --hash=sha256:374e8528a1376145cbe0f0ec4a7b6a5ebfd6152f665d274498ea49d8bffef24c \
-    --hash=sha256:48325027b803376bee22ca273f8a1b477324c10663c6218a5acebfdc4a107328
+pip-audit==2.0.0 \
+    --hash=sha256:9d74a50661af43f0ee7773611d8e1851529fb1918bdba46f1ce210f6eb0f7db9 \
+    --hash=sha256:f435c4a2fad527029761523b94342ea8b90e3062e270976c52e34bcb5a1a8a48
     # via -r ../../requirements-dev.in
 pip-tools==6.5.1 \
     --hash=sha256:80f1cfc7156e4a4465b1a46a6bb3599587909537db1a149cf3a6b73eed979ee4 \
@@ -448,10 +448,6 @@ requests==2.26.0 \
     # via
     #   cachecontrol
     #   safety
-requirements-parser==0.2.0 \
-    --hash=sha256:5963ee895c2d05ae9f58d3fc641082fb38021618979d6a152b6b1398bd7d4ed4 \
-    --hash=sha256:76650b4a9d98fc65edf008a7920c076bb2a76c08eaae230ce4cfc6f51ea6a773
-    # via cyclonedx-python-lib
 resolvelib==0.8.1 \
     --hash=sha256:c6ea56732e9fb6fca1b2acc2ccc68a0b6b8c566d8f3e78e0443310ede61dbd37 \
     --hash=sha256:d9b7907f055c3b3a2cfc56c914ffd940122915826ff5fb5b1de0c99778f4de98
