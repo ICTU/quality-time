@@ -2,8 +2,14 @@
 
 from datetime import datetime, timedelta, timezone
 import unittest
+from unittest.mock import patch
+from packaging.version import Version
 
-from shared.model.measurement import Measurement
+from shared.model.measurement import (
+    Measurement,
+    ScaleMeasurement,
+    VersionNumberScaleMeasurement,
+)
 from shared.model.metric import Metric
 from shared.model.source import Source
 
@@ -16,9 +22,19 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up the data model."""
         self.data_model = dict(
-            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
+            metrics=dict(
+                metric_type=dict(
+                    direction="<", default_scale="count", scales=["count", "percentage"]
+                )
+            ),
             sources=dict(
-                source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
+                source_type=dict(
+                    entities=dict(
+                        metric_type=dict(
+                            attributes=[dict(key="story_points", type="integer")]
+                        )
+                    )
+                )
             ),
         )
 
@@ -28,7 +44,10 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             addition=addition,
             direction=direction,
             type="metric_type",
-            sources={"uuid-1": dict(type="source_type"), "uuid-2": dict(type="source_type")},
+            sources={
+                "uuid-1": dict(type="source_type"),
+                "uuid-2": dict(type="source_type"),
+            },
         )
         return Metric(self.data_model, metric_data, METRIC_ID)
 
@@ -40,14 +59,198 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         return measurement
 
 
+class ScaleMeasurementTest(MeasurementTestCase):
+    """Testing the ScaleMeasurement class."""
+
+    def test_status(self):
+        """The status should return a string apparently."""
+        measurement = self.measurement(self.metric())
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            status="target_met",
+        )
+        status = s_m.status()
+        self.assertIs(type(status), str)
+        self.assertEqual(status, "target_met")
+
+    def test_status_start(self):
+        """The status_start should get returned."""
+        measurement = self.measurement(self.metric())
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            status_start="yesterday",
+        )
+        status_start = s_m.status_start()
+        self.assertEqual(status_start, "yesterday")
+
+    def test_status_start_empty(self):
+        """The status_start should return None."""
+        measurement = Measurement(self.metric())
+        s_m = ScaleMeasurement(previous_scale_measurement=None, measurement=measurement)
+        status_start = s_m.status_start()
+        self.assertIs(status_start, None)
+
+    def test_set_status_start(self):
+        """Test status_start."""
+
+        measurement = Measurement(self.metric())
+        previous_s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            status_start="yesterday",
+            status="target_met",
+        )
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=previous_s_m,
+            measurement=measurement,
+            status_start="today",
+        )
+        s_m._ScaleMeasurement__set_status_start("target_met")
+        self.assertEqual(s_m.status_start(), "yesterday")
+
+    def test_set_status_start_changed(self):
+        """Test status_start."""
+
+        measurement = Measurement(self.metric())
+        previous_s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            status_start="yesterday",
+            status="target_met",
+        )
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=previous_s_m, measurement=measurement
+        )
+        s_m._ScaleMeasurement__set_status_start("target_not_met")
+        self.assertEqual(s_m.status_start(), measurement["start"])
+
+    def test_set_status_start_no_status_start(self):
+        """Test status_start."""
+
+        measurement = Measurement(self.metric())
+        previous_s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            status="target_met",
+        )
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=previous_s_m, measurement=measurement
+        )
+        s_m._ScaleMeasurement__set_status_start("target_met")
+        self.assertIs(s_m.status_start(), None)
+
+    def test_calculate_status_debt_target(self):
+        """Test calculate status."""
+
+        with patch.object(Metric, "accept_debt_expired", lambda self: False):
+            with patch.object(
+                ScaleMeasurement,
+                "_better_or_equal",
+                lambda self, value, target: value <= target,
+            ):
+                measurement = Measurement(self.metric())
+                s_m = ScaleMeasurement(
+                    previous_scale_measurement=None,
+                    measurement=measurement,
+                    target=1,
+                    near_target=2,
+                    debt_target=3,
+                )
+                status = s_m._ScaleMeasurement__calculate_status(2.5)
+                self.assertEqual(status, "debt_target_met")
+
+    def test_calculate_status_near_target(self):
+        """Test calculate status."""
+
+        with patch.object(Metric, "accept_debt_expired", lambda self: True):
+            with patch.object(
+                ScaleMeasurement,
+                "_better_or_equal",
+                lambda self, value, target: value <= target,
+            ):
+                measurement = Measurement(self.metric())
+                s_m = ScaleMeasurement(
+                    previous_scale_measurement=None,
+                    measurement=measurement,
+                    target=1,
+                    near_target=2,
+                    debt_target=3,
+                )
+                status = s_m._ScaleMeasurement__calculate_status(2)
+                self.assertEqual(status, "near_target_met")
+
+
+class VersionNumberScaleMeasurementTest(MeasurementTestCase):
+    """Tests for the version numner measurement class."""
+
+    def test_calculate_value(self):
+        """Test calculate value."""
+        measurement = Measurement(self.metric())
+        vn_s_m = VersionNumberScaleMeasurement(
+            previous_scale_measurement=None, measurement=measurement
+        )
+        value = vn_s_m._calculate_value()
+        self.assertEqual(value, "0")
+
+    def test_better_or_equal(self):
+        """Test calculate value."""
+        measurement = Measurement(self.metric())
+        vn_s_m = VersionNumberScaleMeasurement(
+            previous_scale_measurement=None, measurement=measurement, direction="<"
+        )
+        better_or_equal = vn_s_m._better_or_equal("0", "1")
+        self.assertTrue(better_or_equal)
+
+    def test_parse_version(self):
+        """Parse a None version."""
+        version = VersionNumberScaleMeasurement.parse_version(None)
+        self.assertEqual(Version("0"), version)
+
+
 class MeasurementTest(MeasurementTestCase):
     """Unit tests for the measurement class."""
 
     def test_copy(self):
         """Test that the copy has new timestamps."""
         timestamp = "2020-01-01"
-        measurement_copy = Measurement(self.metric(), start=timestamp, end=timestamp).copy()
+        measurement_copy = Measurement(
+            self.metric(), start=timestamp, end=timestamp
+        ).copy()
         self.assertNotIn(timestamp, measurement_copy["start"], measurement_copy["end"])
+
+    def test_equals(self):
+        """Test that metrics are equal."""
+        measurement_1 = Measurement(self.metric())
+        measurement_2 = Measurement(self.metric())
+        self.assertTrue(measurement_1.equals(measurement_2))
+
+    def test_entity_user_data(self):
+        """Copy the user data."""
+
+        measurement_1 = Measurement(
+            self.metric(),
+            sources=[
+                dict(
+                    source_uuid="uuid-1",
+                    type="source_type",
+                    entity_user_data={"key": {}},
+                )
+            ],
+        )
+        measurement_2 = Measurement(
+            self.metric(),
+            sources=[
+                dict(source_uuid="uuid-1", type="source_type"),
+                dict(source_uuid="uuid-2", type="source_type"),
+            ],
+        )
+
+        measurement_2.copy_entity_user_data(measurement_1)
+        for source in measurement_2.sources():
+            if source["source_uuid"] == "uuid-1":
+                self.assertTrue("entity_user_data" in source)
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):
@@ -57,13 +260,21 @@ class SummarizeMeasurementTest(MeasurementTestCase):
         """Test the measurement summary."""
         measurement = self.measurement(self.metric())
         self.assertEqual(
-            dict(count=dict(value=None, status=None), start=measurement["start"], end=measurement["end"]),
+            dict(
+                count=dict(value=None, status=None),
+                start=measurement["start"],
+                end=measurement["end"],
+            ),
             measurement.summarize("count"),
         )
 
     def test_summarize_with_non_default_start_date(self):
         """Test the measurement summary when the measurement has a specific start date."""
-        timestamp = (datetime.now(timezone.utc) - timedelta(days=1)).replace(microsecond=0).isoformat()
+        timestamp = (
+            (datetime.now(timezone.utc) - timedelta(days=1))
+            .replace(microsecond=0)
+            .isoformat()
+        )
         measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
             dict(count=dict(value=None, status=None), start=timestamp, end=timestamp),
@@ -79,7 +290,13 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         super().setUp()
         self.source_count = 0
 
-    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
+    def source(
+        self,
+        metric: Metric,
+        parse_error: str = None,
+        total: str = None,
+        value: str = None,
+    ) -> Source:
         """Create a source fixture."""
         self.source_count += 1
         return Source(
@@ -101,14 +318,17 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     def test_error(self):
         """Test that the measurement value is None if a source has an error."""
         metric = self.metric()
-        measurement = self.measurement(metric, sources=[self.source(metric, parse_error="error")])
+        measurement = self.measurement(
+            metric, sources=[self.source(metric, parse_error="error")]
+        )
         self.assertEqual(None, measurement["count"]["value"])
 
     def test_add_two_sources(self):
         """Test that the values of two sources are added."""
         metric = self.metric()
         measurement = self.measurement(
-            metric, sources=[self.source(metric, value="10"), self.source(metric, value="20")]
+            metric,
+            sources=[self.source(metric, value="10"), self.source(metric, value="20")],
         )
         self.assertEqual("30", measurement["count"]["value"])
 
@@ -116,7 +336,8 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         """Test that the max value of two sources is returned."""
         metric = self.metric(addition="max")
         measurement = self.measurement(
-            metric, sources=[self.source(metric, value="10"), self.source(metric, value="20")]
+            metric,
+            sources=[self.source(metric, value="10"), self.source(metric, value="20")],
         )
         self.assertEqual("20", measurement["count"]["value"])
 
@@ -124,7 +345,12 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         """Test that the number of ignored entities is subtracted."""
         metric = self.metric()
         source = self.source(metric, value="10")
-        source["entities"] = [dict(key="entity1"), dict(key="entity2"), dict(key="entity3"), dict(key="entity4")]
+        source["entities"] = [
+            dict(key="entity1"),
+            dict(key="entity2"),
+            dict(key="entity3"),
+            dict(key="entity4"),
+        ]
         source["entity_user_data"] = dict(
             entity1=dict(status="fixed"),
             entity2=dict(status="wont_fix", status_end_date="3000-01-01"),
@@ -135,7 +361,9 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_value_ignored_entities(self):
         """Test that the summed value of ignored entities is subtracted, if an entity attribute should be used."""
-        self.data_model["sources"]["source_type"]["entities"]["metric_type"]["measured_attribute"] = "story_points"
+        self.data_model["sources"]["source_type"]["entities"]["metric_type"][
+            "measured_attribute"
+        ] = "story_points"
         metric = self.metric()
         source = self.source(metric, value="10")
         source["entities"] = [
@@ -155,7 +383,10 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     def test_percentage(self):
         """Test a non-zero percentage."""
         metric = self.metric()
-        sources = [self.source(metric, value="10", total="70"), self.source(metric, value="20", total="50")]
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="20", total="50"),
+        ]
         measurement = self.measurement(metric, sources=sources)
         self.assertEqual("25", measurement["percentage"]["value"])
 
@@ -176,13 +407,19 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     def test_min_of_percentages(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
         metric = self.metric(addition="min")
-        sources = [self.source(metric, value="10", total="70"), self.source(metric, value="20", total="50")]
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="20", total="50"),
+        ]
         measurement = self.measurement(metric, sources=sources)
         self.assertEqual("14", measurement["percentage"]["value"])
 
     def test_min_of_percentages_with_zero_denominator(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
         metric = self.metric(addition="min")
-        sources = [self.source(metric, value="10", total="70"), self.source(metric, value="0", total="0")]
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="0", total="0"),
+        ]
         measurement = self.measurement(metric, sources=sources)
         self.assertEqual("0", measurement["percentage"]["value"])
