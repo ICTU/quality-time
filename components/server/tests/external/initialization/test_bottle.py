@@ -2,12 +2,12 @@
 
 import unittest
 from unittest.mock import Mock
-
 import bottle
+
+from shared.routes.plugins import InjectionPlugin
 
 from external.routes.plugins import AuthPlugin
 from external.initialization import init_bottle
-from shared.routes.plugins import InjectionPlugin
 
 
 class BottleInitTest(unittest.TestCase):
