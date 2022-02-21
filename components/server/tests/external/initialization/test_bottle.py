@@ -5,9 +5,9 @@ from unittest.mock import Mock
 
 import bottle
 
-from shared.routes.plugins import InjectionPlugin
 from external.routes.plugins import AuthPlugin
 from external.initialization import init_bottle
+from shared.routes.plugins import InjectionPlugin
 
 
 class BottleInitTest(unittest.TestCase):
@@ -15,7 +15,8 @@ class BottleInitTest(unittest.TestCase):
 
     def tearDown(self):
         """Override to remove the plugins."""
-        bottle.app().uninstall(True)
+        bottle.uninstall(AuthPlugin)
+        bottle.uninstall(InjectionPlugin)
 
     def test_init(self):
         """Test that bottle has been initialized."""
