@@ -19,7 +19,9 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
     """Class representing a measurement on a specific scale."""
 
     def __init__(self, *args, **kwargs):
-        self.__previous_scale_measurement: ScaleMeasurement | None = kwargs.pop("previous_scale_measurement")
+        self.__previous_scale_measurement: ScaleMeasurement | None = kwargs.pop(
+            "previous_scale_measurement"
+        )
         self._measurement: Measurement = kwargs.pop("measurement")
         self._metric: Metric = self._measurement.metric
         super().__init__(*args, **kwargs)
@@ -36,7 +38,9 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Update the measurement value and status."""
         self["direction"] = self._metric.direction()
         self["value"] = value = (
-            self._calculate_value() if self._measurement.sources_exist() and self._measurement.sources_ok() else None
+            self._calculate_value()
+            if self._measurement.sources_exist() and self._measurement.sources_ok()
+            else None
         )
         self["status"] = status = self.__calculate_status(value)
         self.__set_status_start(status)
@@ -45,14 +49,22 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Set the status start date."""
         if (previous := self.__previous_scale_measurement) is None:
             return
-        if status_start := previous.status_start() if status == previous.status() else self._measurement["start"]:
+        if (
+            status_start := previous.status_start()
+            if status == previous.status()
+            else self._measurement["start"]
+        ):
             self["status_start"] = status_start
 
     def update_targets(self) -> None:
         """Update the measurement targets."""
         self["target"] = self._metric.get_target("target")
         self["near_target"] = self._metric.get_target("near_target")
-        self["debt_target"] = None if self._metric.accept_debt_expired() else self._metric.get_target("debt_target")
+        self["debt_target"] = (
+            None
+            if self._metric.accept_debt_expired()
+            else self._metric.get_target("debt_target")
+        )
 
     @abstractmethod
     def _calculate_value(self) -> str:
@@ -60,14 +72,23 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
 
     def __calculate_status(self, value: str | None) -> Status | None:
         """Determine the status of the measurement."""
-        target, near_target, debt_target = self.get("target"), self.get("near_target"), self.get("debt_target")
+        target, near_target, debt_target = (
+            self.get("target"),
+            self.get("near_target"),
+            self.get("debt_target"),
+        )
         if value is None:
             status = self.__calculate_status_without_measurement()
         elif self._better_or_equal(value, target):
             status = "target_met"
-        elif self._better_or_equal(value, debt_target) and not self._metric.accept_debt_expired():
+        elif (
+            self._better_or_equal(value, debt_target)
+            and not self._metric.accept_debt_expired()
+        ):
             status = "debt_target_met"
-        elif self._better_or_equal(target, near_target) and self._better_or_equal(value, near_target):
+        elif self._better_or_equal(target, near_target) and self._better_or_equal(
+            value, near_target
+        ):
             status = "near_target_met"
         else:
             status = "target_not_met"
@@ -77,7 +98,11 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Determine the status of the measurement if there is no measurement value."""
         # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
-        return None if self._metric.accept_debt_expired() or self._metric.sources else "debt_target_met"
+        return (
+            None
+            if self._metric.accept_debt_expired() or self._metric.sources
+            else "debt_target_met"
+        )
 
     @abstractmethod
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -90,7 +115,10 @@ class CountScaleMeasurement(ScaleMeasurement):
     def _calculate_value(self) -> str:
         """Override to calculate the value of the count scale measurement."""
         sources = self._measurement.sources()
-        values = [int(str(source.value())) - source.value_of_entities_to_ignore() for source in sources]
+        values = [
+            int(str(source.value())) - source.value_of_entities_to_ignore()
+            for source in sources
+        ]
         add = self._metric.addition()
         return str(add(values))
 
@@ -106,7 +134,10 @@ class PercentageScaleMeasurement(ScaleMeasurement):
     def _calculate_value(self) -> str:
         """Override to calculate the percentage."""
         sources = self._measurement.sources()
-        values = [int(str(source.value())) - source.value_of_entities_to_ignore() for source in sources]
+        values = [
+            int(str(source.value())) - source.value_of_entities_to_ignore()
+            for source in sources
+        ]
         totals = [int(source.total() or 100) for source in sources]
         direction = self._metric.direction()
         if (add := self._metric.addition()) is sum:
@@ -117,7 +148,12 @@ class PercentageScaleMeasurement(ScaleMeasurement):
             # The metric specifies to take the minimum or maximum of the percentage of each source, so we first divide
             # the nominators and denominators per source to calculate the percentage per source, and then take the
             # minimum or maximum value
-            value = add([percentage(value, total, direction) for value, total in zip(values, totals)])
+            value = add(
+                [
+                    percentage(value, total, direction)
+                    for value, total in zip(values, totals)
+                ]
+            )
         return str(value)
 
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -131,7 +167,9 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
 
     def _calculate_value(self) -> str:
         """Override to calculate the version number."""
-        values = [self.parse_version(source.value()) for source in self._measurement.sources()]
+        values = [
+            self.parse_version(source.value()) for source in self._measurement.sources()
+        ]
         add = self._metric.addition()  # Returns either min or max
         return str(add(values))
 
@@ -159,21 +197,31 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     # two measurements are the same.
 
     SCALE_CLASSES = dict(
-        count=CountScaleMeasurement, percentage=PercentageScaleMeasurement, version_number=VersionNumberScaleMeasurement
+        count=CountScaleMeasurement,
+        percentage=PercentageScaleMeasurement,
+        version_number=VersionNumberScaleMeasurement,
     )
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         self.metric = metric
-        self.__previous_measurement: Measurement | None = kwargs.pop("previous_measurement", None)
+        self.__previous_measurement: Measurement | None = kwargs.pop(
+            "previous_measurement", None
+        )
         super().__init__(*args, **kwargs)
         if self.__previous_measurement or "start" not in self:
             self["start"] = self["end"] = iso_timestamp()
-        self["sources"] = [Source(self.metric, source) for source in self.get("sources", [])]
+        self["sources"] = [
+            Source(self.metric, source) for source in self.get("sources", [])
+        ]
 
     def scale_measurement(self, scale: Scale) -> ScaleMeasurement:
         """Create a measurement with a specific scale."""
         measurement_class = self.SCALE_CLASSES[scale]
-        previous = None if self.__previous_measurement is None else self.__previous_measurement[scale]
+        previous = (
+            None
+            if self.__previous_measurement is None
+            else self.__previous_measurement[scale]
+        )
         # Mypy thinks the SCALE_CLASSES dict lookup results in a class of type ScaleMeasurement and complains that
         # ScaleMeasurement, being abstract, can't be instantiated. Suppress the error.
         return measurement_class(
@@ -186,7 +234,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def __getitem__(self, item):
         """Override to convert the scale dictionary to a ScaleMeasurement instance before returning it."""
-        if item in self.metric.scales() and not isinstance(self.get(item), ScaleMeasurement):
+        if item in self.metric.scales() and not isinstance(
+            self.get(item), ScaleMeasurement
+        ):
             self[item] = self.scale_measurement(item)
         return super().__getitem__(item)
 
@@ -203,12 +253,16 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
         Technical debt can expire because it was turned off or because the end date passed.
         """
-        any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
+        any_debt_target = any(
+            self[scale].get("debt_target") is not None for scale in self.metric.scales()
+        )
         return self.metric.accept_debt_expired() if any_debt_target else False
 
     def status(self) -> Status:
         """Return the status of the measurement."""
-        return cast(Status, self.get(self.metric.scale(), {}).get("status", self.get("status")))
+        return cast(
+            Status, self.get(self.metric.scale(), {}).get("status", self.get("status"))
+        )
 
     def status_start(self):
         """Return the start timestamp of the current status, if any."""
@@ -216,7 +270,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def copy_entity_user_data(self, measurement: Measurement) -> None:
         """Copy the entity user data from the measurement to this measurement."""
-        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
+        old_sources = {
+            source["source_uuid"]: source for source in measurement.sources()
+        }
         for new_source in self.sources():
             if old_source := old_sources.get(new_source["source_uuid"]):
                 new_source.copy_entity_user_data(old_source)
@@ -230,15 +286,16 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def sources_ok(self) -> bool:
         """Return whether there are sources and none have parse or connection errors."""
         sources = self.sources()
-        return bool(sources) and not any(source["parse_error"] or source["connection_error"] for source in sources)
+        return bool(sources) and not any(
+            source["parse_error"] or source["connection_error"] for source in sources
+        )
 
     def sources_exist(self) -> bool:
         """Return whether all measurement sources exist in the metric."""
-<<<<<<< HEAD
-        return all(source["source_uuid"] in self.metric.source_uuids for source in self.sources())
-=======
-        return all(source["source_uuid"] in self.metric.sources() for source in self.sources())
->>>>>>> 51527c9c (move shared code into module)
+        return all(
+            source["source_uuid"] in self.metric.source_uuids
+            for source in self.sources()
+        )
 
     def sources(self) -> Sequence[Source]:
         """Return the measurement's sources."""
