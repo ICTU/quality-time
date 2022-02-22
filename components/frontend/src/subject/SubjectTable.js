@@ -38,7 +38,6 @@ export function SubjectTable({
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
-
     const dates = getColumnDates(reportDate, dateInterval, dateOrder, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
     const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
