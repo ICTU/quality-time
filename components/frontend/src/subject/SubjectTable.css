@@ -1,33 +1,40 @@
-.ui.sortable.table.stickyHeader > thead {
-    position: sticky;  /* Make thead sticky by positioning the th's */
-    top: 129px;  /* Leave room for the menu bar and the subject title */
+.ui.sortable.table.stickyHeader>thead {
+    /* Make thead sticky by positioning the th's */
+    position: sticky;
+    /* Leave room for the menu bar and the subject title */
+    top: 129px;
     z-index: 1;
 }
 
-.ui.sortable.table.stickyHeader.subjectHasSubTitle > thead {
-    position: sticky;  /* Make thead sticky by positioning the th's */
-    top: 142px;  /* Leave room for the menu bar, the subject title, and the subtitle */
+.ui.sortable.table.stickyHeader.subjectHasSubTitle>thead {
+    /* Make thead sticky by positioning the th's */
+    position: sticky;
+    /* Leave room for the menu bar, the subject title, and the subtitle */
+    top: 142px;
     z-index: 1;
 }
 
-.ui.sortable.table.stickyHeader > thead > tr > th {
-    border-top: 1px solid rgba(34,36,38,.15);  /* Apply the top table border to the th as the table border scrolls out of view */
+.ui.sortable.table.stickyHeader>thead>tr>th {
+    /* Apply the top table border to the th as the table border scrolls out of view */
+    border-top: 1px solid rgba(34, 36, 38, .15);
 }
 
 .ui.sortable.table.stickyHeader {
-    border-top: 0px;  /* The top table border is applied to the th's because the top table border scrolls out of view */
+    /* The top table border is applied to the th's because the top table border scrolls out of view */
+    border-top: 0px;
 }
 
 /* Remove opacity from the th background, otherwise the rows underneath are visible. */
 
 .ui.sortable.table:not(.basic)>thead>tr>th.sorted {
-    background: rgba(242,242,242,1);
+    background: rgba(242, 242, 242, 1);
 }
 
 .ui.sortable.table:not(.basic)>thead>tr>th:not(.unsortable):hover {
-    background: rgba(242,242,242,1);
+    background: rgba(242, 242, 242, 1);
 }
 
 .ui.sortable.table:not(.basic)>thead>tr>th.unsortable:hover {
-    background: rgba(249,250,251,1);  /* Don't highlight unsortable columns */
+    /* Don't highlight unsortable columns */
+    background: rgba(249, 250, 251, 1);
 }
