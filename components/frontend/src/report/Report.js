@@ -26,7 +26,7 @@ function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     function tag_cards() {
         return Object.entries(report.summary_by_tag).map(([tag, summary]) =>
             <MetricSummaryCard
-                header={<Tag tag={tag} color={tags.includes(tag) ? "blue" : null} />}
+                header={<Tag tag={tag} selected={tags.includes(tag)} />}
                 key={tag}
                 onClick={() => setTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
                 {...summary}
