@@ -24,17 +24,35 @@
     border-top: 0px;
 }
 
+
 /* Remove opacity from the th background, otherwise the rows underneath are visible. */
 
-.ui.sortable.table:not(.basic)>thead>tr>th.sorted {
-    background: rgba(242, 242, 242, 1);
+.ui.inverted.sortable.table>thead>tr>th {
+    background-color: rgba(50, 50, 50, 1);
 }
 
-.ui.sortable.table:not(.basic)>thead>tr>th:not(.unsortable):hover {
-    background: rgba(242, 242, 242, 1);
+.ui.sortable.table>thead>tr>th.sorted {
+    background-color: rgba(242, 242, 242, 1);
 }
 
-.ui.sortable.table:not(.basic)>thead>tr>th.unsortable:hover {
+.ui.inverted.sortable.table>thead>tr>th.sorted {
+    background-color: rgba(80, 80, 80, 1) !important;
+}
+
+.ui.sortable.table>thead>tr>th:not(.unsortable):hover {
+    background-color: rgba(242, 242, 242, 1);
+}
+
+.ui.inverted.sortable.table>thead>tr>th:not(.unsortable):hover {
+    background-color: rgba(100, 100, 100, 1);
+}
+
+.ui.sortable.table>thead>tr>th.unsortable:hover {
     /* Don't highlight unsortable columns */
-    background: rgba(249, 250, 251, 1);
+    background-color: rgba(249, 250, 251, 1);
+}
+
+.ui.inverted.sortable.table>thead>tr>th.unsortable:hover {
+    /* Don't highlight unsortable columns */
+    background-color: rgba(50, 50, 50, 1);
 }

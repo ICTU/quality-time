@@ -1,5 +1,8 @@
 import React, { useContext } from 'react';
-import { Grid, Header, Icon, Label, Menu, Tab } from 'semantic-ui-react';
+import { Grid, Label, Menu } from 'semantic-ui-react';
+import { Header } from '../semantic_ui_react_wrappers/Header';
+import { Icon } from '../semantic_ui_react_wrappers/Icon';
+import { Tab } from '../semantic_ui_react_wrappers/Tab';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';

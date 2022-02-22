@@ -19,9 +19,11 @@ export function ViewPanel({
     setNrDates,
     setSortColumn,
     setSortDirection,
+    setUIMode,
     sortColumn,
     sortDirection,
     toggleHiddenColumn,
+    uiMode,
     visibleDetailsTabs
 }) {
     return (
@@ -73,6 +75,14 @@ export function ViewPanel({
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+            </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Dark/light mode</Header>
+                <Menu vertical inverted size="small">
+                    <UIModeMenuItem mode={null} uiMode={uiMode} setUIMode={setUIMode} />
+                    <UIModeMenuItem mode="dark" uiMode={uiMode} setUIMode={setUIMode} />
+                    <UIModeMenuItem mode="light" uiMode={uiMode} setUIMode={setUIMode} />
+                </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
@@ -146,6 +156,7 @@ export function ViewPanel({
     )
 }
 
+
 function VisibleColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
@@ -192,6 +203,16 @@ function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNot
         <div onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
             <Menu.Item active={hideMetricsNotRequiringAction === hide} color={activeColor} onClick={() => setHideMetricsNotRequiringAction(hide)}>
                 {hide ? 'Metrics requiring action' : 'All metrics'}
+            </Menu.Item>
+        </div>
+    )
+}
+
+function UIModeMenuItem({ mode, uiMode, setUIMode }) {
+    return (
+        <div onKeyPress={(event) => { event.preventDefault(); setUIMode(mode) }} tabIndex={0}>
+            <Menu.Item color={activeColor} active={mode === uiMode} onClick={() => setUIMode(mode)}>
+                {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
             </Menu.Item>
         </div>
     )

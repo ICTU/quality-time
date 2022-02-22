@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Feed, Form, Header, Icon, Segment } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
+import { Button } from '../semantic_ui_react_wrappers/Button';
+import { Feed } from '../semantic_ui_react_wrappers/Feed';
+import { Form } from '../semantic_ui_react_wrappers/Form';
+import { Header } from '../semantic_ui_react_wrappers/Header';
+import { Segment } from '../semantic_ui_react_wrappers/Segment';
 import { get_changelog } from '../api/changelog';
 import { Avatar } from '../widgets/Avatar';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';

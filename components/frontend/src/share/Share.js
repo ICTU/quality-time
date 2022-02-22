@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import { Header } from '../semantic_ui_react_wrappers/Header';
 import { PermLinkButton } from '../widgets/Button';
 
 export function Share({ title, url }) {

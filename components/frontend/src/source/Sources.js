@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
-import { Message, Segment } from 'semantic-ui-react';
-import { Source } from './Source';
+import { Message } from 'semantic-ui-react';
+import { Segment } from '../semantic_ui_react_wrappers/Segment';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
+import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { source_options } from '../widgets/menu_options';
 import { show_message } from '../widgets/toast';
 import { pluralize } from '../utils';
+import { Source } from './Source';
 
 function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     const dataModel = useContext(DataModel);

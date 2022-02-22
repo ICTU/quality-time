@@ -17,7 +17,7 @@ function Background({ data, ...props }) {
     )
 }
 
-export function TrendGraph({ metric, measurements }) {
+export function TrendGraph({ darkMode, metric, measurements }) {
     const dataModel = useContext(DataModel)
     const metricName = get_metric_name(metric, dataModel);
     const metricType = dataModel.metrics[metric.type];
@@ -95,7 +95,7 @@ export function TrendGraph({ metric, measurements }) {
         <VictoryChart
             height={250}
             scale={{ x: "time", y: "linear" }}
-            style={{ parent: { height: "100%", background: "white" } }}
+            style={{ parent: { height: "100%", background: darkMode ? "black" : "white" } }}
             theme={VictoryTheme.material}
             width={750}
         >

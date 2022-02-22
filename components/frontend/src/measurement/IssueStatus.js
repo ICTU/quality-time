@@ -1,5 +1,6 @@
 import React from 'react';
-import { Label, Popup } from 'semantic-ui-react';
+import { Label } from 'semantic-ui-react';
+import { Popup } from '../semantic_ui_react_wrappers/Popup';
 import { HyperLink } from '../widgets/HyperLink';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import TimeAgo from 'react-timeago';

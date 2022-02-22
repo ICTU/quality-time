@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Icon, Label, Menu, Tab } from 'semantic-ui-react';
+import { Icon, Label, Menu } from 'semantic-ui-react';
+import { Tab } from '../semantic_ui_react_wrappers/Tab';
 import { TrendGraph } from './TrendGraph';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';

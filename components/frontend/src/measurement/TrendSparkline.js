@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext} from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme } from 'victory';
+import { DarkMode } from '../context/DarkMode';
 import { pluralize } from '../utils';
 
 export function TrendSparkline({ measurements, scale, report_date }) {
+    const stroke = useContext(DarkMode) ? "white" : "black"
     if (scale === "version_number") { return null }
     let points = [];
     let yValues = new Set();
@@ -26,7 +28,7 @@ export function TrendSparkline({ measurements, scale, report_date }) {
             <VictoryGroup theme={VictoryTheme.material} scale={{ x: "time", y: "linear" }} domain={{ x: [week_ago, now] }} height={30} padding={0}>
                 <VictoryLine data={points} interpolation="stepBefore" style={{
                     data: {
-                        stroke: "black", strokeWidth: 3, width: "100%"
+                        stroke: stroke, strokeWidth: 3, width: "100%"
                     }
                 }} />
             </VictoryGroup>

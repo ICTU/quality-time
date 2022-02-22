@@ -5,6 +5,10 @@
     padding: 0px;
 }
 
+.tabbutton.inverted {
+    color: white
+}
+
 .tabbutton:focus {
     outline: thin dotted;
 }

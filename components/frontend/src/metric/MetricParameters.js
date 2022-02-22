@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
-import { Grid, Header, Icon, Popup } from 'semantic-ui-react';
+import { Grid, Header } from 'semantic-ui-react';
+import { Icon } from '../semantic_ui_react_wrappers/Icon';
+import { Popup } from '../semantic_ui_react_wrappers/Popup';
 import { MetricType } from './MetricType';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';

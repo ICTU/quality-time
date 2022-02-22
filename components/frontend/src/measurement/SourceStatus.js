@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Label, Popup } from 'semantic-ui-react';
+import { Label } from 'semantic-ui-react';
+import { Popup } from '../semantic_ui_react_wrappers/Popup';
 import { DataModel } from '../context/DataModel';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';

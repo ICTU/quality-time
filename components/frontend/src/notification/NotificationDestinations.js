@@ -1,5 +1,8 @@
 import React from 'react';
-import { Grid, Icon, Message, Popup, Segment } from 'semantic-ui-react';
+import { Grid, Message } from 'semantic-ui-react';
+import { Icon } from '../semantic_ui_react_wrappers/Icon';
+import { Popup } from '../semantic_ui_react_wrappers/Popup';
+import { Segment } from '../semantic_ui_react_wrappers/Segment';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'

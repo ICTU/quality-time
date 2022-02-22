@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Label } from 'semantic-ui-react';
+import { Label } from 'semantic-ui-react';
+import { Form } from '../semantic_ui_react_wrappers/Form';
 
 export function Input(props) {
     let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Icon, Popup } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
+import { Popup } from '../semantic_ui_react_wrappers/Popup';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import './StatusIcon.css';
 

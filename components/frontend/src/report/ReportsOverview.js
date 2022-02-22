@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message, Segment } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CommentSegment } from '../widgets/CommentSegment';
@@ -8,6 +8,7 @@ import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddButton, CopyButton } from '../widgets/Button';
+import { Segment } from '../semantic_ui_react_wrappers/Segment';
 import { report_options } from '../widgets/menu_options';
 
 function ReportsDashboard({ reports, open_report, layout, reload }) {

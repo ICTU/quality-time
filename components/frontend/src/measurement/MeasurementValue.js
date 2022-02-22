@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Popup } from "semantic-ui-react";
+import { Popup } from "../semantic_ui_react_wrappers/Popup";
 import { DataModel } from "../context/DataModel";
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { format_minutes, get_metric_value } from '../utils';
