@@ -179,7 +179,7 @@ function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
 
 function SortOrderMenuItem({ order, sortOrder, setSortOrder }) {
     return (
-        <div key={order} onKeyPress={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
+        <div onKeyPress={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
             <Menu.Item active={sortOrder === order} color={activeColor} onClick={() => setSortOrder(order)}>
                 {capitalize(order)}
             </Menu.Item>
@@ -189,7 +189,7 @@ function SortOrderMenuItem({ order, sortOrder, setSortOrder }) {
 
 function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
     return (
-        <div key={hide} onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
+        <div onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
             <Menu.Item active={hideMetricsNotRequiringAction === hide} color={activeColor} onClick={() => setHideMetricsNotRequiringAction(hide)}>
                 {hide ? 'Metrics requiring action' : 'All metrics'}
             </Menu.Item>
