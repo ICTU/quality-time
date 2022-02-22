@@ -1,27 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Icon, Header } from 'semantic-ui-react';
-import { shallow } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { HeaderWithDetails } from './HeaderWithDetails';
 
-it('renders without crashing', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<HeaderWithDetails />, div);
-    ReactDOM.unmountComponentAtNode(div);
-});
-
-describe('<HeaderWithDetails />', () => {
-    it('changes the caret on mouse click', () => {
-        const wrapper = shallow(<HeaderWithDetails />);
-        expect(wrapper.find(Icon).prop("name")).toBe("caret right");
-        wrapper.find(Header).simulate("click");
-        expect(wrapper.find(Icon).prop("name")).toBe("caret down");
-    });
-
-    it('changes the caret on key press', () => {
-        const wrapper = shallow(<HeaderWithDetails />);
-        expect(wrapper.find(Icon).prop("name")).toBe("caret right");
-        wrapper.find(Header).simulate("keyPress");
-        expect(wrapper.find(Icon).prop("name")).toBe("caret down");
-    })
-});
+it('expands and collapses the details on click', () => {
+    render(<HeaderWithDetails><p>Hello</p></HeaderWithDetails>)
+    expect(screen.queryAllByText("Hello").length).toBe(0)
+    fireEvent.click(screen.getByTitle("expand"))
+    expect(screen.getAllByText("Hello").length).toBe(1)
+    fireEvent.click(screen.getByTitle("expand"))
+    expect(screen.queryAllByText("Hello").length).toBe(0)
+})

@@ -4,7 +4,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
-export function SubjectType({subject_type, set_value}) {
+export function SubjectType({ subject_type, set_value }) {
     const dataModel = useContext(DataModel)
     let options = [];
     Object.keys(dataModel.subjects).forEach((key) => {

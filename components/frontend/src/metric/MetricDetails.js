@@ -67,8 +67,7 @@ export function MetricDetails({
         {
             menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricConfiguration
-                    metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+                <MetricConfiguration metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {
