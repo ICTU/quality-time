@@ -28,7 +28,8 @@ const report = {
     subjects: {
         subject_uuid: {
             type: "subject_type", name: "Subject title", metrics: {
-                metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] }
+                metric_uuid: { name: "Metric name", type: "metric_type", tags: ["tag"], recent_measurements: [] },
+                another_metric_uuid: { name: "Metric name", type: "metric_type", tags: [], recent_measurements: [] },
             }
         }
     }
@@ -106,4 +107,11 @@ it('sorts another column', async () => {
     renderReport(report, { sortColumn: "issues", handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
+});
+
+it('filters by tag', async () => {
+    renderReport(report)
+    expect(screen.getAllByText(/Metric name/).length).toBe(2)
+    fireEvent.click(screen.getAllByText(/tag/)[0])
+    expect(screen.getAllByText(/Metric name/).length).toBe(1)
 });
