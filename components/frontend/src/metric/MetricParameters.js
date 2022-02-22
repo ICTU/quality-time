@@ -110,7 +110,7 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     return (
         <SingleChoiceInput
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
+            label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon tabIndex="0" name="help circle" link /></HyperLink></label>}
             value={metric.accept_debt || false}
             options={[
                 { key: true, text: "Yes", value: true },
