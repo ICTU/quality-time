@@ -10,7 +10,7 @@ import { ViewPanel } from './header_footer/ViewPanel';
 
 import { DataModel } from './context/DataModel';
 import { Permissions } from './context/Permissions';
-import {PageContent} from './PageContent';
+import { PageContent } from './PageContent';
 import { getUserPermissions, useURLSearchQuery } from './utils'
 
 export function AppUI({
