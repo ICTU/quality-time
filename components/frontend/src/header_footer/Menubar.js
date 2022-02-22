@@ -27,7 +27,7 @@ function Login({ set_user }) {
 
     return (
         <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny' onClose={() => setLoginError(false)} >
-            <Header content='Login' />
+            <Modal.Header content='Login' />
             <Modal.Content>
                 <Form error={login_error} warning={!login_error} onSubmit={() => submit()} >
                     <Form.Input autoFocus label='Username' name='username' onChange={(event, { value }) => setUsername(value)} />
