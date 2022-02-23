@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from '../semantic_ui_react_wrappers/Table';
+import { Table } from '../semantic_ui_react_wrappers';
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';

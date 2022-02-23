@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '../semantic_ui_react_wrappers/Card';
+import { Card } from '../semantic_ui_react_wrappers';
 import { StatusPieChart } from './StatusPieChart';
 import './MetricSummaryCard.css';
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Header } from 'semantic-ui-react';
-import { Icon } from '../semantic_ui_react_wrappers/Icon';
-import { Popup } from '../semantic_ui_react_wrappers/Popup';
+import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { DateInput } from '../fields/DateInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { TextInput } from '../fields/TextInput';

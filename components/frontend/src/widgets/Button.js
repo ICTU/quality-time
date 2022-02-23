@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown, Icon, Input } from 'semantic-ui-react';
-import { Button } from '../semantic_ui_react_wrappers/Button';
-import { Popup } from '../semantic_ui_react_wrappers/Popup';
+import { Button, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
 import { registeredURLSearchParams } from '../utils';

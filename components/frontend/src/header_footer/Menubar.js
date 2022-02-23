@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from 'semantic-ui-react';
-import { Form } from '../semantic_ui_react_wrappers/Form';
-import { Modal } from '../semantic_ui_react_wrappers/Modal';
-import { Popup } from '../semantic_ui_react_wrappers/Popup';
+import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { DatePicker } from '../widgets/DatePicker';

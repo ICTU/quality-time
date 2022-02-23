@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Message } from 'semantic-ui-react';
-import { Segment } from '../semantic_ui_react_wrappers/Segment';
+import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { add_source, copy_source, move_source } from '../api/source';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
-import { Tab } from '../semantic_ui_react_wrappers/Tab';
+import { Tab } from '../semantic_ui_react_wrappers';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Comment } from '../fields/Comment';

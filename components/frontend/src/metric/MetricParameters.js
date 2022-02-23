@@ -1,8 +1,6 @@
 import React, { useContext } from 'react';
 import { Grid, Header } from 'semantic-ui-react';
-import { Icon } from '../semantic_ui_react_wrappers/Icon';
-import { Popup } from '../semantic_ui_react_wrappers/Popup';
-import { MetricType } from './MetricType';
+import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -10,11 +8,12 @@ import { Comment } from '../fields/Comment';
 import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { HyperLink } from '../widgets/HyperLink';
-import { Target } from './Target';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
+import { MetricType } from './MetricType';
+import { Target } from './Target';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from 'semantic-ui-react';
-import { Segment } from './semantic_ui_react_wrappers/Segment';
+import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
 

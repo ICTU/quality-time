@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Label } from 'semantic-ui-react';
-import { Form } from '../semantic_ui_react_wrappers/Form';
+import { Form, Label } from '../semantic_ui_react_wrappers';
 
 export function Input(props) {
     let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props;
@@ -27,7 +26,7 @@ export function Input(props) {
             onKeyDown={onKeyDown}
             value={value}
         >
-            {prefix ? <Label basic>{prefix}</Label> : null}
+            {prefix ? <Label>{prefix}</Label> : null}
             <input />
         </Form.Input>
     )

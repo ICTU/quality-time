@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Icon, Label, Menu } from 'semantic-ui-react';
-import { Tab } from '../semantic_ui_react_wrappers/Tab';
-import { TrendGraph } from './TrendGraph';
+import { Icon, Menu } from 'semantic-ui-react';
+import { Label, Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
@@ -12,6 +11,7 @@ import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { get_source_name } from '../utils';
 import { MetricConfiguration } from './MetricConfiguration';
+import { TrendGraph } from './TrendGraph';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }) {
     return (

@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import { Icon, Menu } from 'semantic-ui-react';
-import { Tab } from '../semantic_ui_react_wrappers/Tab';
+import { Header, Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
-import { Header } from '../semantic_ui_react_wrappers/Header';
 
 export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
     const dataModel = useContext(DataModel)
