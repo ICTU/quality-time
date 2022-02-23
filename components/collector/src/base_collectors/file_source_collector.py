@@ -57,7 +57,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         headers = super()._headers()
         if token := cast(str, self._parameter("private_token")):
             # GitLab needs this header, see
-            # https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-by-job-id
+            # https://docs.gitlab.com/ee/api/job_artifacts.html#download-a-single-artifact-file-by-job-id
             headers["Private-Token"] = token
         return headers
 
