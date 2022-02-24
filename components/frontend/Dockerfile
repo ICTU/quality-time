@@ -1,9 +1,9 @@
-FROM node:16.14.0-alpine3.14
+FROM node:16.14.0-alpine3.15
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time frontend"
 
-RUN apk --no-cache add curl=~7.79
+RUN apk --no-cache add curl=~7.80
 
 WORKDIR /work
 COPY . /work
