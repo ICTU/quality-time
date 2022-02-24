@@ -144,9 +144,9 @@ flake8-polyfill==1.0.2 \
     --hash=sha256:12be6a34ee3ab795b19ca73505e7b55826d5f6ad7230d31b18e106400169b9e9 \
     --hash=sha256:e44b087597f6da52ec6393a709e7108b2905317d0c0b744cdca6208e670d8eda
     # via pep8-naming
-furo==2022.2.14.1 \
-    --hash=sha256:1af3a3053e594666e27eefd347b84beae5d74d6d20f6294cc47777d46f5761a7 \
-    --hash=sha256:d7cb8126034637212332350ec8490cb95732d36506b024318a58cee2e7de0fda
+furo==2022.2.23 \
+    --hash=sha256:005823b67f6ba00dde03e68dc78d437c72df7bcf816bcc6c111019c8faa7aa3d \
+    --hash=sha256:bfed4e6a0511ab7baf211b3195b851914bf11a72e5907e073b1de9296de391f6
     # via -r docs/requirements-dev.in
 gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
