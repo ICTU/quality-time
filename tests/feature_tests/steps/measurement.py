@@ -81,6 +81,7 @@ def parse_error(context):
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
+            report_uuid=context.uuid["report"],
             has_error=True,
             sources=[
                 dict(
