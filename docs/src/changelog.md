@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - Subject subtitles would partly obscure the header of their subject's metrics table. Fixes [#3443](https://github.com/ICTU/quality-time/issues/3443).
+- GitLab job artifacts archives downloaded via the GitLab API would not be recognized as zipped archives. Fixes [#3478](https://github.com/ICTU/quality-time/issues/3478).
 
 ### Added
 

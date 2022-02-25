@@ -74,7 +74,11 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     @staticmethod
     def __is_zipped(url: URL, response: Response) -> bool:
         """Return whether the responses are zipped."""
-        return urlparse(str(url)).path.endswith(".zip") or response.content_type == "application/zip"
+        return (
+            urlparse(str(url)).path.endswith(".zip")
+            or response.content_type == "application/zip"
+            or ".zip" in str(response.content_disposition)
+        )
 
 
 class CSVFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
