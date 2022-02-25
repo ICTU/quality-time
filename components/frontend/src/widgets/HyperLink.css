@@ -1,0 +1,9 @@
+a.inverted {
+    /* Slightly brighter blue for dark mode */
+    color: rgb(88, 181, 249) !important;
+}
+
+a.inverted.error {
+    /* Use white (on red) when the link is in error mode */
+    color: rgb(255, 255, 255) !important;
+}
