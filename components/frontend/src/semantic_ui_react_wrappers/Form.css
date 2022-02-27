@@ -1,3 +1,3 @@
-form.ui.inverted.form input, form.ui.inverted.form textarea, form.ui.inverted.form div.dropdown {
+form.ui.inverted.form input, form.ui.inverted.form textarea, form.ui.inverted.form div.dropdown, form.ui.inverted.form div.menu {
     background-color:#e8e8e8 !important;
 }
