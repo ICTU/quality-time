@@ -3,8 +3,9 @@ import { Tab as SemanticUITab } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
 
 export function Tab(props) {
+    const darkMode = useContext(DarkMode)
     return (
-        <SemanticUITab menu={{ inverted: useContext(DarkMode), attached: true, tabular: true }} {...props} />
+        <SemanticUITab menu={{ inverted: darkMode, attached: !darkMode, tabular: !darkMode }} {...props} />
     )
 }
 
