@@ -1,3 +1,4 @@
+export { Breadcrumb } from './semantic_ui_react_wrappers/Breadcrumb';
 export { Button } from './semantic_ui_react_wrappers/Button';
 export { Card } from './semantic_ui_react_wrappers/Card';
 export { Dropdown } from './semantic_ui_react_wrappers/Dropdown';
