@@ -1,5 +1,6 @@
 export { Button } from './semantic_ui_react_wrappers/Button';
 export { Card } from './semantic_ui_react_wrappers/Card';
+export { Dropdown } from './semantic_ui_react_wrappers/Dropdown';
 export { Feed } from './semantic_ui_react_wrappers/Feed';
 export { Form } from './semantic_ui_react_wrappers/Form';
 export { Header } from './semantic_ui_react_wrappers/Header';
