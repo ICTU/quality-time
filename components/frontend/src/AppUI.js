@@ -63,7 +63,7 @@ export function AppUI({
         }
     }
 
-    const darkMode = uiMode === "dark"
+    const darkMode = uiMode === "dark" || (uiMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
     const backgroundColor = darkMode ? "#1b1c1d" : "white"
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
