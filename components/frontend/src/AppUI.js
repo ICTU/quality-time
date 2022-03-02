@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getUserPermissions, useURLSearchQuery } from './utils'
+import { getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -63,7 +63,7 @@ export function AppUI({
         }
     }
 
-    const darkMode = uiMode === "dark" || (uiMode === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const darkMode = userPrefersDarkMode(uiMode)
     const backgroundColor = darkMode ? "#1b1c1d" : "white"
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>

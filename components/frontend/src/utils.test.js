@@ -2,7 +2,8 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
 import {
     getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number,
-    scaled_number, format_minutes, registeredURLSearchParams, useURLSearchQuery } from './utils';
+    scaled_number, format_minutes, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
+} from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
 it('rounds numbers nicely', () => {
@@ -234,4 +235,32 @@ it('returns registered URL search parameters only', () => {
     const history = createMemoryHistory({ initialEntries: ['?unregistered_key=value&report_date=2022-02-11'] })
     const expected = new URLSearchParams("?report_date=2022-02-11")
     expect(registeredURLSearchParams(history).toString()).toEqual(expected.toString())
+})
+
+it("returns true when the user sets dark mode", () => {
+    expect(userPrefersDarkMode("dark")).toBe(true)
+})
+
+it("returns false when the user sets light mode", () => {
+    expect(userPrefersDarkMode("light")).toBe(false)
+})
+
+let matchMediaMatches
+
+beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+        value: jest.fn().mockImplementation(query => ({
+            matches: matchMediaMatches,
+        })),
+    });
+});
+
+it("returns true when the user prefers dark mode", () => {
+    matchMediaMatches = true
+    expect(userPrefersDarkMode(null)).toBe(true)
+})
+
+it("returns false when the user prefers light mode", () => {
+    matchMediaMatches = false
+    expect(userPrefersDarkMode(null)).toBe(false)
 })

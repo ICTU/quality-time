@@ -203,3 +203,7 @@ export function getUserPermissions(username, email, current_report_is_tag_report
         return permittedUsers.length === 0 ? true : permittedUsers.includes(username) || permittedUsers.includes(email)
     });
 }
+
+export function userPrefersDarkMode(uiMode) {
+    return uiMode === "dark" || (uiMode === null && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+}
