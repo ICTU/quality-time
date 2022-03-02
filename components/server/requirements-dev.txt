@@ -8,9 +8,9 @@ astroid==2.9.0 \
     --hash=sha256:5939cf55de24b92bda00345d4d0659d01b3c7dafb5055165c330bc7c568ba273 \
     --hash=sha256:776ca0b748b4ad69c00bfe0fff38fa2d21c338e12c84aa9715ee0d473c422778
     # via pylint
-bandit==1.7.2 \
-    --hash=sha256:6d11adea0214a43813887bfe71a377b5a9955e4c826c8ffd341b494e3ab25260 \
-    --hash=sha256:e20402cadfd126d85b68ed4c8862959663c8c372dbbb1fca8f8e2c9f55a067ec
+bandit==1.7.3 \
+    --hash=sha256:3ce9b4e6a4f7f41aa966c9543e635dd35e52a793a47e746f0c55c7ecfc69d7e8 \
+    --hash=sha256:58772ca951bf1129dda8a280d351547de832720bf7b5c29fac3103927980b8a6
     # via -r ../../requirements-dev.in
 black==22.1.0 \
     --hash=sha256:07e5c049442d7ca1a2fc273c79d1aecbbf1bc858f62e8184abe1ad175c4f7cc2 \
