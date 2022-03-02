@@ -14,7 +14,7 @@ jobs:
       COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: Run application tests
         run: |
           docker-compose build && docker-compose up -d
