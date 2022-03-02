@@ -56,7 +56,8 @@ export function ViewPanel({
                                     dateInterval === 7 &&
                                     dateOrder === "descending" &&
                                     sortColumn === null &&
-                                    sortDirection === "ascending"
+                                    sortDirection === "ascending" &&
+                                    uiMode === null
                                 }
                                 onClick={() => {
                                     clearVisibleDetailsTabs();
@@ -66,7 +67,8 @@ export function ViewPanel({
                                     setDateInterval(7);
                                     setDateOrder("descending");
                                     setSortColumn(null);
-                                    setSortDirection("ascending")
+                                    setSortDirection("ascending");
+                                    setUIMode(null);
                                 }}
                                 inverted
                             >

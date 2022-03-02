@@ -41,7 +41,8 @@ function eventHandlers() {
         setHideMetricsNotRequiringAction: jest.fn(),
         setNrDates: jest.fn(),
         setSortColumn: jest.fn(),
-        setSortDirection: jest.fn()
+        setSortDirection: jest.fn(),
+        setUIMode: jest.fn()
     }
 }
 
@@ -57,6 +58,7 @@ it('resets the settings', async () => {
                 nrDates={7}
                 sortColumn="status"
                 sortDirection="descending"
+                uiMode="dark"
                 visibleDetailsTabs={["tab"]}
                 {...props}
             />
@@ -71,6 +73,7 @@ it('resets the settings', async () => {
     expect(props.setHideMetricsNotRequiringAction).toHaveBeenCalled()
     expect(props.setSortColumn).toHaveBeenCalledWith(null)
     expect(props.setSortDirection).toHaveBeenCalledWith("ascending")
+    expect(props.setUIMode).toHaveBeenCalledWith(null)
 })
 
 it('does not reset the settings when all have the default value', async () => {
@@ -85,6 +88,7 @@ it('does not reset the settings when all have the default value', async () => {
                 nrDates={1}
                 sortColumn={null}
                 sortDirection="ascending"
+                uiMode={null}
                 visibleDetailsTabs={[]}
                 {...props}
             />
@@ -99,6 +103,56 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setHideMetricsNotRequiringAction).not.toHaveBeenCalled()
     expect(props.setSortColumn).not.toHaveBeenCalled()
     expect(props.setSortDirection).not.toHaveBeenCalled()
+    expect(props.setUIMode).not.toHaveBeenCalled()
+})
+
+it("sets dark mode", async () => {
+    const setUIMode = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={false}
+                setUIMode={setUIMode}
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Dark mode/))
+    });
+    expect(setUIMode).toHaveBeenCalledWith("dark")
+})
+
+it("sets light mode", async () => {
+    const setUIMode = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={false}
+                setUIMode={setUIMode}
+                uiMode="dark"
+                visibleDetailsTabs={[]}
+            />
+        )
+        fireEvent.click(screen.getByText(/Light mode/))
+    });
+    expect(setUIMode).toHaveBeenCalledWith("light")
+})
+
+it("sets dark mode on keypress", async () => {
+    const setUIMode = jest.fn();
+    await act(async () => {
+        render(
+            <ViewPanel
+                hiddenColumns={[]}
+                hideMetricsNotRequiringAction={true}
+                setUIMode={setUIMode}
+                visibleDetailsTabs={[]}
+            />
+        )
+        userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
+    });
+    expect(setUIMode).toHaveBeenCalledWith("dark")
 })
 
 it("hides the metrics not requiring action", async () => {
