@@ -7,7 +7,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - run: |
