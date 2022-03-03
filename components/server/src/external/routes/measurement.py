@@ -10,14 +10,12 @@ from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
-from shared.model.metric import Metric
 from shared.utils.type import MetricId, SourceId
 
 from ..database import sessions
 from ..database.datamodels import latest_datamodel
 from ..database.measurements import count_measurements, measurements_by_metric
 from ..database.reports import latest_reports
-from ..model.data import SourceData
 from ..utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -32,8 +30,9 @@ def set_entity_attribute(
 ) -> Measurement:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
-    data = SourceData(data_model, latest_reports(database, data_model), source_uuid)
-    metric = Metric(data.datamodel, data.metric, metric_uuid)
+    reports = latest_reports(database, data_model)
+    report = next(report for report in reports if metric_uuid in report.metrics_dict)
+    metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
@@ -43,7 +42,7 @@ def set_entity_attribute(
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
     user = sessions.find_user(database)
     new_measurement["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
+        uuids=[report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
         description=f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to "
         f"'{new_value}'.",
         email=user.email,

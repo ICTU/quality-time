@@ -60,11 +60,11 @@ class GetMeasurementsTest(unittest.TestCase):
 class SetEntityAttributeTest(unittest.TestCase):
     """Unit tests for the set entity attribute route."""
 
-    def test_set_attribute(self):
-        """Test that setting an attribute inserts a new measurement."""
-        database = Mock()
-        database.sessions.find_one.return_value = JOHN
-        measurement = database.measurements.find_one.return_value = dict(
+    def setUp(self):
+        """Set up test mocks."""
+        self.database = Mock()
+        self.database.sessions.find_one.return_value = JOHN
+        self.measurement = self.database.measurements.find_one.return_value = dict(
             _id="id",
             metric_uuid=METRIC_ID,
             status="red",
@@ -79,23 +79,27 @@ class SetEntityAttributeTest(unittest.TestCase):
                 )
             ],
         )
-        database.measurements.find.return_value = [measurement]
+        self.database.measurements.find.return_value = [self.measurement]
 
         def insert_one(new_measurement):
             """Fake setting an id on the inserted measurement."""
             new_measurement["_id"] = "id"
 
-        database.measurements.insert_one = insert_one
-        database.reports = Mock()
-        database.reports.find.return_value = [create_report()]
-        database.datamodels = Mock()
-        database.datamodels.find_one.return_value = dict(
+        self.database.measurements.insert_one = insert_one
+        self.database.reports = Mock()
+        self.database.reports.find.return_value = [create_report()]
+        self.database.datamodels = Mock()
+        self.database.datamodels.find_one.return_value = dict(
             _id=123,
             metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count"])),
             sources=dict(source_type=dict(entities={})),
         )
+
+    def test_set_attribute(self):
+        """Test that setting an attribute inserts a new measurement."""
+
         with patch("bottle.request", Mock(json=dict(attribute="value"))):
-            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", database)
+            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
         self.assertEqual(
@@ -105,6 +109,13 @@ class SetEntityAttributeTest(unittest.TestCase):
                 uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
             ),
             measurement["delta"],
+        )
+
+    def test_set_attribute_on_non_existing_metric(self):
+        """Test what happens if the specified metric does not exist."""
+        self.database.reports.find.return_value = []
+        self.assertRaises(
+            StopIteration, set_entity_attribute, METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database
         )
 
 
