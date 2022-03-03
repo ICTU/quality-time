@@ -33,7 +33,7 @@ HEALTHCHECK CMD curl -f http://localhost:${SERVER_PORT:-5001}/api/health || exit
 
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY server/src /home/server
-COPY /home/shared_python /home/shared_python
+COPY shared_python /home/shared_python
 
 ENV PATH="/home/server/venv/bin:$PATH"
 CMD ["python", "/home/server/quality_time_server.py"]
