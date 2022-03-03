@@ -1,5 +1,6 @@
 """Test the Metric model."""
 
+from datetime import date
 import unittest
 
 from shared.model.metric import Metric
@@ -36,7 +37,11 @@ class MetricTest(unittest.TestCase):
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
 
         measurement_timestamp = iso_timestamp()
-        measurement = Measurement(metric, count={"value": 1, "start": measurement_timestamp})
+        measurement = Measurement(
+            metric,
+            count={"value": 1, "start": measurement_timestamp},
+            status="target_met",
+        )
 
         result = metric.summarize([measurement])
         self.assertDictEqual(
@@ -45,17 +50,18 @@ class MetricTest(unittest.TestCase):
                 "issue_status": [],
                 "type": "fixture_metric_type",
                 "scale": "count",
-                "status": None,
+                "status": "target_met",
                 "status_start": None,
                 "latest_measurement": {
                     "count": {"value": 1, "start": measurement_timestamp},
                     "end": measurement_timestamp,
                     "sources": [],
                     "start": measurement_timestamp,
+                    "status": "target_met",
                 },
                 "recent_measurements": [
                     {
-                        "count": {"status": None, "value": 1},
+                        "count": {"status": "target_met", "value": 1},
                         "end": measurement_timestamp,
                         "start": measurement_timestamp,
                     }
@@ -66,7 +72,9 @@ class MetricTest(unittest.TestCase):
     def test_summarize_metric_data(self):
         """Test that metric data is summarized."""
         metric = Metric(
-            self.DATA_MODEL, {"type": "fixture_metric_type", "some_metric_property": "some_value"}, METRIC_ID
+            self.DATA_MODEL,
+            {"type": "fixture_metric_type", "some_metric_property": "some_value"},
+            METRIC_ID,
         )
 
         result = metric.summarize([])
@@ -100,3 +108,14 @@ class MetricTest(unittest.TestCase):
                 "some_kw": "some_arg",
             },
         )
+
+    def test_debt_end_date(self):
+        """Test debt end date."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
+        self.assertEqual(metric.debt_end_date(), date.max.isoformat())
+
+        metric["debt_end_date"] = ""
+        self.assertEqual(metric.debt_end_date(), date.max.isoformat())
+
+        metric["debt_end_date"] = "some date"
+        self.assertEqual(metric.debt_end_date(), "some date")

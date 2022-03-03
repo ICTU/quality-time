@@ -112,7 +112,7 @@ class Metric(dict):
 
     def debt_end_date(self) -> str:
         """Return the end date of the accepted technical debt."""
-        return str(self.get("debt_end_date")) or date.max.isoformat()
+        return str(self.get("debt_end_date") or date.max.isoformat())
 
     def get_target(self, target_type: TargetType) -> str | None:
         """Return the target."""

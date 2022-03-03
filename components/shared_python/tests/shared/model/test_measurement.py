@@ -106,9 +106,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status_start="today",
         )
-        s_m._ScaleMeasurement__set_status_start(
+        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
             "target_met"
-        )  # pylint: disable=protected-access
+        )
         self.assertEqual(s_m.status_start(), "yesterday")
 
     def test_set_status_start_changed(self):
@@ -123,9 +123,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m = ScaleMeasurement(
             previous_scale_measurement=previous_s_m, measurement=measurement
         )
-        s_m._ScaleMeasurement__set_status_start(
+        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
             "target_not_met"
-        )  # pylint: disable=protected-access
+        )
         self.assertEqual(s_m.status_start(), measurement["start"])
 
     def test_set_status_start_no_status_start(self):
@@ -139,9 +139,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m = ScaleMeasurement(
             previous_scale_measurement=previous_s_m, measurement=measurement
         )
-        s_m._ScaleMeasurement__set_status_start(
+        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
             "target_met"
-        )  # pylint: disable=protected-access
+        )
         self.assertIs(s_m.status_start(), None)
 
     @patch.object(Metric, "accept_debt_expired", lambda self: False)
@@ -160,9 +160,11 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(
-            2.5
-        )  # pylint: disable=protected-access
+        status = (
+            s_m._ScaleMeasurement__calculate_status(  # pylint: disable=protected-access
+                2.5
+            )
+        )
         self.assertEqual(status, "debt_target_met")
 
     @patch.object(Metric, "accept_debt_expired", lambda self: True)
@@ -181,9 +183,11 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(
-            2
-        )  # pylint: disable=protected-access
+        status = (
+            s_m._ScaleMeasurement__calculate_status(  # pylint: disable=protected-access
+                2
+            )
+        )
         self.assertEqual(status, "near_target_met")
 
 
@@ -205,9 +209,9 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
         vn_s_m = VersionNumberScaleMeasurement(
             previous_scale_measurement=None, measurement=measurement, direction="<"
         )
-        better_or_equal = vn_s_m._better_or_equal(
+        better_or_equal = vn_s_m._better_or_equal(  # pylint: disable=protected-access
             "0", "1"
-        )  # pylint: disable=protected-access
+        )
         self.assertTrue(better_or_equal)
 
     def test_parse_version(self):
