@@ -22,6 +22,7 @@ class Source(dict):  # lgtm [py/missing-equals]
 
     def __init__(self, metric: Metric, *args, **kwargs):
         self.__metric = metric
+        self.metric = metric
         super().__init__(*args, **kwargs)
 
     def total(self) -> str | None:

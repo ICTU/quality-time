@@ -94,6 +94,7 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Check that the report has the correct delta."""
         report = report or self.report
+        self.maxDiff = None
         self.assertEqual(dict(uuids=sorted(uuids) or [], email=self.email, description=description), report["delta"])
 
 
@@ -542,6 +543,9 @@ class SourceTest(SourceTestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
 
+        self.assertRaises(StopIteration, post_source_copy, SOURCE_ID2, METRIC_ID, self.database)
+        self.assertRaises(StopIteration, post_source_copy, SOURCE_ID, METRIC_ID2, self.database)
+
     def test_move_source_within_subject(self):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
@@ -558,6 +562,9 @@ class SourceTest(SourceTestCase):
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
+
+        self.assertRaises(StopIteration, post_move_source, SOURCE_ID2, METRIC_ID, self.database)
+        self.assertRaises(StopIteration, post_move_source, SOURCE_ID, METRIC_ID3, self.database)
 
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""

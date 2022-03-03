@@ -1,8 +1,9 @@
 """A class that represents a report."""
 
 from typing import cast
+from shared.model.source import Source
 
-from shared.utils.type import Color, ReportId, Status
+from shared.utils.type import Color, MetricId, ReportId, SourceId, Status, SubjectId
 
 from .measurement import Measurement
 from .subject import Subject
@@ -29,6 +30,10 @@ class Report(dict):
         self.metrics_dict = self._metrics()
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
+
+        self.sources_dict = self._sources()
+        self.sources = list(self.sources_dict.values())
+        self.source_uuids = list(self.sources_dict.keys())
 
         if "_id" in report_data:
             report_data["_id"] = str(report_data["_id"])
@@ -62,6 +67,13 @@ class Report(dict):
             metrics.update(subject.metrics_dict)
         return metrics
 
+    def _sources(self) -> dict[str, Source]:
+        """All sources of this report."""
+        sources = {}
+        for metric in self.metrics:
+            sources.update(metric.sources_dict)
+        return sources
+
     def summarize(self, measurements: dict[str, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
@@ -83,3 +95,30 @@ class Report(dict):
                 summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 
         return summary
+
+    def instance_and_parents_for_uuid(
+        self, subject_uuid: SubjectId = None, metric_uuid: MetricId = None, source_uuid: SourceId = None
+    ) -> tuple | None:
+        """Find an instance and it's parents.
+        example:
+        If a metric_uuid is provided,
+        this function will return the metric, it's subject and it's report in that order:
+        (Metric, Subject)
+
+        Only one of the three uuid arguments should be filled.
+        If more are filled, all but the first one will be ignored.
+        """
+
+        if subject_uuid is not None:
+            return (self.subjects_dict[subject_uuid],)
+
+        if metric_uuid is not None:
+            metric = self.metrics_dict[metric_uuid]
+            subject = self.subjects_dict[metric.subject_uuid]
+            return (metric, subject)
+
+        if source_uuid is not None:
+            source = self.sources_dict[source_uuid]
+            metric = source.metric
+            subject = self.subjects_dict[metric.subject_uuid]
+            return (source, metric, subject)

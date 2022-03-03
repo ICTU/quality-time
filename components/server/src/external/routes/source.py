@@ -44,16 +44,22 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     """Add a copy of the source to the metric (new in v3)."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    source = SourceData(data_model, reports, source_uuid)
-    target = MetricData(data_model, reports, metric_uuid)
-    target.metric["sources"][(source_copy_uuid := uuid())] = copy_source(source.source, source.datamodel)
+
+    source_report = next(report for report in reports if source_uuid in report.sources_dict)
+    source, source_metric, source_subject = source_report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+
+    target_report = next(report for report in reports if metric_uuid in report.metrics_dict)
+    target_metric, target_subject = target_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+
+    target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source, data_model)
     delta_description = (
-        f"{{user}} copied the source '{source.source_name}' of metric '{source.metric_name}' of subject "
-        f"'{source.subject_name}' from report '{source.report_name}' to metric '{target.metric_name}' of subject "
-        f"'{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} copied the source '{source.get('name')}' of metric '{source_metric.get('name')}' of subject "
+        f"'{source_subject.get('name')}' from report '{source_report.get('title')}' "
+        f"to metric '{target_metric.get('name')}' of subject "
+        f"'{target_subject.get('name')}' in report '{target_report.get('title')}'."
     )
-    uuids = [target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid]
-    result = insert_new_report(database, delta_description, uuids, target.report)
+    uuids = [target_report.uuid, target_subject.uuid, target_metric.uuid, source_copy_uuid]
+    result = insert_new_report(database, delta_description, uuids, target_report)
     result["new_source_uuid"] = source_copy_uuid
     return result
 
@@ -63,31 +69,36 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     """Move the source to another metric."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    source = SourceData(data_model, reports, source_uuid)
-    target = MetricData(data_model, reports, target_metric_uuid)
+
+    source_report = next(report for report in reports if source_uuid in report.sources_dict)
+    source, source_metric, source_subject = source_report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+
+    target_report = next(report for report in reports if target_metric_uuid in report.metrics_dict)
+    target_metric, target_subject = target_report.instance_and_parents_for_uuid(metric_uuid=target_metric_uuid)
+
     delta_description = (
-        f"{{user}} moved the source '{source.source_name}' from metric '{source.metric_name}' of subject "
-        f"'{source.subject_name}' in report '{source.report_name}' to metric '{target.metric_name}' of subject "
-        f"'{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} moved the source '{source.get('name')}' from metric '{source_metric.get('name')}' of subject "
+        f"'{source_subject.get('name')}' in report '{source_report.get('title')}' to metric '{target_metric.get('name')}' of subject "
+        f"'{target_subject.get('name')}' in report '{target_report.get('title')}'."
     )
-    target.metric["sources"][source_uuid] = source.source
+    target_metric["sources"][source_uuid] = source
     uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [
-        target.report_uuid,
-        target.subject_uuid,
+        target_report.uuid,
+        target_subject.uuid,
         target_metric_uuid,
-        source.report_uuid,
-        source.subject_uuid,
-        source.metric_uuid,
+        source_report.uuid,
+        source_subject.uuid,
+        source_metric.uuid,
         source_uuid,
     ]
-    reports_to_insert = [target.report]
-    if target.report_uuid == source.report_uuid:
+    reports_to_insert = [target_report]
+    if target_report == source_report:
         # Source is moved within the same report
-        del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
+        del target_report["subjects"][source_subject.uuid]["metrics"][source_metric.uuid]["sources"][source_uuid]
     else:
         # Source is moved from one report to another, update both
-        del source.metric["sources"][source_uuid]
-        reports_to_insert.append(source.report)
+        del source_metric["sources"][source_uuid]
+        reports_to_insert.append(source_report)
     return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
