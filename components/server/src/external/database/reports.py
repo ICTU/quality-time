@@ -8,7 +8,7 @@ from pymongo.database import Database
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import MetricId, ReportId, SubjectId
 
 from ..database import sessions
 from ..utils.functions import unique

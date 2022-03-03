@@ -78,7 +78,8 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 
     delta_description = (
         f"{{user}} moved the source '{source.get('name')}' from metric '{source_metric.get('name')}' of subject "
-        f"'{source_subject.get('name')}' in report '{source_report.get('title')}' to metric '{target_metric.get('name')}' of subject "
+        f"'{source_subject.get('name')}' in report '{source_report.get('title')}' "
+        f"to metric '{target_metric.get('name')}' of subject "
         f"'{target_subject.get('name')}' in report '{target_report.get('title')}'."
     )
     target_metric["sources"][source_uuid] = source
