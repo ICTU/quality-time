@@ -94,7 +94,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
 
     def test_set_status_start(self):
         """Test status_start."""
-
         measurement = Measurement(self.metric())
         previous_s_m = ScaleMeasurement(
             previous_scale_measurement=None,
@@ -114,7 +113,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
 
     def test_set_status_start_changed(self):
         """Test status_start."""
-
         measurement = Measurement(self.metric())
         previous_s_m = ScaleMeasurement(
             previous_scale_measurement=None,
@@ -132,7 +130,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
 
     def test_set_status_start_no_status_start(self):
         """Test status_start."""
-
         measurement = Measurement(self.metric())
         previous_s_m = ScaleMeasurement(
             previous_scale_measurement=None,
@@ -147,49 +144,47 @@ class ScaleMeasurementTest(MeasurementTestCase):
         )  # pylint: disable=protected-access
         self.assertIs(s_m.status_start(), None)
 
+    @patch.object(Metric, "accept_debt_expired", lambda self: False)
+    @patch.object(
+        ScaleMeasurement,
+        "_better_or_equal",
+        lambda self, value, target: value <= target,
+    )
     def test_calculate_status_debt_target(self):
         """Test calculate status."""
+        measurement = Measurement(self.metric())
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            target=1,
+            near_target=2,
+            debt_target=3,
+        )
+        status = s_m._ScaleMeasurement__calculate_status(
+            2.5
+        )  # pylint: disable=protected-access
+        self.assertEqual(status, "debt_target_met")
 
-        with patch.object(Metric, "accept_debt_expired", lambda self: False):
-            with patch.object(
-                ScaleMeasurement,
-                "_better_or_equal",
-                lambda self, value, target: value <= target,
-            ):
-                measurement = Measurement(self.metric())
-                s_m = ScaleMeasurement(
-                    previous_scale_measurement=None,
-                    measurement=measurement,
-                    target=1,
-                    near_target=2,
-                    debt_target=3,
-                )
-                status = s_m._ScaleMeasurement__calculate_status(
-                    2.5
-                )  # pylint: disable=protected-access
-                self.assertEqual(status, "debt_target_met")
-
+    @patch.object(Metric, "accept_debt_expired", lambda self: True)
+    @patch.object(
+        ScaleMeasurement,
+        "_better_or_equal",
+        lambda self, value, target: value <= target,
+    )
     def test_calculate_status_near_target(self):
         """Test calculate status."""
-
-        with patch.object(Metric, "accept_debt_expired", lambda self: True):
-            with patch.object(
-                ScaleMeasurement,
-                "_better_or_equal",
-                lambda self, value, target: value <= target,
-            ):
-                measurement = Measurement(self.metric())
-                s_m = ScaleMeasurement(
-                    previous_scale_measurement=None,
-                    measurement=measurement,
-                    target=1,
-                    near_target=2,
-                    debt_target=3,
-                )
-                status = s_m._ScaleMeasurement__calculate_status(
-                    2
-                )  # pylint: disable=protected-access
-                self.assertEqual(status, "near_target_met")
+        measurement = Measurement(self.metric())
+        s_m = ScaleMeasurement(
+            previous_scale_measurement=None,
+            measurement=measurement,
+            target=1,
+            near_target=2,
+            debt_target=3,
+        )
+        status = s_m._ScaleMeasurement__calculate_status(
+            2
+        )  # pylint: disable=protected-access
+        self.assertEqual(status, "near_target_met")
 
 
 class VersionNumberScaleMeasurementTest(MeasurementTestCase):
@@ -240,7 +235,6 @@ class MeasurementTest(MeasurementTestCase):
 
     def test_entity_user_data(self):
         """Copy the user data."""
-
         measurement_1 = Measurement(
             self.metric(),
             sources=[
