@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Icon, Popup, Table } from 'semantic-ui-react';
+import { Button, Icon, Popup, Table } from '../semantic_ui_react_wrappers';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';

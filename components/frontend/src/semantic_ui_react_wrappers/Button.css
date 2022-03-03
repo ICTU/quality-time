@@ -1,0 +1,4 @@
+.ui.inverted.primary.basic.negative.button:hover {
+    box-shadow: 0 0 0 2px #db2828 inset !important;
+    color: #db2828 !important;
+}

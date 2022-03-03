@@ -4,8 +4,8 @@ import { createMemoryHistory } from 'history';
 import { datamodel, report } from "./__fixtures__/fixtures";
 import { AppUI } from './AppUI';
 
-it('shows an error message when there are no reports', () =>{
-    render(<AppUI history={{location: {search: ""}}} report_uuid="" reports={[]} reports_overview={{}} />)
+it('shows an error message when there are no reports', () => {
+    render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
 })
 
@@ -24,4 +24,26 @@ it('handles sorting', async () => {
     expect(history.location.search).toEqual("?sort_column=comment")
     await act(async () => fireEvent.click(screen.getAllByText(/Add metric/)[0]))
     expect(history.location.search).toEqual("")
+})
+
+let matchMediaMatches
+
+beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+        value: jest.fn().mockImplementation(query => ({
+            matches: matchMediaMatches,
+        })),
+    });
+});
+
+it('supports dark mode', () => {
+    matchMediaMatches = true
+    const { container } = render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("rgb(27, 28, 29)")
+})
+
+it('supports light mode', () => {
+    matchMediaMatches = false
+    const { container } = render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("white")
 })

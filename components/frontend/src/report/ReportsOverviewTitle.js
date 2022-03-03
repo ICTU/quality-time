@@ -1,6 +1,7 @@
 import React from 'react';
+import { Grid, Icon, Menu } from 'semantic-ui-react';
+import { Tab } from '../semantic_ui_react_wrappers';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { Grid, Icon, Menu, Tab } from 'semantic-ui-react';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
@@ -89,7 +90,7 @@ export function ReportsOverviewTitle({ reports_overview, reload }) {
     const panes = [
         { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={reports_overview.permissions ?? {}} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog /></Tab.Pane> }
+        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog/></Tab.Pane> }
     ]
     return (
         <HeaderWithDetails level="h1" header={reports_overview.title} subheader={reports_overview.subtitle}>

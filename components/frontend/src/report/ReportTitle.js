@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Grid, Header, Icon, Menu, Popup, Tab } from 'semantic-ui-react';
+import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
+import { Popup, Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';

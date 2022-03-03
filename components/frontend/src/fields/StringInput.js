@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';

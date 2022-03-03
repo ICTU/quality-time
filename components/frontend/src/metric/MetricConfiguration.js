@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Header, Icon, Menu, Tab } from 'semantic-ui-react';
+import { Icon, Menu } from 'semantic-ui-react';
+import { Header, Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';

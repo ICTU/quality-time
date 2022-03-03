@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.34.0-rc.1 - 2022-02-25
+## [Unreleased]
 
 ### Fixed
 
@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Highlight metrics on hover to make it easier to indicate which metric is being discussed in online meetings. Closes [#3132](https://github.com/ICTU/quality-time/issues/3132).
+- Add dark mode. Switch between dark and light mode via the settings panel. Closes [#3159](https://github.com/ICTU/quality-time/issues/3159).
 - Show an error message when the user adds issue ids to metrics in a report that doesn't have an issue tracker configured. Closes [##3228](https://github.com/ICTU/quality-time/issues/3228).
 - Add the summary of an issue to its popup, and, optionally, to the issue status in the metric table. Closes [#3368](https://github.com/ICTU/quality-time/issues/3368).
 

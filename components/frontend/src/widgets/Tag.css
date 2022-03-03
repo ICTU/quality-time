@@ -1,7 +1,3 @@
-div.ui.tag.label {
-    background-color: gainsboro;
-}
-
 /* The box shadow gets a grey square background in the PDF, remove it when printing. */
 @media print {
     div.ui.tag.label::after {

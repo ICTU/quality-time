@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TrendSparkline } from './TrendSparkline';
+import { DarkMode } from '../context/DarkMode';
 
 it('returns null when the metric scale is version number', () => {
     render(<TrendSparkline scale="version_number"/>)
@@ -9,6 +10,11 @@ it('returns null when the metric scale is version number', () => {
 
 it('renders an empty sparkline if there are no measurements', () => {
     render(<TrendSparkline measurements={[]} />)
+    expect(screen.queryAllByLabelText(/sparkline graph showing 0 different measurement values/).length).toBe(1)
+});
+
+it('renders an empty sparkline if there are no measurements in dark mode', () => {
+    render(<DarkMode.Provider value="true"><TrendSparkline measurements={[]} /></DarkMode.Provider>)
     expect(screen.queryAllByLabelText(/sparkline graph showing 0 different measurement values/).length).toBe(1)
 });
 

@@ -1,13 +1,19 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import { DarkMode } from '../context/DarkMode';
 import { Avatar } from './Avatar';
 
 it('shows the image when passed an email address', () => {
-    const wrapper = mount(<Avatar email="foo@bar" />);
-    expect(wrapper.find("Image").length).toBe(1);
+    render(<Avatar email="foo@bar" />)
+    expect(screen.queryAllByAltText("Avatar").length).toBe(1)
 });
 
 it('shows an icon when not passed an email address', () => {
-    const wrapper = mount(<Avatar email="" />);
-    expect(wrapper.find("Icon").length).toBe(1);
+    const { container} = render(<Avatar email="" />)
+    expect(container.firstChild.className).toEqual("user icon")
 });
+
+it('is grey in dark mode', () => {
+    const { container } = render(<DarkMode.Provider value={true}><Avatar email="" /></DarkMode.Provider>)
+    expect(container.firstChild.className).toEqual(expect.stringContaining("grey"));
+})

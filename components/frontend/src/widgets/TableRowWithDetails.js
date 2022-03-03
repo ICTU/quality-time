@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Table } from 'semantic-ui-react';
+import { Icon, Table } from '../semantic_ui_react_wrappers';
 
 export function TableRowWithDetails(props) {
     var { children, details, expanded, onExpand, style, ...otherProps } = props;

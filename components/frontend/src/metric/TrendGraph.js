@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack } from 'victory';
+import { DarkMode } from "../context/DarkMode";
 import { DataModel } from "../context/DataModel";
 import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, scaled_number } from '../utils';
 
@@ -19,6 +20,7 @@ function Background({ data, ...props }) {
 
 export function TrendGraph({ metric, measurements }) {
     const dataModel = useContext(DataModel)
+    const darkMode = useContext(DarkMode)
     const metricName = get_metric_name(metric, dataModel);
     const metricType = dataModel.metrics[metric.type];
     const unit = capitalize(formatMetricScaleAndUnit(metricType, metric, false));
@@ -90,16 +92,21 @@ export function TrendGraph({ metric, measurements }) {
         }
     });
 
-    const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
+    const softWhite = "rgba(256, 256, 256, 0.8)"
+    const softerWhite = "rgba(256, 256, 256, 0.7)"
+    const axisStyle = {
+        axisLabel: { padding: 30, fontSize: 11, fill: darkMode ? softWhite : null },
+        tickLabels: { fontSize: 8, fill: darkMode ? softerWhite : null }
+    };
     return (
         <VictoryChart
             height={250}
             scale={{ x: "time", y: "linear" }}
-            style={{ parent: { height: "100%", background: "white" } }}
+            style={{ parent: { height: "100%", background: darkMode ? "black" : "white" } }}
             theme={VictoryTheme.material}
             width={750}
         >
-            <VictoryLabel x={375} y={20} text={metricName} textAnchor="middle" />
+            <VictoryLabel x={375} y={20} style={{fill: darkMode ? softWhite : null}} text={metricName} textAnchor="middle" />
             <VictoryAxis
                 label={"Time"}
                 style={axisStyle}
@@ -114,7 +121,7 @@ export function TrendGraph({ metric, measurements }) {
             <VictoryLine
                 data={measurementValues}
                 interpolation="stepBefore"
-                style={{ data: { stroke: "black", strokeWidth: 2 } }} />
+                style={{ data: { stroke: darkMode ? "white" : "black", strokeWidth: 2 } }} />
         </VictoryChart>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, Popup } from 'semantic-ui-react';
+import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';

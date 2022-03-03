@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment } from 'semantic-ui-react';
+import { Segment } from '../semantic_ui_react_wrappers';
 
 export function CommentSegment({ comment }) {
     if (comment) {

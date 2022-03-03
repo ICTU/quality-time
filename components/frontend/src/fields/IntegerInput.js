@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Label } from 'semantic-ui-react';
+import { Form, Label } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
@@ -41,9 +41,9 @@ function EditableIntegerInput(props) {
                 value={value}
                 width={16}
             >
-                {prefix ? <Label basic>{prefix}</Label> : null}
+                {prefix ? <Label>{prefix}</Label> : null}
                 <input />
-                {unit ? <Label basic>{unit}</Label> : null}
+                {unit ? <Label>{unit}</Label> : null}
             </Form.Input>
         </Form>
     )

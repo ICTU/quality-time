@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Table } from '../semantic_ui_react_wrappers';
 
 export function SortableTableHeaderCell({ colSpan, column, sortColumn, sortDirection, handleSort, label, textAlign }) {
     const sorted = sortColumn === column ? sortDirection : null;

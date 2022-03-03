@@ -1,5 +1,6 @@
 import React from 'react';
-import { Message, Segment } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
+import { Segment } from '../semantic_ui_react_wrappers';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CommentSegment } from '../widgets/CommentSegment';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Header, Icon, Segment } from 'semantic-ui-react';
+import { Header, Icon, Segment } from '../semantic_ui_react_wrappers';
 import './HeaderWithDetails.css';
 
 export function HeaderWithDetails({ children, className, header, level, style, subheader }) {
