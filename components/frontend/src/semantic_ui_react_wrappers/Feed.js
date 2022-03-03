@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Feed as SemanticUIFeed } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import { addInvertedClassNameWhenInDarkMode } from './dark_mode';
+import './Feed.css';
 
 export function Feed(props) {
     return (
@@ -9,30 +11,14 @@ export function Feed(props) {
 }
 
 function Date(props) {
-    const darkMode = useContext(DarkMode)
-    let { style, ...otherProps } = props;
-    if (darkMode) {
-        if (!style) {
-            style = {}
-        }
-        style.color = "grey"
-    }
     return (
-        <SemanticUIFeed.Date style={style} {...otherProps} />
+        <SemanticUIFeed.Date {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 
 function Summary(props) {
-    const darkMode = useContext(DarkMode)
-    let { style, ...otherProps } = props;
-    if (darkMode) {
-        if (!style) {
-            style = {}
-        }
-        style.color = "white"
-    }
     return (
-        <SemanticUIFeed.Summary style={style} {...otherProps} />
+        <SemanticUIFeed.Summary {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 

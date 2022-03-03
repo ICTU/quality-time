@@ -1,14 +1,11 @@
 import React, { useContext } from 'react';
 import { Dropdown as SemanticUIDropdown } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import { addInvertedClassNameWhenInDarkMode } from './dark_mode';
 
 export function Dropdown(props) {
-    let { className, ...otherProps } = props
-    if (useContext(DarkMode)) {
-        className += " inverted"
-    }
     return (
-        <SemanticUIDropdown className={className} {...otherProps} />
+        <SemanticUIDropdown {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 

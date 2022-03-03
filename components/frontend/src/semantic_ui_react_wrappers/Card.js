@@ -1,32 +1,18 @@
 import React, { useContext } from 'react';
 import { Card as SemanticUICard } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import { addInvertedClassNameWhenInDarkMode } from './dark_mode';
+import './Card.css';
 
 export function Card(props) {
-    const darkMode = useContext(DarkMode)
-    let { style, ...otherProps} = props
-    if (darkMode) {
-        if (!style) {
-            style = {}
-        }
-        style.backgroundColor = "black"
-    }
     return (
-        <SemanticUICard style={style} {...otherProps} />
+        <SemanticUICard {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 
 function Header(props) {
-    const darkMode = useContext(DarkMode)
-    let { style, ...otherProps} = props
-    if (darkMode) {
-        if (!style) {
-            style = {}
-        }
-        style.color = "white"
-    }
     return (
-        <SemanticUICard.Header style={style} {...otherProps} />
+        <SemanticUICard.Header {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 
