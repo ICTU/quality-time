@@ -1,3 +1,49 @@
-form.ui.inverted.form input, form.ui.inverted.form textarea, form.ui.inverted.form div.dropdown, form.ui.inverted.form div.menu {
-    background-color:#e8e8e8 !important;
+form.ui.inverted.form input {
+    background-color: rgba(50, 50, 50) !important;
+    color: white !important;
+}
+
+form.ui.inverted.form .ui.label:not(.circular) {
+    background-color: rgba(100, 100, 100) !important;
+    color: white !important;
+}
+
+form.ui.inverted.form textarea {
+    background-color: rgba(50, 50, 50) !important;
+    color: white !important;
+}
+
+form.ui.inverted.form div.dropdown:not(.inline) {
+    background-color: rgba(50, 50, 50) !important;
+    color: white !important;
+}
+
+form.ui.inverted.form div.menu {
+    background-color: rgba(50, 50, 50) !important;
+    color: white !important;
+}
+
+form.ui.inverted.form div.menu .item {
+    border-top: 1px solid transparent;
+    color: white !important;
+}
+
+form.ui.inverted.form div.menu .active.selected.item {
+    background: rgba(255,255,255,.15);
+}
+
+form.ui.inverted.form div.menu .item:hover {
+    background: rgba(255,255,255,.05);
+}
+
+form.ui.inverted.form .ui.header {
+    color: white !important;
+}
+
+form.ui.inverted.form .sub.header {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+form.ui.inverted.form .message {
+    color: white !important;
 }
