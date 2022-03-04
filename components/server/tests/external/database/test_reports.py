@@ -55,7 +55,6 @@ class LatestReportForUuidsTest(unittest.TestCase):
 
     def test_existing_uuids(self):
         """Test that function works for report, subject, metric and source uuids."""
-
         reports = latest_report_for_uuids(self.database, self.data_model, REPORT_ID)
         self.assertEqual(len(reports), 1)
         self.assertEqual(reports[0].uuid, REPORT_ID)
@@ -74,7 +73,6 @@ class LatestReportForUuidsTest(unittest.TestCase):
 
     def test_multiple_uuids(self):
         """Test that function works for report, subject, metric and source uuids."""
-
         reports = latest_report_for_uuids(self.database, self.data_model, SUBJECT_ID2, REPORT_ID)
         self.assertEqual(len(reports), 2)
         self.assertEqual(reports[0].uuid, REPORT_ID2)
@@ -82,6 +80,5 @@ class LatestReportForUuidsTest(unittest.TestCase):
 
     def test_non_existing_uuid(self):
         """Test that function works for report, subject, metric and source uuids."""
-
         reports = latest_report_for_uuids(self.database, self.data_model, SOURCE_ID2)
         self.assertEqual(len(reports), 0)
