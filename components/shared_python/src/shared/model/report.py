@@ -46,6 +46,11 @@ class Report(dict):
         """Return the uuid of this report."""
         return cast(ReportId, self["report_uuid"])  # pragma: no cover-behave
 
+    @property
+    def name(self) -> str:
+        """A different access to title."""
+        return self.get("title")
+
     def __eq__(self, other):
         """Return whether the reports are equal."""
         return self.uuid == other.uuid  # pragma: no cover-behave

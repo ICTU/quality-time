@@ -21,9 +21,13 @@ class Source(dict):  # lgtm [py/missing-equals]
     # are the same.
 
     def __init__(self, metric: Metric, *args, **kwargs):
-        self.__metric = metric
         self.metric = metric
         super().__init__(*args, **kwargs)
+
+    @property
+    def name(self) -> str | None:
+        """Easier way to access name."""
+        return self.get("name")
 
     def total(self) -> str | None:
         """Return the measurement total of the source."""
@@ -69,7 +73,7 @@ class Source(dict):  # lgtm [py/missing-equals]
         points of each user story.
         """
         entities_to_ignore = self._entities_to_ignore()
-        measured_attribute, attribute_type = self.__metric.get_measured_attribute(self)
+        measured_attribute, attribute_type = self.metric.get_measured_attribute(self)
         if measured_attribute:
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
             value = sum(convert(entity[measured_attribute]) for entity in entities_to_ignore)

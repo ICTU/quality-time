@@ -50,10 +50,10 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
 
     target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source, data_model)
     delta_description = (
-        f"{{user}} copied the source '{source.get('name')}' of metric '{source_metric.get('name')}' of subject "
-        f"'{source_subject.get('name')}' from report '{reports[0].get('title')}' "
-        f"to metric '{target_metric.get('name')}' of subject "
-        f"'{target_subject.get('name')}' in report '{reports[1].get('title')}'."
+        f"{{user}} copied the source '{source.name}' of metric '{source_metric.name}' of subject "
+        f"'{source_subject.name}' from report '{reports[0].name}' "
+        f"to metric '{target_metric.name}' of subject "
+        f"'{target_subject.name}' in report '{reports[1].name}'."
     )
     uuids = [reports[1].uuid, target_subject.uuid, target_metric.uuid, source_copy_uuid]
     result = insert_new_report(database, delta_description, uuids, reports[1])
@@ -72,10 +72,10 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=target_metric_uuid)
 
     delta_description = (
-        f"{{user}} moved the source '{source.get('name')}' from metric '{source_metric.get('name')}' of subject "
-        f"'{source_subject.get('name')}' in report '{reports[0].get('title')}' "
-        f"to metric '{target_metric.get('name')}' of subject "
-        f"'{target_subject.get('name')}' in report '{reports[1].get('title')}'."
+        f"{{user}} moved the source '{source.name}' from metric '{source_metric.name}' of subject "
+        f"'{source_subject.name}' in report '{reports[0].name}' "
+        f"to metric '{target_metric.name}' of subject "
+        f"'{target_subject.name}' in report '{reports[1].name}'."
     )
     target_metric["sources"][source_uuid] = source
     uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [
@@ -102,15 +102,15 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SourceData(data_model, reports, source_uuid)
+    report = latest_report_for_uuids(database, data_model, source_uuid)[0]
+    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     delta_description = (
-        f"{{user}} deleted the source '{data.source_name}' from metric "
-        f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'."
+        f"{{user}} deleted the source '{source.name}' from metric "
+        f"'{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
-    uuids = [data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid]
-    del data.metric["sources"][source_uuid]
-    return insert_new_report(database, delta_description, uuids, data.report)
+    uuids = [report.uuid, subject.uuid, metric.uuid, source_uuid]
+    del metric["sources"][source_uuid]
+    return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])

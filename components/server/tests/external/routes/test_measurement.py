@@ -97,7 +97,6 @@ class SetEntityAttributeTest(unittest.TestCase):
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
-
         with patch("bottle.request", Mock(json=dict(attribute="value"))):
             measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]

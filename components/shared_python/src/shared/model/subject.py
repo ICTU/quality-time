@@ -39,9 +39,15 @@ class Subject(dict):
             metrics[metric_uuid] = Metric(self.__data_model, metric_dict, metric_uuid, self.uuid)
         return metrics
 
-    def name(self):
+    @property
+    def type(self) -> str | None:
+        """Return the type of the subject."""
+        return str(self["type"]) if "type" in self else None
+
+    @property
+    def name(self) -> str | None:
         """Either a custom name or one from the subject type in the data model."""
-        return self.get("name") or self.__data_model["subjects"][self["type"]]["name"]
+        return self.get("name") or self.__data_model["subjects"].get(self.type).get("name")
 
     def tag_subject(self, tag: str, report: Optional["Report"] = None) -> Optional["Subject"]:
         """Return a Subject instance with only metrics belonging to one tag."""
@@ -50,7 +56,7 @@ class Subject(dict):
             return None
         data = dict(self)
         data["metrics"] = metrics
-        data["name"] = self.report.get("title", "") + " ❯ " + self.name()
+        data["name"] = self.report.name + " ❯ " + self.name
         return Subject(self.__data_model, data, self.uuid, report)
 
     def summarize(self, measurements: dict[str, list[Measurement]]):
