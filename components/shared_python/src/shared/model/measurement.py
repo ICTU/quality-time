@@ -219,7 +219,8 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         if self.__previous_measurement or "start" not in self:
             self["start"] = self["end"] = iso_timestamp()
         self["sources"] = [
-            Source(self.metric, source) for source in self.get("sources", [])
+            Source(source["source_uuid"], self.metric, source)
+            for source in self.get("sources", [])
         ]
 
     def scale_measurement(self, scale: Scale) -> ScaleMeasurement:

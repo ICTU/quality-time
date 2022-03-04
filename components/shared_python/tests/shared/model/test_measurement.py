@@ -310,6 +310,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         """Create a source fixture."""
         self.source_count += 1
         return Source(
+            f"uuid-{self.source_count}",
             metric,
             dict(
                 source_uuid=f"uuid-{self.source_count}",

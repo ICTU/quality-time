@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import cast, Optional, TYPE_CHECKING
 
+from shared.utils.type import SourceId
 from shared.utils.functions import days_ago, iso_timestamp
 
 
@@ -20,8 +21,9 @@ class Source(dict):  # lgtm [py/missing-equals]
     # dictionary contains the source UUID and thus we don't need to compare the metrics to know whether two sources
     # are the same.
 
-    def __init__(self, metric: Metric, *args, **kwargs):
+    def __init__(self, source_uuid: SourceId, metric: Metric, *args, **kwargs):
         self.metric = metric
+        self.uuid = source_uuid
         super().__init__(*args, **kwargs)
 
     @property
@@ -43,7 +45,9 @@ class Source(dict):  # lgtm [py/missing-equals]
         # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
         # unique. Create a mapping of old keys to new keys so we can move the entity user data to the new keys
         changed_entity_keys = {
-            entity["old_key"]: entity["key"] for entity in self.get("entities", []) if "old_key" in entity
+            entity["old_key"]: entity["key"]
+            for entity in self.get("entities", [])
+            if "old_key" in entity
         }
         # Copy the user data of entities, keeping 'orphaned' entity user data around for a while in case the entity
         # returns in a later measurement:
@@ -52,11 +56,17 @@ class Source(dict):  # lgtm [py/missing-equals]
             entity_key = changed_entity_keys.get(entity_key, entity_key)
             if entity_key in new_entity_keys:
                 if "orphaned_since" in attributes:
-                    del attributes["orphaned_since"]  # The entity returned, remove the orphaned since date/time
+                    del attributes[
+                        "orphaned_since"
+                    ]  # The entity returned, remove the orphaned since date/time
             else:
                 if "orphaned_since" in attributes:
-                    days_since_orphaned = days_ago(datetime.fromisoformat(attributes["orphaned_since"]))
-                    if days_since_orphaned > max_days_to_keep_orphaned_entity_user_data:  # pragma: no cover-behave
+                    days_since_orphaned = days_ago(
+                        datetime.fromisoformat(attributes["orphaned_since"])
+                    )
+                    if (
+                        days_since_orphaned > max_days_to_keep_orphaned_entity_user_data
+                    ):  # pragma: no cover-behave
                         continue  # Don't copy this user data, it has been orphaned too long
                 else:
                     # The entity user data refers to a disappeared entity. Keep it around in case the entity
@@ -76,7 +86,9 @@ class Source(dict):  # lgtm [py/missing-equals]
         measured_attribute, attribute_type = self.metric.get_measured_attribute(self)
         if measured_attribute:
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
-            value = sum(convert(entity[measured_attribute]) for entity in entities_to_ignore)
+            value = sum(
+                convert(entity[measured_attribute]) for entity in entities_to_ignore
+            )
         else:
             value = len(entities_to_ignore)
         return int(value)
@@ -85,7 +97,11 @@ class Source(dict):  # lgtm [py/missing-equals]
         """Return the entities to ignore."""
         user_data = self.get("entity_user_data", {})
         entities = self.get("entities", [])
-        return [entity for entity in entities if self._entity_to_be_ignored(user_data.get(entity["key"], {}))]
+        return [
+            entity
+            for entity in entities
+            if self._entity_to_be_ignored(user_data.get(entity["key"], {}))
+        ]
 
     @staticmethod
     def _entity_to_be_ignored(entity) -> bool:
