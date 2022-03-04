@@ -1,4 +1,4 @@
-name: Server
+name: Shared Python
 
 on: [push]
 
@@ -8,22 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2.4.0
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2.3.2
       with:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        cd components/server
+        cd components/shared_python
         python -m pip install --upgrade pip
         pip install -r requirements.txt -r requirements-dev.txt
-        pip install -r requirements-internal.txt
     - name: Test
       run: |
-        cd components/server
+        cd components/shared_python
         ci/unittest.sh
     - name: Quality
       run: |
-        cd components/server
+        cd components/shared_python
         ci/quality.sh

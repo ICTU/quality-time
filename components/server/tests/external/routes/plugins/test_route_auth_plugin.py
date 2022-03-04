@@ -7,8 +7,9 @@ from unittest.mock import Mock
 
 import bottle
 
-from external.routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 from shared.routes.plugins import InjectionPlugin
+
+from external.routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 
 
 class AuthPluginTest(unittest.TestCase):

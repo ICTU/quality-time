@@ -5,7 +5,6 @@ import sys
 
 import coverage
 
-
 sys.path.insert(0, "src")
 
 cov = coverage.Coverage()

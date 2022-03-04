@@ -7,20 +7,24 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - run: |
           case $CIRCLE_NODE_INDEX in
-          	0) component=collector;;
-          	1) component=notifier;;
-          	2) component=server;;
+            0) component=collector;;
+            1) component=notifier;;
+            2) component=server;;
+            3) component=shared_python;;
           esac
           cd components/$component
           python -m venv venv
           . venv/bin/activate
           pip install wheel
           pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
+          if [ -f "requirements-internal.txt" ]; then
+            pip install --progress-bar off -r requirements-internal.txt
+          fi
           ci/unittest.sh
           ci/quality.sh
 
@@ -102,6 +106,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
+            pip install --progress-bar off -r requirements-internal.txt &>> /tmp/log/pip-internal.log
       - run:
           background: true
           working_directory: components/server

@@ -3,6 +3,9 @@
 import unittest
 from unittest.mock import Mock, patch
 
+from shared.model.report import Report
+from shared.utils.type import SubjectId
+
 from external.routes import (
     delete_subject,
     get_subject_measurements,
@@ -11,8 +14,6 @@ from external.routes import (
     post_subject_attribute,
     post_subject_copy,
 )
-from shared.model.report import Report
-from shared.utils.type import SubjectId
 
 from ...fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
