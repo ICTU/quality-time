@@ -26,14 +26,15 @@ class Report(dict):
         subject_data = report_data.get("subjects", {})
         self.subjects_dict = self._subjects(subject_data)
         self.subjects = list(self.subjects_dict.values())
+        self.subject_uuids = set(self.subjects_dict.keys())
 
         self.metrics_dict = self._metrics()
         self.metrics = list(self.metrics_dict.values())
-        self.metric_uuids = list(self.metrics_dict.keys())
+        self.metric_uuids = set(self.metrics_dict.keys())
 
         self.sources_dict = self._sources()
         self.sources = list(self.sources_dict.values())
-        self.source_uuids = list(self.sources_dict.keys())
+        self.source_uuids = set(self.sources_dict.keys())
 
         if "_id" in report_data:
             report_data["_id"] = str(report_data["_id"])

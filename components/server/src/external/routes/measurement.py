@@ -15,7 +15,7 @@ from shared.utils.type import MetricId, SourceId
 from ..database import sessions
 from ..database.datamodels import latest_datamodel
 from ..database.measurements import count_measurements, measurements_by_metric
-from ..database.reports import latest_reports
+from ..database.reports import latest_report_for_uuids
 from ..utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -30,8 +30,7 @@ def set_entity_attribute(
 ) -> Measurement:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    report = next(report for report in reports if metric_uuid in report.metrics_dict)
+    report = latest_report_for_uuids(database, data_model, metric_uuid)[0]
     metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]

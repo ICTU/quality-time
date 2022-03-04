@@ -111,13 +111,6 @@ class SetEntityAttributeTest(unittest.TestCase):
             measurement["delta"],
         )
 
-    def test_set_attribute_on_non_existing_metric(self):
-        """Test what happens if the specified metric does not exist."""
-        self.database.reports.find.return_value = []
-        self.assertRaises(
-            StopIteration, set_entity_attribute, METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database
-        )
-
 
 class StreamNrMeasurementsTest(unittest.TestCase):
     """Unit tests for the number of measurements stream."""
