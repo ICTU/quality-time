@@ -20,7 +20,7 @@ class SourceTest(unittest.TestCase):
             "key_3": {},
         }
 
-        old_source = (SOURCE_ID, metric=None, entity_user_data=old_eud)
+        old_source = Source(SOURCE_ID, metric=None, entity_user_data=old_eud)
 
         new_entities = [{"key": "key_2"}, {"key": "key_3"}]
 
