@@ -3,7 +3,7 @@ black==22.1.0
 coverage==6.3.2
 dlint==0.12.0
 lxml==4.8.0  # Needed to be able to run mypy with `--html-report`.
-mypy==0.931
+mypy==0.940
 pep8-naming==0.12.1
 pip==22.0.4
 pip-audit==2.0.0
