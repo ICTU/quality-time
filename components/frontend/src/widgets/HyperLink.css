@@ -1,6 +1,6 @@
 a.inverted {
     /* Slightly brighter blue for dark mode */
-    color: rgb(88, 181, 249) !important;
+    color: rgb(143, 208, 255) !important;
 }
 
 a.inverted.error {
