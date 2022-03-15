@@ -58,8 +58,8 @@ jobs:
           ci/quality.sh
 
   application_tests:
-    machine: true
-      image: "ubuntu-2004:current"
+    machine:
+      image: ubuntu-2004:current
     parallelism: 1
     steps:
       - checkout
