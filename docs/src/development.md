@@ -45,6 +45,7 @@ cd components/server
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
+pip install -r requirements-internal.txt  # This needs a separate `pip install` as requirements.txt and requirements-dev.txt have hashes, but requirements-internal.txt does not
 python src/quality_time_server.py
 ```
 
