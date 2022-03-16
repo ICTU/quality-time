@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,6 +34,21 @@ export function AppUI({
     set_user,
     user
 }) {
+    const [uiMode, setUIMode] = useURLSearchQuery(history, "ui_mode", "string", null);
+    useEffect(() => {
+        const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+        mediaQueryList.addEventListener("change", changeMode);
+        function changeMode(e) {
+            if (uiMode === null) {  // Only update if the user is following the OS mode setting
+                setUIMode(e.matches ? "dark" : "light")  // Force redraw
+                setTimeout(() => setUIMode(null))  // Reset setting
+            }
+        }
+        return () => {
+            mediaQueryList.removeEventListener("change", changeMode);
+        }
+    }, [uiMode, setUIMode]);
+
     const user_permissions = getUserPermissions(
         user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
     )
@@ -46,7 +61,6 @@ export function AppUI({
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending");
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [uiMode, setUIMode] = useURLSearchQuery(history, "ui_mode", "string", null);
 
     function handleSort(column) {
         if (column === null) {
@@ -63,7 +77,7 @@ export function AppUI({
         }
     }
 
-    const darkMode = userPrefersDarkMode(uiMode)
+    const darkMode = userPrefersDarkMode(uiMode);
     const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
