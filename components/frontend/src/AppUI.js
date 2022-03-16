@@ -64,7 +64,7 @@ export function AppUI({
     }
 
     const darkMode = userPrefersDarkMode(uiMode)
-    const backgroundColor = darkMode ? "#1b1c1d" : "white"
+    const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
             <DarkMode.Provider value={darkMode}>

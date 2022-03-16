@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Table as SemanticUITable } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import './Table.css';
 
 export function Table(props) {
     return (

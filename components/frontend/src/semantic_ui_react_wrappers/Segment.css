@@ -1,0 +1,7 @@
+.ui.inverted.segment, .ui.inverted.segments .segment, .ui.primary.inverted.segment {
+    background-color: rgba(40, 40, 40);
+}
+
+.ui.inverted.segment>.ui.header, .ui.inverted.segment>.ui.header .sub.header, .ui.inverted.segments .segment>.ui.header, .ui.inverted.segments .segment>.ui.header .sub.header {
+    color: rgba(255, 255, 255, 0.87);
+}

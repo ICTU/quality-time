@@ -3,6 +3,14 @@ form.ui.inverted.form input {
     color: rgba(255, 255, 255, 0.87) !important;
 }
 
+form.ui.inverted.form .ui.search.dropdown:not(.multiple)>input.search {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+form.ui.inverted.form .ui.multiple.search.dropdown {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
 form.ui.inverted.form .ui.label:not(.circular) {
     background-color: rgba(100, 100, 100) !important;
     color: rgba(255, 255, 255, 0.87) !important;
@@ -10,6 +18,7 @@ form.ui.inverted.form .ui.label:not(.circular) {
 
 form.ui.inverted.form textarea {
     background-color: rgba(50, 50, 50) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: rgba(255, 255, 255, 0.87) !important;
 }
 

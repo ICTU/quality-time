@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Tab as SemanticUITab } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import './Tab.css';
 
 export function Tab(props) {
     const darkMode = useContext(DarkMode)
