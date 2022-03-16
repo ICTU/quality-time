@@ -4,7 +4,7 @@ import { DarkMode } from '../context/DarkMode';
 import { pluralize } from '../utils';
 
 export function TrendSparkline({ measurements, scale, report_date }) {
-    const stroke = useContext(DarkMode) ? "white" : "black"
+    const stroke = useContext(DarkMode) ? "rgba(255, 255, 255, 0.87)" : "black"
     if (scale === "version_number") { return null }
     let points = [];
     let yValues = new Set();

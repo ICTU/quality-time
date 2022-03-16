@@ -3,5 +3,5 @@ div.date.inverted {
 }
 
 div.summary.inverted {
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }

@@ -92,8 +92,8 @@ export function TrendGraph({ metric, measurements }) {
         }
     });
 
-    const softWhite = "rgba(256, 256, 256, 0.8)"
-    const softerWhite = "rgba(256, 256, 256, 0.7)"
+    const softWhite = "rgba(255, 255, 255, 0.8)"
+    const softerWhite = "rgba(255, 255, 255, 0.7)"
     const axisStyle = {
         axisLabel: { padding: 30, fontSize: 11, fill: darkMode ? softWhite : null },
         tickLabels: { fontSize: 8, fill: darkMode ? softerWhite : null }
@@ -121,7 +121,7 @@ export function TrendGraph({ metric, measurements }) {
             <VictoryLine
                 data={measurementValues}
                 interpolation="stepBefore"
-                style={{ data: { stroke: darkMode ? "white" : "black", strokeWidth: 2 } }} />
+                style={{ data: { stroke: darkMode ? "rgba(255, 255, 255, 0.87) " : "black", strokeWidth: 2 } }} />
         </VictoryChart>
     )
 }
