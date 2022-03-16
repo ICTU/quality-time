@@ -32,14 +32,16 @@ beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
         value: jest.fn().mockImplementation(query => ({
             matches: matchMediaMatches,
-        })),
+            addEventListener: () => { },
+            removeEventListener: () => { },
+        }))
     });
 });
 
 it('supports dark mode', () => {
     matchMediaMatches = true
     const { container } = render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
-    expect(container.firstChild.style.background).toEqual("rgb(27, 28, 29)")
+    expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
 })
 
 it('supports light mode', () => {
