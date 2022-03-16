@@ -102,7 +102,7 @@ export function TrendGraph({ metric, measurements }) {
         <VictoryChart
             height={250}
             scale={{ x: "time", y: "linear" }}
-            style={{ parent: { height: "100%", background: darkMode ? "black" : "white" } }}
+            style={{ parent: { height: "100%", background: darkMode ? "rgb(40, 40, 40)" : "white" } }}
             theme={VictoryTheme.material}
             width={750}
         >
