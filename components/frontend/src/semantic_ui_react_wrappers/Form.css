@@ -1,31 +1,40 @@
 form.ui.inverted.form input {
     background-color: rgba(50, 50, 50) !important;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
+}
+
+form.ui.inverted.form .ui.search.dropdown:not(.multiple)>input.search {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+form.ui.inverted.form .ui.multiple.search.dropdown {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 form.ui.inverted.form .ui.label:not(.circular) {
     background-color: rgba(100, 100, 100) !important;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form textarea {
     background-color: rgba(50, 50, 50) !important;
-    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form div.dropdown:not(.inline) {
     background-color: rgba(50, 50, 50) !important;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form div.menu {
     background-color: rgba(50, 50, 50) !important;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form div.menu .item {
     border-top: 1px solid transparent;
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form div.menu .active.selected.item {
@@ -37,13 +46,13 @@ form.ui.inverted.form div.menu .item:hover {
 }
 
 form.ui.inverted.form .ui.header {
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
 form.ui.inverted.form .sub.header {
     color: rgba(255, 255, 255, 0.8) !important;
 }
 
-form.ui.inverted.form .message {
-    color: white !important;
+form.ui.inverted.form .icon {
+    color: rgba(255, 255, 255, 0.87);
 }

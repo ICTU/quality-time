@@ -1,3 +1,7 @@
 .ui.inverted.popup {
-    border: 1px solid darkgrey;
+    background-color: rgba(80, 80, 80);
+}
+
+.ui.inverted.top.popup:before {
+    background-color: rgba(80, 80, 80);
 }

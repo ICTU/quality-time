@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { VictoryLabel, VictoryPie, VictoryTooltip } from 'victory';
+import { DarkMode } from '../context/DarkMode';
 import { pluralize } from '../utils';
 
 function nr_metrics_text(nr_metrics) {
@@ -10,7 +11,7 @@ function nr_metrics_label(nr_metrics) {
     return nr_metrics === 0 ? "no metrics" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
-export function StatusPieChart({green, red,  yellow, grey, white}) {
+export function StatusPieChart({ green, red, yellow, grey, white }) {
     function pie_chart_label() {
         let label = 'Status pie chart: ' + nr_metrics_label(nr_metrics);
         if (green > 0) { label += `, ${green} target met` }
@@ -23,11 +24,12 @@ export function StatusPieChart({green, red,  yellow, grey, white}) {
     const nr_metrics = red + green + yellow + grey + white;
     const radius = 175;
     const innerRadius = Math.max(60, (radius - 50) - Math.pow(nr_metrics, 1.35));
+    const labelColor = useContext(DarkMode) ? "lightgrey" : "darkgrey";
     return (
         <svg viewBox="0 0 400 400" aria-label={pie_chart_label()}>
             <VictoryLabel
                 textAnchor="middle"
-                style={{ fill: "grey", fontFamily: "Arial", fontSize: 30 }}
+                style={{ fill: labelColor, fontFamily: "Arial", fontSize: 30 }}
                 x={200} y={200}
                 text={nr_metrics_text(nr_metrics)}
             />

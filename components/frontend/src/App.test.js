@@ -24,6 +24,13 @@ beforeAll(() => {
         addEventListener: jest.fn(),
         close: jest.fn()
     }))
+    Object.defineProperty(window, 'matchMedia', {
+        value: jest.fn().mockImplementation(query => ({
+            matches: false,
+            addEventListener: () => { /* No implementation needed */ },
+            removeEventListener: () => { /* No implementation needed */ },
+        })),
+    });
 });
 
 beforeEach(() => {

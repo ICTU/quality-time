@@ -1,7 +1,7 @@
 div.date.inverted {
-    color: grey !important;
+    color: darkgrey !important;
 }
 
 div.summary.inverted {
-    color: white !important;
+    color: rgba(255, 255, 255, 0.87) !important;
 }

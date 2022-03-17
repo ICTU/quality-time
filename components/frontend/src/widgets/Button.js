@@ -205,7 +205,7 @@ export function PermLinkButton({ url }) {
                     }}
                     style={{ fontWeight: "bold" }}
                 />
-                <input id="permlink" style={{ border: "1px solid #0E6EB8", color: "#0E6EB8", fontWeight: "bold" }} />
+                <input id="permlink" style={{ border: "1px solid rgb(143, 208, 255)", color: "rgb(143, 208, 255)", fontWeight: "bold" }} />
             </Input>
         )
     }
