@@ -52,3 +52,7 @@ form.ui.inverted.form .ui.header {
 form.ui.inverted.form .sub.header {
     color: rgba(255, 255, 255, 0.8) !important;
 }
+
+form.ui.inverted.form .calendar.icon {
+    color: rgba(255, 255, 255, 0.87);
+}
