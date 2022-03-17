@@ -4,3 +4,7 @@
         box-shadow: none !important;
     }
 }
+
+.ui.ui.ui.grey.label {
+    color: rgba(255, 255, 255, 0.87)
+}
