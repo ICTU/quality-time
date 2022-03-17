@@ -73,7 +73,7 @@ it('follows OS mode when switching to dark mode', () => {
 
 it('ignores OS mode when mode explicitly set', () => {
     matchMediaMatches = false
-    const { container } = render(<AppUI history={{ location: { search: "?ui_mode=light" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    const { container } = render(<AppUI history={{ location: { search: "?ui_mode=light" }}} report_uuid="" reports={[]} reports_overview={{}} />)
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
         changeMode({matches: true})
