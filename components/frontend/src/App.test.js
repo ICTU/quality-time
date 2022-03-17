@@ -27,8 +27,8 @@ beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
         value: jest.fn().mockImplementation(query => ({
             matches: false,
-            addEventListener: () => {},
-            removeEventListener: () => {},
+            addEventListener: () => { /* No implementation needed */ },
+            removeEventListener: () => { /* No implementation needed */ },
         })),
     });
 });
