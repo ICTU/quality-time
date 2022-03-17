@@ -26,6 +26,9 @@ updates:
   schedule:
     interval: daily
     time: "04:00"
+  ignore:
+    - dependency-name: "python"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
   open-pull-requests-limit: 10
 
 - package-ecosystem: docker
@@ -74,6 +77,9 @@ updates:
   schedule:
     interval: daily
     time: "04:00"
+  ignore:
+    - dependency-name: "python"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
   open-pull-requests-limit: 10
 
 - package-ecosystem: docker
@@ -98,6 +104,9 @@ updates:
   schedule:
     interval: daily
     time: "04:00"
+  ignore:
+    - dependency-name: "python"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
   open-pull-requests-limit: 10
 
 - package-ecosystem: pip
@@ -112,6 +121,9 @@ updates:
   schedule:
     interval: daily
     time: "04:00"
+  ignore:
+    - dependency-name: "python"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
   open-pull-requests-limit: 10
 
 - package-ecosystem: npm
