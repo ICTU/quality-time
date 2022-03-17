@@ -27,12 +27,13 @@ it('handles sorting', async () => {
 })
 
 let matchMediaMatches
+let changeMode
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
         value: jest.fn().mockImplementation(query => ({
             matches: matchMediaMatches,
-            addEventListener: () => { /* No implementation needed */ },
+            addEventListener: (eventType, eventHandler) => { changeMode = eventHandler },
             removeEventListener: () => { /* No implementation needed */ },
         }))
     });
@@ -47,5 +48,35 @@ it('supports dark mode', () => {
 it('supports light mode', () => {
     matchMediaMatches = false
     const { container } = render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("white")
+})
+
+it('follows OS mode when switching to light mode', () => {
+    matchMediaMatches = true
+    const { container } = render(<AppUI history={{ location: { search: "" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
+    act(() => {
+        changeMode({matches: false})
+    })
+    expect(container.firstChild.style.background).toEqual("white")
+})
+
+it('follows OS mode when switching to dark mode', () => {
+    matchMediaMatches = false
+    const { container } = render(<AppUI history={{ location: { search: "" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("white")
+    act(() => {
+        changeMode({matches: true})
+    })
+    expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
+})
+
+it('ignores OS mode when mode explicitly set', () => {
+    matchMediaMatches = false
+    const { container } = render(<AppUI history={{ location: { search: "?ui_mode=light" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />)
+    expect(container.firstChild.style.background).toEqual("white")
+    act(() => {
+        changeMode({matches: true})
+    })
     expect(container.firstChild.style.background).toEqual("white")
 })
