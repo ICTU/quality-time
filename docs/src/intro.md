@@ -12,31 +12,75 @@ Users can add and configure reports, metrics, and sources (such as SonarQube and
 
 Some screenshots to wet your appetite.
 
+```{tip}
+*Quality-time* supports both a light and a dark UI mode. Toggle the UI mode of the documentation, using the icon at the top of the page, to also toggle the UI mode of the screenshots.
+```
+
 ## Projects dashboard
 
 *Quality-time* shows a summary of the projects on its landing page:
 
-![Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts](screenshots/projects_dashboard.png)
+```{image} screenshots/projects_dashboard_dark.png
+:alt: Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts
+:class: only-dark
+```
+
+```{image} screenshots/projects_dashboard.png
+:alt: Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts
+:class: only-light
+```
 
 ## Metrics overview
 
 For each metric, *Quality-time* displays the key data:
 
-![Screenshot of a demo app with metrics that have different statuses](screenshots/metrics.png)
+```{image} screenshots/metrics.png
+:alt: Screenshot of a demo app with metrics that have different statuses
+:class: only-light
+```
+
+```{image} screenshots/metrics_dark.png
+:alt: Screenshot of a demo app with metrics that have different statuses
+:class: only-dark
+```
 
 ## Metric details
 
 Users can expand the metrics to see and configure the metric details:
 
-![Screenshot of a metric source configuration form](screenshots/metric_details.png)
+```{image} screenshots/metric_details.png
+:alt: Screenshot of a metric source configuration form
+:class: only-light
+```
+
+```{image} screenshots/metric_details_dark.png
+:alt: Screenshot of a metric source configuration form
+:class: only-dark
+```
 
 Keep track of trends:
 
-![Screenshot of a metric trend graph showing the value of the metric over time](screenshots/metric_trendgraph.png)
+```{image} screenshots/metric_trendgraph.png
+:alt: Screenshot of a metric trend graph showing the value of the metric over time
+:class: only-light
+```
+
+```{image} screenshots/metric_trendgraph_dark.png
+:alt: Screenshot of a metric trend graph showing the value of the metric over time
+:class: only-dark
+```
 
 And manage false positives:
 
-![Screenshot of a metric's entities, in this case suppressed violations](screenshots/metric_entities.png)
+```{image} screenshots/metric_entities.png
+:alt: Screenshot of a metric's entities, in this case suppressed violations
+:class: only-light
+```
+
+```{image} screenshots/metric_entities_dark.png
+:alt: Screenshot of a metric's entities, in this case suppressed violations
+:class: only-dark
+```
 
 # Features
 
@@ -52,6 +96,7 @@ Implemented features include:
 - Export of reports to PDF, both via the UI as well as via the API.
 - Notifications of events, such as metrics turning red, to Microsoft Teams.
 - Side-by-side comparison of measurements at different points in time.
+- Dark and light UI mode.
 
 ```{seealso}
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
