@@ -1,3 +1,7 @@
 .ui.inverted.table, .ui.ui.inverted.table>tbody>tr>th, .ui.ui.inverted.table>tfoot>tr>td, .ui.ui.inverted.table>tfoot>tr>th, .ui.ui.inverted.table>thead>tr>th, .ui.ui.inverted.table>tr>th {
     color: rgba(255, 255, 255, 0.87);
 }
+
+.ui.sortable.table:not(.basic) thead th.sorted:hover {
+    background-color: rgba(242, 242, 242, 1) !important;
+}
