@@ -13,7 +13,15 @@ Quality reports can be viewed without logging in, but to edit reports and metric
 Enter your {index}`LDAP`-credentials in the dialog:
 
 ```{image} screenshots/login_dialog.png
-:alt: Loging dialog with username and password fields
+:alt: Login dialog with username and password fields
+:class: only-light
+:width: 400px
+:align: center
+```
+
+```{image} screenshots/login_dialog_dark.png
+:alt: Login dialog with username and password fields
+:class: only-dark
 :width: 400px
 :align: center
 ```
@@ -77,7 +85,15 @@ To change the title or subtitle of a report, expand the report header and simply
 
 The "{index}`Comment <pair: Comment;Report>`" field can be used to describe the report, or any other information. HTML and URLs are supported. The entered comments are shown between the report title and the dashboard.
 
-![Editing report screenshot](screenshots/editing_report.png)
+```{image} screenshots/editing_report.png
+:alt: Screenshot of dialog to edit report title, subtitle, and comments
+:class: only-light
+```
+
+```{image} screenshots/editing_report_dark.png
+:alt: Screenshot of dialog to edit report title, subtitle, and comments
+:class: only-dark
+```
 
 #### Deleting reports
 
@@ -94,7 +110,15 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding subjects
 
-![Adding subject screenshot](screenshots/adding_subject.png)
+```{image} screenshots/adding_subject.png
+:alt: Screenshot of buttons to add subjects to a report
+:class: only-light
+```
+
+```{image} screenshots/adding_subject_dark.png
+:alt: Screenshot of buttons to add subjects to a report
+:class: only-dark
+```
 
 Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to add a new subject. The subject is added to the report dashboard.
 
@@ -104,7 +128,15 @@ Alternatively, you can also copy an existing subject or move an existing subject
 
 To change the subject type and name expand the subject header if it's not already expanded. The subject type can be changed by means of the "Subject type" dropdown.
 
-![Editing subject screenshot](screenshots/editing_subject.png)
+```{image} screenshots/editing_subject.png
+:alt: Screenshot of dialog to edit a subject showing fields for the subject type, subject title, subject subtitle and comments
+:class: only-light
+```
+
+```{image} screenshots/editing_subject_dark.png
+:alt: Screenshot of dialog to edit a subject showing fields for the subject type, subject title, subject subtitle and comments
+:class: only-dark
+```
 
 ```{note}
 Currently, changing the type of the subject does not affect what you can do with the subject.
@@ -135,7 +167,15 @@ To reorder subjects, expand the subject title and use the buttons on the lower l
 
 To add a metric to a subject, hit the "Add metric" button to create a new metric.
 
-![Adding metric screenshot](screenshots/adding_metric.png)
+```{image} screenshots/adding_metric.png
+:alt: Screenshot of buttons to add, copy, and move metrics
+:class: only-light
+```
+
+```{image} screenshots/adding_metric_dark.png
+:alt: Screenshot of buttons to add, copy, and move metrics
+:class: only-dark
+```
 
 *Quality-time* adds a metric to the report that you can next configure. It's immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
 
@@ -145,13 +185,29 @@ Alternatively, you can also copy an existing metric or move an existing metric t
 
 After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab.
 
-![Editing metric screenshot](screenshots/editing_metric.png)
+```{image} screenshots/editing_metric.png
+:alt: Screenshot of dialog to edit metrics showingn fields for metric type, metric name, tags, metric scale, metric direction, metric unit, metric targets, technical debt, issues, and comments
+:class: only-light
+```
+
+```{image} screenshots/editing_metric_dark.png
+:alt: Screenshot of dialog to edit metrics showingn fields for metric type, metric name, tags, metric scale, metric direction, metric unit, metric targets, technical debt, issues, and comments
+:class: only-dark
+```
 
 The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
-![Dashboard tags](screenshots/dashboard_tags.png)
+```{image} screenshots/dashboard_tags.png
+:alt: Screenshot of dashboard cards showing pie charts for different tags
+:class: only-light
+```
+
+```{image} screenshots/dashboard_tags_dark.png
+:alt: Screenshot of dashboard cards showing pie charts for different tags
+:class: only-dark
+```
 
 The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale, or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
@@ -188,7 +244,15 @@ Be careful, there's no way to undo your action via the user interface.
 
 To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported source types.
 
-![Adding source screenshot](screenshots/adding_source.png)
+```{image} screenshots/adding_source.png
+:alt: Screenshot of buttons to add, copy, and move sources
+:class: only-light
+```
+
+```{image} screenshots/adding_source_dark.png
+:alt: Screenshot of buttons to add, copy, and move sources
+:class: only-dark
+```
 
 Alternatively, you can also copy an existing source or move an existing source to the metric. Clicking the "Copy source" or "Move source" button shows a drop down menu with all of the sources to choose from.
 
@@ -202,7 +266,15 @@ By default, the name of the source equals the source type but this can be overri
 
 The parameters that sources need differ per source type. Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. If a parameter is required, this is indicated with a red outline as shown below.
 
-![Editing source screenshot](screenshots/editing_source.png)
+```{image} screenshots/editing_source.png
+:alt: Screenshot of dialog to edit source showing fields for the source type, source name, and source parameters such as URL and credentials
+:class: only-light
+```
+
+```{image} screenshots/editing_source_dark.png
+:alt: Screenshot of dialog to edit source showing fields for the source type, source name, and source parameters such as URL and credentials
+:class: only-dark
+```
 
 Source parameter (URL's, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
 
@@ -246,7 +318,15 @@ One special metric type is "Metrics". It counts the number of metrics in a quali
 
 After adding *Quality-time* as a source to a "Metrics"-metric, one can configure which statuses to count and which metrics to consider by filtering on report names or identifiers, on metric types, on source types, and on tags.
 
-![Editing *Quality-time* source screenshot](screenshots/editing_quality_time_source.png)
+```{image} screenshots/editing_quality_time_source.png
+:alt: Screenshot of dialog to edit *Quality-time* source showing fields for source type, source name, and source parameters such as URL, metric statuses, report names, and metric types
+:class: only-light
+```
+
+```{image} screenshots/editing_quality_time_source_dark.png
+:alt: Screenshot of dialog to edit *Quality-time* source showing fields for source type, source name, and source parameters such as URL, metric statuses, report names, and metric types
+:class: only-dark
+```
 
 Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics, and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
 
@@ -403,11 +483,11 @@ Both the reports dashboard on the *Quality-time* landing page and the dashboard 
 
 ### Measurement trend
 
-By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also list multiple recent measurement values of each metric to show the measurement trend. Use the 'hamburger' menu on the top left-hand side of the table to increase the number of dates displayed. The hamburger menu can also be used to configure the number of days or weeks between dates.
+By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also list multiple recent measurement values of each metric to show the measurement trend. Use the 'Settings' panel in the menu bar to increase the number of dates displayed. The 'Settings' panel can also be used to configure the number of days or weeks between dates.
 
 ### Sorting metrics
 
-Metrics can be sorted by clicking on the table column headers. The sort order cycles between the default order, sorted ascending by the column click, and sorted descending by the column clicked.
+Metrics can be sorted by clicking on the table column headers. The sort order cycles between the default order, sorted ascending by the column click, and sorted descending by the column clicked. The sort order can also be changed via the 'Settings' panel in the menu bar.
 
 ```{index} Tag
 ```
@@ -418,13 +498,11 @@ In a report's dashboard, click on a tag card to show only metrics that have the 
 
 ### Filtering metrics by status
 
-Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide metrics that need no action.
-
-![Metric table columns](screenshots/metric_table_columns.png)
+The 'Settings' panel in the menu bar can be used to hide metrics that need no action.
 
 ### Hiding columns
 
-Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide specific columns from the metric tables.
+The 'Settings' panel in the menu bar can be used to hide specific columns from the metric tables.
 
 ```{index} Export report
 ```
