@@ -49,7 +49,7 @@ The frontend uses the following environment variables:
 
 ### Example reports
 
-The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the [section on configuration](#configuration) below.
+The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/server/src/external/example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the [section on configuration](#configuration) below.
 
 ```{index} API
 ```
@@ -248,7 +248,7 @@ The list of `metrics` contains the metrics that make the most sense for the subj
 
 *Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
 
-The server component is the only component that directly interacts with the database. The server [`database` package](https://github.com/ICTU/quality-time/tree/master/components/server/src/database) contains the code for interacting with the collections.
+The server component is the only component that directly interacts with the database. The server [`database` package](https://github.com/ICTU/quality-time/tree/master/components/server/src/external/database) contains the code for interacting with the collections.
 
 Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time.
 

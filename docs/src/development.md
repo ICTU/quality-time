@@ -245,7 +245,7 @@ Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](h
 
 ##### Adding a logo for the new source to the server
 
-Add a small png file of the logo in [`components/server/src/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small png file of the logo in [`components/server/src/external/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/external/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
