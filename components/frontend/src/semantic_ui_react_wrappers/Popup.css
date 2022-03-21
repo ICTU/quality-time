@@ -1,7 +1,7 @@
 .ui.inverted.popup {
-    background-color: rgba(80, 80, 80);
+    background-color: rgba(60, 65, 70);
 }
 
 .ui.inverted.top.popup:before {
-    background-color: rgba(80, 80, 80);
+    background-color: rgba(60, 65, 70);
 }
