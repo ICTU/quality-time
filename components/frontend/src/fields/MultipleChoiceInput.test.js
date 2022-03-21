@@ -28,7 +28,7 @@ function renderMultipleChoiceInput(options=[], value=["hello"]) {
     let mockSetValue = jest.fn();
     render(
         <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} />
+            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} allowAdditions={true} />
         </Permissions.Provider>
     )
     return mockSetValue
@@ -51,38 +51,42 @@ it('invokes the callback', () => {
 })
 
 it('does not add a value to the options twice when clicked', () => {
-    let mockSetValue = renderMultipleChoiceInput(["hello", "again"])
+    renderMultipleChoiceInput(["hello", "again"])
     fireEvent.click(screen.getByText(/again/))
     expect(screen.getAllByText(/again/).length).toBe(1)
 })
 
 it('does not add a value to the options twice when typed', () => {
     renderMultipleChoiceInput()
-    userEvent.type(screen.getAllByDisplayValue("")[0], "again")
-    userEvent.tab()
-    userEvent.tab()
-    userEvent.type(screen.getAllByDisplayValue("")[0], "again")
-    userEvent.tab()
-    expect(screen.getAllByText(/again/).length).toBe(2)  // Once as value, once as option
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    expect(screen.getAllByText(/again/).length).toBe(3)  // Twice as value, once as option
+})
+
+it('does not add a value to the options when the options already contain that value', () => {
+    renderMultipleChoiceInput(["again"])
+    expect(screen.getAllByText(/again/).length).toBe(1)
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    expect(screen.getAllByText(/again/).length).toBe(2)
 })
 
 it('saves an uncommitted value on blur', () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getAllByDisplayValue("")[0], "new")
+    userEvent.type(screen.getByDisplayValue(""), "new")
     userEvent.tab()
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "new"]);
 })
 
 it('does not save an uncommitted value on blur that is already in the list', () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getAllByDisplayValue("")[0], "hello")
+    userEvent.type(screen.getByDisplayValue(""), "hello")
     userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
 })
 
 it('does not save an uncommitted value on blur if there is none', () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getAllByDisplayValue("")[0], "x{backspace}")
+    userEvent.type(screen.getByDisplayValue(""), "x{backspace}")
     userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
 })
