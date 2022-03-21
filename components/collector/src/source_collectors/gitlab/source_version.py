@@ -1,6 +1,6 @@
 """GitLab source version collector."""
 
-from packaging.version import Version
+from packaging.version import InvalidVersion, Version
 
 from base_collectors import SourceVersionCollector
 from collector_utilities.type import Response, URL
@@ -17,4 +17,8 @@ class GitLabSourceVersion(GitLabBase, SourceVersionCollector):
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to return the GitLab version."""
-        return Version((await response.json())["version"])
+        version_string = (await response.json())["version"]
+        try:
+            return Version(version_string)
+        except InvalidVersion:
+            return Version(version_string.split("-")[0])
