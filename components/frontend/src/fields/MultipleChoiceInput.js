@@ -20,7 +20,7 @@ export function MultipleChoiceInput(props) {
         <Form>
             <ReadOnlyOrEditable
                 requiredPermissions={requiredPermissions}
-                readOnlyComponent={<ReadOnlyInput {...otherProps} value={value ? value.join(", ") : ''}  />}
+                readOnlyComponent={<ReadOnlyInput {...otherProps} value={value.join(", ")} />}
                 editableComponent={
                     <Form.Dropdown
                         {...otherProps}
