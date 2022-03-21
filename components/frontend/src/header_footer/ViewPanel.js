@@ -26,6 +26,9 @@ export function ViewPanel({
     uiMode,
     visibleDetailsTabs
 }) {
+    const multipleDateColumns = nrDates > 1
+    const oneDateColumn = nrDates === 1
+    const sortOrderNotChangeable = sortColumn === null || (multipleDateColumns && ["status", "measurement", "target"].includes(sortColumn))
     return (
         <Segment.Group
             horizontal
@@ -96,10 +99,10 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Visible columns</Header>
                 <Menu vertical inverted size="small">
-                    <VisibleColumnMenuItem column="trend" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="status" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="measurement" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="target" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="trend" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="status" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="measurement" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="target" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="unit" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
@@ -111,9 +114,9 @@ export function ViewPanel({
                 <Header size="small">Sort column</Header>
                 <Menu vertical inverted size="small">
                     <SortColumnMenuItem column="name" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="status" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="measurement" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="target" sortColumn={sortColumn} setSortColumn={setSortColumn} />
+                    <SortColumnMenuItem column="status" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
+                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
+                    <SortColumnMenuItem column="target" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
                     <SortColumnMenuItem column="unit" sortColumn={sortColumn} setSortColumn={setSortColumn} />
                     <SortColumnMenuItem column="source" sortColumn={sortColumn} setSortColumn={setSortColumn} />
                     <SortColumnMenuItem column="comment" sortColumn={sortColumn} setSortColumn={setSortColumn} />
@@ -124,8 +127,8 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Sort direction</Header>
                 <Menu vertical inverted size="small">
-                    <SortOrderMenuItem order="ascending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
-                    <SortOrderMenuItem order="descending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
+                    <SortOrderMenuItem disabled={sortOrderNotChangeable} order="ascending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
+                    <SortOrderMenuItem disabled={sortOrderNotChangeable} order="descending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -141,17 +144,17 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Time between dates</Header>
                 <Menu vertical inverted size="small">
-                    <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} setDateInterval={setDateInterval} />
+                    <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
                     {[7, 14, 21, 28].map((nr) =>
-                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} setDateInterval={setDateInterval} />
+                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
                     )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Date order</Header>
                 <Menu vertical inverted size="small">
-                    <SortOrderMenuItem order="ascending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
-                    <SortOrderMenuItem order="descending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
+                    <SortOrderMenuItem disabled={oneDateColumn} order="ascending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
+                    <SortOrderMenuItem disabled={oneDateColumn} order="descending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
                 </Menu>
             </Segment>
         </Segment.Group>
@@ -159,41 +162,41 @@ export function ViewPanel({
 }
 
 
-function VisibleColumnMenuItem({ column, hiddenColumns, toggleHiddenColumn }) {
+function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item color={activeColor} active={!hiddenColumns.includes(column)} onClick={() => toggleHiddenColumn(column)}>
+            <Menu.Item active={disabled ? false : !hiddenColumns.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
                 {capitalize(column)}
             </Menu.Item>
         </div>
     )
 }
 
-function SortColumnMenuItem({ column, sortColumn, setSortColumn }) {
+function SortColumnMenuItem({ column, disabled, sortColumn, setSortColumn }) {
     const newColumn = sortColumn === column ? null : column
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setSortColumn(newColumn) }} tabIndex={0}>
-            <Menu.Item color={activeColor} active={sortColumn === column} onClick={() => setSortColumn(newColumn)}>
+            <Menu.Item active={disabled ? false : sortColumn === column} color={activeColor} disabled={disabled} onClick={() => setSortColumn(newColumn)}>
                 {capitalize(column === "name" ? "metric" : column)}
             </Menu.Item>
         </div>
     )
 }
 
-function DateIntervalMenuItem({ nr, dateInterval, setDateInterval }) {
+function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
-            <Menu.Item key={nr} active={nr === dateInterval} color={activeColor} onClick={() => setDateInterval(nr)}>
+            <Menu.Item key={nr} active={disabled ? false : nr === dateInterval} color={activeColor} disabled={disabled} onClick={() => setDateInterval(nr)}>
                 {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
             </Menu.Item>
         </div>
     )
 }
 
-function SortOrderMenuItem({ order, sortOrder, setSortOrder }) {
+function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
-            <Menu.Item active={sortOrder === order} color={activeColor} onClick={() => setSortOrder(order)}>
+            <Menu.Item active={disabled ? false : sortOrder === order} color={activeColor} disabled={disabled} onClick={() => setSortOrder(order)}>
                 {capitalize(order)}
             </Menu.Item>
         </div>
