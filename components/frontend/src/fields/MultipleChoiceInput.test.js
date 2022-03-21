@@ -24,80 +24,64 @@ it('does not render in error state if a required value is present', () => {
     expect(screen.getByRole("combobox")).toBeValid()
 })
 
-it('renders an editable value', () => {
+function renderMultipleChoiceInput(options=[], value=["hello"]) {
+    let mockSetValue = jest.fn();
     render(
         <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={["hello", "again"]} />
+            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} />
         </Permissions.Provider>
     )
+    return mockSetValue
+}
+
+it('renders an editable value', () => {
+    renderMultipleChoiceInput(["hello", "again"])
     expect(screen.getByText(/hello/)).not.toBe(null)
 })
 
 it('renders a missing editable value', () => {
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput options={["hello", "again"]} />
-        </Permissions.Provider>
-    )
+    renderMultipleChoiceInput(["hello", "again"], [])
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
 it('invokes the callback', () => {
-    let mockSetValue = jest.fn();
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={["hello", "again"]} set_value={mockSetValue} />
-        </Permissions.Provider>
-    )
+    let mockSetValue = renderMultipleChoiceInput(["hello", "again"])
     fireEvent.click(screen.getByText(/again/))
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "again"]);
 })
 
-it('does not add a value to the options twice', () => {
-    let mockSetValue = jest.fn();
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={["hello", "again"]} set_value={mockSetValue} />
-        </Permissions.Provider>
-    )
+it('does not add a value to the options twice when clicked', () => {
+    let mockSetValue = renderMultipleChoiceInput(["hello", "again"])
     fireEvent.click(screen.getByText(/again/))
     expect(screen.getAllByText(/again/).length).toBe(1)
 })
 
+it('does not add a value to the options twice when typed', () => {
+    renderMultipleChoiceInput()
+    userEvent.type(screen.getAllByDisplayValue("")[0], "again")
+    userEvent.tab()
+    userEvent.tab()
+    userEvent.type(screen.getAllByDisplayValue("")[0], "again")
+    userEvent.tab()
+    expect(screen.getAllByText(/again/).length).toBe(2)  // Once as value, once as option
+})
+
 it('saves an uncommitted value on blur', () => {
-    let mockSetValue = jest.fn();
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={[]} set_value={mockSetValue} />
-            <input tabIndex="0" />
-        </Permissions.Provider>
-    )
+    let mockSetValue = renderMultipleChoiceInput()
     userEvent.type(screen.getAllByDisplayValue("")[0], "new")
     userEvent.tab()
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "new"]);
 })
 
 it('does not save an uncommitted value on blur that is already in the list', () => {
-    let mockSetValue = jest.fn();
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={[]} set_value={mockSetValue} />
-            <input tabIndex="0" />
-        </Permissions.Provider>
-    )
+    let mockSetValue = renderMultipleChoiceInput()
     userEvent.type(screen.getAllByDisplayValue("")[0], "hello")
     userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
 })
 
 it('does not save an uncommitted value on blur if there is none', () => {
-    let mockSetValue = jest.fn();
-    render(
-        <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={["hello"]} options={[]} set_value={mockSetValue} />
-            <input tabIndex="0" />
-        </Permissions.Provider>
-    )
+    let mockSetValue = renderMultipleChoiceInput()
     userEvent.type(screen.getAllByDisplayValue("")[0], "x{backspace}")
     userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
