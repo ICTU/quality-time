@@ -2,6 +2,14 @@
     color: rgba(255, 255, 255, 0.87);
 }
 
-.ui.sortable.table:not(.basic) thead th.sorted:hover {
+.ui.sortable.table:not(.basic) thead th.sorted {
     background-color: rgba(242, 242, 242, 1) !important;
+}
+
+.ui.sortable.table:not(.basic):not(.inverted) thead th.sorted:hover {
+    background-color: rgba(232, 232, 232, 1) !important;
+}
+
+.ui.sortable.table.inverted:not(.basic) thead th.sorted:hover {
+    background-color: rgba(140, 140, 140, 1) !important;
 }
