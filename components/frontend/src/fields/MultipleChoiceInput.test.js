@@ -1,43 +1,92 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Permissions } from '../context/Permissions';
 import { MultipleChoiceInput } from './MultipleChoiceInput';
 
-function input_wrapper(props) {
-    return mount(
+it('renders the value read only', () => {
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={["hello", "again"]} />)
+    expect(screen.getByDisplayValue(/hello, world/)).not.toBe(null)
+})
+
+it('renders an empty read only value', () => {
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={["hello", "again"]} />)
+    expect(screen.queryByDisplayValue(/hello/)).toBe(null)
+})
+
+it('renders in error state if a required value is missing', () => {
+    render(<MultipleChoiceInput value={[]} options={[]} required />)
+    expect(screen.getByRole("combobox")).toBeInvalid()
+})
+
+it('does not render in error state if a required value is present', () => {
+    render(<MultipleChoiceInput value={["check"]} options={[]} required />)
+    expect(screen.getByRole("combobox")).toBeValid()
+})
+
+function renderMultipleChoiceInput(options=[], value=["hello"]) {
+    let mockSetValue = jest.fn();
+    render(
         <Permissions.Provider value={false}>
-            <MultipleChoiceInput {...props} />
+            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} allowAdditions={true} />
         </Permissions.Provider>
     )
+    return mockSetValue
 }
-let mock_set_value;
 
-describe("<MultipleChoiceInput />", () => {
-    beforeEach(() => { mock_set_value = jest.fn(); });
+it('renders an editable value', () => {
+    renderMultipleChoiceInput(["hello", "again"])
+    expect(screen.getByText(/hello/)).not.toBe(null)
+})
 
-    it('renders the value read only', () => {
-        const wrapper = mount(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={["hello", "again"]} />);
-        expect(wrapper.find("FormInput").prop("value")).toStrictEqual("hello, world");
-    });
-    it('renders the editable value', () => {
-        const wrapper = input_wrapper({ value: ["hello"], options: ["hello", "again"] });
-        expect(wrapper.find('FormDropdown').prop("value")).toStrictEqual(["hello"]);
-    });
-    it('renders a missing editable value', () => {
-        const wrapper = input_wrapper({ options: ["hello", "again"] });
-        expect(wrapper.find('FormDropdown').prop("value")).toStrictEqual([]);
-    });
-    it('invokes the callback with correct parameters on adding a new choice', () => {
-        const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {/*Dummy implementation*/ } } }
-        const wrapper = input_wrapper({ allowAdditions: true, value: ["hello"], options: ["hello", "hi", "ho"], set_value: mock_set_value });
-        wrapper.find("input").simulate("change", { target: { value: "ciao" } });
-        wrapper.find("DropdownItem").simulate("click", nativeEvent);
-        expect(mock_set_value).toHaveBeenCalledWith(["hello", "ciao"]);
-    });
-    it('invokes the callback with correct parameters on adding an existing choice', () => {
-        const nativeEvent = { nativeEvent: { stopImmediatePropagation: () => {/*Dummy implementation*/ } } }
-        const wrapper = input_wrapper({ allowAdditions: true, value: ["hello"], options: ["hello", "hi", "ho"], set_value: mock_set_value });
-        wrapper.find("DropdownItem").at(0).simulate("click", nativeEvent);
-        expect(mock_set_value).toHaveBeenCalledWith(["hello", "hi"]);
-    });
-});
+it('renders a missing editable value', () => {
+    renderMultipleChoiceInput(["hello", "again"], [])
+    expect(screen.queryByDisplayValue(/hello/)).toBe(null)
+})
+
+it('invokes the callback', () => {
+    let mockSetValue = renderMultipleChoiceInput(["hello", "again"])
+    fireEvent.click(screen.getByText(/again/))
+    expect(mockSetValue).toHaveBeenCalledWith(["hello", "again"]);
+})
+
+it('does not add a value to the options twice when clicked', () => {
+    renderMultipleChoiceInput(["hello", "again"])
+    fireEvent.click(screen.getByText(/again/))
+    expect(screen.getAllByText(/again/).length).toBe(1)
+})
+
+it('does not add a value to the options twice when typed', () => {
+    renderMultipleChoiceInput()
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    expect(screen.getAllByText(/again/).length).toBe(3)  // Twice as value, once as option
+})
+
+it('does not add a value to the options when the options already contain that value', () => {
+    renderMultipleChoiceInput(["again"])
+    expect(screen.getAllByText(/again/).length).toBe(1)
+    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    expect(screen.getAllByText(/again/).length).toBe(2)
+})
+
+it('saves an uncommitted value on blur', () => {
+    let mockSetValue = renderMultipleChoiceInput()
+    userEvent.type(screen.getByDisplayValue(""), "new")
+    userEvent.tab()
+    expect(mockSetValue).toHaveBeenCalledWith(["hello", "new"]);
+})
+
+it('does not save an uncommitted value on blur that is already in the list', () => {
+    let mockSetValue = renderMultipleChoiceInput()
+    userEvent.type(screen.getByDisplayValue(""), "hello")
+    userEvent.tab()
+    expect(mockSetValue).not.toHaveBeenCalled();
+})
+
+it('does not save an uncommitted value on blur if there is none', () => {
+    let mockSetValue = renderMultipleChoiceInput()
+    userEvent.type(screen.getByDisplayValue(""), "x{backspace}")
+    userEvent.tab()
+    expect(mockSetValue).not.toHaveBeenCalled();
+})

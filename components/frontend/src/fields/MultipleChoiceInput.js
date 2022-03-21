@@ -12,35 +12,56 @@ function sort_options(option_list) {
 }
 
 export function MultipleChoiceInput(props) {
-    let { allowAdditions, editableLabel, required, set_value, value, requiredPermissions, ...otherProps } = props;
-    const choices = props.value || [];
+    let { allowAdditions, editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
+    const [value, setValue] = useState(props.value || [])
     const [options, setOptions] = useState(props.options);
-    function onChange(event, { value: changed_value }) { set_value(changed_value) }
-    function onAddItem(event, { value: added_value }) { setOptions(prev_options => ([added_value, ...prev_options])) }
-    function Dropdown() {
-        return (
-            <Form.Dropdown
-                {...otherProps}
-                allowAdditions={allowAdditions}
-                error={required && choices.length === 0}
-                fluid
-                label={editableLabel || props.label}
-                multiple
-                onAddItem={onAddItem}
-                onChange={onChange}
-                options={sort_options(options)}
-                search
-                selection
-                value={choices}
-            />
-        )
-    }
+    const [searchQuery, setSearchQuery] = useState("");
     return (
         <Form>
             <ReadOnlyOrEditable
                 requiredPermissions={requiredPermissions}
-                readOnlyComponent={<ReadOnlyInput value={value ? value.join(', ') : ''} {...otherProps} />}
-                editableComponent={<Dropdown />} />
+                readOnlyComponent={<ReadOnlyInput {...otherProps} value={value.join(", ")} />}
+                editableComponent={
+                    <Form.Dropdown
+                        {...otherProps}
+                        allowAdditions={allowAdditions}
+                        error={required && value.length === 0}
+                        fluid
+                        label={editableLabel || props.label}
+                        multiple
+                        onAddItem={(event, { value: addedValue }) => {
+                            if (!options.includes(addedValue)) {
+                                setOptions(prevOptions => ([addedValue, ...prevOptions]))
+                            }
+                            setSearchQuery("");
+                        }}
+                        onBlur={() => {
+                            if (searchQuery && !value.includes(searchQuery)) {
+                                // Save the data on loss of focus like we do with other input types
+                                let newValue = value.concat(searchQuery);
+                                setOptions(prevOptions => ([searchQuery, ...prevOptions]))
+                                setValue(newValue);
+                                set_value(newValue)
+                            }
+                            setSearchQuery("");
+                        }}
+                        onChange={(event, { value: changedValue }) => {
+                            setValue(changedValue);
+                            set_value(changedValue)
+                            setSearchQuery("");
+                        }}
+                        onSearchChange={(event, data) => {
+                            event.preventDefault();
+                            setSearchQuery(data.searchQuery)
+                        }}
+                        options={sort_options(options)}
+                        search
+                        searchQuery={searchQuery}
+                        selection
+                        value={value}
+                    />
+                }
+            />
         </Form>
     )
 }
