@@ -8,12 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.34.0-rc.6 - 2022-03-21
+## [Unreleased]
 
 ### Fixed
 
 - Subject subtitles would partly obscure the header of their subject's metrics table. Fixes [#3443](https://github.com/ICTU/quality-time/issues/3443).
 - GitLab job artifacts archives downloaded via the GitLab API would not be recognized as zipped archives. Fixes [#3478](https://github.com/ICTU/quality-time/issues/3478).
+- GitLab uses non-standard version numbers like "14.5.2-ee"; be prepared. Fixes [#3519](https://github.com/ICTU/quality-time/issues/3519).
 - Multiple choice fields such as fields for tags and issue identifiers would not save newly entered items on focus loss. Fixes [#3560](https://github.com/ICTU/quality-time/issues/3560).
 
 ### Added
