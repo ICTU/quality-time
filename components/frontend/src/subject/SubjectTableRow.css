@@ -34,7 +34,7 @@ tr.unknown, td.unknown {
     background-color: rgb(245, 245, 245, 0.15) !important;
 }
 
-.ui.table.inverted > tbody > tr.unknown:hover {
+.ui.table.inverted > tbody > tr.unknown:hover, .ui.table.inverted > tbody > tr > td.unknown:hover {
     background-color: rgb(245, 245, 245, 0.25) !important;
 }
 
