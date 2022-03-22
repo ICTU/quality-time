@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Table } from "semantic-ui-react";
 import { DataModel } from "../context/DataModel";
+import { DarkMode } from "../context/DarkMode";
 import { MetricDetails } from '../metric/MetricDetails';
 import { IssueStatus } from '../measurement/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
@@ -79,7 +80,8 @@ export function SubjectTableRow(
         }
     }
 
-    const style = nrDates > 1 ? { background: "#f9fafb" } : {}
+    const darkMode = useContext(DarkMode)
+    const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
     const className = nrDates === 1 ? metric.status || "unknown" : ""
     return (
         <TableRowWithDetails id={metric_uuid} className={className} details={details} style={style} expanded={expanded} onExpand={(state) => onExpand(state)}>
