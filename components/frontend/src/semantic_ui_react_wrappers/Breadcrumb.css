@@ -2,6 +2,6 @@
     color: rgba(255, 255, 255, 0.87) !important;
 }
 
-.ui.breadcrumb {
+div.inverted .ui.breadcrumb {
     color: rgba(255, 255, 255, 0.87) !important;
 }
