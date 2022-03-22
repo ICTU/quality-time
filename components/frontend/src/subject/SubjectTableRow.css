@@ -1,44 +1,44 @@
-tr.target_met {
+tr.target_met, td.target_met {
     background-color: rgb(30, 148, 78, 0.15) !important;
 }
 
-tr.target_met:hover {
+tr.target_met:hover, td.target_met:hover {
     background-color: rgb(30, 148, 78, 0.25) !important;
 }
 
-tr.target_not_met {
+tr.target_not_met, td.target_not_met {
     background-color: rgb(211, 59, 55, 0.2) !important;
 }
 
-tr.target_not_met:hover {
+tr.target_not_met:hover, td.target_not_met:hover {
     background-color: rgb(211, 59, 55, 0.3) !important;
 }
 
-tr.near_target_met {
+tr.near_target_met, td.near_target_met {
     background-color: rgb(253, 197, 54, 0.15) !important;
 }
 
-tr.near_target_met:hover {
+tr.near_target_met:hover, td.near_target_met:hover {
     background-color: rgb(253, 197, 54, 0.25) !important;
 }
 
-tr.debt_target_met {
+tr.debt_target_met, td.debt_target_met {
     background-color: rgb(150, 150, 150, 0.2) !important;
 }
 
-tr.debt_target_met:hover {
+tr.debt_target_met:hover, td.debt_target_met:hover {
     background-color: rgb(150, 150, 150, 0.3) !important;
 }
 
-tr.unknown {
+tr.unknown, td.unknown {
     background-color: rgb(245, 245, 245, 0.15) !important;
 }
 
-.ui.table.inverted > tbody > tr.unknown:hover {
+.ui.table.inverted > tbody > tr.unknown:hover, .ui.table.inverted > tbody > tr > td.unknown:hover {
     background-color: rgb(245, 245, 245, 0.25) !important;
 }
 
-tr.unknown:hover {
+tr.unknown:hover, td.unknown:hover {
     background-color: rgb(245, 245, 245, 0.65) !important;
 }
 
