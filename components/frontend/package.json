@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
-    "fomantic-ui-css": "^2.8.8",
+    "fomantic-ui-css": "git+https://github.com/peacekeeper/Fomantic-UI-CSS.git#c94ff9bd5ab897cd3e3facd2c968090da8755dcb",
     "history": "^5.3.0",
     "md5": "^2.3.0",
     "react": "^17.0.2",
@@ -43,7 +43,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "enzyme": "^3.11.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.0",
     "react-test-renderer": "^17.0.2"
   }
 }
