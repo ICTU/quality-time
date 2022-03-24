@@ -4,7 +4,7 @@ import { DataModel } from '../context/DataModel';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';
 
-export function SourceStatus({metric, measurement_source }) {
+export function SourceStatus({ metric, measurement_source }) {
     const dataModel = useContext(DataModel)
     // Source may be deleted from report but still referenced in the latest measurement, be prepared:
     if (!Object.keys(metric.sources).includes(measurement_source.source_uuid)) { return null }
@@ -16,10 +16,12 @@ export function SourceStatus({metric, measurement_source }) {
     if (measurement_source.connection_error || measurement_source.parse_error) {
         return (
             <Popup
-                flowing hoverable
-                trigger={<Label color='red'>{source_label(true)}</Label>}>
-                {measurement_source.connection_error ? 'Connection error' : 'Parse error'}
-            </Popup>
+                content={measurement_source.connection_error ? 'Quality-time could not retrieve data from the source.' : 'Quality-time could not parse the data received from the source.'}
+                flowing
+                header={measurement_source.connection_error ? 'Connection error' : 'Parse error'}
+                hoverable
+                trigger={<Label color='red'>{source_label(true)}</Label>}
+            />
         )
     } else {
         return source_label()
