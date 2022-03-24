@@ -5,5 +5,5 @@ a.inverted {
 
 a.inverted.error {
     /* Use white (on red) when the link is in error mode */
-    color: rgb(255, 255, 255) !important;
+    color: rgb(255, 255, 255, 0.87) !important;
 }
