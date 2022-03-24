@@ -75,7 +75,7 @@ it('shows when the metric was last measured', async () => {
     )
     userEvent.hover(screen.queryByText(/42/))
     await waitFor(() => {
-        expect(screen.queryByText(/Metric was last measured/)).not.toBe(null)
+        expect(screen.queryByText(/The metric was last measured/)).not.toBe(null)
     })
 })
 

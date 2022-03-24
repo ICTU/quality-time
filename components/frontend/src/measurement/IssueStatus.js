@@ -34,8 +34,9 @@ function labelDetails(issueStatus, issueTracker) {
 
 function IssueWithTracker({ issueStatus, issueTracker }) {
     let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
-    if (issueStatus.connection_error) { popupContent = "Connection error" }
-    if (issueStatus.parse_error) { popupContent = "Parse error" }
+    let popupHeader = "";
+    if (issueStatus.connection_error) { popupHeader = "Connection error"; popupContent = "Quality-time could not retrieve data from the issue tracker." }
+    if (issueStatus.parse_error) { popupHeader = "Parse error"; popupContent = "Quality-time could not parse the data received from the issue tracker." }
     const color = popupContent ? "red" : "blue";
     const basic = popupContent ? false : true;
     let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, issueTracker)}</Label>
@@ -44,13 +45,14 @@ function IssueWithTracker({ issueStatus, issueTracker }) {
         label = <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
     }
     if (!popupContent && issueStatus.created) {
+        popupHeader = issueStatus.summary;
         popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
         if (issueStatus.updated) {
             popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
         }
     }
     if (popupContent) {
-        label = <Popup header={issueStatus.summary} content={popupContent} flowing hoverable trigger={label} />
+        label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
     }
     return label
 }
