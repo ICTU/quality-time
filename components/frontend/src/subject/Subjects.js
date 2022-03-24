@@ -20,6 +20,9 @@ export function Subjects({
     report,
     reports,
     report_date,
+    showIssueCreationDate,
+    showIssueSummary,
+    showIssueUpdateDate,
     sortColumn,
     sortDirection,
     tags,
@@ -47,6 +50,9 @@ export function Subjects({
                         report={report}
                         report_date={report_date}
                         reports={reports}
+                        showIssueCreationDate={showIssueCreationDate}
+                        showIssueSummary={showIssueSummary}
+                        showIssueUpdateDate={showIssueUpdateDate}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}

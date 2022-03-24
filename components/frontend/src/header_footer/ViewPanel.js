@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { Popup } from '../semantic_ui_react_wrappers';
 import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
@@ -17,9 +18,15 @@ export function ViewPanel({
     setDateOrder,
     setHideMetricsNotRequiringAction,
     setNrDates,
+    setShowIssueCreationDate,
+    setShowIssueSummary,
+    setShowIssueUpdateDate,
     setSortColumn,
     setSortDirection,
     setUIMode,
+    showIssueCreationDate,
+    showIssueSummary,
+    showIssueUpdateDate,
     sortColumn,
     sortDirection,
     toggleHiddenColumn,
@@ -40,7 +47,7 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={visibleDetailsTabs.length === 0}
+                                disabled={visibleDetailsTabs?.length === 0}
                                 onClick={() => clearVisibleDetailsTabs()}
                                 inverted
                             >
@@ -52,12 +59,15 @@ export function ViewPanel({
                         <Grid.Column>
                             <Button
                                 disabled={
-                                    visibleDetailsTabs.length === 0 &&
+                                    visibleDetailsTabs?.length === 0 &&
                                     !hideMetricsNotRequiringAction &&
-                                    hiddenColumns.length === 0 &&
+                                    hiddenColumns?.length === 0 &&
                                     nrDates === 1 &&
                                     dateInterval === 7 &&
                                     dateOrder === "descending" &&
+                                    !showIssueCreationDate &&
+                                    !showIssueSummary &&
+                                    !showIssueUpdateDate &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
                                     uiMode === null
@@ -69,6 +79,9 @@ export function ViewPanel({
                                     setNrDates(1);
                                     setDateInterval(7);
                                     setDateOrder("descending");
+                                    setShowIssueCreationDate(false);
+                                    setShowIssueSummary(false);
+                                    setShowIssueUpdateDate(false);
                                     setSortColumn(null);
                                     setSortDirection("ascending");
                                     setUIMode(null);
@@ -157,6 +170,29 @@ export function ViewPanel({
                     <SortOrderMenuItem disabled={oneDateColumn} order="descending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
                 </Menu>
             </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Visible issue details</Header>
+                <Menu vertical inverted size="small">
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Summary"
+                        issueAttribute={showIssueSummary}
+                        setIssueAttribute={setShowIssueSummary}
+                        help="Next to the issue status, also show the issue summary. Note: the popup over the issue always shows the issue summary, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Creation date"
+                        issueAttribute={showIssueCreationDate}
+                        setIssueAttribute={setShowIssueCreationDate}
+                        help="Next to the issue status, also show how long ago issue were created. Note: the popup over the issue always shows the exact date when the issue was created, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Update date"
+                        issueAttribute={showIssueUpdateDate}
+                        setIssueAttribute={setShowIssueUpdateDate}
+                        help="Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue always shows the exact date when the issue was last updated, regardless of this setting."
+                    />
+                </Menu>
+            </Segment>
         </Segment.Group>
     )
 }
@@ -165,7 +201,7 @@ export function ViewPanel({
 function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn }) {
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item active={disabled ? false : !hiddenColumns.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
+            <Menu.Item active={disabled ? false : !hiddenColumns?.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
                 {capitalize(column)}
             </Menu.Item>
         </div>
@@ -220,5 +256,22 @@ function UIModeMenuItem({ mode, uiMode, setUIMode }) {
                 {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
             </Menu.Item>
         </div>
+    )
+}
+
+function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setIssueAttribute }) {
+    return (
+        <Popup
+            content={help}
+            inverted
+            position="left center"
+            trigger={
+                <div onKeyPress={(event) => { event.preventDefault(); setIssueAttribute(!issueAttribute) }} tabIndex={0}>
+                    <Menu.Item color={activeColor} active={issueAttribute} onClick={() => setIssueAttribute(!issueAttribute)} >
+                        {issueAttributeName}
+                    </Menu.Item>
+                </div>
+            }
+        />
     )
 }
