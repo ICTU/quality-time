@@ -1,7 +1,7 @@
-.ui.label > a.inverted {
-    opacity: 0.8;  /* Default opacity of 0.5 gives too little contrast */
+.ui.inverted.label {
+    color: rgba(255, 255, 255, 0.87) !important;
 }
 
-.ui.label > a.inverted:hover {
-    opacity: 1.0;  /* Default opacity of 0.5 gives too little contrast */
+.ui.label > a {
+    opacity: 1.0;
 }

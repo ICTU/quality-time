@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Label as SemanticUILabel } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
+import { addInvertedClassNameWhenInDarkMode } from './dark_mode';
 import './Label.css';
 
 export function Label(props) {
     return (
-        <SemanticUILabel basic={!useContext(DarkMode)} {...props} />
+        <SemanticUILabel {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
 }
 
