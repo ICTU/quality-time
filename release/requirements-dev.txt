@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes requirements-dev.in
 #
-astroid==2.9.3 \
-    --hash=sha256:1efdf4e867d4d8ba4a9f6cf9ce07cd182c4c41de77f23814feb27ca93ca9d877 \
-    --hash=sha256:506daabe5edffb7e696ad82483ad0228245a9742ed7d2d8c9cdb31537decf9f6
+astroid==2.11.1 \
+    --hash=sha256:33f1c15fe9661348a50b7ec6789947089ead2a5de727bb4782d530d9d2fff2c8 \
+    --hash=sha256:e3ae0984c28b7bae2a107dffbc6e9acecf9b06506322f3465e914405dd652394
     # via pylint
 bandit==1.7.4 \
     --hash=sha256:2d63a8c573417bae338962d4b9b06fbc6080f74ecd955a092849e1e65c717bd2 \
@@ -107,6 +107,10 @@ cyclonedx-python-lib==1.3.0 \
     --hash=sha256:2b8b1250f6b22b4836bfb86b87381a228377e4d329d6d6d7488a2cdfbc073049 \
     --hash=sha256:8793fcf6a4735835bda33cda461a9a60c63faf0a8f9c58fc1fc4312e8f307164
     # via pip-audit
+dill==0.3.4 \
+    --hash=sha256:7e40e4a70304fd9ceab3535d36e58791d9c4a776b38ec7f7ec9afc8d3dca4d4f \
+    --hash=sha256:9f9734205146b2b353ab3fec9af0070237b6ddae78452af83d2fca84d739e675
+    # via pylint
 dlint==0.12.0 \
     --hash=sha256:344823d299439aa94fe276b2b3b90733026787d25713c664e137cf5f7d0645f7
     # via -r ../requirements-dev.in
@@ -421,9 +425,9 @@ pyflakes==2.4.0 \
     --hash=sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c \
     --hash=sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
     # via flake8
-pylint==2.12.2 \
-    --hash=sha256:9d945a73640e1fec07ee34b42f5669b770c759acd536ec7b16d7e4b87a9c9ff9 \
-    --hash=sha256:daabda3f7ed9d1c60f52d563b1b854632fd90035bcf01443e234d3dc794e3b74
+pylint==2.13.0 \
+    --hash=sha256:ea1692d409487a93cdcc015ddf2fd92f2367fb1193d46ece76df98b6fefc0dda \
+    --hash=sha256:f04508086a0772f1a459b4e9facd02416943b47dda5a98ed79d4d87e709da04f
     # via -r ../requirements-dev.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
@@ -498,7 +502,6 @@ toml==0.10.2 \
     # via
     #   cyclonedx-python-lib
     #   dparse
-    #   pylint
     #   vulture
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
@@ -507,6 +510,7 @@ tomli==2.0.1 \
     #   black
     #   mypy
     #   pep517
+    #   pylint
 types-setuptools==57.4.9 \
     --hash=sha256:536ef74744f8e1e4be4fc719887f886e74e4cf3c792b4a06984320be4df450b5 \
     --hash=sha256:948dc6863373750e2cd0b223a84f1fb608414cde5e55cf38ea657b93aeb411d2
