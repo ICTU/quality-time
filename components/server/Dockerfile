@@ -1,4 +1,4 @@
-FROM python:3.10.3-buster AS compile-image
+FROM python:3.10.4-buster AS compile-image
 
 RUN useradd --create-home server
 WORKDIR /home/server
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r /requirements-internal.txt
 
 USER server
 
-FROM python:3.10.3-buster
+FROM python:3.10.4-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
