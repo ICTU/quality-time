@@ -61,6 +61,9 @@ export function AppUI({
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending");
     const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
+    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", false);
+    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", false);
+    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", false);
 
     function handleSort(column) {
         if (column === null) {
@@ -103,9 +106,15 @@ export function AppUI({
                         setDateOrder={setDateOrder}
                         setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
                         setNrDates={setNrDates}
+                        setShowIssueCreationDate={setShowIssueCreationDate}
+                        setShowIssueSummary={setShowIssueSummary}
+                        setShowIssueUpdateDate={setShowIssueUpdateDate}
                         setSortColumn={setSortColumn}
                         setSortDirection={setSortDirection}
                         setUIMode={setUIMode}
+                        showIssueCreationDate={showIssueCreationDate}
+                        showIssueSummary={showIssueSummary}
+                        showIssueUpdateDate={showIssueUpdateDate}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         toggleHiddenColumn={toggleHiddenColumn}
@@ -135,6 +144,9 @@ export function AppUI({
                             report_uuid={report_uuid}
                             reports={reports}
                             reports_overview={reports_overview}
+                            showIssueCreationDate={showIssueCreationDate}
+                            showIssueSummary={showIssueSummary}
+                            showIssueUpdateDate={showIssueUpdateDate}
                             sortColumn={sortColumn}
                             sortDirection={sortDirection}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}

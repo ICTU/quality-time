@@ -31,6 +31,9 @@ export function SubjectTable({
     report,
     reportDate,
     reports,
+    showIssueCreationDate,
+    showIssueSummary,
+    showIssueUpdateDate,
     sortDirection,
     sortColumn,
     subject,
@@ -71,6 +74,9 @@ export function SubjectTable({
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             nrDates={nrDates}
                             reload={reload}
+                            showIssueCreationDate={showIssueCreationDate}
+                            showIssueSummary={showIssueSummary}
+                            showIssueUpdateDate={showIssueUpdateDate}
                             stopSorting={() => handleSort(null)}
                         />
                     )

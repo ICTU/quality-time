@@ -5,13 +5,7 @@ import { ViewPanel } from './ViewPanel';
 it("clears the visible details tabs", async () => {
     const clearVisibleDetailsTabs = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                hiddenColumns={[]}
-                visibleDetailsTabs={["tab"]}
-            />
-        )
+        render(<ViewPanel clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
         fireEvent.click(screen.getByText(/Collapse all metrics/))
     });
     expect(clearVisibleDetailsTabs).toHaveBeenCalled()
@@ -20,13 +14,7 @@ it("clears the visible details tabs", async () => {
 it("doesn't clear the visible details tabs if there are none", async () => {
     const clearVisibleDetailsTabs = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                hiddenColumns={[]}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={[]} />)
         fireEvent.click(screen.getByText(/Collapse all metrics/))
     });
     expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
@@ -40,6 +28,9 @@ function eventHandlers() {
         setDateOrder: jest.fn(),
         setHideMetricsNotRequiringAction: jest.fn(),
         setNrDates: jest.fn(),
+        setShowIssueCreationDate: jest.fn(),
+        setShowIssueSummary: jest.fn(),
+        setShowIssueUpdateDate: jest.fn(),
         setSortColumn: jest.fn(),
         setSortDirection: jest.fn(),
         setUIMode: jest.fn()
@@ -56,6 +47,9 @@ it('resets the settings', async () => {
                 hiddenColumns={["trend"]}
                 hideMetricsNotRequiringAction={true}
                 nrDates={7}
+                showIssueCreationDate={true}
+                showIssueSummary={true}
+                showIssueUpdateDate={true}
                 sortColumn="status"
                 sortDirection="descending"
                 uiMode="dark"
@@ -71,6 +65,9 @@ it('resets the settings', async () => {
     expect(props.setDateOrder).toHaveBeenCalled()
     expect(props.setNrDates).toHaveBeenCalled()
     expect(props.setHideMetricsNotRequiringAction).toHaveBeenCalled()
+    expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
     expect(props.setSortColumn).toHaveBeenCalledWith(null)
     expect(props.setSortDirection).toHaveBeenCalledWith("ascending")
     expect(props.setUIMode).toHaveBeenCalledWith(null)
@@ -86,6 +83,9 @@ it('does not reset the settings when all have the default value', async () => {
                 hiddenColumns={[]}
                 hideMetricsNotRequiringAction={false}
                 nrDates={1}
+                showIssueCreationDate={false}
+                showIssueSummary={false}
+                showIssueUpdateDate={false}
                 sortColumn={null}
                 sortDirection="ascending"
                 uiMode={null}
@@ -101,6 +101,9 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setDateOrder).not.toHaveBeenCalled()
     expect(props.setNrDates).not.toHaveBeenCalled()
     expect(props.setHideMetricsNotRequiringAction).not.toHaveBeenCalled()
+    expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
+    expect(props.setShowIssueSummary).not.toHaveBeenCalled()
+    expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
     expect(props.setSortColumn).not.toHaveBeenCalled()
     expect(props.setSortDirection).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
@@ -109,14 +112,7 @@ it('does not reset the settings when all have the default value', async () => {
 it("sets dark mode", async () => {
     const setUIMode = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={false}
-                setUIMode={setUIMode}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} />)
         fireEvent.click(screen.getByText(/Dark mode/))
     });
     expect(setUIMode).toHaveBeenCalledWith("dark")
@@ -125,15 +121,7 @@ it("sets dark mode", async () => {
 it("sets light mode", async () => {
     const setUIMode = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={false}
-                setUIMode={setUIMode}
-                uiMode="dark"
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} uiMode="dark" />)
         fireEvent.click(screen.getByText(/Light mode/))
     });
     expect(setUIMode).toHaveBeenCalledWith("light")
@@ -142,14 +130,7 @@ it("sets light mode", async () => {
 it("sets dark mode on keypress", async () => {
     const setUIMode = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={true}
-                setUIMode={setUIMode}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />)
         userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
     });
     expect(setUIMode).toHaveBeenCalledWith("dark")
@@ -158,14 +139,7 @@ it("sets dark mode on keypress", async () => {
 it("hides the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={false}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={false} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
         fireEvent.click(screen.getByText(/Metrics requiring action/))
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(true)
@@ -174,14 +148,7 @@ it("hides the metrics not requiring action", async () => {
 it("shows the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={true}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
         fireEvent.click(screen.getByText(/All metrics/))
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
@@ -190,14 +157,7 @@ it("shows the metrics not requiring action", async () => {
 it("shows the metrics not requiring action by keypress", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                hideMetricsNotRequiringAction={true}
-                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
         userEvent.type(screen.getByText(/All metrics/), "{Enter}")
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
@@ -206,13 +166,7 @@ it("shows the metrics not requiring action by keypress", async () => {
 it("hides a column", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                toggleHiddenColumn={toggleHiddenColumn}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
         fireEvent.click(screen.getByText(/Trend/))
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
@@ -221,13 +175,7 @@ it("hides a column", async () => {
 it("hides a column by keypress", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                toggleHiddenColumn={toggleHiddenColumn}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
         userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
@@ -236,13 +184,7 @@ it("hides a column by keypress", async () => {
 it("shows a column", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                toggleHiddenColumn={toggleHiddenColumn}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
         fireEvent.click(screen.getAllByText(/Status/)[0])
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("status")
@@ -251,13 +193,7 @@ it("shows a column", async () => {
 it("sorts a column", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                setSortColumn={setSortColumn}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel setSortColumn={setSortColumn} />)
         fireEvent.click(screen.getAllByText(/Comment/)[1])
     });
     expect(setSortColumn).toHaveBeenCalledWith("comment")
@@ -266,14 +202,7 @@ it("sorts a column", async () => {
 it("unsorts a column", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                setSortColumn={setSortColumn}
-                sortColumn="comment"
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel setSortColumn={setSortColumn} sortColumn="comment" />)
         fireEvent.click(screen.getAllByText(/Comment/)[1])
     });
     expect(setSortColumn).toHaveBeenCalledWith(null)
@@ -282,13 +211,7 @@ it("unsorts a column", async () => {
 it("sorts a column by keypress", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                setSortColumn={setSortColumn}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel setSortColumn={setSortColumn} />)
         userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(setSortColumn).toHaveBeenCalledWith("comment")
@@ -297,14 +220,7 @@ it("sorts a column by keypress", async () => {
 it("unsorts a column by keypress", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                setSortColumn={setSortColumn}
-                sortColumn="comment"
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel setSortColumn={setSortColumn} sortColumn="comment" />)
         userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(setSortColumn).toHaveBeenCalledWith(null)
@@ -313,14 +229,7 @@ it("unsorts a column by keypress", async () => {
 it("sets the number of dates", async () => {
     const setNrDates = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                nrDates={2}
-                setNrDates={setNrDates}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel nrDates={2} setNrDates={setNrDates} />)
         fireEvent.click(screen.getByText(/7 dates/))
     });
     expect(setNrDates).toHaveBeenCalledWith(7)
@@ -329,30 +238,16 @@ it("sets the number of dates", async () => {
 it("sets the number of dates by keypress", async () => {
     const setNrDates = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                nrDates={1}
-                setNrDates={setNrDates}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel nrDates={1} setNrDates={setNrDates} />)
         userEvent.type(screen.getByText(/5 dates/), "{Enter}")
     });
     expect(setNrDates).toHaveBeenCalledWith(5)
 })
 
-it("setss the date interval to weeks", async () => {
+it("sets the date interval to weeks", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                dateInterval={1}
-                setDateInterval={setDateInterval}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel dateInterval={1} setDateInterval={setDateInterval} />)
         fireEvent.click(screen.getByText(/2 weeks/))
     });
     expect(setDateInterval).toHaveBeenCalledWith(14)
@@ -361,14 +256,7 @@ it("setss the date interval to weeks", async () => {
 it("sets the date interval to one day", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                dateInterval={7}
-                setDateInterval={setDateInterval}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
         fireEvent.click(screen.getByText(/1 day/))
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
@@ -377,14 +265,7 @@ it("sets the date interval to one day", async () => {
 it("sets the date interval by keypress", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                dateInterval={7}
-                setDateInterval={setDateInterval}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
         userEvent.type(screen.getByText(/1 day/), "{Enter}")
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
@@ -393,14 +274,7 @@ it("sets the date interval by keypress", async () => {
 it("sorts the dates descending", async () => {
     const setDateOrder = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                dateOrder="ascending"
-                setDateOrder={setDateOrder}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel dateOrder="ascending" setDateOrder={setDateOrder} />)
         fireEvent.click(screen.getAllByText(/Descending/)[1])
     });
     expect(setDateOrder).toHaveBeenCalledWith("descending")
@@ -409,15 +283,26 @@ it("sorts the dates descending", async () => {
 it("sorts the dates ascending by keypress", async () => {
     const setDateOrder = jest.fn();
     await act(async () => {
-        render(
-            <ViewPanel
-                hiddenColumns={[]}
-                dateOrder="descending"
-                setDateOrder={setDateOrder}
-                visibleDetailsTabs={[]}
-            />
-        )
+        render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
         userEvent.type(screen.getAllByText(/Ascending/)[1], "{Enter}")
     });
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
+})
+
+it("shows issue summaries", async () => {
+    const setShowIssueSummary = jest.fn();
+    await act(async () => {
+        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
+        fireEvent.click(screen.getAllByText(/Summary/)[0])
+    });
+    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
+})
+
+it("shows issue summaries by keypress", async () => {
+    const setShowIssueSummary = jest.fn();
+    await act(async () => {
+        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
+        userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
+    });
+    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })

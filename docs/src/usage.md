@@ -542,6 +542,8 @@ To show the measurement trend, add the `nr_dates` parameter and set it to more t
 
 To change the time between dates shown, use the `date_interval` parameter. The interval should be an integer and can have the value 1, 7, 14, 21 or 28. For example, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?date_interval=7`.
 
+To add issue attributes to the exported report, set the `show_issue_summary`, `show_issue_creation_date`, and/or `show_issue_update_date` parameters to `true`. For example, `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?show_issue_summary=true`.
+
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
 Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/api/v3/report/<report_uuid>`.
