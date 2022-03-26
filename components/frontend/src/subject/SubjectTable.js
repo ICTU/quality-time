@@ -16,28 +16,13 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
-function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
-    const baseDate = reportDate ? new Date(reportDate) : new Date();
-    const intervalLength = dateInterval;  // dateInterval is in days
-    const columnDates = []
-    for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
-        let date = new Date(baseDate.getTime());
-        date.setDate(date.getDate() - offset);
-        columnDates.push(date)
-    }
-    if (dateOrder === "ascending") { columnDates.reverse() }
-    return columnDates
-}
-
 export function SubjectTable({
     changed_fields,
-    dateInterval,
-    dateOrder,
+    dates,
     handleSort,
     hiddenColumns,
     measurements,
     metricEntries,
-    nrDates,
     reload,
     report,
     reportDate,
@@ -52,11 +37,11 @@ export function SubjectTable({
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
-    const dates = getColumnDates(reportDate, dateInterval, dateOrder, nrDates)
     const last_index = Object.entries(subject.metrics).length - 1;
     const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
+    const nrDates = dates.length
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     measurements.sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
@@ -65,7 +50,6 @@ export function SubjectTable({
                 columnDates={dates}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
-                nrDates={nrDates}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
             />

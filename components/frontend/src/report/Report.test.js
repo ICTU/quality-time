@@ -40,6 +40,7 @@ function renderReport(reportToRender, { report_date = null, hiddenColumns = [], 
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Report
+                    dates={[]}
                     reports={[reportToRender]}
                     report={reportToRender}
                     report_date={report_date}

@@ -6,11 +6,11 @@ export function SubjectTableHeader(
         columnDates,
         handleSort,
         hiddenColumns,
-        nrDates,
         sortColumn,
         sortDirection,
     }) {
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
+    const nrDates = columnDates.length
     return (
         <Table.Header>
             <Table.Row>
