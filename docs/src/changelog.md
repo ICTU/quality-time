@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Fixed
 
+- The visibility settings of the issue attributes summary, creation date, and update date were not applied to tag reports. Fixes [#2827](https://github.com/ICTU/quality-time/issues/2827).
 - Subject subtitles would partly obscure the header of their subject's metrics table. Fixes [#3443](https://github.com/ICTU/quality-time/issues/3443).
 - GitLab job artifacts archives downloaded via the GitLab API would not be recognized as zipped archives. Fixes [#3478](https://github.com/ICTU/quality-time/issues/3478).
 - GitLab uses non-standard version numbers like "14.5.2-ee"; be prepared. Fixes [#3519](https://github.com/ICTU/quality-time/issues/3519).

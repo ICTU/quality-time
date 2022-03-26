@@ -45,7 +45,7 @@ describe("MeasurementRow", () => {
                         <SubjectTableRow
                             metric_uuid="metric_uuid"
                             metric={metric}
-                            report={{subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
+                            report={{report_uuid: "report_uuid", subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
                             subject_uuid="subject_uuid"
                             measurements={measurements}
                             dates={dates}

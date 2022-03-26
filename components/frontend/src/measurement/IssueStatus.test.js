@@ -7,7 +7,7 @@ function renderIssueStatus(
     {
         connectionError = false,
         created = true,
-        issueTracker = { type: "jira" },
+        issueTrackerMissing = false,
         landingUrl = "https://issue",
         parseError = false,
         status = "in progress",
@@ -39,7 +39,7 @@ function renderIssueStatus(
     return render(
         <IssueStatus
             metric={metric}
-            issueTracker={issueTracker}
+            issueTrackerMissing={issueTrackerMissing}
             showIssueCreationDate={showIssueCreationDate}
             showIssueSummary={showIssueSummary}
             showIssueUpdateDate={showIssueUpdateDate}
@@ -150,7 +150,7 @@ it("displays nothing if the metric has no issue status", async () => {
 });
 
 it("displays an error message if the metric has issue ids but the report has no issue tracker", async () => {
-    const { queryByText } = renderIssueStatus({ issueTracker: null})
+    const { queryByText } = renderIssueStatus({ issueTrackerMissing: true})
     userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText(/No issue tracker configured/)).not.toBe(null) })
 })

@@ -100,7 +100,7 @@ export function SubjectTableRow(
             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
                 <IssueStatus
                     metric={metric}
-                    issueTracker={report.issue_tracker}
+                    issueTrackerMissing={!report.issue_tracker && !report.report_uuid.startsWith("tag-")}
                     showIssueCreationDate={showIssueCreationDate}
                     showIssueSummary={showIssueSummary}
                     showIssueUpdateDate={showIssueUpdateDate}

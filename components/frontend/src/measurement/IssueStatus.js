@@ -68,8 +68,8 @@ function IssuesWithTracker({ metric, showIssueCreationDate, showIssueSummary, sh
     />)}</>
 }
 
-export function IssueStatus({ metric, issueTracker, showIssueCreationDate, showIssueSummary, showIssueUpdateDate }) {
-    if (!issueTracker && metric.issue_ids?.length > 0) {
+export function IssueStatus({ metric, issueTrackerMissing, showIssueCreationDate, showIssueSummary, showIssueUpdateDate }) {
+    if (issueTrackerMissing && metric.issue_ids?.length > 0) {
         return <IssuesWithoutTracker issueIds={metric.issue_ids} />
     }
     return <IssuesWithTracker
