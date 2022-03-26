@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
+import { MetricDetails } from '../metric/MetricDetails';
 import { IssueStatus } from '../measurement/IssueStatus';
 import { MeasurementSources } from '../measurement/MeasurementSources';
 import { MeasurementTarget } from '../measurement/MeasurementTarget';
@@ -85,20 +86,28 @@ export function SubjectTable({
                     const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
                     return (
                         <SubjectTableRow key={metric_uuid}
-                            changed_fields={changed_fields}
-                            first_metric={index === 0}
-                            last_metric={index === last_index}
+                            details={
+                                <MetricDetails
+                                    first_metric={index === 0}
+                                    last_metric={index === last_index}
+                                    report_date={reportDate}
+                                    reports={reports}
+                                    report={report}
+                                    subject_uuid={subject_uuid}
+                                    metric_uuid={metric_uuid}
+                                    changed_fields={changed_fields}
+                                    visibleDetailsTabs={visibleDetailsTabs}
+                                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                                    stopSorting={() => handleSort(null)}
+                                    reload={reload}
+                                />
+                            }
                             metric_uuid={metric_uuid}
                             metric={metric}
-                            reportDate={reportDate}
-                            report={report}
-                            reports={reports}
-                            subject_uuid={subject_uuid}
                             visibleDetailsTabs={visibleDetailsTabs}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             nrDates={nrDates}
-                            reload={reload}
-                            stopSorting={() => handleSort(null)}
+                            style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
                             {nrDates > 1 && measurementCells}

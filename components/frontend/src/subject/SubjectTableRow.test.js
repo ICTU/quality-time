@@ -15,11 +15,10 @@ describe("MeasurementRow", () => {
                 <tbody>
                     <DataModel.Provider value={dataModel}>
                         <SubjectTableRow
+                            details={<span>Details</span>}
                             metric_uuid="metric_uuid"
                             metric={metric}
-                            report={{report_uuid: "report_uuid", subjects: {subject_uuid: {metrics: {metric_uuid: {type: "metricType"}}}}}}
                             subject_uuid="subject_uuid"
-                            reportDate={null}
                             nrDates={1}
                             toggleVisibleDetailsTab={(tab) => toggleVisibleDetailsTab(tab)}
                             visibleDetailsTabs={visibleDetailsTabs}
@@ -32,10 +31,10 @@ describe("MeasurementRow", () => {
 
     it('expands and collapses the metric via the props', () => {
         render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
-        expect(screen.queryAllByText("Configuration").length).toBe(0)
+        expect(screen.queryAllByText("Details").length).toBe(0)
         visibleDetailsTabs.push("metric_uuid:0")
         render_measurements_row({ type: "metricType", unit: "testUnit", scale: "count", recent_measurements: [] })
-        expect(screen.queryAllByText("Configuration").length).toBe(1)
+        expect(screen.queryAllByText("Details").length).toBe(1)
     });
 
     it('expands and collapses the metric via the button', () => {
