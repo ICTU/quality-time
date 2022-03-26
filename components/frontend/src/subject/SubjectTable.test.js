@@ -30,7 +30,7 @@ function renderSubjectTable(dateInterval, dateOrder, hiddenColumns) {
                 dateInterval={dateInterval}
                 dateOrder={dateOrder}
                 reportDate={reportDate}
-                report={{}}
+                report={{report_uuid: "report_uuid"}}
                 measurements={[]}
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                 subject={{ metrics: { 1: metric, 2: metric2 } }}
