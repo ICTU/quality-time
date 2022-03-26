@@ -9,10 +9,10 @@ import { MeasurementTarget } from '../measurement/MeasurementTarget';
 import { MeasurementValue } from '../measurement/MeasurementValue';
 import { TrendSparkline } from '../measurement/TrendSparkline';
 import { StatusIcon } from '../measurement/StatusIcon';
+import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
 import { formatMetricScale, format_minutes, get_metric_name, get_metric_tags, getMetricUnit } from '../utils';
 import { SubjectTableFooter } from './SubjectTableFooter';
-import { SubjectTableRow } from './SubjectTableRow';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
@@ -84,8 +84,19 @@ export function SubjectTable({
                     const metricName = get_metric_name(metric, dataModel);
                     const unit = getMetricUnit(metric, dataModel)
                     const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
+                    function onExpand(expand) {
+                        if (expand) {
+                            toggleVisibleDetailsTab(`${metric_uuid}:0`)
+                        } else {
+                            const tabs = visibleDetailsTabs.filter((each) => each?.startsWith(metric_uuid));
+                            if (tabs.length > 0) {
+                                toggleVisibleDetailsTab(tabs[0])
+                            }
+                        }
+                    }
                     return (
-                        <SubjectTableRow key={metric_uuid}
+                        <TableRowWithDetails key={metric_uuid}
+                            className={nrDates === 1 ? metric.status || "unknown" : ""}
                             details={
                                 <MetricDetails
                                     first_metric={index === 0}
@@ -102,11 +113,9 @@ export function SubjectTable({
                                     reload={reload}
                                 />
                             }
-                            metric_uuid={metric_uuid}
-                            metric={metric}
-                            visibleDetailsTabs={visibleDetailsTabs}
-                            toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                            nrDates={nrDates}
+                            expanded={visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
+                            id={metric_uuid}
+                            onExpand={onExpand}
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
@@ -128,7 +137,7 @@ export function SubjectTable({
                                 />
                             </Table.Cell>}
                             {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
-                        </SubjectTableRow>
+                        </TableRowWithDetails>
                     )
                 })
                 }
