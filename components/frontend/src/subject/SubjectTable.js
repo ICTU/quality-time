@@ -16,6 +16,27 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
+function MeasurementCells({dates, metric, measurements}) {
+    const dataModel = useContext(DataModel);
+    const metricType = dataModel.metrics[metric.type];
+    return (
+        <>
+            {
+                dates.forEach((date) => {
+                    const iso_date_string = date.toISOString().split("T")[0];
+                    const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
+                    let metric_value = measurement?.[metric.scale]?.value ?? "?";
+                    metric_value = metric_value !== "?" && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric_value) : metric_value;
+                    const status = measurement?.[metric.scale]?.status ?? "unknown";
+                    return (
+                        <Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>
+                    )
+                })
+            }
+        </>
+    )
+}
+
 export function SubjectTable({
     changed_fields,
     dates,
@@ -55,16 +76,6 @@ export function SubjectTable({
             />
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {
-                    const metricType = dataModel.metrics[metric.type];
-                    const measurementCells = []
-                    dates.forEach((date) => {
-                        const iso_date_string = date.toISOString().split("T")[0];
-                        const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-                        let metric_value = measurement?.[metric.scale]?.value ?? "?";
-                        metric_value = metric_value !== "?" && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric_value) : metric_value;
-                        const status = measurement?.[metric.scale]?.status ?? "unknown";
-                        measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
-                    })
                     const metricName = get_metric_name(metric, dataModel);
                     const unit = getMetricUnit(metric, dataModel)
                     const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
@@ -103,7 +114,7 @@ export function SubjectTable({
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
-                            {nrDates > 1 && measurementCells}
+                            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} measurements={measurements} />}
                             {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} /></Table.Cell>}
