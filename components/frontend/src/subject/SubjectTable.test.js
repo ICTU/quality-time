@@ -38,8 +38,6 @@ function renderSubjectTable(hiddenColumns, visibleDetailsTabs) {
                 measurements={[]}
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                 subject={{ metrics: { 1: metric, 2: metric2 } }}
-                setDateInterval={() => {/*Dummy implementation*/ }}
-                setNrDates={() => {/*Dummy implementation*/ }}
                 subject_uuid="subject_uuid"
                 hiddenColumns={hiddenColumns ?? []}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
@@ -102,6 +100,13 @@ it('hides the tags column', () => {
 
 it('expands the details via the button', () => {
     const toggleVisibleDetailsTab = renderSubjectTable()
+    const expand = screen.getAllByRole("button")[0];
+    fireEvent.click(expand);
+    expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("1:0");
+})
+
+it('collapses the details via the button', () => {
+    const toggleVisibleDetailsTab = renderSubjectTable([], ["1:0"])
     const expand = screen.getAllByRole("button")[0];
     fireEvent.click(expand);
     expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("1:0");
