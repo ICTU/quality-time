@@ -16,7 +16,7 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
-function MeasurementCells({dates, metric, measurements}) {
+function MeasurementCells({dates, metric, metric_uuid, measurements}) {
     const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
     return (
@@ -114,7 +114,7 @@ export function SubjectTable({
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
-                            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} measurements={measurements} />}
+                            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={measurements} />}
                             {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} /></Table.Cell>}
