@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { DataModel } from '../context/DataModel';
 import { SubjectTable } from './SubjectTable';
 
@@ -23,8 +23,9 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
-function renderSubjectTable(hiddenColumns) {
-    return render(
+function renderSubjectTable(hiddenColumns, visibleDetailsTabs) {
+    const toggleVisibleDetailsTab = jest.fn();
+    render(
         <DataModel.Provider value={datamodel}>
             <SubjectTable
                 dates={[
@@ -33,19 +34,20 @@ function renderSubjectTable(hiddenColumns) {
                     new Date("2020-01-13T00:00:00+00:00"),
                 ]}
                 reportDate={reportDate}
-                report={{report_uuid: "report_uuid"}}
+                report={{ report_uuid: "report_uuid", subjects: { subject_uuid: { metrics: { 1: metric, 2: metric2 } } } }}
                 measurements={[]}
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                 subject={{ metrics: { 1: metric, 2: metric2 } }}
-                nrDates={3}
                 setDateInterval={() => {/*Dummy implementation*/ }}
                 setNrDates={() => {/*Dummy implementation*/ }}
+                subject_uuid="subject_uuid"
                 hiddenColumns={hiddenColumns ?? []}
-                visibleDetailsTabs={[]}
+                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                visibleDetailsTabs={visibleDetailsTabs ?? []}
             />
         </DataModel.Provider>
-
     );
+    return toggleVisibleDetailsTab
 }
 
 it('displays all the metrics', () => {
@@ -96,4 +98,18 @@ it('hides the tags column', () => {
     renderSubjectTable(["tags"])
     expect(screen.queryAllByText(/Tags/).length).toBe(0)
     expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
+})
+
+it('expands the details via the button', () => {
+    const toggleVisibleDetailsTab = renderSubjectTable()
+    const expand = screen.getAllByRole("button")[0];
+    fireEvent.click(expand);
+    expect(toggleVisibleDetailsTab).toHaveBeenCalledWith("1:0");
+})
+
+it('expands the details via the url', () => {
+    renderSubjectTable()
+    expect(screen.queryAllByText("Configuration").length).toBe(0)
+    renderSubjectTable([], ["1:0"])
+    expect(screen.queryAllByText("Configuration").length).toBe(1)
 })
