@@ -37,6 +37,17 @@ function MeasurementCells({dates, metric, metric_uuid, measurements}) {
     )
 }
 
+function expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs, toggleVisibleDetailsTab) {
+    if (expand) {
+        toggleVisibleDetailsTab(`${metric_uuid}:0`)
+    } else {
+        const tabs = visibleDetailsTabs.filter((each) => each?.startsWith(metric_uuid));
+        if (tabs.length > 0) {
+            toggleVisibleDetailsTab(tabs[0])
+        }
+    }
+}
+
 export function SubjectTable({
     changed_fields,
     dates,
@@ -63,6 +74,7 @@ export function SubjectTable({
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
     const nrDates = dates.length
+    const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     measurements.sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
@@ -78,17 +90,6 @@ export function SubjectTable({
                 {metricEntries.map(([metric_uuid, metric], index) => {
                     const metricName = get_metric_name(metric, dataModel);
                     const unit = getMetricUnit(metric, dataModel)
-                    const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
-                    function onExpand(expand) {
-                        if (expand) {
-                            toggleVisibleDetailsTab(`${metric_uuid}:0`)
-                        } else {
-                            const tabs = visibleDetailsTabs.filter((each) => each?.startsWith(metric_uuid));
-                            if (tabs.length > 0) {
-                                toggleVisibleDetailsTab(tabs[0])
-                            }
-                        }
-                    }
                     return (
                         <TableRowWithDetails key={metric_uuid}
                             className={nrDates === 1 ? metric.status || "unknown" : ""}
@@ -110,7 +111,7 @@ export function SubjectTable({
                             }
                             expanded={visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
                             id={metric_uuid}
-                            onExpand={onExpand}
+                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs, toggleVisibleDetailsTab)}
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
