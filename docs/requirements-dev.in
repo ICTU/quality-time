@@ -2,6 +2,6 @@
 furo==2022.3.4
 gitpython==3.1.27
 myst-parser==0.17.0
-Sphinx==4.4.0
+Sphinx==4.5.0
 sphinx-copybutton==0.5.0
 sphinx_panels==0.6.0
