@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      QUALITY_TIME_VERSION: v3.34.0
+      QUALITY_TIME_VERSION: v3.35.0-rc.1
       ENV: ci
       COMPOSE_PATH_SEPARATOR: ":"
       COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
