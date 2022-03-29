@@ -70,12 +70,6 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
-    async def test_filter_by_violation_type(self):
-        """Test that violations can be filtered by violation type."""
-        self.set_source_parameter("violation_type", ["aria-input-field-name", "area-hidden-focus"])
-        response = await self.collect(get_request_text=self.csv)
-        self.assert_measurement(response, value="1")
-
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.set_source_parameter("url", "https://example.org/axecsv.zip")

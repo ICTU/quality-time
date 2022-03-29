@@ -34,9 +34,8 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
     async def __parse_csv(self, responses: SourceResponses) -> list[dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""
         impact_levels = self._parameter("impact")
-        violation_types = self._parameter("violation_type")
         rows = []
         for response in responses:
             csv_text = (await response.text()).strip()
             rows.extend(list(csv.DictReader(StringIO(csv_text, newline=""))))
-        return [row for row in rows if row["Impact"] in impact_levels and row["Violation Type"] in violation_types]
+        return [row for row in rows if row["Impact"] in impact_levels]

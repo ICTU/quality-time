@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When using Axe CVS as source for the accessibility violations metric, the "nested-interactive" violation type would be ignored by *Quality-time*. Fixes [#3628](https://github.com/ICTU/quality-time/issues/3628).
+
+### Removed
+
+- The Axe CSV "violation type" parameter that could be used to select which violation types to count has been removed to help fix [#3628](https://github.com/ICTU/quality-time/issues/3628). The parameter was already not very practical to ignore certain violation types because it would require the user to select all violation types except the ones to be ignored. Also, if Axe adds new violation types, *Quality-time* would need to be updated to prevent it from ignoring the new violation types.
+
 ## v3.34.0 - 2022-03-27
 
 ### Fixed
