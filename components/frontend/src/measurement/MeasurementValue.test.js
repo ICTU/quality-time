@@ -73,7 +73,7 @@ it('shows when the metric was last measured', async () => {
             <MeasurementValue metric={{ status: "target_met", type: "violations", scale: "count", unit: null, latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: "42" } } }} />
         </DataModel.Provider>
     )
-    userEvent.hover(screen.queryByText(/42/))
+    await userEvent.hover(screen.queryByText(/42/))
     await waitFor(() => {
         expect(screen.queryByText(/The metric was last measured/)).not.toBe(null)
     })
@@ -85,7 +85,7 @@ it('shows when the last measurement attempt was', async () => {
             <MeasurementValue metric={{ status: null, type: "violations", scale: "count", unit: null, latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } } }} />
         </DataModel.Provider>
     )
-    userEvent.hover(screen.queryByText(/\?/))
+    await userEvent.hover(screen.queryByText(/\?/))
     await waitFor(() => {
         expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
     })

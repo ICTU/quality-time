@@ -17,6 +17,6 @@ it("renders a popup with the date the status started", async () => {
     let startDate = new Date();
     startDate.setDate(startDate.getDate() - 4);
     const { queryByLabelText, queryByText } = render(<StatusIcon status="target_met" status_start={startDate} />)
-    userEvent.hover(queryByLabelText(/Target met/))
+    await userEvent.hover(queryByLabelText(/Target met/))
     await waitFor(() => { expect(queryByText("4 days ago")).not.toBe(null) })
 })

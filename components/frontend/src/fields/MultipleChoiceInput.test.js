@@ -56,37 +56,37 @@ it('does not add a value to the options twice when clicked', () => {
     expect(screen.getAllByText(/again/).length).toBe(1)
 })
 
-it('does not add a value to the options twice when typed', () => {
+it('does not add a value to the options twice when typed', async () => {
     renderMultipleChoiceInput()
-    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
-    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
+    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
     expect(screen.getAllByText(/again/).length).toBe(3)  // Twice as value, once as option
 })
 
-it('does not add a value to the options when the options already contain that value', () => {
+it('does not add a value to the options when the options already contain that value', async () => {
     renderMultipleChoiceInput(["again"])
     expect(screen.getAllByText(/again/).length).toBe(1)
-    userEvent.type(screen.getByDisplayValue(""), "again{enter}")
+    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
     expect(screen.getAllByText(/again/).length).toBe(2)
 })
 
-it('saves an uncommitted value on blur', () => {
+it('saves an uncommitted value on blur', async () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getByDisplayValue(""), "new")
-    userEvent.tab()
+    await userEvent.type(screen.getByDisplayValue(""), "new")
+    await userEvent.tab()
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "new"]);
 })
 
-it('does not save an uncommitted value on blur that is already in the list', () => {
+it('does not save an uncommitted value on blur that is already in the list', async () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getByDisplayValue(""), "hello")
-    userEvent.tab()
+    await userEvent.type(screen.getByDisplayValue(""), "hello")
+    await userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
 })
 
-it('does not save an uncommitted value on blur if there is none', () => {
+it('does not save an uncommitted value on blur if there is none', async () => {
     let mockSetValue = renderMultipleChoiceInput()
-    userEvent.type(screen.getByDisplayValue(""), "x{backspace}")
-    userEvent.tab()
+    await userEvent.type(screen.getByDisplayValue(""), "x{Backspace}")
+    await userEvent.tab()
     expect(mockSetValue).not.toHaveBeenCalled();
 })

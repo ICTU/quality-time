@@ -34,19 +34,19 @@ function render_metric_target(type) {
 
 it('sets the metric integer target', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_target("violations") });
-    userEvent.type(screen.getByRole("spinbutton"), '{selectall}42{enter}');
+    render_metric_target("violations");
+    await userEvent.type(screen.getByDisplayValue("10"), '42{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 2});
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", { target: "42" });
 });
 
 it('sets the metric version target', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_target("source_version") });
-    userEvent.type(screen.getByDisplayValue("10"), '{selectall}4.2{enter}');
+    render_metric_target("source_version");
+    await userEvent.type(screen.getByDisplayValue("10"), '4.2{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 2});
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", { target: "4.2" });
 });
 
 it('displays the default target if changed', () => {
     render_metric_target("violations_with_default_target");
     expect(screen.queryAllByText(/default:/).length).toBe(1);
-})
+});

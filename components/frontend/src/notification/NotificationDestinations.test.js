@@ -50,7 +50,7 @@ it('edits notification destination name attribute when it is changed in the inpu
     await act(async () => {
         render_notification_destinations(notification_destinations)
     });
-    userEvent.type(screen.getByLabelText(/Name/), ' changed{enter}');
+    await userEvent.type(screen.getByLabelText(/Name/), ' changed{Enter}');
 
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, { name: "new changed" });
 });
@@ -60,7 +60,7 @@ it('edits multiple notification destination attributes when they are changed in 
     await act(async () => {
         render_notification_destinations(notification_destinations)
     });
-    userEvent.type(screen.getByPlaceholderText(/https:\/\/example/), 'new.webhook.com{enter}');
+    await userEvent.type(screen.getByPlaceholderText(/https:\/\/example/), 'new.webhook.com{Enter}');
 
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, { webhook: "new.webhook.com", url: "http://localhost/" });
 });

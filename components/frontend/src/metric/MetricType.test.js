@@ -32,6 +32,6 @@ function render_metric_type() {
 it('sets the metric type', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => { render_metric_type() });
-    userEvent.type(screen.getByRole("combobox"), '{selectall}{del}Source version{enter}');
+    await userEvent.type(screen.getByRole("combobox"), 'Source version{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/type", { type: "source_version" });
 });

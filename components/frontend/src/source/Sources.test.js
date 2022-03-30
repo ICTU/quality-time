@@ -120,7 +120,7 @@ it('moves a source', async () => {
 it('updates a parameter of a source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 });
     render_sources()
-    userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), '{selectall}https://other{enter}')
+    await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), 'https://other{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 15 })
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue('Source 1'))
     })
@@ -136,7 +136,7 @@ it('mass updates a parameter of a source', async () => {
         fireEvent.click(screen.getByText(/Apply change to subject/))
     })
     expect(screen.getAllByText(/Apply change to subject/).length).toBe(2)
-    userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), '{selectall}https://other{enter}')
+    await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), 'https://other{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 15 })
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue('Source 1'))
     })

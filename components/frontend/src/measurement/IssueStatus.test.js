@@ -89,7 +89,7 @@ it("does not display the creation date in the label if not configured", async ()
 
 it("displays the issue summary in the popup", async () => {
     const { queryByText } = renderIssueStatus()
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("Issue summary")).not.toBe(null)
     })
@@ -97,7 +97,7 @@ it("displays the issue summary in the popup", async () => {
 
 it("displays the creation date in the popup", async () => {
     const { queryByText } = renderIssueStatus({ updated: false })
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("4 days ago")).not.toBe(null)
         expect(queryByText("2 days ago")).toBe(null);
@@ -116,7 +116,7 @@ it("does not display the update date in the label if not configured", async () =
 
 it("displays the update date in the popup", async () => {
     const { queryByText } = renderIssueStatus({ updated: true })
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("4 days ago")).not.toBe(null);
         expect(queryByText("2 days ago")).not.toBe(null);
@@ -125,7 +125,7 @@ it("displays the update date in the popup", async () => {
 
 it("displays no popup if the issue has no creation date and there is no error", async () => {
     const { queryByText } = renderIssueStatus({ created: false })
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("4 days ago")).toBe(null);
         expect(queryByText("2 days ago")).toBe(null);
@@ -134,13 +134,13 @@ it("displays no popup if the issue has no creation date and there is no error", 
 
 it("displays a connection error in the popup", async () => {
     const { queryByText } = renderIssueStatus({ connectionError: true })
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText("Connection error")).not.toBe(null) })
 });
 
 it("displays a parse error in the popup", async () => {
     const { queryByText } = renderIssueStatus({ parseError: true })
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText("Parse error")).not.toBe(null) })
 });
 
@@ -151,6 +151,6 @@ it("displays nothing if the metric has no issue status", async () => {
 
 it("displays an error message if the metric has issue ids but the report has no issue tracker", async () => {
     const { queryByText } = renderIssueStatus({ issueTrackerMissing: true})
-    userEvent.hover(queryByText(/123/))
+    await userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText(/No issue tracker configured/)).not.toBe(null) })
 })

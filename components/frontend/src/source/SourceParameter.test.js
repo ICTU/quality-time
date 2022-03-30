@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SourceParameter } from './SourceParameter';
 import * as fetch_server_api from '../api/fetch_server_api';
+import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -47,21 +48,23 @@ function renderSourceParameter(
     }
 ) {
     return render(
-        <SourceParameter
-            help={help}
-            help_url={help_url}
-            index={index}
-            parameter_key={parameter_key}
-            parameter_name={parameter_name}
-            parameter_type={parameter_type}
-            parameter_value={parameter_value}
-            parameter_values={parameter_values}
-            placeholder={placeholder}
-            report={report}
-            source={{ "type": "source_type" }}
-            source_uuid="source_uuid"
-            warning={warning}
-        />
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <SourceParameter
+                help={help}
+                help_url={help_url}
+                index={index}
+                parameter_key={parameter_key}
+                parameter_name={parameter_name}
+                parameter_type={parameter_type}
+                parameter_value={parameter_value}
+                parameter_values={parameter_values}
+                placeholder={placeholder}
+                report={report}
+                source={{ "type": "source_type" }}
+                source_uuid="source_uuid"
+                warning={warning}
+            />
+        </Permissions.Provider>
     )
 }
 
@@ -153,21 +156,21 @@ it('renders a help url', () => {
 
 it('renders a help text', async () => {
     renderSourceParameter({ help: "Help text" })
-    userEvent.hover(screen.queryByTestId("help-icon"))
+    await userEvent.hover(screen.queryByTestId("help-icon"))
     await waitFor(() => { expect(screen.queryAllByText(/Help text/).length).toBe(1) });
 });
 
 it('changes the value', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     renderSourceParameter({});
-    userEvent.type(screen.queryByText(/test/), "{selectall}new url{enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "new url", edit_scope: "source" });
+    await userEvent.type(screen.queryByText(/test/), "/new{Enter}")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "source" });
 })
 
 it('changes the value via mass edit', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     renderSourceParameter({});
-    userEvent.click(screen.queryByText(/Apply change to subject/))
-    userEvent.type(screen.queryByText(/test/), "{selectall}new url{enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "new url", edit_scope: "subject" });
+    await userEvent.click(screen.queryByText(/Apply change to subject/))
+    await userEvent.type(screen.queryByText(/test/), "/new{Enter}")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "subject" });
 })

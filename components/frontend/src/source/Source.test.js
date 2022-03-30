@@ -56,7 +56,7 @@ it('changes the source name', async () => {
     await act(async () => {
         render_source();
     })
-    userEvent.type(screen.getByLabelText(/Source name/), 'New source name{enter}');
+    await userEvent.type(screen.getByLabelText(/Source name/), 'New source name{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", { name: "New source name" });
 });
 

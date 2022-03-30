@@ -44,11 +44,11 @@ it('changes the entity status end date', async () => {
     );
 })
 
-it('changes the rationale', () => {
+it('changes the rationale', async () => {
     source.set_source_entity_attribute = jest.fn()
     renderSourceEntityDetails()
-    userEvent.type(screen.getByPlaceholderText(/Rationale/), 'Rationale');
-    userEvent.tab()
+    await userEvent.type(screen.getByPlaceholderText(/Rationale/), 'Rationale');
+    await userEvent.tab()
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
         "metric_uuid", "source_uuid", "key", "rationale", "Rationale", reload
     );

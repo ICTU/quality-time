@@ -8,34 +8,34 @@ it('renders the value read only', () => {
     expect(screen.queryByText("Hello")).not.toBe(null)
 });
 
-it('changes the value', () => {
+it('changes the value', async () => {
     const mockCallback = jest.fn();
     render(<TextInput value="Hello" set_value={mockCallback} />);
-    userEvent.type(screen.getByText(/Hello/), '{selectall}Bye{shift}{enter}')
+    await userEvent.type(screen.getByText(/Hello/), 'Bye{Shift>}{Enter}')
     expect(screen.getByText(/Bye/)).not.toBe(null)
-    expect(mockCallback).toHaveBeenCalledWith("Bye")
+    expect(mockCallback).toHaveBeenCalledWith("HelloBye")
 })
 
-it('does not invoke the callback on enter', () => {
+it('does not invoke the callback on enter', async () => {
     const mockCallback = jest.fn();
     render(<TextInput value="Hello" set_value={mockCallback} />);
-    userEvent.type(screen.getByText(/Hello/), '{selectall}Bye{enter}')
+    await userEvent.type(screen.getByText(/Hello/), 'Bye{Enter}')
     expect(screen.getByText(/Bye/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 })
 
-it('does not invoke the callback if the value is unchanged', () => {
+it('does not invoke the callback if the value is unchanged', async () => {
     const mockCallback = jest.fn();
     render(<TextInput value="Hello" set_value={mockCallback} />);
-    userEvent.type(screen.getByText(/Hello/), '{selectall}Hello{shift}{enter}')
+    await userEvent.type(screen.getByText(/Hello/), '{Shift>}{Enter}')
     expect(screen.getByText(/Hello/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 })
 
-it('resets the value on escape', () => {
+it('resets the value on escape', async () => {
     const mockCallback = jest.fn();
     render(<TextInput value="Hello" set_value={mockCallback} />);
-    userEvent.type(screen.getByText(/Hello/), '{selectall}Revert{escape}')
+    await userEvent.type(screen.getByText(/Hello/), 'Revert{Escape}')
     expect(screen.getByText(/Hello/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 })
