@@ -363,9 +363,9 @@ pip-api==0.0.29 \
     --hash=sha256:36c3211975e69c46c1d3b13b702dcc96d054d54e02147b1485300cf5fc45c1a0 \
     --hash=sha256:f701584eb1c3e01021c846f89d629ab9373b6624f0626757774ad54fc4c29571
     # via pip-audit
-pip-audit==2.1.0 \
-    --hash=sha256:5006fdefa17b97c9698eea007a39dfcb6c12529d2136047805ce7f25fec72ad5 \
-    --hash=sha256:b987aa4c6b31e316db197d370443ff34053ca0400a27f7407e74a71d92006a89
+pip-audit==2.1.1 \
+    --hash=sha256:3c131ecb11a1c2487d25abe36ef72ab407003a7ba3febd492566f6595a6797a2 \
+    --hash=sha256:e60626902d2ab7320fcb416e06cbcd8ed834398ea49d79ca266e1a78b5fbbcba
     # via -r ../requirements-dev.in
 pip-tools==6.5.1 \
     --hash=sha256:80f1cfc7156e4a4465b1a46a6bb3599587909537db1a149cf3a6b73eed979ee4 \
@@ -425,9 +425,9 @@ pyflakes==2.4.0 \
     --hash=sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c \
     --hash=sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
     # via flake8
-pylint==2.13.2 \
-    --hash=sha256:0c6dd0e53e6e17f2d0d62660905f3868611e734e9d9b310dc651a4b9f3dc70da \
-    --hash=sha256:3cd8eb401c6aa6c66b614d72cf0c54a02d6bf7752aa9890fc41de71030f3c81a
+pylint==2.13.3 \
+    --hash=sha256:12ed2520510c40db647e4ec7f747b07e0d669b33ab41479c2a07bb89b92877db \
+    --hash=sha256:c8837b6ec6440e3490ab8f066054b0645a516a29ca51ce442f16f7004f711a70
     # via -r ../requirements-dev.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
