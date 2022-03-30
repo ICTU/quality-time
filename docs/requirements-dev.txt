@@ -525,9 +525,9 @@ pygments==2.11.2 \
     # via
     #   furo
     #   sphinx
-pylint==2.13.2 \
-    --hash=sha256:0c6dd0e53e6e17f2d0d62660905f3868611e734e9d9b310dc651a4b9f3dc70da \
-    --hash=sha256:3cd8eb401c6aa6c66b614d72cf0c54a02d6bf7752aa9890fc41de71030f3c81a
+pylint==2.13.3 \
+    --hash=sha256:12ed2520510c40db647e4ec7f747b07e0d669b33ab41479c2a07bb89b92877db \
+    --hash=sha256:c8837b6ec6440e3490ab8f066054b0645a516a29ca51ce442f16f7004f711a70
     # via -r ../requirements-dev.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
