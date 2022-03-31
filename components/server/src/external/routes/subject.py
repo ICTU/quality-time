@@ -8,7 +8,7 @@ from shared.utils.type import MetricId, ReportId, SubjectId
 
 from ..database.datamodels import default_subject_attributes, latest_datamodel
 from ..database.measurements import measurements_by_metric
-from ..database.reports import insert_new_report, metrics_of_subject, latest_reports
+from ..database.reports import insert_new_report, latest_report_for_uuids, metrics_of_subject, latest_reports
 from ..model.actions import copy_subject, move_item
 from ..model.data import ReportData, SubjectData
 from ..utils.functions import report_date_time, sanitize_html, uuid
@@ -84,23 +84,24 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
     """Set the subject attribute."""
     new_value = dict(bottle.request.json)[subject_attribute]
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SubjectData(data_model, reports, subject_uuid)
+    report = latest_report_for_uuids(database, data_model, subject_uuid)[0]
+    subject = report.subjects_dict.get(subject_uuid)
+    old_subject_name = subject.name  # in case the name is the attribute that is changed
     if subject_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
-    old_value = data.subject.get(subject_attribute) or ""
+    old_value = subject.get(subject_attribute) or ""
     if subject_attribute == "position":
-        old_value, new_value = move_item(data, new_value, "subject")
+        old_value, new_value = move_item(report, subject, new_value)
     else:
-        data.subject[subject_attribute] = new_value
+        subject[subject_attribute] = new_value
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     delta_description = (
         f"{{user}} changed the {subject_attribute} of subject "
-        f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{new_value}'."
+        f"'{old_subject_name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
     )
-    uuids = [data.report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, uuids, data.report)
+    uuids = [report.uuid, subject.uuid]
+    return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)

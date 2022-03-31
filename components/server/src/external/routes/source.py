@@ -117,25 +117,26 @@ def delete_source(source_uuid: SourceId, database: Database):
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SourceData(data_model, reports, source_uuid)
+    report = latest_report_for_uuids(database, data_model, source_uuid)[0]
+    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+    old_source_name = source.name  # in case the name is the attribute that is changed
     value = dict(bottle.request.json)[source_attribute]
     old_value: Any
     if source_attribute == "position":
-        old_value, value = move_item(data, value, "source")
+        old_value, value = move_item(metric, source, value)
     else:
-        old_value = data.source.get(source_attribute) or ""
-        data.source[source_attribute] = value
+        old_value = source.get(source_attribute) or ""
+        source[source_attribute] = value
     if old_value == value:
         return dict(ok=True)  # Nothing to do
     delta_description = (
-        f"{{user}} changed the {source_attribute} of source '{data.source_name}' of metric '{data.metric_name}' of "
-        f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'."
+        f"{{user}} changed the {source_attribute} of source '{old_source_name}' of metric '{metric.name}' of "
+        f"subject '{subject.name}' in report '{report.name}' from '{old_value}' to '{value}'."
     )
-    uuids = [data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid]
+    uuids = [report.uuid, subject.uuid, metric.uuid, source.uuid]
     if source_attribute == "type":
-        data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
-    return insert_new_report(database, delta_description, uuids, data.report)
+        source["parameters"] = default_source_parameters(database, metric["type"], value)
+    return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION])

@@ -24,7 +24,9 @@ class Report(dict):
         self.__data_model = data_model
 
         subject_data = report_data.get("subjects", {})
-        report_data["subjects"] = self.subjects_dict = self._subjects(subject_data)
+        report_data["subjects"] = self._subjects(subject_data)
+        super().__init__(report_data)
+
         self.subjects = list(self.subjects_dict.values())
         self.subject_uuids = set(self.subjects_dict.keys())
 
@@ -39,12 +41,15 @@ class Report(dict):
         if "_id" in report_data:
             report_data["_id"] = str(report_data["_id"])
 
-        super().__init__(report_data)
-
     @property
     def uuid(self):
         """Return the uuid of this report."""
         return cast(ReportId, self["report_uuid"])  # pragma: no cover-behave
+
+    @property
+    def subjects_dict(self) -> dict[SubjectId, Subject]:
+        """Return the dict with subject uuids as keys and subject instances as values."""
+        return self.get("subjects")
 
     @property
     def name(self) -> str:

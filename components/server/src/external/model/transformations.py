@@ -111,7 +111,13 @@ def change_source_parameter(
     """
     changed_ids: list[ItemId] = []
     changed_source_uuids: set[ItemId] = set()
+    print(scope)
     for source, uuids in _sources_to_change(data, scope):
+        print()
+        print(
+            source["type"], data.source["type"], (source["parameters"].get(parameter_key) or None), (old_value or None)
+        )
+        print()
         if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
             old_value or None
         ):
@@ -127,6 +133,7 @@ def _sources_to_change(data, scope: EditScope) -> Iterator:
         for subject_uuid, subject in _subjects_to_change(data, report, scope):
             for metric_uuid, metric in _metrics_to_change(data, subject, scope):
                 for source_uuid, source_to_change in __sources_to_change(data, metric, scope):
+                    print(source_uuid)
                     yield source_to_change, [report["report_uuid"], subject_uuid, metric_uuid, source_uuid]
 
 

@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from shared.utils.type import SubjectId
+from shared.utils.type import MetricId, SubjectId
 
 from .measurement import Measurement
 from .metric import Metric
@@ -21,12 +21,12 @@ class Subject(dict):
         self.uuid = subject_uuid
         self.report = report if report is not None else {}
 
-        metric_data = subject_data.get("metrics", {})
-        subject_data["metrics"] = self.metrics_dict = self._instantiate_metrics(metric_data)
+        metrics_data = subject_data.get("metrics", {})
+        subject_data["metrics"] = self._instantiate_metrics(metrics_data)
+        super().__init__(subject_data)
+
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
-
-        super().__init__(subject_data)
 
     def __eq__(self, other):
         """Return whether the subjects are equal."""
@@ -43,6 +43,11 @@ class Subject(dict):
     def type(self) -> str | None:
         """Return the type of the subject."""
         return str(self["type"]) if "type" in self else None
+
+    @property
+    def metrics_dict(self) -> dict[MetricId, Metric]:
+        """Return the dict with metric uuids as keys and metric instances as values."""
+        return self.get("metrics")
 
     @property
     def name(self) -> str | None:

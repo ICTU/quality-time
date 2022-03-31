@@ -43,9 +43,11 @@ class PostSubjectAttributeTest(unittest.TestCase):
 
     def setUp(self):
         """Override to create a mock database fixture."""
+
+        self.data_model = dict(_id="id", subjects=dict(subject_type=dict(name="subject2")))
         self.database = Mock()
         self.report = Report(
-            None,
+            self.data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -55,9 +57,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         )
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id", subjects=dict(subject_type=dict(name="subject2"))
-        )
+        self.database.datamodels.find_one.return_value = self.data_model
         self.email = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 

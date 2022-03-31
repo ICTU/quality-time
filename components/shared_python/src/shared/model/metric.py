@@ -8,7 +8,7 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from shared.utils.type import Direction, MetricId, Scale, Status, SubjectId, TargetType
+from shared.utils.type import Direction, MetricId, Scale, SourceId, Status, SubjectId, TargetType
 
 from .source import Source
 
@@ -32,13 +32,13 @@ class Metric(dict):
         self.subject_uuid = subject_uuid
 
         source_data = metric_data.get("sources", {})
-        metric_data["sources"] = self.sources_dict = {
+        metric_data["sources"] = {
             source_uuid: Source(source_uuid, self, **source_dict) for source_uuid, source_dict in source_data.items()
         }
+        super().__init__(metric_data)
+
         self.sources = list(self.sources_dict.values())
         self.source_uuids = list(self.sources_dict.keys())
-
-        super().__init__(metric_data)
 
     def __eq__(self, other):
         """Return whether the metrics are equal."""
@@ -49,9 +49,14 @@ class Metric(dict):
         return str(self["type"]) if "type" in self else None
 
     @property
+    def sources_dict(self) -> dict[SourceId, Source]:
+        """Return the dict with source_uuid as keys and source instances as values."""
+        return self.get("sources")
+
+    @property
     def name(self) -> str | None:
         """Either a custom name or one from the metric type in the data model."""
-        return self.get("name") or self.__data_model["metrics"].get(self.type, None).get("name")
+        return self.get("name") or self.__data_model["metrics"].get(self.type, {}).get("name")
 
     def status(self, last_measurement: Measurement | None) -> Status | None:
         """Determine the metric status."""

@@ -10,7 +10,7 @@ from shared.model.metric import Metric
 from shared.utils.type import MetricId, SubjectId
 
 from ..database.datamodels import default_metric_attributes, latest_datamodel
-from ..database.reports import insert_new_report, latest_reports
+from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_metric, move_item
 from ..model.data import MetricData, SubjectData
 from ..utils.functions import sanitize_html, uuid
@@ -97,27 +97,28 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = MetricData(data_model, reports, metric_uuid)
+    report = latest_report_for_uuids(database, data_model, metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    old_metric_name = metric.name  # in case the name is the attribute that will be changed
     if metric_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
     old_value: Any
     if metric_attribute == "position":
-        old_value, new_value = move_item(data, new_value, "metric")
+        old_value, new_value = move_item(subject, metric, new_value)
     else:
-        old_value = data.metric.get(metric_attribute) or ""
+        old_value = metric.get(metric_attribute) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
-    data.metric[metric_attribute] = new_value
+    metric[metric_attribute] = new_value
     if metric_attribute == "type":
-        data.metric.update(default_metric_attributes(database, new_value))
+        metric.update(default_metric_attributes(database, new_value))
     description = (
-        f"{{user}} changed the {metric_attribute} of metric '{data.metric_name}' of subject "
-        f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{new_value}'."
+        f"{{user}} changed the {metric_attribute} of metric '{old_metric_name}' of subject "
+        f"'{subject.name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
     )
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    insert_new_report(database, description, uuids, data.report)
-    metric = Metric(data.datamodel, data.metric, metric_uuid)
+    uuids = [report.uuid, subject.uuid, metric.uuid]
+    insert_new_report(database, description, uuids, report)
+    metric = Metric(data_model, metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
     return dict(ok=True)
