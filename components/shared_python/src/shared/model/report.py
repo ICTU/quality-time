@@ -38,8 +38,8 @@ class Report(dict):
         self.sources = list(self.sources_dict.values())
         self.source_uuids = set(self.sources_dict.keys())
 
-        if "_id" in report_data:
-            report_data["_id"] = str(report_data["_id"])
+        if "_id" in self:
+            self["_id"] = str(self["_id"])
 
     @property
     def uuid(self):
