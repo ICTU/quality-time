@@ -24,7 +24,6 @@
     border-top: 0px;
 }
 
-
 /* Remove opacity from the th background, otherwise the rows underneath are visible. */
 
 .ui.inverted.sortable.table>thead>tr>th {
@@ -55,4 +54,57 @@
 .ui.inverted.sortable.table>thead>tr>th.unsortable:hover {
     /* Don't highlight unsortable columns */
     background-color: rgba(50, 50, 50, 1);
+}
+
+tr.target_met, td.target_met {
+    background-color: rgb(30, 148, 78, 0.15) !important;
+}
+
+tr.target_met:hover, td.target_met:hover {
+    background-color: rgb(30, 148, 78, 0.25) !important;
+}
+
+tr.target_not_met, td.target_not_met {
+    background-color: rgb(211, 59, 55, 0.2) !important;
+}
+
+tr.target_not_met:hover, td.target_not_met:hover {
+    background-color: rgb(211, 59, 55, 0.3) !important;
+}
+
+tr.near_target_met, td.near_target_met {
+    background-color: rgb(253, 197, 54, 0.15) !important;
+}
+
+tr.near_target_met:hover, td.near_target_met:hover {
+    background-color: rgb(253, 197, 54, 0.25) !important;
+}
+
+tr.debt_target_met, td.debt_target_met {
+    background-color: rgb(150, 150, 150, 0.2) !important;
+}
+
+tr.debt_target_met:hover, td.debt_target_met:hover {
+    background-color: rgb(150, 150, 150, 0.3) !important;
+}
+
+tr.unknown, td.unknown {
+    background-color: rgb(245, 245, 245, 0.15) !important;
+}
+
+.ui.table.inverted > tbody > tr.unknown:hover, .ui.table.inverted > tbody > tr > td.unknown:hover {
+    background-color: rgb(245, 245, 245, 0.25) !important;
+}
+
+tr.unknown:hover, td.unknown:hover {
+    background-color: rgb(245, 245, 245, 0.65) !important;
+}
+
+td > a {
+    color: rgb(0, 88, 176) !important;
+}
+
+.ui.sortable.table thead th.unsortable:hover {
+    /* Allow for specifying that some columns in a sortable table aren't sortable */
+    background: #f9fafb;
 }

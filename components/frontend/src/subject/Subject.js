@@ -76,8 +76,7 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
 
 export function Subject({
     changed_fields,
-    dateInterval,
-    dateOrder,
+    dates,
     first_subject,
     handleSort,
     hiddenColumns,
@@ -94,7 +93,6 @@ export function Subject({
     subject_uuid,
     tags,
     toggleVisibleDetailsTab,
-    nrDates,
     visibleDetailsTabs,
     reload
 }) {
@@ -105,7 +103,7 @@ export function Subject({
     const dataModel = useContext(DataModel)
 
     useEffect(() => {
-        if (nrDates > 1) {
+        if (dates.length > 1) {
             get_subject_measurements(subject_uuid, report_date).then(json => {
                 if (json.ok !== false) {
                     setMeasurements(json.measurements)
@@ -113,7 +111,7 @@ export function Subject({
             })
         }
         // eslint-disable-next-line
-    }, [nrDates]);
+    }, [dates]);
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
@@ -135,13 +133,11 @@ export function Subject({
             <CommentSegment comment={subject.comment} />
             <SubjectTable
                 changed_fields={changed_fields}
-                dateInterval={dateInterval}
-                dateOrder={dateOrder}
+                dates={dates}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 measurements={measurements}
                 metricEntries={metricEntries}
-                nrDates={nrDates}
                 reload={reload}
                 report={report}
                 reportDate={report_date}

@@ -10,7 +10,6 @@ it('shows the column dates and unit', () => {
         <Table>
             <SubjectTableHeader
                 columnDates={[date1, date2]}
-                nrDates={2}
                 hiddenColumns={[]}
             />
         </Table>
@@ -25,17 +24,15 @@ it('shows the column dates and unit', () => {
 
 it('does not show the column dates', () => {
     const date1 = new Date("2022-02-02")
-    const date2 = new Date("2022-02-03")
     render(
         <Table>
             <SubjectTableHeader
-                columnDates={[date1, date2]}
-                nrDates={1}
+                columnDates={[date1]}
                 hiddenColumns={[]}
             />
         </Table>
     );
-    [date1.toLocaleDateString(), date2.toLocaleDateString()].forEach(
+    [date1.toLocaleDateString()].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(0)
     );
     ["Trend (7 days)", "Status", "Measurement", "Target", "Unit", "Source", "Comment", "Issues", "Tags"].forEach(
@@ -44,11 +41,11 @@ it('does not show the column dates', () => {
 })
 
 it('hides columns', () => {
+    const date1 = new Date("2022-02-02")
     render(
         <Table>
             <SubjectTableHeader
-                columnDates={[]}
-                nrDates={1}
+                columnDates={[date1]}
                 hiddenColumns={["trend", "status", "measurement", "target", "source", "comment", "issues", "tags"]}
             />
         </Table>

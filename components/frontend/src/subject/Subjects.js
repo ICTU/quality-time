@@ -10,12 +10,10 @@ import { Subject } from './Subject';
 
 export function Subjects({
     changed_fields,
-    dateInterval,
-    dateOrder,
+    dates,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
-    nrDates,
     reload,
     report,
     reports,
@@ -39,8 +37,7 @@ export function Subjects({
                 visible || index < 3 ?
                     <Subject
                         changed_fields={changed_fields}
-                        dateInterval={dateInterval}
-                        dateOrder={dateOrder}
+                        dates={dates}
                         first_subject={index === 0}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
@@ -58,7 +55,6 @@ export function Subjects({
                         subject_uuid={subject_uuid}
                         tags={tags}
                         toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                        nrDates={nrDates}
                         visibleDetailsTabs={visibleDetailsTabs}
                         reload={reload}
                     /> : null

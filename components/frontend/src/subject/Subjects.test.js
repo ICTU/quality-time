@@ -35,6 +35,7 @@ function renderSubjects(permissions = [], initialEntries = []) {
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={datamodel}>
                 <Subjects
+                    dates={[]}
                     hiddenColumns={[]}
                     history={history}
                     report={report}
