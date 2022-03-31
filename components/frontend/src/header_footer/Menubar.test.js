@@ -54,7 +54,7 @@ it('goes to home page on keypress', async () => {
     const go_home = jest.fn();
     await act(async () => {
         render(<Menubar go_home={go_home} />);
-        userEvent.type(screen.getByAltText(/Go home/), "{Enter}");
+        await userEvent.type(screen.getByAltText(/Go home/), "{Enter}");
     });
     expect(go_home).toHaveBeenCalled();
 });
@@ -70,8 +70,9 @@ it('shows the view panel on menu item click', async () => {
 it('shows the view panel on enter', async () => {
     await act(async () => {
         render(<Menubar panel={<div>Hello</div>} />);
-        userEvent.type(screen.getByText(/Settings/), "{Enter}");
     });
+    await userEvent.tab()  // Move focus to the settings button
+    await userEvent.keyboard("{Enter}")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
 
@@ -87,14 +88,14 @@ it('hides the view panel on escape', async () => {
     await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await act(async() => {fireEvent.keyDown(screen.getByText(/Hello/), { key: 'Escape', code: 'Escape' })})
+    await userEvent.keyboard("{Escape}")
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
 
-it('does not hide the view panel on another key', async () => {
+it('hides the view panel on other keys', async () => {
     await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await act(async() => {userEvent.keyboard("X")})
-    expect(screen.queryAllByText(/Hello/).length).toBe(1)
+    await userEvent.keyboard("x")
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })

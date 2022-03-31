@@ -26,35 +26,35 @@ it('renders a missing value', () => {
     expect(screen.queryByDisplayValue(/Option/)).toBe(null)
 });
 
-it('invokes the callback on change', () => {
+it('invokes the callback on change', async () => {
     const mockCallback = jest.fn();
     renderStringInput(mockCallback);
-    userEvent.type(screen.getByDisplayValue(/Option 1/), '{selectall}Option 2{enter}')
+    await userEvent.type(screen.getByDisplayValue(/Option 1/), 'Option 2{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 8})
     expect(screen.getByDisplayValue(/Option 2/)).not.toBe(null)
     expect(mockCallback).toHaveBeenCalledWith("Option 2")
 });
 
-it('invokes the callback on add', () => {
+it('invokes the callback on add', async () => {
     const mockCallback = jest.fn();
     renderStringInput(mockCallback);
-    userEvent.type(screen.getByDisplayValue(/Option 1/), '{selectall}Option 3{enter}')
+    await userEvent.type(screen.getByDisplayValue(/Option 1/), 'Option 3{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 8})
     expect(screen.getByDisplayValue(/Option 3/)).not.toBe(null)
     expect(mockCallback).toHaveBeenCalledWith("Option 3")
 });
 
-it('does not invoke the callback when the new value equals the old value', () => {
+it('does not invoke the callback when the new value equals the old value', async () => {
     const mockCallback = jest.fn();
     renderStringInput(mockCallback);
-    userEvent.type(screen.getByDisplayValue(/Option 1/), '{selectall}Option 1{enter}')
+    await userEvent.type(screen.getByDisplayValue(/Option 1/), 'Option 1{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 8})
     expect(screen.getByDisplayValue(/Option 1/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 });
 
-it('works without options', () => {
+it('works without options', async () => {
     const mockCallback = jest.fn();
     renderStringInput(mockCallback);
     render(<StringInput set_value={mockCallback} />)
-    userEvent.type(screen.getByDisplayValue(""), '{selectall}New value{enter}')
+    await userEvent.type(screen.getByDisplayValue(""), 'New value{Enter}')
     expect(screen.getByDisplayValue(/New value/)).not.toBe(null)
     expect(mockCallback).toHaveBeenCalledWith("New value")
 });

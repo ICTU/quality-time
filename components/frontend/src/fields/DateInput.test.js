@@ -56,7 +56,7 @@ it('does not submit the value when the value is not changed even on enter', asyn
     const date = "2022-02-10"
     renderDateInput({ value: date, set_value: set_value })
     await act(async () => fireEvent.click(screen.getByDisplayValue(date)))
-    await act(async () => userEvent.type(screen.getByDisplayValue(date), "{enter}"))
+    await userEvent.type(screen.getByDisplayValue(date), "{Enter}")
     expect(screen.getByDisplayValue(date)).not.toBe(null)
     expect(set_value).not.toHaveBeenCalled()
 })

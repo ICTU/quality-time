@@ -131,7 +131,7 @@ it("sets dark mode on keypress", async () => {
     const setUIMode = jest.fn();
     await act(async () => {
         render(<ViewPanel hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />)
-        userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
+        await userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
     });
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })
@@ -158,7 +158,7 @@ it("shows the metrics not requiring action by keypress", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     await act(async () => {
         render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
-        userEvent.type(screen.getByText(/All metrics/), "{Enter}")
+        await userEvent.type(screen.getByText(/All metrics/), "{Enter}")
     });
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })
@@ -176,7 +176,7 @@ it("hides a column by keypress", async () => {
     const toggleHiddenColumn = jest.fn();
     await act(async () => {
         render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
-        userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
+        await userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
     });
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
 })
@@ -212,7 +212,7 @@ it("sorts a column by keypress", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
         render(<ViewPanel setSortColumn={setSortColumn} />)
-        userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+        await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(setSortColumn).toHaveBeenCalledWith("comment")
 })
@@ -221,7 +221,7 @@ it("unsorts a column by keypress", async () => {
     const setSortColumn = jest.fn();
     await act(async () => {
         render(<ViewPanel setSortColumn={setSortColumn} sortColumn="comment" />)
-        userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+        await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(setSortColumn).toHaveBeenCalledWith(null)
 })
@@ -239,7 +239,7 @@ it("sets the number of dates by keypress", async () => {
     const setNrDates = jest.fn();
     await act(async () => {
         render(<ViewPanel nrDates={1} setNrDates={setNrDates} />)
-        userEvent.type(screen.getByText(/5 dates/), "{Enter}")
+        await userEvent.type(screen.getByText(/5 dates/), "{Enter}")
     });
     expect(setNrDates).toHaveBeenCalledWith(5)
 })
@@ -266,7 +266,7 @@ it("sets the date interval by keypress", async () => {
     const setDateInterval = jest.fn();
     await act(async () => {
         render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
-        userEvent.type(screen.getByText(/1 day/), "{Enter}")
+        await userEvent.type(screen.getByText(/1 day/), "{Enter}")
     });
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
@@ -284,7 +284,7 @@ it("sorts the dates ascending by keypress", async () => {
     const setDateOrder = jest.fn();
     await act(async () => {
         render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
-        userEvent.type(screen.getAllByText(/Ascending/)[1], "{Enter}")
+        await userEvent.type(screen.getAllByText(/Ascending/)[1], "{Enter}")
     });
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })
@@ -302,7 +302,7 @@ it("shows issue summaries by keypress", async () => {
     const setShowIssueSummary = jest.fn();
     await act(async () => {
         render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
-        userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
+        await userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
     });
     expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })

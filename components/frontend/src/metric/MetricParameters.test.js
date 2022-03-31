@@ -33,21 +33,21 @@ function render_metric_parameters(scale = "count", issue_ids = [], report = { su
 it('sets the metric name', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => { render_metric_parameters() });
-    userEvent.type(screen.getByLabelText(/Metric name/), '{selectall}{del}New metric name{enter}');
+    await userEvent.type(screen.getByLabelText(/Metric name/), 'New metric name{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 11});
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/name", { name: "New metric name" });
 });
 
 it('sets the metric unit for metrics with the count scale', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => { render_metric_parameters() });
-    userEvent.type(screen.getByLabelText(/Metric unit/), '{selectall}{del}New metric unit{enter}');
+    await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 11});
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
 });
 
 it('sets the metric unit field for metrics with the percentage scale', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => { render_metric_parameters("percentage") });
-    userEvent.type(screen.getByLabelText(/Metric unit/), '{selectall}{del}New metric unit{enter}');
+    await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 11});
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
 });
 

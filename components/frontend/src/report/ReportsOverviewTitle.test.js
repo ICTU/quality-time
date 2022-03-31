@@ -21,7 +21,7 @@ it('sets the title', async () => {
         render_reports_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    userEvent.type(screen.getByLabelText(/Report overview title/), '{selectall}{del}New title{enter}');
+    await userEvent.type(screen.getByLabelText(/Report overview title/), '{Delete}New title{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", { title: "New title" });
 });
 
@@ -31,7 +31,7 @@ it('sets the subtitle', async () => {
         render_reports_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{selectall}{del}New subtitle{enter}');
+    await userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{Delete}New subtitle{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
@@ -41,7 +41,7 @@ it('sets the comment', async () => {
         render_reports_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    userEvent.type(screen.getByLabelText(/Comment/), '{selectall}{del}New comment{shift}{enter}');
+    await userEvent.type(screen.getByLabelText(/Comment/), '{Delete}New comment{Shift>}{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", { comment: "New comment" });
 });
 
@@ -54,7 +54,7 @@ it('sets the edit report permission', async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Permissions/));
     });
-    userEvent.type(screen.getAllByText(/All authenticated users/)[0], 'jadoe{enter}');
+    await userEvent.type(screen.getAllByText(/All authenticated users/)[0], 'jadoe{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", { permissions: { edit_reports: ["jadoe"] } });
 })
 
@@ -67,7 +67,7 @@ it('sets the edit entities permission', async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Permissions/));
     });
-    userEvent.type(screen.getAllByText(/All authenticated users/)[1], 'jodoe{enter}');
+    await userEvent.type(screen.getAllByText(/All authenticated users/)[1], 'jodoe{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", { permissions: { edit_entities: ["jodoe"] } });
 })
 

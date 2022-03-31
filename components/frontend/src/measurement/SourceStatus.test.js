@@ -27,7 +27,7 @@ it('renders the source label if there is no error', () => {
 it('renders the source label and the popup if there is an connection error', async () => {
     render_source_status({source_uuid: "source_uuid", connection_error: "error" })
     expect(screen.getAllByText(/Source name/).length).toBe(1)
-    userEvent.hover(screen.queryByText(/Source name/))
+    await userEvent.hover(screen.queryByText(/Source name/))
     await waitFor(() => {
         expect(screen.queryByText("Connection error")).not.toBe(null)
     })
@@ -36,7 +36,7 @@ it('renders the source label and the popup if there is an connection error', asy
 it('renders the source label and the popup if there is a parse error', async () => {
     render_source_status({source_uuid: "source_uuid", parse_error: "error" })
     expect(screen.getAllByText(/Source name/).length).toBe(1)
-    userEvent.hover(screen.queryByText(/Source name/))
+    await userEvent.hover(screen.queryByText(/Source name/))
     await waitFor(() => {
         expect(screen.queryByText("Parse error")).not.toBe(null)
     })

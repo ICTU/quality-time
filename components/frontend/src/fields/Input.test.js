@@ -3,34 +3,34 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Input } from './Input';
 
-it('changes the value', () => {
+it('changes the value', async () => {
     const mockCallback = jest.fn();
     render(<Input value="Hello" set_value={mockCallback} />)
-    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Bye{enter}')
+    await userEvent.type(screen.getByDisplayValue(/Hello/), 'Bye{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 5})
     expect(screen.getByDisplayValue(/Bye/)).not.toBe(null)
     expect(mockCallback).toHaveBeenCalledWith("Bye")
 });
 
-it('changes the value when blurred', () => {
+it('changes the value when blurred', async () => {
     const mockCallback = jest.fn();
     render(<><Input value="Hello" set_value={mockCallback} /><Input value="Bye" /></>)
-    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Ciao')
+    await userEvent.type(screen.getByDisplayValue(/Hello/), 'Ciao', {initialSelectionStart: 0, initialSelectionEnd: 5})
     screen.getByDisplayValue(/Bye/).focus();  // blur
     expect(mockCallback).toHaveBeenCalledWith("Ciao");
 });
 
-it('does not submit the value when it is unchanged', () => {
+it('does not submit the value when it is unchanged', async () => {
     const mockCallback = jest.fn();
     render(<Input value="Hello" set_value={mockCallback} />)
-    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Hello{enter}')
+    await userEvent.type(screen.getByDisplayValue(/Hello/), 'Hello{Enter}', {initialSelectionStart: 0, initialSelectionEnd: 5})
     expect(screen.getByDisplayValue(/Hello/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 });
 
-it('renders the initial value on escape and does not submit', () => {
+it('renders the initial value on escape and does not submit', async () => {
     const mockCallback = jest.fn();
     render(<Input value="Hello" set_value={mockCallback} />)
-    userEvent.type(screen.getByDisplayValue(/Hello/), '{selectall}Bye{escape}')
+    await userEvent.type(screen.getByDisplayValue(/Hello/), 'Bye{Escape}')
     expect(screen.getByDisplayValue(/Hello/)).not.toBe(null)
     expect(mockCallback).not.toHaveBeenCalled()
 });
