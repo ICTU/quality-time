@@ -5,8 +5,11 @@ import unittest
 from unittest.mock import Mock, patch
 
 import requests
+from shared.model.metric import Metric
 
 from shared.model.report import Report
+from shared.model.subject import Subject
+from shared.model.source import Source
 
 from external.routes import (
     delete_source,
@@ -358,26 +361,37 @@ class PostSourceParameterMassEditTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.sources[SOURCE_ID3] = dict(
-            name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE)
+        self.sources[SOURCE_ID3] = Source(
+            SOURCE_ID3, None, dict(name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
         )
-        self.sources[SOURCE_ID4] = dict(
-            name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE)
+        self.sources[SOURCE_ID4] = Source(
+            SOURCE_ID4, None, dict(name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
         )
         self.sources2 = {
-            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            SOURCE_ID5: Source(
+                SOURCE_ID5, None, dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            )
         }
         self.sources3 = {
-            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            SOURCE_ID6: Source(
+                SOURCE_ID6, None, dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            )
         }
         self.sources4 = {
-            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            SOURCE_ID7: Source(
+                SOURCE_ID7, None, dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
+            )
         }
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = dict(
-            name="Metric 2", type="metric_type", sources=self.sources2
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
+            self.data_model, dict(name="Metric 2", type="metric_type", sources=self.sources2), METRIC_ID2, SUBJECT_ID
         )
-        self.report["subjects"][SUBJECT_ID2] = dict(
-            name="Subject 2", metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)}
+        self.report["subjects"][SUBJECT_ID2] = Subject(
+            self.data_model,
+            dict(
+                name="Subject 2", metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)}
+            ),
+            SUBJECT_ID2,
+            self.report,
         )
         self.report2 = Report(
             self.data_model,
@@ -545,8 +559,8 @@ class SourceTest(SourceTestCase):
     def test_move_source_within_subject(self):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
-        target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = dict(
-            name=self.target_metric_name, type="metric_type", sources={}
+        target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
+            self.data_model, dict(name=self.target_metric_name, type="metric_type", sources={}), METRIC_ID2, SUBJECT_ID
         )
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
