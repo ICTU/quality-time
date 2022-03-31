@@ -7,9 +7,14 @@ it('shows the reports overview', () =>{
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
 })
 
-it('shows the report', () => {
+it('shows that the report is missing', () => {
     render(<PageContent history={{location: {}}} reports={[{}]} report_uuid="uuid" />)
     expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
+})
+
+it('shows that the report was missing', () => {
+    render(<PageContent dateOrder="ascending" history={{location: {}}} report_date="2022-03-31" reports={[{}]} report_uuid="uuid" />)
+    expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
 })
 
 it('shows the loading spinner', () =>{

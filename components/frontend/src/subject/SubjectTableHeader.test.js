@@ -33,7 +33,7 @@ it('does not show the column dates', () => {
         </Table>
     );
     [date1.toLocaleDateString()].forEach(
-        header => expect(screen.queryAllByText(date1.toLocaleDateString()).length).toBe(0)
+        header => expect(screen.queryAllByText(header).length).toBe(0)
     );
     ["Trend (7 days)", "Status", "Measurement", "Target", "Unit", "Source", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(1)
