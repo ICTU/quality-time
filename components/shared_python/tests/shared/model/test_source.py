@@ -33,3 +33,8 @@ class SourceTest(unittest.TestCase):
         self.assertIn("key_2", new_source["entity_user_data"])
         self.assertIn("key_3", new_source["entity_user_data"])
         self.assertNotIn("orphaned_since", new_source["entity_user_data"]["key_2"])
+
+    def test_name(self):
+        """Test that we get the expected name."""
+        source = Source(SOURCE_ID, metric=None, name="test")
+        self.assertEqual(source.name, "test")

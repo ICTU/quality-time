@@ -8,7 +8,15 @@ from typing import cast
 
 from typing import TYPE_CHECKING
 
-from shared.utils.type import Direction, MetricId, Scale, SourceId, Status, SubjectId, TargetType
+from shared.utils.type import (
+    Direction,
+    MetricId,
+    Scale,
+    SourceId,
+    Status,
+    SubjectId,
+    TargetType,
+)
 
 from .source import Source
 
@@ -57,9 +65,9 @@ class Metric(dict):
     @property
     def name(self) -> str | None:
         """Either a custom name or one from the metric type in the data model."""
-        return self.get("name") or self.__data_model["metrics"].get(self.type, {}).get(
-            "name"
-        )
+        return self.get("name") or self.__data_model["metrics"].get(
+            self.type(), {}
+        ).get("name")
 
     def status(self, last_measurement: Measurement | None) -> Status | None:
         """Determine the metric status."""
