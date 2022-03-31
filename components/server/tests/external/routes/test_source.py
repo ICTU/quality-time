@@ -361,10 +361,10 @@ class PostSourceParameterMassEditTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.sources[SOURCE_ID3] = Source(
+        self.source_3 = Source(
             SOURCE_ID3, None, dict(name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
         )
-        self.sources[SOURCE_ID4] = Source(
+        self.source_4 = Source(
             SOURCE_ID4, None, dict(name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
         )
         self.sources2 = {
@@ -382,6 +382,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 SOURCE_ID7, None, dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
             )
         }
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID4] = self.source_4
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
             self.data_model, dict(name="Metric 2", type="metric_type", sources=self.sources2), METRIC_ID2, SUBJECT_ID
         )
@@ -438,8 +440,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                     self.sources3[SOURCE_ID6],
                     self.sources4[SOURCE_ID7],
                 ],
-                self.OLD_VALUE: [self.sources[SOURCE_ID4]],
-                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+                self.OLD_VALUE: [self.source_4],
+                self.UNCHANGED_VALUE: [self.source_3],
             }
         )
         uuids = [
@@ -473,8 +475,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                     self.sources2[SOURCE_ID5],
                     self.sources3[SOURCE_ID6],
                 ],
-                self.OLD_VALUE: [self.sources[SOURCE_ID4]],
-                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+                self.OLD_VALUE: [self.source_4],
+                self.UNCHANGED_VALUE: [self.source_3],
             }
         )
         extra_uuids = [METRIC_ID2, SOURCE_ID5, SUBJECT_ID2, METRIC_ID3, SOURCE_ID6]
@@ -490,8 +492,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
-                self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources3[SOURCE_ID6]],
-                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+                self.OLD_VALUE: [self.source_4, self.sources3[SOURCE_ID6]],
+                self.UNCHANGED_VALUE: [self.source_3],
             }
         )
         extra_uuids = [METRIC_ID2, SOURCE_ID5]
@@ -509,8 +511,8 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
-                self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
-                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+                self.OLD_VALUE: [self.source_4, self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
+                self.UNCHANGED_VALUE: [self.source_3],
             }
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
