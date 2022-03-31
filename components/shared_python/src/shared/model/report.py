@@ -12,7 +12,12 @@ from .metric import Metric
 
 STATUS_COLOR_MAPPING = cast(
     dict[Status, Color],
-    dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
+    dict(
+        target_met="green",
+        debt_target_met="grey",
+        near_target_met="yellow",
+        target_not_met="red",
+    ),
 )
 
 
@@ -49,12 +54,12 @@ class Report(dict):
     @property
     def subjects_dict(self) -> dict[SubjectId, Subject]:
         """Return the dict with subject uuids as keys and subject instances as values."""
-        return self.get("subjects")
+        return self.get("subjects", {})
 
     @property
     def name(self) -> str:
         """A different access to title."""
-        return self.get("title")
+        return self.get("title", "")
 
     def __eq__(self, other):
         """Return whether the reports are equal."""
@@ -67,18 +72,20 @@ class Report(dict):
             if isinstance(subject, Subject):
                 subjects[subject_uuid] = subject
             else:
-                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
+                subjects[subject_uuid] = Subject(
+                    self.__data_model, subject, subject_uuid, self
+                )
 
         return subjects
 
-    def _metrics(self) -> dict[str, Metric]:
+    def _metrics(self) -> dict[MetricId, Metric]:
         """All metrics of all subjects of this report."""
         metrics = {}
         for subject in self.subjects:
             metrics.update(subject.metrics_dict)
         return metrics
 
-    def _sources(self) -> dict[str, Source]:
+    def _sources(self) -> dict[SourceId, Source]:
         """All sources of this report."""
         sources = {}
         for metric in self.metrics:
@@ -92,23 +99,38 @@ class Report(dict):
         summary["summary_by_subject"] = {}
         summary["summary_by_tag"] = {}
 
-        summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
+        summary["subjects"] = {
+            subject.uuid: subject.summarize(measurements) for subject in self.subjects
+        }
 
         for metric in self.metrics:
-            latest_measurement = measurements[metric.uuid][-1] if measurements and metric.uuid in measurements else None
+            latest_measurement = (
+                measurements[metric.uuid][-1]
+                if measurements and metric.uuid in measurements
+                else None
+            )
             metric_status = metric.status(latest_measurement)
-            color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
+            color = (
+                STATUS_COLOR_MAPPING[metric_status]
+                if metric_status is not None
+                else "white"
+            )
             summary["summary"][color] += 1
             summary["summary_by_subject"].setdefault(
                 metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)
             )[color] += 1
             for tag in metric.get("tags", []):
-                summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+                summary["summary_by_tag"].setdefault(
+                    tag, dict(red=0, green=0, yellow=0, grey=0, white=0)
+                )[color] += 1
 
         return summary
 
     def instance_and_parents_for_uuid(
-        self, subject_uuid: SubjectId = None, metric_uuid: MetricId = None, source_uuid: SourceId = None
+        self,
+        subject_uuid: SubjectId = None,
+        metric_uuid: MetricId = None,
+        source_uuid: SourceId = None,
     ) -> tuple | None:
         """Find an instance and it's parents.
         example:
@@ -133,3 +155,4 @@ class Report(dict):
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return (source, metric, subject)
+        return None

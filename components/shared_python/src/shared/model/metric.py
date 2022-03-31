@@ -33,7 +33,7 @@ class Metric(dict):
         data_model,
         metric_data,
         metric_uuid: MetricId,
-        subject_uuid: SubjectId = None,
+        subject_uuid: SubjectId = SubjectId(""),
     ) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid
@@ -60,10 +60,10 @@ class Metric(dict):
     @property
     def sources_dict(self) -> dict[SourceId, Source]:
         """Return the dict with source_uuid as keys and source instances as values."""
-        return self.get("sources")
+        return self.get("sources", {})
 
     @property
-    def name(self) -> str | None:
+    def name(self):
         """Either a custom name or one from the metric type in the data model."""
         return self.get("name") or self.__data_model["metrics"].get(
             self.type(), {}
