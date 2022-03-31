@@ -1,6 +1,6 @@
 """Model operations."""
 
-from typing import Any, Literal
+from typing import Any
 
 from shared.model.report import Report
 from shared.model.subject import Subject

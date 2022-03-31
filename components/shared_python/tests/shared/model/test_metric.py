@@ -29,6 +29,7 @@ class MetricTest(unittest.TestCase):
                 "status_start": None,
                 "latest_measurement": None,
                 "recent_measurements": [],
+                "sources": {},
             },
         )
 
@@ -66,6 +67,7 @@ class MetricTest(unittest.TestCase):
                         "start": measurement_timestamp,
                     }
                 ],
+                "sources": {},
             },
         )
 
@@ -88,6 +90,7 @@ class MetricTest(unittest.TestCase):
                 "latest_measurement": None,
                 "recent_measurements": [],
                 "some_metric_property": "some_value",
+                "sources": {},
             },
         )
 
@@ -106,6 +109,7 @@ class MetricTest(unittest.TestCase):
                 "latest_measurement": None,
                 "recent_measurements": [],
                 "some_kw": "some_arg",
+                "sources": {},
             },
         )
 
