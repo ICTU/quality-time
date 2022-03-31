@@ -37,14 +37,22 @@ class Report(dict):
 
         self.metrics_dict = self._metrics()
         self.metrics = list(self.metrics_dict.values())
-        self.metric_uuids = set(self.metrics_dict.keys())
 
         self.sources_dict = self._sources()
         self.sources = list(self.sources_dict.values())
-        self.source_uuids = set(self.sources_dict.keys())
 
         if "_id" in self:
             self["_id"] = str(self["_id"])
+
+    @property
+    def metric_uuids(self) -> set[MetricId]:
+        """Return only the metric ids."""
+        return set(self.metrics_dict.keys())
+
+    @property
+    def source_uuids(self) -> set[SourceId]:
+        """Return only the source ids."""
+        return set(self.sources_dict.keys())
 
     @property
     def uuid(self):

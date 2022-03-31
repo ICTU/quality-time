@@ -12,3 +12,5 @@ api  # unused variable (/Users/werk/Projects/ictu/quality-time/components/shared
 setup  # unused method (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/routes/plugins/injection_plugin.py:19)
 apply  # unused method (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/routes/plugins/injection_plugin.py:25)
 SourceId  # unused variable (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/utils/type.py:15)
+subject_uuids  # unused attribute (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/model/report.py:36)
+instance_and_parents_for_uuid  # unused method (/Users/werk/Projects/ictu/quality-time/components/shared_python/src/shared/model/report.py:137)
