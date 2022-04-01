@@ -94,6 +94,7 @@ class PrivateToken(Password):  # pylint: disable=too-few-public-methods
 
     name: str = "Private token"
     short_name = "private token"
+    validation_path: str = ""  # URL path to use for the validation of tokens
 
 
 class Days(IntegerParameter):  # pylint: disable=too-few-public-methods
@@ -201,7 +202,7 @@ def access_parameters(
     )
     validate_on = ["username", "password"]
     if include.get("private_token", True):
-        parameters["private_token"] = PrivateToken(metrics=metrics)
+        parameters["private_token"] = PrivateToken(metrics=metrics, **kwargs.get("private_token", {}))
         validate_on.append("private_token")
     url_kwargs = kwargs.get("url") or dict(name="URL")
     if source_type:

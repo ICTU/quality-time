@@ -204,7 +204,9 @@ def _source_description(data_model, items, edit_scope, parameter_key, old_value)
 
 def _availability_checks(data_model, source, parameter_key: str) -> list[dict[str, str | int]]:
     """Check the availability of the URLs."""
-    parameters = data_model["sources"][source["type"]]["parameters"]
+    source_model = data_model["sources"][source["type"]]
+    parameters = source_model["parameters"]
+    token_validation_path = parameters["private_token"].get("validation_path", "")
     source_parameters = source["parameters"]
     url_parameter_keys = [
         key
@@ -216,7 +218,7 @@ def _availability_checks(data_model, source, parameter_key: str) -> list[dict[st
         url = source_parameters.get(url_parameter_key, "")
         if not url:
             continue
-        availability = check_url_availability(url, source_parameters)
+        availability = check_url_availability(url, source_parameters, token_validation_path)
         availability["parameter_key"] = url_parameter_key
         availability["source_uuid"] = source.uuid
         availability_checks.append(availability)
