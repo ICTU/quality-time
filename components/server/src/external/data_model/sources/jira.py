@@ -9,7 +9,6 @@ from ..parameters import (
     access_parameters,
     Days,
     IntegerParameter,
-    PrivateToken,
     SingleChoiceParameter,
     StringParameter,
     TestResult,

@@ -65,8 +65,7 @@ def _headers(source_parameters) -> dict:
     if "private_token" in source_parameters:
         private_token = source_parameters["private_token"]
         return {"Private-Token": private_token, "Authorization": f"Bearer {private_token}"}
-    else:
-        return {}
+    return {}
 
 
 def md5_hash(string: str) -> str:
