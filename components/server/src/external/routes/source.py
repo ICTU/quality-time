@@ -44,7 +44,8 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     """Add a copy of the source to the metric (new in v3)."""
     data_model = latest_datamodel(database)
 
-    reports = latest_report_for_uuids(database, data_model, source_uuid, metric_uuid)
+    all_reports = latest_reports(database, data_model)
+    reports = latest_report_for_uuids(all_reports, source_uuid, metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=metric_uuid)
 
@@ -67,7 +68,8 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
 
-    reports = latest_report_for_uuids(database, data_model, source_uuid, target_metric_uuid)
+    all_reports = latest_reports(database, data_model)
+    reports = latest_report_for_uuids(all_reports, source_uuid, target_metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=target_metric_uuid)
 
@@ -102,7 +104,8 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(database, data_model, source_uuid)[0]
+    reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(reports, source_uuid)[0]
     source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     delta_description = (
         f"{{user}} deleted the source '{source.name}' from metric "
@@ -117,7 +120,8 @@ def delete_source(source_uuid: SourceId, database: Database):
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(database, data_model, source_uuid)[0]
+    reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(reports, source_uuid)[0]
     source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     old_source_name = source.name  # in case the name is the attribute that is changed
     value = dict(bottle.request.json)[source_attribute]
@@ -144,18 +148,24 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     """Set the source parameter."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(reports, source_uuid)[0]
+    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     data = SourceData(data_model, reports, source_uuid)
-    new_value = new_parameter_value(data, parameter_key)
-    old_value = data.source["parameters"].get(parameter_key) or ""
+    new_value = new_parameter_value(data_model, source, parameter_key)
+    old_value = source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
-    changed_ids, changed_source_ids = change_source_parameter(data, parameter_key, old_value, new_value, edit_scope)
+    changed_ids, changed_source_ids = change_source_parameter(
+        reports, report, subject, metric, source, parameter_key, old_value, new_value, edit_scope
+    )
 
-    if is_password_parameter(data.datamodel, data.source["type"], parameter_key):
+    if is_password_parameter(data_model, source.type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
-    source_description = _source_description(data, edit_scope, parameter_key, old_value)
+    source_description = _source_description(
+        data_model, report, subject, metric, source, edit_scope, parameter_key, old_value
+    )
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
@@ -166,28 +176,28 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     return result
 
 
-def new_parameter_value(data, parameter_key: str):
+def new_parameter_value(data_model, source, parameter_key: str):
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
     new_value = dict(bottle.request.json)[parameter_key]
-    source_parameter = data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]
+    source_parameter = data_model["sources"][source.type]["parameters"][parameter_key]
     if source_parameter["type"] == "multiple_choice":
         new_value = [value for value in new_value if value in source_parameter["values"]]
     return new_value
 
 
-def _source_description(data, edit_scope, parameter_key, old_value):
+def _source_description(data_model, report, subject, metric, source, edit_scope, parameter_key, old_value):
     """Return the description of the source."""
-    source_type_name = data.datamodel["sources"][data.source["type"]]["name"]
+    source_type_name = data_model["sources"][source.type]["name"]
     source_description = (
-        f"source '{data.source_name}'"
+        f"source '{source.name}'"
         if edit_scope == "source"
         else f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
     )
     if edit_scope in ["source", "metric"]:
-        source_description += f" of metric '{data.metric_name}'"
+        source_description += f" of metric '{metric.name}'"
     if edit_scope in ["subject", "metric", "source"]:
-        source_description += f" of subject '{data.subject_name}'"
-    source_description += " in all reports" if edit_scope == "reports" else f" in report '{data.report_name}'"
+        source_description += f" of subject '{subject.name}'"
+    source_description += " in all reports" if edit_scope == "reports" else f" in report '{report.name}'"
     return source_description
 
 

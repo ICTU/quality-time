@@ -84,7 +84,8 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
     """Set the subject attribute."""
     new_value = dict(bottle.request.json)[subject_attribute]
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(database, data_model, subject_uuid)[0]
+    reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(reports, subject_uuid)[0]
     subject = report.subjects_dict.get(subject_uuid)
     old_subject_name = subject.name  # in case the name is the attribute that is changed
     if subject_attribute == "comment" and new_value:

@@ -142,14 +142,11 @@ def report_exists(database: Database, report_uuid: ReportId):
     return report_uuid in database.reports.distinct("report_uuid")
 
 
-def latest_report_for_uuids(
-    database: Database, data_model: dict, *uuids: list, max_iso_timestamp: str = ""
-) -> list[Report]:
+def latest_report_for_uuids(all_reports: list[Report], *uuids: list) -> list[Report]:
     """Return the report for given child entity uuids.
     The uuids can be of a report, subject, metric or source.
     The returned results will be in order of provided uuids.
     """
-    all_reports = latest_reports(database, data_model, max_iso_timestamp)
     reports = []
     for uuid in uuids:
         for report in all_reports:  # pragma: no cover-behave

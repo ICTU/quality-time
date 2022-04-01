@@ -97,7 +97,8 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(database, data_model, metric_uuid)[0]
+    reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     old_metric_name = metric.name  # in case the name is the attribute that will be changed
     if metric_attribute == "comment" and new_value:

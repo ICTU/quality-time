@@ -3,6 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
+from shared.model.report import Report
+
 from external.database.reports import latest_report_for_uuids, metrics_of_subject
 
 from ...fixtures import (
@@ -43,43 +45,47 @@ class LatestReportForUuidsTest(unittest.TestCase):
 
     def setUp(self) -> None:
         """Override to create a mock database fixture."""
-        self.data_model = {}
-        self.database = Mock()
-        self.database.reports.find.return_value = [
-            {
-                "report_uuid": REPORT_ID,
-                "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {"sources": {SOURCE_ID: {}}}, METRIC_ID2: {}}}},
-            },
-            {"report_uuid": REPORT_ID2, "subjects": {SUBJECT_ID2: {"metrics": {METRIC_ID3: {}, METRIC_ID4: {}}}}},
+        self.all_reports = [
+            Report(
+                {},
+                {
+                    "report_uuid": REPORT_ID,
+                    "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {"sources": {SOURCE_ID: {}}}, METRIC_ID2: {}}}},
+                },
+            ),
+            Report(
+                {},
+                {"report_uuid": REPORT_ID2, "subjects": {SUBJECT_ID2: {"metrics": {METRIC_ID3: {}, METRIC_ID4: {}}}}},
+            ),
         ]
         return super().setUp()
 
     def test_existing_uuids(self):
         """Test that function works for report, subject, metric and source uuids."""
-        reports = latest_report_for_uuids(self.database, self.data_model, REPORT_ID)
+        reports = latest_report_for_uuids(self.all_reports, REPORT_ID)
         self.assertEqual(len(reports), 1)
         self.assertEqual(reports[0].uuid, REPORT_ID)
 
-        reports = latest_report_for_uuids(self.database, self.data_model, SUBJECT_ID2)
+        reports = latest_report_for_uuids(self.all_reports, SUBJECT_ID2)
         self.assertEqual(len(reports), 1)
         self.assertEqual(reports[0].uuid, REPORT_ID2)
 
-        reports = latest_report_for_uuids(self.database, self.data_model, METRIC_ID3)
+        reports = latest_report_for_uuids(self.all_reports, METRIC_ID3)
         self.assertEqual(len(reports), 1)
         self.assertEqual(reports[0].uuid, REPORT_ID2)
 
-        reports = latest_report_for_uuids(self.database, self.data_model, SOURCE_ID)
+        reports = latest_report_for_uuids(self.all_reports, SOURCE_ID)
         self.assertEqual(len(reports), 1)
         self.assertEqual(reports[0].uuid, REPORT_ID)
 
     def test_multiple_uuids(self):
         """Test that function works for report, subject, metric and source uuids."""
-        reports = latest_report_for_uuids(self.database, self.data_model, SUBJECT_ID2, REPORT_ID)
+        reports = latest_report_for_uuids(self.all_reports, SUBJECT_ID2, REPORT_ID)
         self.assertEqual(len(reports), 2)
         self.assertEqual(reports[0].uuid, REPORT_ID2)
         self.assertEqual(reports[1].uuid, REPORT_ID)
 
     def test_non_existing_uuid(self):
         """Test that function works for report, subject, metric and source uuids."""
-        reports = latest_report_for_uuids(self.database, self.data_model, SOURCE_ID2)
+        reports = latest_report_for_uuids(self.all_reports, SOURCE_ID2)
         self.assertEqual(len(reports), 0)
