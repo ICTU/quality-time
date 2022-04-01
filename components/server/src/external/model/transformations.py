@@ -102,7 +102,7 @@ def replace_report_uuids(*reports) -> None:
                     metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 
-def change_source_parameter(
+def change_source_parameter(  # pylint: disable=too-many-arguments
     reports, items, parameter_key: str, old_value, new_value, scope: EditScope
 ) -> tuple[list[ItemId], set[ItemId]]:
     """Change the parameter of all sources of the specified type and the same old value to the new value.

@@ -38,3 +38,8 @@ class SourceTest(unittest.TestCase):
         """Test that we get the expected name."""
         source = Source(SOURCE_ID, metric=None, name="test")
         self.assertEqual(source.name, "test")
+
+    def test_type(self):
+        """Test that we get the expected type"""
+        source = Source(SOURCE_ID, metric=None, type="test")
+        self.assertEqual(source.type, "test")

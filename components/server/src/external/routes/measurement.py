@@ -30,8 +30,7 @@ def set_entity_attribute(
 ) -> Measurement:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    report = latest_report_for_uuids(reports, metric_uuid)[0]
+    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
     metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]

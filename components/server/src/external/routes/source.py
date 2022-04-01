@@ -4,7 +4,7 @@ from typing import Any, cast
 
 import bottle
 from pymongo.database import Database
-
+from shared.model.report import Report
 from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 from ..database.datamodels import default_source_parameters, latest_datamodel
@@ -148,8 +148,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     """Set the source parameter."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    report = latest_report_for_uuids(reports, source_uuid)[0]
-    items = (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
+    items = _items(reports, source_uuid)
     new_value = new_parameter_value(data_model, items[0], parameter_key)
     old_value = items[0]["parameters"].get(parameter_key) or ""
     if old_value == new_value:
@@ -171,6 +170,11 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
     result["availability"] = _availability_checks(data_model, items[0], parameter_key)
     return result
+
+
+def _items(reports: list[Report], source_uuid: SourceId) -> tuple:
+    report = latest_report_for_uuids(reports, source_uuid)[0]
+    return (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
 
 
 def new_parameter_value(data_model, source, parameter_key: str):
