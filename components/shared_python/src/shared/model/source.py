@@ -27,6 +27,11 @@ class Source(dict):  # lgtm [py/missing-equals]
         super().__init__(*args, **kwargs)
 
     @property
+    def type(self) -> str | None:
+        """Return the type of the metric."""
+        return str(self["type"]) if "type" in self else None
+
+    @property
     def name(self) -> str | None:
         """Easier way to access name."""
         return self.get("name")
