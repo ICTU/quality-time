@@ -136,7 +136,6 @@ class Report(dict):
 
     def instance_and_parents_for_uuid(
         self,
-        subject_uuid: SubjectId = None,
         metric_uuid: MetricId = None,
         source_uuid: SourceId = None,
     ) -> tuple | None:
@@ -149,9 +148,6 @@ class Report(dict):
         Only one of the three uuid arguments should be filled.
         If more are filled, all but the first one will be ignored.
         """
-        if subject_uuid is not None:
-            return (self.subjects_dict[subject_uuid],)
-
         if metric_uuid is not None:
             metric = self.metrics_dict[metric_uuid]
             subject = self.subjects_dict[metric.subject_uuid]
@@ -162,4 +158,4 @@ class Report(dict):
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return (source, metric, subject)
-        return None
+        return None  # pragma: no cover-behave
