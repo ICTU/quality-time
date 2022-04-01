@@ -10,7 +10,7 @@ from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 from ..database.datamodels import default_source_parameters, latest_datamodel
 from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_source, move_item
-from ..model.data import MetricData, SourceData
+from ..model.data import MetricData
 from ..model.queries import is_password_parameter
 from ..model.transformations import change_source_parameter
 from ..utils.functions import check_url_availability, uuid
@@ -149,30 +149,27 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(reports, source_uuid)[0]
-    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
-    data = SourceData(data_model, reports, source_uuid)
-    new_value = new_parameter_value(data_model, source, parameter_key)
-    old_value = source["parameters"].get(parameter_key) or ""
+    items = (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
+    new_value = new_parameter_value(data_model, items[0], parameter_key)
+    old_value = items[0]["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
     changed_ids, changed_source_ids = change_source_parameter(
-        reports, report, subject, metric, source, parameter_key, old_value, new_value, edit_scope
+        reports, items, parameter_key, old_value, new_value, edit_scope
     )
 
-    if is_password_parameter(data_model, source.type, parameter_key):
+    if is_password_parameter(data_model, items[0].type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
-    source_description = _source_description(
-        data_model, report, subject, metric, source, edit_scope, parameter_key, old_value
-    )
+    source_description = _source_description(data_model, items, edit_scope, parameter_key, old_value)
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
-    reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
+    reports_to_insert = [report for report in reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
     result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
-    result["availability"] = _availability_checks(data, parameter_key)
+    result["availability"] = _availability_checks(data_model, items[0], parameter_key)
     return result
 
 
@@ -185,8 +182,9 @@ def new_parameter_value(data_model, source, parameter_key: str):
     return new_value
 
 
-def _source_description(data_model, report, subject, metric, source, edit_scope, parameter_key, old_value):
+def _source_description(data_model, items, edit_scope, parameter_key, old_value):
     """Return the description of the source."""
+    source, metric, subject, report = items
     source_type_name = data_model["sources"][source.type]["name"]
     source_description = (
         f"source '{source.name}'"
@@ -201,10 +199,10 @@ def _source_description(data_model, report, subject, metric, source, edit_scope,
     return source_description
 
 
-def _availability_checks(data, parameter_key: str) -> list[dict[str, str | int]]:
+def _availability_checks(data_model, source, parameter_key: str) -> list[dict[str, str | int]]:
     """Check the availability of the URLs."""
-    parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
-    source_parameters = data.source["parameters"]
+    parameters = data_model["sources"][source["type"]]["parameters"]
+    source_parameters = source["parameters"]
     url_parameter_keys = [
         key
         for key, value in parameters.items()
@@ -217,6 +215,6 @@ def _availability_checks(data, parameter_key: str) -> list[dict[str, str | int]]
             continue
         availability = check_url_availability(url, source_parameters)
         availability["parameter_key"] = url_parameter_key
-        availability["source_uuid"] = data.source_uuid
+        availability["source_uuid"] = source.uuid
         availability_checks.append(availability)
     return availability_checks

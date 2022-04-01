@@ -57,27 +57,8 @@ class SubjectData(ReportData):
 class MetricData(SubjectData):
     """Class to hold data about a specific metric, in a specific subject, in a specific report."""
 
-    def __init__(self, data_model, reports, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
-        self.metric_uuid = self.get_metric_uuid(reports, source_uuid) if source_uuid else metric_uuid
+    def __init__(self, data_model, reports, metric_uuid: MetricId = None) -> None:
+        self.metric_uuid = metric_uuid
         super().__init__(data_model, reports, metric_uuid=self.metric_uuid)
         self.metric = self.subject["metrics"][self.metric_uuid]
         self.metric_name = self.name("metric")
-
-    @staticmethod
-    def get_metric_uuid(reports, source_uuid: SourceId) -> MetricId:
-        """Find the uuid of the metric that contains a source with the given source uuid."""
-        metrics: list[tuple[MetricId, Any]] = []
-        for report in reports:
-            for subject in report["subjects"].values():
-                metrics.extend(subject["metrics"].items())
-        return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
-
-
-class SourceData(MetricData):
-    """Class to hold data about a specific source, of a specific metric, in a specific subject, in a specific report."""
-
-    def __init__(self, data_model, reports, source_uuid: SourceId) -> None:
-        self.source_uuid = source_uuid
-        super().__init__(data_model, reports, source_uuid=source_uuid)
-        self.source = self.metric["sources"][self.source_uuid]
-        self.source_name = self.name("source")
