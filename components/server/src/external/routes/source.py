@@ -173,6 +173,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
 
 
 def _items(reports: list[Report], source_uuid: SourceId) -> tuple:
+    """Return a tuple with all ancestors of the given source and the source itself."""
     report = latest_report_for_uuids(reports, source_uuid)[0]
     return (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
 
