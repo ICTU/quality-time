@@ -152,7 +152,7 @@ def latest_report_for_uuids(
     all_reports = latest_reports(database, data_model, max_iso_timestamp)
     reports = []
     for uuid in uuids:
-        for report in all_reports:
+        for report in all_reports:  # pragma: no cover-behave
             child_uuids = set().union(report.subject_uuids, report.metric_uuids, report.source_uuids)
             if uuid in child_uuids or report.uuid == uuid:
                 reports.append(report)
