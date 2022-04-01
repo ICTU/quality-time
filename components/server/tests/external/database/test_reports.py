@@ -42,6 +42,7 @@ class LatestReportForUuidsTest(unittest.TestCase):
     """Unittest for getting specific reports based on uuids."""
 
     def setUp(self) -> None:
+        """Override to create a mock database fixture."""
         self.data_model = {}
         self.database = Mock()
         self.database.reports.find.return_value = [

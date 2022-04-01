@@ -149,7 +149,6 @@ class Report(dict):
         Only one of the three uuid arguments should be filled.
         If more are filled, all but the first one will be ignored.
         """
-
         if subject_uuid is not None:
             return (self.subjects_dict[subject_uuid],)
 

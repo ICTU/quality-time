@@ -43,7 +43,6 @@ class PostSubjectAttributeTest(unittest.TestCase):
 
     def setUp(self):
         """Override to create a mock database fixture."""
-
         self.data_model = dict(_id="id", subjects=dict(subject_type=dict(name="subject2")))
         self.database = Mock()
         self.report = Report(

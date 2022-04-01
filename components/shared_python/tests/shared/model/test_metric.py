@@ -126,7 +126,6 @@ class MetricTest(unittest.TestCase):
 
     def test_name(self):
         """Test that we always get the expected name."""
-
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
         self.assertEqual(metric.name, "fixture_metric_type")
 

@@ -63,7 +63,6 @@ def move_item(
     container: Report | Subject | Metric, item_to_move: Subject | Metric | Source, new_position: Position
 ) -> tuple[int, int]:
     """Change the item position."""
-
     if isinstance(container, Report):
         items_dict = container.subjects_dict
     elif isinstance(container, Subject):
