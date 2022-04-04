@@ -22,7 +22,8 @@ class JiraIssues(SourceCollector):
         """Extend to only return the basic auth credentials if no private token is configured.
 
         This prevents aiohttp from complaining that it "Cannot combine AUTHORIZATION header with AUTH argument or
-        credentials encoded in URL"."""
+        credentials encoded in URL".
+        """
         return None if self._parameter("private_token") else super()._basic_auth_credentials()
 
     def _headers(self) -> dict[str, str]:  # pylint: disable=no-self-use
