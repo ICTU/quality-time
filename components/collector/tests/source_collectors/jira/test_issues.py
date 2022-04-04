@@ -28,3 +28,10 @@ class JiraIssuesTest(JiraTestCase):
         )
         JiraIssues.MAX_RESULTS = previous_max_results
         self.assert_measurement(response, value="2", entities=[self.entity(), self.entity(key="2")])
+
+    async def test_token_header(self):
+        """Test that the private token is added to the headers."""
+        self.set_source_parameter("private_token", "xxx")
+        issues_json = dict(total=1, issues=[self.issue()])
+        response = await self.get_response(issues_json)
+        self.assert_measurement(response, value="1", entities=[self.entity()])

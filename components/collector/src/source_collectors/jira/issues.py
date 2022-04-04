@@ -18,6 +18,20 @@ class JiraIssues(SourceCollector):
         super().__init__(*args, **kwargs)
         self._field_ids = {}
 
+    def _basic_auth_credentials(self) -> tuple[str, str] | None:
+        """Extend to only return the basic auth credentials if no private token is configured.
+
+        This prevents aiohttp from complaining that it "Cannot combine AUTHORIZATION header with AUTH argument or
+        credentials encoded in URL"."""
+        return None if self._parameter("private_token") else super()._basic_auth_credentials()
+
+    def _headers(self) -> dict[str, str]:  # pylint: disable=no-self-use
+        """Extend to add the token, if present, to the headers for the get request."""
+        headers = super()._headers()
+        if token := self._parameter("private_token"):
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
+
     async def _api_url(self) -> URL:
         """Extend to get the fields from Jira and create a field name to field id mapping."""
         url = await super()._api_url()

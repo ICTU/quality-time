@@ -49,7 +49,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         post_request_json_return_value=None,
     ):
         """Collect the metric."""
-        get_request = self.__mock_get_request(
+        get_response = self.__get_response(
             get_request_json_return_value,
             get_request_json_side_effect,
             get_request_content,
@@ -57,32 +57,32 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             get_request_headers,
             get_request_links,
         )
-        post_request = self.__mock_post_request(post_request_json_return_value)
-        mocked_get = AsyncMock(return_value=get_request, side_effect=get_request_side_effect)
-        mocked_post = AsyncMock(return_value=post_request, side_effect=post_request_side_effect)
-        with patch("aiohttp.ClientSession.get", mocked_get), patch("aiohttp.ClientSession.post", mocked_post):
+        post_response = self.__post_response(post_request_json_return_value)
+        get = AsyncMock(return_value=get_response, side_effect=get_request_side_effect)
+        post = AsyncMock(return_value=post_response, side_effect=post_request_side_effect)
+        with patch("aiohttp.ClientSession.get", get), patch("aiohttp.ClientSession.post", post):
             async with aiohttp.ClientSession() as session:
                 return await MetricCollector(session, self.metric, self.data_model).collect()
 
     @staticmethod
-    def __mock_get_request(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
-        """Create the mock get request."""
+    def __get_response(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
+        """Create the mock get response."""
         # pylint: disable=too-many-arguments
-        get_request = AsyncMock()
-        get_request.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
-        get_request.read.return_value = content
-        get_request.text.return_value = text
-        type(get_request).headers = PropertyMock(return_value=headers or {})
-        type(get_request).links = PropertyMock(return_value={}, side_effect=[links, {}] if links else None)
-        type(get_request).filename = PropertyMock(return_value="")
-        return get_request
+        get_response = AsyncMock()
+        get_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
+        get_response.read.return_value = content
+        get_response.text.return_value = text
+        type(get_response).headers = PropertyMock(return_value=headers or {})
+        type(get_response).links = PropertyMock(return_value={}, side_effect=[links, {}] if links else None)
+        type(get_response).filename = PropertyMock(return_value="")
+        return get_response
 
     @staticmethod
-    def __mock_post_request(json_return_value) -> AsyncMock:
-        """Create the mock post request."""
-        post_request = AsyncMock()
-        post_request.json.return_value = json_return_value
-        return post_request
+    def __post_response(json_return_value) -> AsyncMock:
+        """Create the mock post response."""
+        post_response = AsyncMock()
+        post_response.json.return_value = json_return_value
+        return post_response
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
