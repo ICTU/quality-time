@@ -67,7 +67,14 @@ it('sets the issue tracker private token', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/private_token", { private_token: "secret" });
 });
 
-it('does not show the issue tracker private token help url', async () => {
+it('does not show the issue tracker private token help url if there is no issue tracker', async () => {
+    await act(async () => {
+        const { container } = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} }, help_url: "https://help" });
+        expect(container.querySelector("a")).toBe(null)
+    });
+});
+
+it('does not show the issue tracker private token help url if the data model has no help url', async () => {
     await act(async () => {
         const { container } = render_issue_tracker({ report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } });
         expect(container.querySelector("a")).toBe(null)
@@ -76,7 +83,7 @@ it('does not show the issue tracker private token help url', async () => {
 
 it('shows the issue tracker private token help url', async () => {
     await act(async () => {
-        const { container} = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help"});
+        const { container } = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help" });
         expect(container.querySelector("a")).toHaveAttribute('href', 'https://help')
     });
 });
