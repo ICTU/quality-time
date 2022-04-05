@@ -4,10 +4,11 @@ from urllib.parse import parse_qs, urlparse
 
 from typing_extensions import TypedDict
 
-from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+from .base import JiraBase
 
 
 Board = TypedDict("Board", {"id": int, "name": str})
@@ -16,7 +17,7 @@ Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
 SprintPoints = dict[str, Points]
 
 
-class JiraVelocity(SourceCollector):
+class JiraVelocity(JiraBase):
     """Collector to get sprint velocity from Jira."""
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:

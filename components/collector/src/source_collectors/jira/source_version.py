@@ -5,8 +5,10 @@ from packaging.version import Version
 from base_collectors import SourceVersionCollector
 from collector_utilities.type import Response, URL
 
+from .base import JiraBase
 
-class JiraSourceVersion(SourceVersionCollector):
+
+class JiraSourceVersion(JiraBase, SourceVersionCollector):
     """Jira source version collector."""
 
     async def _api_url(self) -> URL:

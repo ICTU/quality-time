@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
-import { Tab } from '../semantic_ui_react_wrappers';
+import { Popup, Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { HyperLink } from '../widgets/HyperLink';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
@@ -93,6 +94,13 @@ function IssueTracker({ report_uuid, report, reload }) {
         }
     );
     trackerSources.push(NONE_OPTION)
+    var privateTokenLabel = "Private token";
+    if (report.issue_tracker) {
+        const help_url = dataModel.sources[report.issue_tracker?.type]?.parameters?.private_token?.help_url;
+        if (help_url) {
+            privateTokenLabel = <label>{privateTokenLabel} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
+        }
+    }
 
     return (
         <Grid stackable>
@@ -132,11 +140,21 @@ function IssueTracker({ report_uuid, report, reload }) {
                 <Grid.Column>
                     <PasswordInput
                         id="tracker-password"
-                        required={report.issue_tracker?.type && report.issue_tracker?.parameters?.username}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Password for basic authentication"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
                         value={report.issue_tracker?.parameters?.password}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <PasswordInput
+                        id="tracker-token"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label={privateTokenLabel}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "private_token", value, reload)}
+                        value={report.issue_tracker?.parameters?.private_token}
                     />
                 </Grid.Column>
             </Grid.Row>
