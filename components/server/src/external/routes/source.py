@@ -206,7 +206,7 @@ def _availability_checks(data_model, source, parameter_key: str) -> list[dict[st
     """Check the availability of the URLs."""
     source_model = data_model["sources"][source["type"]]
     parameters = source_model["parameters"]
-    token_validation_path = parameters["private_token"].get("validation_path", "")
+    token_validation_path = parameters.get("private_token", {}).get("validation_path", "")
     source_parameters = source["parameters"]
     url_parameter_keys = [
         key
