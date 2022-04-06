@@ -66,8 +66,6 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-
     all_reports = latest_reports(database, data_model)
     reports = latest_report_for_uuids(all_reports, source_uuid, target_metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)

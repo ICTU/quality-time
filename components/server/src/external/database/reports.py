@@ -10,9 +10,9 @@ from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import MetricId, ReportId, SubjectId
 
-from ..database import sessions
 from ..utils.functions import unique
-from ..utils.type import Change
+from ..utils.type import Change, ItemId
+from . import sessions
 
 
 # Sort order:
@@ -142,16 +142,17 @@ def report_exists(database: Database, report_uuid: ReportId):
     return report_uuid in database.reports.distinct("report_uuid")
 
 
-def latest_report_for_uuids(all_reports: list[Report], *uuids: list) -> list[Report]:
+def latest_report_for_uuids(all_reports: list[Report], *uuids: ItemId) -> list[Report]:
     """Return the report for given child entity uuids.
+
     The uuids can be of a report, subject, metric or source.
     The returned results will be in order of provided uuids.
     """
     reports = []
     for uuid in uuids:
         for report in all_reports:  # pragma: no cover-behave
-            child_uuids = set().union(report.subject_uuids, report.metric_uuids, report.source_uuids)
-            if uuid in child_uuids or report.uuid == uuid:
+            uuids_in_report = {report.uuid}.union(report.subject_uuids, report.metric_uuids, report.source_uuids)
+            if uuid in uuids_in_report:
                 reports.append(report)
                 break
     return reports
