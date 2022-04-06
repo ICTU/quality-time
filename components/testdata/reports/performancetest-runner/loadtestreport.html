@@ -2,9 +2,9 @@
 <html>
 	<head>
 	<title>PERF foo/2020.07.10.01.51.24</title>
-			
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes@latest/dist/chartjs-plugin-colorschemes.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-colorschemes/0.4.0/chartjs-plugin-colorschemes.min.js" integrity="sha512-AcghRXJUs1RaSrhWEbtX2W0cpgclyjDqEtKUw+bRzzvGU5NikAMVwGlrRKqUvQWHr15SkogpMFXFRnnkkHhxXw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 	<style type="text/css">
 		body {
@@ -46,7 +46,7 @@
 		table.config tr td.header {
 			background: #eeeee0; //font-style:italic;
 		}
-		
+
 		table.config tr td.rightalign {
 			text-align: right;
 		}
@@ -66,7 +66,7 @@
 			text-align: left;
 			vertical-align: left;
 		}
-		
+
 		table.details tr th.blank {
 			font-weight: bold;
 			background-color: white;
@@ -84,7 +84,7 @@
 			white-space: nowrap;
 			text-align: right;
 		}
-		
+
 		table.details tr td.name {
 			font-weight: bold;
 			text-align: left;
@@ -127,29 +127,29 @@
 			color: red;
 		}
 
-		/* Rotation */		
+		/* Rotation */
 		th.rotate {
 			height: 170px;
 			white-space: nowrap;
 		}
 
 		th.rotate > div {
-			transform: 
+			transform:
 				translate(0px, 55px)
 				rotate(270deg);
 			width: 40px;
 		}
-		
+
 		th.rotate > div > span {
 			border-bottom: 1px solid #ccc;
 			padding: 1px 1px;
 		}
 
 	</style>
-	
+
 </head>
 <body>
-	
+
 <table width="100%"><tr>
 <td>
 	<h1>PERFORMANCETEST SUMMARY FOR PROJECT foo</h1>
@@ -161,7 +161,7 @@
 <td align="right">
 <img src="https://www.ictu.nl/themes/custom/ictu_theme/assets/images/logo.svg" height="30p"/>
 </td></tr></table>
-	
+
 <hr align="left" width="100%" size="1"/>
 
 <p class="Failure"></p>
@@ -247,15 +247,15 @@
 	<tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">10</td></tr>
 	<tr><td>&nbsp</td><td></td></tr>
 	<tr><td class="name">Duration</td><td id="duration">01:00:01</td></tr>
-	<tr><td class="name">Virtual users</td><td id="virtual_users">8</td></tr>	
-	<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>	
-	<tr><td class="name">Transactions success</td><td id="success">1250</td></tr>	
-	<tr><td class="name">Transactions failed</td><td id="failed">0</td></tr>	
-	<tr><td class="name">Min of minima (s)</td><td id="min">0,043</td></tr>	
-	<tr><td class="name">Avg of averages (s)</td><td id="avg">1,058</td></tr>	
-	<tr><td class="name">Avg of 90 percentiles (s)</td><td id="avg_90_percentile">1,538</td></tr>	
-	<tr><td class="name">Max of maxima (s)</td><td id="max">13,877</td></tr>	
-	<tr><td class="name">Avg of StdDev (s)</td><td id="avg_stddev">0,512</td></tr>	
+	<tr><td class="name">Virtual users</td><td id="virtual_users">8</td></tr>
+	<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>
+	<tr><td class="name">Transactions success</td><td id="success">1250</td></tr>
+	<tr><td class="name">Transactions failed</td><td id="failed">0</td></tr>
+	<tr><td class="name">Min of minima (s)</td><td id="min">0,043</td></tr>
+	<tr><td class="name">Avg of averages (s)</td><td id="avg">1,058</td></tr>
+	<tr><td class="name">Avg of 90 percentiles (s)</td><td id="avg_90_percentile">1,538</td></tr>
+	<tr><td class="name">Max of maxima (s)</td><td id="max">13,877</td></tr>
+	<tr><td class="name">Avg of StdDev (s)</td><td id="avg_stddev">0,512</td></tr>
 </table>
 </td>
 	<td style="min-width: 600px; min-height: 400px"><canvas id="chart_counters"></canvas></td>
@@ -271,7 +271,7 @@
 	<td width="20%"><canvas id="chart_trend_stats_4"></canvas></td>
 	<td width="20%"><canvas id="chart_trend_stats_5"></canvas></td>
 </tr></table>
-	
+
 <hr align="left" width="100%" size="1"/>
 
 <h3>Response times (s)</h3>
@@ -279,11 +279,11 @@
 	<tr valign="top">
 	<th class="blank"/><th class="blank"/><th class="blank"/><th class="blank"/><th class="blank">Evaluated</th><th class="blank"/><th class="blank"/><th class="blank"/><th class="blank"/><th class="blank">Baseline</th><th class="blank">Current</th><th class="blank"/>
 	</tr>
-	
+
 	<tr valign="top">
 	<th>Transaction</th><th>Success</th><th>Min</th><th>Avg</th><th>90 perc</th><th>Max</th><th>StDev</th><th>Failed</th><th class="blank"/><th>2019.02.27.02.34.38<br></th><th>2020.07.10.01.51.24<br></th><th>Delta %</th>
 	</tr>
-	
+
 	<tr valign="top" class="transaction">
 	<td class="name">foo_01_bar</td>
 	<td>147</td>
@@ -607,7 +607,7 @@ new Chart(document.getElementById("chart_counters"), {
         }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
@@ -619,7 +619,7 @@ new Chart(document.getElementById("chart_counters"), {
 						unit = " s";
 					if ((data.datasets[tooltipItem.datasetIndex].label == "Transaction rate (count)") || (data.datasets[tooltipItem.datasetIndex].label == "Error rate (sum)"))
 						unit = " trs\/10s";
-					
+
 					if (data.datasets[tooltipItem.datasetIndex].label == "Active users (max)")
 						unit = " users";
                     return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel + unit;
@@ -658,7 +658,7 @@ new Chart(document.getElementById("chart_counters"), {
                 ticks: {
                     beginAtZero:true,
 					minRotation: 90,
-					maxRotation: 90,					
+					maxRotation: 90,
 					callback: function(dataLabel, index) {
 								return dataLabel%300 == 0 ? Math.floor((dataLabel)/60) : '';
 					}
@@ -669,13 +669,13 @@ new Chart(document.getElementById("chart_counters"), {
     }
 });
 
-			
+
 new Chart(document.getElementById("chart_trend"), {
     type: 'line',
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "foo_01_bar",
           data: [0.144,0.155,0.151,0.147,0.157,0.144,0.162,0.148,0.148,0.145,0.145,0.154,0.154,0.144,],
 		  fill: false,
@@ -684,7 +684,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_02_bar",
           data: [0.739,0.752,0.730,0.687,0.773,0.684,0.758,0.751,0.699,0.677,0.757,0.798,0.794,0.693,],
 		  fill: false,
@@ -693,7 +693,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_02_bar_medium",
           data: [1.340,1.473,1.394,1.247,1.372,1.369,1.389,1.424,1.179,1.318,1.434,1.378,1.344,1.201,],
 		  fill: false,
@@ -702,7 +702,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_02_bar_large",
           data: [2.852,3.074,2.963,4.964,2.787,3.060,2.930,3.042,2.993,2.764,2.739,4.918,2.992,2.703,],
 		  fill: false,
@@ -711,7 +711,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_03_bar_small",
           data: [1.270,1.275,1.587,1.083,1.372,1.336,1.491,1.406,1.390,1.340,1.508,1.649,1.353,1.283,],
 		  fill: false,
@@ -720,7 +720,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_03_bar_medium",
           data: [1.839,1.996,1.962,1.842,1.948,1.877,1.939,2.096,1.724,1.696,1.819,1.934,1.930,1.756,],
 		  fill: false,
@@ -729,7 +729,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_03_bar_large",
           data: [2.692,2.744,2.653,4.861,2.628,2.709,2.795,3.130,2.778,2.734,2.703,5.193,2.718,2.768,],
 		  fill: false,
@@ -738,7 +738,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_04_bar_small",
           data: [0.601,0.571,0.611,0.489,0.615,0.542,0.565,0.590,0.540,0.609,0.560,0.639,0.767,0.554,],
 		  fill: false,
@@ -747,7 +747,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_04_bar_medium",
           data: [1.052,1.059,1.035,0.906,1.071,1.033,1.062,1.092,1.084,1.079,0.955,1.039,1.021,1.076,],
 		  fill: false,
@@ -756,7 +756,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_04_bar_large",
           data: [2.519,2.523,2.503,3.625,2.416,2.429,2.412,2.830,2.382,2.472,2.393,3.721,2.616,2.288,],
 		  fill: false,
@@ -765,7 +765,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_05_bar_small",
           data: [3.029,2.627,2.959,2.066,2.965,2.798,2.966,2.621,2.729,2.860,2.792,3.198,3.165,2.715,],
 		  fill: false,
@@ -774,7 +774,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_05_bar_medium",
           data: [4.224,4.136,4.202,3.513,4.159,3.461,3.891,3.812,3.804,3.939,4.065,3.717,4.211,3.882,],
 		  fill: false,
@@ -783,7 +783,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_05_bar_large",
           data: [5.688,7.219,6.270,12.789,6.385,6.313,6.784,10.127,6.423,5.980,5.845,13.026,6.760,6.014,],
 		  fill: false,
@@ -792,7 +792,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_01_baz",
           data: [0.110,0.090,0.103,0.132,0.098,0.095,0.103,0.115,0.105,0.109,0.109,0.092,0.109,0.109,],
 		  fill: false,
@@ -801,7 +801,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_02_baz",
           data: [0.779,0.738,0.777,0.667,0.712,0.813,0.794,0.867,0.737,0.762,0.710,0.730,0.786,0.780,],
 		  fill: false,
@@ -810,7 +810,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_03_baz",
           data: [0.440,0.447,0.447,0.562,0.450,0.569,0.440,0.398,0.445,0.455,0.463,0.422,0.449,0.483,],
 		  fill: false,
@@ -819,7 +819,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_04_baz",
           data: [0.248,0.398,0.216,0.391,0.249,0.259,0.390,0.397,0.377,0.251,0.207,0.199,0.202,0.203,],
 		  fill: false,
@@ -828,7 +828,7 @@ new Chart(document.getElementById("chart_trend"), {
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
 
-},{			
+},{
           label: "foo_05_baz",
           data: [0.226,0.207,0.220,0.227,0.208,0.238,0.219,0.225,0.227,0.247,0.217,0.220,0.218,0.228,],
 		  fill: false,
@@ -840,7 +840,7 @@ new Chart(document.getElementById("chart_trend"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: false
 		},
 	  tooltips: {
@@ -885,7 +885,7 @@ new Chart(document.getElementById("chart_trend_stats_1"), {
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "Users",
           data: [8,8,8,8,8,8,8,8,8,8,8,8,8,8,],
 		  fill: false,
@@ -893,7 +893,7 @@ new Chart(document.getElementById("chart_trend_stats_1"), {
 		  pointRadius: 2,
 		  borderWidth: 2,
 		  yAxisID: 'Y1'
-},{			
+},{
           label: "Faults (%)",
           data: [0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,],
 		  fill: false,
@@ -904,7 +904,7 @@ new Chart(document.getElementById("chart_trend_stats_1"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
@@ -944,7 +944,7 @@ new Chart(document.getElementById("chart_trend_stats_1"), {
 					display: true,
 					labelString: 'percentage'
 					}
-					
+
 			}],
 			xAxes: [{
 				type: 'category',
@@ -960,7 +960,7 @@ new Chart(document.getElementById("chart_trend_stats_2"), {
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "90 Percentiles (s)",
           data: [1.586,1.675,1.638,2.133,1.617,1.583,1.655,1.864,1.585,1.567,1.566,2.283,1.681,1.538,],
 		  fill: false,
@@ -979,7 +979,7 @@ new Chart(document.getElementById("chart_trend_stats_2"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
@@ -1025,7 +1025,7 @@ new Chart(document.getElementById("chart_trend_stats_3"), {
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "Executed",
           data: [1250,1250,1250,193,1250,1250,1250,724,1250,1250,1250,320,1250,1250,],
 		  fill: false,
@@ -1044,7 +1044,7 @@ new Chart(document.getElementById("chart_trend_stats_3"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
@@ -1091,7 +1091,7 @@ new Chart(document.getElementById("chart_trend_stats_4"), {
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "Scalability (%)",
           data: [63,75,63,100,63,75,75,100,63,75,63,100,75,63,],
 		  fill: false,
@@ -1110,7 +1110,7 @@ new Chart(document.getElementById("chart_trend_stats_4"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
@@ -1156,7 +1156,7 @@ new Chart(document.getElementById("chart_trend_stats_5"), {
     data: {
       labels: ['2020.06.18.01.54.36','2020.06.19.01.54.45','2020.06.23.02.08.51','2020.06.24.01.54.43','2020.06.25.01.54.35','2020.06.26.02.07.46','2020.06.30.01.54.40','2020.07.01.01.54.44','2020.07.02.01.54.40','2020.07.03.02.30.36','2020.07.07.02.33.52','2020.07.08.01.55.54','2020.07.09.02.32.40','2020.07.10.01.51.24',],
       datasets: [
-        {			
+        {
           label: "Threshold violations",
           data: [1,0,0,0,0,0,0,0,0,0,0,1,1,0,],
 		  fill: false,
@@ -1175,7 +1175,7 @@ new Chart(document.getElementById("chart_trend_stats_5"), {
 }]
     },
     options: {
-      legend: { 
+      legend: {
 		display: true,
 		position: 'bottom'
 		},
