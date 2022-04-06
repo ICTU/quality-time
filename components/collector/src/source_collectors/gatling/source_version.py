@@ -14,8 +14,11 @@ class GatlingSourceVersion(GatlingLogCollector, SourceVersionCollector):
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the XML."""
         text = await response.text()
-        if lines := text.splitlines():
-            version_number_text = lines[0].strip().split()[-1]  # Version number is the last string on the first line
+        for line in text.splitlines():
+            words = line.strip().split()
+            if words[0] == "RUN":
+                version_number_text = words[-1]  # Version number is the last string on the line that starts with RUN
+                break
         else:
             version_number_text = "0"
         return Version(version_number_text)

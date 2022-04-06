@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - When using Axe CVS as source for the accessibility violations metric, the "nested-interactive" violation type would be ignored by *Quality-time*. Fixes [#3628](https://github.com/ICTU/quality-time/issues/3628).
+- When using Gatling as source for the source version metric, the source version would not be found, when the version number was not present on the first line of the simulation.log. Fixes [#3661](https://github.com/ICTU/quality-time/issues/3661).
 
 ### Removed
 

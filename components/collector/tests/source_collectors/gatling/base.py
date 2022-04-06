@@ -39,7 +39,8 @@ class GatlingTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             ),
         )
     )
-    GATLING_LOG = """RUN     api.CombinedSimulations combinedsimulations     1638907423554           3.3.1
+    GATLING_LOG = """ASSERTION AAECAAIBAAAAAAAAACRA
+    RUN     api.CombinedSimulations combinedsimulations     1638907423554           3.3.1
     USER    Get Token       1       START   1638907424543   1638907424543
     REQUEST 1               GetToken        1638907424608   1638907424842   OK
     USER    Get Token       1       END     1638907424543   1638907424919
