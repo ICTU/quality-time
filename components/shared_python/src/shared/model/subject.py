@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Optional
 
-from shared.utils.type import SubjectId
+from shared.utils.type import MetricId, SubjectId
 
 from .measurement import Measurement
 from .metric import Metric
@@ -15,18 +15,24 @@ if TYPE_CHECKING:
 class Subject(dict):
     """Class representing a subject."""
 
-    def __init__(self, data_model, subject_data: dict, subject_uuid: SubjectId, report: Optional["Report"]) -> None:
+    def __init__(
+        self,
+        data_model,
+        subject_data: dict,
+        subject_uuid: SubjectId,
+        report: Optional["Report"],
+    ) -> None:
         """Instantiate a subject."""
         self.__data_model = data_model
         self.uuid = subject_uuid
-        self.report = report if report is not None else {}
+        self.report = report
 
-        metric_data = subject_data.get("metrics", {})
-        self.metrics_dict = self._instantiate_metrics(metric_data)
+        metrics_data = subject_data.get("metrics", {})
+        subject_data["metrics"] = self._instantiate_metrics(metrics_data)
+        super().__init__(subject_data)
+
         self.metrics = list(self.metrics_dict.values())
         self.metric_uuids = list(self.metrics_dict.keys())
-
-        super().__init__(subject_data)
 
     def __eq__(self, other):
         """Return whether the subjects are equal."""
@@ -36,21 +42,42 @@ class Subject(dict):
         """Create metrics from metric_data."""
         metrics = {}
         for metric_uuid, metric_dict in metric_data.items():
-            metrics[metric_uuid] = Metric(self.__data_model, metric_dict, metric_uuid, self.uuid)
+            metrics[metric_uuid] = Metric(
+                self.__data_model, metric_dict, metric_uuid, self.uuid
+            )
         return metrics
 
+    @property
+    def type(self) -> str | None:
+        """Return the type of the subject."""
+        return str(self["type"]) if "type" in self else None
+
+    @property
+    def metrics_dict(self) -> dict[MetricId, Metric]:
+        """Return the dict with metric uuids as keys and metric instances as values."""
+        return self.get("metrics", {})
+
+    @property
     def name(self):
         """Either a custom name or one from the subject type in the data model."""
-        return self.get("name") or self.__data_model["subjects"][self["type"]]["name"]
+        return self.get("name") or self.__data_model["subjects"].get(self.type, {}).get(
+            "name"
+        )
 
-    def tag_subject(self, tag: str, report: Optional["Report"] = None) -> Optional["Subject"]:
+    def tag_subject(
+        self, tag: str, report: Optional["Report"] = None
+    ) -> Optional["Subject"]:
         """Return a Subject instance with only metrics belonging to one tag."""
-        metrics = {metric.uuid: metric for metric in self.metrics if tag in metric.get("tags", [])}
-        if len(metrics) == 0:
+        metrics = {
+            metric.uuid: metric
+            for metric in self.metrics
+            if tag in metric.get("tags", [])
+        }
+        if self.report is None or len(metrics) == 0:
             return None
         data = dict(self)
         data["metrics"] = metrics
-        data["name"] = self.report.get("title", "") + " ❯ " + self.name()
+        data["name"] = self.report.name + " ❯ " + self.name
         return Subject(self.__data_model, data, self.uuid, report)
 
     def summarize(self, measurements: dict[str, list[Measurement]]):
@@ -59,6 +86,10 @@ class Subject(dict):
         summary["metrics"] = {}
         for metric in self.metrics:
             metric_measurements = measurements.get(metric.uuid, [])
-            metric_measurements = [measurement for measurement in metric_measurements if measurement.sources_exist()]
+            metric_measurements = [
+                measurement
+                for measurement in metric_measurements
+                if measurement.sources_exist()
+            ]
             summary["metrics"][metric.uuid] = metric.summarize(metric_measurements)
         return summary

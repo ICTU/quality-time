@@ -5,6 +5,8 @@ import unittest
 
 from shared.model.source import Source
 
+from tests.fixtures import SOURCE_ID
+
 
 class SourceTest(unittest.TestCase):
     """Test the Source model."""
@@ -18,11 +20,11 @@ class SourceTest(unittest.TestCase):
             "key_3": {},
         }
 
-        old_source = Source(metric=None, entity_user_data=old_eud)
+        old_source = Source(SOURCE_ID, metric=None, entity_user_data=old_eud)
 
         new_entities = [{"key": "key_2"}, {"key": "key_3"}]
 
-        new_source = Source(metric=None, entities=new_entities)
+        new_source = Source(SOURCE_ID, metric=None, entities=new_entities)
 
         new_source.copy_entity_user_data(old_source)
 
@@ -31,3 +33,13 @@ class SourceTest(unittest.TestCase):
         self.assertIn("key_2", new_source["entity_user_data"])
         self.assertIn("key_3", new_source["entity_user_data"])
         self.assertNotIn("orphaned_since", new_source["entity_user_data"]["key_2"])
+
+    def test_name(self):
+        """Test that we get the expected name."""
+        source = Source(SOURCE_ID, metric=None, name="test")
+        self.assertEqual(source.name, "test")
+
+    def test_type(self):
+        """Test that we get the expected type"""
+        source = Source(SOURCE_ID, metric=None, type="test")
+        self.assertEqual(source.type, "test")

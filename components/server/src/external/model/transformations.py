@@ -102,8 +102,8 @@ def replace_report_uuids(*reports) -> None:
                     metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 
-def change_source_parameter(
-    data, parameter_key: str, old_value, new_value, scope: EditScope
+def change_source_parameter(  # pylint: disable=too-many-arguments
+    reports, items, parameter_key: str, old_value, new_value, scope: EditScope
 ) -> tuple[list[ItemId], set[ItemId]]:
     """Change the parameter of all sources of the specified type and the same old value to the new value.
 
@@ -111,42 +111,42 @@ def change_source_parameter(
     """
     changed_ids: list[ItemId] = []
     changed_source_uuids: set[ItemId] = set()
-    for source, uuids in _sources_to_change(data, scope):
-        if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
-            old_value or None
-        ):
+    for source, uuids in _sources_to_change(reports, items, scope):
+        if source["type"] == items[0].type and (source["parameters"].get(parameter_key) or None) == (old_value or None):
             source["parameters"][parameter_key] = new_value
             changed_ids.extend(uuids)
             changed_source_uuids.add(uuids[-1])
     return list(unique(changed_ids)), changed_source_uuids
 
 
-def _sources_to_change(data, scope: EditScope) -> Iterator:
+def _sources_to_change(reports, items, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
-    for report in _reports_to_change(data, scope):
-        for subject_uuid, subject in _subjects_to_change(data, report, scope):
-            for metric_uuid, metric in _metrics_to_change(data, subject, scope):
-                for source_uuid, source_to_change in __sources_to_change(data, metric, scope):
+    for report in _reports_to_change(reports, items[-1], scope):
+        for subject_uuid, subject in _subjects_to_change(report, items[2], scope):
+            for metric_uuid, metric in _metrics_to_change(subject, items[1], scope):
+                for source_uuid, source_to_change in __sources_to_change(metric, items[0], scope):
                     yield source_to_change, [report["report_uuid"], subject_uuid, metric_uuid, source_uuid]
 
 
-def _reports_to_change(data, scope: EditScope) -> Iterator:
+def _reports_to_change(reports, report, scope: EditScope) -> Iterator:
     """Return the reports to change, given the scope."""
-    yield from data.reports if scope == "reports" else [data.report]
+    yield from reports if scope == "reports" else [report]
 
 
-def _subjects_to_change(data, report, scope: EditScope) -> Iterator:
+def _subjects_to_change(report, subject, scope: EditScope) -> Iterator:
     """Return the subjects to change, given the scope."""
-    yield from {data.subject_uuid: data.subject}.items() if scope in ("subject", "metric", "source") else report[
-        "subjects"
-    ].items()
+    yield from {subject.uuid: subject}.items() if scope in (
+        "subject",
+        "metric",
+        "source",
+    ) else report.subjects_dict.items()
 
 
-def _metrics_to_change(data, subject, scope: EditScope) -> Iterator:
+def _metrics_to_change(subject, metric, scope: EditScope) -> Iterator:
     """Return the metrics to change, given the scope."""
-    yield from {data.metric_uuid: data.metric}.items() if scope in ("metric", "source") else subject["metrics"].items()
+    yield from {metric.uuid: metric}.items() if scope in ("metric", "source") else subject.metrics_dict.items()
 
 
-def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
+def __sources_to_change(metric, source, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
-    yield from {data.source_uuid: data.source}.items() if scope == "source" else metric["sources"].items()
+    yield from {source.uuid: source}.items() if scope == "source" else metric.sources_dict.items()

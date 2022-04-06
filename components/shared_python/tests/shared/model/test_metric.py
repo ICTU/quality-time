@@ -13,7 +13,7 @@ from tests.fixtures import METRIC_ID
 class MetricTest(unittest.TestCase):
     """Test the Metric model."""
 
-    DATA_MODEL = {"metrics": {"fixture_metric_type": {}}}
+    DATA_MODEL = {"metrics": {"fixture_metric_type": {"name": "fixture_metric_type"}}}
 
     def test_summarize_empty_metric(self):
         """Test that a minimal metric returns a summary."""
@@ -29,6 +29,7 @@ class MetricTest(unittest.TestCase):
                 "status_start": None,
                 "latest_measurement": None,
                 "recent_measurements": [],
+                "sources": {},
             },
         )
 
@@ -66,6 +67,7 @@ class MetricTest(unittest.TestCase):
                         "start": measurement_timestamp,
                     }
                 ],
+                "sources": {},
             },
         )
 
@@ -88,6 +90,7 @@ class MetricTest(unittest.TestCase):
                 "latest_measurement": None,
                 "recent_measurements": [],
                 "some_metric_property": "some_value",
+                "sources": {},
             },
         )
 
@@ -106,6 +109,7 @@ class MetricTest(unittest.TestCase):
                 "latest_measurement": None,
                 "recent_measurements": [],
                 "some_kw": "some_arg",
+                "sources": {},
             },
         )
 
@@ -119,3 +123,11 @@ class MetricTest(unittest.TestCase):
 
         metric["debt_end_date"] = "some date"
         self.assertEqual(metric.debt_end_date(), "some date")
+
+    def test_name(self):
+        """Test that we always get the expected name."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
+        self.assertEqual(metric.name, "fixture_metric_type")
+
+        metric["name"] = "test_name"
+        self.assertEqual(metric.name, "test_name")

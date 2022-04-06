@@ -44,7 +44,7 @@ class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             ),
             sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
         )
-        self.report = Report({}, create_report())
+        self.report = Report(self.database.datamodels.find_one(), create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.reports.find_one.return_value = self.report
         self.database.measurements.find.return_value = []
@@ -310,6 +310,7 @@ class ReportTest(ReportTestCase):
                                         status=None,
                                         status_start=None,
                                         scale="count",
+                                        sources={},
                                         recent_measurements=[],
                                         latest_measurement=None,
                                         type="metric_type",

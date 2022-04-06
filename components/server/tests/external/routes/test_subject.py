@@ -43,9 +43,10 @@ class PostSubjectAttributeTest(unittest.TestCase):
 
     def setUp(self):
         """Override to create a mock database fixture."""
+        self.data_model = dict(_id="id", subjects=dict(subject_type=dict(name="subject2")))
         self.database = Mock()
         self.report = Report(
-            None,
+            self.data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -55,9 +56,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         )
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id", subjects=dict(subject_type=dict(name="subject2"))
-        )
+        self.database.datamodels.find_one.return_value = self.data_model
         self.email = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 
@@ -155,7 +154,7 @@ class SubjectTest(unittest.TestCase):
         self.database = Mock()
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
-        self.report = create_report()
+        self.report = Report(None, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.datamodels.find_one.return_value = dict(
@@ -206,7 +205,7 @@ class SubjectTest(unittest.TestCase):
     def test_move_subject(self):
         """Test that a subject can be moved to another report."""
         subject = self.report["subjects"][SUBJECT_ID]
-        target_report = dict(_id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={})
+        target_report = Report(None, dict(_id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={}))
         self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_subject(SUBJECT_ID, REPORT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"])
