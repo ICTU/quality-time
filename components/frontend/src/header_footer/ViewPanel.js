@@ -202,7 +202,7 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenCo
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort }) {
     const active = disabled ? false : sortColumn === column;
     let sortIndicator = null;
-    if (sortColumn == column && sortDirection) {
+    if (sortColumn === column && sortDirection) {
         // We use a triangle because the sort down and up icons are not at the same height
         const iconDirection = sortDirection === "ascending" ? "up" : "down"
         sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sort ${sortDirection}`} />
