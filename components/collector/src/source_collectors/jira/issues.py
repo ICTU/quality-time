@@ -3,12 +3,13 @@
 import itertools
 import re
 
-from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
+from .base import JiraBase
 
-class JiraIssues(SourceCollector):
+
+class JiraIssues(JiraBase):
     """Jira collector for issues."""
 
     SPRINT_NAME_RE = re.compile(r",name=(.*),startDate=")

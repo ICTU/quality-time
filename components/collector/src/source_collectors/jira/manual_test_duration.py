@@ -1,6 +1,6 @@
 """Jira manual test duration collector."""
 
-from .base import JiraFieldSumBase
+from .field_sum_base import JiraFieldSumBase
 
 
 class JiraManualTestDuration(JiraFieldSumBase):

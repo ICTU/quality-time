@@ -30,10 +30,16 @@ class DecryptionError(Exception):
     """Exception to be raised when decryption has failed."""
 
 
-def check_url_availability(url: URL, source_parameters: dict[str, str]) -> dict[str, int | str]:
+def check_url_availability(
+    url: URL, source_parameters: dict[str, str], token_validation_path: str
+) -> dict[str, int | str]:
     """Check the availability of the URL."""
-    credentials = _basic_auth_credentials(source_parameters)
     headers = _headers(source_parameters)
+    if token_validation_path and "private_token" in source_parameters:
+        url = URL(url.rstrip("/") + "/" + token_validation_path.lstrip("/"))
+        credentials = None
+    else:
+        credentials = _basic_auth_credentials(source_parameters)
     try:
         response = requests.get(url, auth=credentials, headers=headers, verify=False)  # noqa: DUO123, # nosec
         return dict(status_code=response.status_code, reason=response.reason)
@@ -56,7 +62,10 @@ def _basic_auth_credentials(source_parameters) -> tuple[str, str] | None:
 
 def _headers(source_parameters) -> dict:
     """Return the headers for the url-check."""
-    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}
+    if "private_token" in source_parameters:
+        private_token = source_parameters["private_token"]
+        return {"Private-Token": private_token, "Authorization": f"Bearer {private_token}"}
+    return {}
 
 
 def md5_hash(string: str) -> str:

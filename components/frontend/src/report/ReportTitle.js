@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
+import React from 'react';
+import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
 import { StringInput } from '../fields/StringInput';
@@ -8,13 +8,10 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
-import { delete_report, set_report_attribute, set_report_issue_tracker_attribute } from '../api/report';
+import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
-import { SingleChoiceInput } from '../fields/SingleChoiceInput';
-import { PasswordInput } from '../fields/PasswordInput';
-import { Logo } from '../source/Logo';
-import { DataModel } from '../context/DataModel';
+import { IssueTracker } from './IssueTracker';
 
 function ReportConfiguration({ report, reload }) {
     return (
@@ -66,84 +63,6 @@ function ButtonRow({ report_uuid, go_home, history }) {
     )
 }
 
-const NONE_OPTION = {
-    key: null, text: "None", value: null, content:
-        <Header as="h4">
-            <Header.Content>None</Header.Content>
-        </Header>
-}
-
-function IssueTracker({ report_uuid, report, reload }) {
-    const dataModel = useContext(DataModel)
-    let trackerSources = Object.entries(dataModel.sources).filter(
-        ([source_name, source_type]) => { return source_type.issue_tracker === true }
-    ).map(
-        ([source_name, source_type]) => {
-            return {
-                key: source_name,
-                text: source_type.name,
-                value: source_name,
-                content:
-                    <Header as="h4">
-                        <Header.Content>
-                            <Logo logo={source_name} alt={source_type.name} />{source_type.name}<Header.Subheader>{source_type.description}</Header.Subheader>
-                        </Header.Content>
-                    </Header>
-            }
-        }
-    );
-    trackerSources.push(NONE_OPTION)
-
-    return (
-        <Grid stackable>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <SingleChoiceInput
-                        id="tracker-type"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        placeholder="None"
-                        label="Issue tracker type"
-                        options={trackerSources}
-                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "type", value, reload)}
-                        value={report.issue_tracker?.type}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id="tracker-url"
-                        required={report.issue_tracker?.type}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Issue tracker URL"
-                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
-                        value={report.issue_tracker?.parameters?.url}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <StringInput
-                        id="tracker-username"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Username for basic authentication"
-                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "username", value, reload)}
-                        value={report.issue_tracker?.parameters?.username}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <PasswordInput
-                        id="tracker-password"
-                        required={report.issue_tracker?.type && report.issue_tracker?.parameters?.username}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Password for basic authentication"
-                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "password", value, reload)}
-                        value={report.issue_tracker?.parameters?.password}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
-    )
-}
-
 export function ReportTitle({ report, go_home, history, reload }) {
     const report_uuid = report.report_uuid;
     const reportUrl = `${window.location}`;
@@ -158,7 +77,7 @@ export function ReportTitle({ report, go_home, history, reload }) {
         },
         {
             menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><IssueTracker report_uuid={report_uuid} report={report} reload={reload} /></Tab.Pane>
+            render: () => <Tab.Pane><IssueTracker report={report} reload={reload} /></Tab.Pane>
         },
         {
             menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,

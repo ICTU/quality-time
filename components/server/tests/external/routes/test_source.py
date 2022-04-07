@@ -287,7 +287,26 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=("xxx", ""), headers={"Private-Token": "xxx"}, verify=False)
+        mock_get.assert_called_once_with(
+            self.url, auth=("xxx", ""), headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"}, verify=False
+        )
+
+    @patch.object(requests, "get")
+    def test_url_with_token_and_validation_path(self, mock_get, request):
+        """Test that the source url can be changed and that the availability is checked."""
+        self.data_model["sources"]["source_type"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
+        mock_get.return_value = self.url_check_get_response
+        request.json = dict(url=self.url)
+        self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
+        self.assert_url_check(response)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
+        mock_get.assert_called_once_with(
+            self.url + "/rest/api",
+            auth=None,
+            headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"},
+            verify=False,
+        )
 
     @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):

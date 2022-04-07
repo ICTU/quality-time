@@ -223,7 +223,8 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     parameters = issue_tracker.get("parameters", {})
     url_parameters = ("type", "url", "username", "password")
     if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:
-        result["availability"] = [check_url_availability(url, parameters)]
+        token_validation_path = parameters.get("private_token", {}).get("validation_path", "")
+        result["availability"] = [check_url_availability(url, parameters, token_validation_path)]
     return result
 
 

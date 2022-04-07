@@ -1,6 +1,6 @@
 """Jira user story points collector."""
 
-from .base import JiraFieldSumBase
+from .field_sum_base import JiraFieldSumBase
 
 
 class JiraUserStoryPoints(JiraFieldSumBase):

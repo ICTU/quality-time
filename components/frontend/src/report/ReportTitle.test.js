@@ -101,7 +101,7 @@ it('sets the issue tracker username', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/username", { username: "janedoe" });
 });
 
-it('sets the issue tracker username', async () => {
+it('sets the issue tracker password', async () => {
     await act(async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
@@ -111,6 +111,18 @@ it('sets the issue tracker username', async () => {
     });
     await userEvent.type(screen.getByText(/Password/), 'secret{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/password", { password: "secret" });
+});
+
+it('sets the issue tracker private token', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Issue tracker/));
+    });
+    await userEvent.type(screen.getByText(/Private token/), 'secret{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/private_token", { private_token: "secret" });
 });
 
 it('loads the changelog', async () => {

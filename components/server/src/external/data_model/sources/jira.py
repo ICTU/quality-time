@@ -5,7 +5,14 @@ from enum import Enum
 from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
 from ..meta.unit import Unit
-from ..parameters import access_parameters, Days, IntegerParameter, SingleChoiceParameter, StringParameter, TestResult
+from ..parameters import (
+    access_parameters,
+    Days,
+    IntegerParameter,
+    SingleChoiceParameter,
+    StringParameter,
+    TestResult,
+)
 
 
 class VelocityType(str, Enum):
@@ -129,9 +136,13 @@ JIRA = Source(
             kwargs=dict(
                 url=dict(
                     help="URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'."
-                )
+                ),
+                private_token=dict(
+                    help_url="https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html",
+                    validation_path="rest/api/2/myself",
+                ),
             ),
-            include=dict(landing_url=False, private_token=False),
+            include=dict(landing_url=False),
         )
     ),
     entities=dict(

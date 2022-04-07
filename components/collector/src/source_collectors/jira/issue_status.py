@@ -1,11 +1,12 @@
 """Jira issue status collector."""
 
-from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import IssueStatus, SourceResponses
 
+from .base import JiraBase
 
-class JiraIssueStatus(SourceCollector):
+
+class JiraIssueStatus(JiraBase):
     """Jira issue status collector."""
 
     async def _api_url(self) -> URL:
