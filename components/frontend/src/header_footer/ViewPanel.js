@@ -205,7 +205,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
     if (sortColumn === column && sortDirection) {
         // We use a triangle because the sort down and up icons are not at the same height
         const iconDirection = sortDirection === "ascending" ? "up" : "down"
-        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sort ${sortDirection}`} />
+        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection}`} />
     }
     return (
         <div onKeyPress={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>

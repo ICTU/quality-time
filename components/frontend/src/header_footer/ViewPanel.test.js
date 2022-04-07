@@ -196,6 +196,15 @@ it("sorts a column", async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
+it("sorts a column descending", async () => {
+    const handleSort = jest.fn();
+    await act(async () => {
+        render(<ViewPanel sortColumn="comment" sortDirection="ascending" handleSort={handleSort} />)
+        fireEvent.click(screen.getAllByText(/Comment/)[1])
+    });
+    expect(handleSort).toHaveBeenCalledWith("comment")
+})
+
 it("sorts a column by keypress", async () => {
     const handleSort = jest.fn();
     await act(async () => {
@@ -203,6 +212,15 @@ it("sorts a column by keypress", async () => {
         await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
     expect(handleSort).toHaveBeenCalledWith("comment")
+})
+
+it("ignores a keypress if the menu item is disabled", async () => {
+    const handleSort = jest.fn();
+    await act(async () => {
+        render(<ViewPanel hiddenColumns={["comment"]} handleSort={handleSort} />)
+        await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+    });
+    expect(handleSort).not.toHaveBeenCalledWith("comment")
 })
 
 it("sets the number of dates", async () => {
