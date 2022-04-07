@@ -461,9 +461,9 @@ pip-audit==2.1.1 \
     --hash=sha256:3c131ecb11a1c2487d25abe36ef72ab407003a7ba3febd492566f6595a6797a2 \
     --hash=sha256:e60626902d2ab7320fcb416e06cbcd8ed834398ea49d79ca266e1a78b5fbbcba
     # via -r ../requirements-dev.in
-pip-tools==6.5.1 \
-    --hash=sha256:80f1cfc7156e4a4465b1a46a6bb3599587909537db1a149cf3a6b73eed979ee4 \
-    --hash=sha256:80f562aa699fc76a424539697e0bef41e490a050e57a6a21468531981a9d419e
+pip-tools==6.6.0 \
+    --hash=sha256:66318bc2e884b61fafa1cb2cf01b35fdd779ab9ce82cc1bce277adb8cf3ab845 \
+    --hash=sha256:98aa24004440a1c0489d71a567a4e8afdf23c7782bff483d1219881e7302de83
     # via -r ../requirements-dev.in
 platformdirs==2.5.1 \
     --hash=sha256:7535e70dfa32e84d4b34996ea99c5e432fa29a708d0f4e394bbcb2a8faa4f16d \
@@ -525,9 +525,9 @@ pygments==2.11.2 \
     # via
     #   furo
     #   sphinx
-pylint==2.13.4 \
-    --hash=sha256:7cc6d0c4f61dff440f9ed8b657f4ecd615dcfe35345953eb7b1dc74afe901d7a \
-    --hash=sha256:8672cf7441b81410f5de7defdf56e2d559c956fd0579652f2e0a0a35bea2d546
+pylint==2.13.5 \
+    --hash=sha256:c149694cfdeaee1aa2465e6eaab84c87a881a7d55e6e93e09466be7164764d1e \
+    --hash=sha256:dab221658368c7a05242e673c275c488670144123f4bd262b2777249c1c0de9b
     # via -r ../requirements-dev.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
