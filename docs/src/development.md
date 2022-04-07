@@ -6,7 +6,7 @@ This document is aimed at *Quality-time* developers and maintainers and describe
 
 ### Running *Quality-time* locally
 
-Follow these instructions to run the software in hot-reload mode for easy development.
+When developing *Quality-time*, we recommend running the bespoke components from a shell and the standard components in Docker. The server and frontend components have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
 
 #### Install prerequisites
 
@@ -50,6 +50,18 @@ python src/quality_time_server.py
 ```
 
 The API of the server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/v3/reports](http://localhost:5001/api/v3/reports) to get the available reports combined with their recent measurements.
+
+```{note}
+If you're new to Python virtual environments, note that:
+- Creating a virtual environment (`python3 -m venv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
+- Activating the virtual environment (`. venv/bin/activate`) has to be done everytime you open a new shell and want to use the Python installed in the virtual environment.
+- Installing the requirements (`pip install -r requirements.txt ...`) has to be repeated when the dependencies, specified in the requirements files, change.
+```
+
+```{seealso}
+- See the [Python docs](https://docs.python.org/3/library/venv.html) for more information on creating virtual environments.
+- See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python vertual environments when changing directories.
+```
 
 #### Start the {index}`collector <Collector component>`
 
@@ -251,15 +263,14 @@ The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the l
 
 ## Testing
 
+This section assumes you have created a Python virtual environment, activated it, and installed the requirements for each Python component and that you installed the requirements for the frontend component, as described [above](#developing).
+
 ### Unit tests
 
-To run the unit tests and measure unit test coverage of the backend components:
+To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
 cd components/server  # or components/collector, or components/notifier
-python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
-pip install -r requirements.txt -r requirements-dev.txt
 ci/unittest.sh
 ```
 
@@ -267,7 +278,6 @@ To run the frontend unit tests:
 
 ```console
 cd compontents/frontend
-npm install
 npm run test
 ```
 
@@ -296,7 +306,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker-compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.10.1-buster tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.10.4-buster tests/application_tests/ci/test.sh
 ```
 
 ## Documentation and changelog
