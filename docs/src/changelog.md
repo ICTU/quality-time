@@ -8,12 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.35.0-rc.2 - 2022-04-06
+## [Unreleased]
 
 ### Fixed
 
 - When using Axe CVS as source for the accessibility violations metric, the "nested-interactive" violation type would be ignored by *Quality-time*. Fixes [#3628](https://github.com/ICTU/quality-time/issues/3628).
 - When using Gatling as source for the source version metric, the source version would not be found, when the version number was not present on the first line of the simulation.log. Fixes [#3661](https://github.com/ICTU/quality-time/issues/3661).
+
+### Changed
+
+- In the settings panel under the "Sort column" setting, clicking the same column multiple times now alternates between ascending and descending sort order. This makes the setting consistent with how column headers behave. It also removes the need for a separate "Sort direction" setting in the settings panel. Closes [#3646](https://github.com/ICTU/quality-time/issues/3646).
 
 ### Removed
 

@@ -99,6 +99,7 @@ export function AppUI({
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
+                        handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         nrDates={nrDates}
@@ -109,8 +110,6 @@ export function AppUI({
                         setShowIssueCreationDate={setShowIssueCreationDate}
                         setShowIssueSummary={setShowIssueSummary}
                         setShowIssueUpdateDate={setShowIssueUpdateDate}
-                        setSortColumn={setSortColumn}
-                        setSortDirection={setSortDirection}
                         setUIMode={setUIMode}
                         showIssueCreationDate={showIssueCreationDate}
                         showIssueSummary={showIssueSummary}

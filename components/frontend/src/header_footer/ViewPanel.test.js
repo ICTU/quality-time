@@ -24,6 +24,7 @@ function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),
         clearVisibleDetailsTabs: jest.fn(),
+        handleSort: jest.fn(),
         setDateInterval: jest.fn(),
         setDateOrder: jest.fn(),
         setHideMetricsNotRequiringAction: jest.fn(),
@@ -31,8 +32,6 @@ function eventHandlers() {
         setShowIssueCreationDate: jest.fn(),
         setShowIssueSummary: jest.fn(),
         setShowIssueUpdateDate: jest.fn(),
-        setSortColumn: jest.fn(),
-        setSortDirection: jest.fn(),
         setUIMode: jest.fn()
     }
 }
@@ -61,6 +60,7 @@ it('resets the settings', async () => {
     });
     expect(props.clearVisibleDetailsTabs).toHaveBeenCalled()
     expect(props.clearHiddenColumns).toHaveBeenCalled()
+    expect(props.handleSort).toHaveBeenCalled()
     expect(props.setDateInterval).toHaveBeenCalled()
     expect(props.setDateOrder).toHaveBeenCalled()
     expect(props.setNrDates).toHaveBeenCalled()
@@ -68,8 +68,6 @@ it('resets the settings', async () => {
     expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
-    expect(props.setSortColumn).toHaveBeenCalledWith(null)
-    expect(props.setSortDirection).toHaveBeenCalledWith("ascending")
     expect(props.setUIMode).toHaveBeenCalledWith(null)
 })
 
@@ -97,6 +95,7 @@ it('does not reset the settings when all have the default value', async () => {
     });
     expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
+    expect(props.handleSort).not.toHaveBeenCalled()
     expect(props.setDateInterval).not.toHaveBeenCalled()
     expect(props.setDateOrder).not.toHaveBeenCalled()
     expect(props.setNrDates).not.toHaveBeenCalled()
@@ -104,8 +103,6 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
-    expect(props.setSortColumn).not.toHaveBeenCalled()
-    expect(props.setSortDirection).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 
@@ -191,39 +188,39 @@ it("shows a column", async () => {
 })
 
 it("sorts a column", async () => {
-    const setSortColumn = jest.fn();
+    const handleSort = jest.fn();
     await act(async () => {
-        render(<ViewPanel setSortColumn={setSortColumn} />)
+        render(<ViewPanel handleSort={handleSort} />)
         fireEvent.click(screen.getAllByText(/Comment/)[1])
     });
-    expect(setSortColumn).toHaveBeenCalledWith("comment")
+    expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
-it("unsorts a column", async () => {
-    const setSortColumn = jest.fn();
+it("sorts a column descending", async () => {
+    const handleSort = jest.fn();
     await act(async () => {
-        render(<ViewPanel setSortColumn={setSortColumn} sortColumn="comment" />)
+        render(<ViewPanel sortColumn="comment" sortDirection="ascending" handleSort={handleSort} />)
         fireEvent.click(screen.getAllByText(/Comment/)[1])
     });
-    expect(setSortColumn).toHaveBeenCalledWith(null)
+    expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("sorts a column by keypress", async () => {
-    const setSortColumn = jest.fn();
+    const handleSort = jest.fn();
     await act(async () => {
-        render(<ViewPanel setSortColumn={setSortColumn} />)
+        render(<ViewPanel handleSort={handleSort} />)
         await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
-    expect(setSortColumn).toHaveBeenCalledWith("comment")
+    expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
-it("unsorts a column by keypress", async () => {
-    const setSortColumn = jest.fn();
+it("ignores a keypress if the menu item is disabled", async () => {
+    const handleSort = jest.fn();
     await act(async () => {
-        render(<ViewPanel setSortColumn={setSortColumn} sortColumn="comment" />)
+        render(<ViewPanel hiddenColumns={["comment"]} handleSort={handleSort} />)
         await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     });
-    expect(setSortColumn).toHaveBeenCalledWith(null)
+    expect(handleSort).not.toHaveBeenCalledWith("comment")
 })
 
 it("sets the number of dates", async () => {
@@ -275,7 +272,7 @@ it("sorts the dates descending", async () => {
     const setDateOrder = jest.fn();
     await act(async () => {
         render(<ViewPanel dateOrder="ascending" setDateOrder={setDateOrder} />)
-        fireEvent.click(screen.getAllByText(/Descending/)[1])
+        fireEvent.click(screen.getByText(/Descending/))
     });
     expect(setDateOrder).toHaveBeenCalledWith("descending")
 })
@@ -284,7 +281,7 @@ it("sorts the dates ascending by keypress", async () => {
     const setDateOrder = jest.fn();
     await act(async () => {
         render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
-        await userEvent.type(screen.getAllByText(/Ascending/)[1], "{Enter}")
+        await userEvent.type(screen.getByText(/Ascending/), "{Enter}")
     });
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })
