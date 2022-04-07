@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
-import { Popup } from '../semantic_ui_react_wrappers';
+import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
@@ -11,6 +11,7 @@ export function ViewPanel({
     clearVisibleDetailsTabs,
     dateInterval,
     dateOrder,
+    handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     nrDates,
@@ -21,8 +22,6 @@ export function ViewPanel({
     setShowIssueCreationDate,
     setShowIssueSummary,
     setShowIssueUpdateDate,
-    setSortColumn,
-    setSortDirection,
     setUIMode,
     showIssueCreationDate,
     showIssueSummary,
@@ -35,7 +34,7 @@ export function ViewPanel({
 }) {
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
-    const sortOrderNotChangeable = sortColumn === null || (multipleDateColumns && ["status", "measurement", "target"].includes(sortColumn))
+    hiddenColumns = hiddenColumns ?? [];
     return (
         <Segment.Group
             horizontal
@@ -76,14 +75,13 @@ export function ViewPanel({
                                     clearVisibleDetailsTabs();
                                     setHideMetricsNotRequiringAction(false);
                                     clearHiddenColumns();
+                                    handleSort(null);
                                     setNrDates(1);
                                     setDateInterval(7);
                                     setDateOrder("descending");
                                     setShowIssueCreationDate(false);
                                     setShowIssueSummary(false);
                                     setShowIssueUpdateDate(false);
-                                    setSortColumn(null);
-                                    setSortDirection("ascending");
                                     setUIMode(null);
                                 }}
                                 inverted
@@ -126,22 +124,15 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size="small">Sort column</Header>
                 <Menu vertical inverted size="small">
-                    <SortColumnMenuItem column="name" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="status" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="target" disabled={multipleDateColumns} sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="unit" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="source" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="comment" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="issues" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                    <SortColumnMenuItem column="tags" sortColumn={sortColumn} setSortColumn={setSortColumn} />
-                </Menu>
-            </Segment>
-            <Segment inverted color="black">
-                <Header size='small'>Sort direction</Header>
-                <Menu vertical inverted size="small">
-                    <SortOrderMenuItem disabled={sortOrderNotChangeable} order="ascending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
-                    <SortOrderMenuItem disabled={sortOrderNotChangeable} order="descending" sortOrder={sortDirection} setSortOrder={setSortDirection} />
+                    <SortColumnMenuItem column="name" sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="status" disabled={multipleDateColumns || hiddenColumns.includes("status")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns || hiddenColumns.includes("measurement")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="target" disabled={multipleDateColumns || hiddenColumns.includes("target")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="unit" disabled={hiddenColumns.includes("unit")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="source" disabled={hiddenColumns.includes("source")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="comment" disabled={hiddenColumns.includes("comment")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="issues" disabled={hiddenColumns.includes("issues")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="tags" disabled={hiddenColumns.includes("tags")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -208,12 +199,18 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenCo
     )
 }
 
-function SortColumnMenuItem({ column, disabled, sortColumn, setSortColumn }) {
-    const newColumn = sortColumn === column ? null : column
+function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort }) {
+    const active = disabled ? false : sortColumn === column;
+    let sortIndicator = null;
+    if (sortColumn == column && sortDirection) {
+        // We use a triangle because the sort down and up icons are not at the same height
+        const iconDirection = sortDirection === "ascending" ? "up" : "down"
+        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sort ${sortDirection}`} />
+    }
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setSortColumn(newColumn) }} tabIndex={0}>
-            <Menu.Item active={disabled ? false : sortColumn === column} color={activeColor} disabled={disabled} onClick={() => setSortColumn(newColumn)}>
-                {capitalize(column === "name" ? "metric" : column)}
+        <div onKeyPress={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>
+            <Menu.Item active={active} color={activeColor} disabled={disabled} onClick={() => handleSort(column)}>
+                {capitalize(column === "name" ? "metric" : column)} <span>{sortIndicator}</span>
             </Menu.Item>
         </div>
     )
