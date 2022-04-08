@@ -41,6 +41,6 @@ then
   coverage report
   result=$?
 fi
-docker compose down
 docker compose logs > build/containers.log
+docker compose down
 exit $result
