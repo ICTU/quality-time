@@ -8,7 +8,8 @@ RUN git clone https://github.com/alvarcarto/url-to-pdf-api
 
 WORKDIR /home/renderer/url-to-pdf-api
 
-RUN git reset --hard 4b15a125f6dfa2f3043df94feb8c5efcad08f859  # Commit we used in ictu/url-to-pdf-api:v1.0.0
+RUN git reset --hard 79ce3f04e093744393947ff9b670b9dffbce059a  # Commit 9-3-2020
+# 4b15a125f6dfa2f3043df94feb8c5efcad08f859  # Commit we used in ictu/url-to-pdf-api:v1.0.0
 RUN npm install
 
 FROM node:lts-slim
