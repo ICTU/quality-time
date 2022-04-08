@@ -42,4 +42,5 @@ then
   result=$?
 fi
 docker compose down
+docker compose logs > build/containers.log
 exit $result
