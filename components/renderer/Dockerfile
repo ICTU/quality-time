@@ -8,7 +8,8 @@ RUN git clone https://github.com/alvarcarto/url-to-pdf-api
 
 WORKDIR /home/renderer/url-to-pdf-api
 
-RUN git reset --hard 79ce3f04e093744393947ff9b670b9dffbce059a  # Commit 9-3-2020
+RUN git reset --hard 51723bff949381244979e294196fa5bfcb995e57  # Commit 11-5-2020
+# 79ce3f04e093744393947ff9b670b9dffbce059a  # Commit 9-3-2020 OK
 # 4b15a125f6dfa2f3043df94feb8c5efcad08f859  # Commit we used in ictu/url-to-pdf-api:v1.0.0
 RUN npm install
 
@@ -19,6 +20,7 @@ LABEL description="Quality-time PDF render service based on https://github.com/a
 
 ENV NODE_ENV production
 
+# skipcq: DOK-DL3008
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends \
         wget libatk1.0-0 libasound2 fonts-lato \
