@@ -19,8 +19,7 @@ LABEL description="Quality-time PDF render service based on https://github.com/a
 ENV NODE_ENV production
 
 RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -yq \
+    && apt-get install -yq --no-install-recommends \
         wget libatk1.0-0 libasound2 fonts-lato \
         libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 \
         libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 \
