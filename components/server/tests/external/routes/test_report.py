@@ -203,8 +203,8 @@ class ReportTest(ReportTestCase):
         self.database.measurements.find_one.return_value = {"sources": []}
         self.database.measurements.aggregate.return_value = []
         self.options = (
-            "emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&"
-            "pdf.margin.top=25&pdf.margin.bottom=25&pdf.margin.left=25&pdf.margin.right=25"
+            "emulateScreenMedia=false&goto.timeout=60000&goto.waitUntil=networkidle2&scrollPage=true&waitFor=10000&"
+            "pdf.scale=0.7&pdf.margin.top=25&pdf.margin.bottom=25&pdf.margin.left=25&pdf.margin.right=25"
         )
 
     def test_get_report(self):
