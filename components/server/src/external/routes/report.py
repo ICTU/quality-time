@@ -135,8 +135,9 @@ def export_report_as_pdf(report_uuid: ReportId):
     query_string = f"?{bottle.request.query_string}" if bottle.request.query_string else ""
     report_url = parse.quote(f"http://{proxy_host}:{proxy_port}/{report_uuid}{query_string}")
     margins = "&".join([f"pdf.margin.{side}=25" for side in ("top", "bottom", "left", "right")])
+    goto_options = "goto.timeout=60000&goto.waitUntil=networkidle2"
     # Set pdf scale to 70% or otherwise the dashboard falls off the page
-    options = f"emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&{margins}"
+    options = f"emulateScreenMedia=false&{goto_options}&scrollPage=true&waitFor=10000&pdf.scale=0.7&{margins}"
     response = requests.get(f"{render_url}?url={report_url}&{options}")
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
