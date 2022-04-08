@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.35.0-rc.3 - 2022-04-08
+## [Unreleased]
 
 ### Fixed
 
@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Add support for Jira [personal access token](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html). Closes [#592](https://github.com/ICTU/quality-time/issues/592).
+- Add a 'minimum status duration' parameter to the 'metrics' metric to allow for counting metrics only when they have had the same status for a minimum number of days. Closes [#3681](https://github.com/ICTU/quality-time/issues/3681).
 
 ## v3.34.0 - 2022-03-27
 
