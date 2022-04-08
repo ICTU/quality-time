@@ -55,4 +55,5 @@ ignore-failures:
     - behave
     - bottle-mongo
   javascript:
+    - semantic-ui-css
     - enzyme  # https://github.com/ICTU/quality-time/issues/3003
