@@ -8,7 +8,8 @@ RUN git clone https://github.com/alvarcarto/url-to-pdf-api
 
 WORKDIR /home/renderer/url-to-pdf-api
 
-RUN git reset --hard e57b5ae365a253852ba4f6948562690d54a93d7c  # Commit 9-7-2020
+RUN git reset --hard c3f62e9692e8a97db243ca0112a90c8ea1c67f80  # Commit #3 9-7-2020
+# e57b5ae365a253852ba4f6948562690d54a93d7c  # Commit #4 9-7-2020 NOK
 # 51723bff949381244979e294196fa5bfcb995e57  # Commit 11-5-2020 OK
 # 79ce3f04e093744393947ff9b670b9dffbce059a  # Commit 9-3-2020 OK
 # 4b15a125f6dfa2f3043df94feb8c5efcad08f859  # Commit we used in ictu/url-to-pdf-api:v1.0.0
