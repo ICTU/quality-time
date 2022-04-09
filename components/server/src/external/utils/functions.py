@@ -18,7 +18,7 @@ from cryptography.fernet import Fernet
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
-from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
+from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
 
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
@@ -70,7 +70,7 @@ def _headers(source_parameters) -> dict:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
 
 
 def report_date_time() -> str:
