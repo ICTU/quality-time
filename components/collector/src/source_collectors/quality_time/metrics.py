@@ -63,9 +63,9 @@ class QualityTimeMetrics(QualityTimeCollector):
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
 
-    def __update_entity(
+    def __update_entity(  # pylint: disable=too-many-arguments
         self, entity: Entity, metric, status: str, value: Value, landing_url: URL
-    ) -> None:  # pylint: disable=too-many-arguments
+    ) -> None:
         """Update the entity attributes."""
         entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
         entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
