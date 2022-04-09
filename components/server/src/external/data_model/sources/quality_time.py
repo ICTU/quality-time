@@ -2,7 +2,8 @@
 
 from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
-from ..parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, URL
+from ..meta.unit import Unit
+from ..parameters import IntegerParameter, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, URL
 
 
 ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_up_to_dateness", "source_version"]
@@ -36,6 +37,15 @@ QUALITY_TIME = Source(
                 "technical debt target met (grey)": "debt_target_met",
                 "unknown (white)": "unknown",
             },
+            metrics=["metrics"],
+        ),
+        min_status_duration=IntegerParameter(
+            name="Minimum metric status duration",
+            short_name="minimum status duration",
+            help="Only count metrics whose status has not changed for the given number of days.",
+            unit=Unit.DAYS,
+            min_value="0",
+            default_value="0",
             metrics=["metrics"],
         ),
         reports=MultipleChoiceWithAdditionParameter(
@@ -242,6 +252,7 @@ QUALITY_TIME = Source(
                         technical_debt_target_met=Color.ACTIVE,
                     ),
                 ),
+                dict(name="Status start date", type=EntityAttributeType.DATE),
                 dict(name="Measurement", type=EntityAttributeType.INTEGER),
                 dict(name="Target", type=EntityAttributeType.INTEGER),
             ],
