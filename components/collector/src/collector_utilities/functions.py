@@ -8,7 +8,7 @@ import urllib
 from collections.abc import Collection, Generator
 from datetime import datetime
 from typing import cast
-from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
 
@@ -63,12 +63,12 @@ def hashless(url: URL) -> URL:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
 
 
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
-    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
+    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
 
 
 def days_ago(date_time: datetime) -> int:

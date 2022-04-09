@@ -1,6 +1,6 @@
 """OWASP Dependency Check security warnings collector."""
 
-from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces
 from model import Entity

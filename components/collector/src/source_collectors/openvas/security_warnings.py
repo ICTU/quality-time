@@ -1,7 +1,7 @@
 """OpenVAS security warnings collector."""
 
 from typing import cast
-from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
