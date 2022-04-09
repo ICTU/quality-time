@@ -21,7 +21,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
                 value=self.jobs
                 + [
                     dict(
-                        path=fr"{self.path}\\subfolder",
+                        path=rf"{self.path}\\subfolder",
                         name="include_pipeline",
                         latestCompletedBuild=dict(result="canceled"),
                     ),

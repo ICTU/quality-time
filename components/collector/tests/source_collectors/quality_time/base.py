@@ -48,6 +48,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                                     scale="count",
                                     type="violations",
                                     target="2",
+                                    status_start="2020-05-23T07:53:17+00:00",
                                     sources=dict(s2=dict(type="sonarqube")),
                                     recent_measurements=[
                                         dict(
