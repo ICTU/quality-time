@@ -2,7 +2,7 @@
 
 import re
 from typing import cast
-from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml

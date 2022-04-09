@@ -1,7 +1,7 @@
 """OWASP Dependency Check dependencies collector."""
 
 import re
-from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces

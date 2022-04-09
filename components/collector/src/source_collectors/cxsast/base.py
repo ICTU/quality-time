@@ -34,7 +34,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     async def _get_token(self) -> None:
         """Retrieve the token."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
-        credentials = dict(  # nosec, The client secret is not really secret, see previous url
+        credentials = dict(  # nosec # The client secret is not really secret, see previous url
             username=cast(str, self._parameter("username")),
             password=cast(str, self._parameter("password")),
             grant_type="password",
