@@ -1,6 +1,6 @@
-FROM abiosoft/caddy:1.0.3-no-stats
+FROM nginx:1.20.2
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time proxy"
 
-COPY Caddyfile /etc/Caddyfile
+COPY nginx.conf /etc/nginx/nginx.conf
