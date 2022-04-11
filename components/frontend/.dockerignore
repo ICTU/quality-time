@@ -1,9 +1,8 @@
 .DS_Store
 .vscode
-README.md
+README*.md
 build/
 coverage/
 node_modules/
-tests/
 Dockerfile
 .dockerignore
