@@ -18,4 +18,4 @@ jobs:
       - name: Run application tests
         run: |
           docker-compose build && docker-compose up -d
-          docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:docker_www_1 python:3.10.3-buster tests/application_tests/ci/test.sh
+          docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:docker_www_1 python:3.10.4-buster tests/application_tests/ci/test.sh
