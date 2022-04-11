@@ -16,7 +16,7 @@ jobs:
       - name: Run feature tests
         run: ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: build-artifacts
