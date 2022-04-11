@@ -313,9 +313,9 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 ## Proxy
 
-The proxy routes traffic from and to the user's browser. *Quality-time* uses the [ICTU variant of Caddy](https://github.com/ICTU/caddy) as proxy, but this can be replaced by another proxy if so desired.
+The proxy routes traffic from and to the user's browser. *Quality-time* uses [Nginx](https://nginx.org), but this can be replaced by another proxy if so desired.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) simply wraps the Caddy image in a *Quality-time* image so the Caddy version number can be changed when needed.
+The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the *Quality-time* configuration to the Nginx image.
 
 ## Database
 
