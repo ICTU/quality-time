@@ -55,22 +55,6 @@ def get_report(database: Database, report_uuid: ReportId = None):
     return dict(reports=summarized_reports)
 
 
-@bottle.get("/api/v3/tagreport/<tag>", authentication_required=False)
-def get_tag_report_api(tag: str, database: Database):  # pragma: no cover
-    """Get a report with all metrics that have the specified tag.
-
-    DEPRECATED use /api/v3/report/<report_uuid> instead.
-    """
-    date_time = report_date_time()
-    data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, data_model, date_time)
-    report = tag_report(data_model, tag, reports)
-    measurements = recent_measurements(database, report.metrics_dict)
-    summary = report.summarize(measurements)
-    hide_credentials(data_model, summary)
-    return tag_report
-
-
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""

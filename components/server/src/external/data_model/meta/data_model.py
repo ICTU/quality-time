@@ -91,7 +91,6 @@ class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
     def check_quality_time_metric_types(cls, sources, values):
         """Check that Quality-time lists all metric types as possible values for its metric_type parameter."""
         all_metric_names = {metric.name for metric in values["metrics"].__root__.values()}
-        all_metric_names.add("Ready user story points")  # Removed in first non-patch version after Quality-time v3.3.0
         quality_time_metric_names = set(sources.__root__.get("quality_time").parameters.__root__["metric_type"].values)
         if all_metric_names != quality_time_metric_names:
             raise ValueError("Parameter metric_type of source quality_time doesn't list all metric types")
