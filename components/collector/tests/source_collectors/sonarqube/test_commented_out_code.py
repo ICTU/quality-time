@@ -16,8 +16,8 @@ class SonarQubeCommentedOutCodeTest(SonarQubeTestCase):
             response,
             value="2",
             total="100",
-            landing_url=f"{self.issues_landing_url}&rules=abap:S125,apex:S125,c:CommentedCode,cpp:CommentedCode,"
-            "flex:CommentedCode,csharpsquid:S125,javascript:CommentedCode,javascript:S125,kotlin:S125,"
-            "objc:CommentedCode,php:S125,plsql:S125,python:S125,scala:S125,squid:CommentedOutCodeLine,"
+            landing_url=f"{self.issues_landing_url}&rules=abap:S125,c:CommentedCode,cpp:CommentedCode,"
+            "flex:CommentedCode,csharpsquid:S125,javascript:S125,kotlin:S125,"
+            "objc:CommentedCode,php:S125,plsql:S125,python:S125,scala:S125,"
             "java:S125,swift:S125,typescript:S125,Web:AvoidCommentedOutCodeCheck,xml:S125",
         )

@@ -71,6 +71,5 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             total="4",
             entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
-            "squid:NoSonar,java:NoSonar,squid:S1309,java:S1309,squid:S1310,"
-            "java:S1310,squid:S1315,java:S1315",
+            "java:NoSonar,java:S1309,java:S1310,java:S1315",
         )
