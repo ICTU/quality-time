@@ -2,3 +2,7 @@
     flex-grow:1;
     width:0;
 }
+
+.ui.inverted.menu .item.disabled, .ui.inverted.menu .item.disabled:hover {
+    color: rgba(225, 225, 225, .3) !important;
+}
