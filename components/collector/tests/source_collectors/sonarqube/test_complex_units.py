@@ -27,8 +27,8 @@ class SonarQubeComplexUnitsTest(SonarQubeTestCase):
             value="2",
             total="4",
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1541,csharpsquid:S3776,flex:FunctionComplexity,"
-            "javascript:FunctionComplexity,javascript:S1541,javascript:S3776,go:S3776,kotlin:S3776,"
+            "javascript:S1541,javascript:S3776,go:S3776,kotlin:S3776,"
             "php:S1541,php:S3776,python:FunctionComplexity,python:S3776,ruby:S3776,scala:S3776,"
-            "squid:MethodCyclomaticComplexity,java:S1541,squid:S3776,typescript:S1541,typescript:S3776,"
+            "java:S1541,java:S3776,typescript:S1541,typescript:S3776,"
             "vbnet:S1541,vbnet:S3776",
         )

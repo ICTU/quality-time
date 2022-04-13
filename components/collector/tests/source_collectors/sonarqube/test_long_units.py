@@ -30,7 +30,7 @@ class SonarQubeLongUnitsTest(SonarQubeTestCase):
             landing_url=f"{self.issues_landing_url}&rules=abap:S104,c:FileLoc,cpp:FileLoc,csharpsquid:S104,"
             "csharpsquid:S138,flex:S138,go:S104,go:S138,javascript:S104,javascript:S138,kotlin:S104,"
             "kotlin:S138,objc:FileLoc,php:S104,php:S138,php:S2042,Pylint:R0915,python:S104,ruby:S104,"
-            "ruby:S138,scala:S104,scala:S138,squid:S00104,squid:S1188,squid:S138,java:S138,squid:S2972,"
+            "ruby:S138,scala:S104,scala:S138,java:S104,java:S1188,java:S138,java:S2972,"
             "swift:S104,typescript:S104,typescript:S138,vbnet:S104,vbnet:S138,Web:FileLengthCheck,"
             "Web:LongJavaScriptCheck",
         )
