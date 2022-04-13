@@ -61,9 +61,11 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
 
     # Set the response headers
+    # https://serverfault.com/questions/801628/for-server-sent-events-sse-what-nginx-proxy-configuration-is-appropriate
     bottle.response.set_header("Connection", "keep-alive")
     bottle.response.set_header("Content-Type", "text/event-stream")
     bottle.response.set_header("Cache-Control", "no-cache")
+    bottle.response.set_header("X-Accel-Buffering", "no")
 
     # Provide an initial data dump to each new client and set up our message payload with a retry value in case of
     # connection failure
