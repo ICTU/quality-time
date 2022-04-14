@@ -52,13 +52,3 @@ class SubjectData(ReportData):
         for report in reports:
             subjects.extend(report["subjects"].items())
         return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
-
-
-class MetricData(SubjectData):
-    """Class to hold data about a specific metric, in a specific subject, in a specific report."""
-
-    def __init__(self, data_model, reports, metric_uuid: MetricId = None) -> None:
-        self.metric_uuid = metric_uuid
-        super().__init__(data_model, reports, metric_uuid=self.metric_uuid)
-        self.metric = self.subject["metrics"][self.metric_uuid]
-        self.metric_name = self.name("metric")

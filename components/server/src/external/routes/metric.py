@@ -12,7 +12,7 @@ from shared.utils.type import MetricId, SubjectId
 from ..database.datamodels import default_metric_attributes, latest_datamodel
 from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_metric, move_item
-from ..model.data import MetricData, SubjectData
+from ..model.data import SubjectData
 from ..utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -84,15 +84,15 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = MetricData(data_model, reports, metric_uuid)
+    all_reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(all_reports, metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     description = (
-        f"{{user}} deleted metric '{data.metric_name}' from subject '{data.subject_name}' in report "
-        f"'{data.report_name}'."
+        f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report " f"'{report.name}'."
     )
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    del data.subject["metrics"][metric_uuid]
-    return insert_new_report(database, description, uuids, data.report)
+    uuids = [report.uuid, subject.uuid, metric_uuid]
+    del subject.metrics_dict[metric_uuid]
+    return insert_new_report(database, description, uuids, report)
 
 
 ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
