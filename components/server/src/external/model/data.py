@@ -34,21 +34,3 @@ class ReportData(Data):
         """Find the uuid of the report that contains a subject with the given subject uuid."""
         report = [report for report in reports if subject_uuid in report["subjects"]][0]
         return cast(ReportId, report["report_uuid"])
-
-
-class SubjectData(ReportData):
-    """Class to hold data about a specific subject in a specific report."""
-
-    def __init__(self, data_model, reports, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
-        self.subject_uuid = self.get_subject_uuid(reports, metric_uuid) if metric_uuid else subject_uuid
-        super().__init__(data_model, reports, subject_uuid=self.subject_uuid)
-        self.subject = self.report["subjects"][self.subject_uuid]
-        self.subject_name = self.name("subject")
-
-    @staticmethod
-    def get_subject_uuid(reports, metric_uuid: MetricId) -> SubjectId:
-        """Find the uuid of the subject that contains a metric with the given metric uuid."""
-        subjects: list[tuple[SubjectId, Any]] = []
-        for report in reports:
-            subjects.extend(report["subjects"].items())
-        return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
