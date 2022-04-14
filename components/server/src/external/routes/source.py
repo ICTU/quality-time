@@ -10,7 +10,6 @@ from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 from ..database.datamodels import default_source_parameters, latest_datamodel
 from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_source, move_item
-from ..model.data import MetricData
 from ..model.queries import is_password_parameter
 from ..model.transformations import change_source_parameter
 from ..utils.functions import check_url_availability, uuid
@@ -23,18 +22,18 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = MetricData(data_model, reports, metric_uuid)
-    metric_type = data.metric["type"]
-    source_type = data_model["metrics"][metric_type]["default_source"]
-    parameters = default_source_parameters(database, metric_type, source_type)
-    data.metric["sources"][(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
+    all_reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(all_reports, metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    source_type = data_model["metrics"][metric.type()]["default_source"]
+    parameters = default_source_parameters(database, metric.type(), source_type)
+    metric.sources_dict[(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
     delta_description = (
-        f"{{user}} added a new source to metric '{data.metric_name}' of subject "
-        f"'{data.subject_name}' in report '{data.report_name}'."
+        f"{{user}} added a new source to metric '{metric.name}' of subject "
+        f"'{subject.name}' in report '{report.name}'."
     )
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid, source_uuid]
-    result = insert_new_report(database, delta_description, uuids, data.report)
+    uuids = [report.uuid, subject.uuid, metric.uuid, source_uuid]
+    result = insert_new_report(database, delta_description, uuids, report)
     result["new_source_uuid"] = source_uuid
     return result
 
