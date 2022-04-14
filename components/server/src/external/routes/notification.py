@@ -6,8 +6,7 @@ from pymongo.database import Database
 from shared.utils.type import ReportId
 
 from ..database.datamodels import latest_datamodel
-from ..database.reports import insert_new_report, latest_reports
-from ..model.data import ReportData
+from ..database.reports import insert_new_report, latest_report
 from ..utils.functions import uuid
 from ..utils.type import NotificationDestinationId
 
@@ -18,16 +17,15 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    if "notification_destinations" not in data.report:
-        data.report["notification_destinations"] = {}
-    data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
+    report = latest_report(database, data_model, report_uuid)
+    if "notification_destinations" not in report:
+        report["notification_destinations"] = {}
+    report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
         webhook="", name="Microsoft Teams webhook", sleep_duration=0
     )
-    delta_description = f"{{user}} created a new destination for notifications in report '{data.report_name}'."
+    delta_description = f"{{user}} created a new destination for notifications in report '{report.name}'."
     uuids = [report_uuid, notification_destination_uuid]
-    result = insert_new_report(database, delta_description, uuids, data.report)
+    result = insert_new_report(database, delta_description, uuids, report)
     result["new_destination_uuid"] = notification_destination_uuid
     return result
 
@@ -41,13 +39,12 @@ def delete_notification_destination(
 ):
     """Delete a destination from a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
-    del data.report["notification_destinations"][notification_destination_uuid]
-    delta_description = f"{{user}} deleted destination {destination_name} from report '{data.report_name}'."
+    report = latest_report(database, data_model, report_uuid)
+    destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
+    del report["notification_destinations"][notification_destination_uuid]
+    delta_description = f"{{user}} deleted destination {destination_name} from report '{report.name}'."
     uuids = [report_uuid, notification_destination_uuid]
-    return insert_new_report(database, delta_description, uuids, data.report)
+    return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.post(
@@ -59,14 +56,13 @@ def post_notification_destination_attributes(
 ):
     """Set specified notification destination attributes."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    notification_destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
+    report = latest_report(database, data_model, report_uuid)
+    notification_destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     attributes = dict(bottle.request.json)
     old_values = []
     for key in attributes:
-        old_values.append(data.report["notification_destinations"][notification_destination_uuid].get(key) or "")
-        data.report["notification_destinations"][notification_destination_uuid][key] = attributes[key]
+        old_values.append(report["notification_destinations"][notification_destination_uuid].get(key) or "")
+        report["notification_destinations"][notification_destination_uuid][key] = attributes[key]
 
     if set(old_values) == set(attributes.values()):
         return dict(ok=True)  # Nothing to do
@@ -74,8 +70,8 @@ def post_notification_destination_attributes(
     separator = "' and '"
     delta_description = (
         f"{{user}} changed the '{separator.join(attributes.keys())}' of notification destination "
-        f"'{notification_destination_name}' in report '{data.report_name}' "
+        f"'{notification_destination_name}' in report '{report.name}' "
         f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'."
     )
-    uuids = [data.report_uuid, notification_destination_uuid]
-    return insert_new_report(database, delta_description, uuids, data.report)
+    uuids = [report_uuid, notification_destination_uuid]
+    return insert_new_report(database, delta_description, uuids, report)
