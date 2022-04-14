@@ -24,7 +24,11 @@ class JiraIssues(JiraBase):
         url = await super()._api_url()
         fields_url = URL(f"{url}/rest/api/2/field")
         response = (await super()._get_source_responses(fields_url))[0]
-        self._field_ids = {field["name"].lower(): field["id"] for field in await response.json()}
+        self._field_ids = {}
+        for field in await response.json():
+            field_name, field_id = field["name"].lower(), field["id"]
+            self._field_ids[field_name] = field_id
+            self._field_ids[field_id] = field_id  # Include ids too so we get a key error if a field doesn't exist
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults={self.MAX_RESULTS}")
@@ -39,7 +43,7 @@ class JiraIssues(JiraBase):
         """Extend to replace field names with field ids, if the parameter is a field."""
         parameter_value = super()._parameter(parameter_key, quote)
         if parameter_key.endswith("field"):
-            parameter_value = self._field_ids.get(str(parameter_value).lower(), parameter_value)
+            parameter_value = self._field_ids[str(parameter_value).lower()]
         return parameter_value
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:

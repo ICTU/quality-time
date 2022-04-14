@@ -30,7 +30,8 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 ),
             ]
         )
-        response = await self.get_response(test_cases_json)
+        fields_json = [dict(name="Desired test frequency", id="desired_test_frequency")]
+        response = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
             response,
             value="2",
