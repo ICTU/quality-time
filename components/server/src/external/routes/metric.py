@@ -57,23 +57,26 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    source = MetricData(data_model, reports, metric_uuid)
-    target = SubjectData(data_model, reports, target_subject_uuid)
+    all_reports = latest_reports(database, data_model)
+    source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, target_subject_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    target_subject = target_report.subjects_dict[target_subject_uuid]
     delta_description = (
-        f"{{user}} moved the metric '{source.metric_name}' from subject '{source.subject_name}' in report "
-        f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} moved the metric '{metric.name}' from subject '{source_subject.name}' in report "
+        f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    target.subject["metrics"][metric_uuid] = source.metric
-    uuids = [target.report_uuid, source.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
-    if target.report_uuid == source.report_uuid:
+    target_subject.metrics_dict[metric_uuid] = metric
+    uuids = [target_report.uuid, source_report.uuid, source_subject.uuid, target_subject.uuid, metric.uuid]
+    if target_report.uuid == source_report.uuid:
         # Metric is moved within the same report
-        del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
-        reports_to_insert = [target.report]
+        del source_subject.metrics_dict[metric_uuid]
+        reports_to_insert = [target_report]
     else:
         # Metric is moved from one report to another, update both
-        del source.subject["metrics"][metric_uuid]
-        reports_to_insert = [target.report, source.report]
+        del source_subject.metrics_dict[metric_uuid]
+        reports_to_insert = [target_report, source_report]
     return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
