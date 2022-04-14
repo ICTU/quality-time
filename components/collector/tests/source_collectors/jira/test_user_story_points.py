@@ -24,7 +24,7 @@ class JiraUserStoryPointsTest(JiraTestCase):
                 self.issue(key="2", field=32, custom_field_001=None),
             ]
         )
-        fields_json = [dict(name="Sprint", id="custom_field_001")]
+        fields_json = [dict(name="Field", id="field"), dict(name="Sprint", id="custom_field_001")]
         response = await self.get_response(user_stories_json, fields_json)
         self.assert_measurement(
             response,
