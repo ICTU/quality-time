@@ -102,7 +102,7 @@ def _prepare_documents_for_insertion(
             document[key] = value
 
 
-def latest_report(database: Database, data_model, report_uuid: str) -> Report | None:
+def latest_report(database: Database, data_model, report_uuid: str):
     """Get latest report with this uuid."""
     report_dict = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
     return Report(data_model, report_dict) if report_dict else None

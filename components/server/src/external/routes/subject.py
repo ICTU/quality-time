@@ -10,7 +10,6 @@ from ..database.datamodels import default_subject_attributes, latest_datamodel
 from ..database.measurements import measurements_by_metric
 from ..database.reports import insert_new_report, latest_report_for_uuids, metrics_of_subject, latest_reports
 from ..model.actions import copy_subject, move_item
-from ..model.data import ReportData, SubjectData
 from ..utils.functions import report_date_time, sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -21,11 +20,11 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
-    delta_description = f"{{user}} created a new subject in report '{data.report_name}'."
+    report = latest_report_for_uuids(reports, report_uuid)[0]
+    report.subjects_dict[(subject_uuid := uuid())] = default_subject_attributes(database)
+    delta_description = f"{{user}} created a new subject in report '{report.name}'."
     uuids = [report_uuid, subject_uuid]
-    result = insert_new_report(database, delta_description, uuids, data.report)
+    result = insert_new_report(database, delta_description, uuids, report)
     result["new_subject_uuid"] = subject_uuid
     return result
 
@@ -35,15 +34,17 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     """Add a copy of the subject to the report (new in v3)."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    source = SubjectData(data_model, reports, subject_uuid)
-    target = ReportData(data_model, reports, report_uuid)
-    target.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(source.subject, source.datamodel)
+    source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, report_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    subject = source_report.subjects_dict[subject_uuid]
+    target_report.subjects_dict[(subject_copy_uuid := uuid())] = copy_subject(subject, data_model)
     delta_description = (
-        f"{{user}} copied the subject '{source.subject_name}' from report "
-        f"'{source.report_name}' to report '{target.report_name}'."
+        f"{{user}} copied the subject '{subject.name}' from report "
+        f"'{source_report.name}' to report '{target_report.name}'."
     )
-    uuids = [target.report_uuid, subject_copy_uuid]
-    result = insert_new_report(database, delta_description, uuids, target.report)
+    uuids = [target_report.uuid, subject_copy_uuid]
+    result = insert_new_report(database, delta_description, uuids, target_report)
     result["new_subject_uuid"] = subject_copy_uuid
     return result
 
@@ -53,16 +54,18 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     """Move the subject to another report."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    source = SubjectData(data_model, reports, subject_uuid)
-    target = ReportData(data_model, reports, target_report_uuid)
-    target.report["subjects"][subject_uuid] = source.subject
-    del source.report["subjects"][subject_uuid]
+    source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, target_report_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    subject = source_report.subjects_dict[subject_uuid]
+    target_report.subjects_dict[subject_uuid] = subject
+    del source_report.subjects_dict[subject_uuid]
     delta_description = (
-        f"{{user}} moved the subject '{source.subject_name}' from report "
-        f"'{source.report_name}' to report '{target.report_name}'."
+        f"{{user}} moved the subject '{subject.name}' from report "
+        f"'{source_report.name}' to report '{target_report.name}'."
     )
-    uuids = [target_report_uuid, source.report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, uuids, source.report, target.report)
+    uuids = [target_report_uuid, source_report.uuid, subject_uuid]
+    return insert_new_report(database, delta_description, uuids, source_report, target_report)
 
 
 @bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -70,11 +73,12 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
-    data = SubjectData(data_model, reports, subject_uuid)
-    del data.report["subjects"][subject_uuid]
-    delta_description = f"{{user}} deleted the subject '{data.subject_name}' from report '{data.report_name}'."
-    uuids = [data.report_uuid, subject_uuid]
-    return insert_new_report(database, delta_description, uuids, data.report)
+    report = latest_report_for_uuids(reports, subject_uuid)[0]
+    subject = report.subjects_dict[subject_uuid]
+    del report["subjects"][subject_uuid]
+    delta_description = f"{{user}} deleted the subject '{subject.name}' from report '{report.name}'."
+    uuids = [report.uuid, subject_uuid]
+    return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.post(

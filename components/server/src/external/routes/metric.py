@@ -12,7 +12,6 @@ from shared.utils.type import MetricId, SubjectId
 from ..database.datamodels import default_metric_attributes, latest_datamodel
 from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_metric, move_item
-from ..model.data import MetricData, SubjectData
 from ..utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -22,12 +21,13 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SubjectData(data_model, reports, subject_uuid)
-    data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
-    description = f"{{user}} added a new metric to subject '{data.subject_name}' in report '{data.report_name}'."
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    result = insert_new_report(database, description, uuids, data.report)
+    all_reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(all_reports, subject_uuid)[0]
+    subject = report.subjects_dict[subject_uuid]
+    subject.metrics_dict[(metric_uuid := uuid())] = default_metric_attributes(database)
+    description = f"{{user}} added a new metric to subject '{subject.name}' in report '{report.name}'."
+    uuids = [report.uuid, subject.uuid, metric_uuid]
+    result = insert_new_report(database, description, uuids, report)
     result["new_metric_uuid"] = metric_uuid
     return result
 
@@ -36,16 +36,19 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    source = MetricData(data_model, reports, metric_uuid)
-    target = SubjectData(data_model, reports, subject_uuid)
-    target.subject["metrics"][(metric_copy_uuid := uuid())] = copy_metric(source.metric, source.datamodel)
+    all_reports = latest_reports(database, data_model)
+    source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, subject_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    target_subject = target_report.subjects_dict[subject_uuid]
+    target_subject.metrics_dict[(metric_copy_uuid := uuid())] = copy_metric(source_metric, data_model)
     description = (
-        f"{{user}} copied the metric '{source.metric_name}' of subject '{source.subject_name}' from report "
-        f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
+        f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    uuids = [target.report_uuid, target.subject_uuid, metric_copy_uuid]
-    result = insert_new_report(database, description, uuids, target.report)
+    uuids = [target_report.uuid, target_subject.uuid, metric_copy_uuid]
+    result = insert_new_report(database, description, uuids, target_report)
     result["new_metric_uuid"] = metric_copy_uuid
     return result
 
@@ -54,23 +57,26 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    source = MetricData(data_model, reports, metric_uuid)
-    target = SubjectData(data_model, reports, target_subject_uuid)
+    all_reports = latest_reports(database, data_model)
+    source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, target_subject_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    target_subject = target_report.subjects_dict[target_subject_uuid]
     delta_description = (
-        f"{{user}} moved the metric '{source.metric_name}' from subject '{source.subject_name}' in report "
-        f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} moved the metric '{metric.name}' from subject '{source_subject.name}' in report "
+        f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    target.subject["metrics"][metric_uuid] = source.metric
-    uuids = [target.report_uuid, source.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
-    if target.report_uuid == source.report_uuid:
+    target_subject.metrics_dict[metric_uuid] = metric
+    uuids = [target_report.uuid, source_report.uuid, source_subject.uuid, target_subject.uuid, metric.uuid]
+    if target_report.uuid == source_report.uuid:
         # Metric is moved within the same report
-        del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
-        reports_to_insert = [target.report]
+        del source_subject.metrics_dict[metric_uuid]
+        reports_to_insert = [target_report]
     else:
         # Metric is moved from one report to another, update both
-        del source.subject["metrics"][metric_uuid]
-        reports_to_insert = [target.report, source.report]
+        del source_subject.metrics_dict[metric_uuid]
+        reports_to_insert = [target_report, source_report]
     return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
@@ -78,15 +84,13 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = MetricData(data_model, reports, metric_uuid)
-    description = (
-        f"{{user}} deleted metric '{data.metric_name}' from subject '{data.subject_name}' in report "
-        f"'{data.report_name}'."
-    )
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    del data.subject["metrics"][metric_uuid]
-    return insert_new_report(database, description, uuids, data.report)
+    all_reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(all_reports, metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    description = f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report '{report.name}'."
+    uuids = [report.uuid, subject.uuid, metric_uuid]
+    del subject.metrics_dict[metric_uuid]
+    return insert_new_report(database, description, uuids, report)
 
 
 ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
