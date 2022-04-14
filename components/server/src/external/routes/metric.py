@@ -36,16 +36,19 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    source = MetricData(data_model, reports, metric_uuid)
-    target = SubjectData(data_model, reports, subject_uuid)
-    target.subject["metrics"][(metric_copy_uuid := uuid())] = copy_metric(source.metric, source.datamodel)
+    all_reports = latest_reports(database, data_model)
+    source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, subject_uuid)
+    source_report = source_and_target_reports[0]
+    target_report = source_and_target_reports[1]
+    source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    target_subject = target_report.subjects_dict[subject_uuid]
+    target_subject.metrics_dict[(metric_copy_uuid := uuid())] = copy_metric(source_metric, data_model)
     description = (
-        f"{{user}} copied the metric '{source.metric_name}' of subject '{source.subject_name}' from report "
-        f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
+        f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
+        f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    uuids = [target.report_uuid, target.subject_uuid, metric_copy_uuid]
-    result = insert_new_report(database, description, uuids, target.report)
+    uuids = [target_report.uuid, target_subject.uuid, metric_copy_uuid]
+    result = insert_new_report(database, description, uuids, target_report)
     result["new_metric_uuid"] = metric_copy_uuid
     return result
 
