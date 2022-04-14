@@ -12,7 +12,6 @@ from shared.utils.type import MetricId, SubjectId
 from ..database.datamodels import default_metric_attributes, latest_datamodel
 from ..database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from ..model.actions import copy_metric, move_item
-from ..model.data import SubjectData
 from ..utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -22,12 +21,13 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = SubjectData(data_model, reports, subject_uuid)
-    data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
-    description = f"{{user}} added a new metric to subject '{data.subject_name}' in report '{data.report_name}'."
-    uuids = [data.report_uuid, data.subject_uuid, metric_uuid]
-    result = insert_new_report(database, description, uuids, data.report)
+    all_reports = latest_reports(database, data_model)
+    report = latest_report_for_uuids(all_reports, subject_uuid)[0]
+    subject = report.subjects_dict[subject_uuid]
+    subject.metrics_dict[(metric_uuid := uuid())] = default_metric_attributes(database)
+    description = f"{{user}} added a new metric to subject '{subject.name}' in report '{report.name}'."
+    uuids = [report.uuid, subject.uuid, metric_uuid]
+    result = insert_new_report(database, description, uuids, report)
     result["new_metric_uuid"] = metric_uuid
     return result
 
