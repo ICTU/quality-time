@@ -16,7 +16,6 @@ from ..database.measurements import recent_measurements
 from ..database.reports import insert_new_report, latest_report, latest_reports
 from ..initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from ..model.actions import copy_report
-from ..model.data import ReportData
 from ..model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -98,10 +97,9 @@ def post_report_new(database: Database):
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    report_copy = copy_report(data.report, data.datamodel)
-    delta_description = f"{{user}} copied the report '{data.report_name}'."
+    report = latest_report(database, data_model, report_uuid)
+    report_copy = copy_report(report, data_model)
+    delta_description = f"{{user}} copied the report '{report.name}'."
     uuids = [report_uuid, report_copy["report_uuid"]]
     result = insert_new_report(database, delta_description, uuids, report_copy)
     result["new_report_uuid"] = report_copy["report_uuid"]
@@ -153,29 +151,25 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
-    data.report["deleted"] = "true"
-    delta_description = f"{{user}} deleted the report '{data.report_name}'."
-    return insert_new_report(database, delta_description, [report_uuid], data.report)
+    report = latest_report(database, data_model, report_uuid)
+    report["deleted"] = "true"
+    delta_description = f"{{user}} deleted the report '{report.name}'."
+    return insert_new_report(database, delta_description, [report_uuid], report)
 
 
 @bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
+    report = latest_report(database, data_model, report_uuid)
     new_value = dict(bottle.request.json)[report_attribute]
     if report_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
-    old_value = data.report.get(report_attribute) or ""
-    data.report[report_attribute] = new_value
+    old_value = report.get(report_attribute) or ""
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{new_value}'"
-    delta_description = (
-        f"{{user}} changed the {report_attribute} of report '{data.report_name}'{value_change_description}."
-    )
-    return insert_new_report(database, delta_description, [report_uuid], data.report)
+    delta_description = f"{{user}} changed the {report_attribute} of report '{report.name}'{value_change_description}."
+    report[report_attribute] = new_value
+    return insert_new_report(database, delta_description, [report_uuid], report)
 
 
 @bottle.post(
@@ -184,27 +178,26 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
     """Set the issue tracker attribute."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
-    data = ReportData(data_model, reports, report_uuid)
+    report = latest_report(database, data_model, report_uuid)
     new_value = dict(bottle.request.json)[tracker_attribute]
     if tracker_attribute == "type":
-        old_value = data.report.get("issue_tracker", {}).get("type") or ""
+        old_value = report.get("issue_tracker", {}).get("type") or ""
     else:
-        old_value = data.report.get("issue_tracker", {}).get("parameters", {}).get(tracker_attribute) or ""
+        old_value = report.get("issue_tracker", {}).get("parameters", {}).get(tracker_attribute) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
     if tracker_attribute == "type":
-        data.report.setdefault("issue_tracker", {})["type"] = new_value
+        report.setdefault("issue_tracker", {})["type"] = new_value
     else:
-        data.report.setdefault("issue_tracker", {}).setdefault("parameters", {})[tracker_attribute] = new_value
+        report.setdefault("issue_tracker", {}).setdefault("parameters", {})[tracker_attribute] = new_value
     if tracker_attribute in ("password", "private_token"):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
     delta_description = (
-        f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{data.report_name}' "
+        f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{report.name}' "
         f"from '{old_value}' to '{new_value}'."
     )
-    result = insert_new_report(database, delta_description, [report_uuid], data.report)
-    issue_tracker = data.report.get("issue_tracker", {})
+    result = insert_new_report(database, delta_description, [report_uuid], report)
+    issue_tracker = report.get("issue_tracker", {})
     parameters = issue_tracker.get("parameters", {})
     url_parameters = ("type", "url", "username", "password")
     if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:

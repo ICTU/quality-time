@@ -1,9 +1,9 @@
 """Reports collection."""
 
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import cast
 
-from shared.utils.type import MetricId, ReportId, SubjectId
+from shared.utils.type import ReportId, SubjectId
 
 
 @dataclass
