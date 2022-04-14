@@ -22,6 +22,7 @@ class NotificationTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         self.database = Mock()
         self.report = Report({}, create_report())
         self.database.reports.find.return_value = [self.report]
+        self.database.reports.find_one.return_value = self.report
         self.database.datamodels.find_one.return_value = dict(_id="id")
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
