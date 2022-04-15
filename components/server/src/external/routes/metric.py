@@ -87,9 +87,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     all_reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
-    description = (
-        f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report " f"'{report.name}'."
-    )
+    description = f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report '{report.name}'."
     uuids = [report.uuid, subject.uuid, metric_uuid]
     del subject.metrics_dict[metric_uuid]
     return insert_new_report(database, description, uuids, report)
