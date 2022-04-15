@@ -87,28 +87,17 @@ export function scaled_number(number) {
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
-export function format_minutes(number) {
-    const hours = Math.floor(number / 60);
-    const minutes = number - hours * 60;
-    const leading_zero = minutes < 10 ? "0" : "";
-    return `${hours}:${leading_zero}${minutes}`
-}
-
-export function formatMetricUnit(metricType, metric, withMultiple = true) {
-    let metric_type_unit = metricType.unit;
-    if (withMultiple) {
-        metric_type_unit = metricType.unit === 'minutes' && metric.scale !== 'percentage' ? 'hours' : metricType.unit;
-    }
-    return `${metric.unit || metric_type_unit}`;
+function formatMetricUnit(metricType, metric) {
+    return `${metric.unit || metricType.unit}`;
 }
 
 export function formatMetricScale(metric) {
     return metric.scale === "percentage" ? "%" : "";
 }
 
-export function formatMetricScaleAndUnit(metricType, metric, withMultiple = true) {
+export function formatMetricScaleAndUnit(metricType, metric) {
     const scale = formatMetricScale(metric);
-    const unit = formatMetricUnit(metricType, metric, withMultiple);
+    const unit = formatMetricUnit(metricType, metric);
     const sep = unit ? " " : "";
     return `${scale}${sep}${unit}`;
 }

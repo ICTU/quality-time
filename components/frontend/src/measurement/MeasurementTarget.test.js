@@ -18,7 +18,7 @@ it('renders the target with minutes', () => {
             <MeasurementTarget metric={{ type: "duration" }} />
         </DataModel.Provider>
     )
-    expect(screen.getAllByText(/≦ 0:00/).length).toBe(1)
+    expect(screen.getAllByText(/≦ 0/).length).toBe(1)
 })
 
 it('renders the target with minutes percentage', () => {

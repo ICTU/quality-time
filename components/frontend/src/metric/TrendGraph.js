@@ -23,7 +23,7 @@ export function TrendGraph({ metric, measurements }) {
     const darkMode = useContext(DarkMode)
     const metricName = get_metric_name(metric, dataModel);
     const metricType = dataModel.metrics[metric.type];
-    const unit = capitalize(formatMetricScaleAndUnit(metricType, metric, false));
+    const unit = capitalize(formatMetricScaleAndUnit(metricType, metric));
     let measurement_values = [];
     let target_values = [];
     let near_target_values = [];

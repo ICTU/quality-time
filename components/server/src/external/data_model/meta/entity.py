@@ -27,7 +27,6 @@ class EntityAttributeType(str, Enum):
     DATE = "date"
     DATETIME = "datetime"
     FLOAT = "float"
-    MINUTES = "minutes"
     INTEGER = "integer"
     STATUS = "status"
 
@@ -72,11 +71,7 @@ class Entity(BaseModel):  # pylint: disable=too-few-public-methods
             raise ValueError(
                 f"Measured attribute {measured_attribute} is not an attribute of entity {values.get('name')}"
             )
-        if attributes[measured_attribute] not in (
-            EntityAttributeType.FLOAT,
-            EntityAttributeType.INTEGER,
-            EntityAttributeType.MINUTES,
-        ):
+        if attributes[measured_attribute] not in (EntityAttributeType.FLOAT, EntityAttributeType.INTEGER):
             raise ValueError(f"Measured attribute {measured_attribute} does not have a number type")
         return measured_attribute
 

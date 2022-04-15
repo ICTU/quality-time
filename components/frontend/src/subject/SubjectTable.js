@@ -11,14 +11,12 @@ import { TrendSparkline } from '../measurement/TrendSparkline';
 import { StatusIcon } from '../measurement/StatusIcon';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
-import { formatMetricScale, format_minutes, get_metric_name, get_metric_tags, getMetricUnit } from '../utils';
+import { formatMetricScale, get_metric_name, get_metric_tags, getMetricUnit } from '../utils';
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
 function MeasurementCells({dates, metric, metric_uuid, measurements}) {
-    const dataModel = useContext(DataModel);
-    const metricType = dataModel.metrics[metric.type];
     return (
         <>
             {
@@ -26,7 +24,6 @@ function MeasurementCells({dates, metric, metric_uuid, measurements}) {
                     const iso_date_string = date.toISOString().split("T")[0];
                     const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
                     let metric_value = measurement?.[metric.scale]?.value ?? "?";
-                    metric_value = metric_value !== "?" && metricType.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric_value) : metric_value;
                     const status = measurement?.[metric.scale]?.status ?? "unknown";
                     return (
                         <Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>
