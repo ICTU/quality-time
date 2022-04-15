@@ -4,9 +4,10 @@ import unittest
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
-from database import sessions
-from utils.type import SessionId, User
+from shared.utils.type import SessionId, User
+from shared.database import sessions
 
+from database.sessions import upsert, delete
 from ..fixtures import JOHN, JENNY
 
 
@@ -27,7 +28,7 @@ class SessionsTest(unittest.TestCase):
     def test_upsert(self):
         """Test upsert function."""
         self.assertIsNone(
-            sessions.upsert(
+            upsert(
                 database=self.database,
                 user=User(JENNY["user"], JENNY["email"], JENNY["common_name"]),
                 session_id=SessionId("6"),
@@ -42,7 +43,7 @@ class SessionsTest(unittest.TestCase):
 
     def test_delete_session(self):
         """Test delete function."""
-        self.assertIsNone(sessions.delete(database=self.database, session_id=SessionId("5")))
+        self.assertIsNone(delete(database=self.database, session_id=SessionId("5")))
         self.database.sessions.delete_one.assert_called_with({"session_id": "5"})
 
     @patch("bottle.request")
