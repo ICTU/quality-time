@@ -35,7 +35,7 @@ it('renders a date', () => {
 
 it('renders minutes', () => {
     renderSourceEntityAttribute({ duration: "42" }, { key: "duration", type: "minutes"})
-    expect(screen.getAllByText(/0:42/).length).toBe(1)
+    expect(screen.getAllByText(/42/).length).toBe(1)
 })
 
 it('renders a status icon', () => {

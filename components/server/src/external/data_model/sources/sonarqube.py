@@ -302,7 +302,7 @@ SONARQUBE = Source.parse_obj(
                 measured_attribute="effort",
                 attributes=[
                     dict(name="Effort type", url="url"),
-                    dict(name="Effort (minutes)", key="effort", type=EntityAttributeType.MINUTES),
+                    dict(name="Effort (minutes)", key="effort", type=EntityAttributeType.INTEGER),
                 ],
             ),
             security_warnings=dict(

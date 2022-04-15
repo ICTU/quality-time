@@ -19,8 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 
+- Don't render minutes as hours:minutes in the GUI, but simply as an integer, to prevent confusion about what each number represents (hours, minutes, seconds?). Closes [#3577](https://github.com/ICTU/quality-time/issues/3577).
 - In the settings panel under the "Sort column" setting, clicking the same column multiple times now alternates between ascending and descending sort order. This makes the setting consistent with how column headers behave. It also removes the need for a separate "Sort direction" setting in the settings panel. Closes [#3646](https://github.com/ICTU/quality-time/issues/3646).
-- The database component was ugraded to MongoDB 5.0.7. **Note that to upgrade to this version of *Quality-time* your previous version needs to be at least version 3.32.0**. Closes [#3647](https://github.com/ICTU/quality-time/issues/3647).
+- The database component was upgraded to MongoDB 5.0.7. **Note that to upgrade to this version of *Quality-time* your previous version needs to be at least version 3.32.0**. Closes [#3647](https://github.com/ICTU/quality-time/issues/3647).
 - The proxy component uses Nginx instead of Caddy. Closes [#3687](https://github.com/ICTU/quality-time/issues/3687).
 
 ### Removed

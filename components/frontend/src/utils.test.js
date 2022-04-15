@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
 import {
     getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number,
-    scaled_number, format_minutes, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
+    scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
@@ -28,16 +28,6 @@ it('adds a scale', () => {
     expect(scaled_number(1234567)).toBe("1m");
     expect(scaled_number(12345678)).toBe("12m");
     expect(scaled_number(123456789)).toBe("123m");
-});
-
-it('formats minutes', () => {
-    expect(format_minutes(0)).toBe("0:00");
-    expect(format_minutes(1)).toBe("0:01");
-    expect(format_minutes(10)).toBe("0:10");
-    expect(format_minutes(59)).toBe("0:59");
-    expect(format_minutes(60)).toBe("1:00");
-    expect(format_minutes(61)).toBe("1:01");
-    expect(format_minutes(600)).toBe("10:00");
 });
 
 it('gives users all permissions if permissions have not been limited', () => {

@@ -37,7 +37,7 @@ it('renders a minutes value', () => {
             <MeasurementValue metric={{ type: "duration", scale: "count", unit: null, latest_measurement: { count: { value: "42" } } }} />
         </DataModel.Provider>
     )
-    expect(screen.getAllByText(/0:42/).length).toBe(1)
+    expect(screen.getAllByText(/42/).length).toBe(1)
 })
 
 it('renders an unknown minutes value', () => {
