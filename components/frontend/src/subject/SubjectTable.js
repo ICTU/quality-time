@@ -16,11 +16,11 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 
-function MeasurementCells({dates, metric, metric_uuid, measurements}) {
+function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
     return (
         <>
             {
-                dates.forEach((date) => {
+                dates.map((date) => {
                     const iso_date_string = date.toISOString().split("T")[0];
                     const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
                     let metric_value = measurement?.[metric.scale]?.value ?? "?";
