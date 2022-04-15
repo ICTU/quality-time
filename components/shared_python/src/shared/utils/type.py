@@ -1,5 +1,6 @@
 """Quality-time specific types."""
 
+from dataclasses import dataclass
 from typing import Literal, NewType
 
 
@@ -14,3 +15,18 @@ ReportId = NewType("ReportId", str)
 SubjectId = NewType("SubjectId", str)
 MetricId = NewType("MetricId", str)
 SourceId = NewType("SourceId", str)
+SessionId = NewType("SessionId", str)
+
+
+@dataclass
+class User:
+    """Class representing a user."""
+
+    username: str
+    email: str = ""
+    common_name: str = ""
+    verified: bool = False
+
+    def name(self) -> str:
+        """Return the name of the user."""
+        return self.common_name or self.username
