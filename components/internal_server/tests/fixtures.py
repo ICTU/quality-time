@@ -2,8 +2,7 @@
 
 from typing import cast
 
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
-from external.utils.type import NotificationDestinationId
+from shared.utils.type import MetricId, ReportId, SourceId, SubjectId, NotificationDestinationId
 
 
 METRIC_ID = cast(MetricId, "metric_uuid")
