@@ -7,15 +7,15 @@ services:
     ports:
       - "${PROXY_PORT:-80}:80"
     environment:
-      - SERVER_URL=http://server:${SERVER_PORT:-5001}
-      - FRONTEND_URL=http://frontend:${FRONTEND_PORT:-5000}
+      - FRONTEND_PORT=${FRONTEND_PORT:-5000}
+      - SERVER_PORT=${SERVER_PORT:-5001}
     depends_on:
       - server
       - frontend
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
     environment:
-      - FRONTEND_PORT=5000
+      - FRONTEND_PORT=${FRONTEND_PORT:-5000}
     depends_on:
       - server
     cap_drop:
@@ -23,7 +23,7 @@ services:
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_PORT=5001
+      - SERVER_PORT=${SERVER_PORT:-5001}
       - SERVER_HOST=server
     depends_on:
       - server
@@ -32,7 +32,7 @@ services:
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_PORT=5001
+      - SERVER_PORT=${SERVER_PORT:-5001}
       - SERVER_HOST=server
       - NOTIFIER_SLEEP_DURATION=60
     depends_on:
@@ -42,9 +42,9 @@ services:
   server:
     image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_PORT=5001
+      - SERVER_PORT=${SERVER_PORT:-5001}
       - PROXY_HOST=www
-      - PROXY_PORT=80
+      - PROXY_PORT=${PROXY_PORT:-80}
       - DATABASE_URL=mongodb://root:root@database:27017
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
