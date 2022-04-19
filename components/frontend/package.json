@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
-    "fomantic-ui-css": "git+https://github.com/peacekeeper/Fomantic-UI-CSS.git#c94ff9bd5ab897cd3e3facd2c968090da8755dcb",
+    "fomantic-ui-css": "github:peacekeeper/Fomantic-UI-CSS.git#c94ff9bd5ab897cd3e3facd2c968090da8755dcb",
     "history": "^5.3.0",
     "md5": "^2.3.0",
     "react": "^17.0.2",
