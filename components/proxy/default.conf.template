@@ -1,0 +1,29 @@
+server {
+    include         security_headers.conf;
+    gzip            on;
+    server_tokens   off;
+
+    location /api/v3/nr_measurements {
+        gzip                off;
+        proxy_http_version  1.1;
+        proxy_read_timeout  24h;
+        proxy_set_header    Connection "";
+        proxy_pass          http://server:${SERVER_PORT}/api/v3/nr_measurements;
+    }
+    location /api/v3/datamodel {
+        add_header          Cache-Control "no-cache";
+        proxy_pass          http://server:${SERVER_PORT}/api/v3/datamodel;
+    }
+    location /api/v3/logo {
+        add_header          Cache-Control "no-cache";
+        proxy_pass          http://server:${SERVER_PORT}/api/v3/logo;
+    }
+    location /api {
+        add_header          Cache-Control "no-store";
+        proxy_pass          http://server:${SERVER_PORT}/api;
+    }
+    location / {
+        add_header          Cache-Control "no-store";
+        proxy_pass          http://frontend:${FRONTEND_PORT}/;
+    }
+}
