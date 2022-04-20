@@ -9,4 +9,3 @@ ENV SERVER_HOST server
 ENV SERVER_PORT 5001
 
 COPY *.template /etc/nginx/templates/
-COPY *.conf /etc/nginx/
