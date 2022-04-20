@@ -325,9 +325,9 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 ## Renderer
 
-The renderer component is used to export quality reports to PDF. *Quality-time* uses the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api).
+The renderer component is used to export quality reports to PDF. *Quality-time* uses [url-to-pdf-api](https://github.com/alvarcarto/url-to-pdf-api).
 
-The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) simply wraps the ictu/url-to-pdf-api image in a *Quality-time* image so the version number can be changed when needed.
+The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps the url-to-pdf-api sources (there is no official Docker image for url-to-pdf-api) in a *Quality-time* image.
 
 ## Test data
 
