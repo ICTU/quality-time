@@ -111,17 +111,18 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
 
 @bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)
 def get_subject_measurements(subject_uuid: SubjectId, database: Database):
-    """Return all measurements for the subjects within the last 28 weeks."""
-    metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid)
+    """Return all measurements for the subject within the last 28 weeks."""
+    date_time = report_date_time()
+    metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid, date_time)
 
-    report_timestamp = datetime.fromisoformat(report_date_time()) if report_date_time() else datetime.now(timezone.utc)
+    report_timestamp = datetime.fromisoformat(date_time) if date_time else datetime.now(timezone.utc)
     min_datetime = report_timestamp - timedelta(weeks=28)
     min_iso_timestamp = min_datetime.isoformat()
 
     return dict(
         measurements=list(
             measurements_by_metric(
-                database, *metric_uuids, min_iso_timestamp=min_iso_timestamp, max_iso_timestamp=report_date_time()
+                database, *metric_uuids, min_iso_timestamp=min_iso_timestamp, max_iso_timestamp=date_time
             )
         )
     )

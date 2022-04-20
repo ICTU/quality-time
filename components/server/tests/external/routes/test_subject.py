@@ -36,6 +36,19 @@ class GetSubjectTest(unittest.TestCase):
             dict(measurements=[dict(start="0"), dict(start="1")]), get_subject_measurements(SUBJECT_ID, self.database)
         )
 
+    @patch("bottle.request")
+    def test_get_subject_measurements_with_time_travel(self, request):
+        """Tests that the measurements for the requested metric are returned for past reports."""
+        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
+        # Mock reports collection
+        self.database.reports.find_one.return_value = {"subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}}
+        # Mock measurements collection
+        self.database.measurements.find_one.return_value = dict(start="1")
+        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
+        self.assertEqual(
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_subject_measurements(SUBJECT_ID, self.database)
+        )
+
 
 @patch("bottle.request")
 class PostSubjectAttributeTest(unittest.TestCase):
