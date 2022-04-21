@@ -505,9 +505,9 @@ tomli==2.0.1 \
     #   mypy
     #   pep517
     #   pylint
-types-python-dateutil==2.8.11 \
-    --hash=sha256:61222fa5518b14601a4e95ad4f17feea4ada904947610560336cf8921a7544a8 \
-    --hash=sha256:edc05d0b93201928ab0b5ff2b314413dd3d2b24eb12c470297ef929de77c93ef
+types-python-dateutil==2.8.12 \
+    --hash=sha256:3a49b238d95ff1ae5c92d058b0eeb57a0a79798178ecc784adfba18d1a645e20 \
+    --hash=sha256:ef3053b745f01c4443b512b6b3d5b04fbaf2d476aa503b6cc932046a1edfa56a
     # via -r requirements-dev.in
 types-setuptools==57.4.9 \
     --hash=sha256:536ef74744f8e1e4be4fc719887f886e74e4cf3c792b4a06984320be4df450b5 \
