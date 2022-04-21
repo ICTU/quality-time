@@ -9,7 +9,7 @@ pip==22.0.4
 pip-audit==2.1.1
 pip-tools==6.6.0  # To add hashes to requirements
 pydantic==1.9.0  # Needed for importing the data model from the server component
-pylint==2.13.5
+pylint==2.13.7
 safety==1.10.3
 unittest-xml-reporting==3.2.0  # Needed to generate JUnit XML output for Sonarcloud.io
 vulture==2.3
