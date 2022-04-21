@@ -64,7 +64,7 @@ def metrics_of_subject(database: Database, subject_uuid: SubjectId, max_iso_time
         report_filter["last"] = True
     projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
     report = database.reports.find_one(report_filter, projection=projection)
-    return list(report["subjects"][subject_uuid]["metrics"].keys())
+    return list(report["subjects"][subject_uuid]["metrics"].keys()) if report else []
 
 
 def insert_new_report(database: Database, delta_description: str, uuids, *reports) -> dict[str, Any]:
