@@ -1,0 +1,44 @@
+name: Trivy
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build database image from Dockerfile
+        run: |
+          cd components/database
+          docker build -t docker.io/ictu/quality-time_database:${{ github.sha }} .
+
+      - name: Build notifier image from Dockerfile
+        run: |
+          cd components/notifier
+          docker build -t docker.io/ictu/quality-time_notifier:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner on database
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/ictu/quality-time_database:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-database.sarif'
+
+      - name: Run Trivy vulnerability scanner on notifier
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/ictu/quality-time_notifier:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-notifier.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file:
+            - trivy-database.sarif
+            - trivy-notifier.sarif
