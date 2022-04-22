@@ -1,4 +1,4 @@
-FROM python:3.10.4-buster AS compile-image
+FROM python:3.10.4-bullseye AS compile-image
 
 RUN useradd --create-home server
 WORKDIR /home/server
@@ -15,13 +15,13 @@ RUN pip install --no-cache-dir -r /requirements-internal.txt
 
 USER server
 
-FROM python:3.10.4-buster
+FROM python:3.10.4-slim-bullseye
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
 
 RUN apt-get update && \
-    apt-get install --yes --no-install-recommends curl=7.64\* && \
+    apt-get install --yes --no-install-recommends curl=7.74\* && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
