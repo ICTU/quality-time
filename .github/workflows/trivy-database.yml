@@ -1,4 +1,4 @@
-name: Trivy
+name: Trivy database
 on:
   push:
     branches:
@@ -14,13 +14,13 @@ jobs:
 
       - name: Build an image from Dockerfile
         run: |
-          cd components/notifier
-          docker build -t docker.io/ictu/quality-time_notifier:${{ github.sha }} .
+          cd components/database
+          docker build -t docker.io/ictu/quality-time_database:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/ictu/quality-time_notifier:${{ github.sha }}'
+          image-ref: 'docker.io/ictu/quality-time_database:${{ github.sha }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
