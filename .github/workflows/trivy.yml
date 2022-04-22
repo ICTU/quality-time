@@ -36,9 +36,18 @@ jobs:
           format: 'sarif'
           output: 'trivy-notifier.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Upload Trivy database scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file:
-            - trivy-database.sarif
-            - trivy-notifier.sarif
+          sarif_file: 'trivy-database.sarif'
+
+      - name: Upload Trivy notifier scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-notifier.sarif'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-results
+          path: *.sarif
