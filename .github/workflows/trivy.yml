@@ -10,14 +10,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        component: [collector, database, frontend, notifier, proxy, renderer, server]
+        include:
+          - component: collector
+            build_path: components/collector
+          - component: database
+            build_path: components/database
+          - component: frontend
+            build_path: components/frontend
+          - component: notifier
+            build_path: components/notifier
+          - component: proxy
+            build_path: components/proxy
+          - component: renderer
+            build_path: components/renderer
+          - component: server
+            build_path: components
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Build image from Dockerfile
         run: |
-          cd components/${{ matrix.component }}
+          cd ${{ matrix.build_path }}
           docker build -t docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
