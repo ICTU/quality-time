@@ -5,62 +5,35 @@ on:
       - master
   pull_request:
 jobs:
-  database:
-    name: Database
+  build:
+    name: Trivy component analysis
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [database, notifier]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Build image from Dockerfile
         run: |
-          cd components/database
-          docker build -t docker.io/ictu/quality-time_database:${{ github.sha }} .
+          cd components/${{ matrix.component }}
+          docker build -t docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/ictu/quality-time_database:${{ github.sha }}'
+          image-ref: 'docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }}'
           format: 'sarif'
-          output: 'trivy-database.sarif'
+          output: 'trivy-${{ matrix.component }}.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: 'trivy-database.sarif'
+          sarif_file: 'trivy-${{ matrix.component }}.sarif'
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: trivy-database
-          path: '*.sarif'
-
-  notifier:
-    name: Notifier
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build image from Dockerfile
-        run: |
-          cd components/notifier
-          docker build -t docker.io/ictu/quality-time_notifier:${{ github.sha }} .
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'docker.io/ictu/quality-time_notifier:${{ github.sha }}'
-          format: 'sarif'
-          output: 'trivy-notifier.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: 'trivy-notifier.sarif'
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-notifier
           path: '*.sarif'
