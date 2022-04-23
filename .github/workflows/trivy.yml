@@ -1,0 +1,60 @@
+name: Trivy
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    name: Trivy component analysis
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - component: collector
+            build_path: components/collector
+            docker_file: Dockerfile
+          - component: database
+            build_path: components/database
+            docker_file: Dockerfile
+          - component: frontend
+            build_path: components/frontend
+            docker_file: Dockerfile
+          - component: notifier
+            build_path: components/notifier
+            docker_file: Dockerfile
+          - component: proxy
+            build_path: components/proxy
+            docker_file: Dockerfile
+          - component: renderer
+            build_path: components/renderer
+            docker_file: Dockerfile
+          - component: server
+            build_path: components
+            docker_file: server/Dockerfile
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build image from Dockerfile
+        run: |
+          cd ${{ matrix.build_path }}
+          docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-${{ matrix.component }}.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: 'trivy-${{ matrix.component }}.sarif'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-results
+          path: '*.sarif'
