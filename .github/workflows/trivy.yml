@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        component: [database, notifier]
+        component: [collector, database, frontend, notifier, proxy, renderer, server]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -35,5 +35,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: trivy-database
+          name: trivy-results
           path: '*.sarif'
