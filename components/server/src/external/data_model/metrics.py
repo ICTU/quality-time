@@ -266,6 +266,7 @@ METRICS = Metrics.parse_obj(
                 "owasp_dependency_check",
                 "owasp_zap",
                 "pyupio_safety",
+                "sarif_json",
                 "snyk",
                 "generic_json",
                 "sonarqube",

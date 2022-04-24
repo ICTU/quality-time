@@ -147,6 +147,8 @@ from .robot_framework.tests import RobotFrameworkTests
 from .robot_framework_jenkins_plugin.source_up_to_dateness import RobotFrameworkJenkinsPluginSourceUpToDateness
 from .robot_framework_jenkins_plugin.tests import RobotFrameworkJenkinsPluginTests
 
+from .sarif.security_warnings import SARIFJSONSecurityWarnings
+
 from .snyk.security_warnings import SnykSecurityWarnings
 
 from .sonarqube.commented_out_code import SonarQubeCommentedOutCode

@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Add support for Jira [personal access token](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html). Closes [#592](https://github.com/ICTU/quality-time/issues/592).
 - Add a 'minimum status duration' parameter to the 'metrics' metric to allow for counting metrics only when they have had the same status for a minimum number of days. Closes [#3681](https://github.com/ICTU/quality-time/issues/3681).
+- Add support for [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) JSON files as source for the 'security warnings' metric. Closes [#3730](https://github.com/ICTU/quality-time/issues/3730).
 
 ## v3.34.0 - 2022-03-27
 
