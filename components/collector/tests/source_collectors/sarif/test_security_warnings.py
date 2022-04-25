@@ -1,5 +1,6 @@
 """Unit tests for the SARIF JSON security warnings collector."""
 
+from re import I
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
@@ -21,6 +22,7 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
                                     id="CVE-2022-42",
                                     shortDescription=dict(text="CVE-2022-42"),
                                     fullDescription=dict(text="An issue was discovered ..."),
+                                    helpUri="https://avd.aquasec.com/nvd/cve-2022-42",
                                 )
                             ]
                         )
@@ -33,6 +35,7 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
                 key="CVE-2022-42",
                 title="CVE-2022-42",
                 description="An issue was discovered ...",
+                url="https://avd.aquasec.com/nvd/cve-2022-42",
             )
         ]
         response = await self.collect(get_request_json_return_value=vulnerabilities_json)

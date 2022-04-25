@@ -15,7 +15,7 @@ SARIF_JSON = Source(
         security_warnings=dict(
             name="security warning",
             attributes=[
-                dict(name="Title"),
+                dict(name="Title", url="url"),
                 dict(name="Description"),
             ],
         )
