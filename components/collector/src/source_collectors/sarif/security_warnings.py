@@ -16,11 +16,18 @@ class SARIFJSONSecurityWarnings(JSONFileSourceCollector):
         runs = cast(JSONDict, json).get("runs", [])
         for run in runs:
             rules = run["tool"]["driver"]["rules"]
-            for rule in rules:
+            for result in run["results"]:
+                rule = rules[result["ruleIndex"]]
+                locations = [
+                    location["physicalLocation"]["artifactLocation"]["uri"] for location in result["locations"]
+                ]
                 entities.append(
                     Entity(
-                        key=rule["id"],
-                        title=rule["shortDescription"]["text"],
+                        key=f'{rule["id"]}@{",".join(locations)}',
+                        message=result["message"]["text"],
+                        level=result["level"],
+                        locations=", ".join(locations),
+                        rule=rule["shortDescription"]["text"],
                         description=rule["fullDescription"]["text"],
                         url=rule.get("helpUri", ""),
                     )

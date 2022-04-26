@@ -1,5 +1,6 @@
 """SARIF JSON for security warnings source."""
 
+from ..meta.entity import Color
 from ..meta.source import Source
 from ..parameters import access_parameters
 
@@ -15,7 +16,10 @@ SARIF_JSON = Source(
         security_warnings=dict(
             name="security warning",
             attributes=[
-                dict(name="Title", url="url"),
+                dict(name="Message"),
+                dict(name="Level", color=dict(error=Color.NEGATIVE, warning=Color.WARNING, note=Color.ACTIVE)),
+                dict(name="Locations"),
+                dict(name="Rule", url="url"),
                 dict(name="Description"),
             ],
         )
