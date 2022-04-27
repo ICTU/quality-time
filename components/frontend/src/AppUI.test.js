@@ -31,9 +31,9 @@ let changeMode
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockImplementation(query => ({
+        value: jest.fn().mockImplementation(_query => ({
             matches: matchMediaMatches,
-            addEventListener: (eventType, eventHandler) => { changeMode = eventHandler },
+            addEventListener: (_eventType, eventHandler) => { changeMode = eventHandler },
             removeEventListener: () => { /* No implementation needed */ },
         }))
     });

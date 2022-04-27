@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Permissions } from '../context/Permissions';
 import { IntegerInput } from './IntegerInput';
 
 it('renders the value read only', () => {

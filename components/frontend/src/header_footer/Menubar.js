@@ -13,6 +13,7 @@ function Login({ set_user }) {
     const [login_error, setLoginError] = useState(false);
 
     function submit() {
+        console.log(username, password)
         login(username, password)
             .then(function (json) {
                 if (json.ok) {
@@ -21,7 +22,7 @@ function Login({ set_user }) {
                     setLoginError(true);
                 }
             })
-            .catch(function (error) {
+            .catch(function (_error) {
                 setLoginError(true);
             });
     }
@@ -31,8 +32,8 @@ function Login({ set_user }) {
             <Modal.Header content='Login' />
             <Modal.Content>
                 <Form error={login_error} warning={!login_error} onSubmit={() => submit()} >
-                    <Form.Input autoFocus label='Username' name='username' onChange={(event, { value }) => setUsername(value)} />
-                    <Form.Input type='password' label='Password' name='password' onChange={(event, { value }) => setPassword(value)} />
+                    <Form.Input autoFocus id='username' name='username' label='Username' onChange={(_event, { value }) => setUsername(value)} />
+                    <Form.Input id='password' name='password' type='password' label='Password' onChange={(_event, { value }) => setPassword(value)} />
                     <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
                     <Message warning header='Heads up' content='Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged.' />
                     <Form.Button>Submit</Form.Button>
