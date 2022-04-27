@@ -29,7 +29,7 @@ function SourceParameterLabel({
             color={{ source: "grey", metric: "black", subject: "gold", report: "orange", reports: "red" }[edit_scope]}
             direction={index % 2 === 0 ? "right" : "left"}
             label={label}
-            onChange={(event, data) => setEditScope(data.value)}
+            onChange={(_event, data) => setEditScope(data.value)}
             options={scope_options}
             value={edit_scope} />
     )

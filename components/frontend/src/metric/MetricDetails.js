@@ -109,7 +109,7 @@ export function MetricDetails({
         });
     }
 
-    function onTabChange(event, data) {
+    function onTabChange(_event, data) {
         const old_tab = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid))[0];
         const new_tab = `${metric_uuid}:${data.activeIndex}`;
         toggleVisibleDetailsTab(old_tab, new_tab);

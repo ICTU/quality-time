@@ -29,7 +29,7 @@ export function MultipleChoiceInput(props) {
                         fluid
                         label={editableLabel || props.label}
                         multiple
-                        onAddItem={(event, { value: addedValue }) => {
+                        onAddItem={(_event, { value: addedValue }) => {
                             if (!options.includes(addedValue)) {
                                 setOptions(prevOptions => ([addedValue, ...prevOptions]))
                             }
@@ -45,7 +45,7 @@ export function MultipleChoiceInput(props) {
                             }
                             setSearchQuery("");
                         }}
-                        onChange={(event, { value: changedValue }) => {
+                        onChange={(_event, { value: changedValue }) => {
                             setValue(changedValue);
                             set_value(changedValue)
                             setSearchQuery("");

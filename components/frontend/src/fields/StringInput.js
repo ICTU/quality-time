@@ -17,9 +17,9 @@ function StringInputWithSuggestions(props) {
             error={error || warning || (required && initialValue === "")}
             fluid
             label={editableLabel || label}
-            onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
-            onChange={(event, { value }) => { setSearchQuery(value); set_value(value) }}
-            onSearchChange={(event, data) => { setSearchQuery(data.searchQuery) }}
+            onAddItem={(_event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
+            onChange={(_event, { value }) => { setSearchQuery(value); set_value(value) }}
+            onSearchChange={(_event, data) => { setSearchQuery(data.searchQuery) }}
             options={string_options}
             search
             searchQuery={searchQuery}

@@ -239,7 +239,7 @@ let matchMediaMatches
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockImplementation(query => ({
+        value: jest.fn().mockImplementation(_query => ({
             matches: matchMediaMatches,
         })),
     });

@@ -132,7 +132,7 @@ function ActionAndItemPickerButton({ action, item_type, onChange, get_options, i
                     floating
                     header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
                     options={options}
-                    onChange={(event, { value }) => onChange(value)}
+                    onChange={(_event, { value }) => onChange(value)}
                     onOpen={() => setOptions(get_options())}
                     scrolling
                     selectOnBlur={false}
