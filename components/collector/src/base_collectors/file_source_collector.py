@@ -114,8 +114,7 @@ class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Parse the entities from the JSON."""
-        # pylint: disable=no-self-use,unused-argument
-        return Entities()  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
 
 class XMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
