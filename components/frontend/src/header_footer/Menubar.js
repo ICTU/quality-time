@@ -31,8 +31,8 @@ function Login({ set_user }) {
             <Modal.Header content='Login' />
             <Modal.Content>
                 <Form error={login_error} warning={!login_error} onSubmit={() => submit()} >
-                    <Form.Input autoFocus label='Username' name='username' onChange={(_event, { value }) => setUsername(value)} />
-                    <Form.Input type='password' label='Password' name='password' onChange={(_event, { value }) => setPassword(value)} />
+                    <Form.Input autoFocus id='username' label='Username' onChange={(_event, { value }) => setUsername(value)} />
+                    <Form.Input id='password' type='password' label='Password' onChange={(_event, { value }) => setPassword(value)} />
                     <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
                     <Message warning header='Heads up' content='Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged.' />
                     <Form.Button>Submit</Form.Button>

@@ -13,6 +13,8 @@ it('logs in', async () => {
         render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
         fireEvent.click(screen.getByText(/Login/));
     });
+    userEvent.type(screen.getByLabelText("Username"), "user@example.org")
+    userEvent.type(screen.getByLabelText("Password"), "secret")
     await act(async () => {
         fireEvent.click(screen.getByText(/Submit/));
     });
