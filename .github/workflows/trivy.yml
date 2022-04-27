@@ -39,16 +39,17 @@ jobs:
       - name: Build image from Dockerfile
         run: |
           cd ${{ matrix.build_path }}
-          docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }} .
+          docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/ictu/quality-time_${{ matrix.component }}:${{ github.sha }}'
+          image-ref: 'docker.io/ictu/quality-time_${{ matrix.component }}'
           format: 'sarif'
           output: 'trivy-${{ matrix.component }}.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
+        if: ${{ github.ref == 'refs/heads/master' }}
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-${{ matrix.component }}.sarif'
