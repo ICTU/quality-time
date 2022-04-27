@@ -20,7 +20,7 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
                 violation_type=row["Violation Type"],
                 impact=row["Impact"],
                 element=row["DOM Element"],
-                page=re.sub(r"http[s]?://[^/]+", "", row["URL"]),
+                page=re.sub(r"https?://[^/]+", "", row["URL"]),
                 description=row["Messages"],
                 help=row["Help"],
             )
