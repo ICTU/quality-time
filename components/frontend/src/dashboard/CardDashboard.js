@@ -40,12 +40,12 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
         }
         setLayout(new_layout);
     }
-    function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
+    function onDragStart(_current_layout, _oldItem, _newItem, _placeholder, event) {
         setDragging(true);
         const now = new Date();
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
-    function onDragStop(current_layout, oldItem, newItem, placeholder, event) {
+    function onDragStop(_current_layout, _oldItem, _newItem, _placeholder, _event) {
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
     }
     function isDragging(event) {

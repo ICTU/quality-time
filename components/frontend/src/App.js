@@ -89,7 +89,7 @@ class App extends Component {
         }
     }
 
-    handleDateChange(event, { name, value }) {
+    handleDateChange(_event, { name, value }) {
         const today = new Date();
         const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
         const new_report_date_string = value === today_string ? '' : value;
