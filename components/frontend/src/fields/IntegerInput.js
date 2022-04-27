@@ -37,7 +37,7 @@ function EditableIntegerInput(props) {
                 onBlur={() => { submit_if_changed_and_valid() }}
                 onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") {submit_if_changed_and_valid()};
+                    if (event.key === "Enter") {submit_if_changed_and_valid()}
                     if (event.key === "Escape") { setValue(initialValue) }
                 }}
                 type="number"
