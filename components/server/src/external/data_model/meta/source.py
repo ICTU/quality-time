@@ -95,4 +95,7 @@ class Sources(BaseModel):
             all_source_names = {source.name for source in values.values()}
             quality_time_source_names = set(quality_time.parameters.__root__["source_type"].values)
             if all_source_names != quality_time_source_names:
-                raise ValueError("Parameter source_type of source quality_time doesn't list all source types")
+                raise ValueError(
+                    "Parameter source_type of source quality_time doesn't list source types: "
+                    f"{', '.join(all_source_names - quality_time_source_names)}"
+                )

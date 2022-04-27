@@ -73,7 +73,7 @@ class SourcesTest(MetaModelTestCase):
         """Test that the Quality-time source lists all sources as possible values for its source type parameter."""
         self.mock_path(path_class)
         self.check_validation_error(
-            "Parameter source_type of source quality_time doesn't list all source types",
+            "Parameter source_type of source quality_time doesn't list source types: Quality-time",
             quality_time=dict(
                 name="Quality-time",
                 description="Quality-time.",

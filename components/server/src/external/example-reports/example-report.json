@@ -423,6 +423,16 @@
                                 "private_token": "",
                                 "severities": []
                             }
+                        },
+                        "30f331a2-42fb-4200-75cb-174ba908e336": {
+                            "type": "sarif_json",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/sarif/trivy.sarif",
+                                "landing_url": "http://localhost:8000/reports/sarif/trivy.sarif",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
+                            }
                         }
                     },
                     "name": null,

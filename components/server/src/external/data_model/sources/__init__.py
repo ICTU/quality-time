@@ -31,6 +31,7 @@ from .pip import PIP
 from .pyupio_safety import PYUPIO_SAFETY
 from .quality_time import QUALITY_TIME
 from .robot_framework import ROBOT_FRAMEWORK, ROBOT_FRAMEWORK_JENKINS_PLUGIN
+from .sarif import SARIF_JSON
 from .snyk import SNYK
 from .sonarqube import SONARQUBE
 from .testng import TESTNG
@@ -76,6 +77,7 @@ SOURCES = Sources.parse_obj(
         quality_time=QUALITY_TIME,
         robot_framework=ROBOT_FRAMEWORK,
         robot_framework_jenkins_plugin=ROBOT_FRAMEWORK_JENKINS_PLUGIN,
+        sarif_json=SARIF_JSON,
         snyk=SNYK,
         sonarqube=SONARQUBE,
         testng=TESTNG,
