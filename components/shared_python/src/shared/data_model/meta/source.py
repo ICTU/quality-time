@@ -3,8 +3,7 @@
 import pathlib
 from typing import cast, Optional
 
-from pydantic import BaseModel, Field, HttpUrl, validator
-from shared.data_model.logos import LOGOS_ROOT  # pylint: disable=no-name-in-module
+from pydantic import BaseModel, Field, HttpUrl, validator  # pylint: disable=no-name-in-module
 
 from .base import DescribedModel, NamedModel
 from .entity import Entities
@@ -73,16 +72,13 @@ class Sources(BaseModel):
     @classmethod
     def check_logos(cls, values):
         """Check that a logo exists for each source and vice versa."""
+        logos_path = pathlib.Path(__file__).parent.parent / "logos"  # don't use LOGOS_ROOT to be able to mock this
         for source_type in values:
-            logo_path = LOGOS_ROOT / f"{source_type}.png"
+            logo_path = logos_path / f"{source_type}.png"
             if not logo_path.exists():
                 raise ValueError(f"No logo exists for {source_type}")
-        for logo_path in LOGOS_ROOT.glob("*.png"):
+        for logo_path in logos_path.glob("*.png"):
             if logo_path.stem not in values:
-                print()
-                print(logo_path)
-                print(logo_path.stem)
-                print()
                 raise ValueError(f"No source exists for {logo_path}")
 
     @classmethod

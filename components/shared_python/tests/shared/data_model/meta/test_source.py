@@ -20,9 +20,9 @@ class SourcesTest(MetaModelTestCase):
     def mock_path(path_class, exists: bool = True):
         """Return a mock path that does or does not exist."""
         path = path_class.return_value
-        path.parent = path
         path.__truediv__.return_value = path
         path.exists.return_value = exists
+        path.parent = path
         return path
 
     def test_missing_logo(self, path_class):
