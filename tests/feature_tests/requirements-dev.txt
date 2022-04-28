@@ -622,9 +622,9 @@ tomli==2.0.1 \
     #   mypy
     #   pep517
     #   pylint
-types-requests==2.27.20 \
-    --hash=sha256:63344573cde6c4efd44d867c0158d9fb7e6beb95721cbe9882f3f857ee8a5398 \
-    --hash=sha256:68b8de86552116424ec23b77afc925e111afb6496d3821b183b7d151b3b834d4
+types-requests==2.27.22 \
+    --hash=sha256:2e81a74d2db1e6d06baa4a9e1896720543739297a23daac0436a34e2fc732574 \
+    --hash=sha256:58730c31469fb959a21496d97d2e59c06ca6de2ccdfecb583cb924b83cb0811e
     # via -r requirements-dev.in
 types-setuptools==57.4.14 \
     --hash=sha256:828f7e7e51e157876f47c80518b23ba0c3c36aa8081efd39d5d39f393938aec9 \
