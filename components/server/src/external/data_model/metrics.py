@@ -8,6 +8,7 @@ METRICS = Metrics.parse_obj(
         accessibility=dict(
             name="Accessibility violations",
             description="The number of accessibility violations in the web user interface of the software.",
+            rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to create high quality websites and web tools, and not exclude people from using their products and services.' Web accessibility evaluation tools can help determine if web content meets accessibility standards. Typically, these tools evaluate against one or more accessibility standards, such as the W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being violated.",
             unit=Unit.VIOLATIONS,
             default_source="axecsv",
             sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number"],

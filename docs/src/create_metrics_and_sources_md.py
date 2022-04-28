@@ -62,6 +62,8 @@ def metric_section(data_model, metric, level) -> str:
     """Return the metric as Markdown section."""
     markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
+    if "rationale" in metric:
+        markdown += markdown_paragraph(metric["rationale"])
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *metric["tags"])
