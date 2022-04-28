@@ -12,10 +12,10 @@ from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 from shared.database.reports import insert_new_report
+from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
 from database.measurements import recent_measurements
 from database.reports import latest_report, latest_reports
-from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.issue_tracker import IssueTracker
 from model.transformations import (
