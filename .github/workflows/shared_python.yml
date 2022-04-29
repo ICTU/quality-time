@@ -17,6 +17,7 @@ jobs:
       run: |
         cd components/shared_python
         ci/pip-install.sh
+        pip install .
     - name: Test
       run: |
         cd components/shared_python

@@ -16,12 +16,28 @@ jobs:
             1) component=notifier;;
             2) component=external_server;;
             3) component=internal_server;;
-            4) component=shared_python;;
           esac
           cd components/$component
           python -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
+          ci/unittest.sh
+          ci/quality.sh
+
+  unittest_shared_python:
+    docker:
+      - image: cimg/python:3.10.4
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run: |
+          cd components/shared_python
+          python -m venv venv
+          . venv/bin/activate
+          pip install wheel
+          pip install .
           ci/unittest.sh
           ci/quality.sh
 

@@ -1,6 +1,0 @@
--r ../../../requirements/bottle.in
-cryptography==37.0.2
-packaging==21.3
-pydantic==1.9.1
-pymongo==4.1.1
-
