@@ -17,7 +17,7 @@ jobs:
       run: |
         cd components/shared_python
         ci/pip-install.sh
-        pip install .
+        pip install --progress-bar off .
     - name: Test
       run: |
         cd components/shared_python

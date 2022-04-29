@@ -37,7 +37,8 @@ jobs:
           python -m venv venv
           . venv/bin/activate
           pip install wheel
-          pip install .
+          pip install --progress-bar off .
+          pip install --progress-bar off -r requirements-dev.txt
           ci/unittest.sh
           ci/quality.sh
 
