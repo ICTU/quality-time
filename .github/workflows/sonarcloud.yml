@@ -47,9 +47,26 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
+<<<<<<< HEAD
     - name: External Server
       if: env.SONAR_TOKEN != null
       working-directory: components/external_server
+=======
+    - name: External server
+      if: env.SONAR_TOKEN != null
+      working-directory: components/external_server
+      run: |
+        python -m venv venv
+        . venv/bin/activate
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -r requirements-internal.txt
+        ci/unittest.sh
+        export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
+        python -m xmlrunner --output-file build/unittests.xml
+    - name: Internal server
+      if: env.SONAR_TOKEN != null
+      working-directory: components/internal_server
+>>>>>>> 824f9a0c (add internal server to more workflows)
       run: |
         python -m venv venv
         . venv/bin/activate
@@ -82,6 +99,8 @@ jobs:
         touch components/__init__.py
         touch components/external_server/__init__.py
         touch components/external_server/src/__init__.py
+        touch components/internal_server/__init__.py
+        touch components/internal_server/src/__init__.py
         touch components/collector/__init__.py
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
@@ -94,6 +113,7 @@ jobs:
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/external_server/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/internal_server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_python/build/unittest-coverage.xml
     - name: Sonarcloud scan
       if: env.SONAR_TOKEN != null
