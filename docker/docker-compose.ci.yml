@@ -8,9 +8,13 @@ services:
   frontend:
     build: ../components/frontend
   collector:
-    build: ../components/collector
+    build: 
+      context: ../components
+      dockerfile: collector/Dockerfile
   notifier:
-    build: ../components/notifier
+    build: 
+      context: ../components
+      dockerfile: notifier/Dockerfile
   external_server:
     build:
       context: ../components

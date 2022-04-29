@@ -17,7 +17,6 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("."))
-sys.path.insert(0, os.path.abspath("../components/shared_python"))
 
 # Build metrics and sources overview.
 import create_metrics_and_sources_md  # pylint: disable=wrong-import-position
