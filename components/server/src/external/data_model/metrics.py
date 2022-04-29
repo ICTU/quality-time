@@ -9,6 +9,7 @@ METRICS = Metrics.parse_obj(
             name="Accessibility violations",
             description="The number of accessibility violations in the web user interface of the software.",
             rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to create high quality websites and web tools, and not exclude people from using their products and services.' Web accessibility evaluation tools can help determine if web content meets accessibility standards. Typically, these tools evaluate against one or more accessibility standards, such as the W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being violated.",
+            rationale_urls=["https://www.w3.org/standards/webdesign/accessibility"],
             unit=Unit.VIOLATIONS,
             default_source="axecsv",
             sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number"],
@@ -18,6 +19,10 @@ METRICS = Metrics.parse_obj(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
             rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to why the code is still there. Unused code should be deleted. It can be retrieved from the version control system if needed.",
+            rationale_urls=[
+                "https://rules.sonarsource.com/python/RSPEC-125",
+                "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
+            ],
             unit=Unit.BLOCKS,
             near_target="100",
             sources=["manual_number", "sonarqube"],

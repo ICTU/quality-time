@@ -64,6 +64,11 @@ def metric_section(data_model, metric, level) -> str:
     markdown += markdown_paragraph(metric["description"])
     if metric.get("rationale"):
         markdown += markdown_paragraph(f"Why measure {metric['name'].lower()}? {metric['rationale']}")
+        if rationale_urls := metric.get("rationale_urls"):
+            markdown += "```{seealso}\n"
+            for url in rationale_urls:
+                markdown += f"- {markdown_link(url)}\n"
+            markdown += "```\n\n"
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *metric["tags"])
