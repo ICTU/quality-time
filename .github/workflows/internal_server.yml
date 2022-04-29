@@ -1,0 +1,29 @@
+name: Server
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        cd components/internal_server
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -r requirements-internal.txt
+    - name: Test
+      run: |
+        cd components/internal_server
+        ci/unittest.sh
+    - name: Quality
+      run: |
+        cd components/internal_server
+        ci/quality.sh
