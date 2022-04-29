@@ -112,7 +112,7 @@ class Collector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/{self.API_VERSION}/metrics"))
+        metrics = await get(session, URL(f"{self.server_url}/api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
@@ -133,7 +133,7 @@ class Collector:
         if measurement := await metric_collector.collect():
             measurement.metric_uuid = metric_uuid
             measurement.report_uuid = metric["report_uuid"]
-            api_url = URL(f"{self.server_url}/{self.API_VERSION}/measurements")
+            api_url = URL(f"{self.server_url}/api/{self.API_VERSION}/measurements")
             await post(session, api_url, measurement.as_dict())
 
     def __sorted_by_edit_status(self, metrics: JSONDict) -> list[tuple[str, Any]]:

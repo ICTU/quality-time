@@ -10,7 +10,7 @@ from database.measurements import latest_successful_measurement, update_measurem
 from database.reports import latest_metric
 
 
-@bottle.post("/v3/measurements", authentication_required=False)
+@bottle.post("/api/v3/measurements", authentication_required=False)
 def post_measurement(database: Database) -> None:
     """Put the measurement in the database."""
     measurement_data = dict(bottle.request.json)
