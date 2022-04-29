@@ -1,13 +1,11 @@
 """Utility functions."""
 
-import hashlib
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from typing import cast, TypeVar
 
-import bottle
 import requests
 from cryptography.hazmat.backends import default_backend, openssl
 from cryptography.hazmat.primitives import serialization
@@ -20,7 +18,6 @@ from cryptography.fernet import Fernet
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
 
-from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 
 from .type import URL
