@@ -12,12 +12,11 @@ from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database import sessions
 from shared.model.measurement import Measurement
+from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, SourceId
 
-from database import sessions
 from database.measurements import count_measurements, measurements_by_metric
 from database.reports import latest_report_for_uuids, latest_reports
-from utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 
@@ -91,4 +90,5 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 def get_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    return dict(measurements=list(measurements_by_metric(database, metric_uuid, max_iso_timestamp=report_date_time())))
+    report_date_string = report_date_time(dict(bottle.request.query).get("report_date"))
+    return dict(measurements=list(measurements_by_metric(database, metric_uuid, max_iso_timestamp=report_date_string)))

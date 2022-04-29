@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.model.report import Report
-from shared.utils.functions import iso_timestamp
+from shared.utils.functions import iso_timestamp, report_date_time
 from shared.utils.type import ReportId
 from shared.database.reports import insert_new_report
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
@@ -24,7 +24,7 @@ from model.transformations import (
     hide_credentials,
     replace_report_uuids,
 )
-from utils.functions import DecryptionError, check_url_availability, report_date_time, sanitize_html, uuid
+from utils.functions import DecryptionError, check_url_availability, sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -34,7 +34,7 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
 def get_report(database: Database, report_uuid: ReportId = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
-    date_time = report_date_time()
+    date_time = report_date_time(dict(bottle.request.query).get("report_date"))
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, data_model, date_time)
     summarized_reports = []
@@ -62,7 +62,7 @@ def post_report_import(database: Database):
     report = dict(bottle.request.json)
     report["delta"] = dict(uuids=[report["report_uuid"]])
 
-    date_time = report_date_time()
+    date_time = report_date_time(dict(bottle.request.query).get("report_date"))
     data_model = latest_datamodel(database, date_time)
 
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
@@ -127,7 +127,7 @@ def export_report_as_pdf(report_uuid: ReportId):
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
 def export_report_as_json(database: Database, report_uuid: ReportId):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
-    date_time = report_date_time()
+    date_time = report_date_time(dict(bottle.request.query).get("report_date"))
     data_model = latest_datamodel(database, date_time)
     report = latest_report(database, data_model, report_uuid)
 

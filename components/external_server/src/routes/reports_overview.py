@@ -5,8 +5,9 @@ from pymongo.database import Database
 
 from shared.database.reports import latest_reports_overview, insert_new_reports_overview
 from shared.database import sessions
+from shared.utils.functions import report_date_time
 
-from utils.functions import report_date_time, sanitize_html
+from utils.functions import sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -14,7 +15,8 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.get("/api/v3/reports_overview", authentication_required=False)
 def get_reports_overview(database: Database):
     """Return all the quality reports."""
-    return latest_reports_overview(database, report_date_time())
+    report_date_string = report_date_time(dict(bottle.request.query).get("report_date"))
+    return latest_reports_overview(database, report_date_string)
 
 
 @bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])

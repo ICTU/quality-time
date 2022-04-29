@@ -12,8 +12,7 @@ import os  # skipcq: FLK-E402
 import bottle  # skipcq: FLK-E402
 
 from shared.initialization.database import init_database  # skipcq: FLK-E402
-
-from internal.initialization import init_bottle  # skipcq: FLK-E402
+from initialization import init_bottle  # skipcq: FLK-E402
 
 
 def serve() -> None:  # pragma: no cover-behave
@@ -21,7 +20,7 @@ def serve() -> None:  # pragma: no cover-behave
     logging.getLogger().setLevel(logging.INFO)
     database = init_database()
     init_bottle(database)
-    server_port = os.environ.get("SERVER_PORT", "5001")
+    server_port = os.environ.get("SERVER_PORT", "5002")
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
