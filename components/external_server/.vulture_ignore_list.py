@@ -1,4 +1,3 @@
-initialize_reports_overview  # unused function (src/initialization/report.py:17)
 text  # unused variable (src/model/issue_tracker.py:16)
 api  # unused variable (src/routes/plugins/auth_plugin.py:20)
 _.apply  # unused method (src/routes/plugins/auth_plugin.py:25)
