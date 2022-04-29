@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Icon, Menu } from 'semantic-ui-react';
-import { Header, Tab } from '../semantic_ui_react_wrappers';
+import { Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
+import { MetricTypeHeader } from './MetricTypeHeader';
 
 export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
     const dataModel = useContext(DataModel)
@@ -31,14 +32,7 @@ export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
     ];
     return (
         <>
-            <Header>
-                <Header.Content>
-                    {metricType.name}
-                    <Header.Subheader>
-                        {metricType.description}
-                    </Header.Subheader>
-                </Header.Content>
-            </Header>
+            <MetricTypeHeader metricType={metricType} />
             <Tab panes={panes} />
         </>
     )
