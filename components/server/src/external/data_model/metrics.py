@@ -31,6 +31,12 @@ METRICS = Metrics.parse_obj(
         complex_units=dict(
             name="Complex units",
             description="The amount of units (classes, functions, methods, files) that are too complex.",
+            rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to test because there are more execution paths, that need to be tested. Complex code is harder to maintain because it is harder to understand and analyze.",
+            rationale_urls=[
+                "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf",
+                "https://blog.codacy.com/an-in-depth-explanation-of-code-complexity/",
+                "https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability",
+            ],
             scales=["count", "percentage"],
             unit=Unit.COMPLEX_UNITS,
             sources=["manual_number", "sonarqube"],
