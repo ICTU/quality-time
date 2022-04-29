@@ -41,7 +41,7 @@ services:
       - server
     cap_drop:
       - ALL
-  server:
+  external_server:
     image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
     environment:
       - SERVER_PORT=${SERVER_PORT:-5001}
@@ -51,6 +51,20 @@ services:
       - LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
       - LDAP_LOOKUP_USER_PASSWORD=admin
       - LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))
+      - LOAD_EXAMPLE_REPORTS=True
+      - FORWARD_AUTH_ENABLED=False
+      - FORWARD_AUTH_HEADER=X-Forwarded-User
+    depends_on:
+      - database
+    cap_drop:
+      - ALL
+  internal_server:
+    image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
+    environment:
+      - SERVER_PORT=${SERVER_PORT:-5002}
+      - PROXY_HOST=${PROXY_HOST:-www}
+      - PROXY_PORT=${PROXY_PORT:-80}
+      - DATABASE_URL=mongodb://root:root@database:27017
       - LOAD_EXAMPLE_REPORTS=True
       - FORWARD_AUTH_ENABLED=False
       - FORWARD_AUTH_HEADER=X-Forwarded-User

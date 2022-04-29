@@ -12,13 +12,17 @@ services:
       - testdata
   notifier:
     build: ../components/notifier
-  server:
+  external_server:
     build:
       context: ../components
       dockerfile: external_server/Dockerfile
     depends_on:
       - ldap
       - renderer
+  internal_server:
+    build:
+      context: ../components
+      dockerfile: internal_server/Dockerfile
   database:
     build: ../components/database
     ports:
