@@ -1,4 +1,4 @@
-name: Server
+name: Internal server
 
 on: [push]
 

@@ -31,6 +31,9 @@ dependency_file_paths = [
   "components/external_server/requirements-base.txt",
   "components/external_server/requirements.txt",
   "components/external_server/requirements-dev.txt",
+  "components/internal_server/requirements-base.txt",
+  "components/internal_server/requirements.txt",
+  "components/internal_server/requirements-dev.txt",
   "components/shared_python/requirements-base.txt",
   "components/shared_python/requirements.txt",
   "components/shared_python/requirements-dev.txt",
@@ -56,6 +59,10 @@ enabled = true
     "components/proxy/Dockerfile",
     "components/renderer/Dockerfile",
     "components/external_server/Dockerfile",
+<<<<<<< HEAD
+=======
+    "components/internal_server/Dockerfile",
+>>>>>>> 05b4d428 (some more workflows)
     "components/testdata/Dockerfile",
   ]
 
