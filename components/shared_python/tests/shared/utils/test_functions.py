@@ -14,7 +14,9 @@ class UtilTests(unittest.TestCase):
         """Test that the iso timestamp has the correct format."""
         expected_time_stamp = "2020-03-03T10:04:05+00:00"
         with patch("shared.utils.functions.datetime") as date_time:
-            date_time.now.return_value = datetime(2020, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
+            date_time.now.return_value = datetime(
+                2020, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc
+            )
             self.assertEqual(expected_time_stamp, iso_timestamp())
 
 
@@ -28,7 +30,9 @@ class ReportDateTimeTest(unittest.TestCase):
 
     def test_report_date_time(self):
         """Test that the report datetime can be parsed from the HTTP request."""
-        self.assertEqual(self.expected_time_stamp, report_date_time("2019-03-03T10:04:05Z"))
+        self.assertEqual(
+            self.expected_time_stamp, report_date_time("2019-03-03T10:04:05Z")
+        )
 
     def test_missing_report_date_time(self):
         """Test that the report datetime is empty if it's not present in the request."""
@@ -47,6 +51,7 @@ class MD5HashTest(unittest.TestCase):
     """Unittest for md5 hash function."""
 
     def test_hash(self):
+        """Test that the hash is correct."""
         string = "test"
         string_hash = md5_hash(string)
         self.assertEqual(string_hash, "098f6bcd4621d373cade4e832627b4f6")
