@@ -17,6 +17,7 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
+            rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to why the code is still there. Unused code should be deleted. It can be retrieved from the version control system if needed.",
             unit=Unit.BLOCKS,
             near_target="100",
             sources=["manual_number", "sonarqube"],
