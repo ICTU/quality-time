@@ -8,7 +8,12 @@ METRICS = Metrics.parse_obj(
         accessibility=dict(
             name="Accessibility violations",
             description="The number of accessibility violations in the web user interface of the software.",
-            rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to create high quality websites and web tools, and not exclude people from using their products and services.' Web accessibility evaluation tools can help determine if web content meets accessibility standards. Typically, these tools evaluate against one or more accessibility standards, such as the W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being violated.",
+            rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to "
+            "create high quality websites and web tools, and not exclude people from using their products and "
+            "services.' Web accessibility evaluation tools can help determine if web content meets accessibility "
+            "standards. Typically, these tools evaluate against one or more accessibility standards, such as the "
+            "W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being "
+            "violated.",
             rationale_urls=["https://www.w3.org/standards/webdesign/accessibility"],
             unit=Unit.VIOLATIONS,
             default_source="axecsv",
@@ -18,7 +23,9 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
-            rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to why the code is still there. Unused code should be deleted. It can be retrieved from the version control system if needed.",
+            rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to "
+            "why the code is still there. Unused code should be deleted. It can be retrieved from the version "
+            "control system if needed.",
             rationale_urls=[
                 "https://rules.sonarsource.com/python/RSPEC-125",
                 "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
@@ -31,9 +38,12 @@ METRICS = Metrics.parse_obj(
         complex_units=dict(
             name="Complex units",
             description="The amount of units (classes, functions, methods, files) that are too complex.",
-            rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to test because there are more execution paths, that need to be tested. Complex code is harder to maintain because it is harder to understand and analyze.",
+            rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to "
+            "test because there are more execution paths, that need to be tested. Complex code is harder to "
+            "maintain because it is harder to understand and analyze.",
             rationale_urls=[
-                "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf",
+                "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-Evaluation-Criteria-"
+                "Trusted-Product-Maintainability-Guidance-for-producers.pdf",
                 "https://blog.codacy.com/an-in-depth-explanation-of-code-complexity/",
                 "https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability",
             ],
