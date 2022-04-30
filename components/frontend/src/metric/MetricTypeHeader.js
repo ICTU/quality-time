@@ -10,7 +10,7 @@ export function MetricTypeHeader({ metricType }) {
             rationaleUrls = <>
                 <Header>See also</Header>
                 <ul>
-                    {metricType.rationale_urls.map((url) => <li><a href={url}>{url}</a></li>)}
+                    {metricType.rationale_urls.map((url) => <li key={url}><a href={url}>{url}</a></li>)}
                 </ul>
             </>
         }
