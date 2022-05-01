@@ -137,6 +137,8 @@ METRICS = Metrics.parse_obj(
         manual_test_duration=dict(
             name="Manual test duration",
             description="The duration of the manual test in minutes.",
+            rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to know "
+            "how much time it takes to execute the manual tests, since they have to be executed before every release.",
             unit=Unit.MINUTES,
             near_target="60",
             sources=["jira", "manual_number"],
@@ -145,6 +147,8 @@ METRICS = Metrics.parse_obj(
         manual_test_execution=dict(
             name="Manual test execution",
             description="Measure the number of manual test cases that have not been tested on time.",
+            rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to know "
+            "whether the manual regression tests have been executed recently.",
             unit=Unit.MANUAL_TEST_CASES,
             near_target="5",
             sources=["jira", "manual_number"],
