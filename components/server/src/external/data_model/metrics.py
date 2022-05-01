@@ -98,6 +98,11 @@ METRICS = Metrics.parse_obj(
         issues=dict(
             name="Issues",
             description="The number of issues.",
+            rationale="The number of issues metric can be used to count issues in a source. What exactly those issues "
+            "are, depends on what is available in the source. The issues metric can for example be used to count the "
+            "number of open bug reports, the number of ready user stories, or the number of overdue customer service "
+            "requests. For sources that support a query language, the issues to be counted can be specified using the "
+            "query language of the source.",
             unit=Unit.ISSUES,
             default_source="jira",
             sources=["azure_devops", "jira", "manual_number", "trello"],
@@ -105,6 +110,11 @@ METRICS = Metrics.parse_obj(
         loc=dict(
             name="Size (LOC)",
             description="The size of the software in lines of code.",
+            rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
+            "one of the most widely used metrics to measure size of software.",
+            rationale_urls=[
+                SIG_TUVIT_EVALUATION_CRITERIA,
+            ],
             unit=Unit.LINES,
             target="30000",
             near_target="35000",
