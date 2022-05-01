@@ -3,6 +3,11 @@
 from .meta.metric import Addition, Direction, Metrics, Tag, Unit
 
 
+SIG_TUVIT_EVALUATION_CRITERIA = (
+    "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-"
+    "Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf"
+)
+
 METRICS = Metrics.parse_obj(
     dict(
         accessibility=dict(
@@ -42,8 +47,7 @@ METRICS = Metrics.parse_obj(
             "test because there are more execution paths, that need to be tested. Complex code is harder to "
             "maintain because it is harder to understand and analyze.",
             rationale_urls=[
-                "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-Evaluation-Criteria-"
-                "Trusted-Product-Maintainability-Guidance-for-producers.pdf",
+                SIG_TUVIT_EVALUATION_CRITERIA,
                 "https://blog.codacy.com/an-in-depth-explanation-of-code-complexity/",
                 "https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability",
             ],
@@ -69,6 +73,11 @@ METRICS = Metrics.parse_obj(
         duplicated_lines=dict(
             name="Duplicated lines",
             description="The amount of lines that are duplicated.",
+            rationale="Duplicate code makes software larger and thus potentially harder to maintain. Also, if the "
+            "duplicated code contains bugs, they need to be fixed in multiple locations.",
+            rationale_urls=[
+                SIG_TUVIT_EVALUATION_CRITERIA,
+            ],
             scales=["count", "percentage"],
             unit=Unit.LINES,
             sources=["manual_number", "sonarqube"],
