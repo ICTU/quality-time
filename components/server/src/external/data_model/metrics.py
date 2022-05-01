@@ -55,6 +55,11 @@ METRICS = Metrics.parse_obj(
         dependencies=dict(
             name="Dependencies",
             description="The amount of (outdated) dependencies.",
+            rationale="Dependencies that are out of date can be considered a form of technical debt. On the one hand, "
+            "not upgrading a dependency postpones the work of testing the new version. And, if the new version of "
+            "dependency has backwards-incompatiable changes, it also postpones making adaptations to cater for those "
+            "changes. On the other hand, upgrading the dependency may fix bugs and vulnerabilities, and unlock new "
+            "features. Measuring the number of outdated dependencies provides insight into the size of this backlog.",
             scales=["count", "percentage"],
             unit=Unit.DEPENDENCIES,
             default_source="npm",
