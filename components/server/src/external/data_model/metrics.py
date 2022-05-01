@@ -86,6 +86,9 @@ METRICS = Metrics.parse_obj(
         failed_jobs=dict(
             name="Failed CI-jobs",
             description="The number of continuous integration jobs or pipelines that have failed.",
+            rationale="Although it is to be expected that CI-jobs or pipelines will fail from time to time, a "
+            "significant amount of failed CI-jobs or pipelines over a longer period of time could be a sign that "
+            "the continuous integration process is not functioning properly.",
             unit=Unit.CI_JOBS,
             near_target="5",
             default_source="jenkins",
