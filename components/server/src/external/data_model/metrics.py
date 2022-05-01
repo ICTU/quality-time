@@ -125,6 +125,10 @@ METRICS = Metrics.parse_obj(
         long_units=dict(
             name="Long units",
             description="The amount of units (functions, methods, files) that are too long.",
+            rationale="Long units are deemed harder to maintain.",
+            rationale_urls=[
+                SIG_TUVIT_EVALUATION_CRITERIA,
+            ],
             unit=Unit.LONG_UNITS,
             scales=["count", "percentage"],
             sources=["manual_number", "sonarqube"],
