@@ -169,6 +169,8 @@ METRICS = Metrics.parse_obj(
         merge_requests=dict(
             name="Merge requests",
             description="The amount of merge requests.",
+            rationale="Merge requests need to be reviewed and approved. This metric allows for measuring the number of "
+            "merge requests without the required approvals.",
             scales=["count", "percentage"],
             unit=Unit.MERGE_REQUESTS,
             default_source="gitlab",
