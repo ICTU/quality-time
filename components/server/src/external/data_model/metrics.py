@@ -201,7 +201,8 @@ METRICS = Metrics.parse_obj(
         performancetest_duration=dict(
             name="Performancetest duration",
             description="The duration of the performancetest in minutes.",
-            rationale="",
+            rationale="Performance tests, especially endurance tests, may need to run for a minimum duration to give "
+            "relevant results.",
             unit=Unit.MINUTES,
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
@@ -214,6 +215,9 @@ METRICS = Metrics.parse_obj(
         performancetest_stability=dict(
             name="Performancetest stability",
             description="The duration of the performancetest at which throughput or error count increases.",
+            rationale="When testing endurance, the throughput and error count should remain stable for the complete "
+            "duration of the performancetest. If throughput or error count starts the increase during the "
+            "performancetest, this may indicate memory leaks or other resource problems.",
             scales=["percentage"],
             unit=Unit.MINUTES,
             addition=Addition.MIN,
@@ -235,6 +239,9 @@ METRICS = Metrics.parse_obj(
         scalability=dict(
             name="Scalability",
             description="The percentage of (max) users at which ramp-up of throughput breaks.",
+            rationale="When stress testing, the load on the system-under-test has to increase sufficiently to detect "
+            "the point at which the system breaks, as indicated by increasing throughput or error counts. If this "
+            "breakpoint is not detected, the load has not been increased enough.",
             scales=["percentage"],
             unit=Unit.USERS,
             addition=Addition.MIN,
@@ -247,6 +254,8 @@ METRICS = Metrics.parse_obj(
         slow_transactions=dict(
             name="Slow transactions",
             description="The number of transactions slower than their target response time.",
+            rationale="Transations slower than their target response time indicate performance problems that need "
+            "attention.",
             unit=Unit.TRANSACTIONS,
             near_target="5",
             default_source="jmeter_csv",
