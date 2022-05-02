@@ -180,6 +180,9 @@ METRICS = Metrics.parse_obj(
         metrics=dict(
             name="Metrics",
             description="The amount of metrics from one or more quality reports, with specific states and/or tags.",
+            rationale="Use this metric to monitor other quality reports. For example, count the number of metrics that "
+            "don't meet their target value, or count the number of metrics that have been marked as technical debt for "
+            "more than two months.",
             scales=["count", "percentage"],
             unit=Unit.METRICS,
             near_target="5",
