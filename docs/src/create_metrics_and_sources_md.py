@@ -63,7 +63,7 @@ def metric_section(data_model, metric, level) -> str:
     markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
     if metric.get("rationale"):
-        markdown += markdown_paragraph(f"Why measure {metric['name'].lower()}? {metric['rationale']}")
+        markdown += markdown_paragraph(f"Why measure {decapitalize(metric['name'])}? {metric['rationale']}")
         if rationale_urls := metric.get("rationale_urls"):
             markdown += "```{seealso}\n"
             for url in rationale_urls:
@@ -126,6 +126,11 @@ def source_section(data_model, source, source_key, level) -> str:
 def slugify(name) -> str:
     """Return a slugified version of the name."""
     return f'#{name.lower().replace(" ", "-").replace("(", "").replace(")", "")}'
+
+
+def decapitalize(name) -> str:
+    """Return the name starting with a lower case letter."""
+    return name[0].lower() + name[1:]
 
 
 def metric_source_slug(metric_name: str, source_name: str) -> str:
