@@ -128,7 +128,7 @@ def slugify(name) -> str:
     return f'#{name.lower().replace(" ", "-").replace("(", "").replace(")", "")}'
 
 
-def decapitalize(name) -> str:
+def decapitalize(name: str) -> str:
     """Return the name starting with a lower case letter."""
     return name[0].lower() + name[1:]
 
