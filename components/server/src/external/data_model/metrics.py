@@ -157,6 +157,10 @@ METRICS = Metrics.parse_obj(
         many_parameters=dict(
             name="Many parameters",
             description="The amount of units (functions, methods, procedures) that have too many parameters.",
+            rationale="Units with many parameters are deemed harder to maintain.",
+            rationale_urls=[
+                SIG_TUVIT_EVALUATION_CRITERIA,
+            ],
             scales=["count", "percentage"],
             unit=Unit.UNITS_WITH_TOO_MANY_PARAMETERS,
             sources=["manual_number", "sonarqube"],
