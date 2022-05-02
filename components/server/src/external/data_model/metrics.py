@@ -191,6 +191,8 @@ METRICS = Metrics.parse_obj(
         missing_metrics=dict(
             name="Missing metrics",
             description="Count the number of metrics that can be added to each report, but have not been added yet.",
+            rationale="Metrics still to be added can be tracked. If metrics will not be added, a reason can be "
+            "documented.",
             scales=["count", "percentage"],
             unit=Unit.MISSING_METRICS,
             near_target="5",
@@ -199,6 +201,7 @@ METRICS = Metrics.parse_obj(
         performancetest_duration=dict(
             name="Performancetest duration",
             description="The duration of the performancetest in minutes.",
+            rationale="",
             unit=Unit.MINUTES,
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
