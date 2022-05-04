@@ -7,6 +7,7 @@ SIG_TUVIT_EVALUATION_CRITERIA = (
     "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-"
     "Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf"
 )
+FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
 
 METRICS = Metrics.parse_obj(
     dict(
@@ -446,6 +447,8 @@ METRICS = Metrics.parse_obj(
         uncovered_branches=dict(
             name="Test branch coverage",
             description="The amount of code branches not covered by tests.",
+            rationale="Code branches not covered by tests may contain bugs and signal incomplete tests.",
+            rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
             unit=Unit.UNCOVERED_BRANCHES,
             near_target="100",
@@ -464,6 +467,8 @@ METRICS = Metrics.parse_obj(
         uncovered_lines=dict(
             name="Test line coverage",
             description="The amount of lines of code not covered by tests.",
+            rationale="Code lines not covered by tests may contain bugs and signal incomplete tests.",
+            rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
             unit=Unit.UNCOVERED_LINES,
             near_target="100",
