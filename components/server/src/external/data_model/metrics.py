@@ -487,6 +487,9 @@ METRICS = Metrics.parse_obj(
         unmerged_branches=dict(
             name="Unmerged branches",
             description="The number of branches that have not been merged to the default branch.",
+            rationale="It is strange if branches have had no activity for a while and have not been merged to the "
+            "default branch. Maybe commits have been cherry picked, or maybe the work has been postponed, but it "
+            "also sometimes happen that someone simply forgets to merge the branch.",
             unit=Unit.BRANCHES,
             near_target="5",
             default_source="gitlab",
@@ -496,6 +499,7 @@ METRICS = Metrics.parse_obj(
         unused_jobs=dict(
             name="Unused CI-jobs",
             description="The number of continuous integration jobs that are unused.",
+            rationale="Removing unused, obsolete CI-jobs helps to keep a clear overview of the relevant CI-jobs.",
             unit=Unit.CI_JOBS,
             near_target="5",
             default_source="jenkins",
