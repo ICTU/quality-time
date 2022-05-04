@@ -534,6 +534,12 @@ METRICS = Metrics.parse_obj(
         violations=dict(
             name="Violations",
             description="The number of violations of programming rules in the software.",
+            rationale="The more programming rules are violated, the harder it may be to understand and maintain the "
+            "software.",
+            rationale_urls=[
+                "https://docs.sonarqube.org/latest/user-guide/rules/",
+                "https://martinfowler.com/bliki/CodeSmell.html",
+            ],
             unit=Unit.VIOLATIONS,
             default_source="sonarqube",
             sources=["manual_number", "ojaudit", "sonarqube"],
