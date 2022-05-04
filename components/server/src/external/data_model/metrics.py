@@ -509,6 +509,8 @@ METRICS = Metrics.parse_obj(
         user_story_points=dict(
             name="User story points",
             description="The total number of points of a selection of user stories.",
+            rationale="Keep track of the number of user story points so the team has sufficient 'ready' stories to "
+            "plan the next sprint.",
             unit=Unit.USER_STORY_POINTS,
             direction=Direction.MORE_IS_BETTER,
             target="100",
@@ -520,6 +522,8 @@ METRICS = Metrics.parse_obj(
         velocity=dict(
             name="Velocity",
             description="The average number of user story points delivered in recent sprints.",
+            rationale="Keep track of the velocity so the team knows how many story points need at least be 'ready' "
+            "to plan the next sprint",
             unit=Unit.USER_STORY_POINTS_PER_SPRINT,
             direction=Direction.MORE_IS_BETTER,
             target="20",
