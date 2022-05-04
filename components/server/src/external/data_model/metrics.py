@@ -270,6 +270,8 @@ METRICS = Metrics.parse_obj(
         source_up_to_dateness=dict(
             name="Source up-to-dateness",
             description="The number of days since the source was last updated.",
+            rationale="If the information provided by sources is outdated, so will be the metrics in Quality-time. "
+            "Hence it is important to monitor that sources remain up-to-date.",
             unit=Unit.DAYS,
             addition=Addition.MAX,
             target="3",
