@@ -312,6 +312,8 @@ METRICS = Metrics.parse_obj(
         source_version=dict(
             name="Source version",
             description="The version number of the source.",
+            rationale="Monitor that the version of a source is at least a specific version or get notified when the "
+            "version becomes higher than a specific version.",
             scales=["version_number"],
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
