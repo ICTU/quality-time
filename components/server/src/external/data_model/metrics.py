@@ -230,6 +230,11 @@ METRICS = Metrics.parse_obj(
         remediation_effort=dict(
             name="Violation remediation effort",
             description="The amount of effort it takes to remediate violations.",
+            rationale="To better plan the work to remediate violations, it is helpful to have an estimate of the "
+            "amount of effort it takes to remediate them.",
+            rationale_urls=[
+                "https://docs.sonarqube.org/latest/user-guide/metric-definitions/",
+            ],
             unit=Unit.MINUTES,
             target="60",
             near_target="600",
