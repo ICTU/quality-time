@@ -341,6 +341,8 @@ METRICS = Metrics.parse_obj(
         security_warnings=dict(
             name="Security warnings",
             description="The number of security warnings about the software.",
+            rationale="Monitor security warnings about the software, its source code, dependencies, or infrastructure "
+            "so vulnerabilities can be fixed before they end up in production.",
             unit=Unit.SECURITY_WARNINGS,
             near_target="5",
             default_source="owasp_dependency_check",
