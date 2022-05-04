@@ -395,6 +395,8 @@ METRICS = Metrics.parse_obj(
         test_cases=dict(
             name="Test cases",
             description="The amount of test cases.",
+            rationale="Track the test results of test cases so there is traceability from the test cases, "
+            "defined in Jira, to the test results in test reports produced by tools such as Robot Framework or Junit.",
             scales=["count", "percentage"],
             unit=Unit.TEST_CASES,
             direction=Direction.MORE_IS_BETTER,
@@ -406,6 +408,8 @@ METRICS = Metrics.parse_obj(
         tests=dict(
             name="Tests",
             description="The amount of tests.",
+            rationale="Keep track of the total number of tests or the number of tests with different states, "
+            "for example failed or errored.",
             scales=["count", "percentage"],
             unit=Unit.TESTS,
             direction=Direction.MORE_IS_BETTER,
