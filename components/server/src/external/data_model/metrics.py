@@ -385,6 +385,8 @@ METRICS = Metrics.parse_obj(
         suppressed_violations=dict(
             name="Suppressed violations",
             description="The amount of violations suppressed in the source.",
+            rationale="Some tools allow for suppression of violations. Having the number of suppressed violations "
+            "violations visible in Quality-time allows for a double check of the suppressions.",
             scales=["count", "percentage"],
             unit=Unit.SUPPRESSED_VIOLATIONS,
             sources=["manual_number", "sonarqube"],
