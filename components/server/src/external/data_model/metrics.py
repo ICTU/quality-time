@@ -366,6 +366,15 @@ METRICS = Metrics.parse_obj(
         sentiment=dict(
             name="Sentiment",
             description="How are the team members feeling?",
+            rationale="Satisfaction is how fulfilled developers feel with their work, team, tools, or culture; "
+            "well-being is how healthy and happy they are, and how their work impacts it. Measuring satisfaction and "
+            "well-being can be beneficial for understanding productivity and perhaps even for predicting it. "
+            "For example, productivity and satisfaction are correlated, and it is possible that satisfaction could "
+            "serve as a leading indicator for productivity; a decline in satisfaction and engagement could signal "
+            "upcoming burnout and reduced productivity.",
+            rationale_urls=[
+                "https://queue.acm.org/detail.cfm?id=3454124",
+            ],
             unit=Unit.NONE,
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
