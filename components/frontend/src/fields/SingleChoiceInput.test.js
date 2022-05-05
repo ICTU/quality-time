@@ -1,55 +1,82 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Permissions } from '../context/Permissions';
 import { SingleChoiceInput } from './SingleChoiceInput';
 
-function input_wrapper(props) {
-    return mount(
+it('renders the value read only', () => {
+    render(<SingleChoiceInput requiredPermissions={'testPermission'} value="hello" options={[{ text: "hello", value: "hello" }]} />);
+    expect(screen.getByDisplayValue(/hello/)).not.toBe(null)
+})
+
+it('renders the editable value', () => {
+    render(
         <Permissions.Provider value={false}>
-            <SingleChoiceInput {...props} />
+            <SingleChoiceInput requiredPermissions={'testPermission'} value="hello" options={[{ text: "hello", value: "hello" }]} />
         </Permissions.Provider>
     )
-}
-let mock_set_value;
+    expect(screen.getByDisplayValue(/hello/)).not.toBe(null)
+})
 
-describe("<SingleChoiceInput />", () => {
-    beforeEach(() => { mock_set_value = jest.fn(); });
+it('invokes the callback on a change', () => {
+    let mockSetValue = jest.fn();
+    render(
+        <SingleChoiceInput
+            value="hello"
+            options={[{ text: "hello", value: "hello" }, { text: "hi", value: "hi" }]}
+            set_value={mockSetValue}
+        />
+    )
+    fireEvent.click(screen.getByText(/hi/))
+    expect(mockSetValue).toHaveBeenCalledWith("hi");
+})
 
-    it('renders the value read only', () => {
-        const wrapper = mount(<SingleChoiceInput requiredPermissions={['testPermission']} value="hello" options={[{ text: "hello", value: "hello" }]} />);
-        expect(wrapper.find("FormInput").prop("value")).toStrictEqual("hello");
-    });
-    it('renders the editable value', () => {
-        const wrapper = input_wrapper({ value: "hello", options: [{ text: "hello", value: "hello" }] });
-        expect(wrapper.find('FormDropdown').prop("value")).toStrictEqual("hello");
-    });
-    it('invokes the callback on a change', () => {
-        const wrapper = input_wrapper(
-            { value: "hello", options: [{ text: "hello", value: "hello" }, { text: "hi", value: "hi" }], set_value: mock_set_value });
-        wrapper.find("FormDropdown").at(0).simulate("click");
-        wrapper.find("DropdownItem").at(1).simulate("click");
-        expect(mock_set_value).toHaveBeenCalled();
-    });
-    it('does not invoke the callback when the value is not changed', () => {
-        const wrapper = input_wrapper(
-            { value: "hello", options: [{ text: "hello", value: "hello" }, { text: "hi", value: "hi" }], set_value: mock_set_value });
-        wrapper.find("FormDropdown").at(0).simulate("click");
-        wrapper.find("DropdownItem").at(0).simulate("click");
-        expect(mock_set_value).not.toHaveBeenCalled();
-    });
-    it('does sort by default', () => {
-        const wrapper = input_wrapper(
-            { value: "hello", options: [{ text: "b", value: "hello" }, { text: "a", value: "hi" }], set_value: mock_set_value });
-        expect(wrapper.find("DropdownItem").at(0).text()).toBe("a");
-    });
-    it('does not sort when told not to', () => {
-        const wrapper = input_wrapper(
-            { value: "hello", sort: false, options: [{ text: "b", value: "hello" }, { text: "a", value: "hi" }], set_value: mock_set_value });
-        expect(wrapper.find("DropdownItem").at(0).text()).toBe("b");
-    });
-    it('does sort when told to', () => {
-        const wrapper = input_wrapper(
-            { value: "hello", sort: true, options: [{ text: "b", value: "hello" }, { text: "a", value: "hi" }], set_value: mock_set_value });
-        expect(wrapper.find("DropdownItem").at(0).text()).toBe("a");
-    });
-});
+it('does not invoke the callback when the value is not changed', () => {
+    let mockSetValue = jest.fn();
+    render(
+        <SingleChoiceInput
+            value="hello"
+            options={[{ text: "hello", value: "hello" }, { text: "hi", value: "hi" }]}
+            set_value={mockSetValue}
+        />
+    )
+    fireEvent.click(screen.getAllByText(/hello/)[1])
+    expect(mockSetValue).not.toHaveBeenCalled();
+})
+
+it('does sort by default', () => {
+    render(
+        <SingleChoiceInput
+            value="b"
+            options={[{ text: "option-b", value: "b" }, { text: "option-a", value: "a" }]}
+        />
+    )
+    const options = screen.getAllByRole("option")
+    expect(options[0]).toHaveTextContent("option-a")
+    expect(options[1]).toHaveTextContent("option-b")
+})
+
+it('does not sort when told not to', () => {
+    render(
+        <SingleChoiceInput
+            value="b"
+            options={[{ text: "option-b", value: "b" }, { text: "option-a", value: "a" }]}
+            sort={false}
+        />
+    )
+    const options = screen.getAllByRole("option")
+    expect(options[0]).toHaveTextContent("option-b")
+    expect(options[1]).toHaveTextContent("option-a")
+})
+
+it('does sort when told to', () => {
+    render(
+        <SingleChoiceInput
+            value="b"
+            options={[{ text: "option-b", value: "b" }, { text: "option-a", value: "a" }]}
+            sort={true}
+        />
+    )
+    const options = screen.getAllByRole("option")
+    expect(options[0]).toHaveTextContent("option-a")
+    expect(options[1]).toHaveTextContent("option-b")
+})
