@@ -61,7 +61,7 @@ METRICS = Metrics.parse_obj(
             name="Dependencies",
             description="The amount of (outdated) dependencies.",
             rationale="Dependencies that are out of date can be considered a form of technical debt. On the one hand, "
-            "not upgrading a dependency postpones the work of testing the new version. And, if the new version of "
+            "not upgrading a dependency postpones the work of testing the new version. And, if the new version of a "
             "dependency has backwards-incompatiable changes, it also postpones making adaptations to cater for those "
             "changes. On the other hand, upgrading the dependency may fix bugs and vulnerabilities, and unlock new "
             "features. Measuring the number of outdated dependencies provides insight into the size of this backlog.",
@@ -89,7 +89,8 @@ METRICS = Metrics.parse_obj(
             description="The number of continuous integration jobs or pipelines that have failed.",
             rationale="Although it is to be expected that CI-jobs or pipelines will fail from time to time, a "
             "significant amount of failed CI-jobs or pipelines over a longer period of time could be a sign that "
-            "the continuous integration process is not functioning properly.",
+            "the continuous integration process is not functioning properly. Also, having many failed CI-jobs or "
+            "pipelines makes it hard to see that additional jobs or pipelines start failing.",
             unit=Unit.CI_JOBS,
             near_target="5",
             default_source="jenkins",
@@ -99,11 +100,10 @@ METRICS = Metrics.parse_obj(
         issues=dict(
             name="Issues",
             description="The number of issues.",
-            rationale="The number of issues metric can be used to count issues in a source. What exactly those issues "
-            "are, depends on what is available in the source. The issues metric can for example be used to count the "
-            "number of open bug reports, the number of ready user stories, or the number of overdue customer service "
-            "requests. For sources that support a query language, the issues to be counted can be specified using the "
-            "query language of the source.",
+            rationale="What exactly issues are, depends on what is available in the source. The issues metric can for "
+            "example be used to count the number of open bug reports, the number of ready user stories, or the number "
+            "of overdue customer service requests. For sources that support a query language, the issues to be counted "
+            "can be specified using the query language of the source.",
             unit=Unit.ISSUES,
             default_source="jira",
             sources=["azure_devops", "jira", "manual_number", "trello"],
@@ -139,7 +139,7 @@ METRICS = Metrics.parse_obj(
             name="Manual test duration",
             description="The duration of the manual test in minutes.",
             rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to know "
-            "how much time it takes to execute the manual tests, since they have to be executed before every release.",
+            "how much time it takes to execute the manual tests, since they need to be executed before every release.",
             unit=Unit.MINUTES,
             near_target="60",
             sources=["jira", "manual_number"],
@@ -192,8 +192,8 @@ METRICS = Metrics.parse_obj(
         missing_metrics=dict(
             name="Missing metrics",
             description="Count the number of metrics that can be added to each report, but have not been added yet.",
-            rationale="Metrics still to be added can be tracked. If metrics will not be added, a reason can be "
-            "documented.",
+            rationale="Provide an overview of metrics still to be added to the quality report. If metrics will not be "
+            "added, a reason can be documented.",
             scales=["count", "percentage"],
             unit=Unit.MISSING_METRICS,
             near_target="5",
@@ -217,7 +217,7 @@ METRICS = Metrics.parse_obj(
             name="Performancetest stability",
             description="The duration of the performancetest at which throughput or error count increases.",
             rationale="When testing endurance, the throughput and error count should remain stable for the complete "
-            "duration of the performancetest. If throughput or error count starts the increase during the "
+            "duration of the performancetest. If throughput or error count starts to increase during the "
             "performancetest, this may indicate memory leaks or other resource problems.",
             scales=["percentage"],
             unit=Unit.MINUTES,
@@ -272,7 +272,7 @@ METRICS = Metrics.parse_obj(
             name="Source up-to-dateness",
             description="The number of days since the source was last updated.",
             rationale="If the information provided by sources is outdated, so will be the metrics in Quality-time. "
-            "Hence it is important to monitor that sources remain up-to-date.",
+            "Hence it is important to monitor that sources are up-to-date.",
             unit=Unit.DAYS,
             addition=Addition.MAX,
             target="3",
