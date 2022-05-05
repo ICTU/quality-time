@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Add support for Jira [personal access token](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html). Closes [#592](https://github.com/ICTU/quality-time/issues/592).
+- Add a rationale to each metric explaining why one would want to measure it. The rationale is listed in the [metrics overview](https://quality-time.readthedocs.io/en/latest/metrics_and_sources.html) in the documentation and is available as popup dialog in the user interface. Closes [#3578](https://github.com/ICTU/quality-time/issues/3578).
 - Add a 'minimum status duration' parameter to the 'metrics' metric to allow for counting metrics only when they have had the same status for a minimum number of days. Closes [#3681](https://github.com/ICTU/quality-time/issues/3681).
 - Add support for [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) JSON files as source for the 'security warnings' metric. Closes [#3730](https://github.com/ICTU/quality-time/issues/3730).
 

@@ -50,6 +50,8 @@ class Metric(DescribedModel):
     sources: list[str] = Field(..., min_items=1)
     default_source: Optional[str] = None
     tags: list[Tag] = []
+    rationale: Optional[str] = ""
+    rationale_urls: list[str] = []
 
     @validator("default_scale", always=True)
     def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument,no-self-use
