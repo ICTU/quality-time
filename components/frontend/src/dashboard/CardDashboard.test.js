@@ -11,7 +11,7 @@ it('returns null without cards', () => {
 
 it('does not save the layout after click', async () => {
     const mockCallback = jest.fn();
-    const { container } = render(
+    render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <CardDashboard
                 cards={[<MetricSummaryCard header="Card" red={1} green={2} yellow={1} white={0} grey={0} />]}
