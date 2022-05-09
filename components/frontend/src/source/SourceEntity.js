@@ -44,6 +44,8 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
     if (status !== "unconfirmed" && status_end_date) { statusLabel += ` (status accepted until ${status_end_date})`}
     const entityCells = <>
         <Table.Cell style={style}>{statusLabel}</Table.Cell>
+        <Table.Cell style={style}>{status_end_date}</Table.Cell>
+        <Table.Cell style={style}>{rationale}</Table.Cell>
         {entity_attributes.map((entity_attribute, col_index) =>
             <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)} style={style}>
                 <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />

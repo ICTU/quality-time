@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Show the rationale and end date for the status of measurement entities in the measurement entity table. Closes [#3788](https://github.com/ICTU/quality-time/issues/3788).
+
 ## v3.35.0 - 2022-05-09
 
 ### Fixed
