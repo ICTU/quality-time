@@ -6,7 +6,7 @@ export function MetricTypeHeader({ metricType }) {
     let rationale = null;
     if (metricType.rationale) {
         let rationaleUrls = null;
-        if (metricType.rationale_urls) {
+        if (metricType.rationale_urls?.length > 0) {
             rationaleUrls = <>
                 <Header>See also</Header>
                 <ul>
