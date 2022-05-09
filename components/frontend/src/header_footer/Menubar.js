@@ -13,7 +13,6 @@ function Login({ set_user }) {
     const [login_error, setLoginError] = useState(false);
 
     function submit() {
-        console.log(username, password)
         login(username, password)
             .then(function (json) {
                 if (json.ok) {

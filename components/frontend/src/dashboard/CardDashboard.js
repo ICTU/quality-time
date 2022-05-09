@@ -33,19 +33,19 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
-    function onLayoutChange(new_layout) {
-        if (dragging && new_layout.length === layout.length && JSON.stringify(new_layout) !== JSON.stringify(layout)) {
+    function onLayoutChange(newLayout) {
+        if (dragging && newLayout.length === layout.length && JSON.stringify(newLayout) !== JSON.stringify(layout)) {
             // Only save the layout if it was changed by rearranging cards
-            save_layout(new_layout)
+            save_layout(newLayout)
         }
-        setLayout(new_layout);
+        setLayout(newLayout);
     }
-    function onDragStart(_current_layout, _oldItem, _newItem, _placeholder, event) {
+    function onDragStart(_currentLayout, _oldItem, _newItem, _placeholder, event) {
         setDragging(true);
         const now = new Date();
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
-    function onDragStop(_current_layout, _oldItem, _newItem, _placeholder, _event) {
+    function onDragStop(_currentLayout, _oldItem, _newItem, _placeholder, _event) {
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
     }
     function isDragging(event) {
