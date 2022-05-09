@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - The data model for SonarQube contained some rules, which no longer exist. These were kept for backwards compatibility but now cause the SonarQube web interface to "freeze". These rules are removed. Fixes [#3706](https://github.com/ICTU/quality-time/issues/3706).
 - When measuring 'manual test duration', show an error if the manual test duration field name or id does not exist in Jira, instead of silently ignoring the issue and reporting zero minutes. Fixes [#3714](https://github.com/ICTU/quality-time/issues/3714).
 - When showing a historic report in combination with measurements at multiple dates, *Quality-time* would use the latest report to decide which metrics to retrieve the measurements for, instead of the report at the date shown. Fixes [#3722](https://github.com/ICTU/quality-time/issues/3722).
+- When measuring 'performancetest scalability' with the Performancetest-runner as source, don't consider a trend breakpoint of 100% to be an error. Fixes [#3787](https://github.com/ICTU/quality-time/issues/3787).
 
 ### Changed
 

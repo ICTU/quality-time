@@ -21,10 +21,10 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
         """Test the scalability without breaking point.
 
         Test that if the percentage of the max users at which the ramp-up of throughput breaks is 100%, the metric
-        reports an error (since there is no breaking point).
+        does not report an error (despite there being no breaking point).
         """
         html = """<html><table class="config">
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>"""
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, parse_error="Traceback")
+        self.assert_measurement(response, value="100")
