@@ -74,6 +74,33 @@ function assertOrder(expected) {
     }
 }
 
+it('sorts the entities by status', async () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Entity name status/))
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Entity name status/))
+    assertOrder(["A", "B", "C"])
+})
+
+it('sorts the entities by status end date', async () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Status end date/))
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Status end date/))
+    assertOrder(["A", "B", "C"])
+})
+
+it('sorts the entities by status rationale', async () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Status rationale/))
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/Status rationale/))
+    assertOrder(["A", "B", "C"])
+})
+
 it('sorts the entities by integer', async () => {
     render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
     assertOrder(["C", "B", "A"])

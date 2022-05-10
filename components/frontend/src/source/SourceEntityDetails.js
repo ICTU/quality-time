@@ -51,8 +51,8 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                 <Grid.Column width={10}>
                     <TextInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label="Rationale"
-                        placeholder={`Rationale for ${name} status...`}
+                        label={`${capitalize(name)} status rationale`}
+                        placeholder={`Rationale for the ${name} status...`}
                         rows={Math.min(5, rationale?.split("\n").length ?? 1)}
                         set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "rationale", value, reload)}
                         value={rationale}

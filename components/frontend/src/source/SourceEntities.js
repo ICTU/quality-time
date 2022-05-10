@@ -51,6 +51,12 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
             </Table.HeaderCell>
             <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
                 {`${capitalize(entity_name)} status`}</Table.HeaderCell>
+            <Table.HeaderCell sorted={sorted("status_end_date")} onClick={() => sort("status_end_date")}>
+                Status end date
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={sorted("rationale")} onClick={() => sort("rationale")}>
+                Status rationale
+            </Table.HeaderCell>
             {entity_attributes.map((entity_attribute) =>
                 <Table.HeaderCell
                     key={entity_attribute.key} sorted={sorted(entity_attribute.key)} textAlign={alignment(entity_attribute.type)}
