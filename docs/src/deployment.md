@@ -43,7 +43,7 @@ To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWA
 ```
 
 ```{danger}
-Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible. 
+Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible.
 ```
 
 ## Settings per component
@@ -120,14 +120,13 @@ To configure the sleep duration, set the `NOTIFIER_SLEEP_DURATION` environment v
 
 ### Renderer
 
-The renderer converts *Quality-time* reports into PDFs. Currently, https has not been configured for communication between containers, so `ALLOW_HTTP` needs to be true.
+The renderer converts *Quality-time* reports into PDFs.
 
 The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezone) environment variables, for example:
 
 ```yaml
   renderer:
     environment:
-      - ALLOW_HTTP=true
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Set the timezone to CET
 ```

@@ -1,0 +1,11 @@
+{
+    "name": "quality-time-renderer",
+    "version": "3.35.0",
+    "private": true,
+    "type": "module",
+    "proxy": "http://localhost:9000",
+    "dependencies": {
+        "express": "^4.18.1",
+        "puppeteer": "^14.0.0"
+    }
+}

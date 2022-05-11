@@ -71,7 +71,6 @@ services:
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
-      - ALLOW_HTTP=true
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Make the PDF export use the correct timezone
 volumes:

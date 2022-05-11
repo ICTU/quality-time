@@ -16,14 +16,14 @@ Four bespoke components:
 
 - A [frontend](#frontend) serving the React UI,
 - A [server](#server) serving the API,
-- A [collector](#collector) to collect the measurements from the sources.
+- A [collector](#collector) to collect the measurements from the sources,
 - A [notifier](#notifier) to notify users about events such as metrics turning red.
 
 And three standard components:
 
 - A [proxy](#proxy) routing traffic from and to the user's browser,
 - A [database](#database) for storing reports and measurements,
-- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api)) to export reports to PDF,
+- A [renderer](#renderer) to export reports to PDF.
 
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
@@ -325,9 +325,9 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 ## Renderer
 
-The renderer component is used to export quality reports to PDF. *Quality-time* uses [url-to-pdf-api](https://github.com/alvarcarto/url-to-pdf-api).
+The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
-The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps the url-to-pdf-api sources (there is no official Docker image for url-to-pdf-api) in a *Quality-time* image.
+The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple web server.
 
 ## Test data
 

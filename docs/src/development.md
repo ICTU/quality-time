@@ -412,6 +412,6 @@ Base images used in the Docker containers, and additionally installed software, 
 - [LDAP](https://github.com/ICTU/quality-time/blob/master/components/ldap/Dockerfile): the OpenLDAP base image.
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Caddy base image.
-- [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the url-to-pdf-api image.
+- [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image and the curl version.
 - [Server](https://github.com/ICTU/quality-time/blob/master/components/server/Dockerfile): the Python base image.
 - [Testdata](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
