@@ -15,7 +15,7 @@ it('renders an empty read only value', () => {
 })
 
 it('renders in error state if a required value is missing', () => {
-    render(<MultipleChoiceInput value={[]} options={[]} required />)
+    render(<MultipleChoiceInput value={[]} required />)
     expect(screen.getByRole("combobox")).toBeInvalid()
 })
 

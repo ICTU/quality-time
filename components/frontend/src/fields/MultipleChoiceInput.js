@@ -14,7 +14,7 @@ function sort_options(option_list) {
 export function MultipleChoiceInput(props) {
     let { allowAdditions, editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
     const [value, setValue] = useState(props.value || [])
-    const [options, setOptions] = useState(props.options);
+    const [options, setOptions] = useState(props.options || []);
     const [searchQuery, setSearchQuery] = useState("");
     return (
         <Form>

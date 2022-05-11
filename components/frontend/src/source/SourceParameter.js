@@ -78,7 +78,7 @@ export function SourceParameter({
                 })
             })
         });
-        return values;
+        return Array.from(values);
     }
     var label = parameter_name;
     if (help_url) {
