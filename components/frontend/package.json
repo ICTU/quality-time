@@ -16,7 +16,7 @@
     "react-toastify": "^9.0.1",
     "semantic-ui-calendar-react-17": "^0.16.1",
     "semantic-ui-react": "^2.1.2",
-    "victory": "^36.3.2"
+    "victory": "^36.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
