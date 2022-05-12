@@ -7,7 +7,7 @@ RUN apk --no-cache add curl=~7.80
 
 WORKDIR /work
 COPY . /work
-RUN npm install -g npm@8.7.0
+RUN npm install -g npm@8.10.0
 RUN npm install
 RUN npm install -g serve@13.0.2
 RUN npm run build

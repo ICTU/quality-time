@@ -127,6 +127,8 @@ The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezon
 ```yaml
   renderer:
     environment:
+      - PROXY_HOST=${PROXY_HOST:-www}
+      - PROXY_PORT=${PROXY_PORT:-80}
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Set the timezone to CET
 ```

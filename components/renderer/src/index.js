@@ -2,6 +2,8 @@ import express from "express";
 import puppeteer from "puppeteer";
 
 const app = express();
+const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
+const PROXY = `${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
 
 app.get("/api/health", async (_req, res) => {
     res.status(200).send("OK")
@@ -9,7 +11,7 @@ app.get("/api/health", async (_req, res) => {
 
 app.get("/api/render", async (req, res) => {
     try {
-        const url = req.query.url;
+        const url = `${PROXY}/${req.query.path}`;
         const browser = await puppeteer.launch({
             defaultViewport: { width: 1200, height: 800 },
             args: ['--disable-dev-shm-usage', '--no-sandbox'],
@@ -41,7 +43,6 @@ app.get("/api/render", async (req, res) => {
     }
 })
 
-const port = 9000;
-app.listen(port, () => {
-    console.log(`Renderer started on port ${port}`);
+app.listen(RENDERER_PORT, () => {
+    console.log(`Renderer started on port ${RENDERER_PORT}. Using proxy ${PROXY}`);
 });

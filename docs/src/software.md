@@ -327,7 +327,7 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
-The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple web server.
+The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple API.
 
 ## Test data
 

@@ -71,6 +71,8 @@ services:
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
+      - PROXY_HOST=${PROXY_HOST:-www}
+      - PROXY_PORT=${PROXY_PORT:-80}
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Make the PDF export use the correct timezone
 volumes:
