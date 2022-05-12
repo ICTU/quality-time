@@ -263,8 +263,6 @@ The server uses the following environment variables:
 | Name | Default value | Description |
 | :--- | :---------- | :------------ |
 | SERVER_PORT | 5001 | Port of the server. |
-| PROXY_HOST | www | Hostname of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
-| PROXY_PORT | 80 | Port of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
 | DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
 | LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
 | LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name. |
@@ -328,6 +326,21 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
 The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple API.
+
+### Health check
+
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the renderer API server.
+
+### Configuration
+
+The renderer uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :---------- | :------------ |
+| PROXY_HOST | www | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
+| PROXY_PORT | 80 | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
+| LC_ALL | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
+| TZ | | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 
 ## Test data
 

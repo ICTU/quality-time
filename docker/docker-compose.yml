@@ -45,8 +45,6 @@ services:
     image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
     environment:
       - SERVER_PORT=${SERVER_PORT:-5001}
-      - PROXY_HOST=${PROXY_HOST:-www}
-      - PROXY_PORT=${PROXY_PORT:-80}
       - DATABASE_URL=mongodb://root:root@database:27017
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
