@@ -1,9 +1,10 @@
 import express from "express";
 import puppeteer from "puppeteer";
+import sanitizeUrl from "@braintree/sanitize-url");
 
 const app = express();
 const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
-const PROXY = `http://${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
+const PROXY = `${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
 
 app.get("/api/health", async (_req, res) => {
     res.status(200).send("OK")
@@ -11,7 +12,7 @@ app.get("/api/health", async (_req, res) => {
 
 app.get("/api/render", async (req, res) => {
     try {
-        const url = `${PROXY}/${req.query.path}`;
+        const url = sanitizeUrl(`http://${PROXY}/${req.query.path}`);
         const browser = await puppeteer.launch({
             defaultViewport: { width: 1200, height: 800 },
             args: ['--disable-dev-shm-usage', '--no-sandbox'],
