@@ -1,6 +1,6 @@
 import express from "express";
 import puppeteer from "puppeteer";
-import sanitizeUrl from "@braintree/sanitize-url");
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 const app = express();
 const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
