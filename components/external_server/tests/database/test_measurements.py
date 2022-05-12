@@ -4,8 +4,7 @@ import unittest
 from unittest.mock import Mock
 
 from shared.model.metric import Metric
-
-from database.measurements import measurements_by_metric, recent_measurements
+from shared.database.measurements import measurements_by_metric, recent_measurements
 
 from ..fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 

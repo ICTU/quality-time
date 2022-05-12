@@ -26,7 +26,7 @@ RUN useradd --create-home external_server
 WORKDIR /home/external_server
 USER external_server
 
-HEALTHCHECK CMD curl -f http://localhost:${SERVER_PORT:-5001}/api/health || exit 1
+HEALTHCHECK CMD curl -f http://localhost:${EXTERNAL_SERVER_PORT:-5001}/api/health || exit 1
 
 COPY --from=compile-image /home/external_server/venv /home/external_server/venv
 COPY external_server/src /home/external_server

@@ -16,6 +16,7 @@ SubjectId = NewType("SubjectId", str)
 MetricId = NewType("MetricId", str)
 SourceId = NewType("SourceId", str)
 SessionId = NewType("SessionId", str)
+MeasurementId = NewType("MeasurementId", str)
 
 
 @dataclass

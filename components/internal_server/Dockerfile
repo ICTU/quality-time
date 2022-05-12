@@ -29,7 +29,7 @@ RUN useradd --create-home internal_server
 WORKDIR /home/internal_server
 USER internal_server
 
-HEALTHCHECK CMD curl -f http://localhost:${SERVER_PORT:-5002}/api/health || exit 1
+HEALTHCHECK CMD curl -f http://localhost:${INTERNAL_SERVER_PORT:-5002}/api/health || exit 1
 
 COPY --from=compile-image /home/internal_server/venv /home/internal_server/venv
 COPY internal_server/src /home/internal_server

@@ -23,7 +23,7 @@ class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
         used_scales = set()
         for metric in metrics.__root__.values():
             metric_scales = set(metric.scales)
-            if metric_scales > scales:
+            if not metric_scales <= scales:
                 raise ValueError(f"Metric '{metric.name}' has invalid scales {metric_scales - scales}")
             used_scales |= metric_scales
         if scales - used_scales:

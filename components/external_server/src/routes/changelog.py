@@ -6,8 +6,9 @@ import bottle
 from pymongo.database import Database
 
 from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
+from shared.database import measurements
 
-from database import measurements, reports
+from database import reports
 
 
 def _get_changelog(database: Database, nr_changes: str, **uuids: str):
