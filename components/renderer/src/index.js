@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 
 const app = express();
 const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
-const PROXY = `${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
+const PROXY = `http://${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
 
 app.get("/api/health", async (_req, res) => {
     res.status(200).send("OK")

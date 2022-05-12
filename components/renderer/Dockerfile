@@ -5,7 +5,7 @@ LABEL description="Quality-time PDF render service"
 
 RUN apk --no-cache add curl=~7.80
 
-# skipcq: DOK-DL3008
+# skipcq: DOK-DL3018
 RUN apk add --no-cache \
     msttcorefonts-installer font-noto fontconfig \
     freetype ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
@@ -21,7 +21,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 WORKDIR /home/renderer
-COPY package*.json /home/renderer
+COPY package*.json /home/renderer/
 RUN npm install
 
 COPY src/index.js /home/renderer/index.js
