@@ -16,14 +16,14 @@ Four bespoke components:
 
 - A [frontend](#frontend) serving the React UI,
 - A [server](#server) serving the API,
-- A [collector](#collector) to collect the measurements from the sources.
+- A [collector](#collector) to collect the measurements from the sources,
 - A [notifier](#notifier) to notify users about events such as metrics turning red.
 
 And three standard components:
 
 - A [proxy](#proxy) routing traffic from and to the user's browser,
 - A [database](#database) for storing reports and measurements,
-- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api)) to export reports to PDF,
+- A [renderer](#renderer) to export reports to PDF.
 
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
@@ -42,7 +42,7 @@ As a health check, the favicon is downloaded.
 The frontend uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | FRONTEND_PORT | 5000 | The port the frontend listens on. |
 
 ## Server
@@ -261,10 +261,8 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ser
 The server uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_PORT | 5001 | Port of the server. |
-| PROXY_HOST | www | Hostname of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
-| PROXY_PORT | 80 | Port of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
 | DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
 | LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
 | LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name. |
@@ -288,7 +286,7 @@ Every time the collector wakes up, it writes the current date and time in ISO fo
 The collector uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_HOST | server | Hostname of the server. The collector uses this to get the metrics and post the measurements. |
 | SERVER_PORT | 5001 | Port of the server. The collector uses this to get the metrics and post the measurements. |
 | COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
@@ -306,7 +304,7 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 ### Configuration
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_HOST | server | Hostname of the server. The notifier uses this to get the metrics. |
 | SERVER_PORT | 5001 | Port of the server. The notifier uses this to get the metrics. |
 | NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
@@ -325,9 +323,24 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 ## Renderer
 
-The renderer component is used to export quality reports to PDF. *Quality-time* uses [url-to-pdf-api](https://github.com/alvarcarto/url-to-pdf-api).
+The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
-The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps the url-to-pdf-api sources (there is no official Docker image for url-to-pdf-api) in a *Quality-time* image.
+The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple API.
+
+### Health check
+
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the renderer API server.
+
+### Configuration
+
+The renderer uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| PROXY_HOST | www | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
+| PROXY_PORT | 80 | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
+| LC_ALL | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
+| TZ | | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 
 ## Test data
 
@@ -354,15 +367,13 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 ## Test LDAP server
 
-The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/components/ldap) is included for test purposes. It is based on the `osixia/openldap` Docker image, and adds two extra users. The Docker image is published as `ictu/quality-time_testldap` on Docker Hub.
+The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/components/ldap) is included for test purposes. It is based on the `osixia/openldap` Docker image, and adds two users. The Docker image is published as `ictu/quality-time_testldap` on Docker Hub.
 
 ### LDAP users
 
-The LDAP database has two (*) users:
+The LDAP database has two users:
 
 | User          | Email address       | Username | Password |
 | ------------- | ------------------- | -------- | -------- |
 | Jane Doe      | janedoe@example.org | jadoe    | secret   |
 | John Doe      | johndoe@example.org | jodoe    | secret   |
-
-(*) The `osixia/openldap` Docker image normally has an administrator user as well, but due to [this issue in OpenLDAP 1.5.0](https://github.com/osixia/docker-openldap/issues/555) this user is currently not available.

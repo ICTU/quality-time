@@ -45,8 +45,6 @@ services:
     image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
     environment:
       - SERVER_PORT=${SERVER_PORT:-5001}
-      - PROXY_HOST=${PROXY_HOST:-www}
-      - PROXY_PORT=${PROXY_PORT:-80}
       - DATABASE_URL=mongodb://root:root@database:27017
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
@@ -71,7 +69,8 @@ services:
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
-      - ALLOW_HTTP=true
+      - PROXY_HOST=${PROXY_HOST:-www}
+      - PROXY_PORT=${PROXY_PORT:-80}
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=Europe/Amsterdam  # Make the PDF export use the correct timezone
 volumes:
