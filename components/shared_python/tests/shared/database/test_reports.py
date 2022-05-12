@@ -44,7 +44,7 @@ class InsertNewReportTest(unittest.TestCase):
 
         insert_new_report(
             self.database,
-            "insert a test report",
+            "insert a second test report",
             [REPORT_ID, REPORT_ID2],
             report_1,
             report_2,
@@ -66,7 +66,7 @@ class InsertNewReportTest(unittest.TestCase):
             },
         )
         insert_new_report(
-            self.database, "insert a test report", REPORT_ID, report_to_insert
+            self.database, "insert another test report", REPORT_ID, report_to_insert
         )
 
         self.database.reports.insert_one.assert_called_once_with(report_to_insert)
