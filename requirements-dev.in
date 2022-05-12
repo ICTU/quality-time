@@ -5,7 +5,7 @@ dlint==0.12.0
 lxml==4.8.0  # Needed to be able to run mypy with `--html-report`.
 mypy==0.950
 pep8-naming==0.12.1
-pip==22.0.4
+pip==22.1
 pip-audit==2.2.1
 pip-tools==6.6.0  # To add hashes to requirements
 pydantic==1.9.0  # Needed for importing the data model from the server component
