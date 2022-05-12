@@ -42,7 +42,7 @@ As a health check, the favicon is downloaded.
 The frontend uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | FRONTEND_PORT | 5000 | The port the frontend listens on. |
 
 ## Server
@@ -261,7 +261,7 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ser
 The server uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_PORT | 5001 | Port of the server. |
 | DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
 | LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
@@ -286,7 +286,7 @@ Every time the collector wakes up, it writes the current date and time in ISO fo
 The collector uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_HOST | server | Hostname of the server. The collector uses this to get the metrics and post the measurements. |
 | SERVER_PORT | 5001 | Port of the server. The collector uses this to get the metrics and post the measurements. |
 | COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
@@ -304,7 +304,7 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 ### Configuration
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | SERVER_HOST | server | Hostname of the server. The notifier uses this to get the metrics. |
 | SERVER_PORT | 5001 | Port of the server. The notifier uses this to get the metrics. |
 | NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
@@ -336,7 +336,7 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ren
 The renderer uses the following environment variables:
 
 | Name | Default value | Description |
-| :--- | :---------- | :------------ |
+| :--- | :------------ | :---------- |
 | PROXY_HOST | www | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
 | PROXY_PORT | 80 | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
 | LC_ALL | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
@@ -367,15 +367,13 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 ## Test LDAP server
 
-The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/components/ldap) is included for test purposes. It is based on the `osixia/openldap` Docker image, and adds two extra users. The Docker image is published as `ictu/quality-time_testldap` on Docker Hub.
+The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/components/ldap) is included for test purposes. It is based on the `osixia/openldap` Docker image, and adds two users. The Docker image is published as `ictu/quality-time_testldap` on Docker Hub.
 
 ### LDAP users
 
-The LDAP database has two (*) users:
+The LDAP database has two users:
 
 | User          | Email address       | Username | Password |
 | ------------- | ------------------- | -------- | -------- |
 | Jane Doe      | janedoe@example.org | jadoe    | secret   |
 | John Doe      | johndoe@example.org | jodoe    | secret   |
-
-(*) The `osixia/openldap` Docker image normally has an administrator user as well, but due to [this issue in OpenLDAP 1.5.0](https://github.com/osixia/docker-openldap/issues/555) this user is currently not available.
