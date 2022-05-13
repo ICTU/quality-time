@@ -28,7 +28,7 @@ services:
       - SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
       - SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
     depends_on:
-      - internal_server
+      - external_server
     cap_drop:
       - ALL
   notifier:
@@ -38,7 +38,7 @@ services:
       - SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
       - NOTIFIER_SLEEP_DURATION=60
     depends_on:
-      - internal_server
+      - external_server
     cap_drop:
       - ALL
   external_server:

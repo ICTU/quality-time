@@ -9,7 +9,7 @@ from shared.database.measurements import recent_measurements
 from database.reports import latest_reports
 
 
-@bottle.get("/api/v3/report", authentication_required=False)
+@bottle.get("/api/v3/report")
 def get_report(database: Database):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     data_model = latest_datamodel(database)
