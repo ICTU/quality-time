@@ -29,6 +29,8 @@ services:
       dockerfile: internal_server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
+    ports:
+      - "5002:5002"
   database:
     build: ../components/database
     ports:
