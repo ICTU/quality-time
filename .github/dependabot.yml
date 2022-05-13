@@ -95,8 +95,8 @@ updates:
     interval: daily
     time: "04:00"
   ignore:
-    - dependency-name: "ictu/url-to-pdf-api"
-      versions: ["1.0.1", "1.0.2"]  # These versions don't work
+    - dependency-name: "node"
+      update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
   open-pull-requests-limit: 10
 
 - package-ecosystem: docker
