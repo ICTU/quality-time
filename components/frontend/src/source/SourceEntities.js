@@ -4,11 +4,12 @@ import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
 
-export function alignment(column_type, alignment) {
-    if (alignment === "left" || alignment === "right") {
-        return alignment
+export function alignment(attribute_type, attribute_alignment) {
+    if (attribute_alignment === "left" || attribute_alignment === "right") {
+        return attribute_alignment
     }
-    return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[column_type];
+    // The attribute has no explicitly set aligment, use the attribute type to determine the alignment
+    return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[attribute_type];
 }
 
 export function SourceEntities({ metric, metric_uuid, source, reload }) {
