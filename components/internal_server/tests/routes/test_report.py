@@ -20,15 +20,7 @@ class ReportTest(unittest.TestCase):
         self.database = Mock()
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
-            scales=["count", "percentage"],
-            subjects=dict(subject_type=dict(name="Subject type")),
-            metrics=dict(
-                metric_type=dict(
-                    name="Metric type",
-                    scales=["count", "percentage"],
-                )
-            ),
-            sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
+            metrics=dict(metric_type=dict()),
         )
         self.database.measurements.find.return_value = []
         self.report = Report(self.database.datamodels.find_one(), create_report())
