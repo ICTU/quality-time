@@ -40,7 +40,7 @@ kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give server time to write coverage data
 if [[ "$result" -eq "0" ]]
 then
-  coverage combine . components/external_server components/internal_server
+  coverage combine . components/external_server
   coverage xml
   coverage html
   coverage report
