@@ -1,5 +1,7 @@
 #!/bin/sh
 
+sleep 60 # give time to start up docker containers
+
 cd tests/application_tests
 python3 -m venv venv
 . venv/bin/activate
