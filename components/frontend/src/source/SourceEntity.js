@@ -47,7 +47,11 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
         <Table.Cell style={style}>{status_end_date}</Table.Cell>
         <Table.Cell style={style}>{rationale}</Table.Cell>
         {entity_attributes.map((entity_attribute, col_index) =>
-            <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)} style={style}>
+            <Table.Cell
+                key={col_index}
+                style={style}
+                textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
+            >
                 <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />
             </Table.Cell>)}
     </>;

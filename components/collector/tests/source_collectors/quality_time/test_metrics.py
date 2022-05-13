@@ -39,8 +39,9 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
                     report_url=f"{self.url}/r1",
                     subject_url=f"{self.url}/r1#s1",
                     metric_url=f"{self.url}/r1#m2",
-                    measurement="20 violations",
-                    target="≦ 2 violations",
+                    measurement="20",
+                    target="≦ 2",
+                    unit="violations",
                     status="target_not_met",
                     status_start_date="2020-05-23T07:53:17+00:00",
                 )
@@ -82,8 +83,9 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
                     report_url=f"{self.url}/r1",
                     subject_url=f"{self.url}/r1#s1",
                     metric_url=f"{self.url}/r1#m2",
-                    measurement="20 violations",
-                    target="≦ 2 violations",
+                    measurement="20",
+                    target="≦ 2",
+                    unit="violations",
                     status="target_not_met",
                     status_start_date="2020-05-23T07:53:17+00:00",
                 )

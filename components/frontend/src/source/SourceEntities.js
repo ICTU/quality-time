@@ -4,7 +4,10 @@ import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
 
-export function alignment(column_type) {
+export function alignment(column_type, alignment) {
+    if (alignment === "left" || alignment == "right") {
+        return alignment
+    }
     return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[column_type];
 }
 
@@ -59,8 +62,10 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
             </Table.HeaderCell>
             {entity_attributes.map((entity_attribute) =>
                 <Table.HeaderCell
-                    key={entity_attribute.key} sorted={sorted(entity_attribute.key)} textAlign={alignment(entity_attribute.type)}
+                    key={entity_attribute.key}
                     onClick={() => sort(entity_attribute.key, entity_attribute.type)}
+                    sorted={sorted(entity_attribute.key)}
+                    textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
                 >
                     <span>{entity_attribute.name}</span>
                     {

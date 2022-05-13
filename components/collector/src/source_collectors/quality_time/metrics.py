@@ -74,12 +74,12 @@ class QualityTimeMetrics(QualityTimeCollector):
         entity["status"] = status
         status_start = self.__metric_status_start(metric)
         entity["status_start_date"] = status_start.isoformat() if status_start else ""
-        unit = metric.get("unit") or self._data_model["metrics"][metric["type"]]["unit"]
-        entity["measurement"] = f"{value or '?'} {unit}"
+        entity["unit"] = metric.get("unit") or self._data_model["metrics"][metric["type"]]["unit"]
+        entity["measurement"] = value
         direction = str(metric.get("direction") or self._data_model["metrics"][metric["type"]]["direction"])
         direction = {"<": "≦", ">": "≧"}.get(direction, direction)
         target = metric.get("target") or self._data_model["metrics"][metric["type"]]["target"]
-        entity["target"] = f"{direction} {target} {unit}"
+        entity["target"] = f"{direction} {target}"
 
     @staticmethod
     def __metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:

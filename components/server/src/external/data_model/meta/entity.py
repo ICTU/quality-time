@@ -31,6 +31,13 @@ class EntityAttributeType(str, Enum):
     STATUS = "status"
 
 
+class EntityAttributeAligment(str, Enum):
+    """Alignment of the entity attribute."""
+
+    LEFT = "left"
+    RIGHT = "right"
+
+
 class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
     """Attributes of measurement entities."""
 
@@ -39,6 +46,7 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
     url: Optional[str] = None  # Which key to use to get the URL for this attribute
     color: Optional[dict[str, Color]] = None
     type: Optional[EntityAttributeType] = None
+    alignment: Optional[EntityAttributeAligment] = None  # If not given, the aligment is based on the attribute type
     pre: Optional[bool] = None  # Should the attribute be formatted using <pre></pre>? Defaults to False
     visible: Optional[bool] = None  # Should this attribute be visible in the UI? Defaults to True
 
