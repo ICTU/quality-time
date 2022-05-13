@@ -13,8 +13,6 @@ COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-USER server
-
 FROM python:3.10.4-slim-bullseye
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
