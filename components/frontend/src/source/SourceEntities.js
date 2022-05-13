@@ -5,7 +5,7 @@ import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
 
 export function alignment(column_type, alignment) {
-    if (alignment === "left" || alignment == "right") {
+    if (alignment === "left" || alignment === "right") {
         return alignment
     }
     return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[column_type];
