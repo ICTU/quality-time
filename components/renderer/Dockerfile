@@ -1,4 +1,4 @@
-FROM node:16.15.0-alpine3.15
+FROM node:18.1.0-alpine3.15
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time PDF render service"
