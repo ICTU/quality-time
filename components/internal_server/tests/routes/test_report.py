@@ -13,14 +13,12 @@ from ..fixtures import create_report
 class ReportTest(unittest.TestCase):
     """Unit tests for getting reports."""
 
-    PAST_DATE = "2021-08-31T23:59:59.000Z"
-
     def setUp(self):
         """Extend to set up a database with a report and a user session."""
         self.database = Mock()
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
-            metrics=dict(metric_type=dict()),
+            metrics=dict(metric_type={}),
         )
         self.database.measurements.find.return_value = []
         self.report = Report(self.database.datamodels.find_one(), create_report())
