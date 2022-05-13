@@ -71,71 +71,15 @@ jobs:
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.4-bullseye tests/application_tests/ci/test.sh
 
   feature_tests:
-    docker:
-      - image: cimg/python:3.10.4
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_testldap:v3.36.0-rc.1
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_renderer:v3.36.0-rc.1
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-        environment:
-          ALLOW_HTTP: true
-          LC_ALL: en_GB.UTF-8
-      - image: ictu/quality-time_frontend:v3.36.0-rc.1
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-      - image: ictu/quality-time_database:v3.36.0-rc.1
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: root
+    machine:
+      image: ubuntu-2004:current
+    parallelism: 1
     steps:
       - checkout
-      - run:
-          working_directory: components/server
-          command: |
-            mkdir -p /tmp/log
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
-            pip install --progress-bar off -r requirements-internal.txt &>> /tmp/log/pip-internal.log
-      - run:
-          background: true
-          working_directory: components/server
-          command: |
-            . venv/bin/activate
-            export RENDERER_HOST=localhost
-            export PROXY_HOST=localhost
-            export PROXY_PORT=5000
-            export COVERAGE_RCFILE=../../tests/feature_tests/.coveragerc
-            python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
-      - run:
-          command: |
-            cd tests/feature_tests
-            python3 -m venv venv
-            . venv/bin/activate
-            pip --quiet install --progress-bar off -r requirements-dev.txt
-            cd ../..
-            export COVERAGE_RCFILE=tests/feature_tests/.coveragerc
-            coverage run -m behave --format progress tests/feature_tests
-            kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-            sleep 2  # Give the server time to write the coverage data
-            coverage combine . components/server
-            coverage html
-            coverage report
+      - run: |
+          ./tests/feature_tests/ci/test.sh
       - store_artifacts:
-          path: /tmp/log
-      - store_artifacts:
-          path: build/features-coverage
+          path: build
 
 workflows:
   version: 2
