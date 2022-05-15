@@ -64,6 +64,7 @@ jobs:
     steps:
       - checkout
       - run: |
+          mkdir -p build
           export ENV=ci
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
