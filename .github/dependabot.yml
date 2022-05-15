@@ -99,6 +99,13 @@ updates:
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
   open-pull-requests-limit: 10
 
+- package-ecosystem: npm
+  directory: "/components/renderer"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+
 - package-ecosystem: docker
   directory: "/components/server"
   schedule:
