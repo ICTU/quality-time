@@ -64,11 +64,15 @@ jobs:
     steps:
       - checkout
       - run: |
+          mkdir -p build
           export ENV=ci
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-          docker-compose build && docker-compose up -d
+          docker compose build && docker compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.4-bullseye tests/application_tests/ci/test.sh
+          docker compose logs > build/containers.log
+      - store_artifacts:
+          path: build
 
   feature_tests:
     machine:
