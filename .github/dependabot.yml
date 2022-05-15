@@ -5,21 +5,21 @@ updates:
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/collector"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/collector"
@@ -29,7 +29,7 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/database"
@@ -39,7 +39,7 @@ updates:
   ignore:
     - dependency-name: "mongo"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Patches only, please
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/frontend"
@@ -49,28 +49,28 @@ updates:
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: npm
   directory: "/components/frontend"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/ldap"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/notifier"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/notifier"
@@ -80,14 +80,14 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/proxy"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/renderer"
@@ -97,14 +97,14 @@ updates:
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: npm
   directory: "/components/renderer"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/server"
@@ -114,14 +114,14 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/server"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/testdata"
@@ -131,39 +131,39 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: npm
   directory: "/docs"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/docs"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/release"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/application_tests"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests"
   schedule:
     interval: daily
     time: "04:00"
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 100
