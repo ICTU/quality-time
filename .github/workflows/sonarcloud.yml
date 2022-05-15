@@ -36,6 +36,8 @@ jobs:
       if: env.SONAR_TOKEN != null
       working-directory: components/collector
       run: |
+        python -m venv venv
+        . venv/bin/activate
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
@@ -44,6 +46,8 @@ jobs:
       if: env.SONAR_TOKEN != null
       working-directory: components/notifier
       run: |
+        python -m venv venv
+        . venv/bin/activate
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
@@ -52,8 +56,26 @@ jobs:
       if: env.SONAR_TOKEN != null
       working-directory: components/server
       run: |
+        python -m venv venv
+        . venv/bin/activate
         pip install -r requirements.txt -r requirements-dev.txt
         pip install -r requirements-internal.txt
+        ci/unittest.sh
+        export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
+        python -m xmlrunner --output-file build/unittests.xml
+    - name: Shared Python
+      if: env.SONAR_TOKEN != null
+      working-directory: components/shared_python
+      run: |
+        python -m venv venv
+        . venv/bin/activate
+        # Install the requirements and dev requirements in two steps to prevent a version conflict when installing both at the same time:
+        # ERROR: Cannot install urllib3==1.26.8 and urllib3==1.26.9 because these package versions have conflicting dependencies.
+        # The conflict is caused by:
+        #   The user requested urllib3==1.26.9
+        #   The user requested urllib3==1.26.8
+        pip install -r requirements.txt
+        pip install -r requirements-dev.txt
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
@@ -76,12 +98,15 @@ jobs:
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
         touch components/notifier/src/__init__.py
+        touch components/shared_python/src/__init__.py
+        touch components/shared_python/src/__init__.py
     - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
       if: env.SONAR_TOKEN != null
       run: |
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_python/build/unittest-coverage.xml
     - name: Sonarcloud scan
       if: env.SONAR_TOKEN != null
       uses: sonarsource/sonarcloud-github-action@master
