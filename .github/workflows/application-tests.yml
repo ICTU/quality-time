@@ -20,6 +20,9 @@ jobs:
           mkdir -p build
           docker compose build && docker compose up -d
           docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.4-bullseye tests/application_tests/ci/test.sh
+      - name: Save container logs
+        if: always()
+        run: |
           docker compose logs > build/containers.log
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
