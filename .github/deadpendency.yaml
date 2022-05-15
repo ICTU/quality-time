@@ -18,6 +18,11 @@ additional-dependency-files:
     path: components/server/requirements-dev.in
 
   - type: pip-requirements-txt
+    path: components/shared_python/requirements.in
+  - type: pip-requirements-txt
+    path: components/shared_python/requirements-dev.in
+
+  - type: pip-requirements-txt
     path: tests/application_tests/requirements-dev.in
   - type: pip-requirements-txt
     path: tests/application_tests/requirements.txt

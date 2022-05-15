@@ -22,6 +22,8 @@ dependency_file_paths = [
   "components/notifier/requirements-dev.txt",
   "components/server/requirements.txt",
   "components/server/requirements-dev.txt",
+  "components/shared_python/requirements.txt",
+  "components/shared_python/requirements-dev.txt",
 ]
 additional_builtins = ["given", "when", "then"]
 
