@@ -37,10 +37,9 @@ jobs:
     steps:
       - checkout
       - run:
-          command: |
-            cd components/frontend
-            npm install
-            npm test
+          cd components/frontend
+          npm install
+          npm test
 
   unittest_docs:
     docker:
@@ -66,11 +65,16 @@ jobs:
       - run: |
           mkdir -p build
           export ENV=ci
+          export QUALITY_TIME_VERSION=v3.36.0-rc.1
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.4-bullseye tests/application_tests/ci/test.sh
           docker compose logs > build/containers.log
+      - run:
+          name: Save container logs on failure
+          when: on_fail
+          command: docker compose logs > build/containers.log
       - store_artifacts:
           path: build
 
