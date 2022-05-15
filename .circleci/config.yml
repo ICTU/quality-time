@@ -36,7 +36,7 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
-      - run:
+      - run: |
           cd components/frontend
           npm install
           npm test
