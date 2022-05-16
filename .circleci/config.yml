@@ -65,7 +65,7 @@ jobs:
       - run: |
           mkdir -p build
           export ENV=ci
-          export QUALITY_TIME_VERSION=v3.36.0-rc.1
+          export QUALITY_TIME_VERSION=v3.36.0-rc.2
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
