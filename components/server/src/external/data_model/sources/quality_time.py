@@ -1,6 +1,6 @@
 """Quality-time source."""
 
-from ..meta.entity import Color, EntityAttributeType
+from ..meta.entity import Color, EntityAttributeAligment, EntityAttributeType
 from ..meta.source import Source
 from ..meta.unit import Unit
 from ..parameters import IntegerParameter, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, URL
@@ -254,7 +254,8 @@ QUALITY_TIME = Source(
                 ),
                 dict(name="Status start date", type=EntityAttributeType.DATE),
                 dict(name="Measurement", type=EntityAttributeType.INTEGER),
-                dict(name="Target", type=EntityAttributeType.INTEGER),
+                dict(name="Target", alignment=EntityAttributeAligment.RIGHT),
+                dict(name="Unit"),
             ],
         ),
         missing_metrics=dict(

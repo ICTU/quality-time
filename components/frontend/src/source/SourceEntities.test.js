@@ -15,6 +15,7 @@ const data_model = {
                         { key: "integer", type: "integer", name: "integer" },
                         { key: "float", type: "float", name: "float" },
                         { key: "text", type: "text", name: "text", help: "help text" },
+                        { key: "rightalign", type: "text", name: "rightalign", alignment: "right" },
                         { key: "date", type: "date", name: "date only" },
                         { key: "datetime", type: "datetime", name: "datetime" },
                         { key: "minutes", type: "minutes", name: "minutes" }
@@ -42,6 +43,7 @@ const source = {
             integer: "1",
             float: "0.3",
             text: "CCC",
+            rightalign: "right aligned",
             date: "01-01-2000",
             datetime: "2000-01-01T10:00:00Z",
             minutes: "1"
@@ -51,6 +53,7 @@ const source = {
             integer: "3",
             float: "0.2",
             text: "BBB",
+            rightalign: "right aligned",
             date: "01-01-2002",
             datetime: "2002-01-01T10:00:00Z",
             minutes: "2"
@@ -60,6 +63,7 @@ const source = {
             integer: "2",
             float: "0.1",
             text: "AAA",
+            rightalign: "right aligned",
             date: "01-01-2001",
             datetime: "2001-01-01T10:00:00Z",
             minutes: "3"
