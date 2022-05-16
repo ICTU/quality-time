@@ -14,8 +14,8 @@ METRICS = Metrics.parse_obj(
         accessibility=dict(
             name="Accessibility violations",
             description="The number of accessibility violations in the web user interface of the software.",
-            rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to "
-            "create high quality websites and web tools, and not exclude people from using their products and "
+            rationale="According to the W3C, 'Accessibility is essential for developers and organisations that want to "
+            "create high-quality websites and web tools, and not exclude people from using their products and "
             "services.' Web accessibility evaluation tools can help determine if web content meets accessibility "
             "standards. Typically, these tools evaluate against one or more accessibility standards, such as the "
             "W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being "
@@ -29,9 +29,9 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
-            rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to "
+            rationale="Source code should not be commented out because it bloats the sources and may confuse the reader as to "
             "why the code is still there. Unused code should be deleted. It can be retrieved from the version "
-            "control system if needed.",
+            "control system if needed. Commented out code contributes to the risk of unmaintainable software.",
             rationale_urls=[
                 "https://rules.sonarsource.com/python/RSPEC-125",
                 "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
@@ -43,7 +43,7 @@ METRICS = Metrics.parse_obj(
         ),
         complex_units=dict(
             name="Complex units",
-            description="The amount of units (classes, functions, methods, files) that are too complex.",
+            description="The number of units (classes, functions, methods, files) that are too complex.",
             rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to "
             "test because there are more execution paths, that need to be tested. Complex code is harder to "
             "maintain because it is harder to understand and analyze.",
@@ -59,10 +59,10 @@ METRICS = Metrics.parse_obj(
         ),
         dependencies=dict(
             name="Dependencies",
-            description="The amount of (outdated) dependencies.",
+            description="The number of (outdated) dependencies.",
             rationale="Dependencies that are out of date can be considered a form of technical debt. On the one hand, "
             "not upgrading a dependency postpones the work of testing the new version. And, if the new version of a "
-            "dependency has backwards-incompatiable changes, it also postpones making adaptations to cater for those "
+            "dependency has backwards-incompatible changes, it also postpones making adaptations to cater for those "
             "changes. On the other hand, upgrading the dependency may fix bugs and vulnerabilities, and unlock new "
             "features. Measuring the number of outdated dependencies provides insight into the size of this backlog.",
             scales=["count", "percentage"],
@@ -73,7 +73,7 @@ METRICS = Metrics.parse_obj(
         ),
         duplicated_lines=dict(
             name="Duplicated lines",
-            description="The amount of lines that are duplicated.",
+            description="The number of lines that are duplicated.",
             rationale="Duplicate code makes software larger and thus potentially harder to maintain. Also, if the "
             "duplicated code contains bugs, they need to be fixed in multiple locations.",
             rationale_urls=[
@@ -88,7 +88,7 @@ METRICS = Metrics.parse_obj(
             name="Failed CI-jobs",
             description="The number of continuous integration jobs or pipelines that have failed.",
             rationale="Although it is to be expected that CI-jobs or pipelines will fail from time to time, a "
-            "significant amount of failed CI-jobs or pipelines over a longer period of time could be a sign that "
+            "significant number of failed CI-jobs or pipelines over a longer period of time could be a sign that "
             "the continuous integration process is not functioning properly. Also, having many failed CI-jobs or "
             "pipelines makes it hard to see that additional jobs or pipelines start failing.",
             unit=Unit.CI_JOBS,
@@ -125,7 +125,7 @@ METRICS = Metrics.parse_obj(
         ),
         long_units=dict(
             name="Long units",
-            description="The amount of units (functions, methods, files) that are too long.",
+            description="The number of units (functions, methods, files) that are too long.",
             rationale="Long units are deemed harder to maintain.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -157,7 +157,7 @@ METRICS = Metrics.parse_obj(
         ),
         many_parameters=dict(
             name="Many parameters",
-            description="The amount of units (functions, methods, procedures) that have too many parameters.",
+            description="The number of units (functions, methods, procedures) that have too many parameters.",
             rationale="Units with many parameters are deemed harder to maintain.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -169,7 +169,7 @@ METRICS = Metrics.parse_obj(
         ),
         merge_requests=dict(
             name="Merge requests",
-            description="The amount of merge requests.",
+            description="The number of merge requests.",
             rationale="Merge requests need to be reviewed and approved. This metric allows for measuring the number of "
             "merge requests without the required approvals.",
             scales=["count", "percentage"],
@@ -180,7 +180,7 @@ METRICS = Metrics.parse_obj(
         ),
         metrics=dict(
             name="Metrics",
-            description="The amount of metrics from one or more quality reports, with specific states and/or tags.",
+            description="The number of metrics from one or more quality reports, with specific states and/or tags.",
             rationale="Use this metric to monitor other quality reports. For example, count the number of metrics that "
             "don't meet their target value, or count the number of metrics that have been marked as technical debt for "
             "more than two months.",
@@ -385,7 +385,7 @@ METRICS = Metrics.parse_obj(
         ),
         suppressed_violations=dict(
             name="Suppressed violations",
-            description="The amount of violations suppressed in the source.",
+            description="The number of violations suppressed in the source.",
             rationale="Some tools allow for suppression of violations. Having the number of suppressed violations "
             "violations visible in Quality-time allows for a double check of the suppressions.",
             scales=["count", "percentage"],
@@ -395,7 +395,7 @@ METRICS = Metrics.parse_obj(
         ),
         test_cases=dict(
             name="Test cases",
-            description="The amount of test cases.",
+            description="The number of test cases.",
             rationale="Track the test results of test cases so there is traceability from the test cases, "
             "defined in Jira, to the test results in test reports produced by tools such as Robot Framework or Junit.",
             scales=["count", "percentage"],
@@ -408,7 +408,7 @@ METRICS = Metrics.parse_obj(
         ),
         tests=dict(
             name="Tests",
-            description="The amount of tests.",
+            description="The number of tests.",
             rationale="Keep track of the total number of tests or the number of tests with different states, "
             "for example failed or errored.",
             scales=["count", "percentage"],
@@ -446,7 +446,7 @@ METRICS = Metrics.parse_obj(
         ),
         uncovered_branches=dict(
             name="Test branch coverage",
-            description="The amount of code branches not covered by tests.",
+            description="The number of code branches not covered by tests.",
             rationale="Code branches not covered by tests may contain bugs and signal incomplete tests.",
             rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
@@ -466,7 +466,7 @@ METRICS = Metrics.parse_obj(
         ),
         uncovered_lines=dict(
             name="Test line coverage",
-            description="The amount of lines of code not covered by tests.",
+            description="The number of lines of code not covered by tests.",
             rationale="Code lines not covered by tests may contain bugs and signal incomplete tests.",
             rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
