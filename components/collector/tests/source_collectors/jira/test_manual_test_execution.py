@@ -19,6 +19,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
 
     async def test_nr_of_test_cases(self):
         """Test that the number of test cases is returned."""
+        self.set_source_parameter("manual_test_execution_frequency_field", "desired_test_frequency")
         long_ago = "2019-10-02T11:07:02.444+0200"
         test_cases_json = dict(
             issues=[
@@ -48,6 +49,20 @@ class JiraManualTestExecutionTest(JiraTestCase):
             issues=[self.issue(comment=dict(comments=[dict(updated=self.ten_days_ago)]), custom_field_001="5")]
         )
         fields_json = [dict(name="Required test frequency", id="custom_field_001")]
+        response = await self.get_response(test_cases_json, fields_json)
+        self.assert_measurement(
+            response,
+            value="1",
+            entities=[
+                self.entity(key="1", last_test_date=str(parse(self.ten_days_ago).date()), desired_test_frequency="5")
+            ],
+        )
+
+    async def test_nr_of_test_cases_without_field_name(self):
+        """Test that the field name is optional."""
+        self.set_source_parameter("manual_test_execution_frequency_default", "5")
+        test_cases_json = dict(issues=[self.issue(comment=dict(comments=[dict(updated=self.ten_days_ago)]))])
+        fields_json = [dict(name="Desired test frequency", id="desired_test_frequency")]
         response = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
             response,

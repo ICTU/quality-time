@@ -14,7 +14,6 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.url = "https://jira"
         self.set_source_parameter("jql", "project = abc")
         self.set_source_parameter("story_points_field", "field")
-        self.set_source_parameter("manual_test_execution_frequency_field", "desired_test_frequency")
         self.set_source_parameter("manual_test_duration_field", "field")
         self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
