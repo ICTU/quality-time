@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 
-- Use a custom Javascript API-server to wrap [Puppeteer](https://github.com/puppeteer/puppeteer), instead of the unmaintained [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api), to support the rendering of PDF reports. Closes [#3767](https://github.com/ICTU/quality-time/issues/3767).
+- Use a custom Javascript API-server to wrap [Puppeteer](https://github.com/puppeteer/puppeteer), instead of the unmaintained [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api), to support the rendering of PDF reports. Closes [#3767](https://github.com/ICTU/quality-time/issues/3767). Fixes [#3297](https://github.com/ICTU/quality-time/issues/3297).
 
 ### Added
 
