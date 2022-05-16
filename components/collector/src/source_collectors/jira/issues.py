@@ -42,7 +42,7 @@ class JiraIssues(JiraBase):
     def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Extend to replace field names with field ids, if the parameter is a field."""
         parameter_value = super()._parameter(parameter_key, quote)
-        if parameter_key.endswith("field"):
+        if parameter_value and parameter_key.endswith("field"):
             parameter_value = self._field_ids[str(parameter_value).lower()]
         return parameter_value
 

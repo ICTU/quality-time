@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Adding values to input fields in the user interface that allow for multiple values didn't work. Fixes [#3801](https://github.com/ICTU/quality-time/issues/3801).
 - The detail information of the 'metrics' metric with *Quality-time* as source would show "NaN" (not a number) as the value of the measurements and targets of the measured metrics. Fixes [#3811](https://github.com/ICTU/quality-time/issues/3811).
+- Optional Jira parameters to specify a Jira field name or id were de facto mandatory due to the bug fix for issue #3714. Fixes [#3845](https://github.com/ICTU/quality-time/issues/3845).
 
 ### Changed
 
