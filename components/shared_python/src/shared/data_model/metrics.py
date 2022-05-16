@@ -29,9 +29,10 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
-            rationale="Source code should not be commented out because it bloats the sources and may confuse the reader as to "
-            "why the code is still there. Unused code should be deleted. It can be retrieved from the version "
-            "control system if needed. Commented out code contributes to the risk of unmaintainable software.",
+            rationale="Source code should not be commented out because it bloats the sources and may confuse the "
+            "reader as to why the code is still there. Unused code should be deleted. It can be retrieved from "
+            "the version control system if needed. Commented out code contributes to the risk of "
+            "unmaintainable software.",
             rationale_urls=[
                 "https://rules.sonarsource.com/python/RSPEC-125",
                 "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
