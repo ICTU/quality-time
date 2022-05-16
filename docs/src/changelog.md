@@ -10,6 +10,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## v3.36.0 - 2022-05-16
 
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v3.35.0, please read the v3.35.0 deployment notes.
+
+Because of the new renderer component (see below) the following environment variables are obsolete and can be removed from the `docker-compose.yml`:
+- `server`:
+  - `PROXY_HOST`
+  - `PROXY_PORT`
+  - `RENDERER_ACCESS_KEY`
+- `renderer`:
+  - `ALLOW_HTTP`
+
+If the proxy does not have the default name/port `www:80`, the renderer needs to told how to reach the proxy by means of the `PROXY_HOST` and `PROXY_PORT` environment variables. For example:
+
+```yaml
+  renderer:
+    image: ictu/quality-time_renderer:v3.36.0
+    environment:
+      - PROXY_HOST=qt
+      - PROXY_PORT=8080
+```
+
 ### Fixed
 
 - Adding values to input fields in the user interface that allow for multiple values didn't work. Fixes [#3801](https://github.com/ICTU/quality-time/issues/3801).
@@ -25,6 +47,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Show the rationale for the status of measurement entities in the measurement entity table. Closes [#3788](https://github.com/ICTU/quality-time/issues/3788).
 
 ## v3.35.0 - 2022-05-09
+
+### Deployment notes
+
+To upgrade to this version of *Quality-time* your currently installed version needs to be at least version 3.32.0. If your currently installed version is older, you need to first install v3.32.0, v3.33.0, or v3.34.0 before installing v3.35.0.
+
+Background information: *Quality-time* uses MongoDB as database component. A MongoDB instance is either backward-compatible with the previous MongoDB version or forward-compatible with a next MongoDB version. To configure this, the MongoDB [feature compatibility version](https://www.mongodb.com/docs/manual/reference/command/setFeatureCompatibilityVersion/) has to be set in the database. *Quality-time* has been using MongoDB v4.4 for a while. Uptill *Quality-time* v3.32.0 the database was backward-compatible with MongoDB v4.2. Starting from *Quality-time* v3.32.0 the database has been made forward-compatible with MongoDB v5.0. This ensures that if *Quality-time* v3.35.0 is not functioning properly with MongoDB v5.0, a rollback to a previous version of *Quality-time* (but not older than v3.32.0) with MongoDB v4.4 is possible.
 
 ### Fixed
 
