@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 If your currently installed *Quality-time* version is not v3.35.0, please read the v3.35.0 deployment notes.
 
 Because of the new renderer component (see below) the following environment variables are obsolete and can be removed from the `docker-compose.yml`:
+
 - `server`:
   - `PROXY_HOST`
   - `PROXY_PORT`
