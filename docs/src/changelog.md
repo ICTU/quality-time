@@ -8,13 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.36.0-rc.2 - 2022-05-16
+## [Unreleased]
 
 ### Fixed
 
 - Adding values to input fields in the user interface that allow for multiple values didn't work. Fixes [#3801](https://github.com/ICTU/quality-time/issues/3801).
 - The detail information of the 'metrics' metric with *Quality-time* as source would show "NaN" (not a number) as the value of the measurements and targets of the measured metrics. Fixes [#3811](https://github.com/ICTU/quality-time/issues/3811).
-- Optional Jira parameters to specify a Jira field name or id were de facto mandatory due to the bug fix for issue #3714. Fixes [#3845](https://github.com/ICTU/quality-time/issues/3845).
+- Optional Jira parameters to specify a Jira field name or id were de facto mandatory due to the bug fix for issue [#3714](https://github.com/ICTU/quality-time/issues/3714). Fixes [#3845](https://github.com/ICTU/quality-time/issues/3845).
 
 ### Changed
 
@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- Show the rationale and end date for the status of measurement entities in the measurement entity table. Closes [#3788](https://github.com/ICTU/quality-time/issues/3788).
+- Show the rationale for the status of measurement entities in the measurement entity table. Closes [#3788](https://github.com/ICTU/quality-time/issues/3788).
 
 ## v3.35.0 - 2022-05-09
 
