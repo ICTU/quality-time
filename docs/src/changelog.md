@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v3.36.0, please read the v3.36.0 deployment notes.
+
+### Fixed
+
+- When measuring the 'missing metrics' metric, *Quality-time* was still using an old endpoint to get the data, resulting in a parse error. Fixes [#3855](https://github.com/ICTU/quality-time/issues/3855).
+
 ## v3.36.0 - 2022-05-16
 
 ### Deployment notes
