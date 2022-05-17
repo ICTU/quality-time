@@ -16,7 +16,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
         datamodel_url = URL(f"{api_url}/datamodel")
-        reports_url = URL(f"{api_url}/reports")
+        reports_url = URL(f"{api_url}/report")
         return await super()._get_source_responses(datamodel_url, reports_url, **kwargs)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
