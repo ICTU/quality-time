@@ -4,7 +4,7 @@ import pathlib
 
 import bottle
 
-from external import data_model
+from shared import data_model
 
 
 LOGOS_ROOT = pathlib.Path(data_model.__file__).parent.absolute().joinpath(pathlib.Path("logos"))

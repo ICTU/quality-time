@@ -1,6 +1,6 @@
 """Unit tests for the metric meta model."""
 
-from external.data_model.meta.metric import Metric
+from shared.data_model.meta.metric import Metric
 
 from .base import MetaModelTestCase
 

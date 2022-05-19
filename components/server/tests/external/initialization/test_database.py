@@ -5,8 +5,9 @@ import pathlib
 import unittest
 from unittest.mock import Mock, mock_open, patch
 
+from shared.data_model import DATA_MODEL_JSON
+
 from external.initialization.database import init_database
-from external.data_model import DATA_MODEL_JSON
 
 
 class DatabaseInitTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 """Unit tests for the base models."""
 
-from external.data_model.meta.base import DescribedModel
+from shared.data_model.meta.base import DescribedModel
 
 from .base import MetaModelTestCase
 
