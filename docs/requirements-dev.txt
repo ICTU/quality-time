@@ -23,7 +23,7 @@ babel==2.9.1 \
 bandit==1.7.4 \
     --hash=sha256:2d63a8c573417bae338962d4b9b06fbc6080f74ecd955a092849e1e65c717bd2 \
     --hash=sha256:412d3f259dab4077d0e7f0c11f50f650cc7d10db905d98f6520a95a18049658a
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 beautifulsoup4==4.10.0 \
     --hash=sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf \
     --hash=sha256:c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891
@@ -52,7 +52,7 @@ black==22.3.0 \
     --hash=sha256:e8477ec6bbfe0312c128e74644ac8a02ca06bcdb8982d4ee06f209be28cdf163 \
     --hash=sha256:ee8f1f7228cce7dffc2b464f07ce769f478968bfb3dd1254a4c2eeed84928aad \
     --hash=sha256:fd57160949179ec517d32ac2ac898b5f20d68ed1a9c977346efbac9c2f1e779d
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 cachecontrol[filecache]==0.12.10 \
     --hash=sha256:b0d43d8f71948ef5ebdee5fe236b86c6ffc7799370453dccb0e894c20dfa487c \
     --hash=sha256:d8aca75b82eec92d84b5d6eb8c8f66ea16f09d2adb09dbca27fe2d5fc8d3732d
@@ -114,7 +114,7 @@ coverage==6.3.3 \
     --hash=sha256:e814a4a5a1d95223b08cdb0f4f57029e8eab22ffdbae2f97107aeef28554517e \
     --hash=sha256:f8cabc5fd0091976ab7b020f5708335033e422de25e20ddf9416bdce2b7e07d8 \
     --hash=sha256:fbc86ae8cc129c801e7baaafe3addf3c8d49c9c1597c44bdf2d78139707c3c62
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 cyclonedx-python-lib==1.3.0 \
     --hash=sha256:2b8b1250f6b22b4836bfb86b87381a228377e4d329d6d6d7488a2cdfbc073049 \
     --hash=sha256:8793fcf6a4735835bda33cda461a9a60c63faf0a8f9c58fc1fc4312e8f307164
@@ -125,7 +125,7 @@ dill==0.3.4 \
     # via pylint
 dlint==0.12.0 \
     --hash=sha256:344823d299439aa94fe276b2b3b90733026787d25713c664e137cf5f7d0645f7
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 docutils==0.17.1 \
     --hash=sha256:686577d2e4c32380bb50cbb22f575ed742d58168cee37e99117a854bcd88f125 \
     --hash=sha256:cf316c8370a737a022b72b56874f6602acf974a37a9fba42ec2876387549fc61
@@ -151,7 +151,7 @@ flake8-polyfill==1.0.2 \
 furo==2022.4.7 \
     --hash=sha256:7f3e3d2fb977483590f8ecb2c2cd511bd82661b79c18efb24de9558bc9cdf2d7 \
     --hash=sha256:96204ab7cd047e4b6c523996e0279c4c629a8fc31f4f109b2efd470c17f49c80
-    # via -r requirements-dev.in
+    # via -r docs/requirements-dev.in
 gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
     --hash=sha256:bac2fd45c0a1c9cf619e63a90d62bdc63892ef92387424b855792a6cabe789aa
@@ -160,7 +160,7 @@ gitpython==3.1.27 \
     --hash=sha256:1c885ce809e8ba2d88a29befeb385fcea06338d3640712b59ca623c220bb5704 \
     --hash=sha256:5b68b000463593e05ff2b261acff0ff0972df8ab1b70d3cdbd41b546c8b8fc3d
     # via
-    #   -r requirements-dev.in
+    #   -r docs/requirements-dev.in
     #   bandit
 html5lib==1.1 \
     --hash=sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d \
@@ -290,7 +290,7 @@ lxml==4.8.0 \
     --hash=sha256:fa56bb08b3dd8eac3a8c5b7d075c94e74f755fd9d8a04543ae8d37b1612dd170 \
     --hash=sha256:fa9b7c450be85bfc6cd39f6df8c5b8cbd76b5d6fc1f69efec80203f9894b885f
     # via
-    #   -r ../requirements-dev.in
+    #   -r docs/../requirements-dev.in
     #   unittest-xml-reporting
 markdown-it-py==2.0.1 \
     --hash=sha256:31974138ca8cafbcb62213f4974b29571b940e78364584729233f59b8dfdb8bd \
@@ -414,7 +414,7 @@ mypy==0.950 \
     --hash=sha256:eaff8156016487c1af5ffa5304c3e3fd183edcb412f3e9c72db349faf3f6e0eb \
     --hash=sha256:ee0a36edd332ed2c5208565ae6e3a7afc0eabb53f5327e281f2ef03a6bc7687a \
     --hash=sha256:ef7beb2a3582eb7a9f37beaf38a28acfd801988cde688760aea9e6cc4832b10b
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 mypy-extensions==0.4.3 \
     --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \
     --hash=sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8
@@ -424,7 +424,7 @@ mypy-extensions==0.4.3 \
 myst-parser==0.17.2 \
     --hash=sha256:1635ce3c18965a528d6de980f989ff64d6a1effb482e1f611b1bfb79e38f3d98 \
     --hash=sha256:4c076d649e066f9f5c7c661bae2658be1ca06e76b002bb97f02a09398707686c
-    # via -r requirements-dev.in
+    # via -r docs/requirements-dev.in
 packageurl-python==0.9.9 \
     --hash=sha256:07aa852d1c48b0e86e625f6a32d83f96427739806b269d0f8142788ee807114b \
     --hash=sha256:872a0434b9a448b3fa97571711f69dd2a3fb72345ad66c90b17d827afea82f09
@@ -452,19 +452,19 @@ pep517==0.12.0 \
 pep8-naming==0.12.1 \
     --hash=sha256:4a8daeaeb33cfcde779309fc0c9c0a68a3bbe2ad8a8308b763c5068f86eb9f37 \
     --hash=sha256:bb2455947757d162aa4cad55dba4ce029005cd1692f2899a21d51d8630ca7841
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 pip-api==0.0.29 \
     --hash=sha256:36c3211975e69c46c1d3b13b702dcc96d054d54e02147b1485300cf5fc45c1a0 \
     --hash=sha256:f701584eb1c3e01021c846f89d629ab9373b6624f0626757774ad54fc4c29571
     # via pip-audit
-pip-audit==2.2.1 \
-    --hash=sha256:81825477c86fb5a6458d700ff6dfee0fd3a6d3e2e63ff365e4da4475d0f00bff \
-    --hash=sha256:f7affa67a7d5cc5458c9e85b0dc9bcafcbd6030ba3a69acf7293ef0e6dd056fb
-    # via -r ../requirements-dev.in
+pip-audit==2.3.0 \
+    --hash=sha256:95326d536eab1f60df0c36193675c2ab0777de3ef1b3af98ebfc378159b0bed5 \
+    --hash=sha256:dececec9e7bbb7aa6335fddba8a47b0271122129e2894e9ee0691dd6bb6aeb01
+    # via -r docs/../requirements-dev.in
 pip-tools==6.6.1 \
     --hash=sha256:48a26382c8477adf2cca8b9128093f4778fdadaade74bfaab0832d53d9cb256a \
     --hash=sha256:634e3e8d4707257c004313d16a9d6c14c1ce94d3c0fa1f93c38d264401f2e4f2
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 platformdirs==2.5.1 \
     --hash=sha256:7535e70dfa32e84d4b34996ea99c5e432fa29a708d0f4e394bbcb2a8faa4f16d \
     --hash=sha256:bcae7cab893c2d310a711b70b24efb93334febe65f8de776ee320b517471e227
@@ -514,7 +514,7 @@ pydantic==1.9.0 \
     --hash=sha256:e0896200b6a40197405af18828da49f067c2fa1f821491bc8f5bde241ef3f7d7 \
     --hash=sha256:f5a64b64ddf4c99fe201ac2724daada8595ada0d102ab96d019c1555c2d6441d \
     --hash=sha256:f947352c3434e8b937e3aa8f96f47bdfe6d92779e44bb3f41e4c213ba6a32145
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 pyflakes==2.4.0 \
     --hash=sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c \
     --hash=sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
@@ -528,7 +528,7 @@ pygments==2.11.2 \
 pylint==2.13.9 \
     --hash=sha256:095567c96e19e6f57b5b907e67d265ff535e588fe26b12b5ebe1fc5645b2c731 \
     --hash=sha256:705c620d388035bdd9ff8b44c5bcdd235bfb49d276d488dd2c8ff1736aa42526
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
     --hash=sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484
@@ -589,7 +589,7 @@ resolvelib==0.8.1 \
 safety==1.10.3 \
     --hash=sha256:30e394d02a20ac49b7f65292d19d38fa927a8f9582cdfd3ad1adbbc66c641ad5 \
     --hash=sha256:5f802ad5df5614f9622d8d71fedec2757099705c2356f862847c58c6dfe13e84
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
@@ -610,7 +610,7 @@ sphinx==4.5.0 \
     --hash=sha256:7bf8ca9637a4ee15af412d1a1d9689fec70523a68ca9bb9127c2f3eeb344e2e6 \
     --hash=sha256:ebf612653238bcc8f4359627a9b7ce44ede6fdd75d9d30f68255c7383d3a6226
     # via
-    #   -r requirements-dev.in
+    #   -r docs/requirements-dev.in
     #   furo
     #   myst-parser
     #   sphinx-copybutton
@@ -618,11 +618,11 @@ sphinx==4.5.0 \
 sphinx-copybutton==0.5.0 \
     --hash=sha256:9684dec7434bd73f0eea58dda93f9bb879d24bff2d8b187b1f2ec08dfe7b5f48 \
     --hash=sha256:a0c059daadd03c27ba750da534a92a63e7a36a7736dcf684f26ee346199787f6
-    # via -r requirements-dev.in
+    # via -r docs/requirements-dev.in
 sphinx-panels==0.6.0 \
     --hash=sha256:bd64afaf85c07f8096d21c8247fc6fd757e339d1be97832c8832d6ae5ed2e61d \
     --hash=sha256:d36dcd26358117e11888f7143db4ac2301ebe90873ac00627bf1fe526bf0f058
-    # via -r requirements-dev.in
+    # via -r docs/requirements-dev.in
 sphinxcontrib-applehelp==1.0.2 \
     --hash=sha256:806111e5e962be97c29ec4c1e7fe277bfd19e9652fb1a4392105b43e01af885a \
     --hash=sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58
@@ -684,7 +684,7 @@ typing-extensions==4.1.1 \
 unittest-xml-reporting==3.2.0 \
     --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
     --hash=sha256:f3d7402e5b3ac72a5ee3149278339db1a8f932ee405f48bcb9c681372f2717d5
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 urllib3==1.26.8 \
     --hash=sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed \
     --hash=sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c
@@ -692,7 +692,7 @@ urllib3==1.26.8 \
 vulture==2.3 \
     --hash=sha256:03d5a62bcbe9ceb9a9b0575f42d71a2d414070229f2e6f95fa6e7c71aaaed967 \
     --hash=sha256:f39de5e6f1df1f70c3b50da54f1c8d494159e9ca3d01a9b89eac929600591703
-    # via -r ../requirements-dev.in
+    # via -r docs/../requirements-dev.in
 webencodings==0.5.1 \
     --hash=sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78 \
     --hash=sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923
@@ -760,7 +760,7 @@ pip==22.1 \
     --hash=sha256:2debf847016cfe643fa1512e2d781d3ca9e5c878ba0652583842d50cc2bcc605 \
     --hash=sha256:802e797fb741be1c2d475533d4ea951957e4940091422bd4a24848a7ac95609d
     # via
-    #   -r ../requirements-dev.in
+    #   -r docs/../requirements-dev.in
     #   pip-api
     #   pip-tools
 setuptools==60.9.3 \
