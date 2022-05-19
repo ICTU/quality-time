@@ -72,7 +72,7 @@ class Sources(BaseModel):
     @classmethod
     def check_logos(cls, values):
         """Check that a logo exists for each source and vice versa."""
-        logos_path = pathlib.Path(__file__).parent.parent.parent / "routes" / "logos"
+        logos_path = pathlib.Path(__file__).parent.parent / "logos"
         for source_type in values:
             logo_path = logos_path / f"{source_type}.png"
             if not logo_path.exists():
