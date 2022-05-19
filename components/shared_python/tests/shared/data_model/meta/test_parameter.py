@@ -1,6 +1,6 @@
 """Unit tests for the parameter model."""
 
-from external.data_model.meta.parameter import Parameter
+from shared.data_model.meta.parameter import Parameter
 
 from .base import MetaModelTestCase
 

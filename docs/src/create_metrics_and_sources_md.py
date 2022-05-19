@@ -3,7 +3,8 @@
 import json
 import pathlib
 import re
-import sys
+
+from shared.data_model import DATA_MODEL_JSON
 
 TYPE_DESCRIPTION = dict(
     url="URL",
@@ -19,11 +20,6 @@ TYPE_DESCRIPTION = dict(
 
 def get_data_model():
     """Return the data model."""
-    module_dir = pathlib.Path(__file__).resolve().parent
-    server_src_path = module_dir.parent.parent / "components" / "server" / "src"
-    sys.path.insert(0, str(server_src_path))
-    from external.data_model import DATA_MODEL_JSON  # pylint: disable=import-error,import-outside-toplevel
-
     return json.loads(DATA_MODEL_JSON)
 
 
