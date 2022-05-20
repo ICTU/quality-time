@@ -30,9 +30,8 @@ docker-compose up database ldap phpldapadmin mongo-express testdata
 
 {index}`PHP-LDAP-admin` is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the {index}`LDAP` database. Click login, check the "Anonymous" box and click "Authenticate" to login.
 
-By default, there are three users defined in the LDAP database:
+There are two users defined in the LDAP database:
 
-- User `admin` has password `admin`.
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
 
@@ -255,9 +254,9 @@ src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' 
 
 Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
 
-##### Adding a logo for the new source to the server
+##### Adding a logo for the new source to the data model
 
-Add a small png file of the logo in [`components/server/src/external/routes/logos`](https://github.com/ICTU/quality-time/tree/master/components/server/src/external/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small png file of the logo in [`components/shared_python/src/shared/data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
