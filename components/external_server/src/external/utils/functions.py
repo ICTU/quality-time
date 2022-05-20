@@ -41,7 +41,7 @@ def check_url_availability(
     else:
         credentials = _basic_auth_credentials(source_parameters)
     try:
-        response = requests.get(  # nosec, # noqa: DUO123, # skipqc: PTC-W6001
+        response = requests.get(  # nosec, # noqa: DUO123, # skipcq: PTC-W6001
             url, auth=credentials, headers=headers, verify=False
         )
         return dict(status_code=response.status_code, reason=response.reason)
