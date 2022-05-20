@@ -41,7 +41,9 @@ def check_url_availability(
     else:
         credentials = _basic_auth_credentials(source_parameters)
     try:
-        response = requests.get(url, auth=credentials, headers=headers, verify=False)  # noqa: DUO123, # nosec
+        response = requests.get(
+            url, auth=credentials, headers=headers, verify=False  # noqa: DUO123, # nosec, # skipqc: PTC-W6001
+        )
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception as exception_instance:  # pylint: disable=broad-except
         exception_reason = str(exception_instance) or exception_instance.__class__.__name__
