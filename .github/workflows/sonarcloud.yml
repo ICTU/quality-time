@@ -54,9 +54,9 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
-    - name: Server
+    - name: External Server
       if: env.SONAR_TOKEN != null
-      working-directory: components/server
+      working-directory: components/external_server
       run: |
         python -m venv venv
         . venv/bin/activate
@@ -94,8 +94,8 @@ jobs:
       if: env.SONAR_TOKEN != null
       run: |
         touch components/__init__.py
-        touch components/server/__init__.py
-        touch components/server/src/__init__.py
+        touch components/external_server/__init__.py
+        touch components/external_server/src/__init__.py
         touch components/collector/__init__.py
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
@@ -107,7 +107,7 @@ jobs:
       run: |
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
-        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/external_server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_python/build/unittest-coverage.xml
     - name: Sonarcloud scan
       if: env.SONAR_TOKEN != null

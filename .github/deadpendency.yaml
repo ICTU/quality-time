@@ -13,9 +13,9 @@ additional-dependency-files:
     path: components/notifier/requirements-dev.in
 
   - type: pip-requirements-txt
-    path: components/server/requirements.in
+    path: components/external_server/requirements.in
   - type: pip-requirements-txt
-    path: components/server/requirements-dev.in
+    path: components/external_server/requirements-dev.in
 
   - type: pip-requirements-txt
     path: components/shared_python/requirements.in

@@ -15,7 +15,7 @@ services:
   server:
     build:
       context: ../components
-      dockerfile: server/Dockerfile
+      dockerfile: external_server/Dockerfile
     depends_on:
       - ldap
       - renderer
