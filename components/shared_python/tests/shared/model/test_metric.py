@@ -1,4 +1,4 @@
-"""Test the Metric model."""
+"""Test the metric model."""
 
 from datetime import date
 import unittest
@@ -11,7 +11,7 @@ from tests.fixtures import METRIC_ID
 
 
 class MetricTest(unittest.TestCase):
-    """Test the Metric model."""
+    """Test the metric model."""
 
     DATA_MODEL = {"metrics": {"fixture_metric_type": {"name": "fixture_metric_type"}}}
 

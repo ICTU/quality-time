@@ -1,4 +1,4 @@
-"""Test the Metric model."""
+"""Test the source model."""
 
 from datetime import datetime
 import unittest
@@ -9,7 +9,7 @@ from tests.fixtures import SOURCE_ID
 
 
 class SourceTest(unittest.TestCase):
-    """Test the Source model."""
+    """Test the source model."""
 
     def test_copy_entity_user_data(self):
         """Test copy entity user data."""

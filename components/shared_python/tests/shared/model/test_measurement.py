@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import patch
+
 from packaging.version import Version
 
 from shared.model.measurement import (
