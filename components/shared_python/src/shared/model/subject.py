@@ -16,11 +16,7 @@ class Subject(dict):
     """Class representing a subject."""
 
     def __init__(
-        self,
-        data_model,
-        subject_data: dict,
-        subject_uuid: SubjectId,
-        report: Optional["Report"],
+        self, data_model, subject_data: dict, subject_uuid: SubjectId, report: "Report"
     ) -> None:
         """Instantiate a subject."""
         self.__data_model = data_model
@@ -64,21 +60,19 @@ class Subject(dict):
             "name"
         )
 
-    def tag_subject(
-        self, tag: str, report: Optional["Report"] = None
-    ) -> Optional["Subject"]:
+    def tag_subject(self, tag: str) -> Optional["Subject"]:
         """Return a Subject instance with only metrics belonging to one tag."""
         metrics = {
             metric.uuid: metric
             for metric in self.metrics
             if tag in metric.get("tags", [])
         }
-        if self.report is None or len(metrics) == 0:
+        if len(metrics) == 0:
             return None
         data = dict(self)
         data["metrics"] = metrics
         data["name"] = self.report.name + " ❯ " + self.name
-        return Subject(self.__data_model, data, self.uuid, report)
+        return Subject(self.__data_model, data, self.uuid, self.report)
 
     def summarize(self, measurements: dict[str, list[Measurement]]):
         """Create a summary dict of this subject."""

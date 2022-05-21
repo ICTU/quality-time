@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import date
-from typing import cast
-
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 
 from shared.utils.type import (
     Direction,

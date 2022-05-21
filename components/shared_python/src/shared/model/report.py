@@ -80,7 +80,9 @@ class Report(dict):
             if isinstance(subject, Subject):
                 subjects[subject_uuid] = subject
             else:
-                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
+                subjects[subject_uuid] = Subject(
+                    self.__data_model, subject, subject_uuid, self
+                )
 
         return subjects
 
@@ -105,33 +107,42 @@ class Report(dict):
         summary["summary_by_subject"] = {}
         summary["summary_by_tag"] = {}
 
-        summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
+        summary["subjects"] = {
+            subject.uuid: subject.summarize(measurements) for subject in self.subjects
+        }
 
         for metric in self.metrics:
-            latest_measurement = measurements[metric.uuid][-1] if measurements and metric.uuid in measurements else None
+            latest_measurement = (
+                measurements[metric.uuid][-1]
+                if measurements and metric.uuid in measurements
+                else None
+            )
             metric_status = metric.status(latest_measurement)
-            color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
+            color = (
+                STATUS_COLOR_MAPPING[metric_status]
+                if metric_status is not None
+                else "white"
+            )
             summary["summary"][color] += 1
             summary["summary_by_subject"].setdefault(
                 metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)
             )[color] += 1
             for tag in metric.get("tags", []):
-                summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+                summary["summary_by_tag"].setdefault(
+                    tag, dict(red=0, green=0, yellow=0, grey=0, white=0)
+                )[color] += 1
 
         return summary
 
     def instance_and_parents_for_uuid(
-        self,
-        metric_uuid: MetricId = None,
-        source_uuid: SourceId = None,
+        self, metric_uuid: MetricId = None, source_uuid: SourceId = None
     ) -> tuple | None:
         """Find an instance and its parents.
 
         For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in
         that order: (Metric, Subject)
 
-        Only one of the three uuid arguments should be filled. If more are filled, all but the first one will be
-        ignored.
+        Only one of the uuid arguments should be filled. If more are filled, all but the first one will be ignored.
         """
         if metric_uuid is not None:
             metric = self.metrics_dict[metric_uuid]
