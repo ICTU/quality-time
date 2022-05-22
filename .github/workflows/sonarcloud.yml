@@ -105,7 +105,7 @@ jobs:
     - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
       if: env.SONAR_TOKEN != null
       run: |
-        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\/components\/collector\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_python/build/unittest-coverage.xml
