@@ -100,7 +100,7 @@ jobs:
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
         touch components/notifier/src/__init__.py
-        touch components/shared_python/src/__init__.py
+        touch components/shared_python/__init__.py
         touch components/shared_python/src/__init__.py
     - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
       if: env.SONAR_TOKEN != null
