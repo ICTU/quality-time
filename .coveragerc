@@ -1,7 +1,9 @@
 [run]
 branch = True
 dynamic_context = test_function
-source = src,tests
+include =
+    src/*
+    tests/*
 omit =
     */conf.py
     src/quality_time_*.py
