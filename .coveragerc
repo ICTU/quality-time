@@ -2,8 +2,8 @@
 branch = True
 dynamic_context = test_function
 include =
-    src
-    tests
+    src/*
+    tests/*
 omit =
     */conf.py
     src/quality_time_*.py
