@@ -40,7 +40,7 @@ There are two users defined in the LDAP database:
 Open another terminal and run the server:
 
 ```console
-cd components/server
+cd components/external_server
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
@@ -269,7 +269,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/server  # or components/collector, or components/notifier
+cd components/external_server  # or components/collector, or components/notifier
 ci/unittest.sh
 ```
 
@@ -285,7 +285,7 @@ npm run test
 To run mypy, pylint, and some other security and quality checks on the backend components:
 
 ```console
-cd components/server  # or components/collector, or components/notifier
+cd components/external_server  # or components/collector, or components/notifier
 ci/quality.sh
 ```
 
@@ -412,5 +412,5 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Caddy base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image and the curl version.
-- [Server](https://github.com/ICTU/quality-time/blob/master/components/server/Dockerfile): the Python base image.
+- [Server](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile): the Python base image.
 - [Testdata](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.

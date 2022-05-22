@@ -52,11 +52,11 @@ jobs:
           context: components/notifier
           tags: ictu/quality-time_notifier:${{ steps.get_version.outputs.version }}
           push: true
-      - name: Push Server to Docker Hub
+      - name: Push External Server to Docker Hub
         uses: docker/build-push-action@v3.0.0
         with:
           context: components
-          file: components/server/Dockerfile
+          file: components/external_server/Dockerfile
           tags: ictu/quality-time_server:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Frontend to Docker Hub

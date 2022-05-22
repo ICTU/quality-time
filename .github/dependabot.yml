@@ -107,7 +107,7 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
-  directory: "/components/server"
+  directory: "/components/external_server"
   schedule:
     interval: daily
     time: "04:00"
@@ -117,7 +117,7 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/components/server"
+  directory: "/components/external_server"
   schedule:
     interval: daily
     time: "04:00"

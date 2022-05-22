@@ -582,7 +582,7 @@ The {index}`public key <Public key>` argument is optional. If no public key is p
 
 ### Import API
 
-The importing endpoint is available via `https://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/server/src/example-reports) for the format.
+The importing endpoint is available via `https://www.quality-time.example.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/external_server/src/external/example-reports) for the format.
 
 For example, using curl, and assuming you have logged in as shown above:
 

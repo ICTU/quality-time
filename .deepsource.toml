@@ -20,8 +20,8 @@ dependency_file_paths = [
   "components/collector/requirements-dev.txt",
   "components/notifier/requirements.txt",
   "components/notifier/requirements-dev.txt",
-  "components/server/requirements.txt",
-  "components/server/requirements-dev.txt",
+  "components/external_server/requirements.txt",
+  "components/external_server/requirements-dev.txt",
   "components/shared_python/requirements.txt",
   "components/shared_python/requirements-dev.txt",
 ]
@@ -45,7 +45,7 @@ enabled = true
     "components/notifier/Dockerfile",
     "components/proxy/Dockerfile",
     "components/renderer/Dockerfile",
-    "components/server/Dockerfile",
+    "components/external_server/Dockerfile",
     "components/testdata/Dockerfile",
   ]
 

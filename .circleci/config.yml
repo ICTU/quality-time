@@ -14,7 +14,7 @@ jobs:
           case $CIRCLE_NODE_INDEX in
             0) component=collector;;
             1) component=notifier;;
-            2) component=server;;
+            2) component=external_server;;
             3) component=shared_python;;
           esac
           cd components/$component

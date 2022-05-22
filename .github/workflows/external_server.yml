@@ -1,4 +1,4 @@
-name: Server
+name: External server
 
 on: [push]
 
@@ -15,15 +15,15 @@ jobs:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        cd components/server
+        cd components/external_server
         python -m pip install --upgrade pip
         pip install -r requirements.txt -r requirements-dev.txt
         pip install -r requirements-internal.txt
     - name: Test
       run: |
-        cd components/server
+        cd components/external_server
         ci/unittest.sh
     - name: Quality
       run: |
-        cd components/server
+        cd components/external_server
         ci/quality.sh
