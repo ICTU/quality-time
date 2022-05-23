@@ -1,1 +1,1 @@
--e components/shared_python
+-e ../components/shared_python
