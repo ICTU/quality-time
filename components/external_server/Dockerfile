@@ -1,6 +1,5 @@
 FROM python:3.10.4-bullseye AS compile-image
 
-RUN useradd --create-home server
 WORKDIR /home/server
 
 RUN python -m venv venv

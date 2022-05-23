@@ -1,8 +1,6 @@
 FROM python:3.10.4-bullseye AS compile-image
 
-RUN useradd --create-home collector
 WORKDIR /home/collector
-USER collector
 
 RUN python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
