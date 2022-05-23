@@ -25,4 +25,5 @@ formats:
 python:
    install:
    - requirements: docs/requirements-dev.txt
+   - requirements: docs/requirements-internal.txt
 
