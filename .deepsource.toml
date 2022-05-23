@@ -59,10 +59,7 @@ enabled = true
     "components/proxy/Dockerfile",
     "components/renderer/Dockerfile",
     "components/external_server/Dockerfile",
-<<<<<<< HEAD
-=======
     "components/internal_server/Dockerfile",
->>>>>>> 05b4d428 (some more workflows)
     "components/testdata/Dockerfile",
   ]
 
