@@ -11,8 +11,8 @@ import os  # skipcq: FLK-E402
 
 import bottle  # skipcq: FLK-E402
 
-from external.initialization.database import init_database  # skipcq: FLK-E402
-from external.initialization import init_bottle  # skipcq: FLK-E402
+from initialization.database import init_database  # skipcq: FLK-E402
+from initialization import init_bottle  # skipcq: FLK-E402
 
 
 def serve() -> None:  # pragma: no cover-behave
