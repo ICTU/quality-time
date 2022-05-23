@@ -6,7 +6,6 @@ import re
 
 from shared.data_model import DATA_MODEL_JSON
 
-
 TYPE_DESCRIPTION = dict(
     url="URL",
     string="String",
