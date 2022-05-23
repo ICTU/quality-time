@@ -4,8 +4,6 @@ from typing import cast
 
 from shared.utils.type import MetricId, SourceId, SubjectId, ReportId, NotificationDestinationId
 
-from utils.type import NotificationDestinationId
-
 METRIC_ID = cast(MetricId, "metric_uuid")
 METRIC_ID2 = cast(MetricId, "metric_uuid2")
 METRIC_ID3 = cast(MetricId, "metric_uuid3")
