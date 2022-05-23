@@ -47,11 +47,6 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
-<<<<<<< HEAD
-    - name: External Server
-      if: env.SONAR_TOKEN != null
-      working-directory: components/external_server
-=======
     - name: External server
       if: env.SONAR_TOKEN != null
       working-directory: components/external_server
@@ -72,7 +67,6 @@ jobs:
     - name: Internal server
       if: env.SONAR_TOKEN != null
       working-directory: components/internal_server
->>>>>>> 824f9a0c (add internal server to more workflows)
       run: |
         python -m venv venv
         . venv/bin/activate
