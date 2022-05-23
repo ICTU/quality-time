@@ -1,8 +1,6 @@
 FROM python:3.10.4-bullseye AS compile-image
 
-RUN useradd --create-home notifier
 WORKDIR /home/notifier
-USER notifier
 
 RUN python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
