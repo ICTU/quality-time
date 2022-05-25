@@ -16,10 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd components/collector
-        python -m pip install --upgrade pip
-        python -m pip install wheel
-        pip install -r requirements.txt -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
     - name: Test
       run: |
         cd components/collector

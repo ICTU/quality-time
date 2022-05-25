@@ -4,12 +4,12 @@ WORKDIR /home/server
 
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip
-RUN python -m pip install wheel
-COPY external_server/requirements.txt /requirements.txt
-COPY external_server/requirements-internal.txt /requirements-internal.txt
-COPY shared_python /home/shared_python/
+COPY external_server/requirements/requirements-base.txt /requirements-base.txt
+RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
+COPY external_server/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
+COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
+COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
 FROM python:3.10.4-slim-bullseye

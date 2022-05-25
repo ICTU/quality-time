@@ -16,8 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd components/shared_python
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt -r requirements-dev.txt
+        ci/pip-install.sh
     - name: Test
       run: |
         cd components/shared_python

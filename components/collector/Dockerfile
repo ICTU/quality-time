@@ -4,9 +4,9 @@ WORKDIR /home/collector
 
 RUN python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip
-RUN python -m pip install wheel
-COPY requirements.txt /requirements.txt
+COPY requirements/requirements-base.txt /requirements-base.txt
+RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
+COPY requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
 FROM python:3.10.4-slim-bullseye

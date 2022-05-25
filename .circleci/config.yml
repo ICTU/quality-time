@@ -20,11 +20,7 @@ jobs:
           cd components/$component
           python -m venv venv
           . venv/bin/activate
-          pip install wheel
-          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
-          if [ -f "requirements-internal.txt" ]; then
-            pip install --progress-bar off -r requirements-internal.txt
-          fi
+          ci/pip-install.sh
           ci/unittest.sh
           ci/quality.sh
 
@@ -48,12 +44,10 @@ jobs:
       - checkout
       - run: |
           cd docs
+          npm install
           python -m venv venv
           . venv/bin/activate
-          pip install wheel
-          pip install --progress-bar off -r requirements-dev.txt
-          pip install --progress-bar off -r requirements-internal.txt
-          npm install
+          ci/pip-install.sh
           ci/unittest.sh
           ci/quality.sh
 

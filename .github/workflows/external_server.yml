@@ -16,9 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd components/external_server
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
     - name: Test
       run: |
         cd components/external_server

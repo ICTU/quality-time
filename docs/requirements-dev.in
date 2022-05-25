@@ -1,7 +1,0 @@
--r ../requirements-dev.in
-furo==2022.4.7
-gitpython==3.1.27
-myst-parser==0.17.2
-Sphinx==4.5.0
-sphinx-copybutton==0.5.0
-sphinx_panels==0.6.0

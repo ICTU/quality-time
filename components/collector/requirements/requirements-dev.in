@@ -1,0 +1,2 @@
+-r ../../../requirements/requirements-dev.in
+types-python-dateutil==2.8.16

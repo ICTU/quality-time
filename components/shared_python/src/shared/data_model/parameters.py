@@ -196,7 +196,7 @@ def access_parameters(
     """Create the access parameters, needed to access the source."""
     include = include or {}
     kwargs = kwargs or {}
-    parameters = dict(
+    parameters: dict[str, Parameter] = dict(
         username=Username(metrics=metrics, **kwargs.get("username", {})),
         password=Password(metrics=metrics, **kwargs.get("password", {})),
     )

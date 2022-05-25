@@ -16,9 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd docs
-        python -m pip install --upgrade pip
-        pip install -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
         npm install
     - name: Test
       run: |

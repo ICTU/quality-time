@@ -1,13 +1,8 @@
-"""Source logo's."""
-
-import pathlib
+"""Source logos."""
 
 import bottle
 
-from shared import data_model
-
-
-LOGOS_ROOT = pathlib.Path(data_model.__file__).parent.absolute().joinpath(pathlib.Path("logos"))
+from shared.data_model.logos import LOGOS_ROOT
 
 
 @bottle.get("/api/v3/logo/<source_type>", authentication_required=False)

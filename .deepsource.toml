@@ -13,15 +13,25 @@ exclude_patterns = [
 name = "python"
 enabled = true
 dependency_file_paths = [
+  "docs/requirements-base.txt",
+  "docs/requirements-dev.txt",
+  "release/requirements-base.txt",
   "release/requirements-dev.txt",
+  "tests/application_tests/requirements-base.txt",
+  "tests/application_tests/requirements.txt",
   "tests/application_tests/requirements-dev.txt",
+  "tests/feature_tests/requirements-base.txt",
   "tests/feature_tests/requirements-dev.txt",
+  "components/collector/requirements-base.txt",
   "components/collector/requirements.txt",
   "components/collector/requirements-dev.txt",
+  "components/notifier/requirements-base.txt",
   "components/notifier/requirements.txt",
   "components/notifier/requirements-dev.txt",
+  "components/external_server/requirements-base.txt",
   "components/external_server/requirements.txt",
   "components/external_server/requirements-dev.txt",
+  "components/shared_python/requirements-base.txt",
   "components/shared_python/requirements.txt",
   "components/shared_python/requirements-dev.txt",
 ]
