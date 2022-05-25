@@ -4,9 +4,9 @@ WORKDIR /home/notifier
 
 RUN python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
-COPY requirements-base.txt /requirements-base.txt
+COPY requirements/requirements-base.txt /requirements-base.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
-COPY requirements.txt /requirements.txt
+COPY requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
 FROM python:3.10.4-slim-bullseye

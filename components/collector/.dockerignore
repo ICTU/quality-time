@@ -12,6 +12,6 @@ ci/
 Dockerfile
 README.md
 requirements-dev.*
-requirements.in
+requirements*.in
 tests/
 venv

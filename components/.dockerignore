@@ -15,7 +15,7 @@
 **/ci/
 **/node_modules/
 **/requirements-dev.*
-**/requirements.in
+**/requirements*.in
 **/tests/
 **/venv/
 collector/
