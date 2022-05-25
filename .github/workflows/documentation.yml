@@ -17,6 +17,7 @@ jobs:
       run: |
         cd docs
         ci/pip-install.sh
+        npm install
     - name: Test
       run: |
         cd docs
