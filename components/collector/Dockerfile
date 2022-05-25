@@ -4,8 +4,8 @@ WORKDIR /home/collector
 
 RUN python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip
-RUN python -m pip install wheel
+COPY requirements-base.txt /requirements-base.txt
+RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 

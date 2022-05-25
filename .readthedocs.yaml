@@ -24,6 +24,6 @@ formats:
 # Requirements to install
 python:
    install:
+   - requirements: docs/requirements-base.txt
    - requirements: docs/requirements-dev.txt
    - requirements: docs/requirements-internal-rtd.txt
-

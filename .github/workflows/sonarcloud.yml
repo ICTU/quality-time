@@ -33,10 +33,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements-base.txt
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
@@ -46,10 +43,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements-base.txt
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
@@ -59,10 +53,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements-base.txt
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
-        pip install -r requirements-internal.txt
+        ci/pip-install.sh
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
@@ -72,9 +63,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements-base.txt
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
+        ci/pip-install.sh
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
