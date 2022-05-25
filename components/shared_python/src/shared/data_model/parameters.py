@@ -67,7 +67,9 @@ class MultipleChoiceParameter(Parameter):  # pylint: disable=too-few-public-meth
     default_value: Union[str, list[str]] = []
 
 
-class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class MultipleChoiceWithAdditionParameter(
+    MultipleChoiceParameter
+):  # pylint: disable=too-few-public-methods
     """Multiple choice parameter that allows the user to add additional options."""
 
     type = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
@@ -115,7 +117,9 @@ class Severities(MultipleChoiceParameter):
     def set_help(cls, help_url, values):  # pylint: disable=no-self-argument,no-self-use
         """Add a default help string if a help URL was not provided."""
         if not help_url and not values.get("help"):
-            values["help"] = "If provided, only count security warnings with the selected severities."
+            values[
+                "help"
+            ] = "If provided, only count security warnings with the selected severities."
         return help_url
 
 
@@ -137,7 +141,9 @@ class Upvotes(IntegerParameter):  # pylint: disable=too-few-public-methods
 
     name: str = "Minimum number of upvotes"
     short_name = "minimum upvotes"
-    help: Optional[str] = "Only count merge requests with fewer than the minimum number of upvotes."
+    help: Optional[
+        str
+    ] = "Only count merge requests with fewer than the minimum number of upvotes."
     unit: Unit = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
 
@@ -150,7 +156,9 @@ class Branch(StringParameter):  # pylint: disable=too-few-public-methods
     metrics: list[str] = ["source_up_to_dateness"]
 
 
-class BranchesToIgnore(MultipleChoiceWithAdditionParameter):  # pylint: disable=too-few-public-methods
+class BranchesToIgnore(
+    MultipleChoiceWithAdditionParameter
+):  # pylint: disable=too-few-public-methods
     """Branches to ignore parameter."""
 
     name: str = "Branches to ignore (regular expressions or branch names)"
@@ -158,7 +166,9 @@ class BranchesToIgnore(MultipleChoiceWithAdditionParameter):  # pylint: disable=
     metrics: list[str] = ["unmerged_branches"]
 
 
-class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):  # pylint: disable=too-few-public-methods
+class TargetBranchesToInclude(
+    MultipleChoiceWithAdditionParameter
+):  # pylint: disable=too-few-public-methods
     """Target branches to include parameter."""
 
     name: str = "Target branches to include (regular expressions or branch names)"
@@ -167,7 +177,9 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):  # pylint: d
     metrics: list[str] = ["merge_requests"]
 
 
-class MergeRequestState(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class MergeRequestState(
+    MultipleChoiceParameter
+):  # pylint: disable=too-few-public-methods
     """Merge request states parameter."""
 
     name: str = "Merge request states"
@@ -196,18 +208,22 @@ def access_parameters(
     """Create the access parameters, needed to access the source."""
     include = include or {}
     kwargs = kwargs or {}
-    parameters = dict(
+    parameters: dict[str, Parameter] = dict(
         username=Username(metrics=metrics, **kwargs.get("username", {})),
         password=Password(metrics=metrics, **kwargs.get("password", {})),
     )
     validate_on = ["username", "password"]
     if include.get("private_token", True):
-        parameters["private_token"] = PrivateToken(metrics=metrics, **kwargs.get("private_token", {}))
+        parameters["private_token"] = PrivateToken(
+            metrics=metrics, **kwargs.get("private_token", {})
+        )
         validate_on.append("private_token")
     url_kwargs = kwargs.get("url") or dict(name="URL")
     if source_type:
         source_type_article = "an" if source_type.startswith("an ") else "a"
-        source_type = source_type[len("an ") :] if source_type.startswith("an ") else source_type
+        source_type = (
+            source_type[len("an ") :] if source_type.startswith("an ") else source_type
+        )
         format_phrase = f" in {source_type_format} format" if source_type_format else ""
         url_kwargs["name"] = (
             f"URL to {source_type_article} {source_type}{format_phrase} or to a zip "
@@ -216,10 +232,14 @@ def access_parameters(
     url_kwargs.setdefault("metrics", metrics)
     parameters["url"] = URL(validate_on=validate_on, **url_kwargs)
     if include.get("landing_url", source_type_format != "HTML"):
-        landing_url_name = f"URL to {source_type_article} {source_type} in a human readable format"
+        landing_url_name = (
+            f"URL to {source_type_article} {source_type} in a human readable format"
+        )
         landing_url_help = (
             "If provided, users clicking the source URL will visit this URL instead of the "
             f"{source_type} in {source_type_format} format."
         )
-        parameters["landing_url"] = LandingURL(metrics=metrics, name=landing_url_name, help=landing_url_help)
+        parameters["landing_url"] = LandingURL(
+            metrics=metrics, name=landing_url_name, help=landing_url_help
+        )
     return parameters
