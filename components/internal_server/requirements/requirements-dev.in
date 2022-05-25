@@ -1,0 +1,2 @@
+-r ../../../requirements/requirements-dev.in
+types-requests==2.27.11
