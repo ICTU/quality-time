@@ -27,17 +27,14 @@ jobs:
       if: env.SONAR_TOKEN != null
       with:
         node-version: '16'
-    - name: Prepare scan
-      if: env.SONAR_TOKEN != null
-      run: |
-        python -m pip install -r requirements-base.txt
     - name: Collector
       if: env.SONAR_TOKEN != null
       working-directory: components/collector
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements.txt 
+        pip install -r requirements-base.txt
+        pip install -r requirements.txt
         pip install -r requirements-dev.txt
         pip install -r requirements-internal.txt
         ci/unittest.sh
@@ -49,7 +46,8 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        pip install -r requirements.txt 
+        pip install -r requirements-base.txt
+        pip install -r requirements.txt
         pip install -r requirements-dev.txt
         pip install -r requirements-internal.txt
         ci/unittest.sh
@@ -61,6 +59,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
+        pip install -r requirements-base.txt
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
         pip install -r requirements-internal.txt
@@ -73,11 +72,7 @@ jobs:
       run: |
         python -m venv venv
         . venv/bin/activate
-        # Install the requirements and dev requirements in two steps to prevent a version conflict when installing both at the same time:
-        # ERROR: Cannot install urllib3==1.26.8 and urllib3==1.26.9 because these package versions have conflicting dependencies.
-        # The conflict is caused by:
-        #   The user requested urllib3==1.26.9
-        #   The user requested urllib3==1.26.8
+        pip install -r requirements-base.txt
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
         ci/unittest.sh
