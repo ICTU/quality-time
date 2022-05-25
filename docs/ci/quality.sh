@@ -13,6 +13,7 @@ mypy src
 pylint --rcfile=../.pylintrc src tests
 python -m flake8 --select=DUO src
 isort **/*.py --check-only
-safety check --bare --ignore 41002 -r requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
+run pip-audit --strict --progress-spinner=off -r requirements/requirements-base.txt -r requirements/requirements-dev.txt
+safety check --bare --ignore 41002 -r requirements/requirements-base.txt -r requirements/requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
 NAMES_TO_IGNORE=''
 vulture --min-confidence 0 --ignore-names $NAMES_TO_IGNORE src/ tests/ .vulture_ignore_list.py
