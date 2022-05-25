@@ -194,7 +194,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={}, verify=False)
+        mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={})
         updated_report = self.database.reports.insert_one.call_args[0][0]
         url = self.url
         self.assert_delta(
@@ -257,7 +257,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=("un", "pwd"), headers={}, verify=False)
+        mock_get.assert_called_once_with(self.url, auth=("un", "pwd"), headers={})
 
     @patch.object(requests, "get")
     def test_url_no_url_type(self, mock_get, request):
@@ -288,7 +288,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(
-            self.url, auth=("xxx", ""), headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"}, verify=False
+            self.url, auth=("xxx", ""), headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"}
         )
 
     @patch.object(requests, "get")
@@ -305,7 +305,6 @@ class PostSourceParameterTest(SourceTestCase):
             self.url + "/rest/api",
             auth=None,
             headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"},
-            verify=False,
         )
 
     @patch.object(requests, "get")

@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not v3.36.0, please read t
 
 - When measuring the 'missing metrics' metric, *Quality-time* was still using an old endpoint to get the data, resulting in a parse error. Fixes [#3855](https://github.com/ICTU/quality-time/issues/3855).
 
+### Changed
+
+- Verify SSL certificates when checking secure (https) URLs entered by the user.
+
 ## v3.36.0 - 2022-05-16
 
 ### Deployment notes
