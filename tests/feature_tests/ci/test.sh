@@ -11,7 +11,9 @@ docker compose up --quiet-pull -d database ldap
 cd components/external_server || exit
 python3 -m venv venv
 . venv/bin/activate
-pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
+pip --quiet install --progress-bar off -r requirements-base.txt
+pip --quiet install --progress-bar off -r requirements.txt 
+pip --quiet install --progress-bar off -r requirements-dev.txt
 pip --quiet install --progress-bar off -r requirements-internal.txt
 coverage erase
 RENDERER_HOST=localhost python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_server.log &
@@ -23,6 +25,7 @@ docker compose up --quiet-pull -d server renderer frontend www
 cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
+pip --quiet install --progress-bar off -r requirements-base.txt
 pip --quiet install --progress-bar off -r requirements-dev.txt
 cd ../..
 sleep 10  # Give server time to start up

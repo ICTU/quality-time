@@ -3,35 +3,52 @@ disable-auto-file-load:
 
 additional-dependency-files:
   - type: pip-requirements-txt
+    path: components/collector/requirements-base.in
+  - type: pip-requirements-txt
     path: components/collector/requirements.in
   - type: pip-requirements-txt
     path: components/collector/requirements-dev.in
 
+  - type: pip-requirements-txt
+    path: components/notifier/requirements-base.in
   - type: pip-requirements-txt
     path: components/notifier/requirements.in
   - type: pip-requirements-txt
     path: components/notifier/requirements-dev.in
 
   - type: pip-requirements-txt
+    path: components/external_server/requirements-base.in
+  - type: pip-requirements-txt
     path: components/external_server/requirements.in
   - type: pip-requirements-txt
     path: components/external_server/requirements-dev.in
 
+  - type: pip-requirements-txt
+    path: components/shared_python/requirements-base.in
   - type: pip-requirements-txt
     path: components/shared_python/requirements.in
   - type: pip-requirements-txt
     path: components/shared_python/requirements-dev.in
 
   - type: pip-requirements-txt
+    path: tests/application_tests/requirements-base.in
+  - type: pip-requirements-txt
     path: tests/application_tests/requirements-dev.in
   - type: pip-requirements-txt
     path: tests/application_tests/requirements.txt
+
+  - type: pip-requirements-txt
+    path: tests/feature_tests/requirements-base.in
   - type: pip-requirements-txt
     path: tests/feature_tests/requirements-dev.in
 
   - type: pip-requirements-txt
+    path: release/requirements-base.in
+  - type: pip-requirements-txt
     path: release/requirements-dev.in
 
+  - type: pip-requirements-txt
+    path: docs/requirements-base.in
   - type: pip-requirements-txt
     path: docs/requirements-dev.in
   - type: npm-package-json
