@@ -10,5 +10,5 @@ run () {
 }
 
 # Update the compiled requirements files
-run pip-compile --allow-unsafe --generate-hashes --quiet requirements-base.in
-run pip-compile --allow-unsafe --generate-hashes --quiet requirements-dev.in
+run pip-compile --allow-unsafe --generate-hashes --quiet requirements/requirements-base.in
+run pip-compile --allow-unsafe --generate-hashes --quiet requirements/requirements-dev.in

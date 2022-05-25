@@ -1,12 +1,5 @@
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "04:00"
-  open-pull-requests-limit: 100
-
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
@@ -15,7 +8,7 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/components/collector"
+  directory: "/components/collector/requirements"
   schedule:
     interval: daily
     time: "04:00"
@@ -66,7 +59,7 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/components/notifier"
+  directory: "/components/notifier/requirements"
   schedule:
     interval: daily
     time: "04:00"
@@ -117,7 +110,7 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/components/external_server"
+  directory: "/components/external_server/requirements"
   schedule:
     interval: daily
     time: "04:00"
@@ -134,7 +127,7 @@ updates:
   open-pull-requests-limit: 100
 
  - package-ecosystem: pip
-   directory: "/components/shared_python"
+   directory: "/components/shared_python/requirements"
    schedule:
      interval: daily
      time: "04:00"
@@ -158,29 +151,30 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/docs"
+  directory: "/docs/requirements"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/release"
+  directory: "/release/requirements"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/tests/application_tests"
+  directory: "/tests/application_tests/requirements"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/tests/feature_tests"
+  directory: "/tests/feature_tests/requirements"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 100
+

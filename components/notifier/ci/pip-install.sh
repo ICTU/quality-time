@@ -9,8 +9,9 @@ run () {
     eval "$*"
 }
 
-# Install the requirements from the compiled requirements files
-run pip install --quiet -r requirements-base.txt
-run pip install --quiet -r requirements.txt
-run pip install --quiet -r requirements-dev.txt
-run pip install --quiet -r requirements-internal.txt
+# Install the requirements
+run pip install --quiet -r requirements/requirements-base.txt
+run pip install --quiet -r requirements/requirements.txt
+run pip install --quiet -r requirements/requirements-dev.txt
+run pip install --quiet -r requirements/requirements-internal.txt
+
