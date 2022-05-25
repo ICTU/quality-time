@@ -44,6 +44,7 @@ jobs:
       - checkout
       - run: |
           cd docs
+          npm install
           python -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
