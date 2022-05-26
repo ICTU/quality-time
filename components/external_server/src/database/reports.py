@@ -125,10 +125,10 @@ def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str 
         for report_uuid in report_uuids:
             report_filter["report_uuid"] = report_uuid
             report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
-            if "deleted" not in report_dict:
+            if report_dict and "deleted" not in report_dict:
                 report_dicts.append(report_dict)
     else:
-        report_dicts = database.reports.find({"last": True, "deleted": DOES_NOT_EXIST})
+        report_dicts = cast(list, database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
     return [Report(data_model, report_dict) for report_dict in report_dicts]
 
 
