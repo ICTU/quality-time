@@ -66,7 +66,6 @@ def post_report_import(database: Database):
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
     if not secret:  # pragma: no cover-behave
         bottle.response.status = 500
-        bottle.response.content_type = "application/json"
         return {"error": "Cannot find the private key of this Quality-time instance."}
 
     private_key = secret["private_key"]
@@ -74,7 +73,6 @@ def post_report_import(database: Database):
         decrypt_credentials(data_model, private_key, report)
     except DecryptionError:
         bottle.response.status = 400
-        bottle.response.content_type = "application/json"
         return {
             "error": "Decryption of source credentials failed. \
                 Did you use the public key of this Quality-time instance to encrypt this report?"
