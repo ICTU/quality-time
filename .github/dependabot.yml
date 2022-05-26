@@ -8,6 +8,13 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
+  directory: "/requirements"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 100
+
+- package-ecosystem: pip
   directory: "/components/collector/requirements"
   schedule:
     interval: daily
