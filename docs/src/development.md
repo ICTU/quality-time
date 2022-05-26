@@ -16,6 +16,14 @@ Clone this repository:
 
 ```console
 git clone git@github.com:ICTU/quality-time.git
+cd quality-time
+```
+
+If you don't have a public key in your GitHub account, use:
+
+```console
+git clone https://github.com/ICTU/quality-time.git
+cd quality-time
 ```
 
 #### Start standard components
@@ -23,7 +31,7 @@ git clone git@github.com:ICTU/quality-time.git
 Open a terminal and start the standard containers with docker-compose:
 
 ```console
-docker-compose up database ldap phpldapadmin mongo-express testdata
+docker compose up database ldap phpldapadmin mongo-express testdata
 ```
 
 {index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
@@ -43,8 +51,7 @@ Open another terminal and run the server:
 cd components/external_server
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
-pip install -r requirements.txt -r requirements-dev.txt
-pip install -r requirements-internal.txt  # This needs a separate `pip install` as requirements.txt and requirements-dev.txt have hashes, but requirements-internal.txt does not
+ci/pip-install.sh
 python src/quality_time_server.py
 ```
 
@@ -54,7 +61,7 @@ The API of the server is served at [http://localhost:5001](http://localhost:5001
 If you're new to Python virtual environments, note that:
 - Creating a virtual environment (`python3 -m venv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
 - Activating the virtual environment (`. venv/bin/activate`) has to be done everytime you open a new shell and want to use the Python installed in the virtual environment.
-- Installing the requirements (`pip install -r requirements.txt ...`) has to be repeated when the dependencies, specified in the requirements files, change.
+- Installing the requirements (`ci/pip-install.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
 ```
 
 ```{seealso}
@@ -70,7 +77,7 @@ Open another terminal and run the collector:
 cd components/collector
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
-pip install -r requirements.txt -r requirements-dev.txt
+ci/pip-install.sh
 python src/quality_time_collector.py
 ```
 
@@ -94,7 +101,7 @@ Optionally, open yet another terminal and run the notifier:
 cd components/notifier
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
-pip install -r requirements.txt -r requirements-dev.txt
+ci/pip-install.sh
 python src/quality_time_notifier.py
 ```
 
@@ -318,7 +325,7 @@ To generate the documentation locally:
 cd docs
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
-pip install -r requirements-dev.txt
+ci/pip-install.sh
 make html
 open build/html/index.html
 ```
@@ -341,7 +348,7 @@ Make sure the release folder is the current directory, and you have the dependen
 cd release
 python3 -m venv venv
 . venv/bin/activate
-pip install -r requirements-dev.txt
+ci/pip-install.sh
 ```
 
 Run the release script with `--help` to show help information, including the current release.
