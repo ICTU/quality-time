@@ -48,7 +48,9 @@ class ReportDateTimeTest(unittest.TestCase):
 
 
 class MD5HashTest(unittest.TestCase):
-    def testHash(self):
+    """Test md5 hash function."""
+
+    def test_hash(self):
         """Test that hash is correct."""
         test_string = "test"
         test_hash = md5_hash(test_string)
