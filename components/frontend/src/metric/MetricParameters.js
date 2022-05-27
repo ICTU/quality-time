@@ -48,10 +48,10 @@ function Tags({ metric, metric_uuid, reload, report }) {
     const tags = Object.keys(report.summary_by_tag || []);
     return (
         <MultipleChoiceInput
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
             allowAdditions
             label="Tags"
             options={dropdownOptions(tags)}
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
             set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
             value={get_metric_tags(metric)}
         />
