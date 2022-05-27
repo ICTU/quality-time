@@ -8,6 +8,13 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
+  directory: "/requirements"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 100
+
+- package-ecosystem: pip
   directory: "/components/collector/requirements"
   schedule:
     interval: daily
@@ -126,11 +133,11 @@ updates:
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
   open-pull-requests-limit: 100
 
- - package-ecosystem: pip
-   directory: "/components/shared_python/requirements"
-   schedule:
-     interval: daily
-     time: "04:00"
+- package-ecosystem: pip
+  directory: "/components/shared_python/requirements"
+  schedule:
+    interval: daily
+    time: "04:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
@@ -177,4 +184,3 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 100
-

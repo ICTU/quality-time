@@ -460,6 +460,12 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_report = export_report_as_json(self.database, "non_existing_report")
         self.assertIsNone(exported_report)
 
+    def test_get_json_report_without_public_key(self):
+        """Test that an error message is returned if the database has no public key."""
+        self.database.secrets.find_one.return_value = None
+        response = export_report_as_json(self.database, REPORT_ID)
+        self.assertIn("error", response)
+
     @patch("routes.report.bottle.request")
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
@@ -522,6 +528,18 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
             "not_properly_encrypted==",
             "test_message",
         )
+        request.json = mocked_report
+        response = post_report_import(self.database)
+        self.assertIn("error", response)
+
+    @patch("bottle.request")
+    def test_post_report_import_without_private_key(self, request):
+        """Test that a report cannot be imported if the Quality-time instance has no private key."""
+        self.database.secrets.find_one.return_value = None
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
+            "password"
+        ] = "unencrypted_password"
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)

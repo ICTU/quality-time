@@ -17,7 +17,7 @@ from .secrets import initialize_secrets
 def init_database() -> Database:  # pragma: no cover-behave
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
-    client = pymongo.MongoClient(database_url)
+    client: pymongo.MongoClient = pymongo.MongoClient(database_url)
     set_feature_compatibility_version(client.admin)
     database = client.quality_time_db
     logging.info("Connected to database: %s", database)
