@@ -63,10 +63,41 @@ ENTITIES = dict(
     )
 )
 
+AXE_CORE_DOCUMENTATION = """
+When running Axe-core on a webpage, the
+[run function](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axerun) returns a 
+[results object](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object). The results objects
+may be stored in separate JSON files and served to *Quality-time* in a zipfile, or the results objects can be combined
+in one JSON file that contains a list of results objects.
+"""
+
 AXE_CORE = Source(
     name="Axe-core",
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
     url="https://github.com/dequelabs/axe-core",
+    documentation=dict(
+        accessibility=AXE_CORE_DOCUMENTATION,
+        source_up_to_dateness=AXE_CORE_DOCUMENTATION
+        + """
+Axe-core adds a `timestamp` field to each results object. That field is used by *Quality-time* to determine the 
+up-to-dateness of the report. If there is more than one results object in the JSON file, *Quality-time* uses the 
+first one it encounters, assuming that all timestamps in one JSON file will be roughly equal.
+
+```{tip}
+When combining results objects, make sure the `timestamp` field is retained in the JSON.
+```
+""",
+        source_version=AXE_CORE_DOCUMENTATION
+        + """
+Axe-core adds a `testEngine` field to each results object. That field is used by *Quality-time* to determine the 
+version of Axe-core used to generate the report. If there is more than one results object in the JSON file, 
+*Quality-time* uses the first one it encounters, assuming that all test engines used in one JSON file will be equal.
+
+```{tip}
+When combining results objects, make sure the `testEngine` field is retained in the JSON.
+```
+""",
+    ),
     parameters=dict(
         tags_to_include=TAGS_TO_INCLUDE,
         tags_to_ignore=TAGS_TO_IGNORE,

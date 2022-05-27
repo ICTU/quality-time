@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not v3.36.0, please read t
 
 - Verify SSL certificates when checking secure (https) URLs entered by the user.
 
+### Added
+
+- Explain in the documentation what information needs to be present in Axe-core JSON reports to support the 'source up-to-dateness' and 'source version' metrics. Closes [#3903](https://github.com/ICTU/quality-time/issues/3903).
+
 ## v3.36.0 - 2022-05-16
 
 ### Deployment notes
