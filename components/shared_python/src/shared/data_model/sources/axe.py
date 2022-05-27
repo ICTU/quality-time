@@ -79,8 +79,8 @@ AXE_CORE = Source(
         accessibility=AXE_CORE_DOCUMENTATION,
         source_up_to_dateness=AXE_CORE_DOCUMENTATION
         + """
-Axe-core adds a `timestamp` field to each results object. That field is used by *Quality-time* to determine the 
-up-to-dateness of the report. If there is more than one results object in the JSON file, *Quality-time* uses the 
+Axe-core adds a `timestamp` field to each results object. That field is used by *Quality-time* to determine the
+up-to-dateness of the report. If there is more than one results object in the JSON file, *Quality-time* uses the
 first one it encounters, assuming that all timestamps in one JSON file will be roughly equal.
 
 ```{tip}
@@ -89,8 +89,8 @@ When combining results objects, make sure the `timestamp` field is retained in t
 """,
         source_version=AXE_CORE_DOCUMENTATION
         + """
-Axe-core adds a `testEngine` field to each results object. That field is used by *Quality-time* to determine the 
-version of Axe-core used to generate the report. If there is more than one results object in the JSON file, 
+Axe-core adds a `testEngine` field to each results object. That field is used by *Quality-time* to determine the
+version of Axe-core used to generate the report. If there is more than one results object in the JSON file,
 *Quality-time* uses the first one it encounters, assuming that all test engines used in one JSON file will be equal.
 
 ```{tip}
