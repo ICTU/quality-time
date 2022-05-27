@@ -1,4 +1,4 @@
-bottle==0.12.19
+bottle==0.12.21
 packaging==21.3
 pymongo==4.1.1
 

@@ -4,14 +4,14 @@
 #
 #    pip-compile --generate-hashes requirements/requirements.in
 #
-bottle==0.12.19 \
-    --hash=sha256:a9d73ffcbc6a1345ca2d7949638db46349f5b2b77dac65d6494d45c23628da2c \
-    --hash=sha256:f6b8a34fe9aa406f9813c02990db72ca69ce6a158b5b156d2c41f345016a723d
-    # via -r requirements/requirements.in
+bottle==0.12.21 \
+    --hash=sha256:6e1c9817019dae3a8c20adacaf09035251798d2ae2fcc8ce43157ee72965f257 \
+    --hash=sha256:787c61b6cc02b9c229bf2663011fac53dd8fc197f7f8ad2eeede29d888d7887e
+    # via -r requirements.in
 packaging==21.3 \
     --hash=sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb \
     --hash=sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522
-    # via -r requirements/requirements.in
+    # via -r requirements.in
 pymongo==4.1.1 \
     --hash=sha256:019a4c13ef1d9accd08de70247068671b116a0383adcd684f6365219f29f41cd \
     --hash=sha256:07f50a3b8a3afb086089abcd9ab562fb2a27b63fd7017ca13dfe7b663c8f3762 \
@@ -96,7 +96,7 @@ pymongo==4.1.1 \
     --hash=sha256:f6db4f00d3baad615e99a865539391243d12b113fb628ebda1d7794ce02d5a10 \
     --hash=sha256:f9405c02af86850e0a8a8ba777b7e7609e0d07bff46adc4f78892cc2d5456018 \
     --hash=sha256:fb4445e3721720c5ca14c0650f35c263b3430e6e16df9d2504618df914b3fb99
-    # via -r requirements/requirements.in
+    # via -r requirements.in
 pyparsing==3.0.7 \
     --hash=sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea \
     --hash=sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484
