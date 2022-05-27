@@ -6,9 +6,9 @@ import os
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
 
-from .datamodel import import_datamodel
-from .report import import_example_reports, initialize_reports_overview
-from .secrets import initialize_secrets
+from shared.initialization.datamodel import import_datamodel
+from shared.initialization.report import import_example_reports, initialize_reports_overview
+from shared.initialization.secrets import initialize_secrets
 
 
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.

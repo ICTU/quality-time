@@ -8,10 +8,11 @@ from shared.database.datamodels import latest_datamodel
 from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, ReportId, SubjectId
 from shared.utils.functions import report_date_time
+from shared.database.reports import insert_new_report
 
 from database.datamodels import default_subject_attributes
 from database.measurements import measurements_by_metric
-from database.reports import insert_new_report, latest_report_for_uuids, metrics_of_subject, latest_reports
+from database.reports import latest_report_for_uuids, metrics_of_subject, latest_reports
 from model.actions import copy_subject, move_item
 from utils.functions import sanitize_html, uuid
 

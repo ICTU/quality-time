@@ -9,12 +9,13 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import recent_measurements
+from shared.database.reports import insert_new_report
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp, report_date_time
 from shared.utils.type import ReportId
-from shared.database.measurements import recent_measurements
+from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
-from database.reports import insert_new_report, latest_report, latest_reports
+from database.reports import latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.issue_tracker import IssueTracker

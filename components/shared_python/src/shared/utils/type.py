@@ -1,4 +1,5 @@
 """Quality-time specific types."""
+from dataclasses import dataclass
 
 from dataclasses import dataclass
 

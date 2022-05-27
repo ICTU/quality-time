@@ -4,9 +4,9 @@ import logging
 
 import bottle
 
+from shared.database.reports import latest_reports_overview
 from shared.database import sessions
 
-from database.reports import latest_reports_overview
 from model.session import Session
 
 
