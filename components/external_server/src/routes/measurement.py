@@ -14,6 +14,7 @@ from shared.database.measurements import insert_new_measurement, latest_measurem
 from shared.model.measurement import Measurement
 from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, SourceId
+from shared.utils.functions import report_date_time
 
 from database.measurements import count_measurements, measurements_by_metric
 from database.reports import latest_report_for_uuids, latest_reports
