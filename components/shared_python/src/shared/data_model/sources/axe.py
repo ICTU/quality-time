@@ -65,7 +65,7 @@ ENTITIES = dict(
 
 AXE_CORE_DOCUMENTATION = """
 When running Axe-core on a webpage, the
-[run function](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axerun) returns a 
+[run function](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axerun) returns a
 [results object](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object). The results objects
 may be stored in separate JSON files and served to *Quality-time* in a zipfile, or the results objects can be combined
 in one JSON file that contains a list of results objects.
