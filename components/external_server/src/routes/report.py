@@ -16,6 +16,7 @@ from database.measurements import recent_measurements
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
+from model.issue_tracker import IssueTracker
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -204,6 +205,21 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
         token_validation_path = parameters.get("private_token", {}).get("validation_path", "")
         result["availability"] = [check_url_availability(url, parameters, token_validation_path)]
     return result
+
+
+@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/suggestions/<query>", authentication_required=True)
+def get_report_issue_tracker_suggestions(report_uuid: Report, query: str, database: Database):
+    """Get suggestions for issue ids from the issue tracker using the query string."""
+    data_model = latest_datamodel(database)
+    report = latest_report(database, data_model, report_uuid)
+    issue_tracker_data = report.get("issue_tracker", {})
+    parameters = issue_tracker_data.get("parameters", {})
+    url = parameters.get("url")
+    username = parameters.get("username", "")
+    password = parameters.get("password", "")
+    private_token = parameters.get("private_token", "")
+    issue_tracker = IssueTracker(url, username, password, private_token)
+    return dict(suggestions=[issue.as_dict() for issue in issue_tracker.get_suggestions(query)])
 
 
 def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
