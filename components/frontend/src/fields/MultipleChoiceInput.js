@@ -12,7 +12,7 @@ function sort_options(option_list) {
 }
 
 export function MultipleChoiceInput(props) {
-    let { allowAdditions, editableLabel, getOptions, required, set_value, requiredPermissions, ...otherProps } = props;
+    let { allowAdditions, editableLabel, onSearchChange, required, set_value, requiredPermissions, ...otherProps } = props;
     const [value, setValue] = useState(props.value || [])
     const [searchQuery, setSearchQuery] = useState("");
     return (
@@ -46,6 +46,7 @@ export function MultipleChoiceInput(props) {
                         onSearchChange={(event, data) => {
                             event.preventDefault();
                             setSearchQuery(data.searchQuery)
+                            if (onSearchChange) {onSearchChange(data.searchQuery)}
                         }}
                         options={sort_options(props.options)}
                         search

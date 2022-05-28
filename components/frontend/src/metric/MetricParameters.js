@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, Header } from 'semantic-ui-react';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
+import { get_report_issue_tracker_suggestions } from '../api/report';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -136,13 +137,17 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
     const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
     const metricIssueIds = get_metric_issue_ids(metric);
+    const [suggestions, setSuggestions] = useState([]);
     return (
         <MultipleChoiceInput
             allowAdditions
             id="issue-identifiers"
+            onSearchChange={(query) => {
+                get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestions) => {console.log(suggestions); setSuggestions(suggestions)})
+            }}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-            options={dropdownOptions(metricIssueIds)}
+            options={dropdownOptions(suggestions)}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
             value={metricIssueIds}
         />

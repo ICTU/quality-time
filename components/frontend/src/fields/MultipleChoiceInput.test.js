@@ -23,7 +23,7 @@ it('renders in error state if a required value is missing', () => {
 })
 
 it('does not render in error state if a required value is present', () => {
-    render(<MultipleChoiceInput value={["check"]} getOptions={() => []} required />)
+    render(<MultipleChoiceInput value={["check"]} options={[]} required />)
     expect(screen.getByRole("combobox")).toBeValid()
 })
 
@@ -31,7 +31,7 @@ function renderMultipleChoiceInput(options=[], value=["hello"]) {
     let mockSetValue = jest.fn();
     render(
         <Permissions.Provider value={false}>
-            <MultipleChoiceInput value={value} getOptions={() => options} set_value={mockSetValue} allowAdditions={true} />
+            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} allowAdditions={true} />
         </Permissions.Provider>
     )
     return mockSetValue
