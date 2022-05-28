@@ -203,7 +203,7 @@ class ReportIssueTrackerSuggestionsTest(ReportTestCase):
         response.json.return_value = dict(sections=[dict(issues=[dict(key="FOO-42", summaryText="Summary")])])
         requests_get.return_value = response
         suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
-        self.assertEqual(dict(suggestions=[dict(key="FOO-42", summary="Summary")]), suggested_issues)
+        self.assertEqual(dict(suggestions=[dict(key="FOO-42", text="Summary")]), suggested_issues)
 
 
 class ReportTest(ReportTestCase):

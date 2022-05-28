@@ -13,11 +13,11 @@ class IssueSuggestion:
     """Issue suggestion."""
 
     key: str
-    summary: str
+    text: str
 
     def as_dict(self) -> dict[str, str]:
         """Convert issue suggestion to dict."""
-        return dict(key=self.key, summary=self.summary)
+        return dict(key=self.key, text=self.text)
 
 
 @dataclass
