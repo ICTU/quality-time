@@ -3,14 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Permissions } from '../context/Permissions';
 import { MultipleChoiceInput } from './MultipleChoiceInput';
+import { dropdownOptions } from '../utils';
+
+const options = dropdownOptions(["hello", "again"]);
 
 it('renders the value read only', () => {
-    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={["hello", "again"]} />)
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={options} />)
     expect(screen.getByDisplayValue(/hello, world/)).not.toBe(null)
 })
 
 it('renders an empty read only value', () => {
-    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={["hello", "again"]} />)
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={options} />)
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
@@ -35,39 +38,19 @@ function renderMultipleChoiceInput(options=[], value=["hello"]) {
 }
 
 it('renders an editable value', () => {
-    renderMultipleChoiceInput(["hello", "again"])
+    renderMultipleChoiceInput(options)
     expect(screen.getByText(/hello/)).not.toBe(null)
 })
 
 it('renders a missing editable value', () => {
-    renderMultipleChoiceInput(["hello", "again"], [])
+    renderMultipleChoiceInput(options, [])
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
 it('invokes the callback', () => {
-    let mockSetValue = renderMultipleChoiceInput(["hello", "again"])
+    let mockSetValue = renderMultipleChoiceInput(options)
     fireEvent.click(screen.getByText(/again/))
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "again"]);
-})
-
-it('does not add a value to the options twice when clicked', () => {
-    renderMultipleChoiceInput(["hello", "again"])
-    fireEvent.click(screen.getByText(/again/))
-    expect(screen.getAllByText(/again/).length).toBe(1)
-})
-
-it('does not add a value to the options twice when typed', async () => {
-    renderMultipleChoiceInput()
-    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
-    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
-    expect(screen.getAllByText(/again/).length).toBe(3)  // Twice as value, once as option
-})
-
-it('does not add a value to the options when the options already contain that value', async () => {
-    renderMultipleChoiceInput(["again"])
-    expect(screen.getAllByText(/again/).length).toBe(1)
-    await userEvent.type(screen.getByDisplayValue(""), "again{Enter}")
-    expect(screen.getAllByText(/again/).length).toBe(2)
 })
 
 it('saves an uncommitted value on blur', async () => {

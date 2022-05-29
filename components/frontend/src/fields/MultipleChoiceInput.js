@@ -5,7 +5,7 @@ import { ReadOnlyInput } from './ReadOnlyInput';
 
 function sort_options(option_list) {
     let options = new Set();
-    option_list.forEach((option) => { options.add({ key: option, text: option, value: option }) });
+    (option_list || []).forEach((option) => { options.add(option) });
     options = Array.from(options);
     options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
@@ -14,7 +14,6 @@ function sort_options(option_list) {
 export function MultipleChoiceInput(props) {
     let { allowAdditions, editableLabel, required, set_value, requiredPermissions, ...otherProps } = props;
     const [value, setValue] = useState(props.value || [])
-    const [options, setOptions] = useState(props.options || []);
     const [searchQuery, setSearchQuery] = useState("");
     return (
         <Form>
@@ -29,17 +28,11 @@ export function MultipleChoiceInput(props) {
                         fluid
                         label={editableLabel || props.label}
                         multiple
-                        onAddItem={(_event, { value: addedValue }) => {
-                            if (!options.includes(addedValue)) {
-                                setOptions(prevOptions => ([addedValue, ...prevOptions]))
-                            }
-                            setSearchQuery("");
-                        }}
+                        onAddItem={() => setSearchQuery("") }
                         onBlur={() => {
                             if (searchQuery && !value.includes(searchQuery)) {
                                 // Save the data on loss of focus like we do with other input types
                                 let newValue = value.concat(searchQuery);
-                                setOptions(prevOptions => ([searchQuery, ...prevOptions]))
                                 setValue(newValue);
                                 set_value(newValue)
                             }
@@ -54,7 +47,7 @@ export function MultipleChoiceInput(props) {
                             event.preventDefault();
                             setSearchQuery(data.searchQuery)
                         }}
-                        options={sort_options(options)}
+                        options={sort_options(props.options)}
                         search
                         searchQuery={searchQuery}
                         selection

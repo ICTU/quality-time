@@ -9,6 +9,7 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
+import { dropdownOptions } from '../utils';
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
     return (
@@ -61,7 +62,7 @@ function Permissions({ permissions, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         allowAdditions
                         label="Users allowed to edit reports (user name or email address)"
-                        options={permissions[EDIT_REPORT_PERMISSION] || []}
+                        options={dropdownOptions(permissions[EDIT_REPORT_PERMISSION] || [])}
                         placeholder="All authenticated users"
                         set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
                         value={permissions[EDIT_REPORT_PERMISSION]}
@@ -75,7 +76,7 @@ function Permissions({ permissions, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         allowAdditions
                         label="Users allowed to edit measured entities (user name or email address)"
-                        options={permissions[EDIT_ENTITY_PERMISSION] || []}
+                        options={dropdownOptions(permissions[EDIT_ENTITY_PERMISSION] || [])}
                         placeholder="All authenticated users"
                         set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
                         value={permissions[EDIT_ENTITY_PERMISSION]}
