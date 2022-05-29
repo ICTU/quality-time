@@ -5,15 +5,15 @@ import { Permissions } from '../context/Permissions';
 import { MultipleChoiceInput } from './MultipleChoiceInput';
 import { dropdownOptions } from '../utils';
 
-const options = dropdownOptions(["hello", "again"]);
+const defaultOptions = dropdownOptions(["hello", "again"]);
 
 it('renders the value read only', () => {
-    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={options} />)
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={["hello", "world"]} options={defaultOptions} />)
     expect(screen.getByDisplayValue(/hello, world/)).not.toBe(null)
 })
 
 it('renders an empty read only value', () => {
-    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={options} />)
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={defaultOptions} />)
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
@@ -38,17 +38,17 @@ function renderMultipleChoiceInput(options=[], value=["hello"]) {
 }
 
 it('renders an editable value', () => {
-    renderMultipleChoiceInput(options)
+    renderMultipleChoiceInput(defaultOptions)
     expect(screen.getByText(/hello/)).not.toBe(null)
 })
 
 it('renders a missing editable value', () => {
-    renderMultipleChoiceInput(options, [])
+    renderMultipleChoiceInput(defaultOptions, [])
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
 it('invokes the callback', () => {
-    let mockSetValue = renderMultipleChoiceInput(options)
+    let mockSetValue = renderMultipleChoiceInput(defaultOptions)
     fireEvent.click(screen.getByText(/again/))
     expect(mockSetValue).toHaveBeenCalledWith(["hello", "again"]);
 })
