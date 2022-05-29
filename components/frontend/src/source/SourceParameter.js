@@ -9,6 +9,7 @@ import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { LabelWithDropdown } from '../widgets/LabelWithDropdown';
 import { HyperLink } from '../widgets/HyperLink';
+import { dropdownOptions } from '../utils';
 
 function SourceParameterLabel({
     source_type_name,
@@ -115,10 +116,13 @@ export function SourceParameter({
         return (<IntegerInput {...parameter_props} max={parameter_max} min={parameter_min} unit={parameter_unit} />)
     }
     if (parameter_type === "single_choice") {
-        return (<SingleChoiceInput {...parameter_props} options={parameter_values.map(value => ({ key: value, text: value, value: value }))} />)
+        return (<SingleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />)
     }
     if (parameter_type === "multiple_choice") {
-        return (<MultipleChoiceInput {...parameter_props} options={parameter_values} />)
+        return (<MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />)
+    }
+    if (parameter_type === "multiple_choice_with_addition") {
+        return (<MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} allowAdditions />)
     }
     parameter_props["options"] = options();
     if (parameter_type === "string") {
@@ -126,9 +130,6 @@ export function SourceParameter({
     }
     if (parameter_type === "url") {
         return (<StringInput {...parameter_props} error={warning} />)
-    }
-    if (parameter_type === "multiple_choice_with_addition") {
-        return (<MultipleChoiceInput {...parameter_props} allowAdditions />)
     }
     return null;
 }

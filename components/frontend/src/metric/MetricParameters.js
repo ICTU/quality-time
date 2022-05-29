@@ -11,7 +11,7 @@ import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
+import { dropdownOptions, getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
 
@@ -45,13 +45,13 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
 }
 
 function Tags({ metric, metric_uuid, reload, report }) {
-    const tags = Object.keys(report.summary_by_tag || {});
+    const tags = Object.keys(report.summary_by_tag || []);
     return (
         <MultipleChoiceInput
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             allowAdditions
             label="Tags"
-            options={[...tags]}
+            options={dropdownOptions(tags)}
             set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
             value={get_metric_tags(metric)}
         />
@@ -134,17 +134,17 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 }
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
-    const issue_status_help = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
-    const metric_issue_ids = get_metric_issue_ids(metric);
+    const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
+    const metricIssueIds = get_metric_issue_ids(metric);
     return (
         <MultipleChoiceInput
             allowAdditions
             id="issue-identifiers"
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issue_status_help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-            options={metric_issue_ids}
+            label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            options={dropdownOptions(metricIssueIds)}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={metric_issue_ids}
+            value={metricIssueIds}
         />
     )
 }
