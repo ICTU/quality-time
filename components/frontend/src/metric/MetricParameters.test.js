@@ -92,11 +92,11 @@ it('shows issue id suggestions', async () => {
 it('shows no issue id suggestions without a query', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{key: "FOO-42", text: "Suggestion"}] });
     await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), 'u');
+    await userEvent.type(screen.getByLabelText(/Issue identifiers/), 's');
     await waitFor(() => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1);
     })
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), '{Ctrl}A{/Ctrl}{Delete}');
+    await userEvent.clear(screen.getByLabelText(/Issue identifiers/).firstChild);
     await waitFor(() => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(0);
     })
