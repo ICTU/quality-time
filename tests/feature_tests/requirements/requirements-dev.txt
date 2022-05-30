@@ -612,10 +612,10 @@ tomli==2.0.1 \
     #   black
     #   mypy
     #   pylint
-types-requests==2.27.28 \
-    --hash=sha256:46c72c9ddc73010b14cd19f67023df4a01519411ecf632a305b02e32ca8eb3b8 \
-    --hash=sha256:c2647aca57977bc7a4e9c9d9e14a6c76e6503bc64dcbc9f03836df26e54a80c8
-    # via -r requirements/requirements-dev.in
+types-requests==2.27.29 \
+    --hash=sha256:014f4f82db7b96c41feea9adaea30e68cd64c230eeab34b70c29bebb26ec74ac \
+    --hash=sha256:fb453b3a76a48eca66381cea8004feaaea12835e838196f5c7ac87c75c5c19ef
+    # via -r requirements/../../../requirements/types-requests.in
 types-setuptools==57.4.14 \
     --hash=sha256:828f7e7e51e157876f47c80518b23ba0c3c36aa8081efd39d5d39f393938aec9 \
     --hash=sha256:df02fe1dd244f58cf4e67cfc3d0a97930a2d61a72dd89f21d81c71017cd83f9a

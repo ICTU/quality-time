@@ -507,10 +507,10 @@ types-ipaddress==1.0.8 \
     --hash=sha256:4933b74da157ba877b1a705d64f6fa7742745e9ffd65e51011f370c11ebedb55 \
     --hash=sha256:a03df3be5935e50ba03fa843daabff539a041a28e73e0fce2c5705bee54d3841
     # via types-cryptography
-types-requests==2.27.11 \
-    --hash=sha256:506279bad570c7b4b19ac1f22e50146538befbe0c133b2cea66a9b04a533a859 \
-    --hash=sha256:6a7ed24b21780af4a5b5e24c310b2cd885fb612df5fd95584d03d87e5f2a195a
-    # via -r requirements/requirements-dev.in
+types-requests==2.27.29 \
+    --hash=sha256:014f4f82db7b96c41feea9adaea30e68cd64c230eeab34b70c29bebb26ec74ac \
+    --hash=sha256:fb453b3a76a48eca66381cea8004feaaea12835e838196f5c7ac87c75c5c19ef
+    # via -r requirements/../../../requirements/types-requests.in
 types-setuptools==57.4.9 \
     --hash=sha256:536ef74744f8e1e4be4fc719887f886e74e4cf3c792b4a06984320be4df450b5 \
     --hash=sha256:948dc6863373750e2cd0b223a84f1fb608414cde5e55cf38ea657b93aeb411d2

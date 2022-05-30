@@ -4,10 +4,10 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes requirements/requirements.in
 #
-bottle==0.12.19 \
-    --hash=sha256:a9d73ffcbc6a1345ca2d7949638db46349f5b2b77dac65d6494d45c23628da2c \
-    --hash=sha256:f6b8a34fe9aa406f9813c02990db72ca69ce6a158b5b156d2c41f345016a723d
-    # via -r requirements/requirements.in
+bottle==0.12.21 \
+    --hash=sha256:6e1c9817019dae3a8c20adacaf09035251798d2ae2fcc8ce43157ee72965f257 \
+    --hash=sha256:787c61b6cc02b9c229bf2663011fac53dd8fc197f7f8ad2eeede29d888d7887e
+    # via -r requirements/../../../requirements/bottle.in
 certifi==2021.10.8 \
     --hash=sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872 \
     --hash=sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569
