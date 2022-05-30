@@ -136,20 +136,25 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
     const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
-    const metricIssueIds = get_metric_issue_ids(metric);
     const [suggestions, setSuggestions] = useState([]);
+    const labelId = `issue-identifiers-label-${metric_uuid}`
     return (
         <MultipleChoiceInput
+            aria-labelledby={labelId}
             allowAdditions
-            id="issue-identifiers"
             onSearchChange={(query) => {
-                get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestions) => {console.log(suggestions); setSuggestions(suggestions)})
+                if (query) {
+                    get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestionsResponse) => {
+                        const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({key: s.key, text: `${s.key}: ${s.text}`, value: s.key}))
+                        setSuggestions(suggestionOptions)
+                    })
+                }
             }}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-            options={dropdownOptions(suggestions)}
+            label={<label id={labelId}>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            options={suggestions}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={metricIssueIds}
+            value={get_metric_issue_ids(metric)}
         />
     )
 }
