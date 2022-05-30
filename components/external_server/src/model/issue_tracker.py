@@ -20,6 +20,9 @@ class IssueSuggestion:
         return asdict(self)  # pragma: no cover behave
 
 
+JiraIssueSuggestionJSON = dict[str, list[dict[str, list[dict[str, str]]]]]
+
+
 @dataclass
 class IssueTracker:
     """Issue tracker. Only supports Jira at the moment."""
@@ -42,9 +45,8 @@ class IssueTracker:
         return self._parse_suggestions(json)  # pragma: no cover behave
 
     @staticmethod
-    def _parse_suggestions(json: dict[str, list[dict[str, list[dict[str, str]]]]]) -> list[IssueSuggestion]:
+    def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover behave
         """Parse the suggestions from the JSON."""
-        # pragma: no cover behave
         suggestions = []
         for section in json.get("sections", []):
             for issue in section.get("issues", []):
