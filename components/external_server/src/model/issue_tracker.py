@@ -1,6 +1,6 @@
 """Issue tracker."""
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import logging
 
 import requests
@@ -17,7 +17,7 @@ class IssueSuggestion:
 
     def as_dict(self) -> dict[str, str]:
         """Convert issue suggestion to dict."""
-        return dict(key=self.key, text=self.text)
+        return asdict(self)
 
 
 @dataclass
