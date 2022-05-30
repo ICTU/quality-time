@@ -148,6 +148,8 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
                         const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({key: s.key, text: `${s.key}: ${s.text}`, value: s.key}))
                         setSuggestions(suggestionOptions)
                     })
+                } else {
+                    setSuggestions([])
                 }
             }}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}

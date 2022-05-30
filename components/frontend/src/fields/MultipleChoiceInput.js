@@ -4,10 +4,10 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function assembleOptions(optionList, values) {
-    // Create a sorted list of unique options. Also include the current values, or they won't be displayed or some reason
+    // Create a sorted list of unique options. Also include the current values, or they won't be displayed for some reason
     let options = new Set();
-    (optionList || []).forEach((option) => { options.add(option) });
-    (values || []).forEach((value) => { options.add({ key: value, text: value, value: value }) })
+    optionList.forEach((option) => { options.add(option) });
+    values.forEach((value) => { options.add({ key: value, text: value, value: value }) })
     options = Array.from(options);
     options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
@@ -50,7 +50,7 @@ export function MultipleChoiceInput(props) {
                             setSearchQuery(data.searchQuery)
                             if (onSearchChange) { onSearchChange(data.searchQuery) }
                         }}
-                        options={assembleOptions(props.options, values)}
+                        options={assembleOptions(props.options || [], values)}
                         search
                         searchQuery={searchQuery}
                         selection
