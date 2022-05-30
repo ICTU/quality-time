@@ -17,7 +17,7 @@ class IssueSuggestion:
 
     def as_dict(self) -> dict[str, str]:
         """Convert issue suggestion to dict."""
-        return asdict(self)
+        return asdict(self)  # pragma: no cover behave
 
 
 @dataclass
@@ -35,10 +35,16 @@ class IssueTracker:
         api_url = self.url.rstrip("/") + self.suggestions_api + query
         try:
             response = requests.get(api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers())
-            json = response.json()
+            json = response.json()  # pragma: no cover behave
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
             return []
+        return self._parse_suggestions(json)  # pragma: no cover behave
+
+    @staticmethod
+    def _parse_suggestions(json: dict[str, list[dict[str, list[dict[str, str]]]]]) -> list[IssueSuggestion]:
+        """Parse the suggestions from the JSON."""
+        # pragma: no cover behave
         suggestions = []
         for section in json.get("sections", []):
             for issue in section.get("issues", []):
