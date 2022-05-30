@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, Header } from 'semantic-ui-react';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
+import { get_report_issue_tracker_suggestions } from '../api/report';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -48,10 +49,10 @@ function Tags({ metric, metric_uuid, reload, report }) {
     const tags = Object.keys(report.summary_by_tag || []);
     return (
         <MultipleChoiceInput
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
             allowAdditions
             label="Tags"
             options={dropdownOptions(tags)}
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
             set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
             value={get_metric_tags(metric)}
         />
@@ -135,16 +136,27 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
     const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
-    const metricIssueIds = get_metric_issue_ids(metric);
+    const [suggestions, setSuggestions] = useState([]);
+    const labelId = `issue-identifiers-label-${metric_uuid}`
     return (
         <MultipleChoiceInput
+            aria-labelledby={labelId}
             allowAdditions
-            id="issue-identifiers"
+            onSearchChange={(query) => {
+                if (query) {
+                    get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestionsResponse) => {
+                        const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({key: s.key, text: `${s.key}: ${s.text}`, value: s.key}))
+                        setSuggestions(suggestionOptions)
+                    })
+                } else {
+                    setSuggestions([])
+                }
+            }}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
-            options={dropdownOptions(metricIssueIds)}
+            label={<label id={labelId}>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            options={suggestions}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={metricIssueIds}
+            value={get_metric_issue_ids(metric)}
         />
     )
 }

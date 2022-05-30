@@ -23,6 +23,7 @@ from .report import (
     export_report_as_json,
     export_report_as_pdf,
     get_report,
+    get_report_issue_tracker_suggestions,
     post_report_import,
     post_report_copy,
     post_report_attribute,

@@ -27,3 +27,8 @@ Feature: metric issues
     And the issue status landing_url is 'None'
     And the issue status connection_error is 'None'
     And the issue status parse_error is 'None'
+
+  Scenario: issue id suggestions
+    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    Then the issue id suggestions are missing

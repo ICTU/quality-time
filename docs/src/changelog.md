@@ -24,6 +24,7 @@ If your currently installed *Quality-time* version is not v3.36.0, please read t
 
 ### Added
 
+- When a Jira instance has been configured as issue tracker, use the Jira instance to suggest issues ids when the user starts typing in the metric issue id field. Closes [#3561](https://github.com/ICTU/quality-time/issues/3561).
 - Explain in the documentation what information needs to be present in Axe-core JSON reports to support the 'source up-to-dateness' and 'source version' metrics. Closes [#3903](https://github.com/ICTU/quality-time/issues/3903).
 
 ## v3.36.0 - 2022-05-16

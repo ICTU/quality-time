@@ -58,12 +58,12 @@ function Permissions({ permissions, reload }) {
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <MultipleChoiceInput
-                        id="report_overview_edit_report_permission"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         allowAdditions
+                        id="report_overview_edit_report_permission"
                         label="Users allowed to edit reports (user name or email address)"
                         options={dropdownOptions(permissions[EDIT_REPORT_PERMISSION] || [])}
                         placeholder="All authenticated users"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
                         value={permissions[EDIT_REPORT_PERMISSION]}
                     />
@@ -72,12 +72,12 @@ function Permissions({ permissions, reload }) {
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <MultipleChoiceInput
-                        id="report_overview_edit_entity_permission"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         allowAdditions
+                        id="report_overview_edit_entity_permission"
                         label="Users allowed to edit measured entities (user name or email address)"
                         options={dropdownOptions(permissions[EDIT_ENTITY_PERMISSION] || [])}
                         placeholder="All authenticated users"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
                         value={permissions[EDIT_ENTITY_PERMISSION]}
                     />

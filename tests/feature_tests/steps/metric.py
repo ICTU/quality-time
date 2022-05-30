@@ -15,3 +15,10 @@ def assert_issue_status(context, attribute, value):
         assert_true(None == issue_status or None == issue_status[0].get(attribute))
     else:
         assert_equal(value, issue_status[0].get(attribute))
+
+
+@then("the issue id suggestions are missing")
+def assert_issue_id_suggestions(context):
+    """Check the issue id suggestions."""
+    suggestions = context.get(f"report/{context.uuid['report']}/issue_tracker/suggestions/random_query")
+    assert_equal(dict(suggestions=[]), suggestions)

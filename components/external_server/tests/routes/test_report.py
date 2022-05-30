@@ -14,6 +14,7 @@ from routes import (
     export_report_as_json,
     export_report_as_pdf,
     get_report,
+    get_report_issue_tracker_suggestions,
     post_report_attribute,
     post_report_copy,
     post_report_import,
@@ -27,6 +28,8 @@ from ..fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJE
 
 class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for report route unit tests."""
+
+    ISSUE_TRACKER_URL = "https://jira"
 
     def setUp(self):
         """Override to set up a database with a report and a user session."""
@@ -127,7 +130,7 @@ class ReportIssueTrackerTest(ReportTestCase):
     def test_post_report_issue_tracker_url(self, request):
         """Test that the issue tracker url can be changed."""
         self.report["issue_tracker"] = dict(type="jira")
-        request.json = dict(url="https://jira")
+        request.json = dict(url=self.ISSUE_TRACKER_URL)
         result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
         self.assertTrue(result["ok"])
         self.assertEqual(-1, result["availability"][0]["status_code"])
@@ -138,11 +141,12 @@ class ReportIssueTrackerTest(ReportTestCase):
                 uuids=[REPORT_ID],
                 email=JENNY["email"],
                 description="Jenny Doe changed the url of the issue tracker of report 'Report' from '' to "
-                "'https://jira'.",
+                f"'{self.ISSUE_TRACKER_URL}'.",
             ),
             updated_report["delta"],
         )
-        self.assertEqual(dict(type="jira", parameters=dict(url="https://jira")), updated_report["issue_tracker"])
+        expected_issue_tracker = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
+        self.assertEqual(expected_issue_tracker, updated_report["issue_tracker"])
 
     def test_post_report_issue_tracker_username(self, request):
         """Test that the issue tracker username can be changed."""
@@ -159,9 +163,8 @@ class ReportIssueTrackerTest(ReportTestCase):
             ),
             updated_report["delta"],
         )
-        self.assertEqual(
-            dict(parameters=dict(username="jodoe", password="secret"), type="jira"), updated_report["issue_tracker"]
-        )
+        expected_issue_tracker = dict(type="jira", parameters=dict(username="jodoe", password="secret"))
+        self.assertEqual(expected_issue_tracker, updated_report["issue_tracker"])
 
     def test_post_report_issue_tracker_password(self, request):
         """Test that the issue tracker password can be changed."""
@@ -178,10 +181,8 @@ class ReportIssueTrackerTest(ReportTestCase):
             ),
             updated_report["delta"],
         )
-        self.assertEqual(
-            dict(parameters=dict(password="another secret", username="jadoe"), type="jira"),
-            updated_report["issue_tracker"],
-        )
+        expected_issue_tracker = dict(parameters=dict(password="another secret", username="jadoe"), type="jira")
+        self.assertEqual(expected_issue_tracker, updated_report["issue_tracker"])
 
     def test_post_report_issue_tracker_password_unchanged(self, request):
         """Test that nothing happens when the new issue tracker password is unchanged."""
@@ -189,6 +190,20 @@ class ReportIssueTrackerTest(ReportTestCase):
         request.json = dict(password="secret")
         self.assertEqual(dict(ok=True), post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
         self.database.reports.insert_one.assert_not_called()
+
+
+class ReportIssueTrackerSuggestionsTest(ReportTestCase):
+    """Unit tests for the get report issue tracker suggestions route."""
+
+    @patch("requests.get")
+    def test_get_issue_suggestions(self, requests_get):
+        """Test that issue id suggestions can be retrieved from the issue tracker."""
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
+        response = Mock()
+        response.json.return_value = dict(sections=[dict(issues=[dict(key="FOO-42", summaryText="Summary")])])
+        requests_get.return_value = response
+        suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
+        self.assertEqual(dict(suggestions=[dict(key="FOO-42", text="Summary")]), suggested_issues)
 
 
 class ReportTest(ReportTestCase):
