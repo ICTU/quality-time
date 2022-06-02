@@ -9,7 +9,7 @@ RUN apk --no-cache add curl=~7.80
 RUN apk add --no-cache \
     msttcorefonts-installer font-noto fontconfig \
     freetype ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
-    chromium=~102.0 \
+    chromium=~99.0 \
   && rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
