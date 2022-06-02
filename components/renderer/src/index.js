@@ -23,6 +23,7 @@ app.get("/api/render", async (req, res) => {
             waitUntil: "networkidle2",
             timeout: 60000
         });
+        webPage.waitForSelector(".loading", { hidden: true }).then(console.log(`Ready for pdf conversion of ${url}`));
         const pdf = await webPage.pdf({
             printBackground: true,
             format: "A4",
