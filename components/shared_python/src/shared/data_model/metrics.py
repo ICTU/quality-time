@@ -13,9 +13,9 @@ METRICS = Metrics.parse_obj(
     dict(
         accessibility=dict(
             name="Accessibility violations",
-            description="The number of accessibility violations in the web user interface of the software.",
-            rationale="According to the W3C, 'Accessibility is essential for developers and organizations that want to "
-            "create high quality websites and web tools, and not exclude people from using their products and "
+            description="The number of accessibility violations in the user interface of the software.",
+            rationale="According to the W3C, 'Accessibility is essential for developers and organisations that want to "
+            "create high-quality websites and web tools, and not exclude people from using their products and "
             "services.' Web accessibility evaluation tools can help determine if web content meets accessibility "
             "standards. Typically, these tools evaluate against one or more accessibility standards, such as the "
             "W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being "
@@ -29,9 +29,9 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
-            rationale="Code should not be commented out because it bloats the sources and may confuse the reader as to "
-            "why the code is still there. Unused code should be deleted. It can be retrieved from the version "
-            "control system if needed.",
+            rationale="Code should not be commented out because it bloats the sources and may confuse the "
+            "reader as to why the code is still there, making the source code harder to understand and maintain. "
+            "Unused code should be deleted. It can be retrieved from the version control system if needed.",
             rationale_urls=[
                 "https://rules.sonarsource.com/python/RSPEC-125",
                 "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
@@ -45,7 +45,7 @@ METRICS = Metrics.parse_obj(
             name="Complex units",
             description="The amount of units (classes, functions, methods, files) that are too complex.",
             rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to "
-            "test because there are more execution paths, that need to be tested. Complex code is harder to "
+            "test because there are more execution paths that need to be tested. Complex code is harder to "
             "maintain because it is harder to understand and analyze.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -59,10 +59,10 @@ METRICS = Metrics.parse_obj(
         ),
         dependencies=dict(
             name="Dependencies",
-            description="The amount of (outdated) dependencies.",
+            description="The number of (outdated) dependencies.",
             rationale="Dependencies that are out of date can be considered a form of technical debt. On the one hand, "
             "not upgrading a dependency postpones the work of testing the new version. And, if the new version of a "
-            "dependency has backwards-incompatiable changes, it also postpones making adaptations to cater for those "
+            "dependency has backwards-incompatible changes, it also postpones making adaptations to cater for those "
             "changes. On the other hand, upgrading the dependency may fix bugs and vulnerabilities, and unlock new "
             "features. Measuring the number of outdated dependencies provides insight into the size of this backlog.",
             scales=["count", "percentage"],
@@ -88,7 +88,7 @@ METRICS = Metrics.parse_obj(
             name="Failed CI-jobs",
             description="The number of continuous integration jobs or pipelines that have failed.",
             rationale="Although it is to be expected that CI-jobs or pipelines will fail from time to time, a "
-            "significant amount of failed CI-jobs or pipelines over a longer period of time could be a sign that "
+            "significant number of failed CI-jobs or pipelines over a longer period of time could be a sign that "
             "the continuous integration process is not functioning properly. Also, having many failed CI-jobs or "
             "pipelines makes it hard to see that additional jobs or pipelines start failing.",
             unit=Unit.CI_JOBS,
@@ -191,7 +191,7 @@ METRICS = Metrics.parse_obj(
         ),
         missing_metrics=dict(
             name="Missing metrics",
-            description="Count the number of metrics that can be added to each report, but have not been added yet.",
+            description="The amount of metrics that can be added to each report, but have not been added yet.",
             rationale="Provide an overview of metrics still to be added to the quality report. If metrics will not be "
             "added, a reason can be documented.",
             scales=["count", "percentage"],
