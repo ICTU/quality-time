@@ -546,7 +546,7 @@ To add issue attributes to the exported report, set the `show_issue_summary`, `s
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
-Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/api/v3/report/<report_uuid>`.
+Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/<report_uuid>`.
 
 ```{index} Export report
 ```
@@ -602,7 +602,7 @@ To allow for seeding a *Quality-time* instance with default reports, imported re
 
 ## Issue tracker
 
-To track work being done on metrics, for example to resolve technical debt, it's possible to add (identifiers of) issues to metrics. *Quality-time* uses these issue identifiers to check the status of the issue with an issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or Trello.
+To track work being done on metrics, for example to resolve technical debt, it's possible to add (identifiers of) issues to metrics. *Quality-time* uses these issue identifiers to check the status of the issue with an issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or GitLab.
 
 Multiple issues can be linked to one metric. At most one issue tracker can be configured per report.
 
