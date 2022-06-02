@@ -28,7 +28,7 @@ class IntegerParameter(Parameter):  # pylint: disable=too-few-public-methods
     min_value: str = "0"
 
     @validator("unit", always=True)
-    def check_unit(cls, unit, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_unit(cls, unit, values):  # pylint: disable=no-self-argument
         """Check that integer-type parameters have a unit."""
         if unit is None:
             raise ValueError(f"Parameter {values['name']} has no unit")
@@ -112,7 +112,7 @@ class Severities(MultipleChoiceParameter):
     metrics: list[str] = ["security_warnings"]
 
     @validator("help_url", always=True)
-    def set_help(cls, help_url, values):  # pylint: disable=no-self-argument,no-self-use
+    def set_help(cls, help_url, values):  # pylint: disable=no-self-argument
         """Add a default help string if a help URL was not provided."""
         if not help_url and not values.get("help"):
             values["help"] = "If provided, only count security warnings with the selected severities."

@@ -40,7 +40,7 @@ class Source(DescribedModel):  # pylint: disable=too-few-public-methods
     issue_tracker: Optional[bool] = False
 
     @validator("parameters")
-    def check_parameters(cls, parameters, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_parameters(cls, parameters, values):  # pylint: disable=no-self-argument
         """Check that if the source has a landing URL parameter it also has a URL parameter."""
         source = values["name"]
         if "landing_url" in parameters.__root__ and "url" not in parameters.__root__:
@@ -62,7 +62,7 @@ class Sources(BaseModel):
     __root__: dict[str, Source]
 
     @validator("__root__")
-    def check_sources(cls, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_sources(cls, values):  # pylint: disable=no-self-argument
         """Check the sources."""
         cls.check_logos(values)
         cls.check_urls(values)

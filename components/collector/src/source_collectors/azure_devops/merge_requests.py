@@ -45,7 +45,8 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of merge requests from the responses."""
-        return str(sum([len((await response.json())["value"]) for response in responses]))
+        merge_requests = [len((await response.json())["value"]) for response in responses]
+        return str(sum(merge_requests))
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
         """Create an entity from a Azure Devops JSON result."""

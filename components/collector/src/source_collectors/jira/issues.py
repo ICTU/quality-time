@@ -78,7 +78,7 @@ class JiraIssues(JiraBase):
         """Allow subclasses to compute the value from the entities."""
         return None
 
-    def _create_entity(self, issue: dict, url: URL) -> Entity:  # pylint: disable=no-self-use
+    def _create_entity(self, issue: dict, url: URL) -> Entity:
         """Create an entity from a Jira issue."""
         # Jira issues have a key and an id. The key consist of the project code and a number, e.g. FOO-42. This means
         # the issue key changes when the issue is moved to another project. The id is an internal key and does not
@@ -100,11 +100,11 @@ class JiraIssues(JiraBase):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
 
-    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=no-self-use,unused-argument
+    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument
         """Return whether this issue should be counted."""
         return True
 
-    def _fields(self) -> str:  # pylint: disable=no-self-use
+    def _fields(self) -> str:
         """Return the fields to get from Jira."""
         sprint_field_id = self._field_ids.get("sprint")
         return "issuetype,summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")

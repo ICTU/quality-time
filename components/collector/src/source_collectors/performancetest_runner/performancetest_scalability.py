@@ -11,7 +11,8 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the scalability breaking point from the responses."""
-        return str(min([await self.__breaking_point(response) for response in responses]))
+        breaking_points = [await self.__breaking_point(response) for response in responses]
+        return str(min(breaking_points))
 
     async def __breaking_point(self, response: Response) -> int:
         """Parse the breaking point from the response."""

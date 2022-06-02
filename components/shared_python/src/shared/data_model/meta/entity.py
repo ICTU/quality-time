@@ -51,7 +51,7 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
     visible: Optional[bool] = None  # Should this attribute be visible in the UI? Defaults to True
 
     @validator("key", always=True)
-    def set_key(cls, key, values):  # pylint: disable=no-self-argument,no-self-use
+    def set_key(cls, key, values):  # pylint: disable=no-self-argument
         """Set the key to the lower case version of the name if there's no key."""
         return values["name"].lower().replace(" ", "_") if not key else key
 
@@ -67,12 +67,12 @@ class Entity(BaseModel):  # pylint: disable=too-few-public-methods
     measured_attribute: Optional[str] = None
 
     @validator("name_plural", always=True)
-    def set_name_plural(cls, name_plural, values):  # pylint: disable=no-self-argument,no-self-use
+    def set_name_plural(cls, name_plural, values):  # pylint: disable=no-self-argument
         """Set the plural name if no value was supplied."""
         return values.get("name", "") + "s" if not name_plural else name_plural
 
     @validator("measured_attribute")
-    def check_measured_attribute(cls, measured_attribute, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_measured_attribute(cls, measured_attribute, values):  # pylint: disable=no-self-argument
         """Check that the measured attribute is a valid attribute with a number type."""
         attributes = {attribute.key: attribute.type for attribute in values.get("attributes", [])}
         if measured_attribute and measured_attribute not in attributes:

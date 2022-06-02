@@ -73,7 +73,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: dict[str, str]) -> Entities:  # pylint: disable=unused-argument
         """Return the entities."""
         return Entities()
 

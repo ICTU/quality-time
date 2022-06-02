@@ -54,13 +54,13 @@ class Metric(DescribedModel):
     rationale_urls: list[str] = []
 
     @validator("default_scale", always=True)
-    def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument,no-self-use
+    def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument
         """If the metric supports just one scale, make that scale the default scale."""
         scales = values.get("scales", [])
         return scales[0] if len(scales) == 1 else default_scale
 
     @validator("default_source", always=True)
-    def set_default_source(cls, default_source, values):  # pylint: disable=no-self-argument,no-self-use
+    def set_default_source(cls, default_source, values):  # pylint: disable=no-self-argument
         """If the metric is supported by just one source besides manual_number, make that source the default source."""
         sources = values.get("sources", [])
         sources_except_manual_number = [source for source in sources if source != "manual_number"]

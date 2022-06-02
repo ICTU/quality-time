@@ -14,7 +14,7 @@ class JiraBase(SourceCollector):
         """
         return None if self._parameter("private_token") else super()._basic_auth_credentials()
 
-    def _headers(self) -> dict[str, str]:  # pylint: disable=no-self-use
+    def _headers(self) -> dict[str, str]:
         """Extend to add the token, if present, to the headers for the get request."""
         headers = super()._headers()
         if token := self._parameter("private_token"):
