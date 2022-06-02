@@ -3,7 +3,7 @@ import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
-import { registeredURLSearchParams } from '../utils';
+import { decapitalize, registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
@@ -20,8 +20,35 @@ function ActionButton(props) {
     )
 }
 
-export function AddButton(props) {
-    return <ActionButton icon='plus' action='Add' popup={`Add a new ${props.item_type} here`} {...props} />
+export function AddButton({ item_subtypes, item_type, onClick }) {
+    const [itemSubType, setItemSubType] = useState(item_subtypes?.[0])
+    if (item_subtypes) {
+        return (
+            <Button.Group>
+                <ActionButton
+                    action='Add'
+                    icon='plus'
+                    item_type={`${decapitalize(itemSubType.text)} ${item_type}`}
+                    onClick={() => onClick(itemSubType.value)}
+                    popup={`Add a new ${decapitalize(itemSubType.text)} ${item_type} here`}
+                />
+                <Dropdown
+                    className="basic button icon primary"
+                    onChange={(_event, data) => setItemSubType(item_subtypes.find(t => t.value === data.value))}
+                    options={item_subtypes}
+                    style={{ marginRight: "3px" }}
+                    trigger={<></>}
+                />
+            </Button.Group>
+        )
+    }
+    return <ActionButton
+        action='Add'
+        icon='plus'
+        item_type={item_type}
+        onClick={() => onClick()}
+        popup={`Add a new ${item_type} here`}
+    />;
 }
 
 export function DeleteButton(props) {

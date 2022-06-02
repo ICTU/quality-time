@@ -1,7 +1,7 @@
 import { fetch_server_api } from "./fetch_server_api";
 
-export function add_subject(report_uuid, reload) {
-  return fetch_server_api('post', `subject/new/${report_uuid}`, {}).then(reload)
+export function add_subject(report_uuid, subjectType, reload) {
+  return fetch_server_api('post', `subject/new/${report_uuid}`, { type: subjectType }).then(reload)
 }
 
 export function copy_subject(subject_uuid, report_uuid, reload) {

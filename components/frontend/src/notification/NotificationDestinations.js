@@ -77,7 +77,6 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
                 <Segment vertical>
                     <AddButton
                         item_type="notification destination"
-                        report_uuid={report_uuid}
                         onClick={() => add_notification_destination(report_uuid, reload)}
                     />
                 </Segment>}

@@ -39,10 +39,11 @@ def default_metric_attributes(database: Database, metric_type: str = ""):
     )
 
 
-def default_subject_attributes(database: Database) -> dict[str, Any]:
+def default_subject_attributes(database: Database, subject_type: str = None) -> dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
-    subject_type = list(subject_types.keys())[0]
+    if not subject_type:
+        subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
     return dict(type=subject_type, name=None, description=defaults["description"], metrics={})
 

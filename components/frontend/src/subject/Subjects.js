@@ -30,7 +30,7 @@ export function Subjects({
     const visible = useDelayedRender();
     const dataModel = useContext(DataModel)
     const last_index = Object.keys(report.subjects).length - 1;
-
+    const subjectTypes = Object.entries(dataModel.subjects).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <>
             {Object.keys(report.subjects).map((subject_uuid, index) =>
@@ -61,7 +61,7 @@ export function Subjects({
             )}
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
-                    <AddButton item_type="subject" onClick={() => add_subject(report.report_uuid, reload)} />
+                    <AddButton item_type="subject" item_subtypes={subjectTypes} onClick={(subtype) => { add_subject(report.report_uuid, subtype, reload) }} />
                     <CopyButton
                         item_type="subject"
                         onChange={(source_subject_uuid) => copy_subject(source_subject_uuid, report.report_uuid, reload)}
