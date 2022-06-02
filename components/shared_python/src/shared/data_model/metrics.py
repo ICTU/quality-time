@@ -13,7 +13,7 @@ METRICS = Metrics.parse_obj(
     dict(
         accessibility=dict(
             name="Accessibility violations",
-            description="The number of accessibility violations in the web user interface of the software.",
+            description="The number of accessibility violations in the user interface of the software.",
             rationale="According to the W3C, 'Accessibility is essential for developers and organisations that want to "
             "create high-quality websites and web tools, and not exclude people from using their products and "
             "services.' Web accessibility evaluation tools can help determine if web content meets accessibility "
@@ -29,10 +29,9 @@ METRICS = Metrics.parse_obj(
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
-            rationale="Source code should not be commented out because it bloats the sources and may confuse the "
-            "reader as to why the code is still there. Unused code should be deleted. It can be retrieved from "
-            "the version control system if needed. Commented out code contributes to the risk of "
-            "unmaintainable software.",
+            rationale="Code should not be commented out because it bloats the sources and may confuse the "
+            "reader as to why the code is still there, making the source code harder to understand and maintain. "
+            "Unused code should be deleted. It can be retrieved from the version control system if needed.",
             rationale_urls=[
                 "https://rules.sonarsource.com/python/RSPEC-125",
                 "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
@@ -44,9 +43,9 @@ METRICS = Metrics.parse_obj(
         ),
         complex_units=dict(
             name="Complex units",
-            description="The number of units (classes, functions, methods, files) that are too complex.",
+            description="The amount of units (classes, functions, methods, files) that are too complex.",
             rationale="Complex code makes software harder to test and harder to maintain. Complex code is harder to "
-            "test because there are more execution paths, that need to be tested. Complex code is harder to "
+            "test because there are more execution paths that need to be tested. Complex code is harder to "
             "maintain because it is harder to understand and analyze.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -74,7 +73,7 @@ METRICS = Metrics.parse_obj(
         ),
         duplicated_lines=dict(
             name="Duplicated lines",
-            description="The number of lines that are duplicated.",
+            description="The amount of lines that are duplicated.",
             rationale="Duplicate code makes software larger and thus potentially harder to maintain. Also, if the "
             "duplicated code contains bugs, they need to be fixed in multiple locations.",
             rationale_urls=[
@@ -126,7 +125,7 @@ METRICS = Metrics.parse_obj(
         ),
         long_units=dict(
             name="Long units",
-            description="The number of units (functions, methods, files) that are too long.",
+            description="The amount of units (functions, methods, files) that are too long.",
             rationale="Long units are deemed harder to maintain.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -158,7 +157,7 @@ METRICS = Metrics.parse_obj(
         ),
         many_parameters=dict(
             name="Many parameters",
-            description="The number of units (functions, methods, procedures) that have too many parameters.",
+            description="The amount of units (functions, methods, procedures) that have too many parameters.",
             rationale="Units with many parameters are deemed harder to maintain.",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
@@ -170,7 +169,7 @@ METRICS = Metrics.parse_obj(
         ),
         merge_requests=dict(
             name="Merge requests",
-            description="The number of merge requests.",
+            description="The amount of merge requests.",
             rationale="Merge requests need to be reviewed and approved. This metric allows for measuring the number of "
             "merge requests without the required approvals.",
             scales=["count", "percentage"],
@@ -181,7 +180,7 @@ METRICS = Metrics.parse_obj(
         ),
         metrics=dict(
             name="Metrics",
-            description="The number of metrics from one or more quality reports, with specific states and/or tags.",
+            description="The amount of metrics from one or more quality reports, with specific states and/or tags.",
             rationale="Use this metric to monitor other quality reports. For example, count the number of metrics that "
             "don't meet their target value, or count the number of metrics that have been marked as technical debt for "
             "more than two months.",
@@ -192,7 +191,7 @@ METRICS = Metrics.parse_obj(
         ),
         missing_metrics=dict(
             name="Missing metrics",
-            description="Count the number of metrics that can be added to each report, but have not been added yet.",
+            description="The amount of metrics that can be added to each report, but have not been added yet.",
             rationale="Provide an overview of metrics still to be added to the quality report. If metrics will not be "
             "added, a reason can be documented.",
             scales=["count", "percentage"],
@@ -386,7 +385,7 @@ METRICS = Metrics.parse_obj(
         ),
         suppressed_violations=dict(
             name="Suppressed violations",
-            description="The number of violations suppressed in the source.",
+            description="The amount of violations suppressed in the source.",
             rationale="Some tools allow for suppression of violations. Having the number of suppressed violations "
             "violations visible in Quality-time allows for a double check of the suppressions.",
             scales=["count", "percentage"],
@@ -396,7 +395,7 @@ METRICS = Metrics.parse_obj(
         ),
         test_cases=dict(
             name="Test cases",
-            description="The number of test cases.",
+            description="The amount of test cases.",
             rationale="Track the test results of test cases so there is traceability from the test cases, "
             "defined in Jira, to the test results in test reports produced by tools such as Robot Framework or Junit.",
             scales=["count", "percentage"],
@@ -409,7 +408,7 @@ METRICS = Metrics.parse_obj(
         ),
         tests=dict(
             name="Tests",
-            description="The number of tests.",
+            description="The amount of tests.",
             rationale="Keep track of the total number of tests or the number of tests with different states, "
             "for example failed or errored.",
             scales=["count", "percentage"],
@@ -447,7 +446,7 @@ METRICS = Metrics.parse_obj(
         ),
         uncovered_branches=dict(
             name="Test branch coverage",
-            description="The number of code branches not covered by tests.",
+            description="The amount of code branches not covered by tests.",
             rationale="Code branches not covered by tests may contain bugs and signal incomplete tests.",
             rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
@@ -467,7 +466,7 @@ METRICS = Metrics.parse_obj(
         ),
         uncovered_lines=dict(
             name="Test line coverage",
-            description="The number of lines of code not covered by tests.",
+            description="The amount of lines of code not covered by tests.",
             rationale="Code lines not covered by tests may contain bugs and signal incomplete tests.",
             rationale_urls=[FOWLER_TEST_COVERAGE],
             scales=["count", "percentage"],
