@@ -37,7 +37,7 @@ class Parameter(NamedModel):  # pylint: disable=too-few-public-methods
     api_values: Optional[dict[str, str]] = None
     validate_on: Optional[list[str]] = None
 
-    # pylint: disable=no-self-argument,no-self-use
+    # pylint: disable=no-self-argument
 
     @validator("short_name", always=True)
     def set_short_name(cls, short_name: Optional[str], values) -> Optional[str]:

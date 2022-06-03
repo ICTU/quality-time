@@ -17,7 +17,7 @@ class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
     subjects: Subjects
 
     @validator("metrics")
-    def check_scales(cls, metrics, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_scales(cls, metrics, values):  # pylint: disable=no-self-argument
         """Check that the metric scales are valid scales."""
         scales = set(values["scales"].__root__.keys())
         used_scales = set()
@@ -31,7 +31,7 @@ class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
         return metrics
 
     @validator("sources")
-    def check_sources(cls, sources, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_sources(cls, sources, values):  # pylint: disable=no-self-argument
         """Check that the sources are valid."""
         cls.check_source_has_parameters_for_each_supported_metric(sources, values)
         cls.check_metric_supports_source(sources, values)
@@ -96,7 +96,7 @@ class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
             raise ValueError("Parameter metric_type of source quality_time doesn't list all metric types")
 
     @validator("subjects")
-    def check_subjects(cls, subjects, values):  # pylint: disable=no-self-argument,no-self-use
+    def check_subjects(cls, subjects, values):  # pylint: disable=no-self-argument
         """Check that each metric belongs to at least one subject."""
         for metric_key in values["metrics"].__root__:
             for subject in subjects.__root__.values():

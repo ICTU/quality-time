@@ -17,6 +17,6 @@ class DescribedModel(NamedModel):  # pylint: disable=too-few-public-methods
     description: str = Field(..., regex=r".+")
 
     @validator("description")
-    def set_description(cls, description):  # pylint: disable=no-self-argument,no-self-use
+    def set_description(cls, description):  # pylint: disable=no-self-argument
         """Add a dot if needed."""
         return description if description.endswith(tuple(string.punctuation)) else description + "."

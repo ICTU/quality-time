@@ -25,6 +25,9 @@ class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
         return await super()._get_source_responses(*urls, **kwargs)
 
 
+Metrics = dict[str, str]
+
+
 class SonarQubeMetricsBaseClass(SonarQubeCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
@@ -65,15 +68,15 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         value_key, total_key = self._value_key(), self._total_key()
         return f"{value_key},{total_key}" if total_key else value_key
 
-    def _value(self, metrics: dict[str, str]) -> str:
+    def _value(self, metrics: Metrics) -> str:
         """Return the metric value."""
         return str(sum(int(metrics[key]) for key in self._value_key().split(",")))
 
-    def _total(self, metrics: dict[str, str]) -> str:
+    def _total(self, metrics: Metrics) -> str:
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: Metrics) -> Entities:  # pylint: disable=unused-argument # skipcq: PYL-R0201
         """Return the entities."""
         return Entities()
 
@@ -86,7 +89,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return self.totalKey
 
     @staticmethod
-    async def __get_metrics(responses: SourceResponses) -> dict[str, str]:
+    async def __get_metrics(responses: SourceResponses) -> Metrics:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
         return {measure["metric"]: measure["value"] for measure in measures}

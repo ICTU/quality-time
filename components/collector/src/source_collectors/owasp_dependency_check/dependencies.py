@@ -27,11 +27,11 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             )
         return entities
 
-    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:  # pylint: disable=no-self-use
+    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:  # skipcq: PYL-R0201
         """Return the dependencies."""
         return tree.findall(".//ns:dependency", namespaces)
 
-    def _parse_entity(  # pylint: disable=no-self-use
+    def _parse_entity(
         self, dependency: Element, dependency_index: int, namespaces: Namespaces, landing_url: str
     ) -> Entity:
         """Parse the entity from the dependency."""

@@ -1,4 +1,3 @@
-pip==22.1.1
+pip==22.1.2
 pip-tools==6.6.2  # To add hashes to requirements
 wheel==0.37.1
-

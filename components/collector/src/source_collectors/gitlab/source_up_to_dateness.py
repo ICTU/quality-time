@@ -66,4 +66,5 @@ class GitLabSourceUpToDateness(GitLabProjectBase):
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the dates from the commits."""
         commit_responses = responses[1:]
-        return str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
+        commit_dates = [parse((await response.json())["committed_date"]) for response in commit_responses]
+        return str(days_ago(max(commit_dates)))
