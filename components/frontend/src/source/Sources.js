@@ -12,10 +12,15 @@ import { Source } from './Source';
 
 function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     const dataModel = useContext(DataModel);
+    const sourceTypes = Object.entries(dataModel.sources).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment vertical>
-                <AddButton item_type="source" onClick={() => add_source(metric_uuid, reload)} />
+                <AddButton
+                    item_type="source"
+                    item_subtypes={sourceTypes}
+                    onClick={(subtype) => add_source(metric_uuid, subtype, reload)}
+                />
                 <CopyButton
                     item_type="source"
                     onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
