@@ -34,7 +34,9 @@ export function AddButton({ item_subtypes, item_type, onClick }) {
                     popup={`Add a new ${decapitalize(itemSubType.text)} ${item_type} here`}
                 />
                 <Dropdown
+                    aria-label={`Select ${item_type} type`}
                     className="basic button icon primary"
+                    header={`Available ${item_type} types`}
                     onChange={(_event, data) => setItemSubType(item_subtypes.find(t => t.value === data.value))}
                     options={item_subtypes}
                     scrolling

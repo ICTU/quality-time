@@ -4,9 +4,23 @@ import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, P
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
 
-test('AddButton has the correct label', () => {
-    render(<AddButton item_type="foo" />);
-    expect(screen.getAllByText(/foo/).length).toBe(1);
+test('AddButton subtypes can be changed', async () => {
+    render(
+        <AddButton
+            item_type="foo"
+            item_subtypes={[{key: "sub1", text: "Sub1", value: "sub1"}, {key: "sub2", text: "Sub2", value: "sub2"}]}
+        />
+    );
+    expect(screen.getAllByText(/Add sub1 foo/).length).toBe(1);
+    expect(screen.queryAllByText(/Add sub2 foo/).length).toBe(0);
+    await act(async () => {
+        fireEvent.click(screen.getByLabelText(/Select/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Sub2/));
+    });
+    expect(screen.queryAllByText(/Add sub1 foo/).length).toBe(0);
+    expect(screen.getAllByText(/Add sub2 foo/).length).toBe(1);
 });
 
 test('DeleteButton has the correct label', () => {
@@ -93,7 +107,6 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
     });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/pdf?nr_dates=4&report_url=http%3A%2F%2Flocalhost%2F%3Fnr_dates%3D4", {}, "application/pdf")
 });
-
 
 test("DownloadAsPDFButton ignores a second click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
