@@ -24,12 +24,12 @@ it('shows the add metric button and adds a metric when clicked', async () => {
             </DataModel.Provider>
         </Permissions.Provider>
     );
-    expect(queryAllByText("Add metric").length).toBe(1);
+    expect(queryAllByText(/Add .* metric/).length).toBe(1);
     await act(async () => {
-        fireEvent.click(getByText("Add metric"))
+        fireEvent.click(getByText(/Add .* metric/))
     });
     expect(stopSorting).toBeCalled()
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", { type: "metric_type"});
 });
 
 it('copies a metric when the copy button is clicked and a metric is selected', async () => {

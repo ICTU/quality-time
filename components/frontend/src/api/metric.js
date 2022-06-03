@@ -1,7 +1,7 @@
 import { fetch_server_api } from "./fetch_server_api";
 
-export function add_metric(subject_uuid, reload) {
-    fetch_server_api('post', `metric/new/${subject_uuid}`, {}).then(reload)
+export function add_metric(subject_uuid, metricType, reload) {
+    fetch_server_api('post', `metric/new/${subject_uuid}`, { type: metricType }).then(reload)
 }
 
 export function copy_metric(metric_uuid, subject_uuid, reload) {

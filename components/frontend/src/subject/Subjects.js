@@ -61,7 +61,11 @@ export function Subjects({
             )}
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
-                    <AddButton item_type="subject" item_subtypes={subjectTypes} onClick={(subtype) => { add_subject(report.report_uuid, subtype, reload) }} />
+                    <AddButton
+                        item_type="subject"
+                        item_subtypes={subjectTypes}
+                        onClick={(subtype) => { add_subject(report.report_uuid, subtype, reload) }}
+                    />
                     <CopyButton
                         item_type="subject"
                         onChange={(source_subject_uuid) => copy_subject(source_subject_uuid, report.report_uuid, reload)}

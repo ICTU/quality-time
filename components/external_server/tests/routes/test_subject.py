@@ -201,8 +201,6 @@ class SubjectTest(unittest.TestCase):
         """Test that a subject can be added with a specific type."""
         request.json = dict(type="other_type")
         result = post_new_subject(REPORT_ID, self.database)
-        self.assertTrue(result["ok"])
-        self.assertIn("new_subject_uuid", result)
         subject_uuid = result["new_subject_uuid"]
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual("other_type", updated_report["subjects"][subject_uuid]["type"])

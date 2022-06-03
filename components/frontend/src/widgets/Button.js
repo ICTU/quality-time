@@ -8,7 +8,8 @@ import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
     const { action, icon, item_type, popup, position, ...other } = props;
-    const button = <Button basic icon primary {...other} ><Icon name={icon} /> {action} {item_type}</Button>;
+    const label = `${action} ${item_type}`;
+    const button = <Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button>;
     return (
         popup ?
             <Popup
@@ -36,6 +37,7 @@ export function AddButton({ item_subtypes, item_type, onClick }) {
                     className="basic button icon primary"
                     onChange={(_event, data) => setItemSubType(item_subtypes.find(t => t.value === data.value))}
                     options={item_subtypes}
+                    scrolling
                     style={{ marginRight: "3px" }}
                     trigger={<></>}
                 />

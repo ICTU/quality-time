@@ -8,15 +8,19 @@ import { metric_options } from "../widgets/menu_options";
 
 export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stopSorting }) {
     const dataModel = useContext(DataModel)
+    const metricTypes = Object.entries(dataModel.metrics).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Table.Footer>
                 <Table.Row>
                     <Table.HeaderCell colSpan='99'>
-                        <AddButton item_type="metric" onClick={() => {
-                            stopSorting()
-                            add_metric(subjectUuid, reload);
-                        }}
+                        <AddButton
+                            item_type="metric"
+                            item_subtypes={metricTypes}
+                            onClick={(subtype) => {
+                                stopSorting()
+                                add_metric(subjectUuid, subtype, reload);
+                            }}
                         />
                         <CopyButton
                             item_type="metric"

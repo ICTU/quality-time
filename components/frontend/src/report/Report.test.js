@@ -4,7 +4,12 @@ import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
-const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
+const datamodel = {
+    subjects: {
+        subject_type: { name: "Subject type", metrics: ['metric_type'] } },
+        metrics: { metric_type: { name: "Metric type", tags: [] }
+    }
+}
 const report = {
     report_uuid: "report_uuid",
     summary_by_subject: {

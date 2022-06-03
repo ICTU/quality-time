@@ -24,7 +24,8 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     all_reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(all_reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
-    subject.metrics_dict[(metric_uuid := uuid())] = default_metric_attributes(database)
+    metric_type = dict(bottle.request.json or {}).get("type")
+    subject.metrics_dict[(metric_uuid := uuid())] = default_metric_attributes(database, metric_type)
     description = f"{{user}} added a new metric to subject '{subject.name}' in report '{report.name}'."
     uuids = [report.uuid, subject.uuid, metric_uuid]
     result = insert_new_report(database, description, uuids, report)
