@@ -23,7 +23,9 @@ app.get("/api/render", async (req, res) => {
             waitUntil: "networkidle2",
             timeout: 60000
         });
-        webPage.waitForSelector(".loading", { hidden: true }).then(console.log(`Ready for pdf conversion of ${url}`));
+        console.log(`URL ${url}: opened`);
+        await webPage.waitForSelector(".loading", { hidden: true });
+        console.log(`URL ${url}: spinner hidden`);
         const pdf = await webPage.pdf({
             printBackground: true,
             format: "A4",
@@ -36,6 +38,7 @@ app.get("/api/render", async (req, res) => {
                 right: "25px"
             }
         });
+        console.log(`URL ${url}: PDF created`);
         await browser.close();
         res.contentType("application/pdf");
         res.send(pdf);
