@@ -14,7 +14,7 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
     return {key: value["default_value"] for key, value in parameters if metric_type in value["metrics"]}
 
 
-def default_metric_attributes(database: Database, metric_type: str = ""):
+def default_metric_attributes(database: Database, metric_type: str = None):
     """Return the metric attributes with their default values for the specified metric type.
 
     If no metric type is specified, use the first one from the data model.
