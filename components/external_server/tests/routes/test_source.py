@@ -560,6 +560,19 @@ class SourceTest(SourceTestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
 
+    @patch("bottle.request")
+    def test_add_source_with_type(self, request):
+        """Test that a new source can be added with a specific type."""
+        request.json = dict(type="new_source_type")
+        post_source_new(METRIC_ID, self.database)
+        self.database.reports.insert_one.assert_called_once_with(self.report)
+        source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual(
+            "new_source_type",
+            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]["type"],
+        )
+
     def test_copy_source(self):
         """Test that a source can be copied."""
         self.assertTrue(post_source_copy(SOURCE_ID, METRIC_ID, self.database)["ok"])

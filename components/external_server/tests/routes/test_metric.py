@@ -420,7 +420,7 @@ class MetricTest(unittest.TestCase):
 
     @patch("bottle.request")
     def test_add_metric_with_type(self, request):
-        """Test that a metric with a type can be added."""
+        """Test that a metric can be added with a specific type."""
         request.json = dict(type="other_type")
         post_metric_new(SUBJECT_ID, self.database)
         updated_report = self.database.reports.insert_one.call_args[0][0]
