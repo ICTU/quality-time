@@ -90,7 +90,7 @@ it('creates a new source', async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Add source/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {type: "source_type1"});
 })
 
 it('copies a source', async () => {
