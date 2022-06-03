@@ -100,7 +100,7 @@ class JiraIssues(JiraBase):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
 
-    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument
+    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201
         """Return whether this issue should be counted."""
         return True
 

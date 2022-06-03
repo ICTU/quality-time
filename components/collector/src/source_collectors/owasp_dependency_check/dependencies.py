@@ -27,7 +27,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             )
         return entities
 
-    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:
+    def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:  # skipcq: PYL-R0201
         """Return the dependencies."""
         return tree.findall(".//ns:dependency", namespaces)
 
