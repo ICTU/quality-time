@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
 import {
-    capitalize, decapitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
+    capitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
     nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
@@ -13,19 +13,6 @@ it('capitalizes strings', () => {
     expect(capitalize("ab")).toBe("Ab")
     expect(capitalize("aB")).toBe("AB")
     expect(capitalize("AB")).toBe("AB")
-});
-
-it('decapitalizes strings', () => {
-    expect(decapitalize("")).toBe("")
-    expect(decapitalize("A")).toBe("a")
-    expect(decapitalize("a")).toBe("a")
-    expect(decapitalize("ab")).toBe("ab")
-    expect(decapitalize("aB")).toBe("aB")
-    expect(decapitalize("AB")).toBe("AB")
-    expect(decapitalize("ABC")).toBe("ABC")
-    expect(decapitalize("Abc")).toBe("abc")
-    expect(decapitalize("ABc")).toBe("ABc")
-    expect(decapitalize("abc")).toBe("abc")
 });
 
 it('rounds numbers nicely', () => {

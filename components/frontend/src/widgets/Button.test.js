@@ -4,23 +4,22 @@ import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, P
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
 
-test('AddButton subtypes can be changed', async () => {
+test('AddButton', async () => {
+    const mockCallBack = jest.fn();
     render(
         <AddButton
             item_type="foo"
             item_subtypes={[{key: "sub1", text: "Sub1", value: "sub1"}, {key: "sub2", text: "Sub2", value: "sub2"}]}
+            onClick={mockCallBack}
         />
     );
-    expect(screen.getAllByText(/Add sub1 foo/).length).toBe(1);
-    expect(screen.queryAllByText(/Add sub2 foo/).length).toBe(0);
     await act(async () => {
-        fireEvent.click(screen.getByLabelText(/Select/));
+        fireEvent.click(screen.getByText(/Add foo/));
     });
     await act(async () => {
         fireEvent.click(screen.getByText(/Sub2/));
     });
-    expect(screen.queryAllByText(/Add sub1 foo/).length).toBe(0);
-    expect(screen.getAllByText(/Add sub2 foo/).length).toBe(1);
+    expect(mockCallBack).toHaveBeenCalledWith("sub2")
 });
 
 test('DeleteButton has the correct label', () => {

@@ -9,6 +9,11 @@ import * as fetch_server_api from '../api/fetch_server_api';
 jest.mock("../api/fetch_server_api.js")
 
 const data_model = {
+    subjects: {
+        subject_type: {
+            metrics: ["violations", "source_version"]
+        }
+    },
     metrics: {
         violations: { unit: "violations", direction: "<", name: "Violations", default_scale: "count", scales: ["count", "percentage"] },
         source_version: { unit: "", direction: "<", name: "Source version", default_scale: "version_number", scales: ["version_number"] }
@@ -20,6 +25,7 @@ function render_metric_parameters(scale = "count", issue_ids = [], report = { su
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={data_model}>
                 <MetricParameters
+                    subject={{ type: "subject_type" }}
                     metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids }}
                     metric_uuid="metric_uuid"
                     reload={() => {/* Dummy implementation */ }}
@@ -54,6 +60,7 @@ it('sets the metric unit field for metrics with the percentage scale', async () 
 it('skips the metric unit field for metrics with the version number scale', () => {
     render(<DataModel.Provider value={data_model}><MetricParameters
         report={{}}
+        subject={{ type: "subject_type" }}
         metric={{ type: "source_version", tags: [], accept_debt: false }}
         metric_uuid="metric_uuid"
     /></DataModel.Provider>);
@@ -81,7 +88,7 @@ it('shows an error message if the metric has issues but no issue tracker is conf
 });
 
 it('shows issue id suggestions', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{key: "FOO-42", text: "Suggestion"}] });
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
     await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), 'u');
     await waitFor(() => {
@@ -90,7 +97,7 @@ it('shows issue id suggestions', async () => {
 });
 
 it('shows no issue id suggestions without a query', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{key: "FOO-42", text: "Suggestion"}] });
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
     await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), 's');
     await waitFor(() => {

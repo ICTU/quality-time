@@ -24,9 +24,11 @@ it('shows the add metric button and adds a metric when clicked', async () => {
             </DataModel.Provider>
         </Permissions.Provider>
     );
-    expect(queryAllByText(/Add .* metric/).length).toBe(1);
     await act(async () => {
-        fireEvent.click(getByText(/Add .* metric/))
+        fireEvent.click(getByText(/Add metric/))
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Metric type/));
     });
     expect(stopSorting).toBeCalled()
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", { type: "metric_type"});

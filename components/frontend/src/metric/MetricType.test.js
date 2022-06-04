@@ -9,6 +9,11 @@ import * as fetch_server_api from '../api/fetch_server_api';
 jest.mock("../api/fetch_server_api.js")
 
 const data_model = {
+    subjects: {
+        subject_type: {
+            metrics: ["violations", "source_version"]
+        }
+    },
     metrics: {
         violations: { unit: "violations", direction: "<", name: "Violations", default_scale: "count", scales: ["count", "percentage"] },
         source_version: { unit: "", direction: "<", name: "Source version", default_scale: "version_number", scales: ["version_number"] }
@@ -20,6 +25,7 @@ function render_metric_type() {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={data_model}>
                 <MetricType
+                    subjectType="subject_type"
                     metricType="violations"
                     metric_uuid="metric_uuid"
                     reload={() => {/* Dummy implementation */ }}

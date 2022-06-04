@@ -9,16 +9,16 @@ import { source_options } from '../widgets/menu_options';
 import { show_message } from '../widgets/toast';
 import { pluralize } from '../utils';
 import { Source } from './Source';
+import { sourceTypeOptions } from './SourceType';
 
 function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     const dataModel = useContext(DataModel);
-    const sourceTypes = Object.entries(dataModel.sources).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment vertical>
                 <AddButton
                     item_type="source"
-                    item_subtypes={sourceTypes}
+                    item_subtypes={sourceTypeOptions(dataModel, metric.type)}
                     onClick={(subtype) => add_source(metric_uuid, subtype, reload)}
                 />
                 <CopyButton

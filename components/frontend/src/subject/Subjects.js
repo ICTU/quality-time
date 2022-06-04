@@ -7,6 +7,7 @@ import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { useDelayedRender } from '../utils';
 import { Subject } from './Subject';
+import { subjectTypes } from './SubjectType';
 
 export function Subjects({
     changed_fields,
@@ -30,7 +31,6 @@ export function Subjects({
     const visible = useDelayedRender();
     const dataModel = useContext(DataModel)
     const last_index = Object.keys(report.subjects).length - 1;
-    const subjectTypes = Object.entries(dataModel.subjects).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <>
             {Object.keys(report.subjects).map((subject_uuid, index) =>
@@ -63,7 +63,7 @@ export function Subjects({
                 <Segment basic>
                     <AddButton
                         item_type="subject"
-                        item_subtypes={subjectTypes}
+                        item_subtypes={subjectTypes(dataModel)}
                         onClick={(subtype) => { add_subject(report.report_uuid, subtype, reload) }}
                     />
                     <CopyButton

@@ -63,13 +63,6 @@ export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function decapitalize(string) {
-    if (string.match(/^[A-Z][A-Z]/)) {
-        return string // Don't decapitalize strings that start with an abbrevation
-    }
-    return string.charAt(0).toLowerCase() + string.slice(1);
-}
-
 export function pluralize(word, count) {
     // Pluralize (naively; it doesn't work for words like sheep) the word if count > 1
     return word + (count === 1 ? "" : "s");

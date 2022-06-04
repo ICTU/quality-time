@@ -105,6 +105,7 @@ it('stop sorting on add metric', async () => {
     let handleSort = jest.fn();
     renderReport(report, { sortColumn: "status", handleSort: handleSort })
     await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
+    await act(async () => fireEvent.click(screen.getByText(/Metric type/)))
     expect(handleSort).toHaveBeenCalledWith(null)
 })
 

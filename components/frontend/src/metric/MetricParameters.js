@@ -161,7 +161,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
     )
 }
 
-export function MetricParameters({ report, metric, metric_uuid, reload }) {
+export function MetricParameters({ report, subject, metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
@@ -170,7 +170,7 @@ export function MetricParameters({ report, metric, metric_uuid, reload }) {
         <Grid stackable columns={3}>
             <Grid.Row>
                 <Grid.Column>
-                    <MetricType metricType={metric.type} metric_uuid={metric_uuid} reload={reload} />
+                    <MetricType subjectType={subject.type} metricType={metric.type} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
                     <MetricName metric={metric} metricType={metricType} metric_uuid={metric_uuid} reload={reload} />

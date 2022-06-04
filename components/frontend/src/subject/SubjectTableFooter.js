@@ -5,10 +5,10 @@ import { DataModel } from "../context/DataModel";
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions";
 import { AddButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
+import { metricTypeOptions } from "../metric/MetricType";
 
 export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stopSorting }) {
     const dataModel = useContext(DataModel)
-    const metricTypes = Object.entries(dataModel.metrics).map(([key, value]) => ({ key: key, text: value.name, value: key }));
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Table.Footer>
@@ -16,7 +16,7 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
                     <Table.HeaderCell colSpan='99'>
                         <AddButton
                             item_type="metric"
-                            item_subtypes={metricTypes}
+                            item_subtypes={metricTypeOptions(dataModel, subject.type)}
                             onClick={(subtype) => {
                                 stopSorting()
                                 add_metric(subjectUuid, subtype, reload);

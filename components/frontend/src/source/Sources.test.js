@@ -87,10 +87,9 @@ it('shows errored sources', () => {
 it('creates a new source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     render_sources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add source/))
-    })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {type: "source_type1"});
+    await act(async () => { fireEvent.click(screen.getByText(/Add source/)) })
+    await act(async () => { fireEvent.click(screen.getAllByText(/Source type 2/)[1]) })
+    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {type: "source_type2"});
 })
 
 it('copies a source', async () => {

@@ -16,6 +16,7 @@ const report = {
     subjects: {
         subject_uuid: {
             name: "Metric",
+            type: "subject_type",
             metrics: {
                 metric_uuid: {
                     accept_debt: false,
@@ -35,8 +36,9 @@ const report = {
 };
 
 const data_model = {
-    sources: { source_type: { name: "The source", parameters: {}, entities: { violations: { name: "Attribute", attributes: []} } } },
-    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
+    sources: { source_type: { name: "The source", parameters: {}, entities: { violations: { name: "Attribute", attributes: [] } } } },
+    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } },
+    subjects: { subject_type: { metrics: ["violations"] } }
 }
 
 async function renderMetricDetails(stopSorting, connection_error) {
@@ -48,7 +50,7 @@ async function renderMetricDetails(stopSorting, connection_error) {
                 sources: [
                     {},
                     { source_uuid: "source_uuid" },
-                    { source_uuid: "source_uuid", entities: [{key: "1"}], connection_error: connection_error }
+                    { source_uuid: "source_uuid", entities: [{ key: "1" }], connection_error: connection_error }
                 ]
             },
         ]

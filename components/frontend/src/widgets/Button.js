@@ -3,7 +3,7 @@ import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../widgets/toast';
-import { decapitalize, registeredURLSearchParams } from '../utils';
+import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
@@ -22,28 +22,25 @@ function ActionButton(props) {
 }
 
 export function AddButton({ item_subtypes, item_type, onClick }) {
-    const [itemSubType, setItemSubType] = useState(item_subtypes?.[0])
     if (item_subtypes) {
         return (
-            <Button.Group>
-                <ActionButton
-                    action='Add'
-                    icon='plus'
-                    item_type={`${decapitalize(itemSubType.text)} ${item_type}`}
-                    onClick={() => onClick(itemSubType.value)}
-                    popup={`Add a new ${decapitalize(itemSubType.text)} ${item_type} here`}
-                />
-                <Dropdown
-                    aria-label={`Select ${item_type} type`}
-                    className="basic button icon primary"
-                    header={`Available ${item_type} types`}
-                    onChange={(_event, data) => setItemSubType(item_subtypes.find(t => t.value === data.value))}
-                    options={item_subtypes}
-                    scrolling
-                    style={{ marginRight: "3px" }}
-                    trigger={<></>}
-                />
-            </Button.Group>
+            <Popup
+                content={`Add a ${item_type} here`}
+                trigger={
+                    <Dropdown
+                        basic
+                        className='button icon primary'
+                        floating
+                        header={`Available ${item_type} types`}
+                        onChange={(_event, { value }) => onClick(value)}
+                        options={item_subtypes}
+                        scrolling
+                        selectOnBlur={false}
+                        selectOnNavigation={false}
+                        trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
+                        value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
+                    />}
+            />
         )
     }
     return <ActionButton

@@ -54,10 +54,15 @@ export function ReportsOverview({ reports, open_report, report_date, reports_ove
             <ReportsDashboard reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
-                    <AddButton item_type={"report"} onClick={() => add_report(reload)} />
-                    <CopyButton item_type={"report"} onClick={() => add_report(reload)}
+                    <AddButton
+                        item_type={"report"}
+                        onClick={() => add_report(reload)}
+                    />
+                    <CopyButton
+                        item_type={"report"}
+                        get_options={() => report_options(reports)}
                         onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
-                        get_options={() => report_options(reports)} />
+                    />
                 </Segment>
             }
             />

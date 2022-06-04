@@ -19,6 +19,9 @@ const metric2 = {
 const datamodel = {
     metrics: {
         metric_type: { name: "Metric type", tags: [] }
+    },
+    subjects: {
+        subject_type: { metrics: ["metric_type"]}
     }
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
@@ -30,7 +33,7 @@ function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
             <SubjectTable
                 dates={dates ?? []}
                 reportDate={reportDate}
-                report={{ report_uuid: "report_uuid", subjects: { subject_uuid: { metrics: { 1: metric, 2: metric2 } } } }}
+                report={{ report_uuid: "report_uuid", subjects: { subject_uuid: { type: "subject_type", metrics: { 1: metric, 2: metric2 } } } }}
                 measurements={
                     [
                         { metric_uuid: "1", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00" },
@@ -40,7 +43,7 @@ function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
                     ]
                 }
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
-                subject={{ metrics: { 1: metric, 2: metric2 } }}
+                subject={{ type: "subject_type", metrics: { 1: metric, 2: metric2 } }}
                 subject_uuid="subject_uuid"
                 hiddenColumns={hiddenColumns ?? []}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
