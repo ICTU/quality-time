@@ -12,7 +12,7 @@ jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 
 it('shows the add metric button and adds a metric when clicked', async () => {
-    const { queryAllByText, getByText } = render(
+    const { getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Table>
