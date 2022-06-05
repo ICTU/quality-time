@@ -120,7 +120,7 @@ Be careful, there's no way to undo your action via the user interface.
 :class: only-dark
 ```
 
-Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to add a new subject. The subject is added to the report dashboard.
+Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to select a subject type and add a new subject. The subject is added to the report dashboard.
 
 Alternatively, you can also copy an existing subject or move an existing subject to the report. Clicking the "Copy subject" or "Move subject" button shows a drop down menu with all of the subjects to choose from. Copying or moving a subject also copies or moves the metrics and sources of the subject.
 
@@ -165,7 +165,7 @@ To reorder subjects, expand the subject title and use the buttons on the lower l
 
 #### Adding metrics
 
-To add a metric to a subject, hit the "Add metric" button to create a new metric.
+To add a metric to a subject, hit the "Add metric" button to select a metric type and create a new metric. Only metric types that can measure the subject are listed.
 
 ```{image} screenshots/adding_metric.png
 :alt: Screenshot of buttons to add, copy, and move metrics
@@ -209,7 +209,7 @@ Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have 
 :class: only-dark
 ```
 
-The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale, or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
+The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. Most metrics support either the "Count" scale, the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
 The "Metric {index}`direction <Direction>`" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.
 
@@ -242,7 +242,7 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding sources
 
-To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported source types.
+To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button and select a source type. Only sources that can support the metric type are listed. See the overview of [supported metrics and sources](metrics_and_sources.md) for the list of supported source types.
 
 ```{image} screenshots/adding_source.png
 :alt: Screenshot of buttons to add, copy, and move sources
