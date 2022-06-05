@@ -21,7 +21,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(reports, report_uuid)[0]
-    subject_type = dict(bottle.request.json or {}).get("type")
+    subject_type = str(dict(bottle.request.json)["type"])
     report.subjects_dict[(subject_uuid := uuid())] = default_subject_attributes(database, subject_type)
     delta_description = f"{{user}} created a new subject in report '{report.name}'."
     uuids = [report_uuid, subject_uuid]

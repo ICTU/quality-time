@@ -406,8 +406,10 @@ class MetricTest(unittest.TestCase):
         report = report or self.report
         self.assertEqual(dict(uuids=uuids, email=email, description=description), report["delta"])
 
-    def test_add_metric(self):
+    @patch("bottle.request")
+    def test_add_metric(self, request):
         """Test that a metric can be added."""
+        request.json = dict(type="metric_type")
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         metric_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]
@@ -417,15 +419,6 @@ class MetricTest(unittest.TestCase):
             uuids=[REPORT_ID, SUBJECT_ID, metric_uuid],
             report=updated_report,
         )
-
-    @patch("bottle.request")
-    def test_add_metric_with_type(self, request):
-        """Test that a metric can be added with a specific type."""
-        request.json = dict(type="other_type")
-        post_metric_new(SUBJECT_ID, self.database)
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        metric_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]
-        self.assertEqual("other_type", updated_report["subjects"][SUBJECT_ID]["metrics"][metric_uuid]["type"])
 
     def test_copy_metric(self):
         """Test that a metric can be copied."""

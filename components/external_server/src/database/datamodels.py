@@ -14,14 +14,9 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
     return {key: value["default_value"] for key, value in parameters if metric_type in value["metrics"]}
 
 
-def default_metric_attributes(database: Database, metric_type: str = None):
-    """Return the metric attributes with their default values for the specified metric type.
-
-    If no metric type is specified, use the first one from the data model.
-    """
+def default_metric_attributes(database: Database, metric_type: str):
+    """Return the metric attributes with their default values for the specified metric type."""
     metric_types = latest_datamodel(database)["metrics"]
-    if not metric_type:
-        metric_type = list(metric_types.keys())[0]
     defaults = metric_types[metric_type]
     return dict(
         type=metric_type,
@@ -39,11 +34,9 @@ def default_metric_attributes(database: Database, metric_type: str = None):
     )
 
 
-def default_subject_attributes(database: Database, subject_type: str = None) -> dict[str, Any]:
+def default_subject_attributes(database: Database, subject_type: str) -> dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
-    if not subject_type:
-        subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
     return dict(type=subject_type, name=None, description=defaults["description"], metrics={})
 

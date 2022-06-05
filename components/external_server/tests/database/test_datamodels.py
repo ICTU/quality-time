@@ -19,15 +19,8 @@ class DefaultSubjectAttributesTest(unittest.TestCase):
         data_model["_id"] = "id"
         self.database.datamodels.find_one.return_value = data_model
 
-    def test_without_subject_type(self):
-        """Test the default attriburws without specifying a subject type."""
-        self.assertEqual(
-            dict(type="ci", name=None, description="A continuous integration environment.", metrics={}),
-            default_subject_attributes(self.database),
-        )
-
-    def test_with_subject_type(self):
-        """Test the default attriburws without specifying a subject type."""
+    def test_default_attributes(self):
+        """Test the default attributes for a specific subject type."""
         self.assertEqual(
             dict(type="software", name=None, description="A custom software application or component.", metrics={}),
             default_subject_attributes(self.database, "software"),
