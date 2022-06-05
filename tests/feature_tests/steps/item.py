@@ -17,10 +17,15 @@ def add_item(context, item, attribute=None, value=None, parameter=None, paramete
     container = dict(source="metric", metric="subject", subject="report").get(item)
     if container:
         api += f"/{context.uuid[container]}"
+    if attribute == "type":
+        item_type = value
+        attribute = value = None
+    else:
+        item_type = dict(source="anchore", metric="accessibility", subject="ci").get(item)
     if "tries to" in context.step.name:
-        context.post(api)
+        context.post(api, {"type": item_type})
         return
-    context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
+    context.uuid[item] = context.post(api, {"type": item_type})[f"new_{item}_uuid"]
     if attribute and value:
         context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
     if parameter and parameter_value:
