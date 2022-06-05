@@ -4,6 +4,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Logo } from './Logo';
+import { set_source_attribute } from '../api/source';
 
 function sourceTypeOption(key, sourceType) {
     return {
