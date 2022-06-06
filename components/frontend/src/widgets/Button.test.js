@@ -35,13 +35,14 @@ test('AddDropdownButton keyboard navigation', async () => {
 });
 
 test('AddDropdownButton hides popup when dropdown is shown', async () => {
-    const mockCallBack = renderAddDropdownButton()
+    renderAddDropdownButton()
     await userEvent.hover(screen.getByText(/Add foo/));
-    await waitFor(() => {
-        expect(screen.queryAllByText(/Add a foo here/).length).toBe(1)
-    })
+    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    expect(screen.queryAllByText(/Add a foo here/).length).toBe(0)
+    expect(screen.queryAllByText(/Add a foo here/).length).toBe(0);  // Popup should disappear
+    await userEvent.type(screen.getByText(/Add foo/), "{Escape}");  // Close dropdown
+    await userEvent.hover(screen.getByText(/Add foo/));
+    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })  // Popup should appear again
 });
 
 test('AddButton has the correct label', () => {
