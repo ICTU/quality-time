@@ -21,62 +21,95 @@ function ActionButton(props) {
     )
 }
 
-export function AddButton({ item_subtypes, item_type, onClick }) {
-    const [selectedItem, setSelectedItem] = useState(0);
-    if (item_subtypes) {
-        return (
-            <Popup
-                content={`Add a ${item_type} here`}
-                trigger={
-                    <Dropdown
-                        basic
-                        className='button icon primary'
-                        floating
-                        onKeyDown={(event) => {
-                            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                                let newIndex;
-                                if (event.key === "ArrowUp") {
-                                    newIndex = Math.max(selectedItem - 1, 0);
-                                } else {
-                                    newIndex = Math.min(selectedItem + 1, item_subtypes.length - 1);
-                                }
-                                setSelectedItem(newIndex);
-                                event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({block: "nearest"});
+export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
+    const [selectedItem, setSelectedItem] = useState(0);  // Index of selected item in the dropdown
+    const [query, setQuery] = useState("");  // Search query to filter item subtypes
+    const [popupAllowed, setPopupAllowed] = useState(true);  // Is the popup allowed to be shown? We don't want to show the popup when the dropdown is visible to prevent overlap
+    const [popupTriggered, setPopupTriggered] = useState(false);  // Is the popup triggered by hover or focus?
+    const options = item_subtypes.filter((item_subtype) => (item_subtype.text.toLowerCase().includes(query.toLowerCase())));
+    return (
+        <Popup
+            content={`Add a ${item_type} here`}
+            on={["focus", "hover"]}
+            onOpen={() => setPopupTriggered(true)}
+            onClose={() => setPopupTriggered(false)}
+            open={popupAllowed && popupTriggered}
+            trigger={
+                <Dropdown
+                    basic
+                    className='button icon primary'
+                    floating
+                    onBlur={() => setQuery("")}
+                    onClose={() => setPopupAllowed(true)}
+                    onKeyDown={(event) => {
+                        if (options.length === 0) { return }
+                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                            let newIndex;
+                            if (event.key === "ArrowUp") {
+                                newIndex = Math.max(selectedItem - 1, 0);
+                            } else {
+                                newIndex = Math.min(selectedItem + 1, options.length - 1);
                             }
-                            if (event.key === "Enter") {
-                                onClick(item_subtypes[selectedItem].value);
-                            }
-                        }}
-                        selectOnBlur={false}
-                        selectOnNavigation={false}
-                        trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
-                        value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
-                    >
-                        <Dropdown.Menu>
-                            <Dropdown.Header>{`Available ${item_type} types`}</Dropdown.Header>
-                            <Dropdown.Menu scrolling tabIndex={0} >
-                                {item_subtypes.map((option, index) => (
-                                    <Dropdown.Item
-                                        key={option.key}
-                                        onClick={(_event, { value }) => onClick(value)}
-                                        selected={selectedItem === index}
-                                        {...option}
-                                    />
-                                ))}
-                            </Dropdown.Menu>
+                            setSelectedItem(newIndex);
+                            event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({ block: "nearest" });
+                        }
+                        if (event.key === "Enter") {
+                            onClick(options[selectedItem].value);
+                        }
+                        if (event.key === "Escape") {
+                            setQuery("")
+                        }
+                    }}
+                    onOpen={() => setPopupAllowed(false)}
+                    selectOnBlur={false}
+                    selectOnNavigation={false}
+                    trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
+                    value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
+                >
+                    <Dropdown.Menu>
+                        <Dropdown.Header>{`Available ${item_type} types`}</Dropdown.Header>
+                        {item_subtypes.length > 5 &&
+                            <>
+                                <Dropdown.Divider />
+                                <Input
+                                    className="search"
+                                    icon="search"
+                                    iconPosition="left"
+                                    onChange={(_event, { value }) => setQuery(value)}
+                                    onClick={(event) => { event.stopPropagation() }}
+                                    onKeyDown={(event) => { if (event.key === "Escape") { setQuery("") } }}
+                                    placeholder={`Filter available ${item_type} types`}
+                                    value={query}
+                                />
+                            </>
+                        }
+                        <Dropdown.Menu scrolling tabIndex={0} >
+                            {options.map((option, index) => (
+                                <Dropdown.Item
+                                    key={option.key}
+                                    onClick={(_event, { value }) => onClick(value)}
+                                    selected={selectedItem === index}
+                                    {...option}
+                                />
+                            ))}
                         </Dropdown.Menu>
-                    </Dropdown>
-                }
-            />
-        )
-    }
-    return <ActionButton
-        action='Add'
-        icon='plus'
-        item_type={item_type}
-        onClick={() => onClick()}
-        popup={`Add a new ${item_type} here`}
-    />;
+                    </Dropdown.Menu>
+                </Dropdown>
+            }
+        />
+    )
+}
+
+export function AddButton({ item_type, onClick }) {
+    return (
+        <ActionButton
+            action='Add'
+            icon='plus'
+            item_type={item_type}
+            onClick={() => onClick()}
+            popup={`Add a new ${item_type} here`}
+        />
+    )
 }
 
 export function DeleteButton(props) {

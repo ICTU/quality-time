@@ -4,7 +4,7 @@ import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { add_source, copy_source, move_source } from '../api/source';
-import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
+import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
 import { source_options } from '../widgets/menu_options';
 import { show_message } from '../widgets/toast';
 import { pluralize } from '../utils';
@@ -16,7 +16,7 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment vertical>
-                <AddButton
+                <AddDropdownButton
                     item_type="source"
                     item_subtypes={sourceTypeOptions(dataModel, metric.type)}
                     onClick={(subtype) => add_source(metric_uuid, subtype, reload)}

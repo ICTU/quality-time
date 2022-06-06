@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
+import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { useDelayedRender } from '../utils';
@@ -61,7 +61,7 @@ export function Subjects({
             )}
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
-                    <AddButton
+                    <AddDropdownButton
                         item_type="subject"
                         item_subtypes={subjectTypes(dataModel)}
                         onClick={(subtype) => { add_subject(report.report_uuid, subtype, reload) }}

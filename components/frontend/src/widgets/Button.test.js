@@ -1,13 +1,13 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
+import { AddButton, AddDropdownButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
 
-test('AddButton mouse navigation', async () => {
+test('AddDropdownButton mouse navigation', async () => {
     const mockCallBack = jest.fn();
     render(
-        <AddButton
+        <AddDropdownButton
             item_type="foo"
             item_subtypes={[{ key: "sub1", text: "Sub1", value: "sub1" }, { key: "sub2", text: "Sub2", value: "sub2" }]}
             onClick={mockCallBack}
@@ -18,10 +18,10 @@ test('AddButton mouse navigation', async () => {
     expect(mockCallBack).toHaveBeenCalledWith("sub2")
 });
 
-test('AddButton keyboard navigation', async () => {
+test('AddDropdownButton keyboard navigation', async () => {
     const mockCallBack = jest.fn();
     render(
-        <AddButton
+        <AddDropdownButton
             item_type="foo"
             item_subtypes={[{ key: "sub1", text: "Sub1", value: "sub1" }, { key: "sub2", text: "Sub2", value: "sub2" }]}
             onClick={mockCallBack}
@@ -33,6 +33,11 @@ test('AddButton keyboard navigation', async () => {
     await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }); });
     await act(async () => { fireEvent.keyDown(screen.getByText(/Sub2/), { key: "Enter" }); });
     expect(mockCallBack).toHaveBeenCalledWith("sub2")
+});
+
+test('AddButton has the correct label', () => {
+    render(<AddButton item_type="bar" />);
+    expect(screen.getAllByText(/bar/).length).toBe(1);
 });
 
 test('DeleteButton has the correct label', () => {
