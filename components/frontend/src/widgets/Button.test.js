@@ -65,6 +65,15 @@ test('AddDropdownButton filter zero items', async () => {
     expect(mockCallback).not.toHaveBeenCalled()
 });
 
+test('AddDropdownButton resets query on escape', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "FOO{Escape}");
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub1/), { key: "Enter" }) });
+    expect(mockCallback).toHaveBeenCalledWith("sub1")
+});
+
 test('AddButton has the correct label', () => {
     render(<AddButton item_type="bar" />);
     expect(screen.getAllByText(/bar/).length).toBe(1);
