@@ -1,5 +1,6 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { AddButton, AddDropdownButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
@@ -13,8 +14,8 @@ test('AddDropdownButton mouse navigation', async () => {
             onClick={mockCallBack}
         />
     );
-    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)); });
-    await act(async () => { fireEvent.click(screen.getByText(/Sub2/)); });
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await act(async () => { fireEvent.click(screen.getByText(/Sub2/)) });
     expect(mockCallBack).toHaveBeenCalledWith("sub2")
 });
 
@@ -27,12 +28,27 @@ test('AddDropdownButton keyboard navigation', async () => {
             onClick={mockCallBack}
         />
     );
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Add foo/), { key: " " }); });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }); });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowUp" }); });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }); });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub2/), { key: "Enter" }); });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Add foo/), { key: " " }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowUp" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub2/), { key: "Enter" }) });
     expect(mockCallBack).toHaveBeenCalledWith("sub2")
+});
+
+test('AddDropdownButton hides popup when dropdown is shown', async () => {
+    render(
+        <AddDropdownButton
+            item_type="foo"
+            item_subtypes={[{ key: "sub1", text: "Sub1", value: "sub1" }, { key: "sub2", text: "Sub2", value: "sub2" }]}
+        />
+    );
+    await userEvent.hover(screen.getByText(/Add foo/));
+    await waitFor(() => {
+        expect(screen.queryAllByText(/Add a foo here/).length).toBe(1)
+    })
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    expect(screen.queryAllByText(/Add a foo here/).length).toBe(0)
 });
 
 test('AddButton has the correct label', () => {
