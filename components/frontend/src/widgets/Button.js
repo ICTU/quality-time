@@ -42,6 +42,9 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                     onBlur={() => setQuery("")}
                     onClose={() => setPopupAllowed(true)}
                     onKeyDown={(event) => {
+                        if (event.key === "Escape") {
+                            setQuery("")
+                        }
                         if (options.length === 0) { return }
                         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
                             let newIndex;
@@ -55,9 +58,6 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                         }
                         if (event.key === "Enter") {
                             onClick(options[selectedItem].value);
-                        }
-                        if (event.key === "Escape") {
-                            setQuery("")
                         }
                     }}
                     onOpen={() => setPopupAllowed(false)}

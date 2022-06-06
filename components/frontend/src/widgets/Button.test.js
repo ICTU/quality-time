@@ -5,12 +5,18 @@ import { AddButton, AddDropdownButton, CopyButton, DeleteButton, DownloadAsPDFBu
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
 
-function renderAddDropdownButton() {
+function renderAddDropdownButton(nr_items = 2) {
     const mockCallback = jest.fn();
+    const item_subtypes = [];
+    for (const index of Array(nr_items).keys()) {
+        const text = `Sub${index + 1}`;
+        const key = text.toLowerCase();
+        item_subtypes.push({ key: key, text: text, value: key })
+    }
     render(
         <AddDropdownButton
             item_type="foo"
-            item_subtypes={[{ key: "sub1", text: "Sub1", value: "sub1" }, { key: "sub2", text: "Sub2", value: "sub2" }]}
+            item_subtypes={item_subtypes}
             onClick={mockCallback}
         />
     );
@@ -43,6 +49,20 @@ test('AddDropdownButton hides popup when dropdown is shown', async () => {
     await userEvent.type(screen.getByText(/Add foo/), "{Escape}");  // Close dropdown
     await userEvent.hover(screen.getByText(/Add foo/));
     await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })  // Popup should appear again
+});
+
+test('AddDropdownButton filter one item', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub6{Enter}");
+    expect(mockCallback).toHaveBeenCalledWith("sub6")
+});
+
+test('AddDropdownButton filter zero items', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "FOO{Enter}");
+    expect(mockCallback).not.toHaveBeenCalled()
 });
 
 test('AddButton has the correct label', () => {
