@@ -22,6 +22,7 @@ function ActionButton(props) {
 }
 
 export function AddButton({ item_subtypes, item_type, onClick }) {
+    const [selectedItem, setSelectedItem] = useState(0);
     if (item_subtypes) {
         return (
             <Popup
@@ -31,15 +32,41 @@ export function AddButton({ item_subtypes, item_type, onClick }) {
                         basic
                         className='button icon primary'
                         floating
-                        header={`Available ${item_type} types`}
-                        onChange={(_event, { value }) => onClick(value)}
-                        options={item_subtypes}
-                        scrolling
+                        onKeyDown={(event) => {
+                            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                                let newIndex;
+                                if (event.key === "ArrowUp") {
+                                    newIndex = Math.max(selectedItem - 1, 0);
+                                } else {
+                                    newIndex = Math.min(selectedItem + 1, item_subtypes.length - 1);
+                                }
+                                setSelectedItem(newIndex);
+                                event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({block: "nearest"});
+                            }
+                            if (event.key === "Enter") {
+                                onClick(item_subtypes[selectedItem].value);
+                            }
+                        }}
                         selectOnBlur={false}
                         selectOnNavigation={false}
                         trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
                         value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
-                    />}
+                    >
+                        <Dropdown.Menu>
+                            <Dropdown.Header>{`Available ${item_type} types`}</Dropdown.Header>
+                            <Dropdown.Menu scrolling tabIndex={0} >
+                                {item_subtypes.map((option, index) => (
+                                    <Dropdown.Item
+                                        key={option.key}
+                                        onClick={(_event, { value }) => onClick(value)}
+                                        selected={selectedItem === index}
+                                        {...option}
+                                    />
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                }
             />
         )
     }
