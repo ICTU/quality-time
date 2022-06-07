@@ -4,8 +4,7 @@ import bottle
 from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
-
-from utils.functions import md5_hash, report_date_time
+from shared.utils.functions import md5_hash, report_date_time
 
 
 @bottle.get("/api/v3/datamodel", authentication_required=False)
