@@ -5,9 +5,10 @@ from unittest.mock import Mock, patch
 
 import bottle
 
+from shared.utils.functions import md5_hash
+
 from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 from routes import get_data_model
-from utils.functions import md5_hash
 
 
 class DataModelTest(unittest.TestCase):

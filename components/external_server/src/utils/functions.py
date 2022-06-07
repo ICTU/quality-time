@@ -1,13 +1,11 @@
 """Utility functions."""
 
-import hashlib
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from typing import cast, TypeVar
 
-import bottle
 import requests
 from cryptography.hazmat.backends import default_backend, openssl
 from cryptography.hazmat.primitives import serialization
@@ -20,7 +18,6 @@ from cryptography.fernet import Fernet
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
 
-from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 
 from .type import URL
@@ -66,20 +63,6 @@ def _headers(source_parameters) -> dict:
         private_token = source_parameters["private_token"]
         return {"Private-Token": private_token, "Authorization": f"Bearer {private_token}"}
     return {}
-
-
-def md5_hash(string: str) -> str:
-    """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
-
-
-def report_date_time() -> str:
-    """Return the report date requested as query parameter if it's in the past, else return an empty string."""
-    if report_date_string := dict(bottle.request.query).get("report_date"):
-        iso_report_date_string = str(report_date_string).replace("Z", "+00:00")
-        if iso_report_date_string < iso_timestamp():
-            return iso_report_date_string
-    return ""
 
 
 def sanitize_html(html_text: str) -> str:
