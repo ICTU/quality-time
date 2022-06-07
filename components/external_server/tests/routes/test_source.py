@@ -53,7 +53,7 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
         self.data_model = dict(
             _id="id",
-            metrics=dict(metric_type=dict(default_source="source_type")),
+            metrics=dict(metric_type={}),
             sources=dict(
                 source_type=dict(
                     name="Source type",
@@ -550,8 +550,10 @@ class SourceTest(SourceTestCase):
         self.database.reports.find.return_value = [self.report]
         self.target_metric_name = "Target metric"
 
-    def test_add_source(self):
+    @patch("bottle.request")
+    def test_add_source(self, request):
         """Test that a new source is added."""
+        request.json = dict(type="new_source_type")
         self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
@@ -559,15 +561,6 @@ class SourceTest(SourceTestCase):
         description = "Jenny added a new source to metric 'Metric' of subject 'Subject' in report 'Report'."
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
-
-    @patch("bottle.request")
-    def test_add_source_with_type(self, request):
-        """Test that a new source can be added with a specific type."""
-        request.json = dict(type="new_source_type")
-        post_source_new(METRIC_ID, self.database)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
-        source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
-        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             "new_source_type",
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]["type"],

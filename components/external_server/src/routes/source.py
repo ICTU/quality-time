@@ -25,8 +25,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     all_reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
-    default_source_type = data_model["metrics"][metric.type()]["default_source"]
-    source_type = dict(bottle.request.json or {}).get("type") or default_source_type
+    source_type = dict(bottle.request.json)["type"]
     parameters = default_source_parameters(database, metric.type(), source_type)
     metric.sources_dict[(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
     delta_description = (
