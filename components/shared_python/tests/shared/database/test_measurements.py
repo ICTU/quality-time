@@ -15,7 +15,6 @@ from shared.database.measurements import (
     update_measurement_end,
 )
 from shared.data_model import DATA_MODEL_JSON
-from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp

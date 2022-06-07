@@ -10,17 +10,8 @@ from shared.utils.functions import iso_timestamp
 
 def default_source_parameters(database: Database, metric_type: str, source_type: str):
     """Return the source parameters with their default values for the specified metric."""
-    parameters = (
-        latest_datamodel(database)["sources"]
-        .get(source_type, {})
-        .get("parameters", {})
-        .items()
-    )
-    return {
-        key: value["default_value"]
-        for key, value in parameters
-        if metric_type in value["metrics"]
-    }
+    parameters = latest_datamodel(database)["sources"].get(source_type, {}).get("parameters", {}).items()
+    return {key: value["default_value"] for key, value in parameters if metric_type in value["metrics"]}
 
 
 def default_metric_attributes(database: Database, metric_type: str = ""):
@@ -48,14 +39,11 @@ def default_metric_attributes(database: Database, metric_type: str = ""):
     )
 
 
-def default_subject_attributes(database: Database) -> dict[str, Any]:
+def default_subject_attributes(database: Database, subject_type: str) -> dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
-    subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
-    return dict(
-        type=subject_type, name=None, description=defaults["description"], metrics={}
-    )
+    return dict(type=subject_type, name=None, description=defaults["description"], metrics={})
 
 
 def insert_new_datamodel(database: Database, data_model):
@@ -68,11 +56,7 @@ def insert_new_datamodel(database: Database, data_model):
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     """Return the latest data model."""
-    timestamp_filter = (
-        dict(timestamp={"$lte": max_iso_timestamp}) if max_iso_timestamp else None
-    )
-    if data_model := database.datamodels.find_one(
-        timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]
-    ):
+    timestamp_filter = dict(timestamp={"$lte": max_iso_timestamp}) if max_iso_timestamp else None
+    if data_model := database.datamodels.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
         data_model["_id"] = str(data_model["_id"])
     return data_model or {}

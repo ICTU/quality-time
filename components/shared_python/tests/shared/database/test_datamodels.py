@@ -25,30 +25,20 @@ class DataModelsTest(unittest.TestCase):
             sources=dict(
                 test_source=dict(
                     parameters=dict(
-                        test_parameter=dict(
-                            default_value="value", metrics=["metric_type"]
-                        ),
-                        test_parameter_2=dict(
-                            default_value="value_2", metrics=["some_other_metric"]
-                        ),
+                        test_parameter=dict(default_value="value", metrics=["metric_type"]),
+                        test_parameter_2=dict(default_value="value_2", metrics=["some_other_metric"]),
                     )
                 ),
                 source_type=dict(
                     parameters=dict(
-                        test_parameter_3=dict(
-                            default_value="value_3", metrics=["metric_type"]
-                        ),
-                        test_parameter_4=dict(
-                            default_value="value_4", metrics=["some_other_metric"]
-                        ),
+                        test_parameter_3=dict(default_value="value_3", metrics=["metric_type"]),
+                        test_parameter_4=dict(default_value="value_4", metrics=["some_other_metric"]),
                     )
                 ),
             ),
         )
 
-        default_params = default_source_parameters(
-            self.database, "metric_type", "test_source"
-        )
+        default_params = default_source_parameters(self.database, "metric_type", "test_source")
 
         self.assertDictEqual(default_params, dict(test_parameter="value"))
 
@@ -104,29 +94,21 @@ class DataModelsTest(unittest.TestCase):
             near_target="test_near_target2",
             tags=["tag", "tag-3"],
         )
-        self.assertDictEqual(
-            default_metric_attributes(self.database, "metric_type_2"), expected_dict
-        )
+        self.assertDictEqual(default_metric_attributes(self.database, "metric_type_2"), expected_dict)
 
     def test_default_subject_attributes(self):
         """Test that default subject attributes get retrieved."""
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
-            subjects=dict(
-                subject_type=dict(description="description"), subject_type_2={}
-            ),
+            subjects=dict(subject_type=dict(description="description"), subject_type_2={}),
         )
 
-        expected_dict = dict(
-            type="subject_type", name=None, description="description", metrics={}
-        )
-        self.assertDictEqual(default_subject_attributes(self.database), expected_dict)
+        expected_dict = dict(type="subject_type", name=None, description="description", metrics={})
+        self.assertDictEqual(default_subject_attributes(self.database, "subject_type"), expected_dict)
 
     def test_latest_data_model(self):
         """Test that the data model can be retrieved."""
-        self.database.datamodels.find_one.return_value = data_model = dict(
-            _id="id", metrics=dict(metric_type={})
-        )
+        self.database.datamodels.find_one.return_value = data_model = dict(_id="id", metrics=dict(metric_type={}))
         self.assertEqual(data_model, latest_datamodel(self.database))
 
     def test_no_latest_data_model(self):

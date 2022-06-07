@@ -4,9 +4,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 import bottle
-from shared.database.datamodels import insert_new_datamodel
+
+from shared.database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 from shared.utils.functions import md5_hash
-from shared.database.datamodels import default_source_parameters, default_subject_attributes
 
 from routes import get_data_model
 
@@ -66,5 +66,5 @@ class DataModelTest(unittest.TestCase):
         )
         self.assertEqual(
             dict(name=None, description="description", type="subject_type", metrics={}),
-            default_subject_attributes(self.database),
+            default_subject_attributes(self.database, "subject_type"),
         )
