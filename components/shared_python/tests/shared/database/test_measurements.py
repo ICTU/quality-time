@@ -4,8 +4,8 @@ import json
 import unittest
 from unittest.mock import Mock
 
-from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.data_model import DATA_MODEL_JSON
+from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 
@@ -17,9 +17,7 @@ class MeasurementsTest(unittest.TestCase):
         """Override to create a database fixture."""
         self.database = Mock()
         self.database.measurements.insert_one = self.insert_one_measurement
-        self.metric = Metric(
-            json.loads(DATA_MODEL_JSON), dict(type="violations"), "metric_uuid"
-        )
+        self.metric = Metric(json.loads(DATA_MODEL_JSON), dict(type="violations"), "metric_uuid")
 
     @staticmethod
     def insert_one_measurement(measurement):
@@ -34,9 +32,7 @@ class MeasurementsTest(unittest.TestCase):
     def test_latest_measurement(self):
         """Test a latest measurement is found."""
         self.database.measurements.find_one.return_value = {}
-        self.assertEqual(
-            Measurement(self.metric), latest_measurement(self.database, self.metric)
-        )
+        self.assertEqual(Measurement(self.metric), latest_measurement(self.database, self.metric))
 
     def test_insert_new_measurement_without_id(self):
         """Test inserting a measurement without id."""

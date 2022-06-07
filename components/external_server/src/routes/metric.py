@@ -5,11 +5,12 @@ from typing import Any
 import bottle
 from pymongo.database import Database
 
+from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.metric import Metric
 from shared.utils.type import MetricId, SubjectId
 
-from database.datamodels import default_metric_attributes, latest_datamodel
+from database.datamodels import default_metric_attributes
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item
 from utils.functions import sanitize_html, uuid
