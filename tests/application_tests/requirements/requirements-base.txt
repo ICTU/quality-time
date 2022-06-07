@@ -15,7 +15,7 @@ pep517==0.12.0 \
 pip-tools==6.6.2 \
     --hash=sha256:6b486548e5a139e30e4c4a225b3b7c2d46942a9f6d1a91143c21b1de4d02fd9b \
     --hash=sha256:f638503a9f77d98d9a7d72584b1508d3f82ed019b8fab24f4e5ad078c1b8c95e
-    # via -r requirements/../../../requirements/requirements-base.in
+    # via -r ../../../requirements/requirements-base.in
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
@@ -24,7 +24,7 @@ wheel==0.37.1 \
     --hash=sha256:4bdcd7d840138086126cd09254dc6195fb4fc6f01c050a1d7236f2630db1d22a \
     --hash=sha256:e9a504e793efbca1b8e0e9cb979a249cf4a0a7b5b8c9e8b65a5e39d49529c1c4
     # via
-    #   -r requirements/../../../requirements/requirements-base.in
+    #   -r ../../../requirements/requirements-base.in
     #   pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
@@ -32,7 +32,7 @@ pip==22.1.2 \
     --hash=sha256:6d55b27e10f506312894a87ccc59f280136bad9061719fac9101bdad5a6bce69 \
     --hash=sha256:a3edacb89022ef5258bf61852728bf866632a394da837ca49eb4303635835f17
     # via
-    #   -r requirements/../../../requirements/requirements-base.in
+    #   -r ../../../requirements/requirements-base.in
     #   pip-tools
 setuptools==62.3.2 \
     --hash=sha256:68e45d17c9281ba25dc0104eadd2647172b3472d9e01f911efa57965e8d51a36 \
