@@ -6,7 +6,6 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.utils.functions import iso_timestamp
-from shared.database.datamodels import latest_datamodel
 
 
 def default_source_parameters(database: Database, metric_type: str, source_type: str):
