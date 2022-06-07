@@ -70,8 +70,7 @@ def metric_section(data_model, metric, level) -> str:
     markdown += "```{admonition} Supporting sources\n"
     for source in metric["sources"]:
         source_name = data_model["sources"][source]["name"]
-        default = " (default)" if source == metric.get("default_source", "no default source") else ""
-        markdown += f"- [{source_name}]({metric_source_slug(metric['name'], source_name)}){default}\n"
+        markdown += f"- [{source_name}]({metric_source_slug(metric['name'], source_name)})\n"
     markdown += "```\n"
     return markdown
 

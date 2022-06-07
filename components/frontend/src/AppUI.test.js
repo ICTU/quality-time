@@ -23,6 +23,7 @@ it('handles sorting', async () => {
     fireEvent.click(screen.getAllByText("Comment")[0])
     expect(history.location.search).toEqual("?sort_column=comment")
     await act(async () => fireEvent.click(screen.getAllByText(/Add metric/)[0]))
+    await act(async () => fireEvent.click(screen.getAllByText(/Metric type/)[0]))
     expect(history.location.search).toEqual("")
 })
 

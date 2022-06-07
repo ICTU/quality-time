@@ -1,10 +1,19 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
 import {
-    getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name, nice_number,
-    scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
+    capitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
+    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
+
+it('capitalizes strings', () => {
+    expect(capitalize("")).toBe("")
+    expect(capitalize("A")).toBe("A")
+    expect(capitalize("a")).toBe("A")
+    expect(capitalize("ab")).toBe("Ab")
+    expect(capitalize("aB")).toBe("AB")
+    expect(capitalize("AB")).toBe("AB")
+});
 
 it('rounds numbers nicely', () => {
     expect(nice_number(15)).toBe(20);

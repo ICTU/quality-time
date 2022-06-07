@@ -65,5 +65,5 @@ class DataModelTest(unittest.TestCase):
         )
         self.assertEqual(
             dict(name=None, description="description", type="subject_type", metrics={}),
-            default_subject_attributes(self.database),
+            default_subject_attributes(self.database, "subject_type"),
         )

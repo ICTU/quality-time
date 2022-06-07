@@ -130,7 +130,6 @@ class DataModelTest(MetaModelTestCase):
                     name="Metric",
                     description=self.DESCRIPTION,
                     scales=["count"],
-                    default_source="source",
                     sources=["quality_time", "source"],
                 )
             ),

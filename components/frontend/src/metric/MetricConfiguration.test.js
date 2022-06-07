@@ -17,7 +17,7 @@ const report = {
                     accept_debt: false,
                     tags: [],
                     type: "violations",
-                    sources: { }
+                    sources: {}
                 }
             }
         }
@@ -25,8 +25,9 @@ const report = {
 };
 
 const dataModel = {
-    sources: { source_type: { name: "The source", parameters: {}, entities: { violations: { name: "Attribute", attributes: []} } } },
-    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
+    sources: { source_type: { name: "The source", parameters: {}, entities: { violations: { name: "Attribute", attributes: [] } } } },
+    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } },
+    subjects: { subject_type: { metrics: ["violations"] } }
 }
 
 async function renderMetricConfiguration() {
@@ -40,6 +41,7 @@ async function renderMetricConfiguration() {
                         metric_uuid="metric_uuid"
                         metric={report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]}
                         report={report}
+                        subject={{ type: "subject_type" }}
                     />
                 </DataModel.Provider>
             </Permissions.Provider>

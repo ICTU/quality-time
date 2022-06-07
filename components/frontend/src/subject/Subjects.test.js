@@ -67,7 +67,8 @@ it("adds a subject", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     renderSubjects([EDIT_REPORT_PERMISSION]);
     await act(async () => fireEvent.click(screen.getByText(/Add subject/)))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/new/report_uuid", { });
+    await act(async () => fireEvent.click(screen.getByText(/Subject type/)))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/new/report_uuid", { type: "subject_type" });
 });
 
 it("copies a subject", async () => {

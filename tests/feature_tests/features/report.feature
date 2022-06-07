@@ -58,6 +58,7 @@ Feature: report
     And the client creates a subject
     And the client creates a metric
     And the client creates a source
+    And the client sets the source parameter url to "https://public"
     And the client sets the source parameter password to "secret"
     And the client downloads the report as json
     Then the client receives the json

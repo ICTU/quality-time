@@ -1,12 +1,82 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { AddButton, AddDropdownButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
 
+function renderAddDropdownButton(nr_items = 2) {
+    const mockCallback = jest.fn();
+    const item_subtypes = [];
+    for (const index of Array(nr_items).keys()) {
+        const text = `Sub${index + 1}`;
+        const key = text.toLowerCase();
+        item_subtypes.push({ key: key, text: text, value: key })
+    }
+    render(
+        <AddDropdownButton
+            item_type="foo"
+            item_subtypes={item_subtypes}
+            onClick={mockCallback}
+        />
+    );
+    return mockCallback;
+}
+
+test('AddDropdownButton mouse navigation', async () => {
+    const mockCallBack = renderAddDropdownButton()
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await act(async () => { fireEvent.click(screen.getByText(/Sub2/)) });
+    expect(mockCallBack).toHaveBeenCalledWith("sub2")
+});
+
+test('AddDropdownButton keyboard navigation', async () => {
+    const mockCallBack = renderAddDropdownButton()
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Add foo/), { key: " " }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowUp" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub2/), { key: "Enter" }) });
+    expect(mockCallBack).toHaveBeenCalledWith("sub2")
+});
+
+test('AddDropdownButton hides popup when dropdown is shown', async () => {
+    renderAddDropdownButton()
+    await userEvent.hover(screen.getByText(/Add foo/));
+    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    expect(screen.queryAllByText(/Add a foo here/).length).toBe(0);  // Popup should disappear
+    await userEvent.type(screen.getByText(/Add foo/), "{Escape}");  // Close dropdown
+    await userEvent.hover(screen.getByText(/Add foo/));
+    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })  // Popup should appear again
+});
+
+test('AddDropdownButton filter one item', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub6{Enter}");
+    expect(mockCallback).toHaveBeenCalledWith("sub6")
+});
+
+test('AddDropdownButton filter zero items', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "FOO{Enter}");
+    expect(mockCallback).not.toHaveBeenCalled()
+});
+
+test('AddDropdownButton resets query on escape', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "FOO{Escape}");
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub1/), { key: "Enter" }) });
+    expect(mockCallback).toHaveBeenCalledWith("sub1")
+});
+
 test('AddButton has the correct label', () => {
-    render(<AddButton item_type="foo" />);
-    expect(screen.getAllByText(/foo/).length).toBe(1);
+    render(<AddButton item_type="bar" />);
+    expect(screen.getAllByText(/bar/).length).toBe(1);
 });
 
 test('DeleteButton has the correct label', () => {
@@ -93,7 +163,6 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
     });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/pdf?nr_dates=4&report_url=http%3A%2F%2Flocalhost%2F%3Fnr_dates%3D4", {}, "application/pdf")
 });
-
 
 test("DownloadAsPDFButton ignores a second click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });

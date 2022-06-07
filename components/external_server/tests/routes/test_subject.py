@@ -173,7 +173,9 @@ class SubjectTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             metrics=dict(metric_type=dict(name="Metric type")),
-            subjects=dict(subject_type=dict(name="Subject", description="")),
+            subjects=dict(
+                subject_type=dict(name="Subject", description=""), other_type=dict(name="Other", description="")
+            ),
             sources=dict(source_type=dict(name="Source type")),
         )
 
@@ -185,14 +187,17 @@ class SubjectTest(unittest.TestCase):
             report["delta"],
         )
 
-    def test_add_subject(self):
+    @patch("bottle.request")
+    def test_add_subject(self, request):
         """Test that a subject can be added."""
+        request.json = dict(type="subject_type")
         result = post_new_subject(REPORT_ID, self.database)
         self.assertTrue(result["ok"])
         self.assertIn("new_subject_uuid", result)
         subject_uuid = result["new_subject_uuid"]
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta("created a new subject in report 'Report'", [REPORT_ID, subject_uuid], report=updated_report)
+        self.assertEqual("subject_type", updated_report["subjects"][subject_uuid]["type"])
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""

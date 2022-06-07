@@ -59,7 +59,8 @@ export function MetricDetails({
         reload();
         fetch_measurements(report_date, metric_uuid, setMeasurements)
     }
-    const metric = report.subjects[subject_uuid].metrics[metric_uuid];
+    const subject = report.subjects[subject_uuid];
+    const metric = subject.metrics[metric_uuid];
     const last_measurement = measurements[measurements.length - 1];
     const any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
     const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
@@ -68,7 +69,7 @@ export function MetricDetails({
         {
             menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricConfiguration metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+                <MetricConfiguration metric={metric} metric_uuid={metric_uuid} subject={subject} report={report} reload={reload} />
             </Tab.Pane>
         },
         {

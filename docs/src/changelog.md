@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v3.37.0-rc.3 - 2022-06-03
+## [Unreleased]
 
 ### Deployment notes
 
@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not v3.36.0, please read t
 ### Changed
 
 - Verify SSL certificates when checking secure (https) URLs entered by the user.
+- The 'Add subject', 'Add metric', and 'Add source' buttons now have a dropdown menu with the available subject, metric, and source types. If there are more than five options, the dropdown menu can be filtered to reduce the number of options. When adding metrics, the dropdown menu only shows the metric types that can measure the subject. When adding sources, the dropdown only shows the source types that support the metric. Closes [#3718](https://github.com/ICTU/quality-time/issues/3718).
 
 ### Added
 

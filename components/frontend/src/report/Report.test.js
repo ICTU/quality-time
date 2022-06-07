@@ -4,7 +4,12 @@ import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
-const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
+const datamodel = {
+    subjects: {
+        subject_type: { name: "Subject type", metrics: ['metric_type'] } },
+        metrics: { metric_type: { name: "Metric type", tags: [] }
+    }
+}
 const report = {
     report_uuid: "report_uuid",
     summary_by_subject: {
@@ -100,6 +105,7 @@ it('stop sorting on add metric', async () => {
     let handleSort = jest.fn();
     renderReport(report, { sortColumn: "status", handleSort: handleSort })
     await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
+    await act(async () => fireEvent.click(screen.getByText(/Metric type/)))
     expect(handleSort).toHaveBeenCalledWith(null)
 })
 

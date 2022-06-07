@@ -8,7 +8,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
 import { MetricTypeHeader } from './MetricTypeHeader';
 
-export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
+export function MetricConfiguration({ metric, metric_uuid, subject, report, reload }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type]
     const metricUrl = `${window.location}#${metric_uuid}`
@@ -16,7 +16,7 @@ export function MetricConfiguration({ metric, metric_uuid, report, reload }) {
         {
             menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+                <MetricParameters subject={subject} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {

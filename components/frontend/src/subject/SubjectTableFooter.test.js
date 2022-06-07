@@ -12,7 +12,7 @@ jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 
 it('shows the add metric button and adds a metric when clicked', async () => {
-    const { queryAllByText, getByText } = render(
+    const { getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Table>
@@ -24,12 +24,14 @@ it('shows the add metric button and adds a metric when clicked', async () => {
             </DataModel.Provider>
         </Permissions.Provider>
     );
-    expect(queryAllByText("Add metric").length).toBe(1);
     await act(async () => {
-        fireEvent.click(getByText("Add metric"))
+        fireEvent.click(getByText(/Add metric/))
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Metric type/));
     });
     expect(stopSorting).toBeCalled()
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", { type: "metric_type"});
 });
 
 it('copies a metric when the copy button is clicked and a metric is selected', async () => {
