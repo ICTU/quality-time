@@ -2,12 +2,11 @@
 
 from pymongo.database import Database
 
-from shared.utils.type import MetricId, ReportId
+from shared.database.datamodels import latest_datamodel
 from shared.database.filters import DOES_NOT_EXIST
 from shared.model.metric import Metric
 from shared.model.report import Report
-
-from .datamodels import latest_datamodel
+from shared.utils.type import MetricId, ReportId
 
 
 def latest_reports(database: Database, data_model: dict) -> list[Report]:

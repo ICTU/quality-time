@@ -5,7 +5,8 @@ from typing import Any
 import bottle
 from pymongo.database import Database
 
-from ..database.datamodels import latest_datamodel
+from shared.database.datamodels import latest_datamodel
+
 from ..database.reports import latest_reports
 
 

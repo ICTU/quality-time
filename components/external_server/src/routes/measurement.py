@@ -8,12 +8,12 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
+from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.utils.type import MetricId, SourceId
 
 from database import sessions
-from database.datamodels import latest_datamodel
 from database.measurements import count_measurements, measurements_by_metric
 from database.reports import latest_report_for_uuids, latest_reports
 from utils.functions import report_date_time
