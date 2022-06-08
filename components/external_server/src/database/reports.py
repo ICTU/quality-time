@@ -5,6 +5,7 @@ from typing import cast, Any
 import pymongo
 from pymongo.database import Database
 
+from shared.database import sessions
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
@@ -12,7 +13,6 @@ from shared.utils.type import MetricId, ReportId, SubjectId
 
 from utils.functions import unique
 from utils.type import Change, ItemId
-from . import sessions
 
 
 # Sort order:

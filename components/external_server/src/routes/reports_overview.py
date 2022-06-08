@@ -3,9 +3,9 @@
 import bottle
 from pymongo.database import Database
 
+from shared.database import sessions
 from shared.utils.functions import report_date_time
 
-from database import sessions
 from database.reports import insert_new_reports_overview, latest_reports_overview
 from utils.functions import sanitize_html
 
