@@ -100,7 +100,7 @@ class Collector:
         # The first attempt is likely to fail because the collector starts up faster than the server,
         # so don't log tracebacks on the first attempt
         first_attempt = True
-        data_model_url = URL(f"{self.server_url}/api/{self.API_VERSION}/datamodel")
+        data_model_url = URL(f"{self.server_url}/internal-api/{self.API_VERSION}/datamodel")
         while True:
             self.record_health()
             logging.info("Loading data model from %s...", data_model_url)

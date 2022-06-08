@@ -75,7 +75,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):  # pylint: disable=invalid-name
         """Define info that is used in multiple tests."""
         self.url = "https://report1"
-        self.report_api = "http://localhost:5001/api/v3/report"
+        self.report_api = "http://localhost:5001/internal-api/v3/report"
         self.title = "Report 1"
         self.history = "2020-01-01T23:59:00+00:00"
         self.subjects = dict(
