@@ -2,7 +2,6 @@
 
 import pymongo
 from pymongo.database import Database
-from shared.utils.functions import iso_timestamp
 
 from shared.utils.functions import iso_timestamp
 

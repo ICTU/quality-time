@@ -11,7 +11,8 @@ import os  # skipcq: FLK-E402
 
 import bottle  # skipcq: FLK-E402
 
-from initialization.database import init_database  # skipcq: FLK-E402
+from shared.initialization.database import init_database  # skipcq: FLK-E402
+
 from initialization import init_bottle  # skipcq: FLK-E402
 
 

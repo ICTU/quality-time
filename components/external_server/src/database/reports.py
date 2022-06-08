@@ -5,7 +5,6 @@ from typing import cast
 import pymongo
 from pymongo.database import Database
 
-from shared.database import sessions
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp

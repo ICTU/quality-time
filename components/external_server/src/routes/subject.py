@@ -5,10 +5,9 @@ import bottle
 from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
+from shared.database.reports import insert_new_report
 from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, ReportId, SubjectId
-from shared.utils.functions import report_date_time
-from shared.database.reports import insert_new_report
 
 from database.datamodels import default_subject_attributes
 from database.measurements import measurements_by_metric

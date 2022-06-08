@@ -16,7 +16,6 @@ from shared.utils.type import ReportId
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
 from database.reports import latest_report, latest_reports
-from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.issue_tracker import IssueTracker
 from model.transformations import (

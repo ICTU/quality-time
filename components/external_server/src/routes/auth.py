@@ -15,10 +15,10 @@ from ldap3 import ALL, Connection, Server
 from ldap3.core import exceptions
 from pymongo.database import Database
 
-from shared.database import sessions
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from shared.utils.type import SessionId, User
 
+from database import sessions
 from utils.functions import uuid
 
 
