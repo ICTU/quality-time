@@ -1,4 +1,4 @@
-FROM python:3.10.4-bullseye AS compile-image
+FROM python:3.10.5-bullseye AS compile-image
 
 WORKDIR /home/collector
 
@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
 COPY requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 
-FROM python:3.10.4-slim-bullseye
+FROM python:3.10.5-bullseye
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time collector"
