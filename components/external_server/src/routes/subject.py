@@ -7,7 +7,6 @@ from pymongo.database import Database
 from shared.database.datamodels import latest_datamodel
 from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, ReportId, SubjectId
-from shared.utils.functions import report_date_time
 
 from database.datamodels import default_subject_attributes
 from database.measurements import measurements_by_metric
