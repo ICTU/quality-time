@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
+from database.datamodels import default_source_parameters, default_subject_attributes
 
 
 class DataModelTest(unittest.TestCase):
@@ -12,16 +12,6 @@ class DataModelTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the database."""
         self.database = Mock()
-
-    def test_insert_data_model_with_id(self):
-        """Test that a new data model can be inserted."""
-        insert_new_datamodel(self.database, dict(_id="id"))
-        self.database.datamodels.insert_one.assert_called_once()
-
-    def test_insert_data_model_without_id(self):
-        """Test that a new data model can be inserted."""
-        insert_new_datamodel(self.database, {})
-        self.database.datamodels.insert_one.assert_called_once()
 
     def test_default_source_parameters(self):
         """Test that the default source parameters can be retrieved from the data model."""
