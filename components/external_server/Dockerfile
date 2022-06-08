@@ -1,4 +1,4 @@
-FROM python:3.10.4-bullseye AS compile-image
+FROM python:3.10.5-bullseye AS compile-image
 
 WORKDIR /home/server
 
@@ -12,7 +12,7 @@ COPY external_server/requirements/requirements-internal.txt /requirements-intern
 COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.10.4-slim-bullseye
+FROM python:3.10.5-bullseye
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
