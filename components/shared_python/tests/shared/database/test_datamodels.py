@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from shared.database.datamodels import latest_datamodel
+from shared.database.datamodels import insert_new_datamodel, latest_datamodel
 
 
 class DataModelsTest(unittest.TestCase):
@@ -22,3 +22,13 @@ class DataModelsTest(unittest.TestCase):
         """Test that the an empty data model is returned when the data models collection is empty."""
         self.database.datamodels.find_one.return_value = None
         self.assertEqual({}, latest_datamodel(self.database))
+
+    def test_insert_data_model_with_id(self):
+        """Test that a new data model can be inserted."""
+        insert_new_datamodel(self.database, dict(_id="id"))
+        self.database.datamodels.insert_one.assert_called_once()
+
+    def test_insert_data_model_without_id(self):
+        """Test that a new data model can be inserted."""
+        insert_new_datamodel(self.database, {})
+        self.database.datamodels.insert_one.assert_called_once()
