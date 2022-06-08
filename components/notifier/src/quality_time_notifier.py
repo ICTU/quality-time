@@ -21,7 +21,7 @@ async def notify(log_level: int = None) -> NoReturn:
     api_version = "v3"
     reports_url = (
         f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
-        f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/report"
+        f"{os.environ.get('SERVER_PORT', '5001')}/internal-api/{api_version}/report"
     )
     data_model = await retrieve_data_model(api_version, sleep_duration)
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
@@ -78,7 +78,7 @@ async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int, 
     )
 
     first_attempt = True
-    data_model_url = URL(f"{server_url}/api/{api_version}/datamodel")
+    data_model_url = URL(f"{server_url}/internal-api/{api_version}/datamodel")
     while True:
         record_health()
         logging.info("Loading data model from %s...", data_model_url)
