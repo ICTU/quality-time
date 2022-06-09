@@ -4,12 +4,12 @@ import unittest
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
-from internal.routes import post_measurement
+from routes import post_measurement
 
-from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
+from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
-@patch("internal.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("shared.model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")

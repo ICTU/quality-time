@@ -7,7 +7,7 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 
-from ..database.reports import latest_reports
+from database.reports import latest_reports
 
 
 @bottle.get("/internal-api/v3/metrics", authentication_required=False)

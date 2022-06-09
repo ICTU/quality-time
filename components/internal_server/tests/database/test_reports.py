@@ -6,9 +6,9 @@ from unittest.mock import Mock
 from shared.model.metric import Metric
 from shared.utils.type import MetricId
 
-from internal.database.reports import latest_metric
+from database.reports import latest_metric
 
-from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID
+from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID
 
 
 class MetricsTest(unittest.TestCase):

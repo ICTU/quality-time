@@ -5,9 +5,9 @@ from unittest.mock import Mock
 
 from shared.model.report import Report
 
-from internal.routes import get_report
+from routes import get_report
 
-from ...fixtures import REPORT_ID, create_report
+from ..fixtures import REPORT_ID, create_report
 
 
 class ReportTest(unittest.TestCase):  # skipcq: PTC-W0046
