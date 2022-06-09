@@ -45,13 +45,3 @@ class ReportDateTimeTest(unittest.TestCase):
         """Test that the report datetime is empty if it's a future date."""
         request.query = dict(report_date="3000-01-01T00:00:00Z")
         self.assertEqual("", report_date_time())
-
-
-class MD5HashTest(unittest.TestCase):
-    """Test md5 hash function."""
-
-    def test_hash(self):
-        """Test that hash is correct."""
-        test_string = "test"
-        test_hash = md5_hash(test_string)
-        self.assertEqual(test_hash, "098f6bcd4621d373cade4e832627b4f6")
