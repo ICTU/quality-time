@@ -57,6 +57,16 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
+    - name: Internal Server
+      if: env.SONAR_TOKEN != null
+      working-directory: components/internal_server
+      run: |
+        python -m venv venv
+        . venv/bin/activate
+        ci/pip-install.sh
+        ci/unittest.sh
+        export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
+        python -m xmlrunner --output-file build/unittests.xml
     - name: Shared Python
       if: env.SONAR_TOKEN != null
       working-directory: components/shared_python
