@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes.
+
+### Added
+
+- The [Performancetest-runner](https://github.com/ICTU/performancetest-runner) HTML report now reports the breaking point as the absolute number of virtual users as well as percentage of the maximum number of virtual users. This allows the 'scalability' metric to support the count scale in addition to the already supported percentage scale. Closes [#3980](https://github.com/ICTU/quality-time/issues/3980).
+
 ## v3.37.0 - 2022-06-07
 
 ### Deployment notes

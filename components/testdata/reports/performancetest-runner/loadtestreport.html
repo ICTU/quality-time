@@ -239,24 +239,25 @@
 <table width="100%">
 <tr valign="top">
 <td><h3>Summary</h3>
-<table class="config">
-	<tr><td class="name">Transactions failed (%)</td><td id="transactions_failed">0,00</td></tr>
-	<tr><td class="name">Threshold violations</td><td id="threshold_violations">0</td></tr>
-	<tr><td class="name">Baseline warnings</td><td id="baseline_warnings">0</td></tr>
-	<tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">63</td></tr>
-	<tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">10</td></tr>
-	<tr><td>&nbsp</td><td></td></tr>
-	<tr><td class="name">Duration</td><td id="duration">01:00:01</td></tr>
-	<tr><td class="name">Virtual users</td><td id="virtual_users">8</td></tr>
-	<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>
-	<tr><td class="name">Transactions success</td><td id="success">1250</td></tr>
-	<tr><td class="name">Transactions failed</td><td id="failed">0</td></tr>
-	<tr><td class="name">Min of minima (s)</td><td id="min">0,043</td></tr>
-	<tr><td class="name">Avg of averages (s)</td><td id="avg">1,058</td></tr>
-	<tr><td class="name">Avg of 90 percentiles (s)</td><td id="avg_90_percentile">1,538</td></tr>
-	<tr><td class="name">Max of maxima (s)</td><td id="max">13,877</td></tr>
-	<tr><td class="name">Avg of StdDev (s)</td><td id="avg_stddev">0,512</td></tr>
-</table>
+    <table class="config">
+        <tr><td class="name">Transactions failed (%)</td><td id="transactions_failed">0,03</td></tr>
+        <tr><td class="name">Threshold violations</td><td id="threshold_violations">74</td></tr>
+        <tr><td class="name">Baseline warnings</td><td id="baseline_warnings">103</td></tr>
+        <tr style="display:none"><td class="name">Breaking point stress (%)</td><td id="trendbreak_scalability">63</td></tr>
+        <tr><td class="name">Breaking point stress (#virtual users)</td><td id="trendbreak_scalability_vusers">354</td></tr>
+        <tr><td class="name">Breaking point endurance (%)</td><td id="trendbreak_stability">90</td></tr>
+        <tr><td>&nbsp</td><td></td></tr>
+        <tr><td class="name">Duration</td><td id="duration">01:00:17</td></tr>
+        <tr><td class="name">Virtual users</td><td id="virtual_users">566</td></tr>
+        <tr><td class="name">Transactions executed</td><td id="executed">248980</td></tr>
+        <tr><td class="name">Transactions success</td><td id="success">248816</td></tr>
+        <tr><td class="name">Transactions failed</td><td id="failed">164</td></tr>
+        <tr><td class="name">Min of minima (s)</td><td id="min">0,000</td></tr>
+        <tr><td class="name">Avg of averages (s)</td><td id="avg">3,204</td></tr>
+        <tr><td class="name">Avg of 90 percentiles (s)</td><td id="avg_90_percentile">5,005</td></tr>
+        <tr><td class="name">Max of maxima (s)</td><td id="max">379,804</td></tr>
+        <tr><td class="name">Avg of StdDev (s)</td><td id="avg_stddev">2,080</td></tr>
+    </table>
 </td>
 	<td style="min-width: 600px; min-height: 400px"><canvas id="chart_counters"></canvas></td>
 	<td style="min-width: 600px; min-height: 400px"><canvas id="chart_trend"></canvas></td>
