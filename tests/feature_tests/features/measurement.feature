@@ -32,7 +32,7 @@ Feature: measurement
     Given an existing metric with type "performancetest_stability"
     And an existing source with type "performancetest_runner"
     When the collector measures "50"
-    Then the metric status is "near_target_met"
+    Then the metric status is "target_not_met"
 
   Scenario: the metric has a percentage scale and measures total 0
     Given an existing metric with type "performancetest_stability"
