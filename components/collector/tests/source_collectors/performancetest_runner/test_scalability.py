@@ -3,6 +3,21 @@
 from .base import PerformanceTestRunnerTestCase
 
 
+PERFORMANCETEST_RUNNER_HTML = """
+<html>
+    <table class="config">
+        <tr>
+            <td class="name">Breaking point stress (%%)</td>
+            <td id="trendbreak_scalability">%s</td></tr>
+        <tr>
+            <td class="name">Breaking point stress (#virtual users)</td>
+            <td id="trendbreak_scalability_vusers">%s</td>
+        </tr>
+    </table>
+</html>
+"""
+
+
 class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
     """Unit tests for the Performancetest-runner performance test scalability collector."""
 
@@ -10,21 +25,17 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
     METRIC_ADDITION = "min"
 
     async def test_scalability(self):
-        """Test that the percentage of the max users at which the ramp-up of throughput breaks is returned."""
-        html = """<html><table class="config">
-            <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">74</td></tr>
-            </table></html>"""
+        """Test that the number of virtual users at which the ramp-up of throughput breaks is returned."""
+        html = PERFORMANCETEST_RUNNER_HTML % (63, 354)
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="74")
+        self.assert_measurement(response, value="354", total="562")
 
     async def test_scalability_without_breaking_point(self):
         """Test the scalability without breaking point.
 
-        Test that if the percentage of the max users at which the ramp-up of throughput breaks is 100%, the metric
+        Test that if the number of virtual users at which the ramp-up of throughput breaks is missing, the metric
         does not report an error (despite there being no breaking point).
         """
-        html = """<html><table class="config">
-            <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
-            </table></html>"""
+        html = PERFORMANCETEST_RUNNER_HTML % (0, 0)
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="100")
+        self.assert_measurement(response, value="0", total="0")

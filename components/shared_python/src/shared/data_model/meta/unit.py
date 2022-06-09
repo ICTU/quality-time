@@ -32,7 +32,7 @@ class Unit(str, Enum):
     UNCOVERED_LINES = "uncovered lines"
     UNITS_WITH_TOO_MANY_PARAMETERS = "units with too many parameters"
     UPVOTES = "upvotes"
-    USERS = "users"
     USER_STORY_POINTS = "user story points"
     USER_STORY_POINTS_PER_SPRINT = "user story points per sprint"
     VIOLATIONS = "violations"
+    VIRTUAL_USERS = "virtual users"
