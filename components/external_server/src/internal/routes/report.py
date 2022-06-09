@@ -3,8 +3,8 @@
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import recent_measurements
+from shared.database.datamodels import latest_datamodel
 
 from internal.database.reports import latest_reports
 
