@@ -1,5 +1,1 @@
-text  # unused variable (src/model/issue_tracker.py:16)
-api  # unused variable (src/routes/plugins/auth_plugin.py:19)
-_.apply  # unused method (src/routes/plugins/auth_plugin.py:24)
-_.content_type  # unused attribute (src/routes/report.py:122)
-_.content_type  # unused attribute (src/routes/report.py:141)
+args  # unused variable (tests/quality_time_server_under_coverage.py:20)
