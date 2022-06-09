@@ -17,7 +17,6 @@ exclude_lines =
     if TYPE_CHECKING:
 omit =
     components/external_server/tests/quality_time_server_under_coverage.py
-    components/shared_python/*
 fail_under = 100
 skip_covered = True
 
