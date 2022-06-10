@@ -40,7 +40,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.collector = Collector()
         self.collector.data_model = self.data_model
         self.url = "https://url"
-        self.measurement_api_url = "http://localhost:5001/internal-api/v3/measurements"
+        self.measurement_api_url = "http://localhost:5002/api/measurements"
         self.metrics = dict(
             metric_uuid=dict(
                 report_uuid="report_uuid",
