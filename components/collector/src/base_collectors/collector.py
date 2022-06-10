@@ -53,9 +53,9 @@ class Collector:
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
-        self.server_url: Final[URL] = URL(
-            f"http://{os.environ.get('INTERNAL_SERVER_HOST', 'localhost')}:{os.environ.get('INTERNAL_SERVER_PORT', '5002')}"
-        )
+        internal_server_host = os.environ.get("INTERNAL_SERVER_HOST", "localhost")
+        internal_server_port = os.environ.get("INTERNAL_SERVER_PORT", "5002")
+        self.server_url: Final[URL] = URL(f"http://{internal_server_host}:{internal_server_port}")
         self.data_model: JSONDict = {}
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
