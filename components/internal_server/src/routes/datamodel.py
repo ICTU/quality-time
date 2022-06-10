@@ -6,7 +6,7 @@ from pymongo.database import Database
 from shared.routes import get_data_model as get_data_model_implementation
 
 
-@bottle.get("/internal-api/v3/datamodel", authentication_required=False)
+@bottle.get("/api/datamodel")
 def get_data_model(database: Database):
     """Return the data model."""
     return get_data_model_implementation(database)  # pragma: no cover

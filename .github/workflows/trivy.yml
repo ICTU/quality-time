@@ -32,6 +32,9 @@ jobs:
           - component: external_server
             build_path: components
             docker_file: external_server/Dockerfile
+          - component: internal_server
+            build_path: components
+            docker_file: internal_server/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

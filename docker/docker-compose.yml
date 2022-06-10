@@ -9,42 +9,42 @@ services:
     environment:
       - FRONTEND_HOST=${FRONTEND_HOST:-frontend}
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
-      - SERVER_HOST=${SERVER_HOST:-server}
-      - SERVER_PORT=${SERVER_PORT:-5001}
+      - EXTERNAL_SERVER_HOST=${EXTERNAL_SERVER_HOST:-external_server}
+      - EXTERNAL_SERVER_PORT=${EXTERNAL_SERVER_PORT:-5001}
     depends_on:
-      - server
+      - external_server
       - frontend
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
     depends_on:
-      - server
+      - internal_server
     cap_drop:
       - ALL
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_HOST=${SERVER_HOST:-server}
-      - SERVER_PORT=${SERVER_PORT:-5001}
+      - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
+      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
     depends_on:
-      - server
+      - internal_server
     cap_drop:
       - ALL
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_HOST=${SERVER_HOST:-server}
-      - SERVER_PORT=${SERVER_PORT:-5001}
+      - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
+      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
       - NOTIFIER_SLEEP_DURATION=60
     depends_on:
-      - server
+      - internal_server
     cap_drop:
       - ALL
-  server:
-    image: ictu/quality-time_server:${QUALITY_TIME_VERSION}
+  external_server:
+    image: ictu/quality-time_external_server:${QUALITY_TIME_VERSION}
     environment:
-      - SERVER_PORT=${SERVER_PORT:-5001}
+      - EXTERNAL_SERVER_PORT=${EXTERNAL_SERVER_PORT:-5001}
       - DATABASE_URL=mongodb://root:root@database:27017
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
@@ -54,6 +54,16 @@ services:
       - LOAD_EXAMPLE_REPORTS=True
       - FORWARD_AUTH_ENABLED=False
       - FORWARD_AUTH_HEADER=X-Forwarded-User
+    depends_on:
+      - database
+    cap_drop:
+      - ALL
+  internal_server:
+    image: ictu/quality-time_internal_server:${QUALITY_TIME_VERSION}
+    environment:
+      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
+      - DATABASE_URL=mongodb://root:root@database:27017
+      - LOAD_EXAMPLE_REPORTS=True
     depends_on:
       - database
     cap_drop:
