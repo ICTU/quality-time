@@ -18,7 +18,7 @@ deactivate
 cd ../..
 # We need to start a second external server for the renderer. We start it after the external server under coverage so
 # we can measure the coverage of the startup code, including the containers that depend on the external server.
-docker compose up --quiet-pull -d server renderer frontend www
+docker compose up --quiet-pull -d external_server renderer frontend www
 cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
