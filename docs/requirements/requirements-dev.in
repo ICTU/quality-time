@@ -1,4 +1,4 @@
--r ../../requirements/requirements-dev.in
+-r ../../requirements/dev.in
 furo==2022.4.7
 gitpython==3.1.27
 myst-parser==0.17.2
