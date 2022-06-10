@@ -12,7 +12,7 @@ def before_all(context):
 
     def api_url(api, internal=False):
         """Return the API URL."""
-        base_api_url = context.base_api_url.format("internal-" if internal else "")
+        base_api_url = context.internal_base_api_url if internal else context.base_api_url
         return f"{base_api_url}/{api}"
 
     def get(api, headers=None, internal=False):
@@ -38,7 +38,8 @@ def before_all(context):
         context.response = response = requests.delete(api_url(api), cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    context.base_api_url = "http://localhost:5001/{0}api/v3"
+    context.base_api_url = "http://localhost:5001/api/v3"
+    context.internal_base_api_url = "http://localhost:5002/api"
     context.session_id = None
     context.report_date = None
     context.response = None  # Most recent respone
