@@ -1,4 +1,4 @@
-external_server {
+server {
     add_header      Strict-Transport-Security "max-age=31536000;";
     add_header      X-XSS-Protection "1; mode=block";
     add_header      X-Content-Type-Options "nosniff";
