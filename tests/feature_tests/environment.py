@@ -12,7 +12,6 @@ def before_all(context):
 
     def api_url(api, internal=False):
         """Return the API URL."""
-
         base_api_url = context.internal_base_api_url if internal else context.base_api_url
         return f"{base_api_url}/{api}"
 
