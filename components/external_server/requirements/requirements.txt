@@ -8,9 +8,9 @@ bottle==0.12.21 \
     --hash=sha256:6e1c9817019dae3a8c20adacaf09035251798d2ae2fcc8ce43157ee72965f257 \
     --hash=sha256:787c61b6cc02b9c229bf2663011fac53dd8fc197f7f8ad2eeede29d888d7887e
     # via -r requirements/../../../requirements/bottle.in
-certifi==2021.10.8 \
-    --hash=sha256:78884e7c1d4b00ce3cea67b44566851c4343c120abd683433ce934a68ea58872 \
-    --hash=sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569
+certifi==2022.5.18.1 \
+    --hash=sha256:9c5705e395cd70084351dd8ad5c41e65655e08ce46f2ec9cf6c2c08390f71eb7 \
+    --hash=sha256:f1d53542ee8cbedbe2118b5686372fb33c297fcd6379b050cca0ef13a597382a
     # via requests
 cffi==1.15.0 \
     --hash=sha256:00c878c90cb53ccfaae6b8bc18ad05d2036553e6d9d1d9dbcf323bbe83854ca3 \
@@ -352,9 +352,9 @@ requests==2.27.1 \
     --hash=sha256:68d7c56fd5a8999887728ef304a6d12edc7be74f1cfa47714fc8b414525c9a61 \
     --hash=sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d
     # via -r requirements/requirements.in
-urllib3==1.26.8 \
-    --hash=sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed \
-    --hash=sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c
+urllib3==1.26.9 \
+    --hash=sha256:44ece4d53fb1706f667c9bd1c648f5469a2ec925fcf3a776667042d645472c14 \
+    --hash=sha256:aabaf16477806a5e1dd19aa41f8c2b7950dd3c746362d7e3223dbe6de6ac448e
     # via requests
 zope-event==4.5.0 \
     --hash=sha256:2666401939cdaa5f4e0c08cf7f20c9b21423b95e88f4675b1443973bdb080c42 \
@@ -415,9 +415,9 @@ zope-interface==5.4.0 \
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==62.3.2 \
-    --hash=sha256:68e45d17c9281ba25dc0104eadd2647172b3472d9e01f911efa57965e8d51a36 \
-    --hash=sha256:a43bdedf853c670e5fed28e5623403bad2f73cf02f9a2774e91def6bda8265a7
+setuptools==62.3.3 \
+    --hash=sha256:d1746e7fd520e83bbe210d02fff1aa1a425ad671c7a9da7d246ec2401a087198 \
+    --hash=sha256:e7d11f3db616cda0751372244c2ba798e8e56a28e096ec4529010b803485f3fe
     # via
     #   gevent
     #   zope-event
