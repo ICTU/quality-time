@@ -112,7 +112,7 @@ def set_entity_attribute(context, attribute, key, value):
 def connect_to_nr_of_measurements_stream(context, stream):
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
-    for message in SSEClient(f"{context.base_api_url.format('')}/nr_measurements"):  # pragma: no cover-behave
+    for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no cover-behave
         context.sse_messages.append(message)
         if stream == "stream":
             break

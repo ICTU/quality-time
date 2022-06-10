@@ -14,7 +14,15 @@ python3 -m venv venv
 . venv/bin/activate
 ci/pip-install.sh
 coverage erase
-RENDERER_HOST=localhost python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_server.log &
+RENDERER_HOST=localhost python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_external_server.log &
+deactivate
+cd ../..
+cd components/internal_server || exit
+python3 -m venv venv
+. venv/bin/activate
+ci/pip-install.sh
+coverage erase
+python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_internal_server.log &
 deactivate
 cd ../..
 # We need to start a second external server for the renderer. We start it after the external server under coverage so
