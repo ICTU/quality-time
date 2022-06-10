@@ -11,7 +11,7 @@ services:
     build: ../components/collector
   notifier:
     build: ../components/notifier
-  exterbal_server:
+  external_server:
     build:
       context: ../components
       dockerfile: external_server/Dockerfile
@@ -25,8 +25,6 @@ services:
       dockerfile: internal_server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
-    depends_on:
-      - ldap
   database:
     build: ../components/database
     ports:
