@@ -2,6 +2,6 @@
 -r ../../../requirements/lxml.in
 -r ../../../requirements/gevent.in
 -r ../../../requirements/pymongo.in
+-r ../../../requirements/requests.in
 ldap3==2.9.1
-requests==2.27.1
 cryptography==36.0.1
