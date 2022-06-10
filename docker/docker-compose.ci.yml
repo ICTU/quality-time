@@ -11,10 +11,18 @@ services:
     build: ../components/collector
   notifier:
     build: ../components/notifier
-  server:
+  exterbal_server:
     build:
       context: ../components
       dockerfile: external_server/Dockerfile
+    environment:
+      - LOAD_EXAMPLE_REPORTS=False
+    depends_on:
+      - ldap
+  internal_server:
+    build:
+      context: ../components
+      dockerfile: internal_server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:
