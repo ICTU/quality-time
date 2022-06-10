@@ -21,7 +21,7 @@ def serve() -> None:  # pragma: no cover-behave
     logging.getLogger().setLevel(logging.INFO)
     database = init_database()
     init_bottle(database)
-    server_port = os.environ.get("SERVER_PORT", "5001")
+    server_port = os.environ.get("SERVER_PORT", "5002")
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
