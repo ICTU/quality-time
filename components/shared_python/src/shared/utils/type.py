@@ -11,6 +11,7 @@ Scale = Literal["count", "percentage", "version_number"]
 Status = Literal["target_met", "debt_target_met", "near_target_met", "target_not_met"]
 TargetType = Literal["target", "near_target", "debt_target"]
 SessionId = NewType("SessionId", str)
+NotificationDestinationId = NewType("NotificationDestinationId", str)
 
 
 ReportId = NewType("ReportId", str)

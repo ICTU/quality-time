@@ -24,9 +24,14 @@ additional-dependency-files:
     path: components/external_server/requirements/requirements-dev.in
 
   - type: pip-requirements-txt
-    path: components/shared_python/requirements/requirements-base.in
+    path: components/internal_server/requirements/requirements-base.in
   - type: pip-requirements-txt
-    path: components/shared_python/requirements/requirements.in
+    path: components/internal_server/requirements/requirements.in
+  - type: pip-requirements-txt
+    path: components/internal_server/requirements/requirements-dev.in
+
+  - type: pip-requirements-txt
+    path: components/shared_python/requirements/requirements-base.in
   - type: pip-requirements-txt
     path: components/shared_python/requirements/requirements-dev.in
 

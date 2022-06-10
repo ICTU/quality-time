@@ -5,11 +5,10 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.database.reports import insert_new_report
-from shared.utils.type import ReportId
+from shared.utils.type import ReportId, NotificationDestinationId
 
 from database.reports import latest_report
 from utils.functions import uuid
-from utils.type import NotificationDestinationId
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
