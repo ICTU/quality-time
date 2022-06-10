@@ -1,4 +1,3 @@
 -r ../../../requirements/bottle.in
--r ../../../requirements/lxml.in
-gevent==21.12.0
-pymongo==4.1.1
+-r ../../../requirements/gevent.in
+-r ../../../requirements/pymongo.in

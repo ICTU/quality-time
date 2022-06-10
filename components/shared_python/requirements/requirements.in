@@ -1,4 +1,5 @@
 -r ../../../requirements/bottle.in
+-r ../../../requirements/pymongo.in
 packaging==21.3
-pymongo==4.1.1
 cryptography==36.0.1
+pydantic==1.9.1
