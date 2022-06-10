@@ -18,12 +18,11 @@ async def notify(log_level: int = None) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
     sleep_duration = int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60))
-    api_version = "v3"
     reports_url = (
-        f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
-        f"{os.environ.get('SERVER_PORT', '5001')}/internal-api/{api_version}/report"
+        f"http://{os.environ.get('INTERNAL_SERVER_HOST', 'localhost')}:"
+        f"{os.environ.get('INTERNAL_SERVER_PORT', '5002')}/api/report"
     )
-    data_model = await retrieve_data_model(api_version, sleep_duration)
+    data_model = await retrieve_data_model(sleep_duration)
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
     notification_finder = NotificationFinder(data_model)
     while True:
@@ -43,10 +42,10 @@ async def notify(log_level: int = None) -> NoReturn:
         await asyncio.sleep(sleep_duration)
 
 
-async def retrieve_data_model(api_version: str, sleep_duration: int) -> JSON:
+async def retrieve_data_model(sleep_duration: int) -> JSON:
     """Retrieve data model from server."""
     async with aiohttp.ClientSession(raise_for_status=True, trust_env=True) as session:
-        return await fetch_data_model(session, sleep_duration, api_version)
+        return await fetch_data_model(session, sleep_duration)
 
 
 def record_health(filename: str = "/home/notifier/health_check.txt") -> None:
@@ -69,16 +68,16 @@ def most_recent_measurement_timestamp(json) -> datetime:
     return most_recent
 
 
-async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int, api_version: str) -> JSON:
+async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
     """Fetch the data model."""
     # The first attempt is likely to fail because the collector starts up faster than the server,
     # so don't log tracebacks on the first attempt
     server_url: Final[URL] = URL(
-        f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
+        f"http://{os.environ.get('INTERNAL_SERVER_HOST', 'localhost')}:{os.environ.get('INTERNAL_SERVER_PORT', '5002')}"
     )
 
     first_attempt = True
-    data_model_url = URL(f"{server_url}/internal-api/{api_version}/datamodel")
+    data_model_url = URL(f"{server_url}/api/datamodel")
     while True:
         record_health()
         logging.info("Loading data model from %s...", data_model_url)
