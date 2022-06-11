@@ -10,24 +10,27 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
    :class: only-light
 ```
 
-*Quality-time* consists of seven components.
+*Quality-time* consists of eight Docker components, as depicted above.
 
-Four bespoke components:
+There are five bespoke components:
 
-- A [frontend](#frontend) serving the React UI,
-- A [server](#server) serving the API,
-- A [collector](#collector) to collect the measurements from the sources,
-- A [notifier](#notifier) to notify users about events such as metrics turning red.
+- A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Semantic UI React](https://react.semantic-ui.com).
+- An [external server](#external-server) serving the API for the user interface. The external server is written in Python using [Bottle](https://bottlepy.org) as web framework.
+- An [internal server](#internal-server) serving the API for the internal components. The internal server is written in Python using Bottle as web framework.
+- A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [aiohttp](https://docs.aiohttp.org) as HTTP client library.
+- A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-And three standard components:
+Source code that is shared between the Python components lives in the [shared python](#shared-python) component. This is not a run-time component. The code is shared at build time, when the Docker images are created.
 
-- A [proxy](#proxy) routing traffic from and to the user's browser,
-- A [database](#database) for storing reports and measurements,
-- A [renderer](#renderer) to export reports to PDF.
+The three standard components are:
+
+- A [proxy](#proxy), routing traffic from and to the user's browser. The proxy is based on [Nginx](https://nginx.org).
+- A [database](#database), for storing reports and measurements. The database is based on [MongoDB](https://www.mongodb.com).
+- A [renderer](#renderer), to export reports to PDF. The renderer is based on [Puppeteer](https://pptr.dev).
 
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
-For testing purposes there are also [test data](#test-data) and an [test LDAP server](#test-ldap-server).
+For testing purposes there are also [test data](#test-data) and a [test LDAP server](#test-ldap-server).
 
 ## Frontend
 
@@ -45,22 +48,99 @@ The frontend uses the following environment variables:
 | :--- | :------------ | :---------- |
 | FRONTEND_PORT | 5000 | The port the frontend listens on. |
 
-## Server
-
-### Example reports
-
-The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/external_server/src/external/example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the [section on configuration](#configuration) below.
+## External server
 
 ```{index} API
 ```
 
 ### API
 
-API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v2 (all routes for a specific version, in this case version 2), and http://www.quality-time.example.org/api/v2/<route_fragment> (all routes matching a specific text fragment).
+API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v3 (all routes for a specific version, in this case version 3), and http://www.quality-time.example.org/api/v3/<route_fragment> (all routes matching a specific text fragment).
+
+### Health check
+
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
+
+### Configuration
+
+The external server uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| EXTERNAL_SERVER_PORT | 5001 | Port of the external server. |
+| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
+| LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
+| LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name. |
+| LDAP_LOOKUP_USER_DN | cn=admin,dc=example,dc=org | LDAP lookup user distinguished name. |
+| LDAP_LOOKUP_USER_PASSWORD | admin | LDAP lookup user password. |
+| LDAP_SEARCH_FILTER | (&#124;(uid=$$username)(cn=$$username)) | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
+| FORWARD_AUTH_ENABLED | False | Whether or not to enable forward authentication. |
+| FORWARD_AUTH_HEADER | X-Forwarded-User | Header to use for getting the username if forward authentication is turned on. |
+
+## Internal server
+
+### Health check
+
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
+
+### Configuration
+
+The internal server uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| INTERNAL_SERVER_PORT | 5001 | Port of the internal server. |
+| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
+| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
+
+## Collector
+
+The collector is responsible for collecting measurement data from sources. It wakes up once every minute and asks the server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the server.
+
+If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
+
+### Health check
+
+Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
+
+### Configuration
+
+The collector uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| INTERNAL_SERVER_HOST | internal_server | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
+| INTERNAL_SERVER_PORT | 5002 | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
+| COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
+| COLLECTOR_MEASUREMENT_LIMIT | 30 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
+| COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |
+
+## Notifier
+
+The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether whether notification destinations have been configured, and whether events happened that need to be notified.
+
+### Health check
+
+Every time the notifier wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
+
+### Configuration
+
+The notifier uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| INTERNAL_SERVER_HOST | internal_server | Hostname of the internal server. The notifier uses this to get the metrics. |
+| INTERNAL_SERVER_PORT | 5002 | Port of the internal server. The notifier uses this to get the metrics. |
+| NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+
+## Shared python
+
+The [shared python component](https://github.com/ICTU/quality-time/tree/master/components/shared_python) contains code and resources shared between the servers and the collector and notifier components. This includes the [data model](#data-model), the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
 
 ### Data model
 
-The data model package describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. On server start up, it checks whether the data model has changed, and if so, imports it into the database.
+The data model package describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. When a server component starts up, it checks whether the data model has changed, and if so, imports it into the database.
 
 The data model package consists of a meta model and the data model itself. The data model consists of four major parts:
 
@@ -244,70 +324,9 @@ The `name` is the default name of the subject. The `description` describes the s
 
 The list of `metrics` contains the metrics that make the most sense for the subject type, and is used for filtering the list of metrics in the dropdown menu of the buttons for moving and copying metrics.
 
-### Database collections
+### Example reports
 
-*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
-
-The server component is the only component that directly interacts with the database. The server [`database` package](https://github.com/ICTU/quality-time/tree/master/components/external_server/src/external/database) contains the code for interacting with the collections.
-
-Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time.
-
-### Health check
-
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
-
-### Configuration
-
-The server uses the following environment variables:
-
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| SERVER_PORT | 5001 | Port of the server. |
-| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
-| LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
-| LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name. |
-| LDAP_LOOKUP_USER_DN | cn=admin,dc=example,dc=org | LDAP lookup user distinguished name. |
-| LDAP_LOOKUP_USER_PASSWORD | admin | LDAP lookup user password. |
-| LDAP_SEARCH_FILTER | (&#124;(uid=$$username)(cn=$$username)) | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
-| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
-
-## Collector
-
-The collector is responsible for collecting measurement data from sources. It wakes up once every minute and asks the server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the server.
-
-If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
-
-### Health check
-
-Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
-
-### Configuration
-
-The collector uses the following environment variables:
-
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| SERVER_HOST | server | Hostname of the server. The collector uses this to get the metrics and post the measurements. |
-| SERVER_PORT | 5001 | Port of the server. The collector uses this to get the metrics and post the measurements. |
-| COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
-| COLLECTOR_MEASUREMENT_LIMIT | 30 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
-| COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |
-
-## Notifier
-
-The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether whether notification destinations have been configured, and whether events happened that need to be notified.
-
-### Health check
-
-Every time the notifier wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
-
-### Configuration
-
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| SERVER_HOST | server | Hostname of the server. The notifier uses this to get the metrics. |
-| SERVER_PORT | 5001 | Port of the server. The notifier uses this to get the metrics. |
-| NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
 
 ## Proxy
 
@@ -315,11 +334,37 @@ The proxy routes traffic from and to the user's browser. *Quality-time* uses [Ng
 
 The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the *Quality-time* configuration to the Nginx image.
 
+### Configuration
+
+The proxy uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| FRONTEND_HOST | frontend | The host name of the frontend. |
+| FRONTEND_PORT | 5000 | The port the frontend listens on. |
+| EXTERNAL_SERVER_HOST | external_server | The hostname of the external server. |
+| EXTERNAL_SERVER_PORT | 5001 | The port the external server listens on. |
+
 ## Database
 
 The database component consists of a [Mongo](https://www.mongodb.com) database to store reports and measurements.
 
 The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) simply wraps the MongoDB image in a *Quality-time* image so the MongoDB version number can be changed when needed.
+
+*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
+
+The two server components are the only components that directly interacts with the database.
+
+Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the external server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
+
+### Configuration
+
+The database uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :------------ | :---------- |
+| MONGO_INITDB_ROOT_USERNAME | root | The MongoDB root username. |
+| MONGO_INITDB_ROOT_PASSWORD | root | The MongoDB root password. |
 
 ## Renderer
 
