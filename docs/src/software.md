@@ -40,7 +40,7 @@ The frontend contains the React frontend code. This component was bootstrapped u
 
 As a health check, the favicon is downloaded.
 
-### Configuration
+### Environment variables
 
 The frontend uses the following environment variables:
 
@@ -61,7 +61,7 @@ API documentation can be retrieved via http://www.quality-time.example.org/api (
 
 The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
 
-### Configuration
+### Environment variables
 
 The external server uses the following environment variables:
 
@@ -84,7 +84,7 @@ The external server uses the following environment variables:
 
 The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
 
-### Configuration
+### Environment variables
 
 The internal server uses the following environment variables:
 
@@ -96,15 +96,17 @@ The internal server uses the following environment variables:
 
 ## Collector
 
-The collector is responsible for collecting measurement data from sources. It wakes up once every minute and asks the server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the server.
+The collector is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the internal server.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
+
+By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes and sleeps 60 seconds in between measurements. This can be changed using the environment variables listed below.
 
 ### Health check
 
 Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
 
-### Configuration
+### Environment variables
 
 The collector uses the following environment variables:
 
@@ -115,6 +117,11 @@ The collector uses the following environment variables:
 | COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
 | COLLECTOR_MEASUREMENT_LIMIT | 30 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
 | COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |
+| HTTP(S)_PROXY | | Proxy to use by the collector. |
+
+```{seealso}
+See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
+```
 
 ## Notifier
 
@@ -124,7 +131,7 @@ The notifier is responsible for notifying users about significant events, such a
 
 Every time the notifier wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
 
-### Configuration
+### Environment variables
 
 The notifier uses the following environment variables:
 
@@ -334,7 +341,7 @@ The proxy routes traffic from and to the user's browser. *Quality-time* uses [Ng
 
 The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the *Quality-time* configuration to the Nginx image.
 
-### Configuration
+### Environment variables
 
 The proxy uses the following environment variables:
 
@@ -357,7 +364,7 @@ The two server components are the only components that directly interacts with t
 
 Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the external server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
 
-### Configuration
+### Environment variables
 
 The database uses the following environment variables:
 
@@ -376,7 +383,7 @@ The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/compo
 
 The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the renderer API server.
 
-### Configuration
+### Environment variables
 
 The renderer uses the following environment variables:
 
