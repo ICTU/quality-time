@@ -1,19 +1,25 @@
 # Deployment instructions
 
-Quality-time consists of a set of containers that together form the application: a proxy that routes incoming traffic to either the frontend container to serve the React frontend and static resources or to the server container that serves the REST API. The database container runs a Mongo database server. The renderer containers is responsible for converting reports to PDF. The collector container collects the measurement data for the metrics. Finally, the notifier container notifies users of significant events, like metrics turning red.
+This document describes how to deploy, and if needed move, the *Quality-time* application. It is aimed at *Quality-time* operators.
 
-In addition, *Quality-time* assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
+*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a docker-composition.
+
+*Quality-time* furthermore assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
 
 ## Docker-composition
 
 This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repo contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
 
-## Configuring LDAP
+## Configuring authentication (mandatory)
 
-To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+You need to either configure an LDAP server to authenticatie users with or configure forwarded authentication.
+
+### LDAP
+
+To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
-  server:
+  external_server:
     environment:
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
@@ -31,12 +37,12 @@ See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more in
 ```{index} Forwarded Authentication
 ```
 
-## Configuring Forwarded Authentication
+### Forwarded authentication
 
-To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
-  server:
+  external_server:
     environment:
       - FORWARD_AUTH_ENABLED=True
       - FORWARD_AUTH_HEADER=X-Forwarded-User
@@ -46,91 +52,73 @@ To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWA
 Only enable Forwarded Authentication if *Quality-time* is setup behind a reverse proxy that is responsible for authentication and direct access to *Quality-time* is not possible.
 ```
 
-## Settings per component
+## Configuring hostnames and ports (optional)
 
-### Proxy
+The hostnames and ports of the different containers can be configured via environment variables. See the [software documentation](software.md) for an overview of the available hostname and port environment variables per component.
 
-External traffic is routed by a {index}`Caddy` reverse proxy (container name: www) to either the frontend container or the server container. The proxy listens on port 80. You can override the Caddy configuration in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) if so desired.
+## Configuring example reports (optional)
 
-### Frontend
-
-The React UI is served by the frontend container, which runs at port 5000 by default. The Caddy reverse proxy routes external traffic that is not meant for the API to the frontend container. To configure the frontend container port, set the `FRONTEND_PORT` environment variable. Add the `FRONTEND_PORT` environment variable to both the proxy (www) and the frontend service:
+By default, the server components will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for both the external and the internal server:
 
 ```yaml
-  www:
+  external_server:
     environment:
-      - FRONTEND_PORT=6000
-  frontend:
+      - LOAD_EXAMPLE_REPORTS=False
+  internal_server:
     environment:
-      - FRONTEND_PORT=6000
+      - LOAD_EXAMPLE_REPORTS=False
 ```
 
-### Server
+## Configuring measurement frequency (optional)
 
-The {index}`API` is accessible at the server container, running at port 5001 by default. The Caddy reverse proxy routes URLs that start with /api to the server. To configure the server container port, set the `SERVER_PORT` environment variable. Add the `SERVER_PORT` environment variable to the server, the collector, and the notifier services:
+The collector component is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the internal server.
 
-```yaml
-  server:
-    environment:
-      - SERVER_PORT=6001
-  collector:
-    environment:
-      - SERVER_PORT=6001
-  notifier:
-    environment:
-      - SERVER_PORT=6001
-```
+If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 
-### Collector
-
-The collector contacts the server to see whether there are metrics that need to be measured and uses the server API to store the new measurements in the database. By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes and sleeps 60 seconds in between measurements.
-
-To configure the sleep duration and the measurement frequency, set the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables. Both variables have seconds as unit. Add the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables to the collector service:
+By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes, sleeps 60 seconds in between measurements, and measures at most 30 metrics every time it wakes up. The defaults can be changed as follows:
 
 ```yaml
   collector:
     environment:
-      - COLLECTOR_SLEEP_DURATION=30
-      - COLLECTOR_MEASUREMENT_FREQUENCY=600
+      - COLLECTOR_SLEEP_DURATION=10  # Wake up every 10 seconds
+      - COLLECTOR_MEASUREMENT_LIMIT=25  # Measure at most 25 metrics on every wake up
+      - COLLECTOR_MEASUREMENT_FREQUENCY=600  # Measure metrics at least every 10 minutes
 ```
 
-To optionally configure a proxy for the collector to use, set the `HTTP_PROXY` or `HTTPS_PROXY` environment variable, for example:
+## Configuring notification frequency (optional)
 
-```yaml
-  collector:
-    environment:
-      - HTTP_PROXY="http://proxy.com"
-```
+The notifier component is responsible for notifying users via MS Teams about changed metric statuses. It wakes up periodically and asks the internal server fo a list of all metrics. For each metric, the notifier decides whether a notification is possible and needed.
 
-```{seealso}
-See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
-```
-
-### Notifier
-
-The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether whether notification destinations have been configured, and whether events happened that users need to be notified of.
-
-To configure the sleep duration, set the `NOTIFIER_SLEEP_DURATION` environment variable. The variable has seconds as unit. Add the `NOTIFIER_SLEEP_DURATION` environment variable to the notifier service:
+By default, the notifier wakes up every minute to check for changed metric statuses. This frequency can be changed as follows:
 
 ```yaml
   notifier:
     environment:
-      - NOTIFIER_SLEEP_DURATION=60
+      - NOTIFIER_SLEEP_DURATION=120  # Check for notifications every two minutes
 ```
 
-### Renderer
+## Configuring MongoDB credentials (optional)
 
-The renderer converts *Quality-time* reports into PDFs.
+The default MongoDB credentials can be changed as follows:
 
-The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezone) environment variables, for example:
+```yaml
+  database:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+```
+
+See the [documentation on the MongoDB image](https://hub.docker.com/_/mongo) for more information.
+
+## Configuring renderer localisation (optional)
+
+The date/time format and timezone of the reports that user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDF's, the renderer can be configured as follows:
 
 ```yaml
   renderer:
     environment:
-      - PROXY_HOST=${PROXY_HOST:-www}
-      - PROXY_PORT=${PROXY_PORT:-80}
-      - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
-      - TZ=Europe/Amsterdam  # Set the timezone to CET
+      - LC_ALL=en_GB.UTF-8  # To get European dates (DD-MM-YYYY)
+      - TZ=Europe/Amsterdam  # To get Central European Time
 ```
 
 ## Moving *Quality-time*
