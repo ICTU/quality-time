@@ -8,7 +8,7 @@ from ..parameters import access_parameters, Severities
 SNYK = Source(
     name="Snyk",
     description="Snyk vulnerability report in JSON format.",
-    url="https://docs.snyk.io/products/snyk-code/cli-for-snyk-code/advanced-snyk-code-cli-usage",
+    url="https://docs.snyk.io/products/snyk-code/cli-for-snyk-code/working-with-the-snyk-code-cli-results",
     parameters=dict(
         severities=Severities(values=["low", "medium", "high"]),
         **access_parameters(["security_warnings"], source_type="Snyk vulnerability report", source_type_format="JSON")

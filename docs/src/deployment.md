@@ -138,5 +138,5 @@ The `<hostname or ip>` is the hostname or IP address of the Swarm manager in cas
 As the dump is stored in a temporary container, the dump will disappear as soon as the container is removed. To keep the dump around, map a folder (`-v`) in the `mongo` container.
 
 ```{seealso}
-See [Back Up and Restore with MongoDB Tools](https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
+See [Back Up and Restore with MongoDB Tools](https://docs.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
 ```
