@@ -14,6 +14,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes.
 
+This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the docker composition needs to be changed:
+
+- Rename the `server` service to `external_server`.
+  - Use the image `ictu/quality-time_external_server`.
+  - If used, rename the `SERVER_PORT` environment variable to `EXTERNAL_SERVER_PORT`.
+- Add an `internal_server` section.
+  - Use the image `ictu/quality-time_internal_server`.
+  - If you want to change the default port (5002) of the internal server, add an `INTERNAL_SERVER_PORT` environment variable.
+  - Add the same `DATABASE_URL` environment variable as the external server has.
+  - Set the `LOAD_EXAMPLE_REPORTS` environment variable to the same value as the external server has (True or False).
+  - Add a `depends_on: database`.
+- In the `www` (proxy) section:
+  - Change `SERVER_HOST` and `SERVER_PORT` (if used) to `EXTERNAL_SERVER_HOST` and `EXTERNAL_SERVER_PORT`.
+  - Change the `depends_on: server` to `depends_on: external_server`.
+- In the `frontend` section:
+  - Change the `depends_on: server` to `depends_on: external_server`.
+- In the `collector` section:
+  - Change `SERVER_HOST` and `SERVER_PORT` (if used) to `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT`.
+  - Change the `depends_on: server` to `depends_on: internal_server`.
+- In the `notifier` section:
+  - Change `SERVER_HOST` and `SERVER_PORT` (if used) to `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT`.
+  - Change the `depends_on: server` to `depends_on: internal_server`.
+- Update the version number of all images to `v4.0.0`.
+
+See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) for an overview of all images.
+
+See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/deployment.html) for other configuration options.
+
 ### Added
 
 - The [Performancetest-runner](https://github.com/ICTU/performancetest-runner) HTML report now reports the breaking point as the absolute number of virtual users as well as percentage of the maximum number of virtual users. This allows the 'scalability' metric to support the count scale in addition to the already supported percentage scale. Closes [#3980](https://github.com/ICTU/quality-time/issues/3980).
