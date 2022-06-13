@@ -28,7 +28,7 @@ cd quality-time
 
 #### Start standard components
 
-Open a terminal and start the standard containers with docker-compose:
+Open a terminal and start the standard containers with docker compose:
 
 ```console
 docker compose up database ldap phpldapadmin mongo-express testdata
@@ -43,9 +43,9 @@ There are two users defined in the LDAP database:
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
 
-#### Start the {index}`server <Server component>`
+#### Start the {index}`external server <External server component>`
 
-Open another terminal and run the server:
+Open another terminal and run the external server:
 
 ```console
 cd components/external_server
@@ -55,12 +55,12 @@ ci/pip-install.sh
 python src/quality_time_server.py
 ```
 
-The API of the server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/v3/reports](http://localhost:5001/api/v3/reports) to get the available reports combined with their recent measurements.
+The API of the external server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/v3/report](http://localhost:5001/api/v3/report) to get the available reports combined with their recent measurements.
 
 ```{note}
 If you're new to Python virtual environments, note that:
 - Creating a virtual environment (`python3 -m venv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
-- Activating the virtual environment (`. venv/bin/activate`) has to be done everytime you open a new shell and want to use the Python installed in the virtual environment.
+- Activating the virtual environment (`. venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
 - Installing the requirements (`ci/pip-install.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
 ```
 
@@ -68,6 +68,20 @@ If you're new to Python virtual environments, note that:
 - See the [Python docs](https://docs.python.org/3/library/venv.html) for more information on creating virtual environments.
 - See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python vertual environments when changing directories.
 ```
+
+#### Start the {index}`internal server <Internal server component>`
+
+Open another terminal and run the internal server:
+
+```console
+cd components/internal_server
+python3 -m venv venv
+. venv/bin/activate  # on Windows: venv\Scripts\activate
+ci/pip-install.sh
+python src/quality_time_server.py
+```
+
+The API of the internal server is served at [http://localhost:5002](http://localhost:5002), e.g. access [http://localhost:5001/api/metrics](http://localhost:5001/api/metrics) to get the list of metrics.
 
 #### Start the {index}`collector <Collector component>`
 
@@ -127,21 +141,21 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 ### Adding metrics and sources
 
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed. And, in the case of new sources, a logo needs to be added to the [server](software.md#server) component.
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed.
 
 #### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [server](software.md#server) component for a description of the data model. Be sure to run the unit tests of the server component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared python](software.md#shared-python) component for a description of the data model. Be sure to run the unit tests of the shared python component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 #### Adding new sources
 
-To add support for a new source, the source needs to be added to the data model, code to retrieve and parse the source data needs to be added to the collector component, including unit tests and quality checks of course, and a logo should be added to the server component.
+To add support for a new source, the source (including a logo) needs to be added to the data model, code to retrieve and parse the source data needs to be added to the collector component, including unit tests and quality checks of course.
 
 ##### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [server](software.md#server) component for a description of the data model. Be sure to run the unit tests of the server component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared python](software.md#shared-python) component for a description of the data model. Be sure to run the unit tests of the shared python component after adding a source to the data model, to check the integrity of the data model.
 
-Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/data/sources/`:
+Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/shared/data_model/sources/`:
 
 ```python
 """Cloc source."""
@@ -171,10 +185,13 @@ To reduce duplication, `SourceCollector` has several abstract subclasses. The cl
 
 - `SourceCollector`
   - `UnmergedBranchesSourceCollector`: for sources that collect data for the number of unmerged branches metric
+  - `TimeCollector`: for sources that collect time since or until a certain moment in time
+    - `TimePassedCollector`: for source-up-to-dateness
+      - `JenkinsPluginSourceUpToDatenessCollector`: for getting the source-up-to-dateness from Jenkins plugins
+    - `TimeRemainingCollector`: for sources that time remaining until a future date
+  - `SourceVersionCollector`: for sources that report version numbers
+  - `SlowTransactionsCollector`: for sources that report slow performance transactions
   - `JenkinsPluginCollector`: for sources that collect their data from Jenkins plugins
-  - `SourceUpToDatenessCollector`: for sources that support the source-up-to-dateness metric
-    - `JenkinsPluginSourceUpToDatenessCollector`: for getting the source-up-to-dateness from Jenkins plugins
-  - `LocalSourceCollector`: for sources that are local to the collector like fixed numbers and date/times
   - `FileSourceCollector`: for sources that parse files
     - `CSVFileSourceCollector`: for sources that parse CSV files
     - `HTMLFileSourceCollector`: for sources that parse HTML files
@@ -202,7 +219,7 @@ class ClocLOC(JSONFileSourceCollector):
         return SourceMeasurement(value=str(loc))
 ```
 
-Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
+Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with APIs and while parsing the data they have to take parameters into account. See the collector source code for more examples.
 
 ###### Writing and running unit tests
 
@@ -276,7 +293,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/external_server  # or components/collector, or components/notifier
+cd components/external_server  # or components/internal_server, components/shared_python, components/collector, components/notifier
 ci/unittest.sh
 ```
 
@@ -292,19 +309,25 @@ npm run test
 To run mypy, pylint, and some other security and quality checks on the backend components:
 
 ```console
-cd components/external_server  # or components/collector, or components/notifier
+cd components/external_server  # or components/internal_server, components/shared_python, components/collector, components/notifier
 ci/quality.sh
 ```
 
 ### Feature tests
 
-The feature tests currently test all features through the server API. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will start all the necessary components, run the tests, and gather coverage information:
+The feature tests currently test all features through the APIs of the external and internal servers. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
 
 ```console
 tests/feature_tests/ci/test.sh
 ```
 
 The `test.sh` shell script will start a server under coverage and then run the [feature tests](https://github.com/ICTU/quality-time/tree/master/tests/feature_tests).
+
+It's also possible to run a subset of the feature tests by passing the feature file as argument:
+
+```console
+tests/feature_tests/ci/test.sh tests/feature_tests/features/metric.feature
+```
 
 ### Application tests
 
@@ -404,7 +427,7 @@ python release.py <bump>  # Where bump is major, minor, patch, rc-major, rc-mino
 
 If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub. The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time).
 
-The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
+The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_external server`, `quality-time_internal_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
 
 ## Maintenance
 
@@ -412,12 +435,13 @@ Keeping dependencies up-to-date is an important aspect of software maintenance. 
 
 Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
 
-- [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the MongoDB base image.
+- [External server](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile): the Python base image.
+- [Internal server](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile): the Python base image.
 - [Collector](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile): the Python base image.
-- [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
-- [LDAP](https://github.com/ICTU/quality-time/blob/master/components/ldap/Dockerfile): the OpenLDAP base image.
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
-- [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Caddy base image.
-- [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image and the curl version.
-- [Server](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile): the Python base image.
+- [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
+- [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the MongoDB base image.
+- [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
+- [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
+- [LDAP](https://github.com/ICTU/quality-time/blob/master/components/ldap/Dockerfile): the OpenLDAP base image.
 - [Testdata](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
