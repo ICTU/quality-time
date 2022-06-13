@@ -19,7 +19,7 @@ services:
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
     depends_on:
-      - internal_server
+      - external_server
     cap_drop:
       - ALL
   collector:
