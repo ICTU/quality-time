@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r /requirements-internal.txt
 FROM python:3.10.5-bullseye
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
-LABEL description="Quality-time server"
+LABEL description="Quality-time external server"
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends curl=7.74\* && \
@@ -26,7 +26,7 @@ RUN useradd --create-home server
 WORKDIR /home/server
 USER server
 
-HEALTHCHECK CMD curl -f http://localhost:${SERVER_PORT:-5001}/api/health || exit 1
+HEALTHCHECK CMD curl -f http://localhost:${EXTERNAL_SERVER_PORT:-5001}/api/health || exit 1
 
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY external_server/src /home/server
