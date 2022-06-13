@@ -22,7 +22,7 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
         return null;
     }
     const style = ignoredEntity ? { textDecoration: "line-through" } : {};
-    var statusClassName = "unknown_status";
+    let statusClassName = "unknown_status";
     for (let entity_attribute of entity_attributes) {
         let cell_contents = entity[entity_attribute.key];
         if (entity_attribute.color && entity_attribute.color[cell_contents]) {

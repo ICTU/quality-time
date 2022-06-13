@@ -200,7 +200,7 @@ export function ReorderButtonGroup(props) {
 function ActionAndItemPickerButton({ action, item_type, onChange, get_options, icon }) {
     const [options, setOptions] = useState([]);
 
-    var breadcrumb_props = { report: "report" };
+    const breadcrumb_props = { report: "report" };
     if (item_type !== 'report') {
         breadcrumb_props.subject = 'subject';
         if (item_type !== 'subject') {

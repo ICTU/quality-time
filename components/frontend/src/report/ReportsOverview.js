@@ -12,7 +12,7 @@ import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 
 function ReportsDashboard({ reports, open_report, layout, reload }) {
-    var tag_counts = {};
+    const tag_counts = {};
     reports.forEach((report) => {
         Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
             if (!Object.keys(tag_counts).includes(tag)) {

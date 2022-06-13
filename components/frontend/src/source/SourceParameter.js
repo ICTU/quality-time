@@ -81,7 +81,7 @@ export function SourceParameter({
         });
         return Array.from(values);
     }
-    var label = parameter_name;
+    let label = parameter_name;
     if (help_url) {
         label = <label>{parameter_name} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
     }
