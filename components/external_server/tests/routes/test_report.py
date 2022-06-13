@@ -45,7 +45,10 @@ class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
                     scales=["count", "percentage"],
                 )
             ),
-            sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
+            sources=dict(
+                source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}}),
+                jira=dict(name="Jira", parameters={"url": {"type": "not a password"}}),
+            ),
         )
         self.report = Report(self.database.datamodels.find_one(), create_report())
         self.database.reports.find.return_value = [self.report]
