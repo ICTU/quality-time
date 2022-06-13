@@ -416,7 +416,7 @@ python3 -m http.server
 
 ### Adding test data
 
-Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/external_server/src/example-reports) in the server component.
+Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) in the shared python component.
 
 ### Acknowledgements
 

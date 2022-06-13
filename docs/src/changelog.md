@@ -490,7 +490,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to pdf. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
-- Add no-cache config for /api/v3/logo to the [Caddy config](https://github.com/ICTU/quality-time/blob/master/components/proxy/Caddyfile).
+- Add no-cache config for /api/v3/logo to the Caddy config.
 
 ### Fixed
 
@@ -607,8 +607,8 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment instructions](deployment.md#configuring-forwarded-authentication).
-- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment instructions](deployment.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment instructions](deployment.md#forwarded-authentication).
+- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment instructions](deployment.md). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## v3.9.0 - 2020-10-11
 
@@ -1174,7 +1174,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [deployment instructions](deployment.md#configuring-ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774).
+- More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [deployment instructions](deployment.md#ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774).
 - Logo for Axe. Closes [#778](https://github.com/ICTU/quality-time/issues/778).
 
 ## v0.16.1 - 2019-11-07
