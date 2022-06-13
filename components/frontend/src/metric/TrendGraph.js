@@ -84,7 +84,7 @@ export function TrendGraph({ metric, measurements }) {
         }
     });
     const rgb = { green: "rgb(30,148,78,0.7)", yellow: "rgb(253,197,54,0.7)", grey: "rgb(150,150,150,0.7)", red: "rgb(211,59,55,0.7)" };
-    var background_data = [];
+    const background_data = [];
     ["<", ">"].forEach((direction) => {
         if (areas[direction].green.length > 0) {
             colors[direction].forEach((color) => background_data.push(

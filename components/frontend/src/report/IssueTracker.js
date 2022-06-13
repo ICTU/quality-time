@@ -36,7 +36,7 @@ export function IssueTracker({ report, reload }) {
         }
     );
     trackerSources.push(NONE_OPTION)
-    var privateTokenLabel = "Private token";
+    let privateTokenLabel = "Private token";
     if (report.issue_tracker) {
         const help_url = dataModel.sources[report.issue_tracker?.type]?.parameters?.private_token?.help_url;
         if (help_url) {

@@ -71,7 +71,7 @@ export function pluralize(word, count) {
 export function nice_number(number) {
     let rounded_numbers = [20, 50, 100];
     do {
-        for (var rounded_number of rounded_numbers) {
+        for (let rounded_number of rounded_numbers) {
             if (number <= ((4 * rounded_number) / 5)) {
                 return rounded_number
             }
@@ -82,8 +82,8 @@ export function nice_number(number) {
 }
 
 export function scaled_number(number) {
-    var scale = ['', 'k', 'm'];
-    var exponent = Math.floor(Math.log(number) / Math.log(1000));
+    const scale = ['', 'k', 'm'];
+    const exponent = Math.floor(Math.log(number) / Math.log(1000));
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
@@ -155,7 +155,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
 export function registeredURLSearchParams(history) {
     // Return registered URL search parameters only; to prevent CodeQL js/client-side-unvalidated-url-redirection
     let parsed = new URLSearchParams(history.location.search)
-    for (var key of parsed.keys()) {
+    for (let key of parsed.keys()) {
         if (!registeredURLSearchQueryKeys.has(key)) { parsed.delete(key) }
     }
     return parsed
