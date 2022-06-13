@@ -55,6 +55,8 @@ The frontend uses the following environment variables:
 
 ### API
 
+The API of the external server is versioned. The version is not changed when backwards compatible changes are made, such as the addition of new endpoints.
+
 API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v3 (all routes for a specific version, in this case version 3), and http://www.quality-time.example.org/api/v3/<route_fragment> (all routes matching a specific text fragment).
 
 ### Health check
@@ -79,6 +81,10 @@ The external server uses the following environment variables:
 | FORWARD_AUTH_HEADER | X-Forwarded-User | Header to use for getting the username if forward authentication is turned on. |
 
 ## Internal server
+
+### API
+
+The API of the internal server is not versioned.
 
 ### Health check
 
