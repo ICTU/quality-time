@@ -31,7 +31,7 @@ class IssueTrackerTest(unittest.TestCase):
     def test_get_suggestions(self, requests_get):
         """Test that issue suggestions are returned."""
         response = Mock()
-        response.json.return_value = dict(sections=[dict(issues=[dict(key="FOO-42", summaryText="Summary")])])
+        response.json.return_value = dict(issues=[dict(key="FOO-42", fields=dict(summary="Summary"))])
         requests_get.return_value = response
         issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL)
         self.assertEqual([IssueSuggestion("FOO-42", "Summary")], issue_tracker.get_suggestions("Summ"))

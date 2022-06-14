@@ -201,9 +201,10 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     result = insert_new_report(database, delta_description, [report_uuid], report)
     issue_tracker = report.get("issue_tracker", {})
     parameters = issue_tracker.get("parameters", {})
-    url_parameters = ("type", "url", "username", "password")
+    url_parameters = ("type", "url", "username", "password", "private_token")
     if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:
-        token_validation_path = parameters.get("private_token", {}).get("validation_path", "")
+        data_model_parameters = data_model["sources"][issue_tracker["type"]].get("parameters", {})
+        token_validation_path = data_model_parameters.get("private_token", {}).get("validation_path", "")
         result["availability"] = [check_url_availability(url, parameters, token_validation_path)]
     return result
 

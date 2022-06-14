@@ -45,7 +45,10 @@ class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
                     scales=["count", "percentage"],
                 )
             ),
-            sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
+            sources=dict(
+                source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}}),
+                jira=dict(name="Jira", parameters={"url": {"type": "not a password"}}),
+            ),
         )
         self.report = Report(self.database.datamodels.find_one(), create_report())
         self.database.reports.find.return_value = [self.report]
@@ -200,7 +203,7 @@ class ReportIssueTrackerSuggestionsTest(ReportTestCase):
         """Test that issue id suggestions can be retrieved from the issue tracker."""
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
         response = Mock()
-        response.json.return_value = dict(sections=[dict(issues=[dict(key="FOO-42", summaryText="Summary")])])
+        response.json.return_value = dict(issues=[dict(key="FOO-42", fields=dict(summary="Summary"))])
         requests_get.return_value = response
         suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
         self.assertEqual(dict(suggestions=[dict(key="FOO-42", text="Summary")]), suggested_issues)

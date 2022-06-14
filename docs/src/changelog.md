@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.0.0-rc.2 - 2022-06-13
+## [Unreleased]
 
 ### Deployment notes
 
@@ -45,6 +45,10 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 ### Added
 
 - The [Performancetest-runner](https://github.com/ICTU/performancetest-runner) HTML report now reports the breaking point as the absolute number of virtual users as well as percentage of the maximum number of virtual users. This allows the 'scalability' metric to support the count scale in addition to the already supported percentage scale. Closes [#3980](https://github.com/ICTU/quality-time/issues/3980).
+
+### Fixed
+
+- *Quality-time* would use the Jira issue picker endpoint to suggest issue ids to the user when typing text in the issue id field. However, the Jira endpoint uses the Jira interaction history of the user contacting the endpoint to make suggestions. In the case of *Quality-time*, this would be the user configured in the issue tracker. If this is a system user without any Jira interaction history, no suggestions would be made. Fixed by using the Jira search endpoint instead of the Jira issue picker endpoint. Fixes [#4017](https://github.com/ICTU/quality-time/issues/4017).
 
 ## v3.37.0 - 2022-06-07
 

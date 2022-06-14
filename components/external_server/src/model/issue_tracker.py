@@ -1,6 +1,7 @@
 """Issue tracker."""
 
 from dataclasses import asdict, dataclass
+from typing import cast
 import logging
 
 import requests
@@ -20,7 +21,7 @@ class IssueSuggestion:
         return asdict(self)  # pragma: no cover behave
 
 
-JiraIssueSuggestionJSON = dict[str, list[dict[str, list[dict[str, str]]]]]
+JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 
 
 @dataclass
@@ -31,11 +32,11 @@ class IssueTracker:
     username: str = ""
     password: str = ""
     private_token: str = ""
-    suggestions_api: str = "/rest/api/2/issue/picker?query="
+    suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
-        api_url = self.url.rstrip("/") + self.suggestions_api + query
+        api_url = self.suggestions_api % (self.url.rstrip("/"), query)
         try:
             response = requests.get(api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers())
             json = response.json()  # pragma: no cover behave
@@ -47,11 +48,8 @@ class IssueTracker:
     @staticmethod
     def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover behave
         """Parse the suggestions from the JSON."""
-        suggestions = []
-        for section in json.get("sections", []):
-            for issue in section.get("issues", []):
-                suggestions.append(IssueSuggestion(issue["key"], issue["summaryText"]))
-        return suggestions
+        issues = json.get("issues", [])
+        return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Return the basic authentication credentials, if any."""
