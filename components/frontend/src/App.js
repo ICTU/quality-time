@@ -63,8 +63,12 @@ class App extends Component {
     }
 
     loadAndSetState(report_date, show_error) {
+        const report_uuid = this.state.report_uuid;
         Promise.all([get_datamodel(report_date), get_reports_overview(report_date), get_reports(this.state.report_uuid, report_date)]).then(
             ([data_model, reports_overview, reports]) => {
+                if (this.state.report_uuid !== report_uuid) {
+                    return  // User navigated to a different report or to the overview page, cancel update
+                }
                 if (data_model.ok === false || reports.ok === false) {
                     show_error();
                 } else {

@@ -49,6 +49,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 ### Fixed
 
 - *Quality-time* would use the Jira issue picker endpoint to suggest issue ids to the user when typing text in the issue id field. However, the Jira endpoint uses the Jira interaction history of the user contacting the endpoint to make suggestions. In the case of *Quality-time*, this would be the user configured in the issue tracker. If this is a system user without any Jira interaction history, no suggestions would be made. Fixed by using the Jira search endpoint instead of the Jira issue picker endpoint. Fixes [#4017](https://github.com/ICTU/quality-time/issues/4017).
+- The user interface would sometimes crash when navigating to the report overview right after editing an input field on a report page. Fixes [#4034](https://github.com/ICTU/quality-time/issues/4034).
 
 ## v3.37.0 - 2022-06-07
 
