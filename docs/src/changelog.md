@@ -8,13 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.0.0-rc.4 - 2022-06-15
+## [Unreleased]
 
 ### Deployment notes
 
 If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes.
 
-This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the docker composition needs to be changed:
+This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the docker composition **must** be changed:
 
 - Rename the `server` service to `external_server`.
   - Use the image `ictu/quality-time_external_server`.
