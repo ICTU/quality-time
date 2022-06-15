@@ -25,7 +25,7 @@ intro.md
 :maxdepth: 2
 :caption: User documentation 📗
 usage.md
-metrics_and_sources.md
+reference.md
 ```
 ---
 ```{toctree}

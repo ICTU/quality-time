@@ -5,7 +5,7 @@ import unittest
 
 import git
 
-from create_metrics_and_sources_md import main
+from create_reference_md import main
 
 
 class GeneratedDocumentationTest(unittest.TestCase):

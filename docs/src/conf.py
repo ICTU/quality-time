@@ -18,10 +18,10 @@ import sys
 
 sys.path.insert(0, os.path.abspath("."))
 
-# Build metrics and sources overview.
-import create_metrics_and_sources_md  # pylint: disable=wrong-import-position
+# Build reference manual with overview of subjects, metrics, and sources.
+import create_reference_md  # pylint: disable=wrong-import-position
 
-create_metrics_and_sources_md.main()
+create_reference_md.main()
 
 # -- Project information -----------------------------------------------------
 

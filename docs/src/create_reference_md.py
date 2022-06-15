@@ -244,7 +244,7 @@ def main() -> None:
     """Convert the data model."""
     build_path = pathlib.Path(__file__).resolve().parent.parent / "build"
     build_path.mkdir(exist_ok=True)
-    data_model_md_path = build_path / "metrics_and_sources.md"
+    data_model_md_path = build_path / "reference.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(get_data_model()))
 
