@@ -7,11 +7,12 @@ PERFORMANCETEST_RUNNER_HTML = """
 <html>
     <table class="config">
         <tr>
-            <td class="name">Breaking point stress (%%)</td>
-            <td id="trendbreak_scalability">%s</td></tr>
-        <tr>
             <td class="name">Breaking point stress (#virtual users)</td>
             <td id="trendbreak_scalability_vusers">%s</td>
+        </tr>
+        <tr>
+            <td class="name">Virtual users</td>
+            <td id="virtual_users">%s</td>
         </tr>
     </table>
 </html>
@@ -26,7 +27,7 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
 
     async def test_scalability(self):
         """Test that the number of virtual users at which the ramp-up of throughput breaks is returned."""
-        html = PERFORMANCETEST_RUNNER_HTML % (63, 354)
+        html = PERFORMANCETEST_RUNNER_HTML % (354, 562)
         response = await self.collect(get_request_text=html)
         self.assert_measurement(response, value="354", total="562")
 

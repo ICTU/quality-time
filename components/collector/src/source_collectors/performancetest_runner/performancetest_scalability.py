@@ -17,18 +17,18 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to compute the total number of vusers from the responses."""
         breaking_points = [
-            (await self.__breaking_point_vusers(response), await self.__breaking_point_percentage(response))
-            for response in responses
+            (await self.__breaking_point_vusers(response), await self.__max_vusers(response)) for response in responses
         ]
-        smallest_breaking_point_vusers, smallest_breaking_point_percentage = min(breaking_points)
-        if smallest_breaking_point_percentage == 0:
-            return "0"
-        return str(round((smallest_breaking_point_vusers * 100) / smallest_breaking_point_percentage))
+        return str(min(breaking_points)[1])
 
     async def __breaking_point_vusers(self, response: Response) -> int:
         """Parse the breaking point from the response."""
-        return int((await self._soup(response)).find(id="trendbreak_scalability_vusers").string)
+        return int(await self.__get_element_by_id("trendbreak_scalability_vusers", response))
 
-    async def __breaking_point_percentage(self, response: Response) -> int:
-        """Parse the breaking point percentage from the response."""
-        return int((await self._soup(response)).find(id="trendbreak_scalability").string)
+    async def __max_vusers(self, response: Response) -> int:
+        """Parse the maximum numer of virtual users from the response."""
+        return int(await self.__get_element_by_id("virtual_users", response))
+
+    async def __get_element_by_id(self, element_id: str, response: Response) -> str:
+        """Parse the element with the given id from the response."""
+        return str((await self._soup(response)).find(id=element_id).string)
