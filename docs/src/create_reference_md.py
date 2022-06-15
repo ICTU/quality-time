@@ -69,12 +69,12 @@ def subject_section(data_model, subject, level) -> str:
 def metric_sections(data_model, level) -> str:
     """Return the metrics as Markdown sections."""
     markdown = ""
-    for metric in sorted(data_model["metrics"].values(), key=lambda item: str(item["name"])):
-        markdown += metric_section(data_model, metric, level)
+    for metric_key, metric in sorted(data_model["metrics"].items(), key=lambda item: str(item[1]["name"])):
+        markdown += metric_section(data_model, metric_key, metric, level)
     return markdown
 
 
-def metric_section(data_model, metric, level) -> str:
+def metric_section(data_model, metric_key, metric, level) -> str:
     """Return the metric as Markdown section."""
     markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
@@ -87,6 +87,12 @@ def metric_section(data_model, metric, level) -> str:
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *metric["tags"])
+    markdown += "```{admonition} Supported subjects\n"
+    subjects = [subject for subject in data_model["subjects"].values() if metric_key in subject["metrics"]]
+    for subject in subjects:
+        subject_name = subject["name"]
+        markdown += f"- [{subject_name}]({slugify(subject_name)})\n"
+    markdown += "```\n\n"
     markdown += "```{admonition} Supporting sources\n"
     for source in metric["sources"]:
         source_name = data_model["sources"][source]["name"]
