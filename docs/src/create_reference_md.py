@@ -46,6 +46,26 @@ def markdown_header(header: str, level: int = 1, index: bool = False) -> str:
     return index_preamble + "#" * level + f" {header}\n\n"
 
 
+def subject_sections(data_model, level) -> str:
+    """Return the subjects as Markdown sections."""
+    markdown = ""
+    for subject in sorted(data_model["subjects"].values(), key=lambda item: str(item["name"])):
+        markdown += subject_section(data_model, subject, level)
+    return markdown
+
+
+def subject_section(data_model, subject, level) -> str:
+    """Return the subject as Markdown section."""
+    markdown = markdown_header(subject["name"], level=level, index=True)
+    markdown += markdown_paragraph(subject["description"])
+    markdown += "```{admonition} Supporting metrics\n"
+    for metric in subject["metrics"]:
+        metric_name = data_model["metrics"][metric]["name"]
+        markdown += f"- [{metric_name}]({slugify(metric_name)})\n"
+    markdown += "```\n"
+    return markdown
+
+
 def metric_sections(data_model, level) -> str:
     """Return the metrics as Markdown sections."""
     markdown = ""
@@ -204,16 +224,23 @@ def metric_source_configuration_section(data_model, metric_key, source_key) -> s
 def data_model_as_table(data_model) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_paragraph(
-        "This is an overview of all [metrics](#metrics) that *Quality-time* can measure and all "
-        "[sources](#sources) that *Quality-time* can use to measure the metrics. For each "
-        "[supported combination of metric and source](#metric-source-combinations), the parameters "
-        "that can be used to configure the source are listed."
+        "This is an overview of all [subjects](#subjects) that *Quality-time* can measure, all [metrics](#metrics) "
+        "that *Quality-time* can use to measure subjects, and all [sources](#sources) that *Quality-time* can use to "
+        "collect data from to measure the metrics. For each supported "
+        "[combination of metric and source](#metric-source-combinations), the parameters that can be used to configure "
+        "the source are listed."
     )
+    markdown += markdown_header("Subjects", 2)
+    markdown += markdown_paragraph(
+        "This is an overview of all the subjects that *Quality-time* can measure. For each subject, the "
+        "metrics that can be used to measure the subject are listed."
+    )
+    markdown += subject_sections(data_model, 3)
     markdown += markdown_header("Metrics", 2)
     markdown += markdown_paragraph(
-        "This is an overview of all the metrics that *Quality-time* can measure. For each metric, the "
+        "This is an overview of all the metrics that *Quality-time* can use to measure subjects. For each metric, the "
         "default target, the supported scales, and the default tags are given. In addition, the sources that "
-        "can be used to measure the metric are listed."
+        "can be used to collect data from to measure the metric are listed."
     )
     markdown += metric_sections(data_model, 3)
     markdown += markdown_header("Sources", 2)
