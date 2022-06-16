@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v4.0.0, please read the v4.0.0 deployment notes.
+
+### Added
+
+- Add subjects to the reference documentation. Closes [#4043](https://github.com/ICTU/quality-time/issues/4043).
+
 ## v4.0.0 - 2022-06-15
 
 ### Deployment notes
@@ -143,7 +153,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Added
 
 - Add support for Jira [personal access token](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html). Closes [#592](https://github.com/ICTU/quality-time/issues/592).
-- Add a rationale to each metric explaining why one would want to measure it. The rationale is listed in the [metrics overview](https://quality-time.readthedocs.io/en/latest/metrics_and_sources.html) in the documentation and is available as popup dialog in the user interface. Closes [#3578](https://github.com/ICTU/quality-time/issues/3578).
+- Add a rationale to each metric explaining why one would want to measure it. The rationale is listed in the [metrics overview](https://quality-time.readthedocs.io/en/latest/reference.html) in the documentation and is available as popup dialog in the user interface. Closes [#3578](https://github.com/ICTU/quality-time/issues/3578).
 - Add a 'minimum status duration' parameter to the 'metrics' metric to allow for counting metrics only when they have had the same status for a minimum number of days. Closes [#3681](https://github.com/ICTU/quality-time/issues/3681).
 - Add support for [SARIF](https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif) JSON files as source for the 'security warnings' metric. Closes [#3730](https://github.com/ICTU/quality-time/issues/3730).
 
@@ -465,7 +475,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - Reports can be exported and imported via API. Partially fixes [1693](https://github.com/ICTU/quality-time/issues/1693).
 - When measuring security warnings with OWASP ZAP as source, allow for counting alert types as security warnings as opposed to alert instances. Closes [#1902](https://github.com/ICTU/quality-time/issues/1902).
-- Added a new metric 'source version' that can be used to measure the version of a source and compare it with a minimum or maximum version number. See the [metrics and sources overview](metrics_and_sources.md) for a list of sources that support this metric. Closes [#1904](https://github.com/ICTU/quality-time/issues/1904).
+- Added a new metric 'source version' that can be used to measure the version of a source and compare it with a minimum or maximum version number. See the [metrics and sources overview](reference.md) for a list of sources that support this metric. Closes [#1904](https://github.com/ICTU/quality-time/issues/1904).
 - Added support for the Anchore Jenkins plugin as source for the 'security warnings' and 'source up-to-dateness' metrics. Closes [#1980](https://github.com/ICTU/quality-time/issues/1980).
 - Added support for Axe-core JSON files (or zips with Axe-core JSON files) as source for measuring accessibility violations. Closes [#1981](https://github.com/ICTU/quality-time/issues/1981).
 
@@ -604,7 +614,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Removed
 
-- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](metrics_and_sources.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
+- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](reference.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
 
 ### Changed
 

@@ -353,7 +353,7 @@ make html
 open build/html/index.html
 ```
 
-`make html` also generates the `docs/src/metrics_and_sources.md` document, containing an overview of all metrics and sources.
+`make html` also generates the `docs/src/reference.md` reference manual, containing an overview of all subjects, metrics, and sources.
 
 To check the correctness of the links:
 

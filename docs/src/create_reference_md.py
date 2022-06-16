@@ -46,15 +46,35 @@ def markdown_header(header: str, level: int = 1, index: bool = False) -> str:
     return index_preamble + "#" * level + f" {header}\n\n"
 
 
-def metric_sections(data_model, level) -> str:
-    """Return the metrics as Markdown sections."""
+def subject_sections(data_model, level) -> str:
+    """Return the subjects as Markdown sections."""
     markdown = ""
-    for metric in sorted(data_model["metrics"].values(), key=lambda item: str(item["name"])):
-        markdown += metric_section(data_model, metric, level)
+    for subject in sorted(data_model["subjects"].values(), key=lambda item: str(item["name"])):
+        markdown += subject_section(data_model, subject, level)
     return markdown
 
 
-def metric_section(data_model, metric, level) -> str:
+def subject_section(data_model, subject, level) -> str:
+    """Return the subject as Markdown section."""
+    markdown = markdown_header(subject["name"], level=level, index=True)
+    markdown += markdown_paragraph(subject["description"])
+    markdown += "```{admonition} Supporting metrics\n"
+    for metric in subject["metrics"]:
+        metric_name = data_model["metrics"][metric]["name"]
+        markdown += f"- [{metric_name}]({slugify(metric_name)})\n"
+    markdown += "```\n"
+    return markdown
+
+
+def metric_sections(data_model, level) -> str:
+    """Return the metrics as Markdown sections."""
+    markdown = ""
+    for metric_key, metric in sorted(data_model["metrics"].items(), key=lambda item: str(item[1]["name"])):
+        markdown += metric_section(data_model, metric_key, metric, level)
+    return markdown
+
+
+def metric_section(data_model, metric_key, metric, level) -> str:
     """Return the metric as Markdown section."""
     markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
@@ -67,6 +87,12 @@ def metric_section(data_model, metric, level) -> str:
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *metric["tags"])
+    markdown += "```{admonition} Supported subjects\n"
+    subjects = [subject for subject in data_model["subjects"].values() if metric_key in subject["metrics"]]
+    for subject in subjects:
+        subject_name = subject["name"]
+        markdown += f"- [{subject_name}]({slugify(subject_name)})\n"
+    markdown += "```\n\n"
     markdown += "```{admonition} Supporting sources\n"
     for source in metric["sources"]:
         source_name = data_model["sources"][source]["name"]
@@ -204,16 +230,23 @@ def metric_source_configuration_section(data_model, metric_key, source_key) -> s
 def data_model_as_table(data_model) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_paragraph(
-        "This is an overview of all [metrics](#metrics) that *Quality-time* can measure and all "
-        "[sources](#sources) that *Quality-time* can use to measure the metrics. For each "
-        "[supported combination of metric and source](#metric-source-combinations), the parameters "
-        "that can be used to configure the source are listed."
+        "This is an overview of all [subjects](#subjects) that *Quality-time* can measure, all [metrics](#metrics) "
+        "that *Quality-time* can use to measure subjects, and all [sources](#sources) that *Quality-time* can use to "
+        "collect data from to measure the metrics. For each supported "
+        "[combination of metric and source](#metric-source-combinations), the parameters that can be used to configure "
+        "the source are listed."
     )
+    markdown += markdown_header("Subjects", 2)
+    markdown += markdown_paragraph(
+        "This is an overview of all the subjects that *Quality-time* can measure. For each subject, the "
+        "metrics that can be used to measure the subject are listed."
+    )
+    markdown += subject_sections(data_model, 3)
     markdown += markdown_header("Metrics", 2)
     markdown += markdown_paragraph(
-        "This is an overview of all the metrics that *Quality-time* can measure. For each metric, the "
+        "This is an overview of all the metrics that *Quality-time* can use to measure subjects. For each metric, the "
         "default target, the supported scales, and the default tags are given. In addition, the sources that "
-        "can be used to measure the metric are listed."
+        "can be used to collect data from to measure the metric are listed."
     )
     markdown += metric_sections(data_model, 3)
     markdown += markdown_header("Sources", 2)
@@ -244,7 +277,7 @@ def main() -> None:
     """Convert the data model."""
     build_path = pathlib.Path(__file__).resolve().parent.parent / "build"
     build_path.mkdir(exist_ok=True)
-    data_model_md_path = build_path / "metrics_and_sources.md"
+    data_model_md_path = build_path / "reference.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(get_data_model()))
 
