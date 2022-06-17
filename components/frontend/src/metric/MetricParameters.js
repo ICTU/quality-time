@@ -110,7 +110,7 @@ function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
 
 function EvaluateTargets({ metric, metric_uuid, reload }) {
     const help = "Turning off evaluation of the metric targets makes this an informative metric. Informative metrics do not turn red, green, or yellow, and can't have accepted technical debt."
-    const labelId = `evaluatie-targets-label-${metric_uuid}`
+    const labelId = `evaluate-targets-label-${metric_uuid}`
     return (
         <SingleChoiceInput
             aria-labelledby={labelId}

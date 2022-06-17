@@ -262,9 +262,10 @@ class ReportTest(ReportTestCase):
             "this string replaces credentials",
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"],
         )
-        self.assertEqual(dict(red=0, green=0, yellow=0, grey=0, white=1), report["summary"])
-        self.assertEqual({SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}, report["summary_by_subject"])
-        self.assertEqual(dict(security=dict(red=0, green=0, yellow=0, grey=0, white=1)), report["summary_by_tag"])
+        expected_counts = dict(blue=0, red=0, green=0, yellow=0, grey=0, white=1)
+        self.assertEqual(expected_counts, report["summary"])
+        self.assertEqual({SUBJECT_ID: expected_counts}, report["summary_by_subject"])
+        self.assertEqual(dict(security=expected_counts), report["summary_by_tag"])
 
     def test_issue_status(self):
         """Test that the issue status is part of the metric."""
@@ -304,13 +305,14 @@ class ReportTest(ReportTestCase):
                 },
             )
         ]
+        expected_counts = dict(blue=0, red=0, green=0, yellow=0, grey=0, white=1)
         self.assertDictEqual(
             dict(
                 reports=[
                     dict(
-                        summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
-                        summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
-                        summary_by_subject={SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)},
+                        summary=expected_counts,
+                        summary_by_tag=dict(tag=expected_counts),
+                        summary_by_subject={SUBJECT_ID: expected_counts},
                         title='Report for tag "tag"',
                         subtitle="Note: tag reports are read-only",
                         report_uuid="tag-tag",

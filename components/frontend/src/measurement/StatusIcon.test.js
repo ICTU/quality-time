@@ -8,7 +8,7 @@ it("renders a checkmark if the status is target met", () => {
     expect(getAllByLabelText(/Target met/).length).toBe(1)
 })
 
-it("renders an info icon if the status is informative met", () => {
+it("renders an info icon if the status is informative", () => {
     const { getAllByLabelText } = render(<StatusIcon status="informative" />)
     expect(getAllByLabelText(/Informative/).length).toBe(1)
 })

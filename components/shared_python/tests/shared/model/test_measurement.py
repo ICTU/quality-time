@@ -234,7 +234,7 @@ class MeasurementTest(MeasurementTestCase):
         self.assertEqual(None, measurement.status())
 
     def test_status_target_met(self):
-        """Test the measurement status is missing if the measurement has no sources."""
+        """Test the measurement status is target met if the measurement has sources with the right measurements."""
         measurement = self.measurement(
             self.metric(),
             sources=[
@@ -245,7 +245,7 @@ class MeasurementTest(MeasurementTestCase):
         self.assertEqual("target_met", measurement.status())
 
     def test_status_informative(self):
-        """Test the measurement status is missing if the measurement has no sources."""
+        """Test the measurement status is informative if the metric has target evaluation turned off."""
         measurement = self.measurement(
             self.metric(evaluate_targets=False),
             sources=[
