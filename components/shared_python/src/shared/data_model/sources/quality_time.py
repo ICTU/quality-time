@@ -24,6 +24,7 @@ QUALITY_TIME = Source(
             name="Metric statuses",
             placeholder="all statuses",
             values=[
+                "informative (blue)",
                 "target met (green)",
                 "near target met (yellow)",
                 "target not met (red)",
@@ -31,6 +32,7 @@ QUALITY_TIME = Source(
                 "unknown (white)",
             ],
             api_values={
+                "informative (blue)": "informative",
                 "target met (green)": "target_met",
                 "near target met (yellow)": "near_target_met",
                 "target not met (red)": "target_not_met",

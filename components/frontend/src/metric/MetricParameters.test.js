@@ -108,3 +108,10 @@ it('shows no issue id suggestions without a query', async () => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(0);
     })
 });
+
+it('turns off evaluation of targets', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => { render_metric_parameters() });
+    await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), 'No{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/evaluate_targets", { evaluate_targets: false });
+});

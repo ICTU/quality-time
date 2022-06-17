@@ -28,6 +28,7 @@ export function TrendGraph({ metric, measurements }) {
     let target_values = [];
     let near_target_values = [];
     let debt_target_values = [];
+    let informative = [];
 
     function measurement_attribute_as_number(measurement, field) {
         const value = (measurement[metric.scale] && measurement[metric.scale][field]) || null;
@@ -39,6 +40,7 @@ export function TrendGraph({ metric, measurements }) {
         target_values.push(measurement_attribute_as_number(measurement, "target"));
         near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
         debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target"));
+        informative.push(measurement[metric.scale]?.status === "informative");
     });
     let max_y = nice_number(Math.max(
         Math.max(...measurement_values), Math.max(...target_values),
@@ -46,28 +48,31 @@ export function TrendGraph({ metric, measurements }) {
 
     // The colors of the background areas in the right order for "<" metrics, where lower values are better, and for
     // ">" metrics, where higher values are better:
-    const colors = { "<": ["green", "grey", "yellow", "red"], ">": ["red", "yellow", "grey", "green"] };
+    const colors = { "<": ["blue", "green", "grey", "yellow", "red"], ">": ["red", "yellow", "grey", "green", "blue"] };
     // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below:
-    let areas = { "<": { green: [], grey: [], yellow: [], red: [] }, ">": { green: [], grey: [], yellow: [], red: [] } };
+    let areas = { "<": { blue: [], green: [], grey: [], yellow: [], red: [] }, ">": { blue: [], green: [], grey: [], yellow: [], red: [] } };
     let measurementValues = [];  // The measurement values (x, y)
     measurements.forEach((measurement, index) => {
         const x1 = new Date(measurement.start);
         const x2 = new Date(measurement.end);
+        x2.setSeconds(x2.getSeconds() - 1) // Prevent the x2 of this measurement being equal to the x1 of the next or VictoryStack may skip the point
         measurementValues.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
         if (target_values[index] === null) { return }  // Old measurements don't have target, near target and debt values
-        let point = { green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
+        let point = { blue: { x: x1 }, green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
         const absolute_y_values = {
             "<": {
-                green: target_values[index],
-                grey: debt_target_values[index] ?? 0,
-                yellow: near_target_values[index],
-                red: max_y
+                blue: informative[index] ? max_y : 0,
+                green: informative[index] ? 0 : target_values[index],
+                grey: informative[index] ? 0 : debt_target_values[index] ?? 0,
+                yellow: informative[index] ? 0 : near_target_values[index],
+                red: informative[index] ? 0 : max_y
             },
             ">": {
-                red: Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER),
-                yellow: debt_target_values[index] ?? 0,
-                grey: target_values[index],
-                green: max_y
+                red: informative[index] ? 0 : Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER),
+                yellow: informative[index] ? 0 : debt_target_values[index] ?? 0,
+                grey: informative[index] ? 0 : target_values[index],
+                green: informative[index] ? 0 : max_y,
+                blue: informative[index] ? max_y : 0
             }
         };
         const direction = measurement[metric.scale].direction || "<";
@@ -79,11 +84,11 @@ export function TrendGraph({ metric, measurements }) {
             areas[direction][color].push(point[color]);
             y0 += y;
         });
-        if (x1.getTime() !== x2.getTime()) {
+        if (x1.getTime() < x2.getTime()) {
             colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
         }
     });
-    const rgb = { green: "rgb(30,148,78,0.7)", yellow: "rgb(253,197,54,0.7)", grey: "rgb(150,150,150,0.7)", red: "rgb(211,59,55,0.7)" };
+    const rgb = { blue: "rgb(0,165,255,0.7)", green: "rgb(30,148,78,0.7)", yellow: "rgb(253,197,54,0.7)", grey: "rgb(150,150,150,0.7)", red: "rgb(211,59,55,0.7)" };
     const background_data = [];
     ["<", ">"].forEach((direction) => {
         if (areas[direction].green.length > 0) {
@@ -91,7 +96,6 @@ export function TrendGraph({ metric, measurements }) {
                 { area: areas[direction][color], color: rgb[color], direction: direction }));
         }
     });
-
     const softWhite = "rgba(255, 255, 255, 0.8)"
     const softerWhite = "rgba(255, 255, 255, 0.7)"
     const axisStyle = {

@@ -96,7 +96,15 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     return insert_new_report(database, description, uuids, report)
 
 
-ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
+ATTRIBUTES_IMPACTING_STATUS = (
+    "accept_debt",
+    "debt_target",
+    "debt_end_date",
+    "direction",
+    "evaluate_targets",
+    "near_target",
+    "target",
+)
 
 
 @bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])

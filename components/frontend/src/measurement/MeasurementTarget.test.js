@@ -12,6 +12,15 @@ it('renders the target', () => {
     expect(screen.getAllByText(/≦ 0/).length).toBe(1)
 })
 
+it('does not render the target if the metric is informative', () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", evaluate_targets: false }} />
+        </DataModel.Provider>
+    )
+    expect(screen.queryAllByText(/≦ 0/).length).toBe(0)
+})
+
 it('renders the target with minutes', () => {
     render(
         <DataModel.Provider value={{ metrics: { duration: { direction: "<", unit: "minutes" } } }}>

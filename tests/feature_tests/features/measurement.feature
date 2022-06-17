@@ -103,6 +103,19 @@ Feature: measurement
     And the collector measures "100"
     Then the metric status is "target_not_met"
 
+  Scenario: the metric has accepted technical debt is changed to informative
+    Given an existing source
+    When the collector measures "100"
+    And the client waits a second
+    And the client changes the metric accept_debt to "True"
+    And the client waits a second
+    And the client changes the metric debt_target to "100"
+    And the client waits a second
+    Then the metric status is "debt_target_met"
+    When the client changes the metric evaluate_targets to "False"
+    And the client waits a second
+    Then the metric status is "informative"
+
   Scenario: a measurement that's unchanged is updated
     Given an existing source
     When the collector measures "0"

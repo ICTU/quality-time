@@ -108,6 +108,23 @@ function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
     )
 }
 
+function EvaluateTargets({ metric, metric_uuid, reload }) {
+    const help = "Turning off evaluation of the metric targets makes this an informative metric. Informative metrics do not turn red, green, or yellow, and can't have accepted technical debt."
+    const labelId = `evaluatie-targets-label-${metric_uuid}`
+    return (
+        <SingleChoiceInput
+            aria-labelledby={labelId}
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            label={<label id={labelId}>Evaluate metric targets? <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            value={metric.evaluate_targets ?? true}
+            options={[
+                { key: true, text: "Yes", value: true },
+                { key: false, text: "No", value: false }]}
+            set_value={(value) => set_metric_attribute(metric_uuid, "evaluate_targets", value, reload)}
+        />
+    )
+}
+
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     return (
         <SingleChoiceInput
@@ -145,7 +162,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
             onSearchChange={(query) => {
                 if (query) {
                     get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestionsResponse) => {
-                        const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({key: s.key, text: `${s.key}: ${s.text}`, value: s.key}))
+                        const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({ key: s.key, text: `${s.key}: ${s.text}`, value: s.key }))
                         setSuggestions(suggestionOptions)
                     })
                 } else {
@@ -192,6 +209,9 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                     </Grid.Column>}
             </Grid.Row>
             <Grid.Row>
+                <Grid.Column>
+                    <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                </Grid.Column>
                 <Grid.Column>
                     <Target label="Metric target" target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>

@@ -19,9 +19,7 @@ class ReportTest(unittest.TestCase):
         """Override to create a database fixture."""
         self.data_model = json.loads(DATA_MODEL_JSON)
         self.source_data = {}
-        self.metric_data = dict(
-            type="violations", sources={SOURCE_ID: self.source_data}, tags=["tag"]
-        )
+        self.metric_data = dict(type="violations", sources={SOURCE_ID: self.source_data}, tags=["tag"])
         self.subject_data = dict(metrics={METRIC_ID: self.metric_data})
         report_data = dict(
             report_uuid=REPORT_ID,
@@ -81,7 +79,7 @@ class ReportTest(unittest.TestCase):
                 tags=["tag"],
             )
         }
-        summary = dict(green=0, grey=0, red=0, white=1, yellow=0)
+        summary = dict(blue=0, green=0, grey=0, red=0, white=1, yellow=0)
         report_summary = dict(
             title="Report",
             report_uuid=REPORT_ID,
