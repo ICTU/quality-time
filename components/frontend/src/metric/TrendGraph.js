@@ -19,19 +19,15 @@ function Background({ data, ...props }) {
 }
 
 function y_values(direction, informative, target_value, near_target_value, debt_target_value, max_y) {
-    return direction === "<" ? {
-        blue: informative ? max_y : 0,
-        green: informative ? 0 : target_value,
-        grey: informative ? 0 : debt_target_value ?? 0,
-        yellow: informative ? 0 : near_target_value,
-        red: informative ? 0 : max_y
-    } : {
-        red: informative ? 0 : Math.min(target_value, near_target_value, debt_target_value ?? Number.MAX_SAFE_INTEGER),
-        yellow: informative ? 0 : debt_target_value ?? 0,
-        grey: informative ? 0 : target_value,
-        green: informative ? 0 : max_y,
-        blue: informative ? max_y : 0
+    if (informative) {
+        return { blue: max_y, green: 0, grey: 0, yellow: 0, red: 0 }
     }
+    const debt_target = debt_target_value ?? 0
+    if (direction === "<") {
+        return { blue: 0, green: target_value, grey: debt_target, yellow: near_target_value, red: max_y }
+    }
+    const red = Math.min(target_value, near_target_value, debt_target_value ?? Number.MAX_SAFE_INTEGER)
+    return { red: red, yellow: debt_target, grey: target_value, green: max_y, blue: 0 }
 }
 
 export function TrendGraph({ metric, measurements }) {
@@ -111,7 +107,7 @@ export function TrendGraph({ metric, measurements }) {
             theme={VictoryTheme.material}
             width={750}
         >
-            <VictoryLabel x={375} y={20} style={{fill: darkMode ? softWhite : null}} text={metricName} textAnchor="middle" />
+            <VictoryLabel x={375} y={20} style={{ fill: darkMode ? softWhite : null }} text={metricName} textAnchor="middle" />
             <VictoryAxis
                 label={"Time"}
                 style={axisStyle}
