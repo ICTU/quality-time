@@ -10,7 +10,7 @@ import './Subject.css'
 function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     const metrics = {}
     Object.entries(allMetrics).forEach(([metric_uuid, metric]) => {
-        if (hideMetricsNotRequiringAction && (metric.status === "target_met" || metric.status === "debt_target_met")) { return }
+        if (hideMetricsNotRequiringAction && (["target_met", "debt_target_met", "informative"].includes(metric.status))) { return }
         if (tags.length > 0 && tags.filter(value => metric.tags?.includes(value)).length === 0) { return }
         metrics[metric_uuid] = metric
     })
@@ -18,7 +18,7 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
 }
 
 function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
-    const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4" };
+    const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4", informative: "5" };
     const sorters = {
         name: (m1, m2) => {
             const m1_name = get_metric_name(m1[1], datamodel);

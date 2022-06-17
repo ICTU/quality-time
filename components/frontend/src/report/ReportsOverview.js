@@ -16,7 +16,7 @@ function ReportsDashboard({ reports, open_report, layout, reload }) {
     reports.forEach((report) => {
         Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
             if (!Object.keys(tag_counts).includes(tag)) {
-                tag_counts[tag] = { "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 0 }
+                tag_counts[tag] = { "blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 0 }
             }
             Object.entries(counts).forEach(([color, color_count]) => { tag_counts[tag][color] += color_count })
         })

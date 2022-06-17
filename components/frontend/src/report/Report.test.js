@@ -14,6 +14,7 @@ const report = {
     report_uuid: "report_uuid",
     summary_by_subject: {
         subject_uuid: {
+            blue: 0,
             red: 0,
             green: 0,
             yellow: 0,
@@ -23,6 +24,7 @@ const report = {
     },
     summary_by_tag: {
         tag: {
+            blue: 0,
             red: 0,
             green: 0,
             yellow: 0,

@@ -14,7 +14,7 @@ from shared.model.measurement import (
 from shared.model.metric import Metric
 from shared.model.source import Source
 
-from ...fixtures import METRIC_ID
+from ...fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
 
 
 class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
@@ -23,31 +23,22 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up the data model."""
         self.data_model = dict(
-            metrics=dict(
-                metric_type=dict(
-                    direction="<", default_scale="count", scales=["count", "percentage"]
-                )
-            ),
+            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
             sources=dict(
-                source_type=dict(
-                    entities=dict(
-                        metric_type=dict(
-                            attributes=[dict(key="story_points", type="integer")]
-                        )
-                    )
-                )
+                source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
             ),
         )
 
-    def metric(self, addition="sum", direction="<") -> Metric:
+    def metric(self, addition="sum", direction="<", evaluate_targets=True) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
             direction=direction,
+            evaluate_targets=evaluate_targets,
             type="metric_type",
             sources={
-                "uuid-1": dict(type="source_type"),
-                "uuid-2": dict(type="source_type"),
+                SOURCE_ID: dict(type="source_type"),
+                SOURCE_ID2: dict(type="source_type"),
             },
         )
         return Metric(self.data_model, metric_data, METRIC_ID)
@@ -107,9 +98,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status_start="today",
         )
-        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
-            "target_met"
-        )
+        s_m._ScaleMeasurement__set_status_start("target_met")  # pylint: disable=protected-access
         self.assertEqual(s_m.status_start(), "yesterday")
 
     def test_set_status_start_changed(self):
@@ -121,12 +110,8 @@ class ScaleMeasurementTest(MeasurementTestCase):
             status_start="yesterday",
             status="target_met",
         )
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=previous_s_m, measurement=measurement
-        )
-        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
-            "target_not_met"
-        )
+        s_m = ScaleMeasurement(previous_scale_measurement=previous_s_m, measurement=measurement)
+        s_m._ScaleMeasurement__set_status_start("target_not_met")  # pylint: disable=protected-access
         self.assertEqual(s_m.status_start(), measurement["start"])
 
     def test_set_status_start_no_status_start(self):
@@ -137,12 +122,8 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status="target_met",
         )
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=previous_s_m, measurement=measurement
-        )
-        s_m._ScaleMeasurement__set_status_start(  # pylint: disable=protected-access
-            "target_met"
-        )
+        s_m = ScaleMeasurement(previous_scale_measurement=previous_s_m, measurement=measurement)
+        s_m._ScaleMeasurement__set_status_start("target_met")  # pylint: disable=protected-access
         self.assertIs(s_m.status_start(), None)
 
     @patch.object(Metric, "accept_debt_expired", lambda self: False)
@@ -161,11 +142,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = (
-            s_m._ScaleMeasurement__calculate_status(  # pylint: disable=protected-access
-                2.5
-            )
-        )
+        status = s_m._ScaleMeasurement__calculate_status(2.5)  # pylint: disable=protected-access
         self.assertEqual(status, "debt_target_met")
 
     @patch.object(Metric, "accept_debt_expired", lambda self: True)
@@ -184,11 +161,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = (
-            s_m._ScaleMeasurement__calculate_status(  # pylint: disable=protected-access
-                2
-            )
-        )
+        status = s_m._ScaleMeasurement__calculate_status(2)  # pylint: disable=protected-access
         self.assertEqual(status, "near_target_met")
 
 
@@ -198,21 +171,15 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
     def test_calculate_value(self):
         """Test calculate value."""
         measurement = Measurement(self.metric())
-        vn_s_m = VersionNumberScaleMeasurement(
-            previous_scale_measurement=None, measurement=measurement
-        )
+        vn_s_m = VersionNumberScaleMeasurement(previous_scale_measurement=None, measurement=measurement)
         value = vn_s_m._calculate_value()  # pylint: disable=protected-access
         self.assertEqual(value, "0")
 
     def test_better_or_equal(self):
         """Test calculate value."""
         measurement = Measurement(self.metric())
-        vn_s_m = VersionNumberScaleMeasurement(
-            previous_scale_measurement=None, measurement=measurement, direction="<"
-        )
-        better_or_equal = vn_s_m._better_or_equal(  # pylint: disable=protected-access
-            "0", "1"
-        )
+        vn_s_m = VersionNumberScaleMeasurement(previous_scale_measurement=None, measurement=measurement, direction="<")
+        better_or_equal = vn_s_m._better_or_equal("0", "1")  # pylint: disable=protected-access
         self.assertTrue(better_or_equal)
 
     def test_parse_version(self):
@@ -227,9 +194,7 @@ class MeasurementTest(MeasurementTestCase):
     def test_copy(self):
         """Test that the copy has new timestamps."""
         timestamp = "2020-01-01"
-        measurement_copy = Measurement(
-            self.metric(), start=timestamp, end=timestamp
-        ).copy()
+        measurement_copy = Measurement(self.metric(), start=timestamp, end=timestamp).copy()
         self.assertNotIn(timestamp, measurement_copy["start"], measurement_copy["end"])
 
     def test_equals(self):
@@ -244,7 +209,7 @@ class MeasurementTest(MeasurementTestCase):
             self.metric(),
             sources=[
                 dict(
-                    source_uuid="uuid-1",
+                    source_uuid=SOURCE_ID,
                     type="source_type",
                     entity_user_data={"key": {}},
                 )
@@ -253,15 +218,42 @@ class MeasurementTest(MeasurementTestCase):
         measurement_2 = Measurement(
             self.metric(),
             sources=[
-                dict(source_uuid="uuid-1", type="source_type"),
-                dict(source_uuid="uuid-2", type="source_type"),
+                dict(source_uuid=SOURCE_ID, type="source_type"),
+                dict(source_uuid=SOURCE_ID2, type="source_type"),
             ],
         )
 
         measurement_2.copy_entity_user_data(measurement_1)
         for source in measurement_2.sources():
-            if source["source_uuid"] == "uuid-1":
+            if source["source_uuid"] == SOURCE_ID:
                 self.assertTrue("entity_user_data" in source)
+
+    def test_status_missing(self):
+        """Test the measurement status is missing if the measurement has no sources."""
+        measurement = Measurement(self.metric())
+        self.assertEqual(None, measurement.status())
+
+    def test_status_target_met(self):
+        """Test the measurement status is target met if the measurement has sources with the right measurements."""
+        measurement = self.measurement(
+            self.metric(),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="0", total="100", parse_error=None, connection_error=None),
+                dict(source_uuid=SOURCE_ID2, value="0", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertEqual("target_met", measurement.status())
+
+    def test_status_informative(self):
+        """Test the measurement status is informative if the metric has target evaluation turned off."""
+        measurement = self.measurement(
+            self.metric(evaluate_targets=False),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="5", total="100", parse_error=None, connection_error=None),
+                dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertEqual("informative", measurement.status())
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):
@@ -281,11 +273,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
 
     def test_summarize_with_non_default_start_date(self):
         """Test the measurement summary when the measurement has a specific start date."""
-        timestamp = (
-            (datetime.now(timezone.utc) - timedelta(days=1))
-            .replace(microsecond=0)
-            .isoformat()
-        )
+        timestamp = (datetime.now(timezone.utc) - timedelta(days=1)).replace(microsecond=0).isoformat()
         measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
             dict(count=dict(value=None, status=None), start=timestamp, end=timestamp),
@@ -310,11 +298,12 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     ) -> Source:
         """Create a source fixture."""
         self.source_count += 1
+        source_number = "" if self.source_count == 1 else str(self.source_count)
         return Source(
-            f"uuid-{self.source_count}",
+            f"source_uuid{source_number}",
             metric,
             dict(
-                source_uuid=f"uuid-{self.source_count}",
+                source_uuid=f"source_uuid{source_number}",
                 connection_error=None,
                 parse_error=parse_error,
                 total=total,
@@ -330,9 +319,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     def test_error(self):
         """Test that the measurement value is None if a source has an error."""
         metric = self.metric()
-        measurement = self.measurement(
-            metric, sources=[self.source(metric, parse_error="error")]
-        )
+        measurement = self.measurement(metric, sources=[self.source(metric, parse_error="error")])
         self.assertEqual(None, measurement["count"]["value"])
 
     def test_add_two_sources(self):
@@ -373,9 +360,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_value_ignored_entities(self):
         """Test that the summed value of ignored entities is subtracted, if an entity attribute should be used."""
-        self.data_model["sources"]["source_type"]["entities"]["metric_type"][
-            "measured_attribute"
-        ] = "story_points"
+        self.data_model["sources"]["source_type"]["entities"]["metric_type"]["measured_attribute"] = "story_points"
         metric = self.metric()
         source = self.source(metric, value="10")
         source["entities"] = [

@@ -11,17 +11,18 @@ function nr_metrics_label(nr_metrics) {
     return nr_metrics === 0 ? "no metrics" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
-export function StatusPieChart({ green, red, yellow, grey, white }) {
+export function StatusPieChart({ blue, green, red, yellow, grey, white }) {
     function pie_chart_label() {
         let label = 'Status pie chart: ' + nr_metrics_label(nr_metrics);
         if (green > 0) { label += `, ${green} target met` }
         if (red > 0) { label += `, ${red} target not met` }
         if (yellow > 0) { label += `, ${yellow} near target` }
         if (grey > 0) { label += `, ${grey} with accepted technical debt` }
+        if (blue > 0) { label += `, ${blue} informative` }
         if (white > 0) { label += `, ${white} with unknown status` }
         return label
     }
-    const nr_metrics = red + green + yellow + grey + white;
+    const nr_metrics = blue + red + green + yellow + grey + white;
     const radius = 175;
     const innerRadius = Math.max(60, (radius - 50) - Math.pow(nr_metrics, 1.35));
     const labelColor = useContext(DarkMode) ? "lightgrey" : "darkgrey";
@@ -35,7 +36,7 @@ export function StatusPieChart({ green, red, yellow, grey, white }) {
             />
             {nr_metrics > 0 &&
                 <VictoryPie
-                    colorScale={["rgb(211,59,55)", "rgb(30,148,78)", "rgb(253,197,54)", "rgb(150,150,150)", "rgb(245,245,245)"]}
+                    colorScale={["rgb(211,59,55)", "rgb(30,148,78)", "rgb(253,197,54)", "rgb(150,150,150)", "rgb(0,165,255)", "rgb(245,245,245)"]}
                     padding={20}
                     style={{
                         data: { stroke: 'grey', strokeWidth: 1, strokeOpacity: 0.5 },
@@ -53,6 +54,7 @@ export function StatusPieChart({ green, red, yellow, grey, white }) {
                         { y: green, label: `Target met: ${nr_metrics_label(green)}` },
                         { y: yellow, label: `Near target: ${nr_metrics_label(yellow)}` },
                         { y: grey, label: `Technical debt target met: ${nr_metrics_label(grey)}` },
+                        { y: blue, label: `Informative: ${nr_metrics_label(blue)}` },
                         { y: white, label: `Unknown: ${nr_metrics_label(white)}` }
                     ]}
                 />

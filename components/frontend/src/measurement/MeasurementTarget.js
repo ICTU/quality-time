@@ -4,6 +4,7 @@ import { formatMetricDirection, get_metric_target } from '../utils';
 
 export function MeasurementTarget({ metric }) {
     const dataModel = useContext(DataModel)
+    if (metric?.evaluate_targets === false) { return null }
     const metricDirection = formatMetricDirection(metric, dataModel)
     let debtEnd = "";
     if (metric.debt_end_date) {

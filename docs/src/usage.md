@@ -217,6 +217,8 @@ The "Metric {index}`unit <Unit>`" derives its default value from the metric type
 
 The "Metric {index}`target <Target>`" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 
+If you don't want to evaluate the metric against targets, but only want to track its measurement value, you can set the "Evaluate metric targets?" field to "No". The metric status will always be "Informative", unless the source data is missing.
+
 If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *{index}`technical debt <Technical debt>`*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field.
 
 The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to e.g. track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker.

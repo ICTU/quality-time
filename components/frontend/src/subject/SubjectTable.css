@@ -84,8 +84,16 @@ tr.debt_target_met, td.debt_target_met {
     background-color: rgb(150, 150, 150, 0.2) !important;
 }
 
+tr.informative, td.informative {
+    background-color: rgb(0, 125, 200, 0.2) !important;
+}
+
 tr.debt_target_met:hover, td.debt_target_met:hover {
     background-color: rgb(150, 150, 150, 0.3) !important;
+}
+
+tr.informative:hover, td.informative:hover {
+    background-color: rgb(0, 125, 200, 0.3) !important;
 }
 
 tr.unknown, td.unknown {

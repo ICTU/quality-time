@@ -4,7 +4,7 @@ import * as fetch_server_api from '../api/fetch_server_api';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(dates) {
+function renderSubject(dates, hideMetricsNotRequiringAction) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
@@ -13,6 +13,7 @@ function renderSubject(dates) {
                 subject_uuid="subject_uuid"
                 tags={[]}
                 hiddenColumns={[]}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 visibleDetailsTabs={[]} />
         </DataModel.Provider>
     )
@@ -35,4 +36,9 @@ it('does not fetch measurements if nr dates == 1', async () => {
 it('shows the subject title', async () => {
     await act(async () => { renderSubject([new Date(2022, 3, 26)]) });
     expect(screen.queryAllByText("Subject 1 title").length).toBe(1);
+})
+
+it('hides metrics not requiring action', async () => {
+    await act(async () => { renderSubject([new Date(2022, 3, 26)], true) });
+    expect(screen.queryAllByText(/M\d/).length).toBe(1);
 })

@@ -17,6 +17,7 @@ STATUS_COLOR_MAPPING = cast(
         debt_target_met="grey",
         near_target_met="yellow",
         target_not_met="red",
+        informative="blue",
     ),
 )
 
@@ -80,9 +81,7 @@ class Report(dict):
             if isinstance(subject, Subject):
                 subjects[subject_uuid] = subject
             else:
-                subjects[subject_uuid] = Subject(
-                    self.__data_model, subject, subject_uuid, self
-                )
+                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
 
         return subjects
 
@@ -103,40 +102,28 @@ class Report(dict):
     def summarize(self, measurements: dict[str, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
-        summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
+        summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
         summary["summary_by_subject"] = {}
         summary["summary_by_tag"] = {}
 
-        summary["subjects"] = {
-            subject.uuid: subject.summarize(measurements) for subject in self.subjects
-        }
+        summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
 
         for metric in self.metrics:
-            latest_measurement = (
-                measurements[metric.uuid][-1]
-                if measurements and metric.uuid in measurements
-                else None
-            )
+            latest_measurement = measurements[metric.uuid][-1] if measurements and metric.uuid in measurements else None
             metric_status = metric.status(latest_measurement)
-            color = (
-                STATUS_COLOR_MAPPING[metric_status]
-                if metric_status is not None
-                else "white"
-            )
+            color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
             summary["summary"][color] += 1
             summary["summary_by_subject"].setdefault(
-                metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0)
+                metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
             )[color] += 1
             for tag in metric.get("tags", []):
-                summary["summary_by_tag"].setdefault(
-                    tag, dict(red=0, green=0, yellow=0, grey=0, white=0)
-                )[color] += 1
+                summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0))[
+                    color
+                ] += 1
 
         return summary
 
-    def instance_and_parents_for_uuid(
-        self, metric_uuid: MetricId = None, source_uuid: SourceId = None
-    ) -> tuple | None:
+    def instance_and_parents_for_uuid(self, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> tuple | None:
         """Find an instance and its parents.
 
         For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in

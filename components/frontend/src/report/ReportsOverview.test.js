@@ -20,21 +20,21 @@ it('shows an error message if there are no reports at the specified date', () =>
 });
 
 it('shows the reports overview', () => {
-    const reports = [{ summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
+    const reports = [{ summary: { blue: 0, red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     render_reports_overview(reports, reportsOverview)
     expect(screen.getAllByText(/Overview/).length).toBe(1);
 });
 
 it('shows the comment', () => {
-    const reports = [{ summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
+    const reports = [{ summary: { blue: 0, red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
     render_reports_overview(reports, reportsOverview)
     expect(screen.getAllByText(/Commentary/).length).toBe(1);
 });
 
 it('shows the report tag cards', () => {
-    const reports = [{ summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: { Tag: { red: 1 } } }]
+    const reports = [{ summary: { blue: 0, red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: { Tag: { red: 1 } } }]
     const reportsOverview = { title: "Overview", permissions: {} }
     render_reports_overview(reports, reportsOverview)
     expect(screen.getAllByText(/Tag/).length).toBe(1);
@@ -51,7 +51,7 @@ it('adds a report', async () => {
 
 it('copies a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    const reports = [{ report_uuid: "uuid", title: "Existing report", summary: { red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
+    const reports = [{ report_uuid: "uuid", title: "Existing report", summary: { blue: 0, red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
     await act(async () => {
         render_reports_overview(reports, {})
         fireEvent.click(screen.getByText(/Copy report/));
