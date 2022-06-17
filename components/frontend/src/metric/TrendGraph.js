@@ -18,6 +18,22 @@ function Background({ data, ...props }) {
     )
 }
 
+function y_values(direction, informative, target_value, near_target_value, debt_target_value, max_y) {
+    return direction === "<" ? {
+        blue: informative ? max_y : 0,
+        green: informative ? 0 : target_value,
+        grey: informative ? 0 : debt_target_value ?? 0,
+        yellow: informative ? 0 : near_target_value,
+        red: informative ? 0 : max_y
+    } : {
+        red: informative ? 0 : Math.min(target_value, near_target_value, debt_target_value ?? Number.MAX_SAFE_INTEGER),
+        yellow: informative ? 0 : debt_target_value ?? 0,
+        grey: informative ? 0 : target_value,
+        green: informative ? 0 : max_y,
+        blue: informative ? max_y : 0
+    }
+}
+
 export function TrendGraph({ metric, measurements }) {
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
@@ -59,26 +75,11 @@ export function TrendGraph({ metric, measurements }) {
         measurementValues.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
         if (target_values[index] === null) { return }  // Old measurements don't have target, near target and debt values
         let point = { blue: { x: x1 }, green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
-        const absolute_y_values = {
-            "<": {
-                blue: informative[index] ? max_y : 0,
-                green: informative[index] ? 0 : target_values[index],
-                grey: informative[index] ? 0 : debt_target_values[index] ?? 0,
-                yellow: informative[index] ? 0 : near_target_values[index],
-                red: informative[index] ? 0 : max_y
-            },
-            ">": {
-                red: informative[index] ? 0 : Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER),
-                yellow: informative[index] ? 0 : debt_target_values[index] ?? 0,
-                grey: informative[index] ? 0 : target_values[index],
-                green: informative[index] ? 0 : max_y,
-                blue: informative[index] ? max_y : 0
-            }
-        };
         const direction = measurement[metric.scale].direction || "<";
+        const absolute_y_values = y_values(direction, informative[index], target_values[index], near_target_values[index], debt_target_values[index], max_y)
         let y0 = 0;
         colors[direction].forEach((color) => {
-            const y = Math.max(0, absolute_y_values[direction][color] - y0);
+            const y = Math.max(0, absolute_y_values[color] - y0);
             point[color].y0 = y0;
             point[color].y = y;
             areas[direction][color].push(point[color]);

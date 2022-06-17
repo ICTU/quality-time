@@ -6,7 +6,7 @@ import { DarkMode } from '../context/DarkMode';
 
 const dataModel = {
     metrics: {
-        stability: { name: "Stability", unit: "minutes", direction: "<", tags: [] },
+        stability: { name: "Stability", unit: "minutes", direction: ">", tags: [] },
         violations: { name: "Violations", unit: "violations", direction: "<", tags: [] }
     }
 };
