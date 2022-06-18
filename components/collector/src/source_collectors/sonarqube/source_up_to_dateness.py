@@ -5,28 +5,13 @@ from datetime import datetime
 from dateutil.parser import isoparse
 
 from base_collectors import TimePassedCollector
-from collector_utilities.type import URL, Response
-from model import SourceResponses
+from collector_utilities.type import Response
 
-from .base import SonarQubeCollector
+from .base import SonarQubeProjectAnalysesBase
 
 
-class SonarQubeSourceUpToDateness(SonarQubeCollector, TimePassedCollector):
+class SonarQubeSourceUpToDateness(SonarQubeProjectAnalysesBase, TimePassedCollector):
     """SonarQube source up-to-dateness."""
-
-    async def _api_url(self) -> URL:
-        """Extend to add the project analyses path and parameters."""
-        url = await super()._api_url()
-        component = self._parameter("component")
-        branch = self._parameter("branch")
-        return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")
-
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Extend to add the project activity path and parameters."""
-        url = await super()._landing_url(responses)
-        component = self._parameter("component")
-        branch = self._parameter("branch")
-        return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the date of the most recent analysis."""

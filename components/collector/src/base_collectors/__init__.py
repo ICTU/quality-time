@@ -14,9 +14,9 @@ from .source_collector import (
     SlowTransactionsCollector,
     SourceCollector,
     SourceMeasurement,
-    SourceVersionCollector,
     TimePassedCollector,
     TimeRemainingCollector,
     TransactionEntity,
     UnmergedBranchesSourceCollector,
+    VersionCollector,
 )

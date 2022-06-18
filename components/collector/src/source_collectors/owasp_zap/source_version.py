@@ -2,12 +2,12 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector, XMLFileSourceCollector
+from base_collectors import VersionCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 
 
-class OWASPZAPSourceVersion(XMLFileSourceCollector, SourceVersionCollector):
+class OWASPZAPSourceVersion(XMLFileSourceCollector, VersionCollector):
     """Collector to collect the OWASP ZAP version."""
 
     async def _parse_source_response_version(self, response: Response) -> Version:

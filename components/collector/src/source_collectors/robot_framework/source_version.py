@@ -2,14 +2,14 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 
 from .base import RobotFrameworkBaseClass
 
 
-class RobotFrameworkSourceVersion(RobotFrameworkBaseClass, SourceVersionCollector):
+class RobotFrameworkSourceVersion(RobotFrameworkBaseClass, VersionCollector):
     """Collector to collect the Robot Framework version."""
 
     async def _parse_source_response_version(self, response: Response) -> Version:

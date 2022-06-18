@@ -2,13 +2,13 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import Response
 
 from .base import GatlingLogCollector
 
 
-class GatlingSourceVersion(GatlingLogCollector, SourceVersionCollector):
+class GatlingSourceVersion(GatlingLogCollector, VersionCollector):
     """Collector to collect the Gatling version."""
 
     async def _parse_source_response_version(self, response: Response) -> Version:

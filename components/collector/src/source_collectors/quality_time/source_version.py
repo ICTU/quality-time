@@ -2,11 +2,11 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import Response, URL
 
 
-class QualityTimeSourceVersion(SourceVersionCollector):
+class QualityTimeSourceVersion(VersionCollector):
     """Collector to get the source version from Quality-time."""
 
     async def _api_url(self) -> URL:

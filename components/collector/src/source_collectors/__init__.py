@@ -159,6 +159,7 @@ from .sonarqube.long_units import SonarQubeLongUnits
 from .sonarqube.many_parameters import SonarQubeManyParameters
 from .sonarqube.remediation_effort import SonarQubeRemediationEffort
 from .sonarqube.security_warnings import SonarQubeSecurityWarnings
+from .sonarqube.source_code_version import SonarQubeSourceCodeVersion
 from .sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
 from .sonarqube.source_version import SonarQubeSourceVersion
 from .sonarqube.suppressed_violations import SonarQubeSuppressedViolations

@@ -2,11 +2,11 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import URL, Response
 
 
-class SonarQubeSourceVersion(SourceVersionCollector):
+class SonarQubeSourceVersion(VersionCollector):
     """SonarQube source version collector."""
 
     async def _api_url(self) -> URL:
