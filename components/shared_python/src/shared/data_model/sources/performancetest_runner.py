@@ -15,6 +15,7 @@ ALL_PERFORMANCETEST_RUNNER_METRICS = TRANSACTION_METRICS + [
     "performancetest_duration",
     "performancetest_stability",
     "scalability",
+    "software_version",
     "source_up_to_dateness",
 ]
 

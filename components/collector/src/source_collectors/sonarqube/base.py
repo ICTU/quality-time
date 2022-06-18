@@ -93,3 +93,21 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
         return {measure["metric"]: measure["value"] for measure in measures}
+
+
+class SonarQubeProjectAnalysesBase(SonarQubeCollector):
+    """Base class for collectors that use the SonarQube project analyses endpoint."""
+
+    async def _api_url(self) -> URL:
+        """Extend to add the project analyses path and parameters."""
+        url = await super()._api_url()
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the project activity path and parameters."""
+        url = await super()._landing_url(responses)
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/project/activity?id={component}&branch={branch}")

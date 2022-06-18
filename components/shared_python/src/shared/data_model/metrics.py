@@ -302,6 +302,22 @@ METRICS = Metrics.parse_obj(
             ],
             tags=[Tag.CI],
         ),
+        software_version=dict(
+            name="Software version",
+            description="The version number of the software as analyzed by the source.",
+            rationale="Monitor that the version of the software is at least a specific version or get notified when "
+            "the software version becomes higher than a specific version.",
+            scales=["version_number"],
+            addition=Addition.MIN,
+            direction=Direction.MORE_IS_BETTER,
+            target="1.0",
+            near_target="0.9",
+            sources=[
+                "performancetest_runner",
+                "sonarqube",
+            ],
+            tags=[Tag.CI],
+        ),
         source_version=dict(
             name="Source version",
             description="The version number of the source.",

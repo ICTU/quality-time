@@ -301,6 +301,33 @@
                     "tags": [
                         "ci"
                     ]
+                },
+                "79528152-36dc-48ff-89db-12b011ab1e04": {
+                    "type": "source_code_version",
+                    "sources": {
+                        "8ec24706-ae21-442d-c1d6-136ebcc28014": {
+                            "type": "sonarqube",
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:quality-time",
+                                "private_token": "",
+                                "branch": "master"
+                            }
+                        }
+                    },
+                    "name": null,
+                    "scale": "version_number",
+                    "unit": null,
+                    "addition": "min",
+                    "evaluate_targets": false,
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "1.0",
+                    "near_target": "0.9",
+                    "tags": [
+                        "ci"
+                    ]
                 }
             }
         }

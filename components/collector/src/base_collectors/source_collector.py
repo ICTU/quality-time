@@ -283,8 +283,8 @@ class TimeRemainingCollector(TimeCollector):
         return days_to_go(date_time)
 
 
-class SourceVersionCollector(SourceCollector):
-    """Base class for source version collectors."""
+class VersionCollector(SourceCollector):
+    """Base class for version collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the version from the parse version method that subclasses should implement."""
@@ -296,7 +296,7 @@ class SourceVersionCollector(SourceCollector):
         return await asyncio.gather(*[self._parse_source_response_version(response) for response in responses])
 
     async def _parse_source_response_version(self, response: Response) -> Version:
-        """Parse the version from the source."""
+        """Parse the version from the source response."""
         raise NotImplementedError  # pragma: no cover
 
 

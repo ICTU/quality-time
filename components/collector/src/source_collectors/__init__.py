@@ -127,6 +127,7 @@ from .performancetest_runner.performancetest_duration import PerformanceTestRunn
 from .performancetest_runner.performancetest_scalability import PerformanceTestRunnerScalability
 from .performancetest_runner.performancetest_stability import PerformanceTestRunnerPerformanceTestStability
 from .performancetest_runner.slow_transactions import PerformanceTestRunnerSlowTransactions
+from .performancetest_runner.software_version import PerformanceTestRunnerSoftwareVersion
 from .performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
 from .performancetest_runner.tests import PerformanceTestRunnerTests
 
@@ -159,6 +160,7 @@ from .sonarqube.long_units import SonarQubeLongUnits
 from .sonarqube.many_parameters import SonarQubeManyParameters
 from .sonarqube.remediation_effort import SonarQubeRemediationEffort
 from .sonarqube.security_warnings import SonarQubeSecurityWarnings
+from .sonarqube.software_version import SonarQubeSoftwareVersion
 from .sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
 from .sonarqube.source_version import SonarQubeSourceVersion
 from .sonarqube.suppressed_violations import SonarQubeSuppressedViolations

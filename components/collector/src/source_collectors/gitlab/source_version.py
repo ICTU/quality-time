@@ -2,13 +2,13 @@
 
 from packaging.version import InvalidVersion, Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import Response, URL
 
 from .base import GitLabBase
 
 
-class GitLabSourceVersion(GitLabBase, SourceVersionCollector):
+class GitLabSourceVersion(GitLabBase, VersionCollector):
     """Collector class to measure the version of a GitLab instance."""
 
     async def _api_url(self) -> URL:

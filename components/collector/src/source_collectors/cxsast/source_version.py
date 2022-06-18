@@ -2,14 +2,14 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import Response, URL
 from model import SourceResponses
 
 from .base import CxSASTBase
 
 
-class CxSASTSourceVersion(CxSASTBase, SourceVersionCollector):
+class CxSASTSourceVersion(CxSASTBase, VersionCollector):
     """Collector class to measure the version of a Checkmarx CxSAST source."""
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:

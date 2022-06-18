@@ -2,11 +2,11 @@
 
 from packaging.version import Version
 
-from base_collectors import SourceVersionCollector
+from base_collectors import VersionCollector
 from collector_utilities.type import Response
 
 
-class JenkinsSourceVersion(SourceVersionCollector):
+class JenkinsSourceVersion(VersionCollector):
     """Collector class to measure the version of a Jenkins instance."""
 
     async def _parse_source_response_version(self, response: Response) -> Version:
