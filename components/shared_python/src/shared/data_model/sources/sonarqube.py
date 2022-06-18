@@ -53,6 +53,7 @@ PROJECT_METRICS = [
     "many_parameters",
     "remediation_effort",
     "security_warnings",
+    "source_code_version",
     "source_up_to_dateness",
     "suppressed_violations",
     "tests",
