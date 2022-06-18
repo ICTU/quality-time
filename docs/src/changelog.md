@@ -24,7 +24,7 @@ If your currently installed *Quality-time* version is not v4.0.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes.
+If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes first.
 
 This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the docker composition **must** be changed:
 
@@ -88,7 +88,7 @@ If your currently installed *Quality-time* version is not v3.36.0, please read t
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v3.35.0, please read the v3.35.0 deployment notes.
+If your currently installed *Quality-time* version is not v3.35.0, please read the v3.35.0 deployment notes first.
 
 Because of the new renderer component (see below) the following environment variables are obsolete and can be removed from the `docker-compose.yml`:
 
