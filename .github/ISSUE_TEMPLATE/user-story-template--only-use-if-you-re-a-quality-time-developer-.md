@@ -29,6 +29,7 @@ The story is considered complete if:
 
 - [ ] Change the data model
 - [ ] Change endpoint `endpoint`
+- [ ] Extend the example reports
 
 ### External server
 
