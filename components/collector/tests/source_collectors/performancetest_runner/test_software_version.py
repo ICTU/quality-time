@@ -1,15 +1,15 @@
-"""Unit tests for the Performancetest-runner source code version collector."""
+"""Unit tests for the Performancetest-runner software version collector."""
 
 from .base import PerformanceTestRunnerTestCase
 
 
-class PerformanceTestRunnerSourceCodeVersionTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the Performancetest-runner source code version collector."""
+class PerformanceTestRunnerSoftwareVersionTest(PerformanceTestRunnerTestCase):
+    """Unit tests for the Performancetest-runner software version collector."""
 
-    METRIC_TYPE = "source_code_version"
+    METRIC_TYPE = "software_version"
     METRIC_ADDITION = "min"
 
-    async def test_source_code_version(self):
+    async def test_software_version(self):
         """Test that the version is returned."""
         html = (
             '<html><table class="config"><tr><td class="name">Application version</td>'

@@ -302,11 +302,11 @@ METRICS = Metrics.parse_obj(
             ],
             tags=[Tag.CI],
         ),
-        source_code_version=dict(
-            name="Source code version",
-            description="The version number of the source code as stored in or analyzed by the source.",
-            rationale="Monitor that the version of the source code is at least a specific version or get notified when "
-            "the source code version becomes higher than a specific version.",
+        software_version=dict(
+            name="Software version",
+            description="The version number of the software as analyzed by the source.",
+            rationale="Monitor that the version of the software is at least a specific version or get notified when "
+            "the software version becomes higher than a specific version.",
             scales=["version_number"],
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
