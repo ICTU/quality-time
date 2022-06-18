@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v4.0.0, please read th
 ### Added
 
 - Allow for turning off evaluation of metric targets, making the metric "informative". Informative metrics are shown with an i (for information) icon on a blue background in the user interface, regardless of their measurement value (unless the source data could not be read or parsed, then they are shown as status unknown/white like all metrics). Closes [#2051](https://github.com/ICTU/quality-time/issues/2051).
+- Add a 'source code version' metric that can be used to measure the version of the source code analysed by sources. Sources currently supporting the 'source code version' metric are: SonarQube. Closes [#3981](https://github.com/ICTU/quality-time/issues/3981).
 - Add subjects to the reference documentation. Closes [#4043](https://github.com/ICTU/quality-time/issues/4043).
 
 ## v4.0.0 - 2022-06-15
