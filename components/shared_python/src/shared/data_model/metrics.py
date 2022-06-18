@@ -313,6 +313,7 @@ METRICS = Metrics.parse_obj(
             target="1.0",
             near_target="0.9",
             sources=[
+                "performancetest_runner",
                 "sonarqube",
             ],
             tags=[Tag.CI],
