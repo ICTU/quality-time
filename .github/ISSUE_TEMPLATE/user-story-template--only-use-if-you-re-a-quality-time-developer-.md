@@ -11,10 +11,22 @@ assignees: ''
 
 As a `role` I want to `action` so that `goal`
 
-# Acceptance criteria
+## Acceptance criteria
 
-The story is considered complete if:
 - [ ] `role` can `action`
+
+## Assumptions
+
+- Something is present...
+
+## Open issues
+
+- What do we need to ...
+
+## Out of scope
+
+- Refactoring ...
+- Adding ...
 
 # Tasks
 
@@ -51,11 +63,10 @@ The story is considered complete if:
 - [ ] Change endpoint `endpoint`
 - [ ] Add ...
 
-## Tests
+## Feature tests
 
-- [ ] Add the following feature tests
-  - [ ] `role` does `action`
-  - [ ] ...
+- [ ] `role` does `action`
+- [ ] ...
 
 ## Documentation
 
@@ -66,9 +77,3 @@ The story is considered complete if:
 - [ ] Update screenshots
 - [ ] Update deployment instructions
 - [ ] Update software documentation
-
-# Out of scope
-
-Out of scope for this issue are:
-- [ ] Refactoring `code`
-- [ ] Adding ...
