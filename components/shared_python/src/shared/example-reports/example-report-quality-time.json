@@ -303,7 +303,7 @@
                     ]
                 },
                 "79528152-36dc-48ff-89db-12b011ab1e04": {
-                    "type": "source_code_version",
+                    "type": "software_version",
                     "sources": {
                         "8ec24706-ae21-442d-c1d6-136ebcc28014": {
                             "type": "sonarqube",

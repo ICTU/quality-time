@@ -884,7 +884,7 @@
                     ]
                 },
                 "e3efc509-2a71-50df-8025-0aab8665bc0f": {
-                    "type": "source_code_version",
+                    "type": "software_version",
                     "sources": {
                         "40724d22-baf6-4830-b247-bc2d875f9db7": {
                             "type": "performancetest_runner",
