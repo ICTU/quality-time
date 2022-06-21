@@ -87,6 +87,14 @@ it('shows an error message if the metric has issues but no issue tracker is conf
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1);
 });
 
+it('creates an issue', async () => {
+    window.open = jest.fn()
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42"});
+    await act(async () => { render_metric_parameters() });
+    fireEvent.click(screen.getByText(/Create new issue/))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { });
+});
+
 it('tries to create an issue', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: ""});
     await act(async () => { render_metric_parameters() });
