@@ -6,8 +6,9 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
-import { set_metric_attribute } from '../api/metric';
+import { set_metric_attribute, add_metric_issue } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
+import { NewIssueButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
@@ -155,6 +156,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
     const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
+    const issue_ids = get_metric_issue_ids(metric);
     return (
         <MultipleChoiceInput
             aria-labelledby={labelId}
@@ -173,10 +175,12 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
             label={<label id={labelId}>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
             options={suggestions}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={get_metric_issue_ids(metric)}
+            value={issue_ids}
+            key={issue_ids}  // Make sure the multiple choice input is rerendered when the issue ids change
         />
     )
 }
+
 
 export function MetricParameters({ report, subject, metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
@@ -231,7 +235,10 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column width={16}>
+                <Grid.Column width={3} verticalAlign="bottom">
+                    <NewIssueButton onClick={() => add_metric_issue(metric_uuid, reload)} />
+                </Grid.Column>
+                <Grid.Column width={13}>
                     <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>

@@ -12,7 +12,14 @@ from .datamodel import get_data_model
 from .documentation import get_api
 from .logo import get_logo
 from .measurement import get_measurements, set_entity_attribute, stream_nr_measurements
-from .metric import delete_metric, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric
+from .metric import (
+    add_metric_issue,
+    delete_metric,
+    post_metric_attribute,
+    post_metric_copy,
+    post_metric_new,
+    post_move_metric,
+)
 from .notification import (
     delete_notification_destination,
     post_new_notification_destination,

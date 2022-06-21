@@ -14,6 +14,7 @@ function ActionButton(props) {
         popup ?
             <Popup
                 content={popup}
+                on={['focus', 'hover']}
                 position={position || 'top left'}
                 trigger={button}
             /> :
@@ -163,6 +164,20 @@ export function DownloadAsPDFButton(props) {
                 }
             }}
             {...otherProps}
+        />
+    )
+}
+
+export function NewIssueButton(props) {
+    return (
+        <ActionButton
+            action='Create new'
+            fluid
+            icon='plus'
+            item_type='issue'
+            popup='Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.'
+            position='top center'
+            {...props}
         />
     )
 }

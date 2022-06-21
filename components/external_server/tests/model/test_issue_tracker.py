@@ -42,3 +42,22 @@ class IssueTrackerTest(unittest.TestCase):
         logging.disable(logging.CRITICAL)
         self.assertEqual([], issue_tracker.get_suggestions("Query"))
         logging.disable(logging.NOTSET)
+
+    @patch("requests.post")
+    def test_create_issue(self, requests_post):
+        """Test that an issue can be created."""
+        response = Mock()
+        response.json.return_value = dict(key="FOO-42")
+        requests_post.return_value = response
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL)
+        self.assertEqual(("FOO-42", ""), issue_tracker.create_issue("New issue"))
+
+    def test_create_issue_without_url(self):
+        """Test that without URL an error message is returned."""
+        issue_tracker = IssueTracker("")
+        logging.disable(logging.CRITICAL)
+        self.assertEqual(
+            ("", "Invalid URL '/rest/api/2/issue': No scheme supplied. Perhaps you meant http:///rest/api/2/issue?"),
+            issue_tracker.create_issue("New issue"),
+        )
+        logging.disable(logging.NOTSET)

@@ -1,11 +1,21 @@
 """Unit tests for the metric routes."""
 
+import logging
 import unittest
 from unittest.mock import Mock, patch
 
+import requests
+
 from shared.model.report import Report
 
-from routes import delete_metric, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric
+from routes import (
+    add_metric_issue,
+    delete_metric,
+    post_metric_attribute,
+    post_metric_copy,
+    post_metric_new,
+    post_move_metric,
+)
 
 from ..fixtures import (
     JOHN,
@@ -478,3 +488,44 @@ class MetricTest(unittest.TestCase):
         self.assert_delta(
             "John Doe deleted metric 'Metric' from subject 'Subject' in report 'Report'.", report=updated_report
         )
+
+
+class MetricIssueTest(unittest.TestCase):
+    """Unit tests for metric issue routes."""
+
+    def setUp(self):
+        """Override to set up the mock database."""
+        self.database = Mock()
+        self.data_model = dict(_id="id")
+        self.database.datamodels.find_one.return_value = self.data_model
+        report = Report(
+            self.data_model,
+            dict(
+                report_uuid=REPORT_ID,
+                issue_tracker=dict(parameters=dict(url="https://tracker")),
+                subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="name")})},
+            ),
+        )
+        self.database.reports.find.return_value = [report]
+        self.database.sessions.find_one.return_value = JOHN
+
+    @patch("model.issue_tracker.requests.post")
+    def test_add_metric_issue(self, requests_post):
+        """Test that an issue can be added to the issue tracker."""
+        response = Mock()
+        response.json.return_value = dict(key="FOO-42")
+        requests_post.return_value = response
+        self.assertEqual(
+            dict(ok=True, error="", issue_url="https://tracker/browse/FOO-42"),
+            add_metric_issue(METRIC_ID, self.database),
+        )
+
+    @patch("model.issue_tracker.requests.post")
+    def test_add_metric_issue_failure(self, requests_post):
+        """Test that an error message is returned if an issue cannot be added to the issue tracker."""
+        logging.disable(logging.CRITICAL)
+        response = Mock()
+        response.raise_for_status.side_effect = requests.HTTPError("Oops")
+        requests_post.return_value = response
+        self.assertEqual(dict(ok=False, error="Oops", issue_url=""), add_metric_issue(METRIC_ID, self.database))
+        logging.disable(logging.NOTSET)
