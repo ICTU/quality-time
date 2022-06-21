@@ -40,11 +40,17 @@ class IssueTracker:
     issue_browse_url = "%s/browse/%s"
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
 
-    def create_issue(self, summary: str) -> tuple[str, str]:
+    def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
         """Create a new issue and return its key or an error message if creating the issue failed."""
         api_url = self.issue_creation_api % (self.url.rstrip("/"))
-        issue_fields = dict(project=dict(key=self.project_key), issuetype=dict(name=self.issue_type), summary=summary)
-        json = dict(fields=issue_fields)
+        json = dict(
+            fields=dict(
+                project=dict(key=self.project_key),
+                issuetype=dict(name=self.issue_type),
+                summary=summary,
+                description=description,
+            )
+        )
         try:
             response = requests.post(
                 api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers(), json=json

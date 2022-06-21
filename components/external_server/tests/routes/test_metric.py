@@ -490,6 +490,8 @@ class MetricTest(unittest.TestCase):
         )
 
 
+@patch("bottle.request")
+@patch("model.issue_tracker.requests.post")
 class MetricIssueTest(unittest.TestCase):
     """Unit tests for metric issue routes."""
 
@@ -509,9 +511,9 @@ class MetricIssueTest(unittest.TestCase):
         self.database.reports.find.return_value = [report]
         self.database.sessions.find_one.return_value = JOHN
 
-    @patch("model.issue_tracker.requests.post")
-    def test_add_metric_issue(self, requests_post):
+    def test_add_metric_issue(self, requests_post, request):
         """Test that an issue can be added to the issue tracker."""
+        request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
@@ -520,10 +522,10 @@ class MetricIssueTest(unittest.TestCase):
             add_metric_issue(METRIC_ID, self.database),
         )
 
-    @patch("model.issue_tracker.requests.post")
-    def test_add_metric_issue_failure(self, requests_post):
+    def test_add_metric_issue_failure(self, requests_post, request):
         """Test that an error message is returned if an issue cannot be added to the issue tracker."""
         logging.disable(logging.CRITICAL)
+        request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response

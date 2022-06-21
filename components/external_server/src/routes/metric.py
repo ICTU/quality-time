@@ -149,8 +149,13 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(reports, metric_uuid)[0]
     issue_tracker = instantiate_issue_tracker(report)
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
-    summary = f"Fix metric '{metric.name}'"
-    issue_key, error = issue_tracker.create_issue(summary)
+    summary = f"Quality-time metric '{metric.name}'"
+    metric_url = dict(bottle.request.json)["metric_url"]
+    description = (
+        f"Please address metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
+        f"in Quality-time report '{report.name}'."
+    )
+    issue_key, error = issue_tracker.create_issue(summary, description)
     if error:
         return dict(ok=False, error=error, issue_url="")
     old_issue_ids = metric.get("issue_ids") or []

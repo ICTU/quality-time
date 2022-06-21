@@ -92,14 +92,14 @@ it('creates an issue', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42"});
     await act(async () => { render_metric_parameters() });
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid"});
 });
 
 it('tries to create an issue', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: ""});
     await act(async () => { render_metric_parameters() });
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid"});
 });
 
 it('shows issue id suggestions', async () => {
