@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, waitFor, render, screen } from '@testing-library/react';
+import { act, waitFor, render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
@@ -85,6 +85,13 @@ it('does not show an error message if the metric has issues and an issue tracker
 it('shows an error message if the metric has issues but no issue tracker is configured', async () => {
     await act(async () => { render_metric_parameters("count", ["FOO-42"]) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1);
+});
+
+it('tries to create an issue', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: ""});
+    await act(async () => { render_metric_parameters() });
+    fireEvent.click(screen.getByText(/Create new issue/))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { });
 });
 
 it('shows issue id suggestions', async () => {
