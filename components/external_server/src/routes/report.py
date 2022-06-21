@@ -17,7 +17,7 @@ from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
 from database.reports import latest_report, latest_reports
 from model.actions import copy_report
-from model.issue_tracker import IssueTracker
+from model.issue_tracker import instantiate_issue_tracker
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -214,13 +214,7 @@ def get_report_issue_tracker_suggestions(report_uuid: Report, query: str, databa
     """Get suggestions for issue ids from the issue tracker using the query string."""
     data_model = latest_datamodel(database)
     report = latest_report(database, data_model, report_uuid)
-    issue_tracker_data = report.get("issue_tracker", {})
-    parameters = issue_tracker_data.get("parameters", {})
-    url = parameters.get("url")
-    username = parameters.get("username", "")
-    password = parameters.get("password", "")
-    private_token = parameters.get("private_token", "")
-    issue_tracker = IssueTracker(url, username, password, private_token)
+    issue_tracker = instantiate_issue_tracker(report)
     return dict(suggestions=[issue.as_dict() for issue in issue_tracker.get_suggestions(query)])
 
 

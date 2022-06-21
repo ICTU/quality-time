@@ -9,13 +9,12 @@ from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database.reports import insert_new_report
 from shared.model.metric import Metric
-from shared.model.report import Report
 from shared.utils.type import MetricId, SubjectId
 
 from database.datamodels import default_metric_attributes
 from database.reports import latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item
-from model.issue_tracker import IssueTracker
+from model.issue_tracker import instantiate_issue_tracker
 from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -164,16 +163,3 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
     insert_new_report(database, description, uuids, report)
     return dict(ok=True, error="", issue_url=issue_tracker.browse_url(issue_key) if issue_key else "")
-
-
-def instantiate_issue_tracker(report: Report) -> IssueTracker:
-    """Instantiate an issue tracker."""
-    issue_tracker_data = report.get("issue_tracker", {})
-    parameters = issue_tracker_data.get("parameters", {})
-    url = parameters.get("url")
-    username = parameters.get("username", "")
-    password = parameters.get("password", "")
-    private_token = parameters.get("private_token", "")
-    project_key = parameters.get("project_key", "")
-    issue_type = parameters.get("issue_type", "")
-    return IssueTracker(url, username, password, private_token, project_key, issue_type)
