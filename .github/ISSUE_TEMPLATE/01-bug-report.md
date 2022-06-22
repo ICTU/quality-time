@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Your environment (please complete the following information):**
- - OS: [e.g. iOS]
+ - OS: [e.g. Linux]
  - Browser [e.g. Chrome, Safari]
  - Quality-time version [e.g. v4.0.0]
 

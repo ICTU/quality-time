@@ -1,6 +1,6 @@
 ---
 name: Epic template [only use if you're a Quality-time developer]
-about: Document what, why and how needs to be changed
+about: Document what and why needs to be changed
 title: ''
 labels: Feature
 assignees: ''
@@ -9,7 +9,7 @@ assignees: ''
 
 # Epic
 
-As a `role` I want to `action` so that `goal`
+As a `role` I want to `action` so that `goal`.
 
 ## Acceptance criteria
 
@@ -25,11 +25,16 @@ As a `role` I want to `action` so that `goal`
 
 ## Out of scope
 
-- Refactoring ...
+- Doing ...
 - Adding ...
 
 # User stories
 
 - [ ] `insert issue number of user story here`
 - [ ] ...
+
+# Dependencies
+
+- `insert issue number of user story here` blocks `insert issue number of user story here` 
+- ...
 
