@@ -518,7 +518,7 @@ class MetricIssueTest(unittest.TestCase):
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
         self.assertEqual(
-            dict(ok=True, error="", issue_url="https://tracker/browse/FOO-42"),
+            dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
             add_metric_issue(METRIC_ID, self.database),
         )
 
@@ -529,5 +529,5 @@ class MetricIssueTest(unittest.TestCase):
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
-        self.assertEqual(dict(ok=False, error="Oops", issue_url=""), add_metric_issue(METRIC_ID, self.database))
+        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))
         logging.disable(logging.NOTSET)

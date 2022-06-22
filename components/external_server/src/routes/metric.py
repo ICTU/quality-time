@@ -157,14 +157,13 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     )
     issue_key, error = issue_tracker.create_issue(summary, description)
     if error:
-        return dict(ok=False, error=error, issue_url="")
+        return dict(ok=False, error=error)
     old_issue_ids = metric.get("issue_ids") or []
     new_issue_ids = sorted([issue_key, *old_issue_ids])
     description = (
         f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
         f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
     )
-    uuids = [report.uuid, subject.uuid, metric.uuid]
     report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
-    insert_new_report(database, description, uuids, report)
-    return dict(ok=True, error="", issue_url=issue_tracker.browse_url(issue_key) if issue_key else "")
+    insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
+    return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
