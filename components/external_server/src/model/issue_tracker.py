@@ -31,17 +31,20 @@ class IssueTracker:
     """Issue tracker. Only supports Jira at the moment."""
 
     url: URL
+    project_key: str
+    issue_type: str
     username: str = ""
     password: str = ""
     private_token: str = ""
-    project_key: str = ""
-    issue_type: str = ""
     issue_creation_api = "%s/rest/api/2/issue"
     issue_browse_url = "%s/browse/%s"
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
 
     def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
         """Create a new issue and return its key or an error message if creating the issue failed."""
+        for attribute, name in [(self.url, "URL"), (self.project_key, "project key"), (self.issue_type, "issue type")]:
+            if not attribute:
+                return "", f"Issue tracker has no {name} configured."
         api_url = self.issue_creation_api % (self.url.rstrip("/"))
         json = dict(
             fields=dict(
@@ -98,9 +101,9 @@ def instantiate_issue_tracker(report: Report) -> IssueTracker:
     issue_tracker_data = report.get("issue_tracker", {})
     parameters = issue_tracker_data.get("parameters", {})
     url = parameters.get("url")
+    project_key = parameters.get("project_key", "")
+    issue_type = parameters.get("issue_type", "")
     username = parameters.get("username", "")
     password = parameters.get("password", "")
     private_token = parameters.get("private_token", "")
-    project_key = parameters.get("project_key", "")
-    issue_type = parameters.get("issue_type", "")
-    return IssueTracker(url, username, password, private_token, project_key, issue_type)
+    return IssueTracker(url, project_key, issue_type, username, password, private_token)

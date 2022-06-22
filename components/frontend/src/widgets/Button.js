@@ -6,10 +6,10 @@ import { show_message } from '../widgets/toast';
 import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
-function ActionButton(props) {
+export function ActionButton(props) {
     const { action, icon, item_type, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
-    const button = <Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button>;
+    const button = <span><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></span>;
     return (
         popup ?
             <Popup
@@ -164,20 +164,6 @@ export function DownloadAsPDFButton(props) {
                 }
             }}
             {...otherProps}
-        />
-    )
-}
-
-export function NewIssueButton(props) {
-    return (
-        <ActionButton
-            action='Create new'
-            fluid
-            icon='plus'
-            item_type='issue'
-            popup='Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.'
-            position='top center'
-            {...props}
         />
     )
 }

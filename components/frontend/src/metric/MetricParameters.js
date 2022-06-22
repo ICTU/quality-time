@@ -8,7 +8,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
 import { set_metric_attribute, add_metric_issue } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
-import { NewIssueButton } from '../widgets/Button';
+import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
@@ -152,8 +152,8 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     )
 }
 
-function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
-    const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
+function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
+    const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this metric. ${issue_tracker_instruction}`;
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
     const issue_ids = get_metric_issue_ids(metric);
@@ -163,7 +163,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
             allowAdditions
             onSearchChange={(query) => {
                 if (query) {
-                    get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestionsResponse) => {
+                    get_report_issue_tracker_suggestions(report_uuid, query).then((suggestionsResponse) => {
                         const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({ key: s.key, text: `${s.key}: ${s.text}`, value: s.key }))
                         setSuggestions(suggestionOptions)
                     })
@@ -186,7 +186,7 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
-    const issue_tracker_instruction = "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
+    const issue_tracker_instruction = report.issue_tracker ? "" : "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -236,10 +236,19 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column width={3} verticalAlign="bottom">
-                    <NewIssueButton onClick={() => add_metric_issue(metric_uuid, reload)} />
+                    <ActionButton
+                        action='Create new'
+                        disabled={!report.issue_tracker}
+                        fluid
+                        icon='plus'
+                        item_type='issue'
+                        onClick={() => add_metric_issue(metric_uuid, reload)}
+                        popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers. ${issue_tracker_instruction}`}
+                        position='top center'
+                    />
                 </Grid.Column>
                 <Grid.Column width={13}>
-                    <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+                    <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             {(get_metric_issue_ids(metric).length > 0 && !report?.issue_tracker?.type) &&

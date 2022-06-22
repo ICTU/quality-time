@@ -504,7 +504,7 @@ class MetricIssueTest(unittest.TestCase):
             self.data_model,
             dict(
                 report_uuid=REPORT_ID,
-                issue_tracker=dict(parameters=dict(url="https://tracker")),
+                issue_tracker=dict(parameters=dict(url="https://tracker", project_key="KEY", issue_type="BUG")),
                 subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="name")})},
             ),
         )
