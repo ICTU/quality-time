@@ -13,6 +13,7 @@ class IssueTrackerTest(unittest.TestCase):
     ISSUE_TRACKER_URL = "https://tracker"
     PROJECT_KEY = "KEY"
     ISSUE_TYPE = "BUG"
+    ISSUE_SUMMARY = "Issue summary"
 
     def setUp(self):
         """Override to set up the issue tracker."""
@@ -37,9 +38,9 @@ class IssueTrackerTest(unittest.TestCase):
     def test_get_suggestions(self, requests_get):
         """Test that issue suggestions are returned."""
         response = Mock()
-        response.json.return_value = dict(issues=[dict(key="FOO-42", fields=dict(summary="Summary"))])
+        response.json.return_value = dict(issues=[dict(key="FOO-42", fields=dict(summary=self.ISSUE_SUMMARY))])
         requests_get.return_value = response
-        self.assertEqual([IssueSuggestion("FOO-42", "Summary")], self.issue_tracker.get_suggestions("Summ"))
+        self.assertEqual([IssueSuggestion("FOO-42", "Issue summary")], self.issue_tracker.get_suggestions("Summ"))
 
     def test_get_suggestions_without_url(self):
         """Test that an empty list of issue suggestions is returned."""
@@ -53,7 +54,7 @@ class IssueTrackerTest(unittest.TestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(("FOO-42", ""), self.issue_tracker.create_issue("New issue"))
+        self.assertEqual(("FOO-42", ""), self.issue_tracker.create_issue(self.ISSUE_SUMMARY))
 
     def test_create_issue_with_invalid_url(self):
         """Test that without a valid URL an error message is returned."""
@@ -73,5 +74,5 @@ class IssueTrackerTest(unittest.TestCase):
         """Test that without a URL an error message is returned."""
         issue_tracker = IssueTracker("", "", "")
         logging.disable(logging.CRITICAL)
-        self.assertEqual(("", "Issue tracker has no URL configured."), issue_tracker.create_issue("New issue"))
+        self.assertEqual(("", "Issue tracker has no URL configured."), issue_tracker.create_issue(self.ISSUE_SUMMARY))
         logging.disable(logging.NOTSET)
