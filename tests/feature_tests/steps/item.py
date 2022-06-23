@@ -73,7 +73,7 @@ def change_item_attribute(context, item, attribute, value):
         context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
     else:
         if item == "report" and attribute.startswith("tracker"):
-            attribute = attribute.split("_")[1]
+            attribute = attribute.split("_", 1)[1]
             attribute_fragment = "issue_tracker"
         else:
             attribute_fragment = "attribute"

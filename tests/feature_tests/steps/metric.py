@@ -1,7 +1,7 @@
 """Feature tests for metric specific attributes."""
 
-from asserts import assert_equal, assert_true
-from behave import then
+from asserts import assert_equal, assert_false, assert_true
+from behave import then, when
 
 from item import get_item
 
@@ -22,3 +22,17 @@ def assert_issue_id_suggestions(context):
     """Check the issue id suggestions."""
     suggestions = context.get(f"report/{context.uuid['report']}/issue_tracker/suggestions/random_query")
     assert_equal(dict(suggestions=[]), suggestions)
+
+
+@when("the client opens a new issue")
+def create_new_issue(context):
+    """Create a new issue for the current metric."""
+    context.post(f"metric/{context.uuid['metric']}/issue/new", dict(metric_url="https://metric"))
+
+
+@then("the new issue response error is '{error}'")
+def new_issue_response(context, error):
+    """Check the new issue response."""
+    json = context.response.json()
+    assert_false(json["ok"])
+    assert_true(error in json["error"])

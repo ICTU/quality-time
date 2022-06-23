@@ -60,16 +60,15 @@ class IssueTracker:
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
             return "", str(reason)
-        return response.json()["key"], ""
+        return response.json()["key"], ""  # pragma: no cover behave
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
         api_url = self.suggestions_api % (self.url.rstrip("/"), query)
         try:
             response = requests.get(api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers())
-            # pragma: no cover behave
-            response.raise_for_status()
-            json = response.json()
+            response.raise_for_status()  # pragma: no cover behave
+            json = response.json()  # pragma: no cover behave
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
             return []

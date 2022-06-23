@@ -32,3 +32,21 @@ Feature: metric issues
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     Then the issue id suggestions are missing
+
+  Scenario: creating a new issue without an issue tracker
+    When the client opens a new issue
+    Then the new issue response error is 'Issue tracker has no URL configured.'
+
+  Scenario: creating a new issue with an incompletely configured issue tracker
+    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client opens a new issue
+    Then the new issue response error is 'Issue tracker has no project key configured.'
+
+  Scenario: creating a new issue with an completely configured issue tracker
+    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_project_key to "KEY"
+    And the client changes the report tracker_issue_type to "Task"
+    And the client opens a new issue
+    Then the new issue response error is 'Failed to establish a new connection'
