@@ -1,4 +1,4 @@
-FROM nginx:1.21.6
+FROM nginx:1.23.0
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time proxy"
