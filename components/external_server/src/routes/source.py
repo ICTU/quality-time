@@ -7,13 +7,13 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.database.reports import insert_new_report
-from shared.model.report import Report
 from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 from database.datamodels import default_source_parameters
 from database.reports import latest_report_for_uuids, latest_reports
 from model.actions import copy_source, move_item
 from model.queries import is_password_parameter
+from model.report import Report
 from model.transformations import change_source_parameter
 from utils.functions import check_url_availability, uuid
 from utils.type import EditScope

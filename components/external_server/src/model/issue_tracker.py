@@ -6,8 +6,6 @@ import logging
 
 import requests
 
-from shared.model.report import Report
-
 from utils.type import URL
 
 
@@ -94,16 +92,3 @@ class IssueTracker:
     def _auth_headers(self) -> dict[str, str]:
         """Return the authorization headers, if any."""
         return dict(Authorization=f"Bearer {self.private_token}") if self.private_token else {}
-
-
-def instantiate_issue_tracker(report: Report) -> IssueTracker:
-    """Instantiate an issue tracker."""
-    issue_tracker_data = report.get("issue_tracker", {})
-    parameters = issue_tracker_data.get("parameters", {})
-    url = parameters.get("url")
-    project_key = parameters.get("project_key", "")
-    issue_type = parameters.get("issue_type", "")
-    username = parameters.get("username", "")
-    password = parameters.get("password", "")
-    private_token = parameters.get("private_token", "")
-    return IssueTracker(url, project_key, issue_type, username, password, private_token)

@@ -14,7 +14,6 @@ from shared.utils.type import MetricId, SubjectId
 from database.datamodels import default_metric_attributes
 from database.reports import latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item
-from model.issue_tracker import instantiate_issue_tracker
 from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -147,7 +146,7 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     data_model = latest_datamodel(database)
     reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(reports, metric_uuid)[0]
-    issue_tracker = instantiate_issue_tracker(report)
+    issue_tracker = report.issue_tracker()
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     summary = f"Quality-time metric '{metric.name}'"
     metric_url = dict(bottle.request.json)["metric_url"]
