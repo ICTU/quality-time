@@ -14,7 +14,7 @@ python3 -m venv venv
 . venv/bin/activate
 ci/pip-install.sh
 coverage erase
-RENDERER_HOST=localhost python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_external_server.log &
+RENDERER_HOST=localhost python tests/quality_time_external_server_under_coverage.py &> ../../build/quality_time_external_server.log &
 deactivate
 cd ../..
 cd components/internal_server || exit
@@ -22,7 +22,7 @@ python3 -m venv venv
 . venv/bin/activate
 ci/pip-install.sh
 coverage erase
-python tests/quality_time_server_under_coverage.py &> ../../build/quality_time_internal_server.log &
+python tests/quality_time_internal_server_under_coverage.py &> ../../build/quality_time_internal_server.log &
 deactivate
 cd ../..
 # We need to start a second external server for the renderer. We start it after the external server under coverage so
@@ -37,11 +37,12 @@ sleep 10  # Give server time to start up
 coverage erase
 coverage run -m behave --format pretty "${1:-tests/feature_tests/features}"
 result=$?
-kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
-sleep 2  # Give server time to write coverage data
+kill -s TERM "$(pgrep -n -f tests/quality_time_external_server_under_coverage.py)"
+kill -s TERM "$(pgrep -n -f tests/quality_time_internal_server_under_coverage.py)"
+sleep 5  # Give servers time to write coverage data
 if [[ "$result" -eq "0" ]]
 then
-  coverage combine . components/external_server
+  coverage combine . components/external_server components/internal_server
   coverage xml
   coverage html
   coverage report
