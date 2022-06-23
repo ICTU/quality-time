@@ -20,6 +20,8 @@ const data_model = {
     }
 };
 
+const reportWithIssueTracker = { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }
+
 function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
@@ -78,7 +80,7 @@ it('does not show an error message if the metric has no issues and an issue trac
 });
 
 it('does not show an error message if the metric has issues and an issue tracker is configured', async () => {
-    await act(async () => { render_metric_parameters("count", ["BAR-42"], { issue_tracker: { type: "Jira" } }) });
+    await act(async () => { render_metric_parameters("count", ["BAR-42"], { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
 });
 
@@ -89,17 +91,17 @@ it('shows an error message if the metric has issues but no issue tracker is conf
 
 it('creates an issue', async () => {
     window.open = jest.fn()
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42"});
-    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", project_key: "KEY", issue_type: "Bug" }}) });
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" });
+    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker) });
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid" });
 });
 
 it('tries to create an issue', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: ""});
-    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", project_key: "KEY", issue_type: "Bug" }}) });
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" });
+    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker) });
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid" });
 });
 
 it('shows issue id suggestions', async () => {

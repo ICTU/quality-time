@@ -186,7 +186,9 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
-    const issue_tracker_instruction = report.issue_tracker ? "" : "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
+    const parameters = report?.issue_tracker?.parameters;
+    const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
+    const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -238,23 +240,23 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                 <Grid.Column width={3} verticalAlign="bottom">
                     <ActionButton
                         action='Create new'
-                        disabled={!report.issue_tracker}
+                        disabled={!issueTrackerConfigured}
                         fluid
                         icon='plus'
                         item_type='issue'
                         onClick={() => add_metric_issue(metric_uuid, reload)}
-                        popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers. ${issue_tracker_instruction}`}
+                        popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.${issueTrackerInstruction}`}
                         position='top center'
                     />
                 </Grid.Column>
                 <Grid.Column width={13}>
-                    <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
+                    <IssueIdentifiers issue_tracker_instruction={issueTrackerInstruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
-            {(get_metric_issue_ids(metric).length > 0 && !report?.issue_tracker?.type) &&
+            {(get_metric_issue_ids(metric).length > 0 && !issueTrackerConfigured) &&
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <ErrorMessage title="No issue tracker configured" message={issue_tracker_instruction} />
+                        <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
                     </Grid.Column>
                 </Grid.Row>
             }
