@@ -101,6 +101,28 @@ export function IssueTracker({ report, reload }) {
                     />
                 </Grid.Column>
             </Grid.Row>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <StringInput
+                        id="tracker-project-key"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        required={report.issue_tracker?.type}
+                        label="Project key for new issues"
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "project_key", value, reload)}
+                        value={report.issue_tracker?.parameters?.project_key}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <StringInput
+                        id="tracker-issue-type"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        required={report.issue_tracker?.type}
+                        label="Issue type for new issues"
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "issue_type", value, reload)}
+                        value={report.issue_tracker?.parameters?.issue_type}
+                    />
+                </Grid.Column>
+            </Grid.Row>
         </Grid>
     )
 }

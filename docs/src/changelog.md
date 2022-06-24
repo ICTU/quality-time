@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v4.0.0, please read th
 ### Added
 
 - Allow for turning off evaluation of metric targets, making the metric "informative". Informative metrics are shown with an i (for information) icon on a blue background in the user interface, regardless of their measurement value (unless the source data could not be read or parsed, then they are shown as status unknown/white like all metrics). Closes [#2051](https://github.com/ICTU/quality-time/issues/2051).
+- Allow for creating issues from *Quality-time*. If an issue tracker is configured (note: including project key and issue type), users can create an issue for a metric by clicking the 'Create new issue' button in the metric configuration tab. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue ids. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser. Closes [#2931](https://github.com/ICTU/quality-time/issues/2931).
 - Add a 'software version' metric that can be used to measure the version of the software analysed by sources. Sources currently supporting the 'software version' metric are: Performancetest-runner and SonarQube. Closes [#3981](https://github.com/ICTU/quality-time/issues/3981).
 - Add subjects to the reference documentation. Closes [#4043](https://github.com/ICTU/quality-time/issues/4043).
 

@@ -87,3 +87,19 @@ it('shows the issue tracker private token help url', async () => {
         expect(container.querySelector("a")).toHaveAttribute('href', 'https://help')
     });
 });
+
+it('sets the issue tracker project key', async () => {
+    await act(async () => {
+        render_issue_tracker();
+    });
+    await userEvent.type(screen.getByText(/Project key/), 'key{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/project_key", { project_key: "key" });
+});
+
+it('sets the issue tracker issue type', async () => {
+    await act(async () => {
+        render_issue_tracker();
+    });
+    await userEvent.type(screen.getByText(/Issue type/), 'bug{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/issue_type", { issue_type: "bug" });
+});

@@ -30,10 +30,10 @@ def check_data_model(context):
     assert_true("timestamp" in context.response.json())
 
 
-@then("the server returns a 304")
-def check_304(context):
-    """Check that the server returns a 304."""
-    assert_equal(304, context.response.status_code)
+@then("the server returns a {http_status_code}")
+def check_http_status_code(context, http_status_code):
+    """Check that the server returns the specified HTTP status code."""
+    assert_equal(str(http_status_code), str(context.response.status_code))
 
 
 @then("the server returns an empty data model")

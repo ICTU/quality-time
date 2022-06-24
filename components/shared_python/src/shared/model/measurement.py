@@ -9,7 +9,7 @@ from typing import Optional, cast
 from packaging.version import InvalidVersion, Version
 
 from shared.utils.functions import iso_timestamp, percentage
-from shared.utils.type import Scale, Status
+from shared.utils.type import Scale, Status, Value
 
 from .metric import Metric
 from .source import Source
@@ -260,10 +260,14 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return the measurement's sources."""
         return cast(Sequence[Source], self["sources"])
 
-    def summarize(self, scale: Scale):
+    def value(self) -> Value:
+        """Return the value of the measurement."""
+        return cast(Value, self[self.metric.scale()].get("value"))
+
+    def summarize(self):
         """Return a summary of this measurement."""
         return {
-            scale: dict(value=self[scale].get("value"), status=self.status()),
+            self.metric.scale(): dict(value=self.value(), status=self.status()),
             "start": self["start"],
             "end": self["end"],
         }

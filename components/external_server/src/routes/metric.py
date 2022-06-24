@@ -138,3 +138,36 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
     return dict(ok=True)
+
+
+@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
+def add_metric_issue(metric_uuid: MetricId, database: Database):
+    """Add a new issue to the metric using the configured issue tracker."""
+    reports = latest_reports(database, latest_datamodel(database))
+    report = latest_report_for_uuids(reports, metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    issue_tracker = report.issue_tracker()
+    issue_summary = f"Quality-time metric '{metric.name}'"
+    issue_description = create_issue_description(metric, subject, report)
+    issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
+    if error:  # pylint: disable=no-else-return
+        return dict(ok=False, error=error)
+    else:  # pragma: no cover
+        old_issue_ids = metric.get("issue_ids") or []
+        new_issue_ids = sorted([issue_key, *old_issue_ids])
+        description = (
+            f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
+            f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
+        )
+        report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
+        insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
+        return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
+
+
+def create_issue_description(metric, subject, report) -> str:
+    """Create an issue description for the metric."""
+    metric_url = dict(bottle.request.json)["metric_url"]
+    return (
+        f"Metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
+        f"in Quality-time report '{report.name}' needs attention."
+    )

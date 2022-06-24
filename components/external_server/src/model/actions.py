@@ -2,11 +2,11 @@
 
 from typing import Any
 
-from shared.model.report import Report
 from shared.model.subject import Subject
 from shared.model.metric import Metric
 from shared.model.source import Source
 
+from model.report import Report
 from utils.functions import uuid
 from utils.type import Position
 

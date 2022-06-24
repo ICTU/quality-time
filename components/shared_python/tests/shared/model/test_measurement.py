@@ -268,7 +268,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
                 start=measurement["start"],
                 end=measurement["end"],
             ),
-            measurement.summarize("count"),
+            measurement.summarize(),
         )
 
     def test_summarize_with_non_default_start_date(self):
@@ -277,7 +277,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
         measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
             dict(count=dict(value=None, status=None), start=timestamp, end=timestamp),
-            measurement.summarize("count"),
+            measurement.summarize(),
         )
 
 

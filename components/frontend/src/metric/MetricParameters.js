@@ -6,8 +6,9 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
-import { set_metric_attribute } from '../api/metric';
+import { set_metric_attribute, add_metric_issue } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
+import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
@@ -151,17 +152,18 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     )
 }
 
-function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, reload, report }) {
-    const issueStatusHelp = "Identifiers of issues in the configured issue tracker that track the progress of fixing this metric." + (report.issue_tracker ? "" : ` ${issue_tracker_instruction}`);
+function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
+    const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this metric. ${issue_tracker_instruction}`;
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
+    const issue_ids = get_metric_issue_ids(metric);
     return (
         <MultipleChoiceInput
             aria-labelledby={labelId}
             allowAdditions
             onSearchChange={(query) => {
                 if (query) {
-                    get_report_issue_tracker_suggestions(report.report_uuid, query).then((suggestionsResponse) => {
+                    get_report_issue_tracker_suggestions(report_uuid, query).then((suggestionsResponse) => {
                         const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({ key: s.key, text: `${s.key}: ${s.text}`, value: s.key }))
                         setSuggestions(suggestionOptions)
                     })
@@ -173,16 +175,20 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, relo
             label={<label id={labelId}>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
             options={suggestions}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={get_metric_issue_ids(metric)}
+            value={issue_ids}
+            key={issue_ids}  // Make sure the multiple choice input is rerendered when the issue ids change
         />
     )
 }
+
 
 export function MetricParameters({ report, subject, metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
-    const issue_tracker_instruction = "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
+    const parameters = report?.issue_tracker?.parameters;
+    const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
+    const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -231,14 +237,26 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column width={16}>
-                    <IssueIdentifiers issue_tracker_instruction={issue_tracker_instruction} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+                <Grid.Column width={3} verticalAlign="bottom">
+                    <ActionButton
+                        action='Create new'
+                        disabled={!issueTrackerConfigured}
+                        fluid
+                        icon='plus'
+                        item_type='issue'
+                        onClick={() => add_metric_issue(metric_uuid, reload)}
+                        popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.${issueTrackerInstruction}`}
+                        position='top center'
+                    />
+                </Grid.Column>
+                <Grid.Column width={13}>
+                    <IssueIdentifiers issue_tracker_instruction={issueTrackerInstruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
-            {(get_metric_issue_ids(metric).length > 0 && !report?.issue_tracker?.type) &&
+            {(get_metric_issue_ids(metric).length > 0 && !issueTrackerConfigured) &&
                 <Grid.Row>
                     <Grid.Column width={16}>
-                        <ErrorMessage title="No issue tracker configured" message={issue_tracker_instruction} />
+                        <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
                     </Grid.Column>
                 </Grid.Row>
             }

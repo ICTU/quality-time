@@ -6,14 +6,15 @@ import { show_message } from '../widgets/toast';
 import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
-function ActionButton(props) {
+export function ActionButton(props) {
     const { action, icon, item_type, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
-    const button = <Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button>;
+    const button = <span><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></span>;
     return (
         popup ?
             <Popup
                 content={popup}
+                on={['focus', 'hover']}
                 position={position || 'top left'}
                 trigger={button}
             /> :
