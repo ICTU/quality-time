@@ -143,26 +143,26 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
 @bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database, latest_datamodel(database))
     report = latest_report_for_uuids(reports, metric_uuid)[0]
-    issue_tracker = report.issue_tracker()
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
-    summary = f"Quality-time metric '{metric.name}'"
+    issue_tracker = report.issue_tracker()
     metric_url = dict(bottle.request.json)["metric_url"]
-    description = (
+    issue_summary = f"Quality-time metric '{metric.name}'"
+    issue_description = (
         f"Please address metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
         f"in Quality-time report '{report.name}'."
     )
-    issue_key, error = issue_tracker.create_issue(summary, description)
-    if error:
+    issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
+    if error:  # pylint: disable=no-else-return
         return dict(ok=False, error=error)
-    old_issue_ids = metric.get("issue_ids") or []
-    new_issue_ids = sorted([issue_key, *old_issue_ids])
-    description = (
-        f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
-        f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
-    )
-    report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
-    insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
-    return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
+    else:  # pragma: no cover
+        old_issue_ids = metric.get("issue_ids") or []
+        new_issue_ids = sorted([issue_key, *old_issue_ids])
+        description = (
+            f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
+            f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
+        )
+        report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
+        insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
+        return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))

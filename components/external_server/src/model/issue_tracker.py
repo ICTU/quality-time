@@ -56,7 +56,7 @@ class IssueTracker:
             response = requests.post(
                 api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers(), json=json
             )
-            response.raise_for_status()
+            response.raise_for_status()  # pragma: no cover behave
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
             return "", str(reason)
@@ -76,7 +76,7 @@ class IssueTracker:
 
     def browse_url(self, issue_key: str) -> URL:
         """Return a URL to a human readable version of the issue."""
-        return URL(self.issue_browse_url % (self.url.rstrip("/"), issue_key))
+        return URL(self.issue_browse_url % (self.url.rstrip("/"), issue_key))  # pragma: no cover behave
 
     @staticmethod
     def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover behave
