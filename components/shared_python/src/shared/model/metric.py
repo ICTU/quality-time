@@ -148,7 +148,7 @@ class Metric(dict):
         summary["status"] = self.status(latest_measurement)
         summary["status_start"] = latest_measurement.status_start() if latest_measurement else None
         summary["latest_measurement"] = latest_measurement
-        summary["recent_measurements"] = [measurement.summarize(self.scale()) for measurement in measurements]
+        summary["recent_measurements"] = [measurement.summarize() for measurement in measurements]
         if latest_measurement:
             summary["issue_status"] = self.issue_statuses(latest_measurement)
         summary.update(kwargs)

@@ -125,9 +125,11 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(metric.debt_end_date(), "some date")
 
     def test_name(self):
-        """Test that we always get the expected name."""
-        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
-        self.assertEqual(metric.name, "fixture_metric_type")
+        """Test that we get the metric name from the metric."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type", "name": "name"}, METRIC_ID)
+        self.assertEqual("name", metric.name)
 
-        metric["name"] = "test_name"
-        self.assertEqual(metric.name, "test_name")
+    def test_missing_name(self):
+        """Test that we get the metric name from the data model if the metric has no name."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
+        self.assertEqual("fixture_metric_type", metric.name)

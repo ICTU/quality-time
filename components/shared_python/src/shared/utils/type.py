@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from typing import Literal, NewType
+from typing import Literal, NewType, Optional
 
 
 Color = Literal["blue", "green", "grey", "red", "yellow", "white"]
@@ -12,6 +12,7 @@ Status = Literal["informative", "target_met", "debt_target_met", "near_target_me
 TargetType = Literal["target", "near_target", "debt_target"]
 SessionId = NewType("SessionId", str)
 NotificationDestinationId = NewType("NotificationDestinationId", str)
+Value = Optional[str]
 
 
 ReportId = NewType("ReportId", str)

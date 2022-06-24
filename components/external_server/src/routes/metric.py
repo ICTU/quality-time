@@ -147,12 +147,8 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     issue_tracker = report.issue_tracker()
-    metric_url = dict(bottle.request.json)["metric_url"]
     issue_summary = f"Quality-time metric '{metric.name}'"
-    issue_description = (
-        f"Please address metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
-        f"in Quality-time report '{report.name}'."
-    )
+    issue_description = create_issue_description(metric, subject, report)
     issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
     if error:  # pylint: disable=no-else-return
         return dict(ok=False, error=error)
@@ -166,3 +162,12 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
         report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
         insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
         return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
+
+
+def create_issue_description(metric, subject, report) -> str:
+    """Create an issue description for the metric."""
+    metric_url = dict(bottle.request.json)["metric_url"]
+    return (
+        f"Metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
+        f"in Quality-time report '{report.name}' needs attention."
+    )
