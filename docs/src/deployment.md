@@ -85,6 +85,10 @@ By default, the collector measures metrics whose configuration hasn't been chang
       - COLLECTOR_MEASUREMENT_FREQUENCY=600  # Measure metrics at least every 10 minutes
 ```
 
+```{warning}
+Note that the frontend warns users when metrics have not been measured for a long period, currently hardcoded to one hour. That means that if you set the collector measurement frequency to more than one hour, users will see warnings that the measurement data is old.
+```
+
 ## Configuring notification frequency (optional)
 
 The notifier component is responsible for notifying users via MS Teams about changed metric statuses. It wakes up periodically and asks the internal server fo a list of all metrics. For each metric, the notifier decides whether a notification is possible and needed.
