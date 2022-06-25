@@ -15,7 +15,7 @@ from shared.model.measurement import Measurement
 from shared.utils.functions import report_date_time
 from shared.utils.type import MetricId, SourceId
 
-from database.measurements import count_measurements, measurements_by_metric
+from database.measurements import count_measurements, all_metric_measurements
 from database.reports import latest_report_for_uuids, latest_reports
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -90,4 +90,4 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 def get_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    return dict(measurements=list(measurements_by_metric(database, metric_uuid, max_iso_timestamp=report_date_time())))
+    return dict(measurements=list(all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time())))
