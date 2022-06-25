@@ -4,8 +4,8 @@ from .meta.metric import Addition, Direction, Metrics, Tag, Unit
 
 
 SIG_TUVIT_EVALUATION_CRITERIA = (
-    "https://www.softwareimprovementgroup.com/wp-content/uploads/2021-SIG-TUViT-"
-    "Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf"
+    "https://www.softwareimprovementgroup.com/wp-content/uploads/SIG-TUViT-Evaluation-Criteria-Trusted-Product-"
+    "Maintainability-Guidance-for-producers.pdf"
 )
 FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
 
