@@ -27,7 +27,7 @@ function y_values(direction, informative, target_value, near_target_value, debt_
         return { blue: 0, green: target_value, grey: debt_target, yellow: near_target_value, red: max_y }
     }
     const red = Math.min(target_value, near_target_value, debt_target_value ?? Number.MAX_SAFE_INTEGER)
-    return { red: red, yellow: debt_target, grey: target_value, green: max_y, blue: 0 }
+    return { red: red, yellow: debt_target_value ? 0 : target_value, grey: target_value, green: max_y, blue: 0 }
 }
 
 export function TrendGraph({ metric, measurements }) {
@@ -56,7 +56,8 @@ export function TrendGraph({ metric, measurements }) {
     });
     let max_y = nice_number(Math.max(
         Math.max(...measurement_values), Math.max(...target_values),
-        Math.max(...near_target_values), Math.max(...debt_target_values)));
+        Math.max(...near_target_values), Math.max(...debt_target_values)
+    ));
 
     // The colors of the background areas in the right order for "<" metrics, where lower values are better, and for
     // ">" metrics, where higher values are better:
@@ -64,10 +65,18 @@ export function TrendGraph({ metric, measurements }) {
     // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below:
     let areas = { "<": { blue: [], green: [], grey: [], yellow: [], red: [] }, ">": { blue: [], green: [], grey: [], yellow: [], red: [] } };
     let measurementValues = [];  // The measurement values (x, y)
+    let previousX2 = new Date("2000-01-01");
     measurements.forEach((measurement, index) => {
         const x1 = new Date(measurement.start);
         const x2 = new Date(measurement.end);
-        x2.setSeconds(x2.getSeconds() - 1) // Prevent the x2 of this measurement being equal to the x1 of the next or VictoryStack may skip the point
+        // Make sure each measurement has a positive width, or VictoryChart won't draw the area
+        if (x1.getTime() <= previousX2.getTime()) {
+            x1.setSeconds(x1.getSeconds() + (previousX2.getSeconds() - x1.getSeconds()) + 1)
+        }
+        if (x2.getTime() <= x1.getTime()) {
+            x2.setSeconds(x2.getSeconds() + (x1.getSeconds() - x2.getSeconds()) + 1)
+        }
+        previousX2 = x2
         measurementValues.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
         if (target_values[index] === null) { return }  // Old measurements don't have target, near target and debt values
         let point = { blue: { x: x1 }, green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
@@ -81,9 +90,7 @@ export function TrendGraph({ metric, measurements }) {
             areas[direction][color].push(point[color]);
             y0 += y;
         });
-        if (x1.getTime() < x2.getTime()) {
-            colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
-        }
+        colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
     });
     const rgb = { blue: "rgb(0,165,255,0.7)", green: "rgb(30,148,78,0.7)", yellow: "rgb(253,197,54,0.7)", grey: "rgb(150,150,150,0.7)", red: "rgb(211,59,55,0.7)" };
     const background_data = [];

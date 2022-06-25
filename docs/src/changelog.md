@@ -16,8 +16,9 @@ If your currently installed *Quality-time* version is not v4.0.0, please read th
 
 ### Fixed
 
-- When showing multiple dates, the most recent measurement of one of the metrics would sometimes be shown as unknown despite not being unknown at all.
+- Trendgraphs would show yellow background areas as grey for metrics with the "more is better" direction. Fixes [#1380](https://github.com/ICTU/quality-time/issues/1380).
 - If for some reason measurements are not updated, the only way to detect this in the UI was to check the last measurement attempt in the popup of meaasurement values. Fixed by coloring measurement values red when the the last measurement attempt is more than one hour ago. Fixes [#4075](https://github.com/ICTU/quality-time/issues/4075).
+- When showing multiple dates, the most recent measurement of one of the metrics would sometimes be shown as unknown despite not being unknown at all.
 
 ### Changed
 
