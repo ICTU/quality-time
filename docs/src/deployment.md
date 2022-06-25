@@ -86,7 +86,7 @@ By default, the collector measures metrics whose configuration hasn't been chang
 ```
 
 ```{warning}
-Note that frontend users warns when metrics have not been measured for a long period, currently hardcoded to one hour. That means that if you set the collector measurement frequency to more than one hour, users will see warnings that the measurement data is old.
+Note that the frontend warns users when metrics have not been measured for a long period, currently hardcoded to one hour. That means that if you set the collector measurement frequency to more than one hour, users will see warnings that the measurement data is old.
 ```
 
 ## Configuring notification frequency (optional)
