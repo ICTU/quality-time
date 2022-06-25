@@ -8,11 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.1.0-rc.1 - 2022-06-24
+## [Unreleased]
 
 ### Deployment notes
 
 If your currently installed *Quality-time* version is not v4.0.0, please read the v4.0.0 deployment notes.
+
+### Fixed
+
+- When showing multiple dates, the most recent measurement of one of the metrics would sometimes be shown as unknown despite not being unknown at all.
 
 ### Added
 
