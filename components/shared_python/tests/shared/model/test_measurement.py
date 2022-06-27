@@ -74,7 +74,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             measurement=measurement,
             status_start="yesterday",
         )
-        status_start = s_m.status_start()  # pylint: disable=protected-access
+        status_start = s_m.status_start()
         self.assertEqual(status_start, "yesterday")
 
     def test_status_start_empty(self):

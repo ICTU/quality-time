@@ -14,7 +14,7 @@ EDIT_REPORT_PERMISSION = "edit_reports"
 EDIT_ENTITY_PERMISSION = "edit_entities"
 
 
-class AuthPlugin:  # pylint: disable=too-few-public-methods
+class AuthPlugin:
     """This plugin checks authentication and authorization for post and delete routes."""
 
     api = 2

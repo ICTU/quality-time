@@ -1,7 +1,7 @@
 """Robot Framework test cases collector."""
 
-from .tests import RobotFrameworkTests  # pylint: disable=no-name-in-module
+from .tests import RobotFrameworkTests
 
 
-class RobotFrameworkTestCases(RobotFrameworkTests):  # pylint: disable=too-few-public-methods
+class RobotFrameworkTestCases(RobotFrameworkTests):
     """Collector for Robot Framework test cases."""

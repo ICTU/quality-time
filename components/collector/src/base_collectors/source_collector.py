@@ -215,7 +215,7 @@ class SourceCollector(ABC):
         return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
 
 
-class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
+class UnmergedBranchesSourceCollector(SourceCollector, ABC):
     """Base class for unmerged branches source collectors."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

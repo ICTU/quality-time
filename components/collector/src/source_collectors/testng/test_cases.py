@@ -1,7 +1,7 @@
 """TestNG test cases collector."""
 
-from .tests import TestNGTests  # pylint: disable=no-name-in-module
+from .tests import TestNGTests
 
 
-class TestNGTestCases(TestNGTests):  # pylint: disable=too-few-public-methods
+class TestNGTestCases(TestNGTests):
     """Collector for TestNG test cases."""

@@ -20,17 +20,17 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
     METRIC_ADDITION = "sum"
 
     @classmethod
-    def setUpClass(cls) -> None:  # pylint: disable=invalid-name
+    def setUpClass(cls) -> None:
         """Override to disable logging and load the data model so it is available for all unit tests."""
-        logging.disable(logging.CRITICAL)
+        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         cls.data_model = DATA_MODEL
 
     @classmethod
-    def tearDownClass(cls) -> None:  # pylint: disable=invalid-name
+    def tearDownClass(cls) -> None:
         """Override to reset logging."""
-        logging.disable(logging.NOTSET)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
-    def setUp(self) -> None:  # pylint: disable=invalid-name
+    def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
         self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url=f"https://{self.SOURCE_TYPE}")))
         self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)

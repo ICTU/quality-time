@@ -29,7 +29,7 @@ class Documentation(BaseModel):  # pylint: disable=too-few-public-methods
     __root__: dict[str, str]
 
 
-class Source(DescribedModel):  # pylint: disable=too-few-public-methods
+class Source(DescribedModel):
     """The source model extends the base model with source parameters and measurement entities."""
 
     url: Optional[HttpUrl] = None

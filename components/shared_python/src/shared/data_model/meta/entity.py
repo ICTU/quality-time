@@ -56,7 +56,7 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
         return values["name"].lower().replace(" ", "_") if not key else key
 
 
-class Entity(BaseModel):  # pylint: disable=too-few-public-methods
+class Entity(BaseModel):
     """Measurement entity (violation, warning, etc.)."""
 
     # Entity is not derived from NamedModel because entity names should be lower case

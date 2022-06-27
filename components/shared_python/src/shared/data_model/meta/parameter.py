@@ -21,7 +21,7 @@ class ParameterType(str, Enum):
     URL = "url"
 
 
-class Parameter(NamedModel):  # pylint: disable=too-few-public-methods
+class Parameter(NamedModel):
     """Source parameter model."""
 
     short_name: Optional[str] = None
