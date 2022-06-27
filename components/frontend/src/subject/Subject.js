@@ -28,12 +28,12 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
         measurement: (m1, m2) => {
             const m1_measurement = get_metric_value(m1[1]);
             const m2_measurement = get_metric_value(m2[1]);
-            return m1_measurement.localeCompare(m2_measurement)
+            return m1_measurement.localeCompare(m2_measurement, undefined, {numeric: true})
         },
         target: (m1, m2) => {
             const m1_target = get_metric_target(m1[1]);
             const m2_target = get_metric_target(m2[1]);
-            return m1_target.localeCompare(m2_target)
+            return m1_target.localeCompare(m2_target, undefined, {numeric: true})
         },
         comment: (m1, m2) => {
             const m1_comment = get_metric_comment(m1[1]);
