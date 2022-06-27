@@ -1,6 +1,7 @@
 """Quality-time specific types."""
 
 from dataclasses import dataclass
+import email
 
 from typing import Literal, NewType, Optional
 
@@ -33,3 +34,11 @@ class User:
     def name(self) -> str:
         """Return the name of the user."""
         return self.common_name or self.username
+
+    def to_dict(self):
+        """Return a dict representing this user."""
+        return dict(
+            username=self.username,
+            email=self.email,
+            common_name=self.common_name
+        )

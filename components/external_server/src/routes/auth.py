@@ -18,6 +18,7 @@ from pymongo.database import Database
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from shared.utils.type import SessionId, User
 
+from database.users import upsert_user
 from database import sessions
 from utils.functions import uuid
 
@@ -121,6 +122,7 @@ def login(database: Database) -> dict[str, bool | str]:
         username, password = get_credentials()
         user = verify_user(username, password)
     if user.verified:
+        upsert_user(database, user)
         session_expiration_datetime = create_session(database, user)
     else:
         session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
