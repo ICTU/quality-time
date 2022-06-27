@@ -5,7 +5,7 @@ from abc import ABC
 from base_collectors import HTMLFileSourceCollector
 
 
-class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
+class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):
     """Base class for performance test runner collectors."""
 
     @staticmethod

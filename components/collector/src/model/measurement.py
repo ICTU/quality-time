@@ -8,7 +8,7 @@ from .entity import Entities
 from .issue_status import IssueStatus
 
 
-class SourceMeasurement:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class SourceMeasurement:  # pylint: disable=too-many-instance-attributes
     """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
 
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server

@@ -13,7 +13,7 @@ from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
 
 
-class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class AzureDevopsRepositoryBase(SourceCollector, ABC):
     """Base class for Azure DevOps collectors that work with repositories."""
 
     async def _api_url(self) -> URL:

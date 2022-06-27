@@ -1,7 +1,7 @@
 """JUnit test cases collector."""
 
-from .tests import JUnitTests  # pylint: disable=no-name-in-module
+from .tests import JUnitTests
 
 
-class JUnitTestCases(JUnitTests):  # pylint: disable=too-few-public-methods
+class JUnitTestCases(JUnitTests):
     """Collector for JUnit test cases."""

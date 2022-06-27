@@ -17,16 +17,16 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
     @classmethod
-    def setUpClass(cls) -> None:  # pylint: disable=invalid-name
+    def setUpClass(cls) -> None:
         """Override to disable logging."""
         logging.disable(logging.CRITICAL)
 
     @classmethod
-    def tearDownClass(cls) -> None:  # pylint: disable=invalid-name
+    def tearDownClass(cls) -> None:
         """Override to enable logging."""
         logging.disable(logging.NOTSET)
 
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):
         """Override to set up common test data."""
 
         class SourceMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065

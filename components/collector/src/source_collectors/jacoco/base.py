@@ -5,7 +5,7 @@ from collector_utilities.functions import parse_source_response_xml
 from model import SourceMeasurement, SourceResponses
 
 
-class JacocoCoverageBaseClass(XMLFileSourceCollector):  # pylint: disable=too-few-public-methods
+class JacocoCoverageBaseClass(XMLFileSourceCollector):
     """Base class for Jacoco coverage collectors."""
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"

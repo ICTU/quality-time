@@ -7,7 +7,7 @@ from collector_utilities.type import URL
 from model import SourceResponses
 
 
-class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
+class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):
     """Base class for Robot Framework collectors."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:

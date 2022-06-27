@@ -51,7 +51,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         </robot>"""
     CREATED = "2020-08-06T16:36:48.000+0200"
 
-    def setUp(self) -> None:  # pylint: disable=invalid-name
+    def setUp(self) -> None:
         """Extend to set up test fixtures."""
         super().setUp()
         self.session = AsyncMock()

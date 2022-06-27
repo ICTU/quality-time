@@ -35,7 +35,7 @@ class FakeResponse:
         return str(self.contents.decode())
 
 
-class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
+class FileSourceCollector(SourceCollector, ABC):
     """Base class for source collectors that retrieve files."""
 
     file_extensions: list[str] = []  # Subclass responsibility
@@ -81,13 +81,13 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         )
 
 
-class CSVFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class CSVFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve CSV files."""
 
     file_extensions = ["csv"]
 
 
-class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class HTMLFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve HTML files."""
 
     file_extensions = ["html", "htm"]
@@ -98,7 +98,7 @@ class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
         return BeautifulSoup(await response.text(), "html.parser")
 
 
-class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class JSONFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve JSON files."""
 
     file_extensions = ["json"]
@@ -117,7 +117,7 @@ class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abst
         raise NotImplementedError  # pragma: no cover
 
 
-class XMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class XMLFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve XML files."""
 
     file_extensions = ["xml"]

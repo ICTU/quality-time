@@ -7,7 +7,7 @@ from collector_utilities.type import URL
 from model import SourceResponses
 
 
-class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class TrelloBase(SourceCollector, ABC):
     """Base class for Trello collectors."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:

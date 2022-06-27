@@ -11,7 +11,7 @@ from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
 
 
-class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class GitLabBase(SourceCollector, ABC):
     """Base class for GitLab collectors."""
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
@@ -42,7 +42,7 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
-class GitLabProjectBase(GitLabBase, ABC):  # pylint: disable=abstract-method
+class GitLabProjectBase(GitLabBase, ABC):
     """Base class for GitLab collectors for a specific project."""
 
     async def _gitlab_api_url(self, api: str) -> URL:
