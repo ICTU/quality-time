@@ -45,3 +45,4 @@ class SessionsTest(unittest.TestCase):
         """Test get."""
         session = sessions.get(self.database, "session_id")
         self.assertDictEqual(session, dict(_id="session_id"))
+        self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})
