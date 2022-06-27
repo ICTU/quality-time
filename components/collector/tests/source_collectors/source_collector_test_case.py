@@ -22,13 +22,13 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
     @classmethod
     def setUpClass(cls) -> None:
         """Override to disable logging and load the data model so it is available for all unit tests."""
-        logging.disable(logging.CRITICAL)
+        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         cls.data_model = DATA_MODEL
 
     @classmethod
     def tearDownClass(cls) -> None:
         """Override to reset logging."""
-        logging.disable(logging.NOTSET)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
