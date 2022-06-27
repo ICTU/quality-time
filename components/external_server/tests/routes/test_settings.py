@@ -1,7 +1,7 @@
 """Unit tests for the settings routes."""
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from routes.settings import find_user, get_settings, update_settings
 
 USERNAME = "john-doe"
@@ -27,9 +27,13 @@ class SettingsTest(unittest.TestCase):  # skipcq: PTC-W0046
         settings_dict = get_settings(self.database)
         self.assertDictEqual(settings_dict, {"settings": {"test_setting": True}})
 
-    def test_update_settings(self):
+    @patch("bottle.request")
+    def test_update_settings(self, request):
         """Update the settings object."""
-        response_dict = update_settings(self.database, {"some_new_settings": False})
+        request.json = {"some_new_settings": False}
+        response_dict = update_settings(
+            self.database,
+        )
 
         self.assertDictEqual(response_dict, dict(ok=True))
         self.database.users.replace_one.assert_called_once_with(
