@@ -8,7 +8,7 @@ from .source import Sources
 from .subject import Subjects
 
 
-class DataModel(BaseModel):  # pylint: disable=too-few-public-methods
+class DataModel(BaseModel):
     """Data model model."""
 
     scales: Scales

@@ -2,25 +2,25 @@
 
 from typing import Literal, Optional, Union
 
-from pydantic import validator  # pylint: disable=no-name-in-module
+from pydantic import validator
 
 from .meta.parameter import Parameter, ParameterType
 from .meta.unit import Unit
 
 
-class DateParameter(Parameter):  # pylint: disable=too-few-public-methods
+class DateParameter(Parameter):
     """Date parameter."""
 
     type: ParameterType = ParameterType.DATE
 
 
-class StringParameter(Parameter):  # pylint: disable=too-few-public-methods
+class StringParameter(Parameter):
     """String parameter."""
 
     type: ParameterType = ParameterType.STRING
 
 
-class IntegerParameter(Parameter):  # pylint: disable=too-few-public-methods
+class IntegerParameter(Parameter):
     """Integer parameter."""
 
     type: ParameterType = ParameterType.INTEGER
@@ -35,7 +35,7 @@ class IntegerParameter(Parameter):  # pylint: disable=too-few-public-methods
         return unit
 
 
-class URL(Parameter):  # pylint: disable=too-few-public-methods
+class URL(Parameter):
     """URL parameter."""
 
     name: str = "URL"
@@ -45,7 +45,7 @@ class URL(Parameter):  # pylint: disable=too-few-public-methods
     type = ParameterType.URL
 
 
-class LandingURL(StringParameter):  # pylint: disable=too-few-public-methods
+class LandingURL(StringParameter):
     """URL to a human readable version of a CSV, XML, or JSON report.
 
     This is a string parameter because Quality-time doesn't validate these URLs.
@@ -54,34 +54,34 @@ class LandingURL(StringParameter):  # pylint: disable=too-few-public-methods
     short_name = "URL"
 
 
-class SingleChoiceParameter(Parameter):  # pylint: disable=too-few-public-methods
+class SingleChoiceParameter(Parameter):
     """Single choice parameter."""
 
     type = ParameterType.SINGLE_CHOICE
 
 
-class MultipleChoiceParameter(Parameter):  # pylint: disable=too-few-public-methods
+class MultipleChoiceParameter(Parameter):
     """Multiple choice parameter."""
 
     type = ParameterType.MULTIPLE_CHOICE
     default_value: Union[str, list[str]] = []
 
 
-class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):
     """Multiple choice parameter that allows the user to add additional options."""
 
     type = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
     placeholder = "none"
 
 
-class Username(StringParameter):  # pylint: disable=too-few-public-methods
+class Username(StringParameter):
     """User to be used for authentication."""
 
     name: str = "Username for basic authentication"
     short_name = "username"
 
 
-class Password(Parameter):  # pylint: disable=too-few-public-methods
+class Password(Parameter):
     """Password parameter."""
 
     name: str = "Password for basic authentication"
@@ -89,7 +89,7 @@ class Password(Parameter):  # pylint: disable=too-few-public-methods
     type = ParameterType.PASSWORD
 
 
-class PrivateToken(Password):  # pylint: disable=too-few-public-methods
+class PrivateToken(Password):
     """Private token for authentication."""
 
     name: str = "Private token"
@@ -97,7 +97,7 @@ class PrivateToken(Password):  # pylint: disable=too-few-public-methods
     validation_path: str = ""  # URL path to use for the validation of tokens
 
 
-class Days(IntegerParameter):  # pylint: disable=too-few-public-methods
+class Days(IntegerParameter):
     """Number of days parameter."""
 
     unit: Unit = Unit.DAYS
@@ -119,7 +119,7 @@ class Severities(MultipleChoiceParameter):
         return help_url
 
 
-class TestResult(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class TestResult(MultipleChoiceParameter):
     """Test result parameter."""
 
     name: str = "Test results"
@@ -132,7 +132,7 @@ class TestResult(MultipleChoiceParameter):  # pylint: disable=too-few-public-met
     metrics: list[str] = ["tests"]
 
 
-class Upvotes(IntegerParameter):  # pylint: disable=too-few-public-methods
+class Upvotes(IntegerParameter):
     """Minimum number of merge request up-votes parameter."""
 
     name: str = "Minimum number of upvotes"
@@ -142,7 +142,7 @@ class Upvotes(IntegerParameter):  # pylint: disable=too-few-public-methods
     metrics: list[str] = ["merge_requests"]
 
 
-class Branch(StringParameter):  # pylint: disable=too-few-public-methods
+class Branch(StringParameter):
     """Branch name parameter."""
 
     name: str = "Branch"
@@ -150,7 +150,7 @@ class Branch(StringParameter):  # pylint: disable=too-few-public-methods
     metrics: list[str] = ["source_up_to_dateness"]
 
 
-class BranchesToIgnore(MultipleChoiceWithAdditionParameter):  # pylint: disable=too-few-public-methods
+class BranchesToIgnore(MultipleChoiceWithAdditionParameter):
     """Branches to ignore parameter."""
 
     name: str = "Branches to ignore (regular expressions or branch names)"
@@ -158,7 +158,7 @@ class BranchesToIgnore(MultipleChoiceWithAdditionParameter):  # pylint: disable=
     metrics: list[str] = ["unmerged_branches"]
 
 
-class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):  # pylint: disable=too-few-public-methods
+class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
     """Target branches to include parameter."""
 
     name: str = "Target branches to include (regular expressions or branch names)"
@@ -167,7 +167,7 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):  # pylint: d
     metrics: list[str] = ["merge_requests"]
 
 
-class MergeRequestState(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class MergeRequestState(MultipleChoiceParameter):
     """Merge request states parameter."""
 
     name: str = "Merge request states"
@@ -177,7 +177,7 @@ class MergeRequestState(MultipleChoiceParameter):  # pylint: disable=too-few-pub
     metrics: list[str] = ["merge_requests"]
 
 
-class FailureType(MultipleChoiceParameter):  # pylint: disable=too-few-public-methods
+class FailureType(MultipleChoiceParameter):
     """Failure type parameter."""
 
     name: str = "Failure types"
