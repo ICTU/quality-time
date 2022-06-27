@@ -87,6 +87,7 @@ it('shows when the last measurement attempt was', async () => {
     )
     await userEvent.hover(screen.queryByText(/\?/))
     await waitFor(() => {
+        expect(screen.queryByText(/This metric was not recently measured/)).not.toBe(null)
         expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
     })
 })
