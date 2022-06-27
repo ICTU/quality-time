@@ -5,7 +5,7 @@ from abc import ABC
 from base_collectors import XMLFileSourceCollector
 
 
-class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
+class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):
     """Base class for OWASP Dependency Check collectors."""
 
     allowed_root_tags = [

@@ -10,7 +10,7 @@ from collector_utilities.type import URL, Response
 from model import SourceResponses
 
 
-class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class CxSASTBase(SourceCollector, ABC):
     """Base class for CxSAST collectors."""
 
     def __init__(self, *args, **kwargs) -> None:

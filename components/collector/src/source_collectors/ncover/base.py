@@ -10,7 +10,7 @@ from collector_utilities.type import Response
 from model import SourceMeasurement, SourceResponses
 
 
-class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
+class NCoverBase(HTMLFileSourceCollector, ABC):
     """Base class for NCover collectors."""
 
     @staticmethod
@@ -22,7 +22,7 @@ class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-meth
         return ""  # pragma: no cover
 
 
-class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
+class NCoverCoverageBase(NCoverBase, ABC):
     """Base class for NCover coverage collectors."""
 
     coverage_type = "Subclass responsibility"

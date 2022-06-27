@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JaCoCoTestCase(SourceCollectorTestCase):  # pylint: disable=too-few-public-methods, # skipcq: PTC-W0046
+class JaCoCoTestCase(SourceCollectorTestCase):
     """Base class for JaCoCo collectors."""
 
     SOURCE_TYPE = "jacoco"
