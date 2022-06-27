@@ -15,7 +15,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { dropdownOptions, getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
 import { MetricType } from './MetricType';
-import { Target } from './Target';
+import { Target, TargetLabel } from './Target';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -189,6 +189,9 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
     const parameters = report?.issue_tracker?.parameters;
     const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
     const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";
+    const targetLabel = <TargetLabel label="Metric target" targetType="target" position='top center' metric={metric}/>
+    const nearTargetLabel = <TargetLabel label="Metric near target" targetType="near_target" position='top right' metric={metric}/>
+    const debtTargetLabel = <TargetLabel label="Accepted technical debt" targetType="debt_target" position='top center' metric={metric}/>
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -219,10 +222,10 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                     <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Metric target" target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label={targetLabel} target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Metric near target" target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label={nearTargetLabel} target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
@@ -230,7 +233,7 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                     <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Accepted technical debt" target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label={debtTargetLabel} target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
                     <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
