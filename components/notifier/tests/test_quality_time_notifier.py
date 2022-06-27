@@ -72,7 +72,7 @@ class FakeResponse:
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):
         """Define info that is used in multiple tests."""
         self.url = "https://report1"
         self.report_api = "http://localhost:5002/api/report"
