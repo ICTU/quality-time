@@ -19,12 +19,12 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """Override to disable logging."""
-        logging.disable(logging.CRITICAL)
+        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
 
     @classmethod
     def tearDownClass(cls) -> None:
         """Override to enable logging."""
-        logging.disable(logging.NOTSET)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     def setUp(self):
         """Override to set up common test data."""
