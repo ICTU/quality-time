@@ -12,6 +12,17 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_configuration = "suppression_rules"
 
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to not include the rules parameter in the landing URL.
+
+        This collector uses two SonarQube endpoints to get the suppressed violations. As we can't include both URLs in
+        the landing URL, we use the overview of all issues as landing page.
+        """
+        url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/project/issues?id={component}&branch={branch}")
+
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Get the suppressed violations from SonarQube.
 
