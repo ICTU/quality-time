@@ -1,7 +1,7 @@
 """Quality-time specific types."""
 
-from dataclasses import dataclass
-import email
+from collections import defaultdict
+from dataclasses import dataclass, field
 
 from typing import Literal, NewType, Optional
 
@@ -30,6 +30,7 @@ class User:
     email: str = ""
     common_name: str = ""
     verified: bool = False
+    settings: defaultdict[dict] = field(default_factory=lambda: defaultdict(dict))
 
     def name(self) -> str:
         """Return the name of the user."""
@@ -37,8 +38,4 @@ class User:
 
     def to_dict(self):
         """Return a dict representing this user."""
-        return dict(
-            username=self.username,
-            email=self.email,
-            common_name=self.common_name
-        )
+        return dict(username=self.username, email=self.email, common_name=self.common_name, settings=self.settings)
