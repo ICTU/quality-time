@@ -31,7 +31,8 @@ export function ViewPanel({
     sortDirection,
     toggleHiddenColumn,
     uiMode,
-    visibleDetailsTabs
+    visibleDetailsTabs,
+    postSettings
 }) {
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
@@ -83,6 +84,16 @@ export function ViewPanel({
                                 inverted
                             >
                                 Reset all settings
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button
+                                onClick={postSettings}
+                                inverted
+                            >
+                                Save settings
                             </Button>
                         </Grid.Column>
                     </Grid.Row>
