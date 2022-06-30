@@ -57,17 +57,20 @@ it('shows help', async () => {
     await waitFor(() => { expect(screen.queryAllByText(/How measurement values are evaluated/).length).toBe(1) });
 })
 
+function assertVisible(...matchers) {
+    matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(1))
+}
+
+function assertNotVisible(...matchers) {
+    matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(0))
+}
+
 it('shows help for evaluated metric without tech debt', async () => {
     render_metric_target({type: "violations", target: "10", near_target: "15"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≦ 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(1)
-        expect(screen.queryAllByText(/10 - 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/> 15 violations/).length).toBe(1)
+        assertVisible(/Target met/, /≦ 10 violations/, /Near target met/, /10 - 15 violations/, /Target not met/, /> 15 violations/)
+        assertNotVisible(/Debt target met/)
     });
 })
 
@@ -75,14 +78,24 @@ it('shows help for evaluated metric with tech debt', async () => {
     render_metric_target({type: "violations", target: "10", debt_target: "15", near_target: "20", accept_debt: true});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≦ 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(1)
-        expect(screen.queryAllByText(/10 - 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(1)
-        expect(screen.queryAllByText(/15 - 20 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/> 20 violations/).length).toBe(1)
+        assertVisible(/Target met/, /≦ 10 violations/, /Debt target met/, /10 - 15 violations/, /Near target met/, /15 - 20 violations/, /Target not met/, /> 20 violations/)
+    });
+})
+
+it('shows help for evaluated metric with tech debt with end date', async () => {
+    render_metric_target({type: "violations", target: "10", debt_target: "15", near_target: "20", accept_debt: true, debt_end_date: "3000-01-01"});
+    await userEvent.tab()
+    await waitFor(() => {
+        assertVisible(/Target met/, /≦ 10 violations/, /Debt target met/, /10 - 15 violations/, /Near target met/, /15 - 20 violations/, /Target not met/, /> 20 violations/)
+    });
+})
+
+it('shows help for evaluated metric with tech debt with end date in the past', async () => {
+    render_metric_target({type: "violations", target: "10", debt_target: "15", near_target: "20", accept_debt: true, debt_end_date: "2000-01-01"});
+    await userEvent.tab()
+    await waitFor(() => {
+        assertVisible(/Target met/, /≦ 10 violations/, /Near target met/, /10 - 20 violations/, /Target not met/, /> 20 violations/)
+        assertNotVisible(/Debt target met/)
     });
 })
 
@@ -90,13 +103,8 @@ it('shows help for evaluated metric with tech debt completely overlapping near t
     render_metric_target({type: "violations", target: "10", debt_target: "20", near_target: "20", accept_debt: true});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≦ 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(1)
-        expect(screen.queryAllByText(/10 - 20 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/> 20 violations/).length).toBe(1)
+        assertVisible(/Target met/, /≦ 10 violations/, /Debt target met/, /10 - 20 violations/, /Target not met/, /> 20 violations/)
+        assertNotVisible(/Near target met/)
     });
 })
 
@@ -104,12 +112,8 @@ it('shows help for evaluated metric without tech debt and target completely over
     render_metric_target({type: "violations", target: "10", near_target: "10"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≦ 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/> 10 violations/).length).toBe(1)
+        assertVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
+        assertNotVisible(/Debt target met/, /Near target met/)
     });
 })
 
@@ -117,13 +121,8 @@ it('shows help for evaluated more-is-better metric without tech debt', async () 
     render_metric_target({type: "violations", target: "15", near_target: "10", direction: ">"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/< 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(1)
-        expect(screen.queryAllByText(/10 - 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≧ 15 violations/).length).toBe(1)
+        assertVisible(/Target not met/, /< 10 violations/, /Near target met/, /10 - 15 violations/, /Target met/, /≧ 15 violations/)
+        assertNotVisible(/Debt target met/)
     });
 })
 
@@ -131,14 +130,7 @@ it('shows help for evaluated more-is-better metric with tech debt', async () => 
     render_metric_target({type: "violations", target: "15", near_target: "5", debt_target: "10", accept_debt: true, direction: ">"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/< 5 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(1)
-        expect(screen.queryAllByText(/5 - 10 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(1)
-        expect(screen.queryAllByText(/10 - 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≧ 15 violations/).length).toBe(1)
+        assertVisible(/Target not met/, /< 5 violations/, /Near target met/, /5 - 10 violations/, /Debt target met/, /10 - 15 violations/, /Target met/, /≧ 15 violations/)
     });
 })
 
@@ -146,13 +138,8 @@ it('shows help for evaluated more-is-better metric with tech debt completely ove
     render_metric_target({type: "violations", target: "15", near_target: "5", debt_target: "5", accept_debt: true, direction: ">"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/< 5 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(1)
-        expect(screen.queryAllByText(/5 - 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≧ 15 violations/).length).toBe(1)
+        assertVisible(/Target not met/, /< 5 violations/, /Debt target met/, /5 - 15 violations/, /Target met/, /≧ 15 violations/)
+        assertNotVisible(/Near target met/)
     });
 })
 
@@ -160,12 +147,17 @@ it('shows help for evaluated more-is-better metric without tech debt and target 
     render_metric_target({type: "violations", target: "15", near_target: "15", direction: ">"});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Target not met/).length).toBe(1)
-        expect(screen.queryAllByText(/< 15 violations/).length).toBe(1)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Target met/).length).toBe(1)
-        expect(screen.queryAllByText(/≧ 15 violations/).length).toBe(1)
+        assertVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
+        assertNotVisible(/Near target met/, /Debt target met/)
+    });
+})
+
+it('shows help for evaluated metric without tech debt and zero target completely overlapping near target', async () => {
+    render_metric_target({type: "violations", target: "0", near_target: "0", direction: ">"});
+    await userEvent.tab()
+    await waitFor(() => {
+        assertVisible(/Target met/, /≧ 0 violations/)
+        assertNotVisible(/Debt target met/, /Near target met/, /Target not met/)
     });
 })
 
@@ -173,11 +165,7 @@ it('shows help for informative metric', async () => {
     render_metric_target({type: "violations", evaluate_targets: false});
     await userEvent.tab()
     await waitFor(() => {
-        expect(screen.queryAllByText(/Informative/).length).toBe(1)
-        expect(screen.queryAllByText(/violations are not evaluated/).length).toBe(1)
-        expect(screen.queryAllByText(/Target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Debt target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Near target met/).length).toBe(0)
-        expect(screen.queryAllByText(/Target not met/).length).toBe(0)
+        assertVisible(/Informative/, /violations are not evaluated/)
+        assertNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)
     });
 })
