@@ -47,6 +47,13 @@ export function get_metric_status(metric) {
     return metric.status ?? '';
 }
 
+export function getStatusName(status) {
+    return {
+        target_met: 'Target met', near_target_met: 'Near target met', debt_target_met: 'Debt target met',
+        target_not_met: 'Target not met', informative: 'Informative', unknown: 'Unknown'
+    }[status || "unknown"];
+}
+
 export function get_metric_tags(metric) {
     let tags = metric.tags ?? [];
     tags.sort();
