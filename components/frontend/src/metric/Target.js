@@ -84,6 +84,12 @@ function minTarget(...targets) {
     return targets.at(0)
 }
 
+function debtTargetActive(metric, direction) {
+    const endDate = metric.debt_end_date ? new Date(metric.debt_end_date) : null
+    const active = !!metric.accept_debt && ((endDate && endDate >= new Date()) || !endDate)
+    return active && (direction === "≦" ? smallerThan(metric.target, metric.debt_target) : smallerThan(metric.debt_target, metric.target))
+}
+
 function TargetVisualiser({ metric }) {
     const dataModel = useContext(DataModel);
     const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
@@ -100,15 +106,11 @@ function TargetVisualiser({ metric }) {
     const nearTarget = metric.near_target
     const debtTarget = metric.debt_target
     const debtTargetSmallerThanNearTarget = smallerThan(debtTarget, nearTarget)
-    const debtTargetSmallerThanTarget = smallerThan(debtTarget, target)
-    const targetSmallerThanDebtTarget = smallerThan(target, debtTarget)
     const targetSmallerThanNearTarget = smallerThan(target, nearTarget)
     const nearTargetSmallerThanTarget = smallerThan(nearTarget, target)
     const nearTargetSmallerThanDebtTarget = smallerThan(nearTarget, debtTarget)
-    const endDate = metric.debt_end_date ? new Date(metric.debt_end_date) : null
-    let debtTargetApplies = !!metric.accept_debt && ((endDate && endDate >= new Date()) || !endDate)
+    const debtTargetApplies = debtTargetActive(metric, direction)
     if (direction === "≦") {
-        debtTargetApplies = debtTargetApplies && targetSmallerThanDebtTarget;
         return (
             <ColoredSegments>
                 <GreenSegment direction={direction} target={target} unit={unit} />
@@ -127,7 +129,6 @@ function TargetVisualiser({ metric }) {
             </ColoredSegments>
         )
     } else {
-        debtTargetApplies = debtTargetApplies && debtTargetSmallerThanTarget;
         return (
             <ColoredSegments>
                 <RedSegment

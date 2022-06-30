@@ -10,7 +10,7 @@ export function StatusIcon({ status, status_start, size }) {
         target_met: 'check', near_target_met: 'warning', debt_target_met: 'money', target_not_met: 'bolt',
         informative: 'info', unknown: 'question'
     }[status || "unknown"];
-    const statusName = getStatusName(status || "unknown")
+    const statusName = getStatusName(status)
     const icon = <Icon aria-label={statusName} className={status} inverted circular name={icon_name} size={size} />;
     return (status_start ? <Popup trigger={icon} flowing hoverable><TimeAgoWithDate date={status_start}>{`${statusName} since`}</TimeAgoWithDate></Popup> : icon);
 }
