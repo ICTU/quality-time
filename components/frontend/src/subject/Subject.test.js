@@ -4,12 +4,15 @@ import * as fetch_server_api from '../api/fetch_server_api';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(dates, hideMetricsNotRequiringAction) {
+function renderSubject(dates, hideMetricsNotRequiringAction, sortColumn, sortDirection) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
                 dates={dates}
+                handleSort={() => { /* Dummy implementation */ }}
                 report={report}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
                 subject_uuid="subject_uuid"
                 tags={[]}
                 hiddenColumns={[]}
@@ -42,3 +45,16 @@ it('hides metrics not requiring action', async () => {
     await act(async () => { renderSubject([new Date(2022, 3, 26)], true) });
     expect(screen.queryAllByText(/M\d/).length).toBe(1);
 })
+
+function expectOrder(metricNames) {
+    expect(screen.getAllByText(/M\d/).map((element) => element.innerHTML)).toStrictEqual(metricNames)
+}
+
+for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status"]) {
+    for (const order of ["ascending", "descending"]) {
+        it('sorts metrics by attribute', async () => {
+            await act(async () => { renderSubject([], false, attribute, order) });
+            expectOrder(order === "ascending" ? ["M1", "M2"] : ["M2", "M1"])
+        })
+    }
+}
