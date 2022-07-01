@@ -54,6 +54,9 @@ function GreySegment({ lowTarget, highTarget, show, unit }) {
 }
 
 function YellowSegment({ lowTarget, highTarget, show, unit }) {
+    if (!smallerThan(lowTarget, highTarget)) {
+        return null
+    }
     return (
         <ColoredSegment color="yellow" show={show} status="near_target_met">{`${lowTarget} - ${highTarget}${unit}`}</ColoredSegment>
     )
@@ -105,10 +108,6 @@ function TargetVisualiser({ metric }) {
     const target = metric.target
     const nearTarget = metric.near_target
     const debtTarget = metric.debt_target
-    const debtTargetSmallerThanNearTarget = smallerThan(debtTarget, nearTarget)
-    const targetSmallerThanNearTarget = smallerThan(target, nearTarget)
-    const nearTargetSmallerThanTarget = smallerThan(nearTarget, target)
-    const nearTargetSmallerThanDebtTarget = smallerThan(nearTarget, debtTarget)
     const debtTargetApplies = debtTargetActive(metric, direction)
     if (direction === "≦") {
         return (
@@ -119,7 +118,6 @@ function TargetVisualiser({ metric }) {
                     lowTarget={debtTargetApplies ? maxTarget(debtTarget, target) : target}
                     highTarget={nearTarget}
                     unit={unit}
-                    show={targetSmallerThanNearTarget && (debtTargetApplies ? debtTargetSmallerThanNearTarget : true)}
                 />
                 <RedSegment
                     direction={oppositeDirection}
@@ -140,7 +138,6 @@ function TargetVisualiser({ metric }) {
                     lowTarget={nearTarget}
                     highTarget={debtTargetApplies ? debtTarget : target}
                     unit={unit}
-                    show={nearTargetSmallerThanTarget && (debtTargetApplies ? nearTargetSmallerThanDebtTarget : true)}
                 />
                 <GreySegment lowTarget={debtTarget} highTarget={target} unit={unit} show={debtTargetApplies} />
                 <GreenSegment direction={direction} target={target} unit={unit} />
