@@ -20,7 +20,7 @@ export const report = {
                     tags: [],
                     target: "1",
                     sources: {},
-                    status: "informative",
+                    status: "target_not_met",
                     recent_measurements: [],
                     latest_measurement: {count: 1},
                     comment: "Comment 1"
@@ -32,7 +32,7 @@ export const report = {
                     target: "2",
                     issue_ids: ["ABC-42"],
                     sources: {source_uuid: {name: "Source"}},
-                    status: "target_not_met",
+                    status: "informative",
                     recent_measurements: [],
                     latest_measurement: {count: 2},
                     comment: "Comment 2"
