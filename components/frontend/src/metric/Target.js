@@ -10,6 +10,27 @@ import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { StatusIcon } from '../measurement/StatusIcon';
 import { capitalize, formatMetricDirection, formatMetricScaleAndUnit, getMetricScale, getStatusName } from '../utils';
 
+function smallerThan(target1, target2) {
+    const t1 = target1 ?? "0"
+    const t2 = target2 ?? "0"
+    return t1.localeCompare(t2, undefined, { numeric: true }) < 0
+}
+
+function maxTarget(...targets) {
+    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
+    return targets.at(-1)
+}
+
+function minTarget(...targets) {
+    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
+    return targets.at(0)
+}
+
+function debtTargetActive(metric, direction) {
+    const endDate = metric.debt_end_date ? new Date(metric.debt_end_date) : null
+    const active = !!metric.accept_debt && ((endDate && endDate >= new Date()) || !endDate)
+    return active && (direction === "≦" ? smallerThan(metric.target, metric.debt_target) : smallerThan(metric.debt_target, metric.target))
+}
 
 function ColoredSegment({ children, color, show, status }) {
     const darkMode = useContext(DarkMode);
@@ -68,29 +89,6 @@ function ColoredSegments({ children }) {
             {children}
         </Segment.Group>
     )
-}
-
-
-function smallerThan(target1, target2) {
-    const t1 = target1 ?? "0"
-    const t2 = target2 ?? "0"
-    return t1.localeCompare(t2, undefined, { numeric: true }) < 0
-}
-
-function maxTarget(...targets) {
-    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
-    return targets.at(-1)
-}
-
-function minTarget(...targets) {
-    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
-    return targets.at(0)
-}
-
-function debtTargetActive(metric, direction) {
-    const endDate = metric.debt_end_date ? new Date(metric.debt_end_date) : null
-    const active = !!metric.accept_debt && ((endDate && endDate >= new Date()) || !endDate)
-    return active && (direction === "≦" ? smallerThan(metric.target, metric.debt_target) : smallerThan(metric.debt_target, metric.target))
 }
 
 function TargetVisualiser({ metric }) {

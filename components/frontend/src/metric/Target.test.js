@@ -82,6 +82,15 @@ it('shows help for evaluated metric with tech debt', async () => {
     });
 })
 
+it('shows help for evaluated metric with tech debt if debt target is missing', async () => {
+    render_metric_target({type: "violations", target: "10", near_target: "20", accept_debt: true});
+    await userEvent.tab()
+    await waitFor(() => {
+        assertVisible(/Target met/, /≦ 10 violations/, /Near target met/, /10 - 20 violations/, /Target not met/, /> 20 violations/)
+        assertNotVisible(/Debt target met/)
+    });
+})
+
 it('shows help for evaluated metric with tech debt with end date', async () => {
     render_metric_target({type: "violations", target: "10", debt_target: "15", near_target: "20", accept_debt: true, debt_end_date: "3000-01-01"});
     await userEvent.tab()
