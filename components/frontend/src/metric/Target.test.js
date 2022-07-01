@@ -143,6 +143,15 @@ it('shows help for evaluated more-is-better metric with tech debt', async () => 
     });
 })
 
+it('shows help for evaluated more-is-better metric with tech debt and missing debt target', async () => {
+    render_metric_target({type: "violations", target: "15", near_target: "5", accept_debt: true, direction: ">"});
+    await userEvent.tab()
+    await waitFor(() => {
+        assertVisible(/Target not met/, /< 5 violations/, /Near target met/, /5 - 15 violations/, /Target met/, /≧ 15 violations/)
+        assertNotVisible(/Debt target met/)
+    });
+})
+
 it('shows help for evaluated more-is-better metric with tech debt completely overlapping near target', async () => {
     render_metric_target({type: "violations", target: "15", near_target: "5", debt_target: "5", accept_debt: true, direction: ">"});
     await userEvent.tab()

@@ -11,7 +11,7 @@ import { StatusIcon } from '../measurement/StatusIcon';
 import { capitalize, formatMetricDirection, formatMetricScaleAndUnit, getMetricScale, getStatusName } from '../utils';
 
 function smallerThan(target1, target2) {
-    const t1 = target1 ?? "0"
+    const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
     const t2 = target2 ?? "0"
     return t1.localeCompare(t2, undefined, { numeric: true }) < 0
 }
