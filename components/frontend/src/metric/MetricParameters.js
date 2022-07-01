@@ -219,10 +219,10 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                     <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Metric target" target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label="Metric target" labelPosition='top center' target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Metric near target" target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label="Metric near target" labelPosition='top right' target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
@@ -230,7 +230,7 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                     <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Accepted technical debt" target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target label="Accepted technical debt" labelPosition='top center' target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
                     <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
