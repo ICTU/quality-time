@@ -431,7 +431,13 @@ The Docker images are `quality-time_database`, `quality-time_renderer`, `quality
 
 ## Maintenance
 
+### Python and Javascript dependencies
+
 Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
+
+For Python, we follow the [dependency management practice described by James Bennett](https://www.b-list.org/weblog/2022/may/13/boring-python-dependencies/), to a large extent.
+
+### Docker images
 
 Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
 
