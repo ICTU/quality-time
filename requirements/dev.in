@@ -10,4 +10,4 @@ pydantic==1.9.1  # Needed for importing the data model from the shared python co
 pylint==2.14.4
 safety==2.0.0
 unittest-xml-reporting==3.2.0  # Needed to generate JUnit XML output for Sonarcloud.io
-vulture==2.4
+vulture==2.5
