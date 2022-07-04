@@ -22,9 +22,9 @@ const data_model = {
 
 const reportWithIssueTracker = { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }
 
-function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }) {
+function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <Permissions.Provider value={permissions}>
             <DataModel.Provider value={data_model}>
                 <MetricParameters
                     subject={{ type: "subject_type" }}
@@ -103,6 +103,11 @@ it('tries to create an issue', async () => {
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid" });
 });
+
+it('does not show the create issue button if the user has no permissions', async () => {
+    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker, []) });
+    expect(screen.queryAllByText(/Create new issue/).length).toBe(0)
+})
 
 it('shows issue id suggestions', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
