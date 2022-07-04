@@ -12,7 +12,7 @@ import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { DataModel } from '../context/DataModel';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { dropdownOptions, getMetricDirection, get_metric_issue_ids, getMetricScale, get_metric_tags } from '../utils';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
@@ -237,21 +237,33 @@ export function MetricParameters({ report, subject, metric, metric_uuid, reload 
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column width={3} verticalAlign="bottom">
-                    <ActionButton
-                        action='Create new'
-                        disabled={!issueTrackerConfigured}
-                        fluid
-                        icon='plus'
-                        item_type='issue'
-                        onClick={() => add_metric_issue(metric_uuid, reload)}
-                        popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.${issueTrackerInstruction}`}
-                        position='top center'
-                    />
-                </Grid.Column>
-                <Grid.Column width={13}>
-                    <IssueIdentifiers issue_tracker_instruction={issueTrackerInstruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
-                </Grid.Column>
+                <ReadOnlyOrEditable
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    readOnlyComponent={
+                        <Grid.Column width={16}>
+                            <IssueIdentifiers issue_tracker_instruction={issueTrackerInstruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
+                        </Grid.Column>
+                    }
+                    editableComponent={
+                        <>
+                            < Grid.Column width={3} verticalAlign="bottom">
+                                <ActionButton
+                                    action='Create new'
+                                    disabled={!issueTrackerConfigured}
+                                    fluid
+                                    icon='plus'
+                                    item_type='issue'
+                                    onClick={() => add_metric_issue(metric_uuid, reload)}
+                                    popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.${issueTrackerInstruction}`}
+                                    position='top center'
+                                />
+                            </Grid.Column>
+                            <Grid.Column width={13}>
+                                <IssueIdentifiers issue_tracker_instruction={issueTrackerInstruction} metric={metric} metric_uuid={metric_uuid} report_uuid={report.report_uuid} reload={reload} />
+                            </Grid.Column>
+                        </>
+                    }
+                />
             </Grid.Row>
             {(get_metric_issue_ids(metric).length > 0 && !issueTrackerConfigured) &&
                 <Grid.Row>
