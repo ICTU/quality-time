@@ -57,7 +57,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                             setSelectedItem(newIndex);
                             event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({ block: "nearest" });
                         }
-                        if (event.key === "Enter") {
+                        if (menuOpen && event.key === "Enter") {
                             onClick(options[selectedItem].value);
                         }
                     }}
