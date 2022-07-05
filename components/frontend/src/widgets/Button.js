@@ -25,7 +25,7 @@ export function ActionButton(props) {
 export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
     const [selectedItem, setSelectedItem] = useState(0);  // Index of selected item in the dropdown
     const [query, setQuery] = useState("");  // Search query to filter item subtypes
-    const [popupAllowed, setPopupAllowed] = useState(true);  // Is the popup allowed to be shown? We don't want to show the popup when the dropdown is visible to prevent overlap
+    const [menuOpen, setMenuOpen] = useState(false);  // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false);  // Is the popup triggered by hover or focus?
     const options = item_subtypes.filter((item_subtype) => (item_subtype.text.toLowerCase().includes(query.toLowerCase())));
     return (
@@ -34,14 +34,14 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
             on={["focus", "hover"]}
             onOpen={() => setPopupTriggered(true)}
             onClose={() => setPopupTriggered(false)}
-            open={popupAllowed && popupTriggered}
+            open={!menuOpen && popupTriggered}
             trigger={
                 <Dropdown
                     basic
                     className='button icon primary'
                     floating
                     onBlur={() => setQuery("")}
-                    onClose={() => setPopupAllowed(true)}
+                    onClose={() => setMenuOpen(false)}
                     onKeyDown={(event) => {
                         if (event.key === "Escape") {
                             setQuery("")
@@ -57,11 +57,11 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                             setSelectedItem(newIndex);
                             event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({ block: "nearest" });
                         }
-                        if (event.key === "Enter") {
+                        if (menuOpen && event.key === "Enter") {
                             onClick(options[selectedItem].value);
                         }
                     }}
-                    onOpen={() => setPopupAllowed(false)}
+                    onOpen={() => setMenuOpen(true)}
                     selectOnBlur={false}
                     selectOnNavigation={false}
                     trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
