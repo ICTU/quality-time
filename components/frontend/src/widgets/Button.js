@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
@@ -28,6 +28,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
     const [menuOpen, setMenuOpen] = useState(false);  // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false);  // Is the popup triggered by hover or focus?
     const options = item_subtypes.filter((item_subtype) => (item_subtype.text.toLowerCase().includes(query.toLowerCase())));
+    const inputRef = useRef(null)
     return (
         <Popup
             content={`Add a new ${item_type} here`}
@@ -43,8 +44,17 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                     onBlur={() => setQuery("")}
                     onClose={() => setMenuOpen(false)}
                     onKeyDown={(event) => {
+                        if (!menuOpen) { return }
                         if (event.key === "Escape") {
                             setQuery("")
+                        }
+                        if (inputRef.current?.inputRef?.current !== document.activeElement) {
+                            // Allow for editing the query without the input having focus
+                            if (event.key === "Backspace") {
+                                setQuery(query.slice(0, query.length - 1))
+                            } else if (event.key.length === 1) {
+                                setQuery(query + event.key)
+                            }
                         }
                         if (options.length === 0) { return }
                         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -57,7 +67,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                             setSelectedItem(newIndex);
                             event.target.querySelectorAll("[role='option']")[newIndex]?.scrollIntoView({ block: "nearest" });
                         }
-                        if (menuOpen && event.key === "Enter") {
+                        if (event.key === "Enter") {
                             onClick(options[selectedItem].value);
                         }
                     }}
@@ -74,6 +84,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                                 <Dropdown.Divider />
                                 <Input
                                     className="search"
+                                    focus
                                     icon="search"
                                     iconPosition="left"
                                     onChange={(_event, { value }) => setQuery(value)}
@@ -83,6 +94,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                                             event.stopPropagation()  // Prevent space from closing menu
                                         }
                                     }}
+                                    ref={inputRef}
                                     placeholder={`Filter available ${item_type} types`}
                                     value={query}
                                 />
