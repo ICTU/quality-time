@@ -78,13 +78,17 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                                     iconPosition="left"
                                     onChange={(_event, { value }) => setQuery(value)}
                                     onClick={(event) => { event.stopPropagation() }}
-                                    onKeyDown={(event) => { if (event.key === "Escape") { setQuery("") } }}
+                                    onKeyDown={(event) => {
+                                        if (event.key === " ") {
+                                            event.stopPropagation()  // Prevent space from closing menu
+                                        }
+                                    }}
                                     placeholder={`Filter available ${item_type} types`}
                                     value={query}
                                 />
                             </>
                         }
-                        <Dropdown.Menu scrolling tabIndex={0} >
+                        <Dropdown.Menu scrolling>
                             {options.map((option, index) => (
                                 <Dropdown.Item
                                     key={option.key}

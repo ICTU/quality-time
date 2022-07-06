@@ -9,7 +9,7 @@ function renderAddDropdownButton(nr_items = 2) {
     const mockCallback = jest.fn();
     const item_subtypes = [];
     for (const index of Array(nr_items).keys()) {
-        const text = `Sub${index + 1}`;
+        const text = `Sub ${index + 1}`;
         const key = text.toLowerCase();
         item_subtypes.push({ key: key, text: text, value: key })
     }
@@ -26,8 +26,8 @@ function renderAddDropdownButton(nr_items = 2) {
 test('AddDropdownButton mouse navigation', async () => {
     const mockCallBack = renderAddDropdownButton()
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    await act(async () => { fireEvent.click(screen.getByText(/Sub2/)) });
-    expect(mockCallBack).toHaveBeenCalledWith("sub2")
+    await act(async () => { fireEvent.click(screen.getByText(/Sub 2/)) });
+    expect(mockCallBack).toHaveBeenCalledWith("sub 2")
 });
 
 test('AddDropdownButton keyboard navigation', async () => {
@@ -36,8 +36,8 @@ test('AddDropdownButton keyboard navigation', async () => {
     await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
     await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowUp" }) });
     await act(async () => { fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" }) });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub2/), { key: "Enter" }) });
-    expect(mockCallBack).toHaveBeenCalledWith("sub2")
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub 2/), { key: "Enter" }) });
+    expect(mockCallBack).toHaveBeenCalledWith("sub 2")
 });
 
 test('AddDropdownButton hides popup when dropdown is shown', async () => {
@@ -54,8 +54,8 @@ test('AddDropdownButton hides popup when dropdown is shown', async () => {
 test('AddDropdownButton filter one item', async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub6{Enter}");
-    expect(mockCallback).toHaveBeenCalledWith("sub6")
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}");
+    expect(mockCallback).toHaveBeenCalledWith("sub 6")
 });
 
 test('AddDropdownButton filter zero items', async () => {
@@ -70,8 +70,8 @@ test('AddDropdownButton resets query on escape', async () => {
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
     await userEvent.type(screen.getByPlaceholderText(/Filter/), "FOO{Escape}");
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub1/), { key: "Enter" }) });
-    expect(mockCallback).toHaveBeenCalledWith("sub1")
+    await act(async () => { fireEvent.keyDown(screen.getByText(/Sub 1/), { key: "Enter" }) });
+    expect(mockCallback).toHaveBeenCalledWith("sub 1")
 });
 
 test('AddDropdownButton does not add selected item on enter when menu is closed', async () => {
