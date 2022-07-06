@@ -30,7 +30,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
     const options = item_subtypes.filter((item_subtype) => (item_subtype.text.toLowerCase().includes(query.toLowerCase())));
     return (
         <Popup
-            content={`Add a ${item_type} here`}
+            content={`Add a new ${item_type} here`}
             on={["focus", "hover"]}
             onOpen={() => setPopupTriggered(true)}
             onClose={() => setPopupTriggered(false)}
