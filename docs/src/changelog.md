@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 ### Fixed
 
 - Don't add items when hitting enter while an add-item button with collapsed dropdown menu has focus. Fixes [#4144](https://github.com/ICTU/quality-time/issues/4144).
+- Don't close the dropdown menu of an add-item button when entering a space into the filter input field. Fixes [#4147](https://github.com/ICTU/quality-time/issues/4147).
 
 ## v4.1.0 - 2022-07-05
 
