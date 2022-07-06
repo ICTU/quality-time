@@ -58,6 +58,14 @@ test('AddDropdownButton filter one item', async () => {
     expect(mockCallback).toHaveBeenCalledWith("sub 6")
 });
 
+test('AddDropdownButton filter one item without focus', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}");
+    await userEvent.type(screen.getByText(/Add foo/), "sub 67{Backspace}{Enter}");
+    expect(mockCallback).toHaveBeenCalledWith("sub 6")
+});
+
 test('AddDropdownButton filter zero items', async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
