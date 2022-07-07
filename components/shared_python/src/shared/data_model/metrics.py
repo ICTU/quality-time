@@ -8,6 +8,15 @@ SIG_TUVIT_EVALUATION_CRITERIA = (
     "Maintainability-Guidance-for-producers.pdf"
 )
 FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
+VERSION_NUMBER_EXPLANATION = """Quality-time uses the packaging library (1) to parse version numbers. The packaging
+library expects version numbers to comply with PEP-440 (2). PEP is an abbrevation for Python Enhancement Proposal,
+but this PEP is primarily a standard for version numbers. PEP-440 encompasses most of the semantic versioning scheme
+(3) so version numbers that follow semantic versioning are usually parsed correctly."""
+VERSION_NUMBER_EXPLANATION_URLS = [
+    "https://pypi.org/project/packaging/",
+    "https://peps.python.org/pep-0440/",
+    "https://semver.org",
+]
 
 METRICS = Metrics.parse_obj(
     dict(
@@ -16,7 +25,7 @@ METRICS = Metrics.parse_obj(
             description="The number of accessibility violations in the user interface of the software.",
             rationale="According to the W3C, 'Accessibility is essential for developers and organisations that want to "
             "create high-quality websites and web tools, and not exclude people from using their products and "
-            "services.' Web accessibility evaluation tools can help determine if web content meets accessibility "
+            "services' (1). Web accessibility evaluation tools can help determine if web content meets accessibility "
             "standards. Typically, these tools evaluate against one or more accessibility standards, such as the "
             "W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being "
             "violated.",
@@ -307,6 +316,8 @@ METRICS = Metrics.parse_obj(
             description="The version number of the software as analyzed by the source.",
             rationale="Monitor that the version of the software is at least a specific version or get notified when "
             "the software version becomes higher than a specific version.",
+            explanation=VERSION_NUMBER_EXPLANATION,
+            explanation_urls=VERSION_NUMBER_EXPLANATION_URLS,
             scales=["version_number"],
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
@@ -323,6 +334,8 @@ METRICS = Metrics.parse_obj(
             description="The version number of the source.",
             rationale="Monitor that the version of a source is at least a specific version or get notified when the "
             "version becomes higher than a specific version.",
+            explanation=VERSION_NUMBER_EXPLANATION,
+            explanation_urls=VERSION_NUMBER_EXPLANATION_URLS,
             scales=["version_number"],
             addition=Addition.MIN,
             direction=Direction.MORE_IS_BETTER,
@@ -374,8 +387,8 @@ METRICS = Metrics.parse_obj(
             name="Sentiment",
             description="How are the team members feeling?",
             rationale="Satisfaction is how fulfilled developers feel with their work, team, tools, or culture; "
-            "well-being is how healthy and happy they are, and how their work impacts it. Measuring satisfaction and "
-            "well-being can be beneficial for understanding productivity and perhaps even for predicting it. "
+            "well-being is how healthy and happy they are, and how their work impacts it. Measuring satisfaction "
+            "and well-being can be beneficial for understanding productivity and perhaps even for predicting it. "
             "For example, productivity and satisfaction are correlated, and it is possible that satisfaction could "
             "serve as a leading indicator for productivity; a decline in satisfaction and engagement could signal "
             "upcoming burnout and reduced productivity.",

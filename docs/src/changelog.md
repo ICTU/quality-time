@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 ### Added
 
 - Allow for filtering items in an add-item button dropdown menu without first clicking the filter input field. Closes [#4114](https://github.com/ICTU/quality-time/issues/4114).
+- Add an explanation of what version numbers are supported for the 'source version' and 'software version' metrics. Closes [#4146](https://github.com/ICTU/quality-time/issues/4146).
 
 ## v4.1.0 - 2022-07-05
 
