@@ -24,6 +24,10 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 - Allow for filtering items in an add-item button dropdown menu without first clicking the filter input field. Closes [#4114](https://github.com/ICTU/quality-time/issues/4114).
 - Add an explanation of what version numbers are supported for the 'source version' and 'software version' metrics. Closes [#4146](https://github.com/ICTU/quality-time/issues/4146).
 
+### Changed
+
+- Set the feature compatibility of the database to MongoDB 5.0 to prepare for the upcoming 6.0 release of MongoDB. Closes [#4041](https://github.com/ICTU/quality-time/issues/4041).
+
 ## v4.1.0 - 2022-07-05
 
 ### Deployment notes
