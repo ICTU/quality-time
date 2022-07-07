@@ -7,36 +7,17 @@ import './ViewPanel.css';
 const activeColor = "grey"
 
 export function ViewPanel({
-    clearHiddenColumns,
-    clearVisibleDetailsTabs,
-    dateInterval,
-    dateOrder,
-    handleSort,
-    hiddenColumns,
-    hideMetricsNotRequiringAction,
-    issueSettings,
-    nrDates,
-    setDateInterval,
-    setDateOrder,
-    setHideMetricsNotRequiringAction,
-    setNrDates,
-    setShowIssueCreationDate,
-    setShowIssueSummary,
-    setShowIssueUpdateDate,
-    setShowIssueDueDate,
-    setShowIssueRelease,
-    setShowIssueSprint,
-    setUIMode,
-    sortColumn,
-    sortDirection,
+    settings,
+    setSettings,
     toggleHiddenColumn,
-    uiMode,
-    visibleDetailsTabs,
-    postSettings
+    postSettings,
+    defaultSettings,
+    handleSort
 }) {
-    const multipleDateColumns = nrDates > 1
-    const oneDateColumn = nrDates === 1
-    hiddenColumns = hiddenColumns ?? [];
+    const multipleDateColumns = settings.nr_dates > 1
+    const oneDateColumn =  settings.nr_dates === 1
+    settings.hidden_columns = settings.hidden_columns ?? [];
+
     return (
         <Segment.Group
             horizontal
@@ -48,38 +29,19 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={
-                                    visibleDetailsTabs?.length === 0 &&
-                                    !hideMetricsNotRequiringAction &&
-                                    hiddenColumns?.length === 0 &&
-                                    nrDates === 1 &&
-                                    dateInterval === 7 &&
-                                    dateOrder === "descending" &&
-                                    !issueSettings.showIssueCreationDate &&
-                                    !issueSettings.showIssueSummary &&
-                                    !issueSettings.showIssueUpdateDate &&
-                                    !issueSettings.showIssueDueDate &&
-                                    !issueSettings.showIssueRelease &&
-                                    !issueSettings.showIssueSprint &&
-                                    sortColumn === null &&
-                                    sortDirection === "ascending" &&
-                                    uiMode === null
-                                }
+                                disabled={settings.tabs?.length === 0}
+                                onClick={() => setSettings({tabs: []})}
+                                inverted
+                            >
+                                Collapse all metrics
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button
                                 onClick={() => {
-                                    clearVisibleDetailsTabs();
-                                    setHideMetricsNotRequiringAction(false);
-                                    clearHiddenColumns();
-                                    handleSort(null);
-                                    setNrDates(1);
-                                    setDateInterval(7);
-                                    setDateOrder("descending");
-                                    setShowIssueCreationDate(false);
-                                    setShowIssueSummary(false);
-                                    setShowIssueUpdateDate(false);
-                                    setShowIssueDueDate(false);
-                                    setShowIssueRelease(false);
-                                    setShowIssueSprint(false);
-                                    setUIMode(null);
+                                    setSettings(defaultSettings)
                                 }}
                                 inverted
                             >
@@ -90,7 +52,7 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                onClick={postSettings}
+                                onClick={() => postSettings(settings)}
                                 inverted
                             >
                                 Save settings
@@ -102,52 +64,58 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Dark/light mode</Header>
                 <Menu vertical inverted size="small">
-                    <UIModeMenuItem mode={null} uiMode={uiMode} setUIMode={setUIMode} />
-                    <UIModeMenuItem mode="dark" uiMode={uiMode} setUIMode={setUIMode} />
-                    <UIModeMenuItem mode="light" uiMode={uiMode} setUIMode={setUIMode} />
+                    <UIModeMenuItem mode={null} uiMode={settings.ui_mode} setUIMode={(uiMode) => setSettings({ui_mode: uiMode})} />
+                    <UIModeMenuItem mode="dark" uiMode={settings.ui_mode} setUIMode={(uiMode) => setSettings({ui_mode: uiMode})} />
+                    <UIModeMenuItem mode="light" uiMode={settings.ui_mode} setUIMode={(uiMode) => setSettings({ui_mode: uiMode})} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
                 <Menu vertical inverted size="small">
-                    <MetricMenuItem hide={true} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
-                    <MetricMenuItem hide={false} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
+                    <MetricMenuItem 
+                        hide={true}
+                        hideMetricsNotRequiringAction={settings.hide_metrics_not_requiring_action}
+                        setHideMetricsNotRequiringAction={(setHideMetricsNotRequiringAction) => setSettings({hide_metrics_not_requiring_action: setHideMetricsNotRequiringAction})} />
+                    <MetricMenuItem
+                        hide={false}
+                        hideMetricsNotRequiringAction={settings.hide_metrics_not_requiring_action}
+                        setHideMetricsNotRequiringAction={(setHideMetricsNotRequiringAction) => setSettings({hide_metrics_not_requiring_action: setHideMetricsNotRequiringAction})} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible columns</Header>
                 <Menu vertical inverted size="small">
-                    <VisibleColumnMenuItem column="trend" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="status" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="measurement" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="target" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="unit" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="trend" disabled={multipleDateColumns} hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="status" disabled={multipleDateColumns} hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="measurement" disabled={multipleDateColumns} hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="target" disabled={multipleDateColumns} hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="unit" hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="source" hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="comment" hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="issues" hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="tags" hiddenColumns={settings.hidden_columns} toggleHiddenColumn={toggleHiddenColumn} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size="small">Sort column</Header>
                 <Menu vertical inverted size="small">
-                    <SortColumnMenuItem column="name" sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="status" disabled={multipleDateColumns || hiddenColumns.includes("status")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns || hiddenColumns.includes("measurement")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="target" disabled={multipleDateColumns || hiddenColumns.includes("target")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="unit" disabled={hiddenColumns.includes("unit")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="source" disabled={hiddenColumns.includes("source")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="comment" disabled={hiddenColumns.includes("comment")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="issues" disabled={hiddenColumns.includes("issues")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="tags" disabled={hiddenColumns.includes("tags")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="name" sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="status" disabled={multipleDateColumns || settings.hidden_columns.includes("status")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns || settings.hidden_columns.includes("measurement")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="target" disabled={multipleDateColumns || settings.hidden_columns.includes("target")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="unit" disabled={settings.hidden_columns.includes("unit")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="source" disabled={settings.hidden_columns.includes("source")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="comment" disabled={settings.hidden_columns.includes("comment")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="issues" disabled={settings.hidden_columns.includes("issues")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
+                    <SortColumnMenuItem column="tags" disabled={settings.hidden_columns.includes("tags")} sortColumn={settings.sort_column} sortDirection={settings.sort_direction} handleSort={handleSort} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Number of dates</Header>
                 <Menu vertical inverted size="small">
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                        <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
-                            <Menu.Item active={nr === nrDates} color={activeColor} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
+                        <div key={nr} onKeyPress={(event) => { event.preventDefault(); setSettings({nr_dates: nr}) }} tabIndex={0}>
+                            <Menu.Item active={nr === settings.nr_dates} color={activeColor} onClick={() => setSettings({nr_dates: nr})}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                         </div>
                     )}
                 </Menu>
@@ -155,17 +123,17 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Time between dates</Header>
                 <Menu vertical inverted size="small">
-                    <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
+                    <DateIntervalMenuItem key={1} nr={1} dateInterval={settings.dateInterval} disabled={oneDateColumn} setDateInterval={(dateInterval) => setSettings({date_interval: dateInterval})} />
                     {[7, 14, 21, 28].map((nr) =>
-                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
+                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={settings.dateInterval} disabled={oneDateColumn} setDateInterval={(dateInterval) => setSettings({date_interval: dateInterval})} />
                     )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Date order</Header>
                 <Menu vertical inverted size="small">
-                    <SortOrderMenuItem disabled={oneDateColumn} order="ascending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
-                    <SortOrderMenuItem disabled={oneDateColumn} order="descending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
+                    <SortOrderMenuItem disabled={oneDateColumn} order="ascending" sortOrder={settings.date_order} setSortOrder={(dateOrder) => setSettings({date_order: dateOrder})} />
+                    <SortOrderMenuItem disabled={oneDateColumn} order="descending" sortOrder={settings.date_order} setSortOrder={(dateOrder) => setSettings({date_order: dateOrder})} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -173,38 +141,38 @@ export function ViewPanel({
                 <Menu vertical inverted size="small">
                     <IssueAttributeMenuItem
                         issueAttributeName="Summary"
-                        issueAttribute={issueSettings?.showIssueSummary}
-                        setIssueAttribute={setShowIssueSummary}
+                        issueAttribute={settings.show_issue_summary}
+                        setIssueAttribute={(showIssueSummary) => setSettings({show_issue_summary: showIssueSummary})}
                         help="Next to the issue status, also show the issue summary. Note: the popup over the issue always shows the issue summary, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Creation date"
-                        issueAttribute={issueSettings?.showIssueCreationDate}
-                        setIssueAttribute={setShowIssueCreationDate}
+                        issueAttribute={settings.show_issue_creation_date}
+                        setIssueAttribute={(showIssueCreationDate => setSettings({show_issue_creation_date: showIssueCreationDate}))}
                         help="Next to the issue status, also show how long ago issue were created. Note: the popup over the issue always shows the exact date when the issue was created, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Update date"
-                        issueAttribute={issueSettings?.showIssueUpdateDate}
-                        setIssueAttribute={setShowIssueUpdateDate}
+                        issueAttribute={settings.show_issue_update_date}
+                        setIssueAttribute={(showIssueUpdateDate) => setSettings({show_issue_update_date: showIssueUpdateDate})}
                         help="Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue always shows the exact date when the issue was last updated, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Due date"
-                        issueAttribute={issueSettings?.showIssueDueDate}
-                        setIssueAttribute={setShowIssueDueDate}
+                        issueAttribute={settings.show_issue_due_date}
+                        setIssueAttribute={(showIssueDueDate) => setSettings({show_issue_due_date: showIssueDueDate})}
                         help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Release"
-                        issueAttribute={issueSettings?.showIssueRelease}
-                        setIssueAttribute={setShowIssueRelease}
+                        issueAttribute={settings.show_issue_release}
+                        setIssueAttribute={(showIssueRelease) => setSettings({show_issue_release: showIssueRelease})}
                         help="Next to the issue status, also show the release issues are assigned to. Note: the popup over the issue always shows the release, if the issue has one, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Sprint"
-                        issueAttribute={issueSettings?.showIssueSprint}
-                        setIssueAttribute={setShowIssueSprint}
+                        issueAttribute={settings.show_issue_sprint}
+                        setIssueAttribute={(showIssueSprint) => setSettings({show_issue_sprint: showIssueSprint})}
                         help="Next to the issue status, also show the sprint issues are assigned to. Note: the popup over the issue always shows the sprint, if the issue has one, regardless of this setting."
                     />
                 </Menu>

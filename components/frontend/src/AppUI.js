@@ -27,9 +27,13 @@ const DEFAULT_SETTINGS = {
     show_issue_summary: false,
     show_issue_creation_date: false,
     show_issue_update_date: false,
+<<<<<<< HEAD
     show_issue_due_date: false,
     show_issue_release: false,
     show_issue_sprint: false
+=======
+    uiMode: null
+>>>>>>> 9b31ee2b (one settings object)
 }
 
 export function AppUI({
@@ -80,12 +84,12 @@ export function AppUI({
 
     const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", defaultSettings.date_interval);
     const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", defaultSettings.date_order);
-    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array", defaultSettings.hidden_columns);
+    const [hiddenColumns, toggleHiddenColumn, setHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array", defaultSettings.hidden_columns);
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", defaultSettings.hide_metrics_not_requiring_action);
     const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", defaultSettings.nr_dates);
     const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", defaultSettings.sort_column);
     const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", defaultSettings.sort_direction);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array", defaultSettings.tabs);
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, setVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array", defaultSettings.tabs);
     const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", defaultSettings.show_issue_summary);
     const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", defaultSettings.show_issue_creation_date);
     const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", defaultSettings.show_issue_update_date);
@@ -93,24 +97,41 @@ export function AppUI({
     const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", defaultSettings.show_issue_release);
     const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", defaultSettings.show_issue_sprint);
 
-    function postSettings() {
-        const currentSettings = {
-            date_interval: dateInterval,
-            date_order: dateOrder,
-            hidden_columns: hiddenColumns,
-            hide_metrics_not_requiring_action: hideMetricsNotRequiringAction,
-            nr_dates: nrDates,
-            sort_column: sortColumn,
-            sort_direction: sortDirection,
-            tabs: visibleDetailsTabs,
-            show_issue_summary: showIssueSummary,
-            show_issue_creation_date: showIssueCreationDate,
-            show_issue_update_date: showIssueUpdateDate,
-            show_issue_due_date: showIssueDueDate,
-            show_issue_release: showIssueRelease,
-            show_issue_sprint: showIssueSprint
-        }
-        post_settings(currentSettings)
+    const currentSettings = {
+        date_interval: dateInterval,
+        date_order: dateOrder,
+        hidden_columns: hiddenColumns,
+        hide_metrics_not_requiring_action: hideMetricsNotRequiringAction,
+        nr_dates: nrDates,
+        sort_column: sortColumn,
+        sort_direction: sortDirection,
+        tabs: visibleDetailsTabs,
+        show_issue_summary: showIssueSummary,
+        show_issue_creation_date: showIssueCreationDate,
+        show_issue_update_date: showIssueUpdateDate,
+        show_issue_due_date: showIssueDueDate,
+        show_issue_release: showIssueRelease,
+        show_issue_sprint: showIssueSprint,
+        ui_mode: uiMode
+    }
+
+    function setSettings(partialSettings) {
+        const settings = {...currentSettings, ...partialSettings}
+        setDateInterval(settings.date_interval)
+        setDateOrder(settings.date_order)
+        setHiddenColumns(settings.hidden_columns)
+        setHideMetricsNotRequiringAction(settings.hide_metrics_not_requiring_action)
+        setNrDates(settings.nr_dates)
+        setSortColumn(settings.sort_column)
+        setSortDirection(settings.sort_direction)
+        setVisibleDetailsTabs(settings.tabs)
+        setShowIssueSummary(settings.show_issue_summary)
+        setShowIssueCreationDate(settings.show_issue_creation_date)
+        setShowIssueUpdateDate(settings.showIssueUpdateDate)
+        setShowIssueDueDate(settings.showIssueDueDate)
+        setShowIssueRelease(settings.showIssueRelease)
+        setShowIssueSprint(settings.showIssueSprint)
+        setUIMode(settings.ui_mode)
     }
 
     function handleSort(column) {
@@ -145,30 +166,12 @@ export function AppUI({
                     user={user}
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
-                        clearHiddenColumns={clearHiddenColumns}
-                        dateInterval={dateInterval}
-                        dateOrder={dateOrder}
-                        handleSort={handleSort}
-                        hiddenColumns={hiddenColumns}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                        nrDates={nrDates}
-                        setDateInterval={setDateInterval}
-                        setDateOrder={setDateOrder}
-                        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-                        setNrDates={setNrDates}
-                        setShowIssueCreationDate={setShowIssueCreationDate}
-                        setShowIssueSummary={setShowIssueSummary}
-                        setShowIssueUpdateDate={setShowIssueUpdateDate}
-                        setShowIssueDueDate={setShowIssueDueDate}
-                        setShowIssueRelease={setShowIssueRelease}
-                        setShowIssueSprint={setShowIssueSprint}
-                        setUIMode={setUIMode}
-                        sortColumn={sortColumn}
-                        sortDirection={sortDirection}
+                        settings={currentSettings}
+                        setSettings={setSettings}
                         toggleHiddenColumn={toggleHiddenColumn}
-                        uiMode={uiMode}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                        postSettings={postSettings}
+                        postSettings={post_settings}
+                        defaultSettings={defaultSettings}
+                        handleSort={handleSort}
                     />}
                 />
                 <ToastContainer theme="colored" />
