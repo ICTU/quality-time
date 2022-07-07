@@ -18,7 +18,7 @@ from pymongo.database import Database
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from shared.utils.type import SessionId, User
 
-from database.users import upsert_user
+from database.users import upsert_user, get_user
 from database import sessions
 from utils.functions import uuid
 
@@ -77,7 +77,7 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def verify_user(username: str, password: str) -> User:
+def verify_user(database: Database, username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_urls = os.environ.get("LDAP_URL", "ldap://localhost:389").split(",")
@@ -85,7 +85,6 @@ def verify_user(username: str, password: str) -> User:
     ldap_lookup_user_pw = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
-    user = User(username)
     try:
         ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_urls]
         ldap_server_pool = ServerPool(ldap_servers)
@@ -96,18 +95,20 @@ def verify_user(username: str, password: str) -> User:
             result = lookup_connection.entries[0]
         if salted_password := result.userPassword.value:
             if check_password(salted_password, password):
-                logging.info("LDAP salted password check for %s succeeded", user)
+                logging.info("LDAP salted password check for %s succeeded", username)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:  # pragma: no cover-behave
             with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
-                logging.info("LDAP bind for %s succeeded", user)
+                logging.info("LDAP bind for %s succeeded", username)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error: %s", reason)
     else:
+        user = get_user(database, username)
         user.email = result.mail.value or ""
         user.common_name = result.cn.value
         user.verified = True
+        upsert_user(database, user)
     return user
 
 
@@ -120,9 +121,8 @@ def login(database: Database) -> dict[str, bool | str]:
         user = User(username, username or "", "", username is not None)
     else:
         username, password = get_credentials()
-        user = verify_user(username, password)
+        user = verify_user(database, username, password)
     if user.verified:
-        upsert_user(database, user)
         session_expiration_datetime = create_session(database, user)
     else:
         session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
