@@ -1,6 +1,7 @@
 import { fetch_server_api } from "./fetch_server_api";
 
 export function post_settings(settings, reload) {
+    console.log(settings)
     return fetch_server_api('post', `/settings/update`, settings).then(reload)
 }
 
