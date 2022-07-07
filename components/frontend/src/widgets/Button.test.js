@@ -43,18 +43,29 @@ test('AddDropdownButton keyboard navigation', async () => {
 test('AddDropdownButton hides popup when dropdown is shown', async () => {
     renderAddDropdownButton()
     await userEvent.hover(screen.getByText(/Add foo/));
-    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })
+    await waitFor(() => { expect(screen.queryAllByText(/Add a new foo here/).length).toBe(1) })
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    expect(screen.queryAllByText(/Add a foo here/).length).toBe(0);  // Popup should disappear
+    expect(screen.queryAllByText(/Add a new foo here/).length).toBe(0);  // Popup should disappear
     await userEvent.type(screen.getByText(/Add foo/), "{Escape}");  // Close dropdown
     await userEvent.hover(screen.getByText(/Add foo/));
-    await waitFor(() => { expect(screen.queryAllByText(/Add a foo here/).length).toBe(1) })  // Popup should appear again
+    await waitFor(() => { expect(screen.queryAllByText(/Add a new foo here/).length).toBe(1) })  // Popup should appear again
 });
 
 test('AddDropdownButton filter one item', async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
     await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}");
+    expect(mockCallback).toHaveBeenCalledWith("sub 6")
+});
+
+test('AddDropdownButton filter one item without focus', async () => {
+    const mockCallback = renderAddDropdownButton(6)
+    await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
+    const dropdown = screen.getByText(/Add foo/)
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "9" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "Backspace" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "6" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "Enter" }) });
     expect(mockCallback).toHaveBeenCalledWith("sub 6")
 });
 
