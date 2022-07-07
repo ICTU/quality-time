@@ -83,7 +83,7 @@ def metric_section(data_model, metric_key, metric, level) -> str:
         markdown += see_also_links(rationale_urls)
     if explanation := metric.get("explanation"):
         markdown += markdown_paragraph(f"*More information* {explanation}")
-        if explanation_urls := metric.get("explanation_urls"):
+        if explanation_urls := metric.get("explanation_urls"):  # pragma: no branch
             markdown += see_also_links(explanation_urls)
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
