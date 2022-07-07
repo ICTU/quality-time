@@ -51,6 +51,8 @@ class Metric(DescribedModel):
     tags: list[Tag] = []
     rationale: Optional[str] = ""
     rationale_urls: list[str] = []
+    explanation: Optional[str] = ""
+    explanation_urls: list[str] = []
 
     @validator("default_scale", always=True)
     def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument

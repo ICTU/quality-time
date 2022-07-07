@@ -78,12 +78,13 @@ def metric_section(data_model, metric_key, metric, level) -> str:
     """Return the metric as Markdown section."""
     markdown = markdown_header(metric["name"], level=level, index=True)
     markdown += markdown_paragraph(metric["description"])
-    markdown += markdown_paragraph(f"Why measure {decapitalize(metric['name'])}? {metric['rationale']}")
+    markdown += markdown_paragraph(f"*Why measure {decapitalize(metric['name'])}?* {metric['rationale']}")
     if rationale_urls := metric.get("rationale_urls"):
-        markdown += "```{seealso}\n"
-        for url in rationale_urls:
-            markdown += f"- {markdown_link(url)}\n"
-        markdown += "```\n\n"
+        markdown += see_also_links(rationale_urls)
+    if explanation := metric.get("explanation"):
+        markdown += markdown_paragraph(f"*More information* {explanation}")
+        if explanation_urls := metric.get("explanation_urls"):
+            markdown += see_also_links(explanation_urls)
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *metric["tags"])
@@ -98,6 +99,15 @@ def metric_section(data_model, metric_key, metric, level) -> str:
         source_name = data_model["sources"][source]["name"]
         markdown += f"- [{source_name}]({metric_source_slug(metric['name'], source_name)})\n"
     markdown += "```\n"
+    return markdown
+
+
+def see_also_links(urls: list[str]) -> str:
+    """Return a see also section with a list of URLs."""
+    markdown = "```{seealso}\n"
+    for url in urls:
+        markdown += f"1. {markdown_link(url)}\n"
+    markdown += "```\n\n"
     return markdown
 
 
