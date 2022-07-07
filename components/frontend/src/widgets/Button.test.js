@@ -61,8 +61,11 @@ test('AddDropdownButton filter one item', async () => {
 test('AddDropdownButton filter one item without focus', async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}");
-    await userEvent.type(screen.getByText(/Add foo/), "sub 67{Backspace}{Enter}");
+    const dropdown = screen.getByText(/Add foo/)
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "9" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "Backspace" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "6" }) });
+    await act(async () => { fireEvent.keyDown(dropdown, { key: "Enter" }) });
     expect(mockCallback).toHaveBeenCalledWith("sub 6")
 });
 
