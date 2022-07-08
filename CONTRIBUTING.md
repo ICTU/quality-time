@@ -26,5 +26,5 @@ Never made an open source contribution before? Wondering how contributions work 
 
 ## Where can I go for help?
 
-If you need help, please contact [Frank Niessink])@fniessink).
+If you need help, please contact [Frank Niessink](@fniessink).
 
