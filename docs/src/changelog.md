@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 ### Added
 
 - Allow for filtering items in an add-item button dropdown menu without first clicking the filter input field. Closes [#4114](https://github.com/ICTU/quality-time/issues/4114).
+- Mention the repository owner in the [README.md](https://github.com/ICTU/quality-time/blob/master/README.md) and add [contributing guidelines](https://github.com/ICTU/quality-time/blob/master/CONTRIBUTING.md) and a [code of conduct](https://github.com/ICTU/quality-time/blob/master/CODE_OF_CONDUCT.md) to make the *Quality-time* repository comply with the [ICTU GitHub policy](https://github.com/ICTU/github-policy). Closes [#4142](https://github.com/ICTU/quality-time/issues/4142).
 - Add an explanation of what version numbers are supported for the 'source version' and 'software version' metrics. Closes [#4146](https://github.com/ICTU/quality-time/issues/4146).
 
 ### Changed
