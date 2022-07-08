@@ -7,9 +7,16 @@
 [![BCH compliance](https://bettercodehub.com/edge/badge/ICTU/quality-time?branch=master)](https://bettercodehub.com/)
 [![Documentation Status](https://readthedocs.org/projects/quality-time/badge/?version=latest)](https://quality-time.readthedocs.io/en/latest/?badge=latest)
 
-![Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts](docs/src/screenshots/projects_dashboard.png)
+## About *Quality-time*
 
 *Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
+![Screenshot of a Quality-time dashboard with three demo projects in the form of donut charts](docs/src/screenshots/projects_dashboard.png)
+
+## More information
+
 See the *Quality-time* [documentation](https://quality-time.readthedocs.io/en/latest) for more screenshots, features, user manual, deployment instructions, and more.
 
+## Get in touch
+
+Point of contact for this repository is [Frank Niessink](@fniessink).
