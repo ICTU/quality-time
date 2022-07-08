@@ -11,21 +11,21 @@ updates:
   directory: "/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:05"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/collector/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:10"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/collector"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:15"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -35,7 +35,7 @@ updates:
   directory: "/components/database"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:20"
   ignore:
     - dependency-name: "mongo"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Patches only, please
@@ -45,7 +45,7 @@ updates:
   directory: "/components/frontend"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:25"
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
@@ -55,28 +55,28 @@ updates:
   directory: "/components/frontend"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:30"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/ldap"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:35"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/notifier/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:40"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/notifier"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:45"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -86,14 +86,14 @@ updates:
   directory: "/components/proxy"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:50"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/renderer"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "04:55"
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
@@ -103,14 +103,14 @@ updates:
   directory: "/components/renderer"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/external_server"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:05"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -120,14 +120,14 @@ updates:
   directory: "/components/external_server/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:10"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/internal_server"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:15"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -137,14 +137,14 @@ updates:
   directory: "/components/internal_server/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:20"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/shared_python"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:25"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -154,14 +154,14 @@ updates:
   directory: "/components/shared_python/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:30"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/testdata"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:35"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -171,33 +171,33 @@ updates:
   directory: "/docs"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:40"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/docs/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:45"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/release/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:50"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/application_tests/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "05:55"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests/requirements"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "06:00"
   open-pull-requests-limit: 100
