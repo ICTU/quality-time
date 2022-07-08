@@ -11,8 +11,9 @@ export function ViewPanel({
     setSettings,
     toggleHiddenColumn,
     postSettings,
-    defaultSettings,
-    handleSort
+    userSettings,
+    handleSort,
+    user
 }) {
     const multipleDateColumns = settings.nr_dates > 1
     const oneDateColumn =  settings.nr_dates === 1
@@ -41,7 +42,7 @@ export function ViewPanel({
                         <Grid.Column>
                             <Button
                                 onClick={() => {
-                                    setSettings(defaultSettings)
+                                    setSettings(userSettings)
                                 }}
                                 inverted
                             >
@@ -52,6 +53,7 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
+                                disabled={user === null}
                                 onClick={() => postSettings(settings)}
                                 inverted
                             >

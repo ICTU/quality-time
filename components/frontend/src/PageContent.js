@@ -20,16 +20,11 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
 export function PageContent({
     changed_fields,
     current_report,
-    dateInterval,
-    dateOrder,
     handleSort,
-    hiddenColumns,
-    hideMetricsNotRequiringAction,
     history,
     issueSettings,
     loading,
     go_home,
-    nrDates,
     nr_measurements,
     open_report,
     reload,
@@ -37,35 +32,35 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
-    sortColumn,
-    sortDirection,
+    settings,
     toggleVisibleDetailsTab,
-    visibleDetailsTabs
 }) {
     let content;
     if (loading) {
         content = <Segment basic placeholder loading size="massive" aria-label="Loading..." />
     } else {
-        const dates = getColumnDates(report_date, dateInterval, dateOrder, nrDates)
+        const dates = getColumnDates(report_date, settings.date_interval, settings.date_order, settings.nr_dates)
         if (report_uuid) {
             content = <Report
                 changed_fields={changed_fields}
                 dates={dates}
                 go_home={go_home}
                 handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                issueSettings={issueSettings}
+                hiddenColumns={settings.hidden_columns}
+                hideMetricsNotRequiringAction={settings.hide_metrics_not_requiring_action}
                 history={history}
                 nr_measurements={nr_measurements}
                 reload={reload}
                 report={current_report}
                 reports={reports}
                 report_date={report_date}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
+                showIssueCreationDate={settings.show_issue_creation_date}
+                showIssueSummary={settings.show_issue_summary}
+                showIssueUpdateDate={settings.show_issue_update_date}
+                sortColumn={settings.sort_column}
+                sortDirection={settings.sort_direction}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                visibleDetailsTabs={visibleDetailsTabs}
+                visibleDetailsTabs={settings.tabs}
             />
         } else {
             content = <ReportsOverview

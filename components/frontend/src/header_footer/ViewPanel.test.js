@@ -2,6 +2,40 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ViewPanel } from './ViewPanel';
 
+let settingsFixture = {
+    date_interval: 7,
+    date_order: "descending",
+    hidden_columns: [],
+    hide_metrics_not_requiring_action: false,
+    nr_dates: 1,
+    sort_column: null,
+    sort_direction: "ascending",
+    tabs: [],
+    show_issue_summary: false,
+    show_issue_creation_date: false,
+    show_issue_update_date: false,
+    ui_mode: null
+}
+
+it("clears the visible details tabs", async () => {
+    const  postSettings = jest.fn();
+    const settings = {...settingsFixture, tabs: ["tab"]}
+    await act(async () => {
+        render(<ViewPanel postSettings={postSettings} settings={settings} />)
+        fireEvent.click(screen.getByText(/Collapse all metrics/))
+    });
+    expect(postSettings).toHaveBeenCalled()
+})
+
+it("doesn't clear the visible details tabs if there are none", async () => {
+    const postSettings = jest.fn();
+    await act(async () => {
+        render(<ViewPanel postSettings={postSettings} visibleDetailsTabs={[]} />)
+        fireEvent.click(screen.getByText(/Collapse all metrics/))
+    });
+    expect(postSettings).not.toHaveBeenCalled()
+})
+
 function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),
@@ -274,37 +308,38 @@ it("sets the date interval by keypress", async () => {
 })
 
 it("sorts the dates descending", async () => {
-    const setDateOrder = jest.fn();
+    const setSettings = jest.fn();
+    const settings = {...settingsFixture, date_order: "ascending"}
     await act(async () => {
-        render(<ViewPanel dateOrder="ascending" setDateOrder={setDateOrder} />)
+        render(<ViewPanel setSettings={setSettings} settings={settings} />)
         fireEvent.click(screen.getByText(/Descending/))
     });
-    expect(setDateOrder).toHaveBeenCalledWith("descending")
+    expect(setSettings).toHaveBeenCalledWith({"date_order": "descending"})
 })
 
 it("sorts the dates ascending by keypress", async () => {
-    const setDateOrder = jest.fn();
+    const setSettings = jest.fn();
     await act(async () => {
-        render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
+        render(<ViewPanel setSettings={setSettings} settings={settingsFixture} />)
         await userEvent.type(screen.getByText(/Ascending/), "{Enter}")
     });
-    expect(setDateOrder).toHaveBeenCalledWith("ascending")
+    expect(setSettings).toHaveBeenCalledWith({"date_order": "ascending"})
 })
 
 it("shows issue summaries", async () => {
-    const setShowIssueSummary = jest.fn();
+    const setSettings = jest.fn();
     await act(async () => {
-        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
+        render(<ViewPanel setSettings={setSettings} settings={settingsFixture} />)
         fireEvent.click(screen.getAllByText(/Summary/)[0])
     });
-    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
+    expect(setSettings).toHaveBeenCalledWith({"show_issue_summary": true})
 })
 
 it("shows issue summaries by keypress", async () => {
-    const setShowIssueSummary = jest.fn();
+    const setSettings = jest.fn();
     await act(async () => {
-        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
+        render(<ViewPanel setSettings={setSettings} settings={settingsFixture} />)
         await userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
     });
-    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
+    expect(setSettings).toHaveBeenCalledWith({"show_issue_summary": true})
 })
