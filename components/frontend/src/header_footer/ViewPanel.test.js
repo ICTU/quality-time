@@ -29,8 +29,9 @@ it("clears the visible details tabs", async () => {
 
 it("doesn't clear the visible details tabs if there are none", async () => {
     const postSettings = jest.fn();
+    const settings = {...settingsFixture, tabs: []}
     await act(async () => {
-        render(<ViewPanel postSettings={postSettings} visibleDetailsTabs={[]} />)
+        render(<ViewPanel postSettings={postSettings} settings={settings} />)
         fireEvent.click(screen.getByText(/Collapse all metrics/))
     });
     expect(postSettings).not.toHaveBeenCalled()

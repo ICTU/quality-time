@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
-import { capitalize, pluralize } from "../utils";
+import { capitalize, pluralize, shallowEqualObjects } from "../utils";
 import './ViewPanel.css';
 
 const activeColor = "grey"
@@ -41,8 +41,10 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
+                                disabled={shallowEqualObjects(userSettings, settings)}
                                 onClick={() => {
                                     setSettings(userSettings)
+                                    handleSort(userSettings.sort_column)
                                 }}
                                 inverted
                             >
