@@ -22,12 +22,12 @@ const data_model = {
 
 const reportWithIssueTracker = { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }
 
-function renderMetricDebtParameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
+function renderMetricDebtParameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION], issue_status = []) {
     render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={data_model}>
                 <MetricDebtParameters
-                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids }}
+                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids, issue_status: issue_status }}
                     metric_uuid="metric_uuid"
                     reload={() => {/* Dummy implementation */ }}
                     report={report}
@@ -69,6 +69,18 @@ it('does not show an error message if the metric has issues and an issue tracker
 it('shows an error message if the metric has issues but no issue tracker is configured', async () => {
     await act(async () => { renderMetricDebtParameters("count", ["FOO-42"]) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1);
+});
+
+it('shows a connection error', async () => {
+    await act(async () => { renderMetricDebtParameters("count", [], {}, [], [{issue_id: "FOO-43", connection_error: "Oops"}] ) });
+    expect(screen.queryAllByText(/Connection error/).length).toBe(1);
+    expect(screen.queryAllByText(/Oops/).length).toBe(1);
+});
+
+it('shows a parse error', async () => {
+    await act(async () => { renderMetricDebtParameters("count", [], {}, [], [{issue_id: "FOO-43", parse_error: "Oops"}] ) });
+    expect(screen.queryAllByText(/Parse error/).length).toBe(1);
+    expect(screen.queryAllByText(/Oops/).length).toBe(1);
 });
 
 it('creates an issue', async () => {

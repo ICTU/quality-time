@@ -1,9 +1,10 @@
-import React, { useId } from 'react';
+import React from 'react';
+import { useUID } from 'react-uid';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { TextInput } from './TextInput';
 
 export function Comment(props) {
-    const labelId = useId();
+    const labelId = useUID();
     return (
         <TextInput
             aria-labelledby={labelId}

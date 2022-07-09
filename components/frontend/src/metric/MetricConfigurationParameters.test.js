@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
@@ -9,6 +9,11 @@ import * as fetch_server_api from '../api/fetch_server_api';
 jest.mock("../api/fetch_server_api.js")
 
 const data_model = {
+    scales: {
+        count: {name: "Count"},
+        percentage: {name: "Percentage"},
+        version_number: {name: "Version number"}
+    },
     subjects: {
         subject_type: {
             metrics: ["violations", "source_version"]
@@ -41,6 +46,26 @@ it('sets the metric name', async () => {
     await act(async () => { render_metric_parameters() });
     await userEvent.type(screen.getByLabelText(/Metric name/), 'New metric name{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/name", { name: "New metric name" });
+});
+
+it('adds a tag', async () => {
+    await act(async () => { render_metric_parameters() });
+    await userEvent.type(screen.getByLabelText(/Tags/), 'New tag{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/tags", { tags: ["New tag"] });
+});
+
+it('changes the scale', async () => {
+    await act(async () => { render_metric_parameters() });
+    fireEvent.click(screen.getByText(/Metric scale/))
+    fireEvent.click(screen.getByText(/Percentage/))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/scale", { scale: "percentage" });
+});
+
+it('changes the direction', async () => {
+    await act(async () => { render_metric_parameters() });
+    fireEvent.click(screen.getByText(/direction/))
+    fireEvent.click(screen.getByText(/More violations is better/))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/direction", { direction: ">" });
 });
 
 it('sets the metric unit for metrics with the count scale', async () => {

@@ -42,10 +42,12 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
 
 function Tags({ metric, metric_uuid, reload, report }) {
     const tags = Object.keys(report.summary_by_tag || []);
+    const labelId = `tags-${metric_uuid}`
     return (
         <MultipleChoiceInput
             allowAdditions
-            label="Tags"
+            aria-labelledby={labelId}
+            label={<label id={labelId}>Tags</label>}
             options={dropdownOptions(tags)}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
@@ -57,10 +59,12 @@ function Tags({ metric, metric_uuid, reload, report }) {
 function Scale({ metricType, metric_scale, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
+    const labelId = `scale-${metric_uuid}`
     return (
         <SingleChoiceInput
+            aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label="Metric scale"
+            label={<label id={labelId}>Metric scale</label>}
             options={scale_options}
             placeholder={metricType.default_scale || "Count"}
             set_value={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
