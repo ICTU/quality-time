@@ -5,12 +5,13 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { isValidDate_YYYYMMDD } from '../utils';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
-function EditableDateInput({ label, placeholder, required, set_value, value }) {
+function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
     // We don't use the minDate property because having a value < minDate can crash the date picker,
     // see https://github.com/ICTU/quality-time/issues/1534
     const [date, setDate] = useState(value);
     return (
         <CalendarDateInput
+            aria-labelledby={ariaLabelledBy}
             clearable
             closable
             dateFormat="YYYY-MM-DD"

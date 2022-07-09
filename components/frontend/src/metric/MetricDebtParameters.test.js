@@ -3,7 +3,7 @@ import { act, waitFor, render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
-import { MetricParameters } from './MetricParameters';
+import { MetricDebtParameters } from './MetricDebtParameters';
 import * as fetch_server_api from '../api/fetch_server_api';
 
 jest.mock("../api/fetch_server_api.js")
@@ -22,13 +22,12 @@ const data_model = {
 
 const reportWithIssueTracker = { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }
 
-function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
+function renderMetricDebtParameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION], issue_status = []) {
     render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={data_model}>
-                <MetricParameters
-                    subject={{ type: "subject_type" }}
-                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids }}
+                <MetricDebtParameters
+                    metric={{ type: "violations", tags: [], accept_debt: false, scale: scale, issue_ids: issue_ids, issue_status: issue_status }}
                     metric_uuid="metric_uuid"
                     reload={() => {/* Dummy implementation */ }}
                     report={report}
@@ -38,80 +37,82 @@ function render_metric_parameters(scale = "count", issue_ids = [], report = { su
     );
 }
 
-it('sets the metric name', async () => {
+it('accepts technical debt', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
-    await userEvent.type(screen.getByLabelText(/Metric name/), 'New metric name{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/name", { name: "New metric name" });
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Accept technical debt/), 'Yes{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/accept_debt", { accept_debt: true });
 });
 
-it('sets the metric unit for metrics with the count scale', async () => {
+it('sets the technical debt end date', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
-    await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
-});
-
-it('sets the metric unit field for metrics with the percentage scale', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters("percentage") });
-    await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
-});
-
-it('skips the metric unit field for metrics with the version number scale', () => {
-    render(<DataModel.Provider value={data_model}><MetricParameters
-        report={{}}
-        subject={{ type: "subject_type" }}
-        metric={{ type: "source_version", tags: [], accept_debt: false }}
-        metric_uuid="metric_uuid"
-    /></DataModel.Provider>);
-    expect(screen.queryAllByText(/Metric unit/).length).toBe(0);
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Technical debt end date/), '2022-12-31{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: "2022-12-31" });
 });
 
 it('does not show an error message if the metric has no issues and no issue tracker is configured', async () => {
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricDebtParameters() });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
 });
 
 it('does not show an error message if the metric has no issues and an issue tracker is configured', async () => {
-    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira" } }) });
+    await act(async () => { renderMetricDebtParameters("count", [], { issue_tracker: { type: "Jira" } }) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
 });
 
 it('does not show an error message if the metric has issues and an issue tracker is configured', async () => {
-    await act(async () => { render_metric_parameters("count", ["BAR-42"], { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }) });
+    await act(async () => { renderMetricDebtParameters("count", ["BAR-42"], { issue_tracker: { type: "Jira", parameters: { url: "https://jira", project_key: "KEY", issue_type: "Bug" } } }) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
 });
 
 it('shows an error message if the metric has issues but no issue tracker is configured', async () => {
-    await act(async () => { render_metric_parameters("count", ["FOO-42"]) });
+    await act(async () => { renderMetricDebtParameters("count", ["FOO-42"]) });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1);
+});
+
+it('shows a connection error', async () => {
+    await act(async () => { renderMetricDebtParameters("count", [], {}, [], [{issue_id: "FOO-43", connection_error: "Oops"}] ) });
+    expect(screen.queryAllByText(/Connection error/).length).toBe(1);
+    expect(screen.queryAllByText(/Oops/).length).toBe(1);
+});
+
+it('shows a parse error', async () => {
+    await act(async () => { renderMetricDebtParameters("count", [], {}, [], [{issue_id: "FOO-43", parse_error: "Oops"}] ) });
+    expect(screen.queryAllByText(/Parse error/).length).toBe(1);
+    expect(screen.queryAllByText(/Oops/).length).toBe(1);
 });
 
 it('creates an issue', async () => {
     window.open = jest.fn()
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" });
-    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker) });
+    await act(async () => { renderMetricDebtParameters("count", [], reportWithIssueTracker) });
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid" });
 });
 
 it('tries to create an issue', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" });
-    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker) });
+    await act(async () => { renderMetricDebtParameters("count", [], reportWithIssueTracker) });
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", { metric_url: "http://localhost/#metric_uuid" });
 });
 
 it('does not show the create issue button if the user has no permissions', async () => {
-    await act(async () => { render_metric_parameters("count", [], reportWithIssueTracker, []) });
+    await act(async () => { renderMetricDebtParameters("count", [], reportWithIssueTracker, []) });
     expect(screen.queryAllByText(/Create new issue/).length).toBe(0)
 })
 
+it('adds an issue id', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Issue identifiers/), 'FOO-42{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/issue_ids", { issue_ids: ["FOO-42"] });
+});
+
 it('shows issue id suggestions', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
-    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
+    await act(async () => { renderMetricDebtParameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), 'u');
     await waitFor(() => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1);
@@ -120,7 +121,7 @@ it('shows issue id suggestions', async () => {
 
 it('shows no issue id suggestions without a query', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
-    await act(async () => { render_metric_parameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
+    await act(async () => { renderMetricDebtParameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), 's');
     await waitFor(() => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1);
@@ -131,9 +132,8 @@ it('shows no issue id suggestions without a query', async () => {
     })
 });
 
-it('turns off evaluation of targets', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
-    await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), 'No{Enter}');
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/evaluate_targets", { evaluate_targets: false });
+it('adds a comment', async () => {
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Comment/), 'Keep cool{Tab}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", { comment: "Keep cool" });
 });

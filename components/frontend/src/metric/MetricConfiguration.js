@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
-import { MetricParameters } from './MetricParameters';
+import { MetricConfigurationParameters } from './MetricConfigurationParameters';
+import { MetricDebtParameters } from './MetricDebtParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
@@ -16,7 +17,13 @@ export function MetricConfiguration({ metric, metric_uuid, subject, report, relo
         {
             menuItem: <Menu.Item key='configuration'><Icon name="settings" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricParameters subject={subject} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+                <MetricConfigurationParameters subject={subject} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+            </Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key='debt'><Icon name="money" /><FocusableTab>{'Technical debt'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {

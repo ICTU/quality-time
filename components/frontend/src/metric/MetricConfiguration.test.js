@@ -49,6 +49,12 @@ async function renderMetricConfiguration() {
     })
 }
 
+it('shows the technical debt tab', async () => {
+    await renderMetricConfiguration();
+    await act(async () => fireEvent.click(screen.getByText(/Technical debt/)));
+    expect(screen.getByText(/Accept technical debt?/)).not.toBe(null)
+});
+
 it('loads the changelog', async () => {
     await renderMetricConfiguration();
     await act(async () => fireEvent.click(screen.getByText(/Changelog/)));
