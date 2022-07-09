@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid } from 'semantic-ui-react';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_issue_tracker_suggestions } from '../api/report';
@@ -10,7 +10,6 @@ import { DateInput } from '../fields/DateInput';
 import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { ErrorMessage } from '../errorMessage';
-import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { get_metric_issue_ids } from '../utils';
 import { Target } from './Target';
@@ -72,7 +71,6 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, repo
 
 
 export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
-    const dataModel = useContext(DataModel)
     const parameters = report?.issue_tracker?.parameters;
     const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
     const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";

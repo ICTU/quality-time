@@ -124,9 +124,6 @@ export function MetricConfigurationParameters({ report, subject, metric, metric_
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
-    const parameters = report?.issue_tracker?.parameters;
-    const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
-    const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
