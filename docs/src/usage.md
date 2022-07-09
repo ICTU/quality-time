@@ -185,13 +185,13 @@ Alternatively, you can also copy an existing metric or move an existing metric t
 
 After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab.
 
-```{image} screenshots/editing_metric.png
-:alt: Screenshot of dialog to edit metrics showingn fields for metric type, metric name, tags, metric scale, metric direction, metric unit, metric targets, technical debt, issues, and comments
+```{image} screenshots/editing_metric_configuration.png
+:alt: Screenshot of tab to edit metrics showing fields for metric type, metric name, tags, metric scale, metric direction, metric unit, and metric targets
 :class: only-light
 ```
 
-```{image} screenshots/editing_metric_dark.png
-:alt: Screenshot of dialog to edit metrics showingn fields for metric type, metric name, tags, metric scale, metric direction, metric unit, metric targets, technical debt, issues, and comments
+```{image} screenshots/editing_metric_configuration_dark.png
+:alt: Screenshot of tab to edit metrics showing fields for metric type, metric name, tags, metric scale, metric direction, metric unit, and metric targets
 :class: only-dark
 ```
 
@@ -219,9 +219,26 @@ The "Metric {index}`target <Target>`" determines at what value a measurement is 
 
 If you don't want to evaluate the metric against targets, but only want to track its measurement value, you can set the "Evaluate metric targets?" field to "No". The metric status will always be "Informative", unless the source data is missing.
 
-If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *{index}`technical debt <Technical debt>`*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field.
+```{index} Technical debt
+```
 
-The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to e.g. track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker. The "Create new issue" button can be used to create a new issue in the configured issue tracker. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue identifiers. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser.
+#### Managing technical debt
+
+If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *{index}`technical debt <Technical debt>`*.
+
+```{image} screenshots/editing_metric_technical_debt.png
+:alt: Screenshot of tab to manage technical debt showing fields for technical debt, issues, and comments
+:class: only-light
+```
+
+```{image} screenshots/editing_metric_technical_debt_dark.png
+:alt: Screenshot of tab to manage technical debt showing fields for technical debt, issues, and comments
+:class: only-dark
+```
+
+To accept technical debt, navigate to the metric's "Technical debt" tab and set the "Accept technical debt?" field to "Yes". Enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Technical debt end date" field.
+
+The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker. The "Create new issue" button can be used to create a new issue in the configured issue tracker. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue identifiers. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser.
 
 The "{index}`Comment <pair: Comment;Metric>`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supported.
 
