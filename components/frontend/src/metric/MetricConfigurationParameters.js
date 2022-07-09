@@ -28,11 +28,12 @@ function metric_scale_options(metric_scales, datamodel) {
 }
 
 function MetricName({ metric, metricType, metric_uuid, reload }) {
+    const labelId = `metric-name-${metric_uuid}`
     return (
         <StringInput
+            aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            id="metric-name"
-            label="Metric name"
+            label={<label id={labelId}>Metric name</label>}
             placeholder={metricType.name}
             set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
             value={metric.name ?? ""}
@@ -80,10 +81,12 @@ function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
     const fewer = { count: `Fewer ${metricUnit}`, percentage: `A lower percentage of ${metricUnitWithoutPercentage}`, version_number: "A lower version number" }[metric_scale];
     const more = { count: `More ${metricUnit}`, percentage: `A higher percentage of ${metricUnitWithoutPercentage}`, version_number: "A higher version number" }[metric_scale];
     const metricDirection = getMetricDirection(metric, dataModel) ?? "<"
+    const labelId = `direction-${metric_uuid}`
     return (
         <SingleChoiceInput
+            aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label="Metric direction"
+            label={<label id={labelId}>Metric direction</label>}
             options={[
                 { key: "0", text: `${fewer} is better`, value: "<" },
                 { key: "1", text: `${more} is better`, value: ">" }]}
@@ -94,10 +97,11 @@ function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
 }
 
 function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
+    const labelId = `unit-${metric_uuid}`
     return (
         <StringInput
-            id="metric-unit"
-            label="Metric unit"
+            aria-labelledby={labelId}
+            label={<label id={labelId}>Metric unit</label>}
             placeholder={metricType.unit}
             prefix={metric_scale === "percentage" ? "%" : ""}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
