@@ -15,10 +15,12 @@ import { get_metric_issue_ids } from '../utils';
 import { Target } from './Target';
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
+    const labelId = `accept-debt-label-${metric_uuid}`
     return (
         <SingleChoiceInput
+            aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon tabIndex="0" name="help circle" link /></HyperLink></label>}
+            label={<label id={labelId}>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon tabIndex="0" name="help circle" link /></HyperLink></label>}
             value={metric.accept_debt || false}
             options={[
                 { key: true, text: "Yes", value: true },
@@ -29,10 +31,12 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
 }
 
 function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
+    const labelId = `technical-debt-end-date-label-${metric_uuid}`
     return (
         <DateInput
+            ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label="Technical debt end date"
+            label={<label id={labelId}>Technical debt end date</label>}
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}

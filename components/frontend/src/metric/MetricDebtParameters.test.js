@@ -37,6 +37,20 @@ function renderMetricDebtParameters(scale = "count", issue_ids = [], report = { 
     );
 }
 
+it('accepts technical debt', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Accept technical debt/), 'Yes{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/accept_debt", { accept_debt: true });
+});
+
+it('sets the technical debt end date', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Technical debt end date/), '2022-12-31{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: "2022-12-31" });
+});
+
 it('does not show an error message if the metric has no issues and no issue tracker is configured', async () => {
     await act(async () => { renderMetricDebtParameters() });
     expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0);
@@ -77,6 +91,13 @@ it('does not show the create issue button if the user has no permissions', async
     expect(screen.queryAllByText(/Create new issue/).length).toBe(0)
 })
 
+it('adds an issue id', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Issue identifiers/), 'FOO-42{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/issue_ids", { issue_ids: ["FOO-42"] });
+});
+
 it('shows issue id suggestions', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] });
     await act(async () => { renderMetricDebtParameters("count", [], { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } }) });
@@ -97,4 +118,10 @@ it('shows no issue id suggestions without a query', async () => {
     await waitFor(() => {
         expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(0);
     })
+});
+
+it('adds a comment', async () => {
+    await act(async () => { renderMetricDebtParameters() });
+    await userEvent.type(screen.getByLabelText(/Comment/), 'Keep cool{Tab}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", { comment: "Keep cool" });
 });
