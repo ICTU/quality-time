@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IssueStatus } from './IssueStatus';
 
@@ -11,6 +11,7 @@ function renderIssueStatus(
         landingUrl = "https://issue",
         parseError = false,
         status = "in progress",
+        statusCategory = "",
         showIssueCreationDate = false,
         showIssueSummary = false,
         showIssueUpdateDate = false,
@@ -21,20 +22,22 @@ function renderIssueStatus(
     creationDate.setDate(creationDate.getDate() - 4);
     let updateDate = new Date();
     updateDate.setDate(updateDate.getDate() - 2);
+    const issueStatus = {
+        issue_id: "123",
+        name: status,
+        summary: "Issue summary",
+        created: created ? creationDate.toISOString() : null,
+        updated: updated ? updateDate.toISOString() : null,
+        landing_url: landingUrl,
+        connection_error: connectionError ? "error" : null,
+        parse_error: parseError ? "error" : null,
+    }
+    if (statusCategory) {
+        issueStatus["status_category"] = statusCategory
+    }
     const metric = {
         issue_ids: ["123"],
-        issue_status: [
-            {
-                issue_id: "123",
-                name: status,
-                summary: "Issue summary",
-                created: created ? creationDate.toISOString() : null,
-                updated: updated ? updateDate.toISOString() : null,
-                landing_url: landingUrl,
-                connection_error: connectionError ? "error" : null,
-                parse_error: parseError ? "error" : null,
-            }
-        ]
+        issue_status: [issueStatus]
     }
     return render(
         <IssueStatus
@@ -57,6 +60,26 @@ it("displays the status", () => {
     expect(queryByText(/in progress/)).not.toBe(null)
 });
 
+it("displays the status category doing", () => {
+    renderIssueStatus({ statusCategory: "doing" });
+    expect(screen.getByText(/123/).className).toContain("blue")
+});
+
+it("displays the status category todo", () => {
+    renderIssueStatus({ statusCategory: "todo" });
+    expect(screen.getByText(/123/).className).toContain("grey")
+});
+
+it("displays the status category done", () => {
+    renderIssueStatus({ statusCategory: "done" });
+    expect(screen.getByText(/123/).className).toContain("green")
+});
+
+it("displays a missing status category as todo", () => {
+    renderIssueStatus();
+    expect(screen.getByText(/123/).className).toContain("grey")
+});
+
 it("displays the issue landing url", async () => {
     const { queryByText } = renderIssueStatus()
     expect(queryByText(/123/).closest("a").href).toBe("https://issue/")
@@ -73,12 +96,12 @@ it("displays a question mark as status if the issue has no status", () => {
 });
 
 it("displays the issue summary in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueSummary: true})
+    const { queryByText } = renderIssueStatus({ showIssueSummary: true })
     expect(queryByText(/summary/)).not.toBe(null)
 });
 
 it("displays the creation date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueCreationDate: true})
+    const { queryByText } = renderIssueStatus({ showIssueCreationDate: true })
     expect(queryByText(/4 days ago/)).not.toBe(null)
 });
 
@@ -150,7 +173,7 @@ it("displays nothing if the metric has no issue status", async () => {
 });
 
 it("displays an error message if the metric has issue ids but the report has no issue tracker", async () => {
-    const { queryByText } = renderIssueStatus({ issueTrackerMissing: true})
+    const { queryByText } = renderIssueStatus({ issueTrackerMissing: true })
     await userEvent.hover(queryByText(/123/))
     await waitFor(() => { expect(queryByText(/No issue tracker configured/)).not.toBe(null) })
 })

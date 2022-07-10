@@ -37,7 +37,7 @@ function IssueWithTracker({ issueStatus, showIssueCreationDate, showIssueSummary
     let popupHeader = "";
     if (issueStatus.connection_error) { popupHeader = "Connection error"; popupContent = "Quality-time could not retrieve data from the issue tracker." }
     if (issueStatus.parse_error) { popupHeader = "Parse error"; popupContent = "Quality-time could not parse the data received from the issue tracker." }
-    const color = popupContent ? "red" : "blue";
+    const color = popupContent ? "red" : {todo: "grey", doing: "blue", done: "green"}[issueStatus.status_category ?? "todo"];
     const basic = popupContent ? false : true;
     let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, showIssueCreationDate, showIssueSummary, showIssueUpdateDate)}</Label>
     if (issueStatus.landing_url) {
