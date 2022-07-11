@@ -77,16 +77,12 @@ it('gets the metric tags even if there are none', () => {
     expect(get_metric_tags({})).toStrictEqual([]);
 });
 
+it('gets the metric target', () => {
+    expect(get_metric_target({ target: "2" })).toStrictEqual("2");
+});
+
 it('gets the metric target, even if the target is missing', () => {
     expect(get_metric_target({})).toStrictEqual("0");
-});
-
-it('gets the metric debt target, if technical debt has been accepted', () => {
-    expect(get_metric_target({ accept_debt: true, debt_target: "1" })).toStrictEqual("1");
-});
-
-it('gets the metric target, if technical debt has not been accepted', () => {
-    expect(get_metric_target({ accept_debt: false, target: "2" })).toStrictEqual("2");
 });
 
 it('gets the source name', () => {

@@ -2,6 +2,10 @@
     color: rgba(255, 255, 255, 0.87) !important;
 }
 
+.ui.inverted.grey.label {
+    background-color: rgba(118, 118, 118, 0.87) !important;
+}
+
 .ui.label > a {
     opacity: 1.0;
 }
