@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Icon, Label, Popup } from '../semantic_ui_react_wrappers';
+import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { formatMetricDirection, formatMetricScale, formatMetricScaleAndUnit, get_metric_target } from '../utils';
 
