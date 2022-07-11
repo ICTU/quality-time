@@ -16,6 +16,13 @@ export function MeasurementTarget({ metric }) {
             const endDate = new Date(metric.debt_end_date);
             debtEnd = ` until ${endDate.toLocaleDateString()}`;
         }
+        const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
+        let popupText = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEnd}`
+        if (allIssuesDone) {
+            popupText += " but this technical debt target is no longer applied because all issues have been done."
+        } else {
+            popupText += "."
+        }
         return (
             <Popup
                 flowing
@@ -23,7 +30,7 @@ export function MeasurementTarget({ metric }) {
                 on={['hover', 'focus']}
                 trigger={trigger}
             >
-                {`Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEnd}.`}
+                {popupText}
             </Popup>
         )
     }

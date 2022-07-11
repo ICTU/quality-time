@@ -63,3 +63,30 @@ it('renders the technical debt popup if technical debt is accepted',  async () =
         expect(screen.queryAllByText(/accepted as technical debt/).length).toBe(1)
     })
 })
+
+it('renders the issue status if all issues are done', () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", accept_debt: true, issue_status: [{status_category: "done"}]}} />
+        </DataModel.Provider>
+    )
+    expect(screen.queryAllByText(/but all issues have been done/).length).toBe(1)
+})
+
+it('does not render the issue status if technical debt is not accepted', () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", issue_status: [{status_category: "done"}]}} />
+        </DataModel.Provider>
+    )
+    expect(screen.queryAllByText(/but all issues have been done/).length).toBe(0)
+})
+
+it('renders both the issue status and the technical debt end date', () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", accept_debt: true, debt_end_date: "2022-12-31", issue_status: [{status_category: "done"}]}} />
+        </DataModel.Provider>
+    )
+    expect(screen.queryAllByText(/until .+ but all issues have been done/).length).toBe(1)
+})
