@@ -108,10 +108,6 @@ class Metric(dict):
         """Return whether the metric has its technical debt accepted."""
         return bool(self.get("accept_debt", False))
 
-    def accept_debt_expired(self) -> bool:
-        """Return whether the accepted debt has expired."""
-        return not self.accept_debt() or date.today().isoformat() > self.debt_end_date()
-
     def debt_end_date(self) -> str:
         """Return the end date of the accepted technical debt."""
         return str(self.get("debt_end_date") or date.max.isoformat())

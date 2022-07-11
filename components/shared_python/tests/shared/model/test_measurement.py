@@ -29,13 +29,17 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             ),
         )
 
-    def metric(self, addition="sum", direction="<", evaluate_targets=True) -> Metric:
+    def metric(  # pylint: disable=too-many-arguments
+        self, addition="sum", direction="<", evaluate_targets=True, accept_debt=False, debt_target=None
+    ) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
             direction=direction,
             evaluate_targets=evaluate_targets,
             type="metric_type",
+            accept_debt=accept_debt,
+            debt_target=debt_target,
             sources={
                 SOURCE_ID: dict(type="source_type"),
                 SOURCE_ID2: dict(type="source_type"),
@@ -126,7 +130,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m._ScaleMeasurement__set_status_start("target_met")  # pylint: disable=protected-access
         self.assertIs(s_m.status_start(), None)
 
-    @patch.object(Metric, "accept_debt_expired", lambda self: False)
     @patch.object(
         ScaleMeasurement,
         "_better_or_equal",
@@ -145,7 +148,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
         status = s_m._ScaleMeasurement__calculate_status(2.5)  # pylint: disable=protected-access
         self.assertEqual(status, "debt_target_met")
 
-    @patch.object(Metric, "accept_debt_expired", lambda self: True)
     @patch.object(
         ScaleMeasurement,
         "_better_or_equal",
@@ -158,10 +160,10 @@ class ScaleMeasurementTest(MeasurementTestCase):
             previous_scale_measurement=None,
             measurement=measurement,
             target=1,
-            near_target=2,
-            debt_target=3,
+            debt_target=2,
+            near_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(2)  # pylint: disable=protected-access
+        status = s_m._ScaleMeasurement__calculate_status(3)  # pylint: disable=protected-access
         self.assertEqual(status, "near_target_met")
 
 
@@ -254,6 +256,22 @@ class MeasurementTest(MeasurementTestCase):
             ],
         )
         self.assertEqual("informative", measurement.status())
+
+    def test_debt_target_expired(self):
+        """Test that the debt target is considered to be expired when all issues have been done."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100"),
+            count=dict(debt_target="100"),
+            issue_status=[dict(status_category="done")],
+        )
+        self.assertTrue(measurement.debt_target_expired())
+
+    def test_debt_target_not_expired(self):
+        """Test that the debt target is not considered to be expired without issues."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100"), count=dict(debt_target="100"), issue_status=[]
+        )
+        self.assertFalse(measurement.debt_target_expired())
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):
