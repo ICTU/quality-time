@@ -32,11 +32,12 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
 
 function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     const labelId = `technical-debt-end-date-label-${metric_uuid}`
+    const help = "Accept technical debt until this date."
     return (
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Technical debt end date</label>}
+            label={<label id={labelId}>Technical debt end date <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
@@ -45,7 +46,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 }
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
-    const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this metric. ${issue_tracker_instruction}`;
+    const issueStatusHelp = <><p>Identifiers of issues in the configured issue tracker that track the progress of fixing this metric.</p>{issue_tracker_instruction}</>
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
     const issue_ids = get_metric_issue_ids(metric);
@@ -77,7 +78,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, repo
 export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
     const parameters = report?.issue_tracker?.parameters;
     const issueTrackerConfigured = report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type;
-    const issueTrackerInstruction = issueTrackerConfigured ? "" : " Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.";
+    const issueTrackerInstruction = issueTrackerConfigured ? null : <p>Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.</p>;
     return (
         <Grid stackable columns={3}>
             <Grid.Row>

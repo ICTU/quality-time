@@ -23,7 +23,7 @@ export function get_subject_name(subject, datamodel) {
 }
 
 export function get_metric_target(metric) {
-    return (metric.accept_debt ? metric.debt_target : metric.target) || "0";
+    return metric.target || "0";
 }
 
 export function getMetricUnit(metric, dataModel) {

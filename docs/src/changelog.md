@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.2.0-rc.1 - 2022-07-09
+## [Unreleased]
 
 ### Deployment notes
 
@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 - Don't add items when hitting enter while an add-item button with collapsed dropdown menu has focus. Fixes [#4144](https://github.com/ICTU/quality-time/issues/4144).
 - Don't close the dropdown menu of an add-item button when entering a space into the filter input field. Fixes [#4147](https://github.com/ICTU/quality-time/issues/4147).
+- The target column would show the technical debt target value instead of the target value when technical debt was accepted. Fixed by always displaying the target value. In addition, if technical debt is accepted, the target value has a grey label. On hovering, a popup shows the technical debt target value and the technical debt end date, if any. Fixes [#4171](https://github.com/ICTU/quality-time/issues/4171).
 
 ### Added
 

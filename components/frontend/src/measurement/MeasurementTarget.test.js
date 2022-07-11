@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
 import { MeasurementTarget } from './MeasurementTarget';
 
@@ -39,20 +40,26 @@ it('renders the target with minutes percentage', () => {
     expect(screen.getAllByText(/≦ 0%/).length).toBe(1)
 })
 
-it('does not render the technical debt end date if technical debt is not accepted', () => {
+it('does not render the technical debt popup if technical debt is not accepted', async () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
-            <MeasurementTarget metric={{ type: "violations", debt_end_date: "2022-12-31" }} />
+            <MeasurementTarget metric={{ type: "violations", target: "100", debt_end_date: "2022-12-31" }} />
         </DataModel.Provider>
     )
-    expect(screen.queryAllByText(/until /).length).toBe(0)
+    await userEvent.hover(screen.queryByText(/100/))
+    await waitFor(() => {
+        expect(screen.queryAllByText(/accepted as technical debt/).length).toBe(0)
+    })
 })
 
-it('renders the technical debt end date if technical debt is accepted', () => {
+it('renders the technical debt popup if technical debt is accepted',  async () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
-            <MeasurementTarget metric={{ type: "violations", accept_debt: true, debt_end_date: "2022-12-31" }} />
+            <MeasurementTarget metric={{ type: "violations", target: "100", accept_debt: true, debt_end_date: "2022-12-31" }} />
         </DataModel.Provider>
     )
-    expect(screen.queryAllByText(/until /).length).toBe(1)
+    await userEvent.hover(screen.queryByText(/100/))
+    await waitFor(() => {
+        expect(screen.queryAllByText(/accepted as technical debt/).length).toBe(1)
+    })
 })
