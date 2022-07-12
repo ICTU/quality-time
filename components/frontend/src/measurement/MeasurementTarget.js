@@ -11,21 +11,34 @@ export function MeasurementTarget({ metric }) {
     if (metric.accept_debt) {
         const trigger = <Label color="grey">{target}</Label>
         const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
-        let debtEnd = "";
+        let debtEndDateInThePast = false;
+        let debtEndDateInTheFuture = false;
+        let debtEndDateText = ""
+        let endDate;
         if (metric.debt_end_date) {
-            const endDate = new Date(metric.debt_end_date);
-            debtEnd = ` until ${endDate.toLocaleDateString()}`;
+            endDate = new Date(metric.debt_end_date);
+            const today = new Date();
+            debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0];
+            debtEndDateInTheFuture = !debtEndDateInThePast
+            debtEndDateText = debtEndDateInTheFuture ? ` until ${endDate.toLocaleDateString()}` : ""
         }
         const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
-        let popupText = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEnd}`
-        if (allIssuesDone) {
-            popupText += " but this technical debt target is no longer applied because all issues have been done."
-        } else {
-            popupText += "."
+        let popupText = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEndDateText}.`
+        if (allIssuesDone || debtEndDateInThePast) {
+            popupText += " However, this technical debt target is not applied because"
         }
+        if (allIssuesDone) {
+            popupText += " all issues for this metric have been marked done"
+        }
+        if (debtEndDateInThePast) {
+            if (allIssuesDone) {
+                popupText += " and"
+            }
+            popupText += ` technical debt was accepted until ${endDate.toLocaleDateString()}`
+        }
+        popupText += "."
         return (
             <Popup
-                flowing
                 hoverable
                 on={['hover', 'focus']}
                 trigger={trigger}
