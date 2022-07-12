@@ -53,4 +53,5 @@ Feature: metric issues
 
   Scenario: technical debt is accepted if not all issues are done
     When the client changes the metric accept_debt to "True"
+    And the client changes the metric debt_target to "100"
     Then the metric status is "debt_target_met"
