@@ -232,9 +232,13 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def __all_issues_done(self) -> bool:
         """Return whether all issues have been done. Return False if there are no issues."""
-        if statuses := self.get("issue_status"):
-            return all(status.get("status_category") == "done" for status in statuses)
-        return False
+        issues_ids = self.metric.issue_ids()
+        if not issues_ids:
+            return False
+        issue_statuses = self.metric.issue_statuses(self)
+        if len(issue_statuses) < len(issues_ids):
+            return False  # Not all issue ids have a status; assume issues without status have not been done
+        return all(status.get("status_category") == "done" for status in issue_statuses)
 
     def status(self) -> Status:
         """Return the status of the measurement."""

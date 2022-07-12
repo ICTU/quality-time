@@ -78,7 +78,11 @@ class Metric(dict):
     def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
         """Return the metric's issue statuses."""
         last_issue_statuses = last_measurement.get("issue_status", []) if last_measurement else []
-        return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
+        return [status for status in last_issue_statuses if status["issue_id"] in self.issue_ids()]
+
+    def issue_ids(self) -> list[str]:
+        """Return the ids of this metric's issues."""
+        return self.get("issue_ids", [])
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""

@@ -29,21 +29,16 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             ),
         )
 
-    def metric(  # pylint: disable=too-many-arguments
-        self, addition="sum", direction="<", evaluate_targets=True, accept_debt=False, debt_target=None
-    ) -> Metric:
+    def metric(self, addition="sum", **kwargs) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
-            direction=direction,
-            evaluate_targets=evaluate_targets,
             type="metric_type",
-            accept_debt=accept_debt,
-            debt_target=debt_target,
             sources={
                 SOURCE_ID: dict(type="source_type"),
                 SOURCE_ID2: dict(type="source_type"),
             },
+            **kwargs,
         )
         return Metric(self.data_model, metric_data, METRIC_ID)
 
@@ -260,9 +255,9 @@ class MeasurementTest(MeasurementTestCase):
     def test_debt_target_expired(self):
         """Test that the debt target is considered to be expired when all issues have been done."""
         measurement = self.measurement(
-            self.metric(accept_debt=True, debt_target="100"),
+            self.metric(accept_debt=True, debt_target="100", issue_ids=["FOO-40"]),
             count=dict(debt_target="100"),
-            issue_status=[dict(status_category="done")],
+            issue_status=[dict(status_category="done", issue_id="FOO-40")],
         )
         self.assertTrue(measurement.debt_target_expired())
 
@@ -270,6 +265,15 @@ class MeasurementTest(MeasurementTestCase):
         """Test that the debt target is not considered to be expired without issues."""
         measurement = self.measurement(
             self.metric(accept_debt=True, debt_target="100"), count=dict(debt_target="100"), issue_status=[]
+        )
+        self.assertFalse(measurement.debt_target_expired())
+
+    def test_debt_target_not_expired_when_new_issue_added(self):
+        """Test that debt target is not expired when a new issue is added."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100", issue_ids=["FOO-41", "FOO-42"]),
+            count=dict(debt_target="100"),
+            issue_status=[dict(status_category="done", issue_id="FOO-41")],
         )
         self.assertFalse(measurement.debt_target_expired())
 
