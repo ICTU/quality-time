@@ -84,7 +84,11 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
             status = "informative"
         elif self._better_or_equal(value, target):
             status = "target_met"
-        elif self._better_or_equal(value, debt_target) and not self._measurement.debt_target_expired():
+        elif (
+            self._metric.accept_debt()
+            and not self._measurement.debt_target_expired()
+            and self._better_or_equal(value, debt_target)
+        ):
             status = "debt_target_met"
         elif self._better_or_equal(target, near_target) and self._better_or_equal(value, near_target):
             status = "near_target_met"

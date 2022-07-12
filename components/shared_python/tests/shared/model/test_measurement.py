@@ -132,7 +132,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
     )
     def test_calculate_status_debt_target(self):
         """Test calculate status."""
-        measurement = Measurement(self.metric())
+        measurement = Measurement(self.metric(accept_debt=True))
         s_m = ScaleMeasurement(
             previous_scale_measurement=None,
             measurement=measurement,
@@ -140,7 +140,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(2.5)  # pylint: disable=protected-access
+        status = s_m._ScaleMeasurement__calculate_status(3)  # pylint: disable=protected-access
         self.assertEqual(status, "debt_target_met")
 
     @patch.object(
