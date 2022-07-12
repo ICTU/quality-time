@@ -64,6 +64,18 @@ it('renders the technical debt popup if technical debt is accepted',  async () =
     })
 })
 
+it('renders the technical debt popup if technical debt is accepted with a future end date',  async () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", target: "100", accept_debt: true, debt_end_date: "3000-01-01" }} />
+        </DataModel.Provider>
+    )
+    await userEvent.hover(screen.queryByText(/100/))
+    await waitFor(() => {
+        expect(screen.queryAllByText(/accepted as technical debt until/).length).toBe(1)
+    })
+})
+
 it('renders the issue status if all issues are done', async () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
