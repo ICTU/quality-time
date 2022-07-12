@@ -16,21 +16,20 @@ function popupText(metric, dataModel) {
         debtEndDateText = debtEndDateInThePast ? "" : ` until ${endDate.toLocaleDateString()}`
     }
     const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
-    let popupText = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEndDateText}.`
+    let text = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEndDateText}.`
     if (allIssuesDone || debtEndDateInThePast) {
-        popupText += " However, this technical debt target is not applied because"
+        text += " However, this technical debt target is not applied because"
     }
     if (allIssuesDone) {
-        popupText += " all issues for this metric have been marked done"
+        text += " all issues for this metric have been marked done"
     }
     if (debtEndDateInThePast) {
         if (allIssuesDone) {
-            popupText += " and"
+            text += " and"
         }
-        popupText += ` technical debt was accepted until ${endDate.toLocaleDateString()}`
+        text += ` technical debt was accepted until ${endDate.toLocaleDateString()}`
     }
-    popupText += "."
-    return popupText
+    return text + "."
 }
 
 export function MeasurementTarget({ metric }) {

@@ -55,7 +55,7 @@ it('does not render the technical debt popup if technical debt is not accepted',
 it('renders the technical debt popup if technical debt is accepted',  async () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
-            <MeasurementTarget metric={{ type: "violations", target: "100", accept_debt: true, debt_end_date: "2022-12-31" }} />
+            <MeasurementTarget metric={{ type: "violations", target: "100", accept_debt: true, debt_end_date: "2021-12-31" }} />
         </DataModel.Provider>
     )
     await userEvent.hover(screen.queryByText(/100/))
