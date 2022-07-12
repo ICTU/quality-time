@@ -7,15 +7,13 @@ function popupText(metric, dataModel) {
     const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
     const metricDirection = formatMetricDirection(metric, dataModel)
     let debtEndDateInThePast = false;
-    let debtEndDateInTheFuture = false;
     let debtEndDateText = ""
     let endDate;
     if (metric.debt_end_date) {
         endDate = new Date(metric.debt_end_date);
         const today = new Date();
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0];
-        debtEndDateInTheFuture = !debtEndDateInThePast
-        debtEndDateText = debtEndDateInTheFuture ? ` until ${endDate.toLocaleDateString()}` : ""
+        debtEndDateText = debtEndDateInThePast ? "" : ` until ${endDate.toLocaleDateString()}`
     }
     const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
     let popupText = `Measurements ${metricDirection} ${metric.debt_target ?? 0}${unit} are accepted as technical debt${debtEndDateText}.`
