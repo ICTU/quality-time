@@ -177,7 +177,7 @@ To add a metric to a subject, hit the "Add metric" button to select a metric typ
 :class: only-dark
 ```
 
-*Quality-time* adds a metric to the report that you can next configure. It's immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
+*Quality-time* adds the selected metric to the report that you can next configure. It is immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
 
 Alternatively, you can also copy an existing metric or move an existing metric to the subject. Clicking the "Copy metric" or "Move metric" button shows a drop down menu with all of the metrics to choose from. Copying or moving a metric also copies or moves the sources of the metric.
 
@@ -238,7 +238,22 @@ If a metric doesn't meet the target value, but your team isn't able to fix the s
 
 To accept technical debt, navigate to the metric's "Technical debt" tab and set the "Accept technical debt?" field to "Yes". Enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Technical debt end date" field.
 
-The "{index}`Issue ID`" field can be used to enter the identifier of an issue in an issue tracker system. This can be used to track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker. The "Create new issue" button can be used to create a new issue in the configured issue tracker. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue identifiers. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser.
+The "{index}`Issue identifiers`" field can be used to enter the identifier of one or more issues in an issue tracker system. This can be used to track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker.
+
+The "Create new issue" button can be used to create a new issue in the configured issue tracker. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue identifiers. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser.
+
+```{note}
+Metrics with accepted technical debt are displayed with a money icon and grey background as long as their measurement value is worse than the metric's target and equal to or better than the metric's technical debt target.
+
+However, measurement values of a metric with accepted technical debt will *not* be evaluated against the technical debt target when:
+
+- the metric has a technical debt end date that is in the past, or
+- the metric has issues associated with it, and the issue tracker reports that all these issues have been done.
+
+If one or both of these situations apply, the technical debt target is ignored and the measurement value is evaluated against the target values. Depending on the evaluation, the metric is shown as green, yellow, or red, as usual.
+
+Also, when the technical debt target is ignored, the target value is shown with a grey background in the target column and has a popup explaining *why* the accepted technical debt target is being ignored.
+```
 
 The "{index}`Comment <pair: Comment;Metric>`" field can be used to capture the rationale for accepting technical debt, or any other information. HTML and URLs are supported.
 
