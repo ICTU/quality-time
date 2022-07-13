@@ -29,17 +29,16 @@ class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             ),
         )
 
-    def metric(self, addition="sum", direction="<", evaluate_targets=True) -> Metric:
+    def metric(self, addition="sum", **kwargs) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
-            direction=direction,
-            evaluate_targets=evaluate_targets,
             type="metric_type",
             sources={
                 SOURCE_ID: dict(type="source_type"),
                 SOURCE_ID2: dict(type="source_type"),
             },
+            **kwargs,
         )
         return Metric(self.data_model, metric_data, METRIC_ID)
 
@@ -126,7 +125,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m._ScaleMeasurement__set_status_start("target_met")  # pylint: disable=protected-access
         self.assertIs(s_m.status_start(), None)
 
-    @patch.object(Metric, "accept_debt_expired", lambda self: False)
     @patch.object(
         ScaleMeasurement,
         "_better_or_equal",
@@ -134,7 +132,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
     )
     def test_calculate_status_debt_target(self):
         """Test calculate status."""
-        measurement = Measurement(self.metric())
+        measurement = Measurement(self.metric(accept_debt=True))
         s_m = ScaleMeasurement(
             previous_scale_measurement=None,
             measurement=measurement,
@@ -142,10 +140,9 @@ class ScaleMeasurementTest(MeasurementTestCase):
             near_target=2,
             debt_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(2.5)  # pylint: disable=protected-access
+        status = s_m._ScaleMeasurement__calculate_status(3)  # pylint: disable=protected-access
         self.assertEqual(status, "debt_target_met")
 
-    @patch.object(Metric, "accept_debt_expired", lambda self: True)
     @patch.object(
         ScaleMeasurement,
         "_better_or_equal",
@@ -158,10 +155,10 @@ class ScaleMeasurementTest(MeasurementTestCase):
             previous_scale_measurement=None,
             measurement=measurement,
             target=1,
-            near_target=2,
-            debt_target=3,
+            debt_target=2,
+            near_target=3,
         )
-        status = s_m._ScaleMeasurement__calculate_status(2)  # pylint: disable=protected-access
+        status = s_m._ScaleMeasurement__calculate_status(3)  # pylint: disable=protected-access
         self.assertEqual(status, "near_target_met")
 
 
@@ -254,6 +251,47 @@ class MeasurementTest(MeasurementTestCase):
             ],
         )
         self.assertEqual("informative", measurement.status())
+
+    def test_debt_target_expired(self):
+        """Test that the debt target is considered to be expired when all issues have been done."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100", issue_ids=["FOO-40"]),
+            count=dict(debt_target="100"),
+            issue_status=[dict(status_category="done", issue_id="FOO-40")],
+        )
+        self.assertTrue(measurement.debt_target_expired())
+
+    def test_debt_target_not_expired(self):
+        """Test that the debt target is not considered to be expired without issues."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100"), count=dict(debt_target="100"), issue_status=[]
+        )
+        self.assertFalse(measurement.debt_target_expired())
+
+    def test_debt_target_not_expired_when_new_issue_added(self):
+        """Test that debt target is not expired when a new issue is added."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100", issue_ids=["FOO-41", "FOO-42"]),
+            count=dict(debt_target="100"),
+            issue_status=[dict(status_category="done", issue_id="FOO-41")],
+        )
+        self.assertFalse(measurement.debt_target_expired())
+
+    def test_accept_missing_sources_as_tech_debt(self):
+        """Test that the fact that no sources have been configured can be accepted as technical debt."""
+        metric = Metric(self.data_model, dict(addition="sum", type="metric_type", accept_debt=True), METRIC_ID)
+        measurement = self.measurement(metric)
+        self.assertEqual("debt_target_met", measurement.status())
+
+    def test_accept_missing_sources_as_tech_debt_expired(self):
+        """Test that having no sources accepted as technical debt can also expire."""
+        metric = Metric(
+            self.data_model,
+            dict(addition="sum", type="metric_type", accept_debt=True, debt_end_date="2020-01-01"),
+            METRIC_ID,
+        )
+        measurement = self.measurement(metric)
+        self.assertIsNone(measurement.status())
 
 
 class SummarizeMeasurementTest(MeasurementTestCase):

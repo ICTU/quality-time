@@ -72,13 +72,16 @@ class Metric(dict):
         """Determine the metric status."""
         if last_measurement and (status := last_measurement.status()):
             return status
-        debt_end_date = self.get("debt_end_date") or date.max.isoformat()
-        return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
+        return "debt_target_met" if self.accept_debt() and not self.debt_end_date_passed() else None
 
     def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
         """Return the metric's issue statuses."""
         last_issue_statuses = last_measurement.get("issue_status", []) if last_measurement else []
-        return [status for status in last_issue_statuses if status["issue_id"] in self.get("issue_ids", [])]
+        return [status for status in last_issue_statuses if status["issue_id"] in self.issue_ids()]
+
+    def issue_ids(self) -> list[str]:
+        """Return the ids of this metric's issues."""
+        return self.get("issue_ids", [])
 
     def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
@@ -108,13 +111,13 @@ class Metric(dict):
         """Return whether the metric has its technical debt accepted."""
         return bool(self.get("accept_debt", False))
 
-    def accept_debt_expired(self) -> bool:
-        """Return whether the accepted debt has expired."""
-        return not self.accept_debt() or date.today().isoformat() > self.debt_end_date()
-
     def debt_end_date(self) -> str:
         """Return the end date of the accepted technical debt."""
         return str(self.get("debt_end_date") or date.max.isoformat())
+
+    def debt_end_date_passed(self) -> bool:
+        """Return whether the end date of the accepted technical debt has passed."""
+        return date.today().isoformat() > self.debt_end_date()
 
     def get_target(self, target_type: TargetType) -> str | None:
         """Return the target."""

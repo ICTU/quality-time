@@ -53,6 +53,7 @@ def measure(context, number, total="100"):
 @when("the collector measures issue '{issue_id}' status '{name}'")
 def measure_issue_status(context, issue_id, name):
     """Post the measurement with the issue status."""
+    status_category = "done" if name == "Completed" else "todo"
     context.post(
         "measurements",
         json=dict(
@@ -69,7 +70,7 @@ def measure_issue_status(context, issue_id, name):
                     entities=[],
                 )
             ],
-            issue_status=[dict(issue_id=issue_id, name=name)],
+            issue_status=[dict(issue_id=issue_id, name=name, status_category=status_category)],
         ),
         internal=True,
     )

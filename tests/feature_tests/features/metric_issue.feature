@@ -50,3 +50,18 @@ Feature: metric issues
     And the client changes the report tracker_issue_type to "Task"
     And the client opens a new issue
     Then the new issue response error is 'Failed to establish a new connection'
+
+  Scenario: completing all issues ignores the accepted technical debt, adding a new issue unignores it
+    When the client changes the metric accept_debt to "True"
+    And the client waits a second
+    And the client changes the metric debt_target to "100"
+    And the client waits a second
+    And the collector measures "100"
+    And the client waits a second
+    Then the metric status is "debt_target_met"
+    When the collector measures issue '123' status 'Completed'
+    And the client waits a second
+    Then the metric status is "near_target_met"
+    When the client changes the metric issue_ids to "123,124"
+    And the client waits a second
+    Then the metric status is "debt_target_met"

@@ -102,6 +102,7 @@ ATTRIBUTES_IMPACTING_STATUS = (
     "debt_end_date",
     "direction",
     "evaluate_targets",
+    "issue_ids",
     "near_target",
     "target",
 )

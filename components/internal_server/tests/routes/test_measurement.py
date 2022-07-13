@@ -353,7 +353,9 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.insert_one.assert_called_once_with(
             self.measurement(
                 sources=[self.source()],
-                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+                count=self.scale_measurement(
+                    value="1", debt_target="100", status="near_target_met", status_start="2019-01-01"
+                ),
             )
         )
 
@@ -368,6 +370,8 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.insert_one.assert_called_once_with(
             self.measurement(
                 sources=[self.source()],
-                count=self.scale_measurement(value="1", status="near_target_met", status_start="2019-01-01"),
+                count=self.scale_measurement(
+                    value="1", debt_target="100", status="near_target_met", status_start="2019-01-01"
+                ),
             )
         )

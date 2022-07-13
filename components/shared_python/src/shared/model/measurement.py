@@ -64,7 +64,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Update the measurement targets."""
         self["target"] = self._metric.get_target("target")
         self["near_target"] = self._metric.get_target("near_target")
-        self["debt_target"] = None if self._metric.accept_debt_expired() else self._metric.get_target("debt_target")
+        self["debt_target"] = self._metric.get_target("debt_target")
 
     @abstractmethod
     def _calculate_value(self) -> str:
@@ -83,7 +83,11 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
             status = "informative"
         elif self._better_or_equal(value, target):
             status = "target_met"
-        elif self._better_or_equal(value, debt_target) and not self._metric.accept_debt_expired():
+        elif (
+            self._metric.accept_debt()
+            and not self._measurement.debt_target_expired()
+            and self._better_or_equal(value, debt_target)
+        ):
             status = "debt_target_met"
         elif self._better_or_equal(target, near_target) and self._better_or_equal(value, near_target):
             status = "near_target_met"
@@ -95,7 +99,9 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Determine the status of the measurement if there is no measurement value."""
         # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
-        return None if self._metric.accept_debt_expired() or self._metric.sources else "debt_target_met"
+        if not self._metric.sources and self._metric.accept_debt() and not self._metric.debt_end_date_passed():
+            return "debt_target_met"
+        return None
 
     @abstractmethod
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -221,10 +227,22 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.
 
-        Technical debt can expire because it was turned off or because the end date passed.
+        Technical debt is considered expired when it was turned off, when the end date passed or when the metric has
+        issues that all have been done.
         """
         any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
-        return self.metric.accept_debt_expired() if any_debt_target else False
+        accept_debt_expired = not self.metric.accept_debt() or self.metric.debt_end_date_passed()
+        return (accept_debt_expired or self.__all_issues_done()) if any_debt_target else False
+
+    def __all_issues_done(self) -> bool:
+        """Return whether all issues have been done. Return False if there are no issues."""
+        issues_ids = self.metric.issue_ids()
+        if not issues_ids:
+            return False
+        issue_statuses = self.metric.issue_statuses(self)
+        if len(issue_statuses) < len(issues_ids):
+            return False  # Not all issue ids have a status; assume issues without status have not been done
+        return all(status.get("status_category") == "done" for status in issue_statuses)
 
     def status(self) -> Status:
         """Return the status of the measurement."""
