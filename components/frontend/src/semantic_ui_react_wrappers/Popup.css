@@ -2,7 +2,7 @@
     background-color: rgba(60, 65, 70);
 }
 
-.ui.inverted.popup .header {
+.ui.inverted.popup .negative.message .header {
     color: #912d2b; /* For some reason the header color is white within an inverted popup. Override. */
 }
 

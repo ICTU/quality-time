@@ -155,6 +155,7 @@ function TargetLabel({ label, metric, position, targetType }) {
             content={<TargetVisualiser metric={metric} />}
             flowing
             header="How measurement values are evaluated"
+            hoverable
             on={['hover', 'focus']}
             position={position}
             trigger={<Icon role="tooltip" tabIndex="0" name="help circle" />} />
