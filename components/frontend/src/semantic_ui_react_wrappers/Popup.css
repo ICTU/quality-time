@@ -2,6 +2,10 @@
     background-color: rgba(60, 65, 70);
 }
 
+.ui.inverted.popup .header {
+    color: #912d2b; /* For some reason the header color is white within an inverted popup. Override. */
+}
+
 .ui.inverted.popup:before {
     background-color: rgba(60, 65, 70) !important;
 }

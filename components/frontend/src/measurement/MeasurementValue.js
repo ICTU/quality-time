@@ -14,7 +14,13 @@ export function MeasurementValue({ metric }) {
         const trigger = staleMeasurementValue ? <Label color="red">{value}</Label> : <span>{value}</span>;
         return (
             <Popup trigger={trigger} flowing hoverable>
-                {staleMeasurementValue && <Message error><Message.Header>This metric was not recently measured</Message.Header>This may indicate a problem with Quality-time itself. Please contact a system administrator.</Message>}
+                {staleMeasurementValue && (
+                    <Message
+                        negative
+                        header="This metric was not recently measured"
+                        content="This may indicate a problem with Quality-time itself. Please contact a system administrator."
+                    />
+                )}
                 <TimeAgoWithDate date={metric.latest_measurement.end}>{metric.status ? "The metric was last measured" : "Last measurement attempt"}</TimeAgoWithDate><br />
                 <TimeAgoWithDate date={metric.latest_measurement.start}>{metric.status ? "The current value was first measured" : "The value is unknown since"}</TimeAgoWithDate>
             </Popup>
