@@ -100,8 +100,9 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Determine the status of the measurement if there is no measurement value."""
         # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
-        accept_debt_expired = not self._metric.accept_debt() or date.today().isoformat() > self._metric.debt_end_date()
-        return None if accept_debt_expired or self._metric.sources else "debt_target_met"
+        if not self._metric.sources and self._metric.accept_debt() and not self._metric.debt_end_date_passed():
+            return "debt_target_met"
+        return None
 
     @abstractmethod
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -231,7 +232,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         issues that all have been done.
         """
         any_debt_target = any(self[scale].get("debt_target") is not None for scale in self.metric.scales())
-        accept_debt_expired = not self.metric.accept_debt() or date.today().isoformat() > self.metric.debt_end_date()
+        accept_debt_expired = not self.metric.accept_debt() or self.metric.debt_end_date_passed()
         return (accept_debt_expired or self.__all_issues_done()) if any_debt_target else False
 
     def __all_issues_done(self) -> bool:

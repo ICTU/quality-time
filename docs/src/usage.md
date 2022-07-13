@@ -248,9 +248,9 @@ Metrics with accepted technical debt are displayed with a money icon and grey ba
 However, measurement values of a metric with accepted technical debt will *not* be evaluated against the technical debt target when:
 
 - the metric has a technical debt end date that is in the past, or
-- the metric has issues associated with it, and the issue tracker reports that all these issues have been done.
+- the metric has issues associated with it, and the issue tracker reports that all these issues have been resolved.
 
-If one or both of these situations apply, the technical debt target is ignored and the measurement value is evaluated against the target values. Depending on the evaluation, the metric is shown as green, yellow, or red, as usual.
+If any of these situations apply, the technical debt target is ignored and the measurement value is evaluated against the target values. Depending on the evaluation, the metric is shown as green, yellow, or red, as usual.
 
 Also, when the technical debt target is ignored, the target value is shown with a grey background in the target column and has a popup explaining *why* the accepted technical debt target is being ignored.
 ```

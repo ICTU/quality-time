@@ -11,7 +11,13 @@ from .base import JiraBase
 class JiraIssueStatus(JiraBase):
     """Jira issue status collector."""
 
+    # Map the Jira status categories, the keys, to the Quality-time status categories, the values:
     STATUS_CATEGORY_MAPPING = dict(done="done", indeterminate="doing", new="todo")
+
+    # Note, Jira distinguishes statuses and status categories. Statuses can be added, but the list of status
+    # categories is fixed, per https://jira.atlassian.com/browse/JRASERVER-36241. As Quality-time only needs to know
+    # whether a issue is done or not, we use status categories to keep track of that and to color the issues in the
+    # UI. We do add the status name to the issue and display it in the UI, but the status is not interpreted.
 
     async def _api_url(self) -> URL:
         """Override to get the issue, including the status field, from Jira."""

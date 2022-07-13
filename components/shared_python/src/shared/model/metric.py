@@ -72,8 +72,7 @@ class Metric(dict):
         """Determine the metric status."""
         if last_measurement and (status := last_measurement.status()):
             return status
-        debt_end_date = self.get("debt_end_date") or date.max.isoformat()
-        return "debt_target_met" if self.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
+        return "debt_target_met" if self.accept_debt() and not self.debt_end_date_passed() else None
 
     def issue_statuses(self, last_measurement: Measurement | None) -> list[dict]:
         """Return the metric's issue statuses."""
@@ -115,6 +114,10 @@ class Metric(dict):
     def debt_end_date(self) -> str:
         """Return the end date of the accepted technical debt."""
         return str(self.get("debt_end_date") or date.max.isoformat())
+
+    def debt_end_date_passed(self) -> bool:
+        """Return whether the end date of the accepted technical debt has passed."""
+        return date.today().isoformat() > self.debt_end_date()
 
     def get_target(self, target_type: TargetType) -> str | None:
         """Return the target."""

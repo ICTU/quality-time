@@ -277,6 +277,22 @@ class MeasurementTest(MeasurementTestCase):
         )
         self.assertFalse(measurement.debt_target_expired())
 
+    def test_accept_missing_sources_as_tech_debt(self):
+        """Test that the fact that no sources have been configured can be accepted as technical debt."""
+        metric = Metric(self.data_model, dict(addition="sum", type="metric_type", accept_debt=True), METRIC_ID)
+        measurement = self.measurement(metric)
+        self.assertEqual("debt_target_met", measurement.status())
+
+    def test_accept_missing_sources_as_tech_debt_expired(self):
+        """Test that having no sources accepted as technical debt can also expire."""
+        metric = Metric(
+            self.data_model,
+            dict(addition="sum", type="metric_type", accept_debt=True, debt_end_date="2020-01-01"),
+            METRIC_ID,
+        )
+        measurement = self.measurement(metric)
+        self.assertIsNone(measurement.status())
+
 
 class SummarizeMeasurementTest(MeasurementTestCase):
     """Unit tests for the measurement summary."""
