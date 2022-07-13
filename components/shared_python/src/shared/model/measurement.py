@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from datetime import date
 from typing import Optional, cast
 
 from packaging.version import InvalidVersion, Version
