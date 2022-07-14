@@ -32,7 +32,12 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
 
 function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     const labelId = `technical-debt-end-date-label-${metric_uuid}`
-    const help = "Accept technical debt until this date."
+    const help = (
+        <>
+            <p>Accept technical debt until this date.</p>
+            <p>After this date, or when the issues below have all been resolved, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated.</p>
+        </>
+    )
     return (
         <DateInput
             ariaLabelledBy={labelId}
@@ -46,7 +51,13 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 }
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
-    const issueStatusHelp = <><p>Identifiers of issues in the configured issue tracker that track the progress of fixing this metric.</p>{issue_tracker_instruction}</>
+    const issueStatusHelp = (
+        <>
+            <p>Identifiers of issues in the configured issue tracker that track the progress of fixing this metric.</p>
+            <p>When the issues have all been resolved, or the technical debt end date has passed, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated.</p>
+            {issue_tracker_instruction}
+        </>
+    )
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
     const issue_ids = get_metric_issue_ids(metric);
