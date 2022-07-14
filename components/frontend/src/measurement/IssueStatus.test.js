@@ -7,6 +7,7 @@ function renderIssueStatus(
     {
         connectionError = false,
         created = true,
+        due = false,
         issueTrackerMissing = false,
         landingUrl = "https://issue",
         parseError = false,
@@ -15,6 +16,7 @@ function renderIssueStatus(
         showIssueCreationDate = false,
         showIssueSummary = false,
         showIssueUpdateDate = false,
+        showIssueDueDate = false,
         updated = false,
     } = {}
 ) {
@@ -22,12 +24,15 @@ function renderIssueStatus(
     creationDate.setDate(creationDate.getDate() - 4);
     let updateDate = new Date();
     updateDate.setDate(updateDate.getDate() - 2);
+    let dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 2);
     const issueStatus = {
         issue_id: "123",
         name: status,
         summary: "Issue summary",
         created: created ? creationDate.toISOString() : null,
         updated: updated ? updateDate.toISOString() : null,
+        duedate: due ? dueDate.toISOString() : null,
         landing_url: landingUrl,
         connection_error: connectionError ? "error" : null,
         parse_error: parseError ? "error" : null,
@@ -46,6 +51,7 @@ function renderIssueStatus(
             showIssueCreationDate={showIssueCreationDate}
             showIssueSummary={showIssueSummary}
             showIssueUpdateDate={showIssueUpdateDate}
+            showIssueDueDate={showIssueDueDate}
         />
     )
 }
@@ -146,12 +152,31 @@ it("displays the update date in the popup", async () => {
     })
 });
 
+it("displays the due date in the label if configured", async () => {
+    const { queryByText } = renderIssueStatus({ due: true, showIssueDueDate: true })
+    expect(queryByText(/2 days from now/)).not.toBe(null)
+});
+
+it("does not display the due date in the label if not configured", async () => {
+    const { queryByText } = renderIssueStatus({ due: true })
+    expect(queryByText(/2 days from now/)).toBe(null)
+});
+
+it("displays the due date in the popup", async () => {
+    const { queryByText } = renderIssueStatus({ due: true })
+    await userEvent.hover(queryByText(/123/))
+    await waitFor(() => {
+        expect(queryByText("2 days from now")).not.toBe(null);
+    })
+});
+
 it("displays no popup if the issue has no creation date and there is no error", async () => {
     const { queryByText } = renderIssueStatus({ created: false })
     await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("4 days ago")).toBe(null);
         expect(queryByText("2 days ago")).toBe(null);
+        expect(queryByText("2 days from now")).toBe(null);
     })
 })
 

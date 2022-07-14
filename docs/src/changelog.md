@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.2.0-rc.2 - 2022-07-13
+## [Unreleased]
 
 ### Deployment notes
 
@@ -25,9 +25,10 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 - *Quality-time* now ignores accepted technical debt not only when the technical debt end date has passed, but also when all issues associated with the metric have been done. When a metric has accepted technical debt that is being ignored, the target value is shown with a grey background and has a popup explaining why the accepted technical debt is being ignored. Closes [#3935](https://github.com/ICTU/quality-time/issues/3935).
 - Allow for filtering items in an add-item button dropdown menu without first clicking the filter input field. Closes [#4114](https://github.com/ICTU/quality-time/issues/4114).
+- Allow the configuration of multiple LDAP servers, see the [deployment instructions](https://quality-time.readthedocs.io/en/latest/deployment.html#ldap) for more information on configuring LDAP. Closes [#4141](https://github.com/ICTU/quality-time/issues/4141).
 - Mention the repository owner in the [README.md](https://github.com/ICTU/quality-time/blob/master/README.md) and add [contributing guidelines](https://github.com/ICTU/quality-time/blob/master/CONTRIBUTING.md) and a [code of conduct](https://github.com/ICTU/quality-time/blob/master/CODE_OF_CONDUCT.md) to make the *Quality-time* repository comply with the [ICTU GitHub policy](https://github.com/ICTU/github-policy). Closes [#4142](https://github.com/ICTU/quality-time/issues/4142).
 - Add an explanation of what version numbers are supported for the 'source version' and 'software version' metrics. Closes [#4146](https://github.com/ICTU/quality-time/issues/4146).
-- Allow the configuration of multiple LDAP servers, see the [deployment instructions](https://quality-time.readthedocs.io/en/latest/deployment.html#ldap) for more information on configuring LDAP. Closes [#4141](https://github.com/ICTU/quality-time/issues/4141).
+- In the issue popup, and in the issue card if so configured via the settings, show the due date of the issue if it has one. Closes [#4186](https://github.com/ICTU/quality-time/issues/4186).
 
 ### Changed
 

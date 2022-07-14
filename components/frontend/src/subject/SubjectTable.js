@@ -59,6 +59,7 @@ export function SubjectTable({
     showIssueCreationDate,
     showIssueSummary,
     showIssueUpdateDate,
+    showIssueDueDate,
     sortDirection,
     sortColumn,
     subject,
@@ -127,6 +128,7 @@ export function SubjectTable({
                                     showIssueCreationDate={showIssueCreationDate}
                                     showIssueSummary={showIssueSummary}
                                     showIssueUpdateDate={showIssueUpdateDate}
+                                    showIssueDueDate={showIssueDueDate}
                                 />
                             </Table.Cell>}
                             {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}

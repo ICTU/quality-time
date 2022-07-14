@@ -22,7 +22,7 @@ class JiraIssueStatus(JiraBase):
     async def _api_url(self) -> URL:
         """Override to get the issue, including the status field, from Jira."""
         url = await super()._api_url()
-        return URL(f"{url}/rest/api/2/issue/{self._issue_id}?fields=created,status,summary,updated")
+        return URL(f"{url}/rest/api/2/issue/{self._issue_id}?fields=created,status,summary,updated,duedate")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the issue to the landing URL."""
@@ -37,6 +37,7 @@ class JiraIssueStatus(JiraBase):
         status_category = cast(IssueStatusCategory, self.STATUS_CATEGORY_MAPPING.get(jira_status_category, "todo"))
         created = json["fields"]["created"]
         updated = json["fields"].get("updated")
+        duedate = json["fields"].get("duedate")
         summary = json["fields"].get("summary")
         return IssueStatus(
             self._issue_id,
@@ -44,5 +45,6 @@ class JiraIssueStatus(JiraBase):
             status_category=status_category,
             created=created,
             updated=updated,
+            duedate=duedate,
             summary=summary,
         )

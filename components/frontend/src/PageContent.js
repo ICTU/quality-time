@@ -39,6 +39,7 @@ export function PageContent({
     showIssueCreationDate,
     showIssueSummary,
     showIssueUpdateDate,
+    showIssueDueDate,
     sortColumn,
     sortDirection,
     toggleVisibleDetailsTab,
@@ -66,6 +67,7 @@ export function PageContent({
                 showIssueCreationDate={showIssueCreationDate}
                 showIssueSummary={showIssueSummary}
                 showIssueUpdateDate={showIssueUpdateDate}
+                showIssueDueDate={showIssueDueDate}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}

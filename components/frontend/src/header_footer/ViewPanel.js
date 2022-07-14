@@ -22,10 +22,12 @@ export function ViewPanel({
     setShowIssueCreationDate,
     setShowIssueSummary,
     setShowIssueUpdateDate,
+    setShowIssueDueDate,
     setUIMode,
     showIssueCreationDate,
     showIssueSummary,
     showIssueUpdateDate,
+    showIssueDueDate,
     sortColumn,
     sortDirection,
     toggleHiddenColumn,
@@ -67,6 +69,7 @@ export function ViewPanel({
                                     !showIssueCreationDate &&
                                     !showIssueSummary &&
                                     !showIssueUpdateDate &&
+                                    !showIssueDueDate &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
                                     uiMode === null
@@ -82,6 +85,7 @@ export function ViewPanel({
                                     setShowIssueCreationDate(false);
                                     setShowIssueSummary(false);
                                     setShowIssueUpdateDate(false);
+                                    setShowIssueDueDate(false);
                                     setUIMode(null);
                                 }}
                                 inverted
@@ -181,6 +185,12 @@ export function ViewPanel({
                         issueAttribute={showIssueUpdateDate}
                         setIssueAttribute={setShowIssueUpdateDate}
                         help="Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue always shows the exact date when the issue was last updated, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Due date"
+                        issueAttribute={showIssueDueDate}
+                        setIssueAttribute={setShowIssueDueDate}
+                        help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
                     />
                 </Menu>
             </Segment>

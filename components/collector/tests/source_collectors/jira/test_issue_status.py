@@ -47,7 +47,8 @@ class JiraIssuesTest(JiraTestCase):
             self.assertNotIn("connection_error", issue_status)
             self.assertNotIn("parse_error", issue_status)
         self.assertEqual(
-            "https://jira/rest/api/2/issue/FOO-42?fields=created,status,summary,updated", issue_status["api_url"]
+            "https://jira/rest/api/2/issue/FOO-42?fields=created,status,summary,updated,duedate",
+            issue_status["api_url"],
         )
         self.assertEqual("https://jira/browse/FOO-42", issue_status["landing_url"])
 

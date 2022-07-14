@@ -32,6 +32,7 @@ function eventHandlers() {
         setShowIssueCreationDate: jest.fn(),
         setShowIssueSummary: jest.fn(),
         setShowIssueUpdateDate: jest.fn(),
+        setShowIssueDueDate: jest.fn(),
         setUIMode: jest.fn()
     }
 }
@@ -68,6 +69,7 @@ it('resets the settings', async () => {
     expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueDueDate).toHaveBeenCalledWith(false)
     expect(props.setUIMode).toHaveBeenCalledWith(null)
 })
 
@@ -103,6 +105,7 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
+    expect(props.setShowIssueDueDate).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 

@@ -15,11 +15,17 @@ class Issue:
     summary: str | None = None
     created: str | None = None
     updated: str | None = None
+    duedate: str | None = None
 
     def as_dict(self) -> dict:
         """Return the issue as dict."""
         return dict(
-            issue_id=self.issue_id, name=self.name, summary=self.summary, created=self.created, updated=self.updated
+            issue_id=self.issue_id,
+            name=self.name,
+            summary=self.summary,
+            created=self.created,
+            updated=self.updated,
+            duedate=self.duedate,
         )
 
 
@@ -37,11 +43,12 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         status_category: IssueStatusCategory = None,
         created: str = None,
         updated: str = None,
+        duedate: str = None,
         summary: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
-        self.issue = Issue(issue_id, name, summary, created, updated)
+        self.issue = Issue(issue_id, name, summary, created, updated, duedate)
         self.status_category = status_category
         self.parse_error = parse_error
         self.connection_error = connection_error

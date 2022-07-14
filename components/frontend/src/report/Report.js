@@ -70,6 +70,7 @@ export function Report({
     showIssueCreationDate,
     showIssueSummary,
     showIssueUpdateDate,
+    showIssueDueDate,
     sortColumn,
     sortDirection,
     toggleVisibleDetailsTab,
@@ -123,6 +124,7 @@ export function Report({
                 showIssueCreationDate={showIssueCreationDate}
                 showIssueSummary={showIssueSummary}
                 showIssueUpdateDate={showIssueUpdateDate}
+                showIssueDueDate={showIssueDueDate}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 tags={tags}
