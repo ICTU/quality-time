@@ -15,6 +15,7 @@ function renderIssueStatus(
         status = "in progress",
         statusCategory = "",
         release = false,
+        releaseReleased = false,
         sprint = false,
         updated = false,
     } = {}
@@ -36,7 +37,7 @@ function renderIssueStatus(
         connection_error: connectionError ? "error" : null,
         parse_error: parseError ? "error" : null,
         release_name: release ? "Release 1.0" : null,
-        release_released: release ? false : null,
+        release_released: release ? releaseReleased : null,
         release_date: release ? "3000-01-02" : null,
         sprint_name: sprint ? "Sprint 42" : null,
         sprint_state: sprint ? "active" : null,
@@ -168,11 +169,24 @@ it("displays the due date in the popup", async () => {
     })
 });
 
-it("displays the release in the label if configured", async () => {
+it("displays the planned release in the label if configured", async () => {
     const { queryByText } = renderIssueStatus({ release: true, issueSettings: {showIssueRelease: true }})
     expect(queryByText(/Release 1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
+});
+
+it("displays the released release in the label if configured", async () => {
+    const { queryByText } = renderIssueStatus({ release: true, releaseReleased: true, issueSettings: {showIssueRelease: true }})
+    expect(queryByText(/Release 1.0/)).not.toBe(null)
+    expect(queryByText(/released/)).not.toBe(null)
+    expect(queryByText(/from now/)).not.toBe(null)
+});
+
+it("displays the release without doubling release in the label", async () => {
+    const { queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0", issueSettings: {showIssueRelease: true }})
+    expect(queryByText(/Release 1.0/)).not.toBe(null)
+    expect(queryByText(/Release Release 1.0/)).toBe(null)
 });
 
 it("does not display the release in the label if not configured", async () => {

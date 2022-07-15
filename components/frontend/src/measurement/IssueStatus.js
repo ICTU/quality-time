@@ -41,11 +41,15 @@ function labelDetails(issueStatus, issueSettings) {
     return details
 }
 
+function releaseStatus(issueStatus) {
+    return issueStatus.release_released ? "released" : "planned"
+}
+
 function releaseLabel(issueStatus) {
     const date = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date}/> : null
     return (
         <Label.Detail key="release">
-            {prefixName(issueStatus.release_name, "Release")} {issueStatus.release_released ? "released" : "planned"} {date}
+            {prefixName(issueStatus.release_name, "Release")} {releaseStatus(issueStatus)} {date}
         </Label.Detail>
     )
 }
@@ -87,27 +91,31 @@ function IssueWithTracker({ issueStatus, issueSettings }) {
     let label = issueLabel(issueStatus, issueSettings, popupHeader)
     if (!popupContent && issueStatus.created) {
         popupHeader = issueStatus.summary;
-        popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
-        if (issueStatus.updated) {
-            popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
-        }
-        if (issueStatus.duedate) {
-            popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.duedate}>Due</TimeAgoWithDate></>
-        }
-        if (issueStatus.release_name) {
-            const releaseStatus = issueStatus.release_released ? "released" : "planned";
-            const releaseDate = issueStatus.release_date ? <TimeAgoWithDate date={issueStatus.release_date}>{releaseStatus}</TimeAgoWithDate> : null
-            popupContent = <>{popupContent}<br />{prefixName(issueStatus.release_name, "Release")} {releaseDate}</>
-        }
-        if (issueStatus.sprint_name) {
-            const sprintEnd = issueStatus.sprint_enddate ? <TimeAgoWithDate date={issueStatus.sprint_enddate}>ends</TimeAgoWithDate> : null
-            popupContent = <>{popupContent}<br />{prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}</>
-        }
+        popupContent = issuePopupContent(issueStatus)
     }
     if (popupContent) {
         label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
     }
     return label
+}
+
+function issuePopupContent(issueStatus) {
+    let popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
+    if (issueStatus.updated) {
+        popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.updated}>Updated</TimeAgoWithDate></>
+    }
+    if (issueStatus.duedate) {
+        popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.duedate}>Due</TimeAgoWithDate></>
+    }
+    if (issueStatus.release_name) {
+        const releaseDate = issueStatus.release_date ? <TimeAgoWithDate date={issueStatus.release_date}>{releaseStatus(issueStatus)}</TimeAgoWithDate> : null
+        popupContent = <>{popupContent}<br />{prefixName(issueStatus.release_name, "Release")} {releaseDate}</>
+    }
+    if (issueStatus.sprint_name) {
+        const sprintEnd = issueStatus.sprint_enddate ? <TimeAgoWithDate date={issueStatus.sprint_enddate}>ends</TimeAgoWithDate> : null
+        popupContent = <>{popupContent}<br />{prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}</>
+    }
+    return popupContent
 }
 
 function IssuesWithTracker({ metric, issueSettings }) {
