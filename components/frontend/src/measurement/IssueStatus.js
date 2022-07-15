@@ -64,7 +64,8 @@ function sprintLabel(issueStatus) {
 }
 
 function prefixName(name, prefix) {
-    return name.toLowerCase().indexOf(name.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
+    // Prefix the name with prefix unless the name already contains the prefix
+    return name.toLowerCase().indexOf(prefix.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
 }
 
 function issueLabel(issueStatus, issueSettings, error) {
