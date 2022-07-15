@@ -11,7 +11,7 @@ from http.cookies import Morsel
 from typing import cast
 
 import bottle
-from ldap3 import ALL, Connection, Server
+from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
 from pymongo.database import Database
 
@@ -79,15 +79,16 @@ def get_credentials() -> tuple[str, str]:
 def verify_user(username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
-    ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
+    ldap_urls = os.environ.get("LDAP_URL", "ldap://localhost:389").split(",")
     ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
-    ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+    ldap_lookup_user_pw = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
     user = User(username)
     try:
-        ldap_server = Server(ldap_url, get_info=ALL)
-        with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
+        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_urls]
+        ldap_server_pool = ServerPool(ldap_servers)
+        with Connection(ldap_server_pool, user=ldap_lookup_user_dn, password=ldap_lookup_user_pw) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no cover-behave
                 raise exceptions.LDAPBindError
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "cn", "mail"])
@@ -98,7 +99,7 @@ def verify_user(username: str, password: str) -> User:
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:  # pragma: no cover-behave
-            with Connection(ldap_server, user=result.entry_dn, password=password, auto_bind=True):
+            with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
                 logging.info("LDAP bind for %s succeeded", user)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error: %s", reason)

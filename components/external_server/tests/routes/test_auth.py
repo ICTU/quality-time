@@ -27,7 +27,7 @@ class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     def tearDown(self):
         """Override to remove the cookies and reset the logging."""
         bottle.response._cookies = None  # pylint: disable=protected-access
-        logging.disable(logging.NOTSET)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     def assert_cookie_has_session_id(self):
         """Assert that the response has a cookie with the session id."""
@@ -92,7 +92,7 @@ class LoginTests(AuthTestCase):
     def assert_ldap_bind_connection_created(self, connection_mock):
         """Assert that the LDAP bind connection was created with the lookup user dn and password."""
         self.assertEqual(
-            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind=True)
+            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind='NO_TLS')
         )
 
     def assert_log(self, logging_mock, exception):
