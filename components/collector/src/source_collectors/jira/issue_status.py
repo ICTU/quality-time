@@ -3,7 +3,7 @@
 from typing import cast
 
 from collector_utilities.type import URL
-from model import IssueStatus, IssueStatusCategory, SourceResponses
+from model import Issue, IssueRelease, IssueSprint, IssueStatus, IssueStatusCategory, SourceResponses
 
 from .base import JiraBase
 
@@ -22,7 +22,8 @@ class JiraIssueStatus(JiraBase):
     async def _api_url(self) -> URL:
         """Override to get the issue, including the status field, from Jira."""
         url = await super()._api_url()
-        return URL(f"{url}/rest/api/2/issue/{self._issue_id}?fields=created,status,summary,updated")
+        fields = "created,status,summary,updated,duedate,fixVersions,sprint"
+        return URL(f"{url}/rest/agile/1.0/issue/{self._issue_id}?fields={fields}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the issue to the landing URL."""
@@ -32,17 +33,29 @@ class JiraIssueStatus(JiraBase):
     async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
         """Override to get the issue status from the responses."""
         json = await responses[0].json()
-        name = json["fields"]["status"]["name"]
-        jira_status_category = json["fields"]["status"]["statusCategory"]["key"]
+        fields = json["fields"]
+        name = fields["status"]["name"]
+        jira_status_category = fields["status"]["statusCategory"]["key"]
         status_category = cast(IssueStatusCategory, self.STATUS_CATEGORY_MAPPING.get(jira_status_category, "todo"))
-        created = json["fields"]["created"]
-        updated = json["fields"].get("updated")
-        summary = json["fields"].get("summary")
-        return IssueStatus(
-            self._issue_id,
-            name=name,
-            status_category=status_category,
-            created=created,
-            updated=updated,
-            summary=summary,
-        )
+        created = fields["created"]
+        updated = fields.get("updated")
+        duedate = fields.get("duedate")
+        summary = fields.get("summary")
+        release = self.__parse_issue_release(fields)
+        sprint = self.__parse_issue_sprint(fields)
+        issue = Issue(name, summary, created, updated, duedate, release, sprint)
+        return IssueStatus(self._issue_id, issue=issue, status_category=status_category)
+
+    @staticmethod
+    def __parse_issue_release(fields) -> IssueRelease:
+        """Parse the release from the Jira issue fields."""
+        fix_versions = fields.get("fixVersions", [])
+        # Issues can have multiple fix versions, assume the last one is the latest one:
+        fix_version = fix_versions[-1] if fix_versions else {}
+        return IssueRelease(fix_version.get("name"), fix_version.get("released"), fix_version.get("releaseDate"))
+
+    @staticmethod
+    def __parse_issue_sprint(fields) -> IssueSprint:
+        """Parse the sprint from the Jira issue fields."""
+        jira_sprint = fields.get("sprint", {})
+        return IssueSprint(jira_sprint.get("name"), jira_sprint.get("state"), jira_sprint.get("endDate"))

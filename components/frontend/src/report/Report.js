@@ -62,14 +62,12 @@ export function Report({
     hiddenColumns,
     hideMetricsNotRequiringAction,
     history,
+    issueSettings,
     nr_measurements,
     reload,
     report,
     report_date,
     reports,
-    showIssueCreationDate,
-    showIssueSummary,
-    showIssueUpdateDate,
     sortColumn,
     sortDirection,
     toggleVisibleDetailsTab,
@@ -116,13 +114,11 @@ export function Report({
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                issueSettings={issueSettings}
                 reload={reload}
                 report={report}
                 reports={reports}
                 report_date={report_date}
-                showIssueCreationDate={showIssueCreationDate}
-                showIssueSummary={showIssueSummary}
-                showIssueUpdateDate={showIssueUpdateDate}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 tags={tags}

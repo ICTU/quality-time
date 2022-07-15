@@ -32,6 +32,9 @@ function eventHandlers() {
         setShowIssueCreationDate: jest.fn(),
         setShowIssueSummary: jest.fn(),
         setShowIssueUpdateDate: jest.fn(),
+        setShowIssueDueDate: jest.fn(),
+        setShowIssueRelease: jest.fn(),
+        setShowIssueSprint: jest.fn(),
         setUIMode: jest.fn()
     }
 }
@@ -45,10 +48,17 @@ it('resets the settings', async () => {
                 dateOrder="ascending"
                 hiddenColumns={["trend"]}
                 hideMetricsNotRequiringAction={true}
+                issueSettings={
+                    {
+                        showIssueCreationDate: true,
+                        showIssueSummary: true,
+                        showIssueUpdateDate: true,
+                        showIssueDueDate: true,
+                        showIssueRelease: true,
+                        showIssueSprint: true
+                    }
+                }
                 nrDates={7}
-                showIssueCreationDate={true}
-                showIssueSummary={true}
-                showIssueUpdateDate={true}
                 sortColumn="status"
                 sortDirection="descending"
                 uiMode="dark"
@@ -68,6 +78,9 @@ it('resets the settings', async () => {
     expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueDueDate).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueRelease).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueSprint).toHaveBeenCalledWith(false)
     expect(props.setUIMode).toHaveBeenCalledWith(null)
 })
 
@@ -80,10 +93,17 @@ it('does not reset the settings when all have the default value', async () => {
                 dateOrder="descending"
                 hiddenColumns={[]}
                 hideMetricsNotRequiringAction={false}
+                issueSettings={
+                    {
+                        showIssueCreationDate: false,
+                        showIssueSummary: false,
+                        showIssueUpdateDate: false,
+                        showIssueDueDate: false,
+                        showIssueRelease: false,
+                        showIssueSprint: false
+                    }
+                }
                 nrDates={1}
-                showIssueCreationDate={false}
-                showIssueSummary={false}
-                showIssueUpdateDate={false}
                 sortColumn={null}
                 sortDirection="ascending"
                 uiMode={null}
@@ -103,6 +123,9 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
+    expect(props.setShowIssueDueDate).not.toHaveBeenCalled()
+    expect(props.setShowIssueRelease).not.toHaveBeenCalled()
+    expect(props.setShowIssueSprint).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 

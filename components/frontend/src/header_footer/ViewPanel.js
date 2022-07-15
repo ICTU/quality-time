@@ -14,6 +14,7 @@ export function ViewPanel({
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
+    issueSettings,
     nrDates,
     setDateInterval,
     setDateOrder,
@@ -22,10 +23,10 @@ export function ViewPanel({
     setShowIssueCreationDate,
     setShowIssueSummary,
     setShowIssueUpdateDate,
+    setShowIssueDueDate,
+    setShowIssueRelease,
+    setShowIssueSprint,
     setUIMode,
-    showIssueCreationDate,
-    showIssueSummary,
-    showIssueUpdateDate,
     sortColumn,
     sortDirection,
     toggleHiddenColumn,
@@ -64,9 +65,12 @@ export function ViewPanel({
                                     nrDates === 1 &&
                                     dateInterval === 7 &&
                                     dateOrder === "descending" &&
-                                    !showIssueCreationDate &&
-                                    !showIssueSummary &&
-                                    !showIssueUpdateDate &&
+                                    !issueSettings.showIssueCreationDate &&
+                                    !issueSettings.showIssueSummary &&
+                                    !issueSettings.showIssueUpdateDate &&
+                                    !issueSettings.showIssueDueDate &&
+                                    !issueSettings.showIssueRelease &&
+                                    !issueSettings.showIssueSprint &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
                                     uiMode === null
@@ -82,6 +86,9 @@ export function ViewPanel({
                                     setShowIssueCreationDate(false);
                                     setShowIssueSummary(false);
                                     setShowIssueUpdateDate(false);
+                                    setShowIssueDueDate(false);
+                                    setShowIssueRelease(false);
+                                    setShowIssueSprint(false);
                                     setUIMode(null);
                                 }}
                                 inverted
@@ -166,21 +173,39 @@ export function ViewPanel({
                 <Menu vertical inverted size="small">
                     <IssueAttributeMenuItem
                         issueAttributeName="Summary"
-                        issueAttribute={showIssueSummary}
+                        issueAttribute={issueSettings?.showIssueSummary}
                         setIssueAttribute={setShowIssueSummary}
                         help="Next to the issue status, also show the issue summary. Note: the popup over the issue always shows the issue summary, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Creation date"
-                        issueAttribute={showIssueCreationDate}
+                        issueAttribute={issueSettings?.showIssueCreationDate}
                         setIssueAttribute={setShowIssueCreationDate}
                         help="Next to the issue status, also show how long ago issue were created. Note: the popup over the issue always shows the exact date when the issue was created, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Update date"
-                        issueAttribute={showIssueUpdateDate}
+                        issueAttribute={issueSettings?.showIssueUpdateDate}
                         setIssueAttribute={setShowIssueUpdateDate}
                         help="Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue always shows the exact date when the issue was last updated, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Due date"
+                        issueAttribute={issueSettings?.showIssueDueDate}
+                        setIssueAttribute={setShowIssueDueDate}
+                        help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Release"
+                        issueAttribute={issueSettings?.showIssueRelease}
+                        setIssueAttribute={setShowIssueRelease}
+                        help="Next to the issue status, also show the release issues are assigned to. Note: the popup over the issue always shows the release, if the issue has one, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Sprint"
+                        issueAttribute={issueSettings?.showIssueSprint}
+                        setIssueAttribute={setShowIssueSprint}
+                        help="Next to the issue status, also show the sprint issues are assigned to. Note: the popup over the issue always shows the sprint, if the issue has one, regardless of this setting."
                     />
                 </Menu>
             </Segment>

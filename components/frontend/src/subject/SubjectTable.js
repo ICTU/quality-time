@@ -50,15 +50,13 @@ export function SubjectTable({
     dates,
     handleSort,
     hiddenColumns,
+    issueSettings,
     measurements,
     metricEntries,
     reload,
     report,
     reportDate,
     reports,
-    showIssueCreationDate,
-    showIssueSummary,
-    showIssueUpdateDate,
     sortDirection,
     sortColumn,
     subject,
@@ -124,9 +122,7 @@ export function SubjectTable({
                                 <IssueStatus
                                     metric={metric}
                                     issueTrackerMissing={!report.issue_tracker && !report.report_uuid.startsWith("tag-")}
-                                    showIssueCreationDate={showIssueCreationDate}
-                                    showIssueSummary={showIssueSummary}
-                                    showIssueUpdateDate={showIssueUpdateDate}
+                                    issueSettings={issueSettings}
                                 />
                             </Table.Cell>}
                             {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}

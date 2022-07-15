@@ -64,6 +64,17 @@ export function AppUI({
     const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", false);
     const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", false);
     const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", false);
+    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", false);
+    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", false);
+    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", false);
+    const issueSettings = {
+        showIssueSummary: showIssueSummary,
+        showIssueCreationDate: showIssueCreationDate,
+        showIssueUpdateDate: showIssueUpdateDate,
+        showIssueDueDate: showIssueDueDate,
+        showIssueRelease: showIssueRelease,
+        showIssueSprint: showIssueSprint
+    }
 
     function handleSort(column) {
         if (column === null) {
@@ -102,6 +113,7 @@ export function AppUI({
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        issueSettings={issueSettings}
                         nrDates={nrDates}
                         setDateInterval={setDateInterval}
                         setDateOrder={setDateOrder}
@@ -110,10 +122,10 @@ export function AppUI({
                         setShowIssueCreationDate={setShowIssueCreationDate}
                         setShowIssueSummary={setShowIssueSummary}
                         setShowIssueUpdateDate={setShowIssueUpdateDate}
+                        setShowIssueDueDate={setShowIssueDueDate}
+                        setShowIssueRelease={setShowIssueRelease}
+                        setShowIssueSprint={setShowIssueSprint}
                         setUIMode={setUIMode}
-                        showIssueCreationDate={showIssueCreationDate}
-                        showIssueSummary={showIssueSummary}
-                        showIssueUpdateDate={showIssueUpdateDate}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         toggleHiddenColumn={toggleHiddenColumn}
@@ -134,6 +146,7 @@ export function AppUI({
                             hiddenColumns={hiddenColumns}
                             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                             history={history}
+                            issueSettings={issueSettings}
                             loading={loading}
                             nrDates={nrDates}
                             nr_measurements={nr_measurements}
@@ -143,9 +156,6 @@ export function AppUI({
                             report_uuid={report_uuid}
                             reports={reports}
                             reports_overview={reports_overview}
-                            showIssueCreationDate={showIssueCreationDate}
-                            showIssueSummary={showIssueSummary}
-                            showIssueUpdateDate={showIssueUpdateDate}
                             sortColumn={sortColumn}
                             sortDirection={sortDirection}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
