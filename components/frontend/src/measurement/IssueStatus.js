@@ -33,38 +33,58 @@ function labelDetails(issueStatus, issueSettings) {
         details.push(<Label.Detail key="duedate">Due <TimeAgo date={issueStatus.duedate} /></Label.Detail>)
     }
     if (issueStatus.release_name && issueSettings?.showIssueRelease) {
-        const releaseDate = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date}/> : null
-        details.push(<Label.Detail key="release">{releaseLabel(issueStatus)} {issueStatus.release_released ? "released" : "planned"} {releaseDate}</Label.Detail>)
+        details.push(releaseLabel(issueStatus))
     }
     if (issueStatus.sprint_name && issueSettings?.showIssueSprint) {
-        const sprintEnd = issueStatus.sprint_enddate ? <>ends <TimeAgo date={issueStatus.sprint_enddate}/></> : null
-        details.push(<Label.Detail key="sprint">{sprintLabel(issueStatus)} ({issueStatus.sprint_state}) {sprintEnd}</Label.Detail>)
+        details.push(sprintLabel(issueStatus))
     }
     return details
 }
 
 function releaseLabel(issueStatus) {
-    const name = issueStatus.release_name;
-    return name.toLowerCase().indexOf("release") < 0 ? `Release ${name}` : name;
+    const date = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date}/> : null
+    return (
+        <Label.Detail key="release">
+            {prefixName(issueStatus.release_name, "Release")} {issueStatus.release_released ? "released" : "planned"} {date}
+        </Label.Detail>
+    )
 }
 
 function sprintLabel(issueStatus) {
-    const name = issueStatus.sprint_name;
-    return name.toLowerCase().indexOf("sprint") < 0 ? `Sprint ${name}` : name;
+    const sprintEnd = issueStatus.sprint_enddate ? <>ends <TimeAgo date={issueStatus.sprint_enddate}/></> : null
+    return (
+        <Label.Detail key="sprint">
+            {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}
+        </Label.Detail>
+    )
+}
+
+function prefixName(name) {
+    return name.toLowerCase().indexOf(name.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
+}
+
+function issueLabel(issueStatus, issueSettings, error) {
+    const color = error ? "red" : {todo: "grey", doing: "blue", done: "green"}[issueStatus.status_category ?? "todo"];
+    const label = <Label basic={!error} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, issueSettings)}</Label>
+    if (issueStatus.landing_url) {
+        // Without the span, the popup doesn't work
+        return <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
+    }
+    return label
 }
 
 function IssueWithTracker({ issueStatus, issueSettings }) {
     let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
     let popupHeader = "";
-    if (issueStatus.connection_error) { popupHeader = "Connection error"; popupContent = "Quality-time could not retrieve data from the issue tracker." }
-    if (issueStatus.parse_error) { popupHeader = "Parse error"; popupContent = "Quality-time could not parse the data received from the issue tracker." }
-    const color = popupContent ? "red" : {todo: "grey", doing: "blue", done: "green"}[issueStatus.status_category ?? "todo"];
-    const basic = popupContent ? false : true;
-    let label = <Label basic={basic} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, issueSettings)}</Label>
-    if (issueStatus.landing_url) {
-        // Without the span, the popup doesn't work
-        label = <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
+    if (issueStatus.connection_error) {
+        popupHeader = "Connection error";
+        popupContent = "Quality-time could not retrieve data from the issue tracker."
     }
+    if (issueStatus.parse_error) {
+        popupHeader = "Parse error";
+        popupContent = "Quality-time could not parse the data received from the issue tracker."
+    }
+    let label = issueLabel(issueStatus, issueSettings, popupHeader)
     if (!popupContent && issueStatus.created) {
         popupHeader = issueStatus.summary;
         popupContent = <TimeAgoWithDate date={issueStatus.created}>Created</TimeAgoWithDate>
@@ -75,12 +95,13 @@ function IssueWithTracker({ issueStatus, issueSettings }) {
             popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.duedate}>Due</TimeAgoWithDate></>
         }
         if (issueStatus.release_name) {
-            const releaseDate = issueStatus.release_date ? <TimeAgoWithDate date={issueStatus.release_date}>{issueStatus.release_released ? "released" : "planned"}</TimeAgoWithDate> : null
-            popupContent = <>{popupContent}<br />{releaseLabel(issueStatus)} {releaseDate}</>
+            const releaseStatus = issueStatus.release_released ? "released" : "planned";
+            const releaseDate = issueStatus.release_date ? <TimeAgoWithDate date={issueStatus.release_date}>{releaseStatus}</TimeAgoWithDate> : null
+            popupContent = <>{popupContent}<br />{prefixName(issueStatus.release_name, "Release")} {releaseDate}</>
         }
         if (issueStatus.sprint_name) {
             const sprintEnd = issueStatus.sprint_enddate ? <TimeAgoWithDate date={issueStatus.sprint_enddate}>ends</TimeAgoWithDate> : null
-            popupContent = <>{popupContent}<br />{sprintLabel(issueStatus)} ({issueStatus.sprint_state}) {sprintEnd}</>
+            popupContent = <>{popupContent}<br />{prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}</>
         }
     }
     if (popupContent) {
