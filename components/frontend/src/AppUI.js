@@ -65,12 +65,14 @@ export function AppUI({
     const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", false);
     const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", false);
     const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", false);
+    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", false);
     const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", false);
     const issueSettings = {
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
         showIssueUpdateDate: showIssueUpdateDate,
         showIssueDueDate: showIssueDueDate,
+        showIssueRelease: showIssueRelease,
         showIssueSprint: showIssueSprint
     }
 
@@ -121,6 +123,7 @@ export function AppUI({
                         setShowIssueSummary={setShowIssueSummary}
                         setShowIssueUpdateDate={setShowIssueUpdateDate}
                         setShowIssueDueDate={setShowIssueDueDate}
+                        setShowIssueRelease={setShowIssueRelease}
                         setShowIssueSprint={setShowIssueSprint}
                         setUIMode={setUIMode}
                         sortColumn={sortColumn}

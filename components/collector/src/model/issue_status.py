@@ -8,7 +8,7 @@ from collector_utilities.type import ErrorMessage, URL
 
 @dataclass
 class IssueSprint:
-    """Class representing a sprint."""
+    """Class representing a sprint of which an issue is part."""
 
     name: str | None = None
     state: str | None = None
@@ -24,6 +24,23 @@ class IssueSprint:
 
 
 @dataclass
+class IssueRelease:
+    """Class representing a release of which an issue is part."""
+
+    name: str | None = None
+    released: bool | None = None
+    date: str | None = None
+
+    def as_dict(self) -> dict:
+        """Return the release as dict."""
+        return dict(
+            release_name=self.name,
+            release_released=self.released,
+            release_date=self.date,
+        )
+
+
+@dataclass
 class Issue:
     """Class representing issues."""
 
@@ -32,6 +49,7 @@ class Issue:
     created: str | None = None
     updated: str | None = None
     duedate: str | None = None
+    release: IssueRelease | None = None
     sprint: IssueSprint | None = None
 
     def as_dict(self) -> dict:
@@ -42,6 +60,7 @@ class Issue:
             created=self.created,
             updated=self.updated,
             duedate=self.duedate,
+            **(self.release.as_dict() if self.release else {}),
             **(self.sprint.as_dict() if self.sprint else {}),
         )
 

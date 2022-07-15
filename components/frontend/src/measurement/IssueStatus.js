@@ -32,11 +32,20 @@ function labelDetails(issueStatus, issueSettings) {
     if (issueStatus.duedate && issueSettings?.showIssueDueDate) {
         details.push(<Label.Detail key="duedate">Due <TimeAgo date={issueStatus.duedate} /></Label.Detail>)
     }
+    if (issueStatus.release_name && issueSettings?.showIssueRelease) {
+        const releaseDate = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date}/> : null
+        details.push(<Label.Detail key="release">{releaseLabel(issueStatus)} {issueStatus.release_released ? "released" : "planned"} {releaseDate}</Label.Detail>)
+    }
     if (issueStatus.sprint_name && issueSettings?.showIssueSprint) {
         const sprintEnd = issueStatus.sprint_enddate ? <>ends <TimeAgo date={issueStatus.sprint_enddate}/></> : null
         details.push(<Label.Detail key="sprint">{sprintLabel(issueStatus)} ({issueStatus.sprint_state}) {sprintEnd}</Label.Detail>)
     }
     return details
+}
+
+function releaseLabel(issueStatus) {
+    const name = issueStatus.release_name;
+    return name.toLowerCase().indexOf("release") < 0 ? `Release ${name}` : name;
 }
 
 function sprintLabel(issueStatus) {
@@ -64,6 +73,10 @@ function IssueWithTracker({ issueStatus, issueSettings }) {
         }
         if (issueStatus.duedate) {
             popupContent = <>{popupContent}<br /><TimeAgoWithDate date={issueStatus.duedate}>Due</TimeAgoWithDate></>
+        }
+        if (issueStatus.release_name) {
+            const releaseDate = issueStatus.release_date ? <TimeAgoWithDate date={issueStatus.release_date}>{issueStatus.release_released ? "released" : "planned"}</TimeAgoWithDate> : null
+            popupContent = <>{popupContent}<br />{releaseLabel(issueStatus)} {releaseDate}</>
         }
         if (issueStatus.sprint_name) {
             const sprintEnd = issueStatus.sprint_enddate ? <TimeAgoWithDate date={issueStatus.sprint_enddate}>ends</TimeAgoWithDate> : null

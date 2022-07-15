@@ -24,6 +24,7 @@ export function ViewPanel({
     setShowIssueSummary,
     setShowIssueUpdateDate,
     setShowIssueDueDate,
+    setShowIssueRelease,
     setShowIssueSprint,
     setUIMode,
     sortColumn,
@@ -68,6 +69,7 @@ export function ViewPanel({
                                     !issueSettings.showIssueSummary &&
                                     !issueSettings.showIssueUpdateDate &&
                                     !issueSettings.showIssueDueDate &&
+                                    !issueSettings.showIssueRelease &&
                                     !issueSettings.showIssueSprint &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
@@ -85,6 +87,7 @@ export function ViewPanel({
                                     setShowIssueSummary(false);
                                     setShowIssueUpdateDate(false);
                                     setShowIssueDueDate(false);
+                                    setShowIssueRelease(false);
                                     setShowIssueSprint(false);
                                     setUIMode(null);
                                 }}
@@ -191,6 +194,12 @@ export function ViewPanel({
                         issueAttribute={issueSettings?.showIssueDueDate}
                         setIssueAttribute={setShowIssueDueDate}
                         help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Release"
+                        issueAttribute={issueSettings?.showIssueRelease}
+                        setIssueAttribute={setShowIssueRelease}
+                        help="Next to the issue status, also show the release issues are assigned to. Note: the popup over the issue always shows the release, if the issue has one, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Sprint"

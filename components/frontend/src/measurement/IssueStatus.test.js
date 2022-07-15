@@ -14,6 +14,7 @@ function renderIssueStatus(
         parseError = false,
         status = "in progress",
         statusCategory = "",
+        release = false,
         sprint = false,
         updated = false,
     } = {}
@@ -34,6 +35,9 @@ function renderIssueStatus(
         landing_url: landingUrl,
         connection_error: connectionError ? "error" : null,
         parse_error: parseError ? "error" : null,
+        release_name: release ? "Release 1.0" : null,
+        release_released: release ? false : null,
+        release_date: release ? "3000-01-02" : null,
         sprint_name: sprint ? "Sprint 42" : null,
         sprint_state: sprint ? "active" : null,
         sprint_enddate: sprint ? "3000-01-01" : null
@@ -161,6 +165,30 @@ it("displays the due date in the popup", async () => {
     await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("2 days from now")).not.toBe(null);
+    })
+});
+
+it("displays the release in the label if configured", async () => {
+    const { queryByText } = renderIssueStatus({ release: true, issueSettings: {showIssueRelease: true }})
+    expect(queryByText(/Release 1.0/)).not.toBe(null)
+    expect(queryByText(/planned/)).not.toBe(null)
+    expect(queryByText(/from now/)).not.toBe(null)
+});
+
+it("does not display the release in the label if not configured", async () => {
+    const { queryByText } = renderIssueStatus({ release: true })
+    expect(queryByText(/Release 1.0/)).toBe(null)
+    expect(queryByText(/planned/)).toBe(null)
+    expect(queryByText(/from now/)).toBe(null)
+});
+
+it("displays the release in the popup", async () => {
+    const { queryByText } = renderIssueStatus({ release: true })
+    await userEvent.hover(queryByText(/123/))
+    await waitFor(() => {
+        expect(queryByText(/Release 1.0/)).not.toBe(null)
+        expect(queryByText(/planned/)).not.toBe(null)
+        expect(queryByText(/from now/)).not.toBe(null)
     })
 });
 
