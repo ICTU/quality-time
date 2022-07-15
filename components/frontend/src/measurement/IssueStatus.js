@@ -59,7 +59,7 @@ function sprintLabel(issueStatus) {
     )
 }
 
-function prefixName(name) {
+function prefixName(name, prefix) {
     return name.toLowerCase().indexOf(name.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
 }
 
