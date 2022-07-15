@@ -16,7 +16,9 @@ You need to either configure an LDAP server to authenticatie users with or confi
 
 ### LDAP
 
-To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables. Add the LDAP environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables.
+Note that `LDAP_URL` may be a comma-separated list of LDAP connection URL(s).
+Add the LDAP environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
   external_server:
