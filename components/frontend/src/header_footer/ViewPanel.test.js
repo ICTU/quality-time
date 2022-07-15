@@ -111,7 +111,7 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
     expect(props.setShowIssueDueDate).not.toHaveBeenCalled()
-    expect(props.setShowSprint).not.toHaveBeenCalled()
+    expect(props.setShowIssueSprint).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 
