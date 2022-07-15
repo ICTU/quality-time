@@ -26,6 +26,7 @@ export function PageContent({
     hiddenColumns,
     hideMetricsNotRequiringAction,
     history,
+    issueSettings,
     loading,
     go_home,
     nrDates,
@@ -36,11 +37,6 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
-    showIssueCreationDate,
-    showIssueSummary,
-    showIssueUpdateDate,
-    showIssueDueDate,
-    showIssueSprint,
     sortColumn,
     sortDirection,
     toggleVisibleDetailsTab,
@@ -59,17 +55,13 @@ export function PageContent({
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                issueSettings={issueSettings}
                 history={history}
                 nr_measurements={nr_measurements}
                 reload={reload}
                 report={current_report}
                 reports={reports}
                 report_date={report_date}
-                showIssueCreationDate={showIssueCreationDate}
-                showIssueSummary={showIssueSummary}
-                showIssueUpdateDate={showIssueUpdateDate}
-                showIssueDueDate={showIssueDueDate}
-                showIssueSprint={showIssueSprint}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}

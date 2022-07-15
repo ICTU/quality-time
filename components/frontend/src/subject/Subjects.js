@@ -15,15 +15,11 @@ export function Subjects({
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
+    issueSettings,
     reload,
     report,
     reports,
     report_date,
-    showIssueCreationDate,
-    showIssueSummary,
-    showIssueUpdateDate,
-    showIssueDueDate,
-    showIssueSprint,
     sortColumn,
     sortDirection,
     tags,
@@ -44,16 +40,12 @@ export function Subjects({
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        issueSettings={issueSettings}
                         key={subject_uuid}
                         last_subject={index === last_index}
                         report={report}
                         report_date={report_date}
                         reports={reports}
-                        showIssueCreationDate={showIssueCreationDate}
-                        showIssueSummary={showIssueSummary}
-                        showIssueUpdateDate={showIssueUpdateDate}
-                        showIssueDueDate={showIssueDueDate}
-                        showIssueSprint={showIssueSprint}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}

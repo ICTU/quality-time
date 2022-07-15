@@ -47,12 +47,16 @@ it('resets the settings', async () => {
                 dateOrder="ascending"
                 hiddenColumns={["trend"]}
                 hideMetricsNotRequiringAction={true}
+                issueSettings={
+                    {
+                        showIssueCreationDate: true,
+                        showIssueSummary: true,
+                        showIssueUpdateDate: true,
+                        showIssueDueDate: true,
+                        showIssueSprint: true
+                    }
+                }
                 nrDates={7}
-                showIssueCreationDate={true}
-                showIssueSummary={true}
-                showIssueUpdateDate={true}
-                showIssueDueDate={true}
-                showIssueSprint={true}
                 sortColumn="status"
                 sortDirection="descending"
                 uiMode="dark"
@@ -86,11 +90,16 @@ it('does not reset the settings when all have the default value', async () => {
                 dateOrder="descending"
                 hiddenColumns={[]}
                 hideMetricsNotRequiringAction={false}
+                issueSettings={
+                    {
+                        showIssueCreationDate: false,
+                        showIssueSummary: false,
+                        showIssueUpdateDate: false,
+                        showIssueDueDate: false,
+                        showIssueSprint: false
+                    }
+                }
                 nrDates={1}
-                showIssueCreationDate={false}
-                showIssueSummary={false}
-                showIssueUpdateDate={false}
-                showIssueSprint={false}
                 sortColumn={null}
                 sortDirection="ascending"
                 uiMode={null}

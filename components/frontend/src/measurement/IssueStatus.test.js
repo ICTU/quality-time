@@ -13,10 +13,7 @@ function renderIssueStatus(
         parseError = false,
         status = "in progress",
         statusCategory = "",
-        showIssueCreationDate = false,
-        showIssueSummary = false,
-        showIssueUpdateDate = false,
-        showIssueDueDate = false,
+        issueSettings = {},
         updated = false,
     } = {}
 ) {
@@ -45,14 +42,7 @@ function renderIssueStatus(
         issue_status: [issueStatus]
     }
     return render(
-        <IssueStatus
-            metric={metric}
-            issueTrackerMissing={issueTrackerMissing}
-            showIssueCreationDate={showIssueCreationDate}
-            showIssueSummary={showIssueSummary}
-            showIssueUpdateDate={showIssueUpdateDate}
-            showIssueDueDate={showIssueDueDate}
-        />
+        <IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} issueSettings={issueSettings} />
     )
 }
 
@@ -102,12 +92,12 @@ it("displays a question mark as status if the issue has no status", () => {
 });
 
 it("displays the issue summary in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueSummary: true })
+    const { queryByText } = renderIssueStatus({ issueSettings: {showIssueSummary: true} })
     expect(queryByText(/summary/)).not.toBe(null)
 });
 
 it("displays the creation date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ showIssueCreationDate: true })
+    const { queryByText } = renderIssueStatus({ issueSettings: { showIssueCreationDate: true }})
     expect(queryByText(/4 days ago/)).not.toBe(null)
 });
 
@@ -134,7 +124,7 @@ it("displays the creation date in the popup", async () => {
 });
 
 it("displays the update date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ updated: true, showIssueUpdateDate: true })
+    const { queryByText } = renderIssueStatus({ updated: true, issueSettings: { showIssueUpdateDate: true }})
     expect(queryByText(/2 days ago/)).not.toBe(null)
 });
 
@@ -153,7 +143,7 @@ it("displays the update date in the popup", async () => {
 });
 
 it("displays the due date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ due: true, showIssueDueDate: true })
+    const { queryByText } = renderIssueStatus({ due: true, issueSettings: {showIssueDueDate: true }})
     expect(queryByText(/2 days from now/)).not.toBe(null)
 });
 
