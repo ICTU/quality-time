@@ -186,6 +186,13 @@ it("displays the released release in the label if configured", async () => {
     expect(queryByText(/from now/)).not.toBe(null)
 });
 
+it("displays the release in the label if configured, but without release date", async () => {
+    const { queryByText } = renderIssueStatus({ release: true, releaseDate: null, issueSettings: {showIssueRelease: true }})
+    expect(queryByText(/1.0/)).not.toBe(null)
+    expect(queryByText(/planned/)).not.toBe(null)
+    expect(queryByText(/from now/)).toBe(null)
+});
+
 it("displays the release without doubling release in the label", async () => {
     const { queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0", issueSettings: {showIssueRelease: true }})
     expect(queryByText(/Release 1.0/)).not.toBe(null)
@@ -224,6 +231,13 @@ it("displays the sprint in the label if configured", async () => {
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
+});
+
+it("displays the sprint in the label if configured, but without sprint end date", async () => {
+    const { queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null, issueSettings: {showIssueSprint: true }})
+    expect(queryByText(/Sprint 42/)).not.toBe(null)
+    expect(queryByText(/active/)).not.toBe(null)
+    expect(queryByText(/from now/)).toBe(null)
 });
 
 it("does not display the sprint in the label if not configured", async () => {
