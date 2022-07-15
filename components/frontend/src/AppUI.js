@@ -70,7 +70,7 @@ export function AppUI({
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
         showIssueUpdateDate: showIssueUpdateDate,
-        showIssueDueDate, showIssueDueDate,
+        showIssueDueDate: showIssueDueDate,
         showIssueSprint: showIssueSprint
     }
 

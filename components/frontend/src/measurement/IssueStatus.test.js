@@ -8,12 +8,13 @@ function renderIssueStatus(
         connectionError = false,
         created = true,
         due = false,
+        issueSettings = {},
         issueTrackerMissing = false,
         landingUrl = "https://issue",
         parseError = false,
         status = "in progress",
         statusCategory = "",
-        issueSettings = {},
+        sprint = false,
         updated = false,
     } = {}
 ) {
@@ -33,6 +34,9 @@ function renderIssueStatus(
         landing_url: landingUrl,
         connection_error: connectionError ? "error" : null,
         parse_error: parseError ? "error" : null,
+        sprint_name: sprint ? "Sprint 42" : null,
+        sprint_state: sprint ? "active" : null,
+        sprint_enddate: sprint ? "3000-01-01" : null
     }
     if (statusCategory) {
         issueStatus["status_category"] = statusCategory
@@ -157,6 +161,30 @@ it("displays the due date in the popup", async () => {
     await userEvent.hover(queryByText(/123/))
     await waitFor(() => {
         expect(queryByText("2 days from now")).not.toBe(null);
+    })
+});
+
+it("displays the sprint in the label if configured", async () => {
+    const { queryByText } = renderIssueStatus({ sprint: true, issueSettings: {showIssueSprint: true }})
+    expect(queryByText(/Sprint 42/)).not.toBe(null)
+    expect(queryByText(/active/)).not.toBe(null)
+    expect(queryByText(/from now/)).not.toBe(null)
+});
+
+it("does not display the sprint in the label if not configured", async () => {
+    const { queryByText } = renderIssueStatus({ sprint: true })
+    expect(queryByText(/Sprint 42/)).toBe(null)
+    expect(queryByText(/active/)).toBe(null)
+    expect(queryByText(/from now/)).toBe(null)
+});
+
+it("displays the sprint in the popup", async () => {
+    const { queryByText } = renderIssueStatus({ sprint: true })
+    await userEvent.hover(queryByText(/123/))
+    await waitFor(() => {
+        expect(queryByText(/Sprint 42/)).not.toBe(null)
+        expect(queryByText(/active/)).not.toBe(null)
+        expect(queryByText(/from now/)).not.toBe(null)
     })
 });
 
