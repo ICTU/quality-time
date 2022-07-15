@@ -23,11 +23,13 @@ export function ViewPanel({
     setShowIssueSummary,
     setShowIssueUpdateDate,
     setShowIssueDueDate,
+    setShowIssueSprint,
     setUIMode,
     showIssueCreationDate,
     showIssueSummary,
     showIssueUpdateDate,
     showIssueDueDate,
+    showIssueSprint,
     sortColumn,
     sortDirection,
     toggleHiddenColumn,
@@ -70,6 +72,7 @@ export function ViewPanel({
                                     !showIssueSummary &&
                                     !showIssueUpdateDate &&
                                     !showIssueDueDate &&
+                                    !showIssueSprint &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
                                     uiMode === null
@@ -86,6 +89,7 @@ export function ViewPanel({
                                     setShowIssueSummary(false);
                                     setShowIssueUpdateDate(false);
                                     setShowIssueDueDate(false);
+                                    setShowIssueSprint(false);
                                     setUIMode(null);
                                 }}
                                 inverted
@@ -191,6 +195,12 @@ export function ViewPanel({
                         issueAttribute={showIssueDueDate}
                         setIssueAttribute={setShowIssueDueDate}
                         help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
+                    />
+                    <IssueAttributeMenuItem
+                        issueAttributeName="Sprint"
+                        issueAttribute={showIssueSprint}
+                        setIssueAttribute={setShowIssueSprint}
+                        help="Next to the issue status, also show the sprint issues are assigned to. Note: the popup over the issue always shows the sprint, if the issue has one, regardless of this setting."
                     />
                 </Menu>
             </Segment>

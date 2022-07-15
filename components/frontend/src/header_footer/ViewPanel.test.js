@@ -33,6 +33,7 @@ function eventHandlers() {
         setShowIssueSummary: jest.fn(),
         setShowIssueUpdateDate: jest.fn(),
         setShowIssueDueDate: jest.fn(),
+        setShowIssueSprint: jest.fn(),
         setUIMode: jest.fn()
     }
 }
@@ -50,6 +51,8 @@ it('resets the settings', async () => {
                 showIssueCreationDate={true}
                 showIssueSummary={true}
                 showIssueUpdateDate={true}
+                showIssueDueDate={true}
+                showIssueSprint={true}
                 sortColumn="status"
                 sortDirection="descending"
                 uiMode="dark"
@@ -70,6 +73,7 @@ it('resets the settings', async () => {
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueDueDate).toHaveBeenCalledWith(false)
+    expect(props.setShowIssueSprint).toHaveBeenCalledWith(false)
     expect(props.setUIMode).toHaveBeenCalledWith(null)
 })
 
@@ -86,6 +90,7 @@ it('does not reset the settings when all have the default value', async () => {
                 showIssueCreationDate={false}
                 showIssueSummary={false}
                 showIssueUpdateDate={false}
+                showIssueSprint={false}
                 sortColumn={null}
                 sortDirection="ascending"
                 uiMode={null}
@@ -106,6 +111,7 @@ it('does not reset the settings when all have the default value', async () => {
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
     expect(props.setShowIssueDueDate).not.toHaveBeenCalled()
+    expect(props.setShowSprint).not.toHaveBeenCalled()
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 

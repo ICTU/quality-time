@@ -89,6 +89,7 @@ export function Subject({
     showIssueSummary,
     showIssueUpdateDate,
     showIssueDueDate,
+    showIssueSprint,
     sortColumn,
     sortDirection,
     subject_uuid,
@@ -147,6 +148,7 @@ export function Subject({
                 showIssueSummary={showIssueSummary}
                 showIssueUpdateDate={showIssueUpdateDate}
                 showIssueDueDate={showIssueDueDate}
+                showIssueSprint={showIssueSprint}
                 sortDirection={sortDirection}
                 sortColumn={sortColumn}
                 subject={subject}

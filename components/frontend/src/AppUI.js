@@ -65,6 +65,7 @@ export function AppUI({
     const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", false);
     const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", false);
     const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", false);
+    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", false);
 
     function handleSort(column) {
         if (column === null) {
@@ -112,11 +113,13 @@ export function AppUI({
                         setShowIssueSummary={setShowIssueSummary}
                         setShowIssueUpdateDate={setShowIssueUpdateDate}
                         setShowIssueDueDate={setShowIssueDueDate}
+                        setShowIssueSprint={setShowIssueSprint}
                         setUIMode={setUIMode}
                         showIssueCreationDate={showIssueCreationDate}
                         showIssueSummary={showIssueSummary}
                         showIssueUpdateDate={showIssueUpdateDate}
                         showIssueDueDate={showIssueDueDate}
+                        showIssueSprint={showIssueSprint}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         toggleHiddenColumn={toggleHiddenColumn}
@@ -150,6 +153,7 @@ export function AppUI({
                             showIssueSummary={showIssueSummary}
                             showIssueUpdateDate={showIssueUpdateDate}
                             showIssueDueDate={showIssueDueDate}
+                            showIssueSprint={showIssueSprint}
                             sortColumn={sortColumn}
                             sortDirection={sortDirection}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}

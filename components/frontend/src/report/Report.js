@@ -71,6 +71,7 @@ export function Report({
     showIssueSummary,
     showIssueUpdateDate,
     showIssueDueDate,
+    showIssueSprint,
     sortColumn,
     sortDirection,
     toggleVisibleDetailsTab,
@@ -125,6 +126,7 @@ export function Report({
                 showIssueSummary={showIssueSummary}
                 showIssueUpdateDate={showIssueUpdateDate}
                 showIssueDueDate={showIssueDueDate}
+                showIssueSprint={showIssueSprint}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 tags={tags}

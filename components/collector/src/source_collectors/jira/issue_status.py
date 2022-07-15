@@ -3,7 +3,7 @@
 from typing import cast
 
 from collector_utilities.type import URL
-from model import IssueStatus, IssueStatusCategory, SourceResponses
+from model import Issue, IssueSprint, IssueStatus, IssueStatusCategory, SourceResponses
 
 from .base import JiraBase
 
@@ -22,7 +22,7 @@ class JiraIssueStatus(JiraBase):
     async def _api_url(self) -> URL:
         """Override to get the issue, including the status field, from Jira."""
         url = await super()._api_url()
-        return URL(f"{url}/rest/api/2/issue/{self._issue_id}?fields=created,status,summary,updated,duedate")
+        return URL(f"{url}/rest/agile/1.0/issue/{self._issue_id}?fields=created,status,summary,updated,duedate,sprint")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the issue to the landing URL."""
@@ -39,12 +39,7 @@ class JiraIssueStatus(JiraBase):
         updated = json["fields"].get("updated")
         duedate = json["fields"].get("duedate")
         summary = json["fields"].get("summary")
-        return IssueStatus(
-            self._issue_id,
-            name=name,
-            status_category=status_category,
-            created=created,
-            updated=updated,
-            duedate=duedate,
-            summary=summary,
-        )
+        jira_sprint = json["fields"].get("sprint", {})
+        sprint = IssueSprint(jira_sprint.get("name"), jira_sprint.get("state"), jira_sprint.get("endDate"))
+        issue = Issue(name, summary, created, updated, duedate, sprint)
+        return IssueStatus(self._issue_id, issue=issue, status_category=status_category)

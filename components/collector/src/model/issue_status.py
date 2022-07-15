@@ -7,25 +7,42 @@ from collector_utilities.type import ErrorMessage, URL
 
 
 @dataclass
+class IssueSprint:
+    """Class representing a sprint."""
+
+    name: str | None = None
+    state: str | None = None
+    enddate: str | None = None
+
+    def as_dict(self) -> dict:
+        """Return the sprint as dict."""
+        return dict(
+            sprint_name=self.name,
+            sprint_state=self.state,
+            sprint_enddate=self.enddate,
+        )
+
+
+@dataclass
 class Issue:
     """Class representing issues."""
 
-    issue_id: str
     name: str | None = None
     summary: str | None = None
     created: str | None = None
     updated: str | None = None
     duedate: str | None = None
+    sprint: IssueSprint | None = None
 
     def as_dict(self) -> dict:
         """Return the issue as dict."""
         return dict(
-            issue_id=self.issue_id,
             name=self.name,
             summary=self.summary,
             created=self.created,
             updated=self.updated,
             duedate=self.duedate,
+            **(self.sprint.as_dict() if self.sprint else {}),
         )
 
 
@@ -39,16 +56,13 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self,
         issue_id: str,
         *,
-        name: str = None,
+        issue: Issue = None,
         status_category: IssueStatusCategory = None,
-        created: str = None,
-        updated: str = None,
-        duedate: str = None,
-        summary: str = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None
     ) -> None:
-        self.issue = Issue(issue_id, name, summary, created, updated, duedate)
+        self.issue_id = issue_id
+        self.issue = issue or Issue()
         self.status_category = status_category
         self.parse_error = parse_error
         self.connection_error = connection_error
@@ -58,6 +72,7 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
     def as_dict(self) -> dict:
         """Return the issue status as dict."""
         status = dict(
+            issue_id=self.issue_id,
             status_category=self.status_category,
             parse_error=self.parse_error,
             connection_error=self.connection_error,
