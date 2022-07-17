@@ -8,6 +8,8 @@ COPY requirements/requirements-base.txt /requirements-base.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
 COPY requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
+COPY shared_data_model /home/shared_data_model/
+RUN pip install --no-cache-dir -r /requirements-internal.txt
 
 FROM python:3.10.5-bullseye
 
@@ -22,6 +24,7 @@ HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; impor
 
 COPY --from=compile-image /home/collector/venv /home/collector/venv
 COPY src /home/collector
+COPY shared_data_model /home/shared_data_model
 
 ENV PATH="/home/collector/venv/bin:$PATH"
 CMD ["python", "/home/collector/quality_time_collector.py"]

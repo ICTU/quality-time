@@ -37,7 +37,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
                 return SourceMeasurement(value="42", total="84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
-        self.collector = Collector()
+        self.collector = Collector(self.data_model)
         self.collector.data_model = self.data_model
         self.url = "https://url"
         self.measurement_api_url = "http://localhost:5002/api/measurements"
@@ -201,9 +201,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_collect(self):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.data_model, self.metrics]
+        mock_async_get_request.json.side_effect = [self.metrics]
         with self._patched_get(mock_async_get_request), self._patched_post() as post, self.assertRaises(RuntimeError):
-            await quality_time_collector.collect()
+            await quality_time_collector.collect(self.data_model)
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
@@ -299,17 +299,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             self.measurement_api_url,
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
         )
-
-    @patch("builtins.open", mock_open())
-    async def test_fetch_data_model_after_failure(self):
-        """Test that the data model is fetched on the second try."""
-        mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
-        with self._patched_get(mock_async_get_request):
-            async with aiohttp.ClientSession() as session:
-                self.collector.MAX_SLEEP_DURATION = 0
-                data_model = await self.collector.fetch_data_model(session)
-        self.assertEqual(self.data_model, data_model)
 
     @patch("builtins.open", new_callable=mock_open)
     @patch("base_collectors.collector.datetime")
