@@ -9,6 +9,8 @@ RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
 COPY external_server/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
+COPY shared_data_model /home/shared_data_model/
+RUN pip install --no-cache-dir -r /requirements-internal.txt
 COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
@@ -30,6 +32,7 @@ HEALTHCHECK CMD curl -f http://localhost:${EXTERNAL_SERVER_PORT:-5001}/api/healt
 
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY external_server/src /home/server
+COPY shared_data_model /home/shared_data_model
 COPY shared_python /home/shared_python
 
 ENV PATH="/home/server/venv/bin:$PATH"
