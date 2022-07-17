@@ -2,24 +2,6 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ViewPanel } from './ViewPanel';
 
-it("clears the visible details tabs", async () => {
-    const clearVisibleDetailsTabs = jest.fn();
-    await act(async () => {
-        render(<ViewPanel clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
-        fireEvent.click(screen.getByText(/Collapse all metrics/))
-    });
-    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
-})
-
-it("doesn't clear the visible details tabs if there are none", async () => {
-    const clearVisibleDetailsTabs = jest.fn();
-    await act(async () => {
-        render(<ViewPanel clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={[]} />)
-        fireEvent.click(screen.getByText(/Collapse all metrics/))
-    });
-    expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
-})
-
 function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),

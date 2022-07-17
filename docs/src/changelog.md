@@ -32,6 +32,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 ### Changed
 
+- As the "Collapse all metrics" button isn't a setting, move it from the settings panel to the menubar. Closes [#3382](https://github.com/ICTU/quality-time/issues/3382).
 - Set the feature compatibility of the database to MongoDB 5.0 to prepare for the upcoming 6.0 release of MongoDB. Closes [#4041](https://github.com/ICTU/quality-time/issues/4041).
 - Move the metric parameters for technical debt, issues, and comments to a separate technical debt tab so that the metric configuration tab is less crowded with parameters. Closes [#4165](https://github.com/ICTU/quality-time/issues/4165).
 

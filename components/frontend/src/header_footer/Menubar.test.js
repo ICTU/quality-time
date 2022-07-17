@@ -101,3 +101,21 @@ it('hides the view panel on other keys', async () => {
     await userEvent.keyboard("x")
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
+
+it("clears the visible details tabs", async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    await act(async () => {
+        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
+        fireEvent.click(screen.getByRole("button", {name: "Collapse all metrics"}))
+    });
+    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
+})
+
+it("doesn't clear the visible details tabs if there are none", async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    await act(async () => {
+        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={[]} />)
+        fireEvent.click(screen.getByRole("button", {name: "Collapse all metrics"}))
+    });
+    expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
+})

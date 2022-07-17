@@ -98,6 +98,7 @@ export function AppUI({
             <DarkMode.Provider value={darkMode}>
                 <HashLinkObserver />
                 <Menubar
+                    clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                     current_report={current_report}
                     email={email}
                     go_home={go_home}
@@ -105,9 +106,9 @@ export function AppUI({
                     report_date_string={report_date_string}
                     set_user={set_user}
                     user={user}
+                    visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
                         handleSort={handleSort}
@@ -130,7 +131,6 @@ export function AppUI({
                         sortDirection={sortDirection}
                         toggleHiddenColumn={toggleHiddenColumn}
                         uiMode={uiMode}
-                        visibleDetailsTabs={visibleDetailsTabs}
                     />}
                 />
                 <ToastContainer theme="colored" />

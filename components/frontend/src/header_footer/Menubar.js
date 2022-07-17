@@ -53,6 +53,7 @@ function Logout({ user, email, set_user }) {
 }
 
 export function Menubar({
+    clearVisibleDetailsTabs,
     current_report,
     email,
     go_home,
@@ -61,6 +62,7 @@ export function Menubar({
     report_date_string,
     set_user,
     user,
+    visibleDetailsTabs
 }) {
     const [panelVisible, setPanelVisible] = useState(false)
     useEffect(() => {
@@ -93,6 +95,31 @@ export function Menubar({
                             </Menu.Item>
                         </div>
                     </FocusLock>
+                    <Menu.Item>
+                        <Popup
+                            on={["hover", "focus"]}
+                            trigger={
+                                <span  // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
+                                >
+                                    <Button
+                                        aria-label="Collapse all metrics"
+                                        basic
+                                        disabled={visibleDetailsTabs?.length === 0}
+                                        onClick={() => clearVisibleDetailsTabs()}
+                                        icon={
+                                            <Icon
+                                                name={`caret ${visibleDetailsTabs?.length === 0 ? "right" : "down"}`}
+                                                size='large'
+                                            />
+                                        }
+                                        inverted
+                                        style={{ marginTop: -7, marginBottom: -7 }}  // Somehow the span removes the negative vertical margin the button has without the span, compensate
+                                    />
+                                </span>
+                            }
+                            content="Collapse all metrics"
+                        />
+                    </Menu.Item>
                 </Menu.Menu>
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" position="left center" trigger={
