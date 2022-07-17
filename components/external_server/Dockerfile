@@ -10,7 +10,6 @@ COPY external_server/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
 COPY shared_data_model /home/shared_data_model/
-RUN pip install --no-cache-dir -r /requirements-internal.txt
 COPY shared_python /home/shared_python/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
