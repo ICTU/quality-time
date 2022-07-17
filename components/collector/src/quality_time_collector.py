@@ -1,6 +1,7 @@
 """Measurement collector."""
 
 import asyncio
+import json
 import logging
 
 from shared_data_model import DATA_MODEL_JSON
@@ -11,9 +12,10 @@ import source_collectors  # pylint: disable=unused-import # lgtm [py/unused-impo
 from base_collectors import Collector
 
 
-async def collect(data_model, log_level: int = None) -> None:
+async def collect(data_model_json, log_level: int = None) -> None:
     """Collect the measurements indefinitely."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
+    data_model = json.loads(data_model_json)
     await Collector(data_model).start()
 
 

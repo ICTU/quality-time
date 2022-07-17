@@ -1,5 +1,6 @@
 """Unit tests for the collector main script."""
 
+import json
 import logging
 import unittest
 from copy import deepcopy
@@ -203,7 +204,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.metrics]
         with self._patched_get(mock_async_get_request), self._patched_post() as post, self.assertRaises(RuntimeError):
-            await quality_time_collector.collect(self.data_model)
+            await quality_time_collector.collect(json.dumps(self.data_model))
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
