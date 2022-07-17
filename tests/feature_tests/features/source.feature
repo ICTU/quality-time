@@ -10,7 +10,7 @@ Feature: source
   Scenario: add source
     When the client creates a source
     Then the source type is "anchore"
-    And "components/shared_python/src/shared/data_model/logos/anchore.png" is returned as source logo
+    And "components/shared_data_model/src/shared_data_model/logos/anchore.png" is returned as source logo
 
   Scenario: delete source
     Given an existing source
