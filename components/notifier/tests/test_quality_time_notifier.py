@@ -3,11 +3,9 @@
 import unittest
 from copy import deepcopy
 from datetime import datetime, timezone
-from unittest.mock import AsyncMock, Mock, mock_open, patch
+from unittest.mock import mock_open, patch
 
-from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
-
-from .data_model import DATA_MODEL
+from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -54,14 +52,11 @@ class HealthCheckTest(unittest.TestCase):
         mocked_log.assert_called_once_with("Could not write health check time stamp to %s: %s", self.filename, io_error)
 
 
-class FakeResponse:
+class FakeResponse:  # pylint: disable=too-few-public-methods
     """Fake response."""
 
     def __init__(self, json_data):
         self._json = json_data
-
-    def close(self):
-        """Mock close method."""
 
     async def json(self):
         """Return the json from the response."""
@@ -98,17 +93,11 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         )
 
     @staticmethod
-    async def return_data_model():
-        """Retrieve data_model from class variable."""
-        return FakeResponse(json_data=DATA_MODEL)
-
-    @staticmethod
     async def return_report(report=None):
         """Return the reports response asynchronously."""
         reports = [report] if report else []
         return FakeResponse(dict(reports=reports))
 
-    @patch("quality_time_notifier.retrieve_data_model", new=AsyncMock())
     @patch("logging.error")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
@@ -131,7 +120,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that no notifications are sent if there are no new red metrics."""
-        mocked_get.side_effect = [self.return_data_model(), self.return_report(), self.return_report()]
+        mocked_get.side_effect = [self.return_report(), self.return_report()]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
@@ -156,7 +145,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
             dict(start=now, end=now, count=dict(status="target_not_met", value="10"))
         )
-        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
+        mocked_get.side_effect = [self.return_report(report), self.return_report(report2)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
@@ -192,27 +181,13 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                 )
             ),
         )
-        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report)]
+        mocked_get.side_effect = [self.return_report(report), self.return_report(report)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
         except RuntimeError:
             pass
         mocked_send.assert_not_called()
-
-    @patch("logging.error", Mock())
-    @patch("asyncio.sleep")
-    @patch("logging.warning")
-    @patch("aiohttp.ClientSession.get")
-    async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_warning, mocked_sleep):
-        """Test being unable to retrieve data from the API."""
-        mocked_get.side_effect = [Exception]
-        mocked_sleep.side_effect = [None, RuntimeError]
-        try:
-            await retrieve_data_model(sleep_duration=60)
-        except RuntimeError:
-            pass
-        self.assertEqual(2, mocked_log_warning.call_count)
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
@@ -231,7 +206,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
             dict(start=now, end=now, count=dict(status="target_met", value="10"))
         )
-        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
+        mocked_get.side_effect = [self.return_report(report), self.return_report(report2)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
