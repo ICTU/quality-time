@@ -4,7 +4,7 @@ import json
 import unittest
 from unittest.mock import Mock
 
-from shared.data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL_JSON
 
 from shared.initialization.datamodel import import_datamodel
 
