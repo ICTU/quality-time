@@ -13,8 +13,8 @@ it('logs in', async () => {
         render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
         fireEvent.click(screen.getByText(/Login/));
     });
-    fireEvent.change(screen.getByLabelText("Username"), {target: {value: 'user@example.org'}})
-    fireEvent.change(screen.getByLabelText("Password"), {target: {value: 'secret'}})
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: 'user@example.org' } })
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: 'secret' } })
     await act(async () => {
         fireEvent.click(screen.getByText(/Submit/));
     });
@@ -63,41 +63,55 @@ it('goes to home page on keypress', async () => {
 
 it('shows the view panel on menu item click', async () => {
     await act(async () => {
-        render(<Menubar panel={<div>Hello</div>}/>);
+        render(<Menubar panel={<div>Hello</div>} />);
         fireEvent.click(screen.getByText(/Settings/));
     });
     expect(screen.getAllByText(/Hello/).length).toBe(1)
-})
+});
 
-it('shows the view panel on enter', async () => {
-    await act(async () => {
-        render(<Menubar panel={<div>Hello</div>} />);
-    });
-    await userEvent.tab()  // Move focus to the settings button
-    await userEvent.keyboard("{Enter}")
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
-})
+["{Enter}", " ", "x"].forEach(key => {
+    it('shows the view panel on enter', async () => {
+        await act(async () => {
+            render(<Menubar panel={<div>Hello</div>} />);
+        });
+        await userEvent.tab()  // Move focus to the settings button
+        await userEvent.keyboard(key)
+        expect(screen.getAllByText(/Hello/).length).toBe(1)
+    })
+});
 
 it('hides the view panel on click', async () => {
-    await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
+    await act(async () => { render(<Menubar panel={<div>Hello</div>} />) })
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     fireEvent.click(screen.getByText(/Settings/));
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
+});
+
+["{Escape}", "{Enter}", " ", "x"].forEach(key => {
+    it('hides the view panel on key press', async () => {
+        await act(async () => { render(<Menubar panel={<div>Hello</div>} />) })
+        fireEvent.click(screen.getByText(/Settings/));
+        expect(screen.getAllByText(/Hello/).length).toBe(1)
+        await userEvent.keyboard(key)
+        expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    })
+});
+
+it("clears the visible details tabs", async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    await act(async () => {
+        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
+        fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
+    });
+    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
 })
 
-it('hides the view panel on escape', async () => {
-    await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
-    fireEvent.click(screen.getByText(/Settings/));
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await userEvent.keyboard("{Escape}")
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
-})
-
-it('hides the view panel on other keys', async () => {
-    await act(async () => { render(<Menubar panel={<div>Hello</div>} />)})
-    fireEvent.click(screen.getByText(/Settings/));
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await userEvent.keyboard("x")
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+it("doesn't clear the visible details tabs if there are none", async () => {
+    const clearVisibleDetailsTabs = jest.fn();
+    await act(async () => {
+        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={[]} />)
+        fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
+    });
+    expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
 })

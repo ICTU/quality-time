@@ -18,7 +18,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 - Don't add items when hitting enter while an add-item button with collapsed dropdown menu has focus. Fixes [#4144](https://github.com/ICTU/quality-time/issues/4144).
 - Don't close the dropdown menu of an add-item button when entering a space into the filter input field. Fixes [#4147](https://github.com/ICTU/quality-time/issues/4147).
-- The target column would show the technical debt target value instead of the target value when technical debt was accepted. Fixed by always displaying the target value. In addition, if technical debt is accepted, the target value has a grey label. On hovering, a popup shows the technical debt target value and the technical debt end date, if any. Fixes [#4171](https://github.com/ICTU/quality-time/issues/4171).
+- The target column would show the technical debt target value instead of the target value when technical debt was accepted. Fixed by always displaying the target value and showing the technical debt target value in a popup on hovering the target value. Fixes [#4171](https://github.com/ICTU/quality-time/issues/4171).
 - The header of error messages in popups would be hard to read in dark mode. Fixes [#4174](https://github.com/ICTU/quality-time/issues/4174).
 
 ### Added
@@ -32,6 +32,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 ### Changed
 
+- As the "Collapse all metrics" button isn't a setting, move it from the settings panel to the menubar. Closes [#3382](https://github.com/ICTU/quality-time/issues/3382).
 - Set the feature compatibility of the database to MongoDB 5.0 to prepare for the upcoming 6.0 release of MongoDB. Closes [#4041](https://github.com/ICTU/quality-time/issues/4041).
 - Move the metric parameters for technical debt, issues, and comments to a separate technical debt tab so that the metric configuration tab is less crowded with parameters. Closes [#4165](https://github.com/ICTU/quality-time/issues/4165).
 

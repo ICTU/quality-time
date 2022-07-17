@@ -47,17 +47,6 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={visibleDetailsTabs?.length === 0}
-                                onClick={() => clearVisibleDetailsTabs()}
-                                inverted
-                            >
-                                Collapse all metrics
-                            </Button>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Button
                                 disabled={
                                     visibleDetailsTabs?.length === 0 &&
                                     !hideMetricsNotRequiringAction &&
