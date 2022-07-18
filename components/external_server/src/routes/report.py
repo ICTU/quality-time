@@ -10,7 +10,7 @@ from pymongo.database import Database
 from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import recent_measurements
 from shared.database.reports import insert_new_report
-from shared.utils.functions import iso_timestamp, report_date_time
+from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
@@ -23,7 +23,7 @@ from model.transformations import (
     hide_credentials,
     replace_report_uuids,
 )
-from utils.functions import DecryptionError, check_url_availability, sanitize_html, uuid
+from utils.functions import DecryptionError, check_url_availability, report_date_time, sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 

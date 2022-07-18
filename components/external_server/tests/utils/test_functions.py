@@ -33,7 +33,7 @@ class UtilTests(unittest.TestCase):
         self.assertEqual("bc9189406be84ec297464a514221406d", md5_hash("XXX"))
 
 
-@patch("shared.utils.functions.bottle.request")
+@patch("utils.functions.bottle.request")
 class ReportDateTimeTest(unittest.TestCase):
     """Unit tests for the report_datetime method."""
 
