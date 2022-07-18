@@ -11,6 +11,7 @@ from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from utils.functions import (
     asymmetric_decrypt,
     asymmetric_encrypt,
+    md5_hash,
     symmetric_decrypt,
     symmetric_encrypt,
     uuid,
@@ -23,6 +24,10 @@ class UtilTests(unittest.TestCase):
     def test_uuid(self):
         """Test the expected length of the uuid."""
         self.assertEqual(36, len(uuid()))
+
+    def test_md5_hash(self):
+        """Test that the hash works."""
+        self.assertEqual("bc9189406be84ec297464a514221406d", md5_hash("XXX"))
 
 
 class TestEncryption(unittest.TestCase):

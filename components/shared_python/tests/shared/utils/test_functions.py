@@ -4,7 +4,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from shared.utils.functions import iso_timestamp, md5_hash, report_date_time
+from shared.utils.functions import iso_timestamp, report_date_time
 
 
 class UtilTests(unittest.TestCase):
@@ -16,10 +16,6 @@ class UtilTests(unittest.TestCase):
         with patch("shared.utils.functions.datetime") as date_time:
             date_time.now.return_value = datetime(2020, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
             self.assertEqual(expected_time_stamp, iso_timestamp())
-
-    def test_md5_hash(self):
-        """Test that the hash works."""
-        self.assertEqual("bc9189406be84ec297464a514221406d", md5_hash("XXX"))
 
 
 @patch("shared.utils.functions.bottle.request")

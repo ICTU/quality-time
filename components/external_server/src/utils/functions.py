@@ -1,5 +1,6 @@
 """Utility functions."""
 
+import hashlib
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
@@ -159,3 +160,8 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
 def uuid() -> ReportId:
     """Return a UUID."""
     return ReportId(str(_uuid.uuid4()))
+
+
+def md5_hash(string: str) -> str:
+    """Return a md5 hash of the string."""
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography

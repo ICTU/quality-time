@@ -26,11 +26,6 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
 
-def md5_hash(string: str) -> str:
-    """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
-
-
 def report_date_time() -> str:
     """Return the report date requested as query parameter if it's in the past, else return an empty string."""
     if report_date_string := dict(bottle.request.query).get("report_date"):
