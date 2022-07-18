@@ -420,9 +420,9 @@ pygments==2.12.0 \
     --hash=sha256:5eb116118f9612ff1ee89ac96437bb6b49e8f04d8a13b514ba26f620208e26eb \
     --hash=sha256:dc9c10fb40944260f6ed4c688ece0cd2048414940f1cea51b8b226318411c519
     # via rich
-pylint==2.14.4 \
-    --hash=sha256:47705453aa9dce520e123a7d51843d5f0032cbfa06870f89f00927aa1f735a4a \
-    --hash=sha256:89b61867db16eefb7b3c5b84afc94081edaf11544189e2b238154677529ad69f
+pylint==2.14.5 \
+    --hash=sha256:487ce2192eee48211269a0e976421f334cf94de1806ca9d0a99449adcdf0285e \
+    --hash=sha256:fabe30000de7d07636d2e82c9a518ad5ad7908590fe135ace169b44839c15f90
     # via -r ../../../requirements/dev.in
 pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
