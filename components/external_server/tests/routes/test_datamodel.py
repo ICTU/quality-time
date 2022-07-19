@@ -1,5 +1,6 @@
 """Unit tests for the datamodel routes."""
 
+import http
 import unittest
 from unittest.mock import Mock, patch
 
@@ -32,7 +33,10 @@ class DataModelTest(unittest.TestCase):
         """Test that a 304 is returned when the data model is unchanged."""
         mocked_request.headers = {"If-None-Match": "W/" + md5_hash("now")}
         self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
-        self.assertRaises(bottle.HTTPError, get_data_model, self.database)
+        try:
+            get_data_model(self.database)
+        except bottle.HTTPError as reason:
+            self.assertEqual(http.HTTPStatus.NOT_MODIFIED, reason.status_code)
 
     def test_default_source_parameters(self):
         """Test that the default source parameters can be retrieved from the data model."""
