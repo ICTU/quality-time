@@ -12,7 +12,6 @@ class TestSecrets(unittest.TestCase):
     def setUp(self):
         """Set up database mocks."""
         self.database = Mock()
-        self.database.secrets.insert = Mock()
 
     def test_initialize_secrets(self):
         """Test initialization of field encryption secrets."""

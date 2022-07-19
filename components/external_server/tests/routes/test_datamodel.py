@@ -1,9 +1,14 @@
 """Unit tests for the datamodel routes."""
 
+import http
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
+
+import bottle
 
 from database.datamodels import default_source_parameters, default_subject_attributes
+from routes import get_data_model
+from utils.functions import md5_hash
 
 
 class DataModelTest(unittest.TestCase):
@@ -12,6 +17,26 @@ class DataModelTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the database."""
         self.database = Mock()
+
+    def test_get_data_model(self):
+        """Test that the data model can be retrieved."""
+        data_model = self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
+        self.assertEqual(data_model, get_data_model(self.database))
+
+    def test_get_data_model_missing(self):
+        """Test that the data model is None if it's not there."""
+        self.database.datamodels.find_one.return_value = None
+        self.assertEqual({}, get_data_model(self.database))
+
+    @patch("bottle.request")
+    def test_get_data_model_unchanged(self, mocked_request):
+        """Test that a 304 is returned when the data model is unchanged."""
+        mocked_request.headers = {"If-None-Match": "W/" + md5_hash("now")}
+        self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
+        try:
+            get_data_model(self.database)
+        except bottle.HTTPError as reason:
+            self.assertEqual(http.HTTPStatus.NOT_MODIFIED, reason.status_code)
 
     def test_default_source_parameters(self):
         """Test that the default source parameters can be retrieved from the data model."""

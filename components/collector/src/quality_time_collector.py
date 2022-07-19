@@ -1,7 +1,10 @@
 """Measurement collector."""
 
 import asyncio
+import json
 import logging
+
+from shared_data_model import DATA_MODEL_JSON
 
 # Make sure subclasses are registered
 import metric_collectors  # pylint: disable=unused-import # lgtm [py/unused-import]
@@ -9,11 +12,12 @@ import source_collectors  # pylint: disable=unused-import # lgtm [py/unused-impo
 from base_collectors import Collector
 
 
-async def collect(log_level: int = None) -> None:
+async def collect(data_model_json, log_level: int = None) -> None:
     """Collect the measurements indefinitely."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
-    await Collector().start()
+    data_model = json.loads(data_model_json)
+    await Collector(data_model).start()
 
 
 if __name__ == "__main__":
-    asyncio.run(collect(logging.INFO), debug=True)  # pragma: no cover
+    asyncio.run(collect(DATA_MODEL_JSON, logging.INFO), debug=True)  # pragma: no cover

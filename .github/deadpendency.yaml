@@ -36,6 +36,11 @@ additional-dependency-files:
     path: components/shared_python/requirements/requirements-dev.in
 
   - type: pip-requirements-txt
+    path: components/shared_data_model/requirements/requirements-base.in
+  - type: pip-requirements-txt
+    path: components/shared_data_model/requirements/requirements-dev.in
+
+  - type: pip-requirements-txt
     path: tests/application_tests/requirements/requirements-base.in
   - type: pip-requirements-txt
     path: tests/application_tests/requirements/requirements-dev.in

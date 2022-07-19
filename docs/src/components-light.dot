@@ -2,7 +2,7 @@ digraph {
   graph [bcolor=transparant, fontname="SFMono-Regular"]
   node [fontname="SFMono-Regular"]
   edge [fontname="SFMono-Regular"]
-browser [shape=rectangle]
+  browser [shape=rectangle]
   ldap [shape=rectangle, label="LDAP"]
   subgraph cluster_qt {
     rank="min"

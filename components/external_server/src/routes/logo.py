@@ -2,7 +2,7 @@
 
 import bottle
 
-from shared.data_model.logos import LOGOS_ROOT
+from shared_data_model.logos import LOGOS_ROOT
 
 
 @bottle.get("/api/v3/logo/<source_type>", authentication_required=False)

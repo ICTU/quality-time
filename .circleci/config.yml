@@ -7,7 +7,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 5
+    parallelism: 6
     steps:
       - checkout
       - run: |
@@ -16,7 +16,8 @@ jobs:
             1) component=notifier;;
             2) component=internal_server;;
             3) component=external_server;;
-            4) component=shared_python;;
+            4) component=shared_data_model;;
+            5) component=shared_python;;
           esac
           cd components/$component
           python -m venv venv

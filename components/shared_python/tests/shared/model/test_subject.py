@@ -3,7 +3,8 @@
 import json
 import unittest
 
-from shared.data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL_JSON
+
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.model.subject import Subject
@@ -38,9 +39,7 @@ class SubjectTest(unittest.TestCase):
 
     def test_instantiate_metrics(self):
         """Test that a subject instantiates its metrics."""
-        subject = Subject(
-            self.data_model, dict(metrics={METRIC_ID: {}}), SUBJECT_ID, self.report
-        )
+        subject = Subject(self.data_model, dict(metrics={METRIC_ID: {}}), SUBJECT_ID, self.report)
         metric = Metric(self.data_model, {}, METRIC_ID)
         self.assertEqual({METRIC_ID: metric}, subject.metrics_dict)
 
@@ -51,9 +50,7 @@ class SubjectTest(unittest.TestCase):
 
     def test_missing_name(self):
         """Test that a subject can have a missing name."""
-        subject = Subject(
-            self.data_model, dict(type="software"), SUBJECT_ID, self.report
-        )
+        subject = Subject(self.data_model, dict(type="software"), SUBJECT_ID, self.report)
         self.assertEqual("Software", subject.name)
 
     def test_tag_subject(self):

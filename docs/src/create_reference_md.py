@@ -4,7 +4,7 @@ import json
 import pathlib
 import re
 
-from shared.data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL_JSON
 
 TYPE_DESCRIPTION = dict(
     url="URL",

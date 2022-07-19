@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from shared.data_model.meta.data_model import DataModel
+from shared_data_model.meta.data_model import DataModel
 
 from .base import MetaModelTestCase
 

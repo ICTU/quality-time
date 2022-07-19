@@ -4,8 +4,9 @@ import json
 import unittest
 from unittest.mock import Mock
 
+from shared_data_model import DATA_MODEL_JSON
+
 from shared.database.measurements import insert_new_measurement, latest_measurement, recent_measurements
-from shared.data_model import DATA_MODEL_JSON
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 

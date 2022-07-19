@@ -1,6 +1,6 @@
 """Unit tests for the entity model."""
 
-from shared.data_model.meta.entity import Entity
+from shared_data_model.meta.entity import Entity
 
 from .base import MetaModelTestCase
 

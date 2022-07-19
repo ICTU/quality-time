@@ -18,11 +18,9 @@
 **/requirements*.in
 **/tests/
 **/venv/
-collector/
 database/
 frontend/
 ldap/
-notifier/
 proxy/
 renderer/
 testdata/

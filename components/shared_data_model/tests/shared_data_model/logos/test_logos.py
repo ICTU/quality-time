@@ -2,7 +2,7 @@
 
 import unittest
 
-from shared.data_model.logos import LOGOS_ROOT
+from shared_data_model.logos import LOGOS_ROOT
 
 
 class LogosTest(unittest.TestCase):

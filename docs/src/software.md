@@ -20,7 +20,7 @@ There are five bespoke components:
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [aiohttp](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared python](#shared-python) component. This is not a run-time component. The code is shared at build time, when the Docker images are created.
+Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared Python](#shared-python) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the internal server, the collector, and the notifier. The shared Python code is used by the external server and the internal server.
 
 The three standard components are:
 
@@ -147,9 +147,17 @@ The notifier uses the following environment variables:
 | INTERNAL_SERVER_PORT | 5002 | Port of the internal server. The notifier uses this to get the metrics. |
 | NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
-## Shared python
+## Shared Python
 
-The [shared python component](https://github.com/ICTU/quality-time/tree/master/components/shared_python) contains code and resources shared between the servers and the collector and notifier components. This includes the [data model](#data-model), the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
+The [shared Python component](https://github.com/ICTU/quality-time/tree/master/components/shared_python) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
+
+### Example reports
+
+The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
+
+## Shared data model
+
+The [shared data model component](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model) contains the data model that is shared between all Python components.
 
 ### Data model
 
@@ -336,10 +344,6 @@ class Subject(DescribedModel):
 The `name` is the default name of the subject. The `description` describes the subject type. Both fields are part of `DescribedModel`.
 
 The list of `metrics` contains the metrics that make the most sense for the subject type, and is used for filtering the list of metrics in the dropdown menu of the buttons for moving and copying metrics.
-
-### Example reports
-
-The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
 
 ## Proxy
 

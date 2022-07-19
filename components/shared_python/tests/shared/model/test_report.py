@@ -3,7 +3,8 @@
 import json
 import unittest
 
-from shared.data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL_JSON
+
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.model.source import Source
