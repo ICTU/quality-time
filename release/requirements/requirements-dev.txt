@@ -516,9 +516,9 @@ ruamel-yaml-clib==0.2.6 \
     --hash=sha256:dc6a613d6c74eef5a14a214d433d06291526145431c3b964f5e16529b1842bed \
     --hash=sha256:de9c6b8a1ba52919ae919f3ae96abb72b994dd0350226e28f3686cb4f142165c
     # via ruamel-yaml
-safety==2.1.0 \
-    --hash=sha256:2f8d95cdab74461e53972ad654ce5fee3a3b3bf6b6f139cc595a6011378b28c8 \
-    --hash=sha256:6211d4bf228694ef262a55e58dd3573650b979861f40a49dc7d534f8f0b339b3
+safety==2.1.1 \
+    --hash=sha256:05ba551fb61ef24c864835d21089f75bc8b37292680047b9f29693a6552e2fc7 \
+    --hash=sha256:dbc5dffa2e47da76cc43dfe8cbbbfca99d29118d0c6c54dfcfa11c2bd349dff6
     # via -r ../../requirements/dev.in
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
