@@ -9,25 +9,25 @@ from asserts import assert_equal, assert_not_in
 from behave import then, when
 
 
-@when("the client downloads the report as pdf")
+@when("the client downloads the report as PDF")
 def download_report_as_pdf(context):
-    """Download the report as pdf."""
+    """Download the report as PDF."""
     context.get(f"report/{context.uuid['report']}/pdf")
 
 
-@when("the client downloads the report as json")
+@when("the client downloads the report as JSON")
 @when("the client downloads the report {report_uuid} as json")
 def download_report_as_json(context, report_uuid=None):
-    """Download the report as json."""
+    """Download the report as JSON."""
     if report_uuid is None:
         report_uuid = context.uuid["report"]
     report = context.get(f"report/{report_uuid}/json")
     context.exported_report = report
 
 
-@when("the client downloads the report as json with his own public key")
+@when("the client downloads the report as JSON with his own public key")
 def download_report_as_json_with_key(context):
-    """Download the report as json with public key."""
+    """Download the report as JSON with public key."""
     public_key = urllib.parse.quote_plus(context.public_key)
     context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 
@@ -73,23 +73,23 @@ def time_travel(context):
     time.sleep(1)  # Make sure report date is in the past
 
 
-@then("the client receives the pdf")
+@then("the client receives the PDF")
 def check_pdf(context):
-    """Check the pdf."""
+    """Check the PDF."""
     assert_equal("application/pdf", context.response.headers["Content-Type"])
 
 
-@then("the client receives the json")
+@then("the client receives the JSON")
 def check_json(context):
-    """Check the json."""
+    """Check the JSON."""
     assert_equal(200, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
     assert_not_in("secret", context.response.text)
 
 
-@then("the client receives no json")
+@then("the client receives no JSON")
 def check_no_json(context):
-    """Check the json."""
+    """Check the JSON."""
     assert_equal(404, context.response.status_code)
 
 
@@ -102,6 +102,6 @@ def get_non_existing_report(context):
 
 @then("the import failed")
 def import_failed(context):
-    """Check the json."""
+    """Check the JSON."""
     assert_equal(400, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])

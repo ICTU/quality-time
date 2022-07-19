@@ -45,10 +45,10 @@ Feature: report
     When the client changes the report comment to "Text<script>alert('Danger')</script>"
     Then the report comment is "Text"
 
-  Scenario: export report as pdf
+  Scenario: export report as PDF
     When the client creates a report
-    And the client downloads the report as pdf
-    Then the client receives the pdf
+    And the client downloads the report as PDF
+    Then the client receives the PDF
 
   Scenario: export report as json
     When the client creates a report

@@ -1,10 +1,10 @@
-"""Unit tests for the Azure Devops Server failed jobs collectors."""
+"""Unit tests for the Azure DevOps Server failed jobs collectors."""
 
 from .base import AzureDevopsJobsTestCase
 
 
 class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
-    """Unit tests for the Azure Devops Server failed jobs collector."""
+    """Unit tests for the Azure DevOps Server failed jobs collector."""
 
     METRIC_TYPE = "failed_jobs"
 

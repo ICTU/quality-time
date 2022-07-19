@@ -6,7 +6,7 @@ This user manual assumes *Quality-time* has been installed, is up and running, a
 
 ## {index}`Logging in` and {index}`out <Logging out>`
 
-Quality reports can be viewed without logging in, but to edit reports and metrics you need to be logged in. Click the "Login" button in the menu bar:
+You can view Quality reports without logging in, but to edit reports and metrics you need to log in. Click the "Login" button in the menu bar:
 
 ![Logged out screenshot](screenshots/menubar_logged_out.png)
 
@@ -33,7 +33,7 @@ You can either use your canonical LDAP name as username or your LDAP user id. Pl
 ```{index} Gravatar
 ```
 
-After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be shown next to your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be visible next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
@@ -44,7 +44,7 @@ Clicking "Logout" logs you out from *Quality-time*. Your user session expires af
 
 ## Configuring permissions
 
-*Quality-time* implements a simple permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit reports, subjects, metrics, sources and measured entities. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights.
+*Quality-time* implements a limited permissions system. Anybody (authenticated and not authenticated) can always view all the information in *Quality-time*. By default, anybody who is logged in can edit reports, subjects, metrics, sources and measured entities. However, this access can be restricted to certain users. On the homepage, expand the reports overview title to see two input fields to grant users report editing rights or entity editing rights.
 
 ### Report edit permission
 
@@ -52,15 +52,15 @@ Report edit permission allows a user to edit the reports in this *Quality-time* 
 
 If you forget to add yourself, your username will be added automatically. This means that you can't retract your own report editing rights: add another user and ask them to remove your username or email address.
 
-To restore the default situation where every logged-in user can edit reports, subjects, metrics, and sources, simply remove all usernames and email addresses.
+To restore the default situation where every logged-in user can edit reports, subjects, metrics, and sources, remove all usernames and email addresses.
 
 ### Entity edit permission
 
 Entity edit permission will allow a user to update the status of measured entities. A user with this permission can for example mark violations as false positives.
 
-Unlike for the report edit permission, it is possible to retract yourself from the list of entity editors.
+Unlike for the report edit permission, it's possible to retract yourself from the list of entity editors.
 
-To restore the default situation where every logged-in user can edit entities, simply remove all usernames and email addresses.
+To restore the default situation where every logged-in user can edit entities, remove all usernames and email addresses.
 
 ## Configuring quality reports
 
@@ -81,7 +81,7 @@ To add a new report, be sure to be logged in and click the "Add report" button o
 
 #### Editing reports
 
-To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
+To change the title or subtitle of a report, expand the report header and enter a new title and/or subtitle in their respective fields. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
 
 The "{index}`Comment <pair: Comment;Report>`" field can be used to describe the report, or any other information. HTML and URLs are supported. The entered comments are shown between the report title and the dashboard.
 
@@ -142,7 +142,7 @@ To change the subject type and name expand the subject header if it's not alread
 Currently, changing the type of the subject does not affect what you can do with the subject.
 ```
 
-To change the title or subtitle of the subject, simply enter a new title and/or subtitle in their respective fields.
+To change the title or subtitle of the subject, enter a new title and/or subtitle in their respective fields.
 
 The "{index}`Comment <pair: Comment;Subject>`" field can be used to describe the subject, or any other information. HTML and URLs are supported. The entered comments are shown between the subject title and the table with metrics.
 
@@ -236,14 +236,14 @@ If a metric doesn't meet the target value, but your team isn't able to fix the s
 :class: only-dark
 ```
 
-To accept technical debt, navigate to the metric's "Technical debt" tab and set the "Accept technical debt?" field to "Yes". Enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Technical debt end date" field.
+To accept technical debt, navigate to the "Technical debt" tab of the metric and set the "Accept technical debt?" field to "Yes". Enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Technical debt end date" field.
 
 The "{index}`Issue identifiers`" field can be used to enter the identifier of one or more issues in an issue tracker system. This can be used to track progress on resolving technical debt. See the [Issue tracker](#issue-tracker) section below on how to configure the issue tracker.
 
 The "Create new issue" button can be used to create a new issue in the configured issue tracker. *Quality-time* will use the issue tracker's API to create a new issue and will add the new issue's id to the tracked issue identifiers. The created issue is opened in a new browser tab for further editing. You may have to allow *Quality-time* to open popup windows in your browser.
 
 ```{note}
-Metrics with accepted technical debt are displayed with a money icon and grey background as long as their measurement value is worse than the metric's target and equal to or better than the metric's technical debt target.
+Metrics with accepted technical debt are displayed with a money icon and grey background as long as their measurement value is worse than their target and equal to or better than their technical debt target.
 
 However, measurement values of a metric with accepted technical debt will *not* be evaluated against the technical debt target when:
 
@@ -259,7 +259,7 @@ The "{index}`Comment <pair: Comment;Metric>`" field can be used to capture the r
 
 #### Reordering metrics
 
-To reorder metrics, expand the metric in the metric table and use the buttons on the lower left-hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by e.g. name or status.
+To reorder metrics, expand the metric in the metric table and use the buttons on the lower left-hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by, for example, name or status.
 
 #### Deleting metrics
 
@@ -310,11 +310,11 @@ The parameters that sources need differ per source type. Most sources need a URL
 :class: only-dark
 ```
 
-Source parameter (URL's, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
+Source parameter (URLs, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
 
 #### Deleting sources
 
-To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
+To delete a source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
 ```{danger}
 Be careful, there's no way to undo your action via the user interface.
@@ -430,7 +430,7 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 ### GitLab
 
-Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
+Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, JaCoCo XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
 
 There are two scenarios: the source is a build artifact of a GitLab CI pipeline, or the source is stored in a GitLab repository.
 
@@ -442,7 +442,7 @@ When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
-If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_api" in the private token field.
+If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope `read_api` in the private token field.
 
 #### GitLab repository file
 
@@ -452,7 +452,7 @@ When the metric source is a file stored in a GitLab repository, use [URLs of the
 
 The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
-If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_repository" in the private token field.
+If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope `read_repository` in the private token field.
 
 ```{index} Jenkins
 ```
@@ -478,7 +478,7 @@ To authorize *Quality-time* for (non-public resources in) Jenkins, you can eithe
 
 ### Generic JSON format for security warnings
 
-In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a simple generic format.
+In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a generic format.
 
 The JSON format consists of an object with one key `vulnerabilities`. The value should be a list of, you guess it, vulnerabilities. Each vulnerability is an object with three keys: `title`, `description`, and `severity`. The title and description values should be strings. The severity is also a string and can be either `low`, `medium`, or `high`.
 
@@ -574,7 +574,7 @@ To expand metrics and set the active tab of the metric detail information, add t
 
 To show the measurement trend, add the `nr_dates` parameter and set it to more than 1, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?nr_dates=5`. The maximum supported value is 7 dates.
 
-To change the time between dates shown, use the `date_interval` parameter. The interval should be an integer and can have the value 1, 7, 14, 21 or 28. For example, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?date_interval=7`.
+To change the time between dates shown, use the `date_interval` parameter. The interval should be an integer and can have the value 1, 7, 14, 21, or 28. For example, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?date_interval=7`.
 
 To add issue attributes to the exported report, set the `show_issue_summary`, `show_issue_creation_date`, and/or `show_issue_update_date` parameters to `true`. For example, `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?show_issue_summary=true`.
 

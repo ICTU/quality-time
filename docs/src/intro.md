@@ -1,8 +1,8 @@
 # About *Quality-time*
 
-*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
-Technically, *Quality-time* consists of a React frontend, a Mongo database server, and three backend components written in Python: an API-server, a worker component to collect measurement data from the sources, and a worker component to send notifications.
+Technically, *Quality-time* consists of a React frontend, a Mongo database server, and a number of backend components written in Python: a worker component to collect measurement data from the sources, a worker component to send notifications, an API-server for the frontend, and an API-server for the worker components.
 
 Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured metric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
@@ -73,12 +73,12 @@ Keep track of trends:
 And manage false positives:
 
 ```{image} screenshots/metric_entities.png
-:alt: Screenshot of a metric's entities, in this case suppressed violations
+:alt: Screenshot of the entities of the metric, in this case suppressed violations
 :class: only-light
 ```
 
 ```{image} screenshots/metric_entities_dark.png
-:alt: Screenshot of a metric's entities, in this case suppressed violations
+:alt: Screenshot of the entities of the metric, in this case suppressed violations
 :class: only-dark
 ```
 
@@ -88,7 +88,7 @@ Implemented features include:
 
 - Robust data collection (the collector should never fail, even in the face of misconfigured or unavailable sources).
 - Measurement history is kept in a database, allowing for time travel.
-- Easy report configuration via the UI.
+- Report configuration via the UI.
 - Multiple reports in one *Quality-time* instance.
 - LDAP-integration.
 - Generic false-positive management.

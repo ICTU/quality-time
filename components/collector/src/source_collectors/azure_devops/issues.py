@@ -1,4 +1,4 @@
-"""Azure Devops Server issues collector."""
+"""Azure DevOps Server issues collector."""
 
 from typing import Final
 

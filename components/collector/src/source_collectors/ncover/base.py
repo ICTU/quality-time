@@ -28,7 +28,7 @@ class NCoverCoverageBase(NCoverBase, ABC):
     coverage_type = "Subclass responsibility"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Override to parse the coverage from the NCover HTML/Javascript."""
+        """Override to parse the coverage from the NCover HTML/JavaScript."""
         covered, total = 0, 0
         for response in responses:
             script = await self._find_script(response, "ncover.execution.stats = ")

@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, Mock, patch
 from .base import GitLabTestCase
 
 
-class GitlabSourceUpToDatenessTest(GitLabTestCase):
+class GitLabSourceUpToDatenessTest(GitLabTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
     METRIC_TYPE = "source_up_to_dateness"

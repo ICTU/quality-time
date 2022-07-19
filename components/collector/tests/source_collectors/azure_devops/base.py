@@ -1,4 +1,4 @@
-"""Base class for Azure Devops unit tests."""
+"""Base class for Azure DevOps unit tests."""
 
 from ..source_collector_test_case import SourceCollectorTestCase
 
@@ -29,7 +29,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
 
 
 class AzureDevopsJobsTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
-    """Base class for Azure Devops jobs collectors."""
+    """Base class for Azure DevOps jobs collectors."""
 
     def setUp(self):
         """Extend to set up job data."""

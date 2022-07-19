@@ -8,11 +8,11 @@ This document describes how to deploy, and if needed move, the *Quality-time* ap
 
 ## Docker-composition
 
-This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repo contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
+This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repository contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
 
 ## Configuring authentication (mandatory)
 
-You need to either configure an LDAP server to authenticatie users with or configure forwarded authentication.
+You need to either configure an LDAP server to authenticate users with or configure forwarded authentication.
 
 ### LDAP
 
@@ -73,7 +73,7 @@ By default, the server components will check for the presence of example reports
 
 ## Configuring measurement frequency (optional)
 
-The collector component is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the internal server.
+The collector component is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of its sources and posts a new measurement to the internal server.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 

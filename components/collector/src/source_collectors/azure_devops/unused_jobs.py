@@ -1,4 +1,4 @@
-"""Azure Devops unused jobs collector."""
+"""Azure DevOps unused jobs collector."""
 
 from typing import cast
 

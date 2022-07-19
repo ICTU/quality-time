@@ -16,6 +16,12 @@ run () {
 }
 
 run ./node_modules/markdownlint-cli/markdownlint.js src/*.md
+if vale -v &> /dev/null
+then
+    run vale --no-wrap src/*.md
+else
+    run docker run --rm -v $(pwd)/styles:/styles -w /docs jdkato/vale --no-wrap src/*.md
+fi
 run mypy src
 run pylint --rcfile=../.pylintrc src tests
 run python -m flake8 --select=DUO src

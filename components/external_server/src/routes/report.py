@@ -111,7 +111,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
 
 @bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
 def export_report_as_pdf(report_uuid: ReportId):
-    """Download the report as pdf."""
+    """Download the report as PDF."""
     renderer_host = os.environ.get("RENDERER_HOST", "renderer")
     renderer_port = os.environ.get("RENDERER_PORT", "9000")
     render_url = f"http://{renderer_host}:{renderer_port}/api/render"

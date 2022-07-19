@@ -1,4 +1,4 @@
-"""Unit tests for the Azure Devops merge requests collector."""
+"""Unit tests for the Azure DevOps merge requests collector."""
 
 from source_collectors import AzureDevopsMergeRequests
 
@@ -29,7 +29,7 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
         )
 
     def create_entity(self, number: int):
-        """Create an Azure Devops merge request entity."""
+        """Create an Azure DevOps merge request entity."""
         return dict(
             key=str(number),
             title=f"Pull request {number}",
