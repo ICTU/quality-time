@@ -1,6 +1,6 @@
 FROM nginx:1.23.1
 
-LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
+LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
 
 ENV FRONTEND_HOST frontend
