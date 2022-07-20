@@ -33,7 +33,7 @@ You can either use your canonical LDAP name as username or your LDAP user id. Pl
 ```{index} Gravatar
 ```
 
-After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be visible next to your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be displayed next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
@@ -120,7 +120,13 @@ Be careful, there's no way to undo your action via the user interface.
 :class: only-dark
 ```
 
-Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to select a subject type and add a new subject. The subject is added to the report dashboard.
+Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can for example be a software product or component, a software process, or a continuous integration pipeline.
+
+```{seealso}
+See the [reference manual](reference.md) for the list of supported subject types.
+```
+
+To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to select a subject type and add a new subject. The subject is added to the report dashboard.
 
 Alternatively, you can also copy an existing subject or move an existing subject to the report. Clicking the "Copy subject" or "Move subject" button shows a drop down menu with all of the subjects to choose from. Copying or moving a subject also copies or moves the metrics and sources of the subject.
 
@@ -165,8 +171,6 @@ To reorder subjects, expand the subject title and use the buttons on the lower l
 
 #### Adding metrics
 
-To add a metric to a subject, hit the "Add metric" button to select a metric type and create a new metric. Only metric types that can measure the subject are listed.
-
 ```{image} screenshots/adding_metric.png
 :alt: Screenshot of buttons to add, copy, and move metrics
 :class: only-light
@@ -175,6 +179,12 @@ To add a metric to a subject, hit the "Add metric" button to select a metric typ
 ```{image} screenshots/adding_metric_dark.png
 :alt: Screenshot of buttons to add, copy, and move metrics
 :class: only-dark
+```
+
+To add a metric to a subject, hit the "Add metric" button to select a metric type and create a new metric. Only metric types that can measure the subject are listed.
+
+```{seealso}
+See the [reference manual](reference.md) for the list of supported metric types.
 ```
 
 *Quality-time* adds the selected metric to the report that you can next configure. It is immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
@@ -195,7 +205,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 :class: only-dark
 ```
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the [reference manual](reference.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
@@ -259,7 +269,7 @@ The "{index}`Comment <pair: Comment;Metric>`" field can be used to capture the r
 
 #### Reordering metrics
 
-To reorder metrics, expand the metric in the metric table and use the buttons on the lower left-hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by, for example, name or status.
+To reorder metrics, expand the metric in the metric table and use the buttons on the lower left-hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. You can temporarily override the default ordering of the metrics by clicking a column headers to sort the metrics by the values in that column.
 
 #### Deleting metrics
 
@@ -276,8 +286,6 @@ Be careful, there's no way to undo your action via the user interface.
 
 #### Adding sources
 
-To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button and select a source type. Only sources that can support the metric type are listed. See the [reference manual](reference.md) for the list of supported source types.
-
 ```{image} screenshots/adding_source.png
 :alt: Screenshot of buttons to add, copy, and move sources
 :class: only-light
@@ -286,6 +294,12 @@ To add a source to a metric, expand the metric in the metric table and then clic
 ```{image} screenshots/adding_source_dark.png
 :alt: Screenshot of buttons to add, copy, and move sources
 :class: only-dark
+```
+
+To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button and select a source type. Only sources that can support the metric type are listed.
+
+```{seealso}
+See the [reference manual](reference.md) for the list of supported source types.
 ```
 
 Alternatively, you can also copy an existing source or move an existing source to the metric. Clicking the "Copy source" or "Move source" button shows a drop down menu with all of the sources to choose from.
@@ -314,7 +328,7 @@ Source parameter (URLs, usernames, passwords, etc.) changes can be applied to di
 
 #### Deleting sources
 
-To delete a source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
+To delete the source of a metric, first expand the metric in the metric table. Then, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
 ```{danger}
 Be careful, there's no way to undo your action via the user interface.
@@ -503,7 +517,7 @@ Example generic JSON file:
 
 ## Customizing quality reports
 
-Users can customize quality reports on an individual basis by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
+You can customize quality reports by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
 
 ```{index} Dashboard
 ```

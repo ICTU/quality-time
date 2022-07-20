@@ -170,7 +170,7 @@ If the proxy does not have the default name/port `www:80`, the renderer needs to
 
 To upgrade to this version of *Quality-time* your currently installed version needs to be at least version 3.32.0. If your currently installed version is older, you need to first install v3.32.0, v3.33.0, or v3.34.0 before installing v3.35.0.
 
-Background information: *Quality-time* uses MongoDB as database component. A MongoDB instance is either backward-compatible with the previous MongoDB version or forward-compatible with a next MongoDB version. To configure this, the MongoDB [feature compatibility version](https://www.mongodb.com/docs/manual/reference/command/setFeatureCompatibilityVersion/) has to be set in the database. *Quality-time* has been using MongoDB v4.4 for a while. Up till *Quality-time* v3.32.0 the database was backward-compatible with MongoDB v4.2. Starting from *Quality-time* v3.32.0 the database has been made forward-compatible with MongoDB v5.0. This ensures that if *Quality-time* v3.35.0 is not functioning properly with MongoDB v5.0, a rollback to a previous version of *Quality-time* (but not older than v3.32.0) with MongoDB v4.4 is possible.
+Background information: *Quality-time* uses MongoDB as database component. A MongoDB instance is either backward-compatible with the previous MongoDB version or forward-compatible with a next MongoDB version. To configure this, the MongoDB [feature compatibility version](https://www.mongodb.com/docs/manual/reference/command/setFeatureCompatibilityVersion/) has to be set in the database. *Quality-time* has been using MongoDB v4.4 for a while. Up until *Quality-time* v3.32.0 the database was backward-compatible with MongoDB v4.2. Starting from *Quality-time* v3.32.0 the database has been made forward-compatible with MongoDB v5.0. This ensures that if *Quality-time* v3.35.0 is not functioning properly with MongoDB v5.0, a rollback to a previous version of *Quality-time* (but not older than v3.32.0) with MongoDB v4.4 is possible.
 
 ### Fixed
 
@@ -191,7 +191,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Removed
 
 - The deprecated (since version 3.24.0) API endpoints `/api/v3/reports` and `/api/v3/tag_report` have been removed. Closes [#1416](https://github.com/ICTU/quality-time/issues/1416).
-- The Axe CSV "violation type" parameter that could be used to select which violation types to count has been removed to help fix [#3628](https://github.com/ICTU/quality-time/issues/3628). The parameter was already not practical to ignore certain violation types because it would require the user to select all violation types except the ones to be ignored. Also, if Axe adds new violation types, *Quality-time* would need to be updated to prevent it from ignoring the new violation types.
+- The Axe CSV "violation type" parameter that could be used to select which violation types to count has been removed to help fix [#3628](https://github.com/ICTU/quality-time/issues/3628). The parameter was already impractical to ignore certain violation types because it would require the user to select all violation types except the ones to be ignored. Also, if Axe adds new violation types, *Quality-time* would need to be updated to prevent it from ignoring the new violation types.
 
 ### Added
 
@@ -576,7 +576,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to PDF. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
-- Add no-cache configuration for /api/v3/logo to the Caddy configuration.
+- Add no-cache option for /api/v3/logo to the Caddy configuration.
 
 ### Fixed
 
