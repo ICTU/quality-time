@@ -1,4 +1,4 @@
-"""Azure Devops Server unmerged branches collector."""
+"""Azure DevOps Server unmerged branches collector."""
 
 from datetime import datetime
 from typing import Any, cast

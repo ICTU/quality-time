@@ -1,4 +1,4 @@
-"""Azure Devops failed jobs collector."""
+"""Azure DevOps failed jobs collector."""
 
 from collector_utilities.type import Job
 

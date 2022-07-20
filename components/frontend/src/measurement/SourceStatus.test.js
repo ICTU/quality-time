@@ -14,7 +14,7 @@ function render_source_status(measurement_source) {
     )
 }
 
-it('renders the hyperlink label if the the source has a landing url', () => {
+it('renders the hyperlink label if the source has a landing url', () => {
     render_source_status({ landing_url: "https://landing", source_uuid: "source_uuid" });
     expect(screen.getAllByRole("link").length).toBe(1)
 });

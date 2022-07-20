@@ -1,4 +1,4 @@
-"""Azure Devops Server up-to-dateness collector."""
+"""Azure DevOps Server up-to-dateness collector."""
 
 from abc import ABC
 from datetime import datetime

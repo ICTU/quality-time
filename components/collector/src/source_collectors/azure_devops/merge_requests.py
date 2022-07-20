@@ -1,4 +1,4 @@
-"""Azure Devops Server merge requests collector."""
+"""Azure DevOps Server merge requests collector."""
 
 from typing import cast
 
@@ -10,9 +10,9 @@ from .base import AzureDevopsRepositoryBase
 
 
 class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
-    """Collector for merge requests (pull requests in Azure Devops)."""
+    """Collector for merge requests (pull requests in Azure DevOps)."""
 
-    PAGE_SIZE = 100  # Page size for Azure Devops pagination
+    PAGE_SIZE = 100  # Page size for Azure DevOps pagination
 
     async def _api_url(self) -> URL:
         """Extend to add the pull requests API path."""
@@ -25,7 +25,7 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
         return URL(f"{landing_url}/pullrequests")
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
-        """Extend to use Azure Devops pagination, if necessary."""
+        """Extend to use Azure DevOps pagination, if necessary."""
         nr_merge_requests_to_skip = 0
         responses = await super()._get_source_responses(*urls, **kwargs)
         while len((await responses[-1].json())["value"]) == self.PAGE_SIZE:
@@ -49,7 +49,7 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
         return str(sum(merge_requests))
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
-        """Create an entity from a Azure Devops JSON result."""
+        """Create an entity from a Azure DevOps JSON result."""
         return Entity(
             key=merge_request["pullRequestId"],
             title=merge_request["title"],

@@ -1,4 +1,4 @@
-"""Unit tests for the Azure Devops Server source up-to-dateness collector."""
+"""Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
 from dateutil.parser import parse
 

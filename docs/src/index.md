@@ -10,7 +10,7 @@
 :class: only-light
 ```
 
-*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
 ````{panels}
 :container: full-width

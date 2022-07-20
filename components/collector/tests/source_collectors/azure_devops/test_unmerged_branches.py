@@ -1,4 +1,4 @@
-"""Unit tests for the Azure Devops Server unmerged branches collector."""
+"""Unit tests for the Azure DevOps Server unmerged branches collector."""
 
 from .base import AzureDevopsTestCase
 

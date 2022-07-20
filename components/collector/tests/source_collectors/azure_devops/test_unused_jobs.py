@@ -1,10 +1,10 @@
-"""Unit tests for the Azure Devops Server unused jobs collectors."""
+"""Unit tests for the Azure DevOps Server unused jobs collectors."""
 
 from .base import AzureDevopsJobsTestCase
 
 
 class AzureDevopsUnusedJobsTest(AzureDevopsJobsTestCase):
-    """Unit tests for the Azure Devops Server unused jobs collector."""
+    """Unit tests for the Azure DevOps Server unused jobs collector."""
 
     METRIC_TYPE = "unused_jobs"
 

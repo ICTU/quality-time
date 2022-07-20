@@ -1,4 +1,4 @@
-"""Azure Devops Server tests collector."""
+"""Azure DevOps Server tests collector."""
 
 import itertools
 from collections import defaultdict

@@ -40,14 +40,14 @@ jobs:
           npm test
 
   unittest_docs:
-    docker:
-      - image: cimg/python:3.10.5-node
+    machine:
+      image: ubuntu-2204:2022.04.2
     steps:
       - checkout
       - run: |
           cd docs
           npm install
-          python -m venv venv
+          python3.10 -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
           ci/unittest.sh

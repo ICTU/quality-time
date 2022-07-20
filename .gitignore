@@ -64,3 +64,5 @@ node_modules/
 # ESLint
 .eslintcache
 
+# Vale
+docs/styles/proselint

@@ -1,4 +1,4 @@
-"""Azure Devops Server base classes for collectors."""
+"""Azure DevOps Server base classes for collectors."""
 
 import urllib.parse
 from datetime import datetime

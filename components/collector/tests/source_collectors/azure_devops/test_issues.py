@@ -1,10 +1,10 @@
-"""Unit tests for the Azure Devops Server issues collector."""
+"""Unit tests for the Azure DevOps Server issues collector."""
 
 from .base import AzureDevopsTestCase
 
 
 class AzureDevopsIssuesTest(AzureDevopsTestCase):
-    """Unit tests for the Azure Devops Server issues metric."""
+    """Unit tests for the Azure DevOps Server issues metric."""
 
     METRIC_TYPE = "issues"
 

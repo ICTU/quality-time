@@ -1,4 +1,4 @@
-"""Azure Devops Server user story points collector."""
+"""Azure DevOps Server user story points collector."""
 
 from collector_utilities.type import Value
 from model import Entities, SourceResponses

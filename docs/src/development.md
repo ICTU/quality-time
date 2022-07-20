@@ -127,7 +127,7 @@ This section contains some notes on coding style used in this project. It's far 
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
-To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repo.
+To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repository.
 
 Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
 
@@ -145,20 +145,20 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 #### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared python component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared Python component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 #### Adding new sources
 
-To add support for a new source, the source (including a logo) needs to be added to the data model, code to retrieve and parse the source data needs to be added to the collector component, including unit tests and quality checks of course.
+To add support for a new source, the source (including a logo) needs to be added to the data model. In addition, code to retrieve and parse the source data needs to be added to the collector component, including unit tests of course.
 
 ##### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared python component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared Python component after adding a source to the data model, to check the integrity of the data model.
 
 Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/shared_data_model/sources/`:
 
 ```python
-"""Cloc source."""
+"""cloc source."""
 
 from ..meta.source import Source
 from ..parameters import access_parameters
@@ -276,11 +276,11 @@ ci/quality.sh
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
+Add `Cloc*` to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
 
 ##### Adding a logo for the new source to the data model
 
-Add a small png file of the logo in [`components/shared_python/src/shared/data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small PNG file of the logo in [`components/shared_python/src/shared/data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
@@ -306,7 +306,7 @@ npm run test
 
 ### Quality checks
 
-To run mypy, pylint, and some other security and quality checks on the backend components:
+To run mypy, Pylint, and some other security and quality checks on the backend components:
 
 ```console
 cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_python, components/collector, components/notifier
@@ -331,7 +331,7 @@ tests/feature_tests/ci/test.sh tests/feature_tests/features/metric.feature
 
 ### Application tests
 
-The application tests in theory test all components through the frontend, but unfortunately the number of tests is still very small. To run the application tests, start all components and then start the tests:
+The application tests in theory test all components through the frontend, but unfortunately the number of tests is too small to meet that goal. To run the application tests, start all components and then start the tests:
 
 ```console
 docker-compose up -d
@@ -431,7 +431,7 @@ The Docker images are `quality-time_database`, `quality-time_renderer`, `quality
 
 ## Maintenance
 
-### Python and Javascript dependencies
+### Python and JavaScript dependencies
 
 Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
 
@@ -450,4 +450,4 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
 - [LDAP](https://github.com/ICTU/quality-time/blob/master/components/ldap/Dockerfile): the OpenLDAP base image.
-- [Testdata](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
+- [Test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.

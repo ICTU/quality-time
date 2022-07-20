@@ -1,10 +1,10 @@
-"""Unit tests for the Azure Devops Server user story points collector."""
+"""Unit tests for the Azure DevOps Server user story points collector."""
 
 from .base import AzureDevopsTestCase
 
 
 class AzureDevopsUserStoryPointsTest(AzureDevopsTestCase):
-    """Unit tests for the Azure Devops Server user story points metric."""
+    """Unit tests for the Azure DevOps Server user story points metric."""
 
     METRIC_TYPE = "user_story_points"
 

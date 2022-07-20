@@ -17,7 +17,7 @@ There are five bespoke components:
 - A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Semantic UI React](https://react.semantic-ui.com).
 - An [external server](#external-server) serving the API for the user interface. The external server is written in Python using [Bottle](https://bottlepy.org) as web framework.
 - An [internal server](#internal-server) serving the API for the internal components. The internal server is written in Python using Bottle as web framework.
-- A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [aiohttp](https://docs.aiohttp.org) as HTTP client library.
+- A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
 Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared Python](#shared-python) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the internal server, the collector, and the notifier. The shared Python code is used by the external server and the internal server.
@@ -46,7 +46,7 @@ The frontend uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| FRONTEND_PORT | 5000 | The port the frontend listens on. |
+| `FRONTEND_PORT` | `5000` | The port the frontend listens on. |
 
 ## External server
 
@@ -61,7 +61,7 @@ API documentation can be retrieved via http://www.quality-time.example.org/api (
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the server.
 
 ### Environment variables
 
@@ -69,16 +69,16 @@ The external server uses the following environment variables:
 
 | Name | Default value | Description                                                                                                                                                                                                                                                                 |
 | :--- | :------------ |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| EXTERNAL_SERVER_PORT | 5001 | Port of the external server.                                                                                                                                                                                                                                         |
-| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL.                                                                                                                                                                                                                 |
-| LDAP_URL | ldap://ldap:389 | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                       |
-| LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name.                                                                                                                                                                                                                                   |
-| LDAP_LOOKUP_USER_DN | cn=admin,dc=example,dc=org | LDAP lookup user distinguished name.                                                                                                                                                                                                            |
-| LDAP_LOOKUP_USER_PASSWORD | admin | LDAP lookup user password.                                                                                                                                                                                                                                     |
-| LDAP_SEARCH_FILTER | (&#124;(uid=$$username)(cn=$$username)) | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
-| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                |
-| FORWARD_AUTH_ENABLED | False | Whether or not to enable forward authentication.                                                                                                                                                                                                                    |
-| FORWARD_AUTH_HEADER | X-Forwarded-User | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                            |
+| `EXTERNAL_SERVER_PORT` | `5001` | Port of the external server.                                                                                                                                                                                                                                         |
+| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                                                                                                                                                                                 |
+| `LDAP_URL` | `ldap://ldap:389` | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                       |
+| `LDAP_ROOT_DN` | `dc=example,dc=org` | LDAP root distinguished name.                                                                                                                                                                                                                                   |
+| `LDAP_LOOKUP_USER_DN` | `cn=admin,dc=example,dc=org` | LDAP lookup user distinguished name.                                                                                                                                                                                                            |
+| `LDAP_LOOKUP_USER_PASSWORD` | `admin` | LDAP lookup user password.                                                                                                                                                                                                                                     |
+| `LDAP_SEARCH_FILTER` | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                |
+| `FORWARD_AUTH_ENABLED` | `False` | Whether or not to enable forward authentication.                                                                                                                                                                                                                    |
+| `FORWARD_AUTH_HEADER` | `X-Forwarded-User` | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                            |
 
 ## Internal server
 
@@ -88,7 +88,7 @@ The API of the internal server is not versioned.
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the server.
 
 ### Environment variables
 
@@ -96,13 +96,13 @@ The internal server uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| INTERNAL_SERVER_PORT | 5001 | Port of the internal server. |
-| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
-| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
+| `INTERNAL_SERVER_PORT` | `5001` | Port of the internal server. |
+| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL. |
+| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up. |
 
 ## Collector
 
-The collector is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the internal server.
+The collector is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of its sources and posts a new measurement to the internal server.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 
@@ -118,20 +118,20 @@ The collector uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| INTERNAL_SERVER_HOST | internal_server | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
-| INTERNAL_SERVER_PORT | 5002 | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
-| COLLECTOR_SLEEP_DURATION | 20 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
-| COLLECTOR_MEASUREMENT_LIMIT | 30 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
-| COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |
-| HTTP(S)_PROXY | | Proxy to use by the collector. |
+| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
+| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
+| `COLLECTOR_SLEEP_DURATION` | `20` | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
+| `COLLECTOR_MEASUREMENT_LIMIT` | `30` | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
+| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900` | The amount of time (in seconds) after which a metric should be measured again. |
+| `HTTP(S)_PROXY` | | Proxy to use by the collector. |
 
 ```{seealso}
-See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
+See the [`aiohttp` documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
 ```
 
 ## Notifier
 
-The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether whether notification destinations have been configured, and whether events happened that need to be notified.
+The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether notification destinations have been configured, and whether events happened that need to be notified.
 
 ### Health check
 
@@ -143,9 +143,9 @@ The notifier uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| INTERNAL_SERVER_HOST | internal_server | Hostname of the internal server. The notifier uses this to get the metrics. |
-| INTERNAL_SERVER_PORT | 5002 | Port of the internal server. The notifier uses this to get the metrics. |
-| NOTIFIER_SLEEP_DURATION | 60 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The notifier uses this to get the metrics. |
+| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The notifier uses this to get the metrics. |
+| `NOTIFIER_SLEEP_DURATION` | `60` | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
 ## Shared Python
 
@@ -285,7 +285,7 @@ For each parameter, a list of `metrics` must be given for which the parameter is
 
 If the `type` is `multiple_choice` the possible `values` need to be specified. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source.
 
-The `validate_on` field specifies that the parameter needs to be validated when the parameters in the list change. This can be used to specify that e.g. a url parameter must be validated when the user changes the password parameter.
+The `validate_on` field specifies that the parameter needs to be validated when the parameters in the list change. This can be used to specify that e.g. a URL parameter must be validated when the user changes the password parameter.
 
 ##### Entities
 
@@ -318,15 +318,15 @@ Each entity contains the name (both singular and plural) of the entities and a l
 
 The attributes are shown as columns in the front end. Each attribute/column consists of a `name` (via `NamedModel`), which is used as column header, and a `key`, used to get the data from the database.
 
-An attribute/column can have a key `url` to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way.
+An attribute/column can have a key `url` to specify which field contains the URL to be used in the column. In theory, each column can link to a different URL this way.
 
-To specify the data type of the attribute/column, use the `type` field. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime.
+To specify the data type of the attribute/column, use the `type` field. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or date-time string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or date-time.
 
 Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states).
 
 Users can mark entities as false positive to ignore them. By default, *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The entity field `measured_attribute` determines which attribute to use.
 
-In most cases, the measured attribute is simply one of the attributes. In other cases, the measured attribute may depend on the parameters selected by the user. For example, when measuring 'tests' using Azure DevOps as source, the test results (failed/passed/etc.) selected by the user influence how many tests *Quality-time* has to subtract from the total if the user decides to ignore a test run. To accommodate this, it is possible to add an attribute that is not shown by the front end, but is used as measured attribute, by marking the attribute as not visible.
+In most cases, the measured attribute is one of the attributes. In other cases, the measured attribute may depend on the parameters selected by the user. For example, when measuring 'tests' using Azure DevOps as source, the test results (failed/passed/etc.) selected by the user influence how many tests *Quality-time* has to subtract from the total if the user decides to ignore a test run. To accommodate this, it is possible to add an attribute that is not shown by the front end, but is used as measured attribute, by marking the attribute as not visible.
 
 Of course, the collector needs to compute the extra attribute and add it to the measurement entities.
 
@@ -357,16 +357,16 @@ The proxy uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| FRONTEND_HOST | frontend | The host name of the frontend. |
-| FRONTEND_PORT | 5000 | The port the frontend listens on. |
-| EXTERNAL_SERVER_HOST | external_server | The hostname of the external server. |
-| EXTERNAL_SERVER_PORT | 5001 | The port the external server listens on. |
+| `FRONTEND_HOST` | `frontend` | The host name of the frontend. |
+| `FRONTEND_PORT` | `5000` | The port the frontend listens on. |
+| `EXTERNAL_SERVER_HOST` | `external_server` | The hostname of the external server. |
+| `EXTERNAL_SERVER_PORT` | `5001` | The port the external server listens on. |
 
 ## Database
 
 The database component consists of a [Mongo](https://www.mongodb.com) database to store reports and measurements.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) simply wraps the MongoDB image in a *Quality-time* image so the MongoDB version number can be changed when needed.
+The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the MongoDB image in a *Quality-time* image so the MongoDB version number can be changed when needed.
 
 *Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
 
@@ -380,14 +380,14 @@ The database uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| MONGO_INITDB_ROOT_USERNAME | root | The MongoDB root username. |
-| MONGO_INITDB_ROOT_PASSWORD | root | The MongoDB root password. |
+| `MONGO_INITDB_ROOT_USERNAME` | `root` | The MongoDB root username. |
+| `MONGO_INITDB_ROOT_PASSWORD` | `root` | The MongoDB root password. |
 
 ## Renderer
 
 The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
-The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a simple API.
+The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a small API that uses puppeteer to convert a report URL into a PDF file.
 
 ### Health check
 
@@ -399,10 +399,10 @@ The renderer uses the following environment variables:
 
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
-| PROXY_HOST | www | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
-| PROXY_PORT | 80 | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
-| LC_ALL | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
-| TZ | | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
+| `PROXY_HOST` | `www` | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
+| `PROXY_PORT` | `80` | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
+| `LC_ALL` | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
+| `TZ` | | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 
 ## Test data
 
@@ -412,7 +412,7 @@ This component contains test data for the example reports. The Docker image is p
 
 The test data component is started as part of the [docker composition](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) for development, see the [developer manual](development.md).
 
-To serve the test data locally, you can also simply start a webserver, e.g.:
+To serve the test data locally, you can also start a web server from a console, for example:
 
 ```console
 python3 -m http.server
@@ -420,7 +420,7 @@ python3 -m http.server
 
 ### Adding test data
 
-Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) in the shared python component.
+Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_python/src/shared/example-reports) in the shared Python component.
 
 ### Acknowledgements
 
@@ -435,7 +435,7 @@ The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/componen
 
 The LDAP database has two users:
 
-| User          | Email address       | Username | Password |
-| ------------- | ------------------- | -------- | -------- |
-| Jane Doe      | janedoe@example.org | jadoe    | secret   |
-| John Doe      | johndoe@example.org | jodoe    | secret   |
+| User          | Email address         | Username | Password |
+| ------------- | --------------------- | -------- | -------- |
+| Jane Doe      | `janedoe@example.org` | `jadoe`  | `secret` |
+| John Doe      | `johndoe@example.org` | `jodoe`  | `secret` |
