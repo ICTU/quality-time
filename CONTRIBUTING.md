@@ -26,4 +26,4 @@ Never made an open source contribution before? Wondering how contributions work 
 
 ## Where can I go for help?
 
-If you need help, please contact the Quality-time team at Quality-time@ictu.nl.
+If you need help, please contact the Quality-time team at quality-time@ictu.nl.
