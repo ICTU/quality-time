@@ -38,9 +38,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
 
     async def __effort_type_landing_url(self, effort_type: str) -> URL:
         """Generate a landing url for the effort type."""
-        url = await super(SonarQubeMetricsBaseClass, self)._landing_url(  # pylint: disable=bad-super-call
-            SourceResponses()
-        )
+        url = await super(SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
