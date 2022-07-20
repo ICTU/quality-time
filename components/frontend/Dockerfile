@@ -1,6 +1,6 @@
 FROM node:16.16.0-alpine3.15
 
-LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
+LABEL maintainer="Quality-time team <Quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
 
 RUN apk --no-cache add curl=~7.80

@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r /requirements-internal.txt
 
 FROM python:3.10.5-bullseye
 
-LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
+LABEL maintainer="Quality-time team <Quality-time@ictu.nl>"
 LABEL description="Quality-time internal server"
 
 RUN apt-get update && \
