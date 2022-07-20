@@ -19,8 +19,10 @@ run ./node_modules/markdownlint-cli/markdownlint.js src/*.md
 # The vale Docker image doesn't support the linux/arm64/v8 architecture, so a locally installed vale if possible
 if ! vale -v &> /dev/null
 then
+    run docker run --rm -v $(pwd)/styles:/styles -v $(pwd):/docs -w /docs jdkato/vale sync
     run docker run --rm -v $(pwd)/styles:/styles -v $(pwd):/docs -w /docs jdkato/vale --no-wrap src/*.md
 else
+    run vale sync
     run vale --no-wrap src/*.md
 fi
 run mypy src
