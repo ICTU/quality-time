@@ -47,7 +47,7 @@ jobs:
       - run: |
           cd docs
           npm install
-          python -m venv venv
+          python.3.10 -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
           ci/unittest.sh
