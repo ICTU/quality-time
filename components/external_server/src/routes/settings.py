@@ -1,4 +1,5 @@
 """Define all routes about settings."""
+
 from typing import cast
 import bottle
 from pymongo.database import Database
