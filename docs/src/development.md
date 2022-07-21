@@ -280,7 +280,7 @@ Add `Cloc*` to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](h
 
 ##### Adding a logo for the new source to the data model
 
-Add a small PNG file of the logo in [`components/shared_data_model/src/data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small PNG file of the logo in [`components/shared_data_model/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
