@@ -1,4 +1,4 @@
-"""users collection."""
+"""Users collection."""
 
 from pymongo.database import Database
 
