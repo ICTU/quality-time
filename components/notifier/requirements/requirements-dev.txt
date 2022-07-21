@@ -343,6 +343,7 @@ packaging==21.3 \
     # via
     #   dparse
     #   pip-audit
+    #   pip-requirements-parser
     #   safety
 pathspec==0.9.0 \
     --hash=sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a \
@@ -360,10 +361,14 @@ pip-api==0.0.29 \
     --hash=sha256:36c3211975e69c46c1d3b13b702dcc96d054d54e02147b1485300cf5fc45c1a0 \
     --hash=sha256:f701584eb1c3e01021c846f89d629ab9373b6624f0626757774ad54fc4c29571
     # via pip-audit
-pip-audit==2.4.1 \
-    --hash=sha256:39818ada6abbdfe821f7ff093399a71acd246e13d18156dbe0bbb9f4c4797105 \
-    --hash=sha256:42d1c847e70c4781128e29573dca23ba5dfd81247a5621eeb66ee6ab33c08142
+pip-audit==2.4.2 \
+    --hash=sha256:b662085ac41ca2340c12c303d421d822ac313b8e3edac359894ff6338cb1f296 \
+    --hash=sha256:ee8c1240e40749769009fd7a3ce92b311f1502288f2329ad9dfe7bb7c6a2f826
     # via -r ../../../requirements/dev.in
+pip-requirements-parser==31.2.0 \
+    --hash=sha256:22fa213a987913385b2484d5698ecfa1d9cf4154978cdf929085548af55355b0 \
+    --hash=sha256:8c2a6f8e091ac2693824a5ef4e3b250226e34f74a20a91a87b9ab0714b47788f
+    # via pip-audit
 platformdirs==2.5.1 \
     --hash=sha256:7535e70dfa32e84d4b34996ea99c5e432fa29a708d0f4e394bbcb2a8faa4f16d \
     --hash=sha256:bcae7cab893c2d310a711b70b24efb93334febe65f8de776ee320b517471e227
@@ -625,9 +630,9 @@ wrapt==1.13.3 \
     # via astroid
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==22.1 \
-    --hash=sha256:2debf847016cfe643fa1512e2d781d3ca9e5c878ba0652583842d50cc2bcc605 \
-    --hash=sha256:802e797fb741be1c2d475533d4ea951957e4940091422bd4a24848a7ac95609d
+pip==22.2 \
+    --hash=sha256:8d63fcd4ee293e30b644827268a0a973d080e5c7425ef26d427f5eb2126c7681 \
+    --hash=sha256:9abf423d5d64f3289ab9d5bf31da9e6234f2e9c5d8dcf1423bcb46b809a02c2c
     # via pip-api
 setuptools==60.9.3 \
     --hash=sha256:2347b2b432c891a863acadca2da9ac101eae6169b1d3dfee2ec605ecd50dbfe5 \
