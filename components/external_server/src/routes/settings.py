@@ -4,6 +4,7 @@ from typing import cast
 
 import bottle
 from pymongo.database import Database
+
 from shared.utils.type import SessionId, User
 
 from database.sessions import get
