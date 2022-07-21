@@ -38,9 +38,9 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
 
     async def __effort_type_landing_url(self, effort_type: str) -> URL:
         """Generate a landing url for the effort type."""
-        url = await super(SonarQubeMetricsBaseClass, self)._landing_url(  # pylint: disable=bad-super-call
-            SourceResponses()
-        )
+        # Super() is invoked with SonarQubeMetricsBaseClass as first argument because we're constructing landing URLs
+        # for entities and don't want the landing URL for the metric here.
+        url = await super(SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())  # skipcq: PYL-E1003
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
