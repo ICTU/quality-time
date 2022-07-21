@@ -1,4 +1,4 @@
-"""Import the data model from the shared python code."""
+"""Import the data model from the shared data model component."""
 
 import json
 

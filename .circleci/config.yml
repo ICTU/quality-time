@@ -17,7 +17,7 @@ jobs:
             2) component=internal_server;;
             3) component=external_server;;
             4) component=shared_data_model;;
-            5) component=shared_python;;
+            5) component=shared_server_code;;
           esac
           cd components/$component
           python -m venv venv
