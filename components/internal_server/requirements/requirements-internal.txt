@@ -1,2 +1,2 @@
 -e ../shared_data_model
--e ../shared_python
+-e ../shared_server_code

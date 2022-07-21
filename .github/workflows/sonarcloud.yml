@@ -77,9 +77,9 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
-    - name: Shared Python
+    - name: Shared Server Code
       if: env.SONAR_TOKEN != null
-      working-directory: components/shared_python
+      working-directory: components/shared_server_code
       run: |
         python -m venv venv
         . venv/bin/activate
@@ -110,8 +110,8 @@ jobs:
         touch components/notifier/src/__init__.py
         touch components/shared_data_model/__init__.py
         touch components/shared_data_model/src/__init__.py
-        touch components/shared_python/__init__.py
-        touch components/shared_python/src/__init__.py
+        touch components/shared_server_code/__init__.py
+        touch components/shared_server_code/src/__init__.py
     - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
       if: env.SONAR_TOKEN != null
       run: |
@@ -120,7 +120,7 @@ jobs:
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/external_server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/internal_server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_data_model/build/unittest-coverage.xml
-        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_python/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_server_code/build/unittest-coverage.xml
     - name: Sonarcloud scan
       if: env.SONAR_TOKEN != null
       uses: sonarsource/sonarcloud-github-action@master

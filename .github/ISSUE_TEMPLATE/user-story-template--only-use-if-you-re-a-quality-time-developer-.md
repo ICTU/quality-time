@@ -37,9 +37,15 @@ As a `role` I want to `action` so that `goal`
 - [ ] Add `user interface element`
 - [ ] Update `user interface element`
 
-###  Shared python
+### Shared data model
 
-- [ ] Change the data model
+- [ ] Add subject `subject` to the data model
+- [ ] Add metric `metric` to the data model
+- [ ] Add source `source` to the data model
+- [ ] Add logo for source `source`
+
+### Shared server code
+
 - [ ] Change endpoint `endpoint`
 - [ ] Extend the example reports
 
@@ -53,7 +59,7 @@ As a `role` I want to `action` so that `goal`
 - [ ] Change `collector`
 - [ ] Add ...
 
-### Notifier 
+### Notifier
 
 - [ ] Change `destination`
 - [ ] Add ...

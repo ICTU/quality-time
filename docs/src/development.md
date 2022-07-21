@@ -145,7 +145,7 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 #### Adding new metrics
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared Python component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared data model component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
 
 #### Adding new sources
 
@@ -153,7 +153,7 @@ To add support for a new source, the source (including a logo) needs to be added
 
 ##### Adding the new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared Python component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared data model component after adding a source to the data model, to check the integrity of the data model.
 
 Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/shared_data_model/sources/`:
 
@@ -280,7 +280,7 @@ Add `Cloc*` to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](h
 
 ##### Adding a logo for the new source to the data model
 
-Add a small PNG file of the logo in [`components/shared_python/src/shared/data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
+Add a small PNG file of the logo in [`components/shared_data_model/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
 
 The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
@@ -293,7 +293,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_python, components/collector, components/notifier
+cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_server_code, components/collector, components/notifier
 ci/unittest.sh
 ```
 
@@ -309,7 +309,7 @@ npm run test
 To run mypy, Pylint, and some other security and quality checks on the backend components:
 
 ```console
-cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_python, components/collector, components/notifier
+cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_server_code, components/collector, components/notifier
 ci/quality.sh
 ```
 

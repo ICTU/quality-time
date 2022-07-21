@@ -37,9 +37,9 @@ dependency_file_paths = [
   "components/shared_data_model/requirements-base.txt",
   "components/shared_data_model/requirements.txt",
   "components/shared_data_model/requirements-dev.txt",
-  "components/shared_python/requirements-base.txt",
-  "components/shared_python/requirements.txt",
-  "components/shared_python/requirements-dev.txt",
+  "components/shared_server_code/requirements-base.txt",
+  "components/shared_server_code/requirements.txt",
+  "components/shared_server_code/requirements-dev.txt",
 ]
 additional_builtins = ["given", "when", "then"]
 
