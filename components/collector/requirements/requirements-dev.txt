@@ -361,6 +361,7 @@ packaging==21.3 \
     # via
     #   dparse
     #   pip-audit
+    #   pip-requirements-parser
     #   safety
 pathspec==0.9.0 \
     --hash=sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a \
@@ -378,10 +379,14 @@ pip-api==0.0.30 \
     --hash=sha256:2a0314bd31522eb9ffe8a99668b0d07fee34ebc537931e7b6483001dbedcbdc9 \
     --hash=sha256:a05df2c7aa9b7157374bcf4273544201a0c7bae60a9c65bcf84f3959ef3896f3
     # via pip-audit
-pip-audit==2.4.1 \
-    --hash=sha256:39818ada6abbdfe821f7ff093399a71acd246e13d18156dbe0bbb9f4c4797105 \
-    --hash=sha256:42d1c847e70c4781128e29573dca23ba5dfd81247a5621eeb66ee6ab33c08142
+pip-audit==2.4.2 \
+    --hash=sha256:b662085ac41ca2340c12c303d421d822ac313b8e3edac359894ff6338cb1f296 \
+    --hash=sha256:ee8c1240e40749769009fd7a3ce92b311f1502288f2329ad9dfe7bb7c6a2f826
     # via -r ../../../requirements/dev.in
+pip-requirements-parser==31.2.0 \
+    --hash=sha256:22fa213a987913385b2484d5698ecfa1d9cf4154978cdf929085548af55355b0 \
+    --hash=sha256:8c2a6f8e091ac2693824a5ef4e3b250226e34f74a20a91a87b9ab0714b47788f
+    # via pip-audit
 platformdirs==2.5.2 \
     --hash=sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788 \
     --hash=sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19
@@ -566,9 +571,9 @@ tomlkit==0.11.1 \
     --hash=sha256:1c5bebdf19d5051e2e1de6cf70adfc5948d47221f097fcff7a3ffc91e953eaf5 \
     --hash=sha256:61901f81ff4017951119cd0d1ed9b7af31c821d6845c8c477587bbdcd5e5854e
     # via pylint
-types-python-dateutil==2.8.16 \
-    --hash=sha256:0e7286436d049d2732ba2f01552f84c52184b955552359156fc8835c10714f2a \
-    --hash=sha256:3aaac4c138eb6b8ecbc2550996ec25d6e45b5d32887d1e693d0842ee2fa659d2
+types-python-dateutil==2.8.19 \
+    --hash=sha256:6284df1e4783d8fc6e587f0317a81333856b872a6669a282f8a325342bce7fa8 \
+    --hash=sha256:bfd3eb39c7253aea4ba23b10f69b017d30b013662bb4be4ab48b20bbd763f309
     # via -r requirements-dev.in
 typing-extensions==4.3.0 \
     --hash=sha256:25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02 \
