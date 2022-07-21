@@ -59,7 +59,7 @@ export function AppUI({
         mediaQueryList.addEventListener("change", changeMode);
         function changeMode(e) {
             if (uiMode === null) {  // Only update if the user is following the OS mode setting
-                setUIMode(e.matches ? "dark" : "light")  // Force redraw
+                setSettings({ui_mode: e.matches ? "dark" : "light"})  // Force redraw
                 setTimeout(() => setUIMode(null))  // Reset setting
             }
         }
@@ -126,6 +126,7 @@ export function AppUI({
 
     function setSettings(partialSettings) {
         const newSettings = {...currentSettings, ...partialSettings}
+        setCurrentSettings(newSettings)
         setDateInterval(newSettings.date_interval)
         setDateOrder(newSettings.date_order)
         setHiddenColumns(newSettings.hidden_columns)
@@ -136,26 +137,27 @@ export function AppUI({
         setVisibleDetailsTabs(newSettings.tabs)
         setShowIssueSummary(newSettings.show_issue_summary)
         setShowIssueCreationDate(newSettings.show_issue_creation_date)
-        setShowIssueUpdateDate(newSettings.showIssueUpdateDate)
-        setShowIssueDueDate(newSettings.showIssueDueDate)
-        setShowIssueRelease(newSettings.showIssueRelease)
-        setShowIssueSprint(newSettings.showIssueSprint)
+        setShowIssueUpdateDate(newSettings.show_issue_update_date)
+        setShowIssueDueDate(newSettings.show_issue_due_date)
+        setShowIssueRelease(newSettings.show_issue_release)
+        setShowIssueSprint(newSettings.show_issue_sprint)
         setUIMode(newSettings.ui_mode)
     }
 
     function handleSort(column) {
+        const sortSettings = {}
         if (column === null) {
-            setSortColumn(null)  // Stop sorting
-            return
+            sortSettings.sort_column = null
         }
-        if (sortColumn === column) {
-            if (sortDirection === 'descending') {
-                setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+        else if (currentSettings.sort_column === column) {
+            if (currentSettings.sort_direction === 'descending') {
+                sortSettings.sort_column = null
             }
-            setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
+            sortSettings.sort_direction = currentSettings.sort_direction === 'ascending' ? 'descending' : 'ascending'
         } else {
-            setSortColumn(column)
+            sortSettings.sort_column = column
         }
+        setSettings(sortSettings)
     }
 
     const darkMode = userPrefersDarkMode(currentSettings.ui_mode);

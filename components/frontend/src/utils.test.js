@@ -183,9 +183,10 @@ it('unsets an array value', () => {
 it('clears the array value', () => {
     const history = createMemoryHistory()
     const { result } = renderHook(() => useURLSearchQuery(history, "key", "array"))
+
     act(() => { result.current[1]("a") })
     act(() => { result.current[1]("b") })
-    act(() => { result.current[2]() })
+    act(() => { result.current[2]([]) })
     expect(result.current[0]).toStrictEqual([])
     expect(history.location.search).toEqual("")
 })

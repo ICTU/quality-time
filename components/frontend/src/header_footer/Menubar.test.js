@@ -99,19 +99,19 @@ it('hides the view panel on click', async () => {
 });
 
 it("clears the visible details tabs", async () => {
-    const clearVisibleDetailsTabs = jest.fn();
+    const setVisibleDetailsTabs = jest.fn();
     await act(async () => {
-        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
+        render(<Menubar setVisibleDetailsTabs={setVisibleDetailsTabs} visibleDetailsTabs={["tab"]} />)
         fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
     });
-    expect(clearVisibleDetailsTabs).toHaveBeenCalled()
+    expect(setVisibleDetailsTabs).toHaveBeenCalled()
 })
 
 it("doesn't clear the visible details tabs if there are none", async () => {
-    const clearVisibleDetailsTabs = jest.fn();
+    const setVisibleDetailsTabs = jest.fn();
     await act(async () => {
-        render(<Menubar clearVisibleDetailsTabs={clearVisibleDetailsTabs} visibleDetailsTabs={[]} />)
+        render(<Menubar setVisibleDetailsTabs={setVisibleDetailsTabs} visibleDetailsTabs={[]} />)
         fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
     });
-    expect(clearVisibleDetailsTabs).not.toHaveBeenCalled()
+    expect(setVisibleDetailsTabs).not.toHaveBeenCalled()
 })

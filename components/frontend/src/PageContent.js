@@ -22,7 +22,6 @@ export function PageContent({
     current_report,
     handleSort,
     history,
-    issueSettings,
     loading,
     go_home,
     nr_measurements,
