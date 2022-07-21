@@ -8,7 +8,7 @@ class UserTests(unittest.TestCase):
     """Unit tests user dataclass."""
 
     def test_to_dict(self):
-        """Test that user convers into dict."""
+        """Test that user converts into dict."""
         user = User(username="jadoe", email="jadoe@qt.com", common_name="Jane Doe", settings={"test_setting": True})
         user_dict = user.to_dict()
 
