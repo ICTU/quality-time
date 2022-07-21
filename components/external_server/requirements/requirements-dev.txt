@@ -361,6 +361,7 @@ packaging==21.3 \
     # via
     #   dparse
     #   pip-audit
+    #   pip-requirements-parser
     #   safety
 pathspec==0.9.0 \
     --hash=sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a \
@@ -378,10 +379,14 @@ pip-api==0.0.29 \
     --hash=sha256:36c3211975e69c46c1d3b13b702dcc96d054d54e02147b1485300cf5fc45c1a0 \
     --hash=sha256:f701584eb1c3e01021c846f89d629ab9373b6624f0626757774ad54fc4c29571
     # via pip-audit
-pip-audit==2.4.1 \
-    --hash=sha256:39818ada6abbdfe821f7ff093399a71acd246e13d18156dbe0bbb9f4c4797105 \
-    --hash=sha256:42d1c847e70c4781128e29573dca23ba5dfd81247a5621eeb66ee6ab33c08142
+pip-audit==2.4.2 \
+    --hash=sha256:b662085ac41ca2340c12c303d421d822ac313b8e3edac359894ff6338cb1f296 \
+    --hash=sha256:ee8c1240e40749769009fd7a3ce92b311f1502288f2329ad9dfe7bb7c6a2f826
     # via -r ../../../requirements/dev.in
+pip-requirements-parser==31.2.0 \
+    --hash=sha256:22fa213a987913385b2484d5698ecfa1d9cf4154978cdf929085548af55355b0 \
+    --hash=sha256:8c2a6f8e091ac2693824a5ef4e3b250226e34f74a20a91a87b9ab0714b47788f
+    # via pip-audit
 platformdirs==2.5.2 \
     --hash=sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788 \
     --hash=sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19
@@ -566,21 +571,13 @@ tomlkit==0.11.0 \
     --hash=sha256:0f4050db66fd445b885778900ce4dd9aea8c90c4721141fde0d6ade893820ef1 \
     --hash=sha256:71ceb10c0eefd8b8f11fe34e8a51ad07812cb1dc3de23247425fbc9ddc47b9dd
     # via pylint
-types-cryptography==3.3.15 \
-    --hash=sha256:a7983a75a7b88a18f88832008f0ef140b8d1097888ec1a0824ec8fb7e105273b \
-    --hash=sha256:d9b0dd5465d7898d400850e7f35e5518aa93a7e23d3e11757cd81b4777089046
+types-cryptography==3.3.21 \
+    --hash=sha256:ad1b9c63159c009f8676c7e41a4d595dfb96e8c03affa2e693e1617908bb409e \
+    --hash=sha256:bdeb6dd07280ac724e05f02e0d8ef01fdef729b18bb07d635d64de83171a4e70
     # via -r requirements-dev.in
-types-enum34==1.1.8 \
-    --hash=sha256:05058c7a495f6bfaaca0be4aeac3cce5cdd80a2bad2aab01fd49a20bf4a0209d \
-    --hash=sha256:6f9c769641d06d73a55e11c14d38ac76fcd37eb545ce79cebb6eec9d50a64110
-    # via types-cryptography
-types-ipaddress==1.0.8 \
-    --hash=sha256:4933b74da157ba877b1a705d64f6fa7742745e9ffd65e51011f370c11ebedb55 \
-    --hash=sha256:a03df3be5935e50ba03fa843daabff539a041a28e73e0fce2c5705bee54d3841
-    # via types-cryptography
-types-requests==2.28.2 \
-    --hash=sha256:398f88cd9302c796cb63d1021af2a1fb7ae507741a3d508edf8e0746d8c16a04 \
-    --hash=sha256:c164696bfdce0123901165c5f097a6cc4f6326268c65815d4b6a57eacfec5e81
+types-requests==2.28.3 \
+    --hash=sha256:66f0e427708588d4dac2f365a0b2c1ad8f31780429fd8ad193fec93139b22112 \
+    --hash=sha256:fb9ea69311766967f9e91861211ec7449f6484025b766ea709689c0dbb29d7ba
     # via -r ../../../requirements/types-requests.in
 types-urllib3==1.26.15 \
     --hash=sha256:6011befa13f901fc934f59bb1fd6973be6f3acf4ebfce427593a27e7f492918f \
