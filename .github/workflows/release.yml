@@ -43,13 +43,15 @@ jobs:
       - name: Push Collector to Docker Hub
         uses: docker/build-push-action@v3.1.0
         with:
-          context: components/collector
+          context: components
+          file: components/collector/Dockerfile
           tags: ictu/quality-time_collector:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Notifier to Docker Hub
         uses: docker/build-push-action@v3.1.0
         with:
-          context: components/notifier
+          context: components
+          file: components/notifier/Dockerfile
           tags: ictu/quality-time_notifier:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push External Server to Docker Hub
