@@ -42,7 +42,7 @@ class SessionsTest(unittest.TestCase):
         self.database.sessions.delete_one.assert_called_with({"session_id": "5"})
 
     def test_get(self):
-        """Test get."""
+        """Test get session."""
         session = sessions.get(self.database, "session_id")
         self.assertDictEqual(session, dict(_id="session_id"))
         self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})
