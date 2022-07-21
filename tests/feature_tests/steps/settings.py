@@ -1,4 +1,4 @@
-"""Steps for authentication."""
+"""Steps for settings."""
 
 import json
 from asserts import assert_equal, assert_true
