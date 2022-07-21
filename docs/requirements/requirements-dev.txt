@@ -146,9 +146,9 @@ flake8==4.0.1 \
     # via
     #   dlint
     #   pep8-naming
-furo==2022.4.7 \
-    --hash=sha256:7f3e3d2fb977483590f8ecb2c2cd511bd82661b79c18efb24de9558bc9cdf2d7 \
-    --hash=sha256:96204ab7cd047e4b6c523996e0279c4c629a8fc31f4f109b2efd470c17f49c80
+furo==2022.6.21 \
+    --hash=sha256:061b68e323345e27fcba024cf33a1e77f3dfd8d9987410be822749a706e2add6 \
+    --hash=sha256:9aa983b7488a4601d13113884bfb7254502c8729942e073a0acb87a5512af223
     # via -r requirements-dev.in
 gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
@@ -654,8 +654,13 @@ sphinx==4.5.0 \
     #   -r requirements-dev.in
     #   furo
     #   myst-parser
+    #   sphinx-basic-ng
     #   sphinx-copybutton
     #   sphinx-panels
+sphinx-basic-ng==0.0.1a12 \
+    --hash=sha256:cffffb14914ddd26c94b1330df1d72dab5a42e220aaeb5953076a40b9c50e801 \
+    --hash=sha256:e8b6efd2c5ece014156de76065eda01ddfca0fee465aa020b1e3c12f84570bbe
+    # via furo
 sphinx-copybutton==0.5.0 \
     --hash=sha256:9684dec7434bd73f0eea58dda93f9bb879d24bff2d8b187b1f2ec08dfe7b5f48 \
     --hash=sha256:a0c059daadd03c27ba750da534a92a63e7a36a7736dcf684f26ee346199787f6
