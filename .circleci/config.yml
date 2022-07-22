@@ -2,15 +2,13 @@ version: 2.1
 
 jobs:
   unittest_backend:
-    docker:
-      - image: cimg/python:3.10.5
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+    machine:
+      image: ubuntu-2204:2022.04.2
     parallelism: 6
     steps:
       - checkout
       - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           case $CIRCLE_NODE_INDEX in
             0) component=collector;;
             1) component=notifier;;
@@ -27,14 +25,12 @@ jobs:
           ci/quality.sh
 
   unittest_frontend:
-    docker:
-      - image: cimg/node:lts
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+    machine:
+      image: ubuntu-2204:2022.04.2
     steps:
       - checkout
       - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           cd components/frontend
           npm install
           npm test
@@ -43,22 +39,19 @@ jobs:
   quality_docker_only:
     machine:
       image: ubuntu-2204:2022.04.2
+    parallelism: 6
     steps:
       - checkout
       - run: |
-          cd components/database
-          ci/quality.sh
-      - run: |
-          cd components/ldap
-          ci/quality.sh
-      - run: |
-          cd components/proxy
-          ci/quality.sh
-      - run: |
-          cd components/renderer
-          ci/quality.sh
-      - run: |
-          cd components/testdata
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          case $CIRCLE_NODE_INDEX in
+            0) component=database;;
+            1) component=ldap;;
+            2) component=proxy;;
+            3) component=renderer;;
+            4) component=testdata;;
+          esac
+          cd components/$component
           ci/quality.sh
 
   unittest_docs:
@@ -67,6 +60,7 @@ jobs:
     steps:
       - checkout
       - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           cd docs
           npm install
           python3.10 -m venv venv
@@ -78,10 +72,10 @@ jobs:
   application_tests:
     machine:
       image: ubuntu-2004:current
-    parallelism: 1
     steps:
       - checkout
       - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           mkdir -p build
           export ENV=ci
           export QUALITY_TIME_VERSION=v4.2.0
@@ -102,10 +96,10 @@ jobs:
   feature_tests:
     machine:
       image: ubuntu-2004:current
-    parallelism: 1
     steps:
       - checkout
       - run: |
+          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
           ./tests/feature_tests/ci/test.sh
       - store_artifacts:
           path: build
@@ -123,4 +117,6 @@ workflows:
       - unittest_frontend:
           context: QualityTime
       - unittest_docs:
+          context: QualityTime
+      - quality_docker_only:
           context: QualityTime
