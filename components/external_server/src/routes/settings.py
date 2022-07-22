@@ -24,9 +24,8 @@ def find_user(database: Database) -> User | None:
 def get_settings(database: Database) -> dict:
     """Retrieve settings for user."""
     user = find_user(database)
-    if user is not None:
-        return dict(settings=user.settings)
-    return {}
+    result = dict(settings=user.settings) if user else {}
+    return result
 
 
 @bottle.put("/api/v3/settings", authentication_required=True)
