@@ -77,21 +77,28 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
+def get_ldap_config() -> dict:
+    ldap_config = dict(
+        ldap_root_dn=os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
+        ldap_urls=os.environ.get("LDAP_URL", "ldap://localhost:389").split(",")
+        ldap_lookup_user_dn=os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
+        ldap_lookup_user_pw=os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+        ldap_search_filter_template=os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
+        ldap_search_filter=string.Template(ldap_search_filter_template).substitute(username=username)
+    )
+    return ldap_config
+
+
 def verify_user(database: Database, username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
-    ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
-    ldap_urls = os.environ.get("LDAP_URL", "ldap://localhost:389").split(",")
-    ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
-    ldap_lookup_user_pw = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
-    ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
-    ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
+    ldap_config = get_ldap_config()
     try:
-        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_urls]
+        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_config.get("ldap_urls")]
         ldap_server_pool = ServerPool(ldap_servers)
-        with Connection(ldap_server_pool, user=ldap_lookup_user_dn, password=ldap_lookup_user_pw) as lookup_connection:
+        with Connection(ldap_server_pool, user=ldap_config.get("ldap_lookup_user_dn"), password=ldap_config.get("ldap_lookup_user_pw")) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no cover-behave
                 raise exceptions.LDAPBindError
-            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "cn", "mail"])
+            lookup_connection.search(ldap_config.get("ldap_root_dn"), ldap_config.get("ldap_search_filter"), attributes=["userPassword", "cn", "mail"])
             result = lookup_connection.entries[0]
         if salted_password := result.userPassword.value:
             if check_password(salted_password, password):

@@ -2,8 +2,8 @@
 
 import bottle
 
-from typing import cast
 from pymongo.database import Database
+from typing import cast
 
 from shared.utils.type import SessionId, User
 
