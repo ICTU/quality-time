@@ -25,3 +25,8 @@ def upsert(database: Database, user: User, session_id: SessionId, session_expira
 def delete(database: Database, session_id: SessionId) -> None:
     """Remove the session."""
     database.sessions.delete_one(dict(session_id=session_id))
+
+
+def get(database, session_id) -> SessionId:
+    """Return the session object belonging to a session id."""
+    return database.sessions.find_one({"session_id": session_id})

@@ -18,6 +18,7 @@ class SessionsTest(unittest.TestCase):
         """Override to set up the database."""
         self.database = Mock()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.sessions.find_one.return_value = dict(_id="session_id")
 
     def test_upsert(self):
         """Test upsert function."""
@@ -39,3 +40,9 @@ class SessionsTest(unittest.TestCase):
         """Test delete function."""
         self.assertIsNone(sessions.delete(database=self.database, session_id=SessionId("5")))
         self.database.sessions.delete_one.assert_called_with({"session_id": "5"})
+
+    def test_get(self):
+        """Test get session."""
+        session = sessions.get(self.database, "session_id")
+        self.assertDictEqual(session, dict(_id="session_id"))
+        self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})

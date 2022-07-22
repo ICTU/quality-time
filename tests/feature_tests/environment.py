@@ -33,6 +33,13 @@ def before_all(context):
             context.session_id = response.cookies["session_id"]
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
+    def put(api, json=None, internal=False):
+        """Post the resource."""
+        url = api_url(api, internal)
+        context.put_response = context.response = response = requests.put(url, json=json, cookies=cookies())
+        # Ignore non-ok responses for now since we don't have testcases where they apply
+        return response.json() if response.headers.get("Content-Type") == "application/json" else response
+
     def delete(api):
         """Delete the resource."""
         context.response = response = requests.delete(api_url(api), cookies=cookies())
@@ -47,6 +54,7 @@ def before_all(context):
     context.uuid: dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
+    context.put = put
     context.delete = delete
     context.public_key = """-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApLaktGOguW3bcC0xILmf

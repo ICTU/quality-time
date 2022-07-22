@@ -61,6 +61,7 @@ class LoginTests(AuthTestCase):
         """Extend to add a mock LDAP."""
         super().setUp()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.users.find_one.return_value = dict(username=USERNAME)
         self.ldap_entry = Mock(
             entry_dn=self.USER_DN,
             mail=Mock(value=self.USER_EMAIL),
@@ -92,7 +93,7 @@ class LoginTests(AuthTestCase):
     def assert_ldap_bind_connection_created(self, connection_mock):
         """Assert that the LDAP bind connection was created with the lookup user dn and password."""
         self.assertEqual(
-            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind='NO_TLS')
+            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind="NO_TLS")
         )
 
     def assert_log(self, logging_mock, exception):
@@ -197,6 +198,31 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
         self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult)
+
+    @patch("routes.auth.datetime", MOCK_DATETIME)
+    def test_login_changed_details(self, connection_mock, connection_enter):
+        """Test that user details are updated after successful login."""
+        ldap_entry = Mock(
+            entry_dn=self.USER_DN,
+            mail=Mock(value="some_other@email.com"),
+            cn=Mock(value="Another Name"),
+            userPassword=Mock(),
+        )
+        ldap_entry.userPassword.value = None
+        ldap_connection = Mock(bind=Mock(return_value=True), search=Mock(), entries=[ldap_entry])
+
+        login_ok = dict(
+            ok=True,
+            email="some_other@email.com",
+            session_expiration_datetime=(self.NOW + timedelta(hours=24)).isoformat(),
+        )
+
+        connection_mock.return_value = None
+        self.ldap_entry.userPassword.value = b"{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr"
+        connection_enter.return_value = ldap_connection
+        self.assertEqual(login_ok, login(self.database))
+        self.assert_cookie_has_session_id()
+        self.assert_ldap_lookup_connection_created(connection_mock)
 
 
 class LogoutTests(AuthTestCase):

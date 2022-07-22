@@ -18,6 +18,7 @@ from pymongo.database import Database
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from shared.utils.type import SessionId, User
 
+from database.users import upsert_user, get_user
 from database import sessions
 from utils.functions import uuid
 
@@ -76,37 +77,55 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def verify_user(username: str, password: str) -> User:
-    """Authenticate the user and return whether they are authorized to login and their email address."""
-    ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
-    ldap_urls = os.environ.get("LDAP_URL", "ldap://localhost:389").split(",")
-    ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
-    ldap_lookup_user_pw = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+def get_ldap_config(username):
+    """Get LDAP config from environment."""
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
-    ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
-    user = User(username)
+    ldap_config = dict(
+        ldap_root_dn=os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),
+        ldap_urls=os.environ.get("LDAP_URL", "ldap://localhost:389").split(","),
+        ldap_lookup_user_dn=os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org"),
+        ldap_lookup_user_pw=os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin"),
+        ldap_search_filter=string.Template(ldap_search_filter_template).substitute(username=username),
+    )
+    return ldap_config
+
+
+def verify_user(database: Database, username: str, password: str) -> User:
+    """Authenticate the user and return whether they are authorized to login and their email address."""
+    ldap_config = get_ldap_config(username)
     try:
-        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_urls]
+        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_config.get("ldap_urls")]
         ldap_server_pool = ServerPool(ldap_servers)
-        with Connection(ldap_server_pool, user=ldap_lookup_user_dn, password=ldap_lookup_user_pw) as lookup_connection:
+        with Connection(
+            ldap_server_pool,
+            user=ldap_config.get("ldap_lookup_user_dn"),
+            password=ldap_config.get("ldap_lookup_user_pw"),
+        ) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no cover-behave
                 raise exceptions.LDAPBindError
-            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "cn", "mail"])
+            lookup_connection.search(
+                ldap_config.get("ldap_root_dn"),
+                ldap_config.get("ldap_search_filter"),
+                attributes=["userPassword", "cn", "mail"],
+            )
             result = lookup_connection.entries[0]
         if salted_password := result.userPassword.value:
             if check_password(salted_password, password):
-                logging.info("LDAP salted password check for %s succeeded", user)
+                logging.info("LDAP salted password check for %s succeeded", username)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:  # pragma: no cover-behave
             with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
-                logging.info("LDAP bind for %s succeeded", user)
+                logging.info("LDAP bind for %s succeeded", username)
     except Exception as reason:  # pylint: disable=broad-except
+        user = User(username)
         logging.warning("LDAP error: %s", reason)
     else:
+        user = get_user(database, username) or User(username)
         user.email = result.mail.value or ""
         user.common_name = result.cn.value
         user.verified = True
+        upsert_user(database, user)
     return user
 
 
@@ -119,7 +138,7 @@ def login(database: Database) -> dict[str, bool | str]:
         user = User(username, username or "", "", username is not None)
     else:
         username, password = get_credentials()
-        user = verify_user(username, password)
+        user = verify_user(database, username, password)
     if user.verified:
         session_expiration_datetime = create_session(database, user)
     else:
