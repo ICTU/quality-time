@@ -93,7 +93,7 @@ class LoginTests(AuthTestCase):
     def assert_ldap_bind_connection_created(self, connection_mock):
         """Assert that the LDAP bind connection was created with the lookup user dn and password."""
         self.assertEqual(
-            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind='NO_TLS')
+            connection_mock.call_args_list[1][1], dict(user=self.USER_DN, password=PASSWORD, auto_bind="NO_TLS")
         )
 
     def assert_log(self, logging_mock, exception):
@@ -201,7 +201,7 @@ class LoginTests(AuthTestCase):
 
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_changed_details(self, connection_mock, connection_enter):
-        """Test that user details are updated after succesful login."""
+        """Test that user details are updated after successful login."""
 
         ldap_entry = Mock(
             entry_dn=self.USER_DN,

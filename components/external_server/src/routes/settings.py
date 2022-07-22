@@ -1,7 +1,10 @@
 """Define all routes about settings."""
-from typing import cast
+
 import bottle
+
+from typing import cast
 from pymongo.database import Database
+
 from shared.utils.type import SessionId, User
 
 from database.sessions import get
