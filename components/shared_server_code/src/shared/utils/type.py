@@ -30,6 +30,7 @@ class User:
     email: str = ""
     common_name: str = ""
     verified: bool = False
+    # use a defaultdict to prevent a mutable default
     settings: defaultdict = field(default_factory=lambda: defaultdict(dict))
 
     def name(self) -> str:

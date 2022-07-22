@@ -77,7 +77,8 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def get_ldap_config(username: str) -> dict:
+def get_ldap_config(username):
+    """Get LDAP config from environment."""
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_config = dict(
         ldap_root_dn=os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),

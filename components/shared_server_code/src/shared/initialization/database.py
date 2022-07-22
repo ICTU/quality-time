@@ -45,7 +45,6 @@ def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
-    database.users.create_index("username", unique=True)
     start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
     latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.DESCENDING)])
     latest_successful_measurement_index = pymongo.IndexModel(
