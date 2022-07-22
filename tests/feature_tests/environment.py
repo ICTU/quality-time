@@ -37,10 +37,7 @@ def before_all(context):
         """Post the resource."""
         url = api_url(api, internal)
         context.put_response = context.response = response = requests.put(url, json=json, cookies=cookies())
-        if not response.ok:
-            return response
-        if "session_id" in response.cookies:
-            context.session_id = response.cookies["session_id"]
+        # Ignore non-ok responses for now since we don't have testcases where they apply
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def delete(api):

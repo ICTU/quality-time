@@ -24,7 +24,8 @@ def find_user(database: Database) -> User | None:
 def get_settings(database: Database) -> dict:
     """Retrieve settings for user."""
     user = find_user(database)
-    result = dict(settings=user.settings) if user else {}
+    # Ignore MyPy because there is always a user since auth_required is true for this endpoint
+    result = dict(settings=user.settings)  # type: ignore
     return result
 
 
@@ -33,7 +34,7 @@ def update_settings(database: Database) -> dict[str, bool]:
     """Update the settings for the logged-in user."""
     new_settings = dict(bottle.request.json)
     user = find_user(database)
-    if user is not None:
-        user.settings = new_settings
-        upsert_user(database, user)
+    # Ignore MyPy because there is always a user since auth_required is true for this endpoint
+    user.settings = new_settings  # type: ignore
+    upsert_user(database, user)
     return dict(ok=True)
