@@ -152,7 +152,11 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
         setURLSearchQuery(new_state);
     }
 
-    return state_type === "array" ? [state, toggleURLSearchQuery, setURLSearchQuery] : [state, setURLSearchQuery]
+    function clearURLSearchQuery() {
+        setURLSearchQuery([]);
+    }
+
+    return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
 }
 
 export function registeredURLSearchParams(history) {
