@@ -202,7 +202,6 @@ class LoginTests(AuthTestCase):
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_changed_details(self, connection_mock, connection_enter):
         """Test that user details are updated after successful login."""
-
         ldap_entry = Mock(
             entry_dn=self.USER_DN,
             mail=Mock(value="some_other@email.com"),
