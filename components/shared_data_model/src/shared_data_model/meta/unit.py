@@ -9,6 +9,7 @@ class Unit(str, Enum):
     BLOCKS = "blocks"
     BRANCHES = "branches"
     CI_JOBS = "CI-jobs"
+    CI_JOB_RUNS = "CI-job runs"
     COMPLEX_UNITS = "complex units"
     DAYS = "days"
     DEPENDENCIES = "dependencies"

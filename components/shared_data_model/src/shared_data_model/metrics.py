@@ -113,6 +113,17 @@ METRICS = Metrics.parse_obj(
             unit=Unit.ISSUES,
             sources=["azure_devops", "jira", "manual_number", "trello"],
         ),
+        job_runs_within_time_period=dict(
+            name="Job runs within time period",
+            description="The number of job runs within a specified time period.",
+            rationale="Deployment Frequency: Number of deployments in a given duration of time.",  # TODO - describe
+            unit=Unit.CI_JOB_RUNS,
+            direction=Direction.MORE_IS_BETTER,
+            target="30",
+            near_target="25",
+            sources=["jenkins"],  # ["azure_devops", "jenkins", "gitlab", "manual_number"],
+            tags=[Tag.CI],
+        ),
         loc=dict(
             name="Size (LOC)",
             description="The size of the software in lines of code.",

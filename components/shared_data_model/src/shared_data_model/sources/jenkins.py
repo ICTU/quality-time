@@ -33,7 +33,8 @@ other sources, when using the API token Jenkins also requires the username to wh
 belongs."""
 JENKINS_TOKEN_DOCS = _TMP_DOC  # nosec hardcoded_password_string
 
-ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
+ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs",
+                       "job_runs_within_time_period"]
 
 JOB_ENTITY = dict(
     name="job",

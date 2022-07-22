@@ -71,6 +71,7 @@ from .jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncover
 from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
 
 from .jenkins.failed_jobs import JenkinsFailedJobs
+from .jenkins.job_runs_within_time_period import JenkinsJobRunsWithinTimePeriod
 from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
 from .jenkins.source_version import JenkinsSourceVersion
 from .jenkins.unused_jobs import JenkinsUnusedJobs
