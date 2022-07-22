@@ -27,6 +27,12 @@ class SettingsTest(unittest.TestCase):  # skipcq: PTC-W0046
         settings_dict = get_settings(self.database)
         self.assertDictEqual(settings_dict, {"settings": {"test_setting": True}})
 
+    def test_get_settings_of_non_existing_user(self):
+        """Retrieve None object."""
+        self.database.users.find_one.return_value = None
+        settings_dict = get_settings(self.database)
+        self.assertDictEqual(settings_dict, {})
+
     @patch("bottle.request")
     def test_update_settings(self, request):
         """Update the settings object."""
@@ -41,3 +47,15 @@ class SettingsTest(unittest.TestCase):  # skipcq: PTC-W0046
             {"username": "test", "email": "", "common_name": "", "settings": {"some_new_settings": False}},
             upsert=True,
         )
+
+    @patch("bottle.request")
+    def test_update_settings_non_existing_user(self, request):
+        """Update the settings object."""
+        self.database.users.find_one.return_value = None
+        request.json = {"some_new_settings": False}
+        response_dict = update_settings(
+            self.database,
+        )
+
+        self.assertDictEqual(response_dict, dict(ok=True))
+        self.database.users.replace_one.assert_not_called()
