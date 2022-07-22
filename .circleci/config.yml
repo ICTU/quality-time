@@ -38,6 +38,28 @@ jobs:
           cd components/frontend
           npm install
           npm test
+          ci/quality.sh
+
+  quality_docker_only:
+    machine:
+      image: ubuntu-2204:2022.04.2
+    steps:
+      - checkout
+      - run: |
+          cd components/database
+          ci/quality.sh
+      - run: |
+          cd components/ldap
+          ci/quality.sh
+      - run: |
+          cd components/proxy
+          ci/quality.sh
+      - run: |
+          cd components/renderer
+          ci/quality.sh
+      - run: |
+          cd components/testdata
+          ci/quality.sh
 
   unittest_docs:
     machine:

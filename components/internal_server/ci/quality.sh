@@ -22,3 +22,4 @@ run pip-audit --strict --progress-spinner=off -r requirements/requirements-base.
 run safety check --bare --ignore 41002 -r requirements/requirements-base.txt -r requirements/requirements.txt -r requirements/requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
 run bandit --quiet --recursive src/
 run vulture --min-confidence 0 src/ tests/ .vulture_ignore_list.py
+run docker run --rm -i hadolint/hadolint < Dockerfile

@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     msttcorefonts-installer font-noto fontconfig \
     freetype ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
     chromium=~99.0 \
-  && rm -rf /var/cache/apk/* /tmp/*
+    && rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
     && fc-cache -f

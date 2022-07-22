@@ -1,0 +1,15 @@
+name: Renderer
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Quality
+      run: |
+        cd components/renderer
+        ci/quality.sh
