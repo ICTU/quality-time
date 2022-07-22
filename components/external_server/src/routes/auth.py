@@ -121,7 +121,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
         user = User(username)
         logging.warning("LDAP error: %s", reason)
     else:
-        user = get_user(database, username)
+        user = get_user(database, username) or User(username)
         user.email = result.mail.value or ""
         user.common_name = result.cn.value
         user.verified = True
