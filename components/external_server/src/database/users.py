@@ -15,7 +15,7 @@ def upsert_user(database: Database, user: User) -> None:
 
 
 def get_user(database: Database, username: str) -> User | None:
-    """Update the existing user or insert a new one."""
+    """Get a user, given a username."""
     user_dict = database.users.find_one({"username": username}, {"_id": False})
     if user_dict is not None:
         return User(**user_dict)
