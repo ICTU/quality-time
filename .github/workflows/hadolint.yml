@@ -12,3 +12,6 @@ jobs:
     - uses: hadolint/hadolint-action@v2.0.0
       with:
         dockerfile: components/collector/Dockerfile
+    - uses: hadolint/hadolint-action@v2.0.0
+      with:
+        dockerfile: components/notifier/Dockerfile
