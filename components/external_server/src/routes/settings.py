@@ -29,7 +29,7 @@ def get_settings(database: Database) -> dict:
     return {}
 
 
-@bottle.post("/api/v3/settings/update", authentication_required=True)
+@bottle.put("/api/v3/settings", authentication_required=True)
 def update_settings(database: Database) -> dict[str, bool]:
     """Update the settings for the logged-in user."""
     new_settings = dict(bottle.request.json)

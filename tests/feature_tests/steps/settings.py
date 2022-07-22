@@ -8,7 +8,7 @@ from behave import then, when
 @when("the client posts new settings")
 def post_settings(context):
     """Post new settings."""
-    context.post("settings/update", json=json.loads(context.text))
+    context.put("settings", json=json.loads(context.text))
 
 
 @then("the settings have been updated")
