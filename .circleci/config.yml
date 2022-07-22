@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           case $CIRCLE_NODE_INDEX in
             0) component=collector;;
             1) component=notifier;;
@@ -18,7 +18,7 @@ jobs:
             5) component=shared_server_code;;
           esac
           cd components/$component
-          python -m venv venv
+          python3.10 -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
           ci/unittest.sh
@@ -30,7 +30,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           cd components/frontend
           npm install
           npm test
@@ -43,7 +43,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           case $CIRCLE_NODE_INDEX in
             0) component=database;;
             1) component=ldap;;
@@ -60,7 +60,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           cd docs
           npm install
           python3.10 -m venv venv
@@ -75,7 +75,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           mkdir -p build
           export ENV=ci
           export QUALITY_TIME_VERSION=v4.2.0
@@ -99,7 +99,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          echo "$DOCKERHUB_PASSWORD" | docker login --username $DOCKERHUB_USERNAME --password-stdin
           ./tests/feature_tests/ci/test.sh
       - store_artifacts:
           path: build
