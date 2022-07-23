@@ -6,7 +6,7 @@ LABEL description="Quality-time PDF render service"
 RUN apk --no-cache add curl=~7.80
 
 RUN apk add --no-cache \
-    msttcorefonts-installer=3.6r2 \
+    msttcorefonts-installer=3.6-r2 \
     font-noto=0_git20211101-r0 \
     fontconfig=2.13.1-r4 \
     freetype=2.11.1-r2 \
