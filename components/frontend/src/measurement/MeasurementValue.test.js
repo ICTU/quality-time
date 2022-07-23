@@ -25,7 +25,7 @@ it('renders an unkown value', () => {
 it('renders a value that has not been measured yet', () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue metric={{ type: "violations", scale: "count", unit: null, latest_measurement: { } }} />
+            <MeasurementValue metric={{ type: "violations", scale: "count", unit: null, latest_measurement: {} }} />
         </DataModel.Provider>
     )
     expect(screen.getAllByText(/\?/).length).toBe(1)
@@ -92,11 +92,14 @@ it('shows when the last measurement attempt was', async () => {
     })
 })
 
-it('does not show an error message for past measurements that were recently measured', async () => {
+it('does not show an error message for past measurements that were recently measured at the time', async () => {
     const reportDate = new Date("2022-01-16T01:00:00")
     render(
         <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue metric={{ status: null, type: "violations", scale: "count", unit: null, latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } } }} reportDate={reportDate} />
+            <MeasurementValue
+                metric={{ type: "violations", latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00" } }}
+                reportDate={reportDate}
+            />
         </DataModel.Provider>
     )
     await userEvent.hover(screen.queryByText(/\?/))
