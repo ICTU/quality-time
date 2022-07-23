@@ -91,3 +91,17 @@ it('shows when the last measurement attempt was', async () => {
         expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
     })
 })
+
+it('does not show an error message for past measurements that were recently measured', async () => {
+    const reportDate = new Date("2022-01-16T01:00:00")
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
+            <MeasurementValue metric={{ status: null, type: "violations", scale: "count", unit: null, latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } } }} reportDate={reportDate} />
+        </DataModel.Provider>
+    )
+    await userEvent.hover(screen.queryByText(/\?/))
+    await waitFor(() => {
+        expect(screen.queryByText(/This metric was not recently measured/)).toBe(null)
+        expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
+    })
+})
