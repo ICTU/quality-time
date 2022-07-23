@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Image, Icon } from 'semantic-ui-react';
-import md5 from 'md5';
+import md5 from 'blueimp-md5';
 import { DarkMode } from '../context/DarkMode';
 
 export function Avatar({ email }) {

@@ -6,6 +6,7 @@ import { Avatar } from './Avatar';
 it('shows the image when passed an email address', () => {
     render(<Avatar email="foo@bar" />)
     expect(screen.queryAllByAltText("Avatar").length).toBe(1)
+    expect(screen.getByAltText("Avatar").getAttribute("src")).toEqual("https://www.gravatar.com/avatar/cca210311c3caf70e4a335aad6fa1047?d=identicon")
 });
 
 it('shows an icon when not passed an email address', () => {
