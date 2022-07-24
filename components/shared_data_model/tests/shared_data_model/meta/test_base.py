@@ -36,6 +36,6 @@ class MappedModelTest(MetaModelTestCase):
 
     def test_get_item(self):
         """Test that values can be retrieved by key."""
-        value_model_kwargs = dict(name="Name", description="Description")
-        mapped_model = MappedModel[DescribedModel].parse_obj(dict(value_model_type=value_model_kwargs))
-        self.assertEqual(DescribedModel(**value_model_kwargs), mapped_model["value_model_type"])
+        described_model_kwargs = dict(name="Name", description="Description")
+        mapped_model = MappedModel[DescribedModel].parse_obj(dict(described_model_type=described_model_kwargs))
+        self.assertEqual(DescribedModel(**described_model_kwargs), mapped_model["described_model_type"])
