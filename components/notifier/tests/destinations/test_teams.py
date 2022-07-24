@@ -3,8 +3,6 @@
 import logging
 from unittest import mock, TestCase
 
-from shared_data_model import DATA_MODEL
-
 from destinations.ms_teams import notification_text, send_notification
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
@@ -63,8 +61,8 @@ class BuildNotificationTextTests(TestCase):
                 dict(count=dict(value=10, status="target_not_met")),
             ],
         )
-        metric_notification_data1 = MetricNotificationData(metric1, self.subject, DATA_MODEL)
-        metric_notification_data2 = MetricNotificationData(metric2, self.subject, DATA_MODEL)
+        metric_notification_data1 = MetricNotificationData(metric1, self.subject)
+        metric_notification_data2 = MetricNotificationData(metric2, self.subject)
         notification = Notification(
             self.report, [metric_notification_data1, metric_notification_data2], "destination_uuid", {}
         )
@@ -90,7 +88,7 @@ class BuildNotificationTextTests(TestCase):
                 dict(count=dict(value=None, status="unknown")),
             ],
         )
-        metric_notification_data1 = MetricNotificationData(metric1, self.subject, DATA_MODEL)
+        metric_notification_data1 = MetricNotificationData(metric1, self.subject)
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"

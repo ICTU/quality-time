@@ -2,8 +2,6 @@
 
 import unittest
 
-from shared_data_model import DATA_MODEL
-
 from models.metric_notification_data import MetricNotificationData
 
 
@@ -26,17 +24,17 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
 
     def test_new_status(self):
         """Test that the new status is set correctly."""
-        new_status = MetricNotificationData(self.metric, self.subject, DATA_MODEL).new_metric_status
+        new_status = MetricNotificationData(self.metric, self.subject).new_metric_status
         self.assertEqual("red (target not met)", new_status)
 
     def test_unknown_status(self):
         """Test that a recent measurement without status works."""
         self.metric["recent_measurements"][-1]["count"]["status"] = None
-        new_status = MetricNotificationData(self.metric, self.subject, DATA_MODEL).new_metric_status
+        new_status = MetricNotificationData(self.metric, self.subject).new_metric_status
         self.assertEqual("white (unknown)", new_status)
 
     def test_unknown_status_without_recent_measurements(self):
         """Test that a metric without recent measurements works."""
         self.metric["recent_measurements"] = []
-        new_status = MetricNotificationData(self.metric, self.subject, DATA_MODEL).new_metric_status
+        new_status = MetricNotificationData(self.metric, self.subject).new_metric_status
         self.assertEqual("white (unknown)", new_status)
