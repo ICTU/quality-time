@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 
-from shared_data_model.meta.source import Source, Sources
+from shared_data_model.meta.source import Sources
 
 from .base import MetaModelTestCase
 
@@ -90,10 +90,3 @@ class SourcesTest(MetaModelTestCase):
                 ),
             ),
         )
-
-    def test_get_item(self, path_class):
-        """Test that sources can be retrieved by key."""
-        self.mock_path(path_class)
-        source_kwargs = dict(url="https://source.org", **self.SOURCE)
-        sources = Sources.parse_obj(dict(source_type=source_kwargs))
-        self.assertEqual(Source(**source_kwargs), sources["source_type"])

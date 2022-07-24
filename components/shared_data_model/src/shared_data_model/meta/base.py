@@ -1,8 +1,10 @@
 """Data model base classes."""
 
 import string
+from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
+from pydantic.generics import GenericModel
 
 
 class NamedModel(BaseModel):  # pylint: disable=too-few-public-methods
@@ -20,3 +22,16 @@ class DescribedModel(NamedModel):  # pylint: disable=too-few-public-methods
     def set_description(cls, description):  # pylint: disable=no-self-argument
         """Add a dot if needed."""
         return description if description.endswith(tuple(string.punctuation)) else description + "."
+
+
+ValueT = TypeVar("ValueT")
+
+
+class MappedModel(GenericModel, Generic[ValueT]):  # pylint: disable=too-few-public-methods
+    """Extend the Pydantic base model with a mapping."""
+
+    __root__: dict[str, ValueT]
+
+    def __getitem__(self, key: str) -> ValueT:
+        """Return the model with the specified key."""
+        return self.__root__[key]

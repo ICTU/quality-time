@@ -1,6 +1,6 @@
 """Unit tests for the parameter model."""
 
-from shared_data_model.meta.parameter import Parameter, Parameters
+from shared_data_model.meta.parameter import Parameter
 
 from .base import MetaModelTestCase
 
@@ -64,9 +64,3 @@ class ParameterTest(MetaModelTestCase):
         self.check_validation_error(
             expected_error, name="Parameter", type="multiple_choice_with_addition", values=["value"]
         )
-
-    def test_get_item(self):
-        """Test that metrics can be retrieved by key."""
-        parameter_kwargs = dict(name="Name", type="string", metrics=["violations"])
-        metrics = Parameters.parse_obj(dict(parameter_type=parameter_kwargs))
-        self.assertEqual(Parameter(**parameter_kwargs), metrics["parameter_type"])

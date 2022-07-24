@@ -5,7 +5,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
 
-from .base import NamedModel
+from .base import MappedModel, NamedModel
 
 
 class Color(str, Enum):
@@ -84,7 +84,5 @@ class Entity(BaseModel):
         return measured_attribute
 
 
-class Entities(BaseModel):  # pylint: disable=too-few-public-methods
+class Entities(MappedModel[Entity]):  # pylint: disable=too-few-public-methods
     """Entity mapping."""
-
-    __root__: dict[str, Entity]

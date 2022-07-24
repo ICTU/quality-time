@@ -1,12 +1,12 @@
 """Unit tests for the base models."""
 
-from shared_data_model.meta.base import DescribedModel
+from shared_data_model.meta.base import DescribedModel, MappedModel
 
 from .base import MetaModelTestCase
 
 
 class DescribedModelTest(MetaModelTestCase):
-    """Data meta model unit tests."""
+    """Unit tests for described models."""
 
     MODEL = DescribedModel
 
@@ -29,3 +29,13 @@ class DescribedModelTest(MetaModelTestCase):
     def test_empty_description(self):
         """Test that the description has a non-zero length."""
         self.check_validation_error('description\n  string does not match regex ".+"', name="Name", description="")
+
+
+class MappedModelTest(MetaModelTestCase):
+    """Unit tests for mapped models."""
+
+    def test_get_item(self):
+        """Test that values can be retrieved by key."""
+        value_model_kwargs = dict(name="Name", description="Description")
+        mapped_model = MappedModel[DescribedModel].parse_obj(dict(value_model_type=value_model_kwargs))
+        self.assertEqual(DescribedModel(**value_model_kwargs), mapped_model["value_model_type"])

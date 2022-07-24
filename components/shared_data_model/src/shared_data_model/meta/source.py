@@ -3,9 +3,9 @@
 import pathlib
 from typing import cast, Optional
 
-from pydantic import BaseModel, Field, HttpUrl, validator  # pylint: disable=no-name-in-module
+from pydantic import Field, HttpUrl, validator  # pylint: disable=no-name-in-module
 
-from .base import DescribedModel, NamedModel
+from .base import DescribedModel, MappedModel, NamedModel
 from .entity import Entities
 from .parameter import Parameters
 
@@ -17,16 +17,12 @@ class Configuration(NamedModel):  # pylint: disable=too-few-public-methods
     value: list[str] = Field(..., min_items=1)
 
 
-class Configurations(BaseModel):  # pylint: disable=too-few-public-methods
+class Configurations(MappedModel[Configuration]):  # pylint: disable=too-few-public-methods
     """Source configurations."""
 
-    __root__: dict[str, Configuration]
 
-
-class Documentation(BaseModel):  # pylint: disable=too-few-public-methods
+class Documentation(MappedModel[str]):  # pylint: disable=too-few-public-methods
     """Source documentation for specific metrics."""
-
-    __root__: dict[str, str]
 
 
 class Source(DescribedModel):
@@ -56,14 +52,8 @@ class Source(DescribedModel):
         return parameters
 
 
-class Sources(BaseModel):
+class Sources(MappedModel[Source]):
     """Sources mapping."""
-
-    __root__: dict[str, Source]
-
-    def __getitem__(self, key: str) -> Source:
-        """Return the source with the specified key."""
-        return self.__root__[key]
 
     @validator("__root__")
     def check_sources(cls, values):  # pylint: disable=no-self-argument
