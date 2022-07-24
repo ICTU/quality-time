@@ -103,3 +103,7 @@ class Parameters(BaseModel):  # pylint: disable=too-few-public-methods
     """Parameter mapping."""
 
     __root__: dict[str, Parameter]
+
+    def __getitem__(self, key: str) -> Parameter:
+        """Return the parameter with the specified key."""
+        return self.__root__[key]

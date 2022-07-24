@@ -65,3 +65,7 @@ class Metrics(BaseModel):  # pylint: disable=too-few-public-methods
     """Metrics mapping."""
 
     __root__: dict[str, Metric]
+
+    def __getitem__(self, key: str) -> Metric:
+        """Return the metric with the specified key."""
+        return self.__root__[key]

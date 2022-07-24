@@ -61,6 +61,10 @@ class Sources(BaseModel):
 
     __root__: dict[str, Source]
 
+    def __getitem__(self, key: str) -> Source:
+        """Return the source with the specified key."""
+        return self.__root__[key]
+
     @validator("__root__")
     def check_sources(cls, values):  # pylint: disable=no-self-argument
         """Check the sources."""

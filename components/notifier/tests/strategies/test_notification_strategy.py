@@ -3,9 +3,9 @@
 from datetime import datetime, timezone
 import unittest
 
-from strategies.notification_strategy import NotificationFinder
+from shared_data_model import DATA_MODEL
 
-from ..data_model import DATA_MODEL
+from strategies.notification_strategy import NotificationFinder
 
 
 class StrategiesTests(unittest.TestCase):

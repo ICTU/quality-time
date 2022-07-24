@@ -15,3 +15,7 @@ class Subjects(BaseModel):  # pylint: disable=too-few-public-methods
     """Subjects mapping."""
 
     __root__: dict[str, Subject]
+
+    def __getitem__(self, key: str) -> Subject:
+        """Return the subject with the specified key."""
+        return self.__root__[key]

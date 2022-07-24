@@ -6,9 +6,9 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
 
     def __init__(self, metric, subject, data_model) -> None:
         """Initialise the Notification with metric data."""
-        self.metric_name = metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}'
-        self.metric_unit = metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}'
-        self.subject_name = subject.get("name") or data_model["subjects"][subject["type"]]["name"]
+        self.metric_name = metric["name"] or f'{data_model.metrics[metric["type"]].name}'
+        self.metric_unit = metric["unit"] or f'{data_model.metrics[metric["type"]].unit}'
+        self.subject_name = subject.get("name") or data_model.subjects[subject["type"]].name
         recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
 
@@ -28,7 +28,7 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
     @staticmethod
     def __user_friendly_status(data_model, metric_status) -> str:
         """Get the user friendly status name from the data model."""
-        statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
+        statuses = data_model.sources["quality_time"].parameters["status"].api_values
         inverted_statuses = {statuses[key]: key for key in statuses}
         human_readable_status, color = (
             str(inverted_statuses.get(metric_status, "unknown (white)")).strip(")").split(" (")

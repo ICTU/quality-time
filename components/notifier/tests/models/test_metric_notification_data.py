@@ -2,9 +2,9 @@
 
 import unittest
 
-from models.metric_notification_data import MetricNotificationData
+from shared_data_model import DATA_MODEL
 
-from ..data_model import DATA_MODEL
+from models.metric_notification_data import MetricNotificationData
 
 
 class MetricNotificationDataModelTestCase(unittest.TestCase):

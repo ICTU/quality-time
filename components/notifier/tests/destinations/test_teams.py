@@ -3,11 +3,11 @@
 import logging
 from unittest import mock, TestCase
 
+from shared_data_model import DATA_MODEL
+
 from destinations.ms_teams import notification_text, send_notification
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
-
-from ..data_model import DATA_MODEL
 
 
 @mock.patch("pymsteams.connectorcard.send")
