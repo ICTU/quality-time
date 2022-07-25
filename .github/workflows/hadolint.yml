@@ -1,0 +1,29 @@
+name: Hadolint
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - component: collector
+          - component: database
+          - component: external_server
+          - component: frontend
+          - component: internal_server
+          - component: ldap
+          - component: notifier
+          - component: proxy
+          - component: renderer
+          - component: testdata
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Hadolint ${{ matrix.component }}
+      uses: hadolint/hadolint-action@v2.0.0
+      with:
+        dockerfile: components/${{ matrix.component }}/Dockerfile

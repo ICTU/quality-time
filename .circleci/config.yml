@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@2.1.2
+
 jobs:
   unittest_backend:
     docker:
@@ -102,3 +105,15 @@ workflows:
           context: QualityTime
       - unittest_docs:
           context: QualityTime
+      - docker/hadolint:
+          context: QualityTime
+          dockerfiles: "components/collector/Dockerfile:\
+            components/database/Dockerfile:\
+            components/external_server/Dockerfile:\
+            components/frontend/Dockerfile:\
+            components/internal_server/Dockerfile:\
+            components/ldap/Dockerfile:\
+            components/notifier/Dockerfile:\
+            components/proxy/Dockerfile:\
+            components/renderer/Dockerfile:\
+            components/testdata/Dockerfile"

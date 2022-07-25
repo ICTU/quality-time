@@ -5,12 +5,17 @@ LABEL description="Quality-time PDF render service"
 
 RUN apk --no-cache add curl=~7.80
 
-# skipcq: DOK-DL3018
 RUN apk add --no-cache \
-    msttcorefonts-installer font-noto fontconfig \
-    freetype ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
-    chromium=~99.0 \
-  && rm -rf /var/cache/apk/* /tmp/*
+    msttcorefonts-installer=3.6-r2 \
+    font-noto=0_git20211101-r0 \
+    fontconfig=2.13.1-r4 \
+    freetype=2.11.1-r2 \
+    ttf-dejavu=2.37-r1 \
+    ttf-droid=20200215-r1 \
+    ttf-freefont=20120503-r2 \
+    ttf-liberation=2.00.5-r0 \
+    chromium=99.0.4844.84-r0 && \
+    rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
     && fc-cache -f
