@@ -1,5 +1,7 @@
 """SonarQube remediation effort collector."""
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
@@ -23,7 +25,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
     async def _entities(self, metrics: dict[str, str]) -> Entities:
         """Override to return the effort entities."""
         entities = Entities()
-        api_values = self._data_model["sources"][self.source_type]["parameters"]["effort_types"]["api_values"]
+        api_values = DATA_MODEL.sources[self.source_type].parameters["effort_types"].api_values
         for effort_type in self.__effort_types():
             effort_type_description = [param for param, api_key in api_values.items() if effort_type == api_key][0]
             entities.append(
