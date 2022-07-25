@@ -82,6 +82,8 @@ class SourceCollector(ABC):
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Return the parameter value."""
+        if parameter_key == "private_token":
+            return self.__parameters.private_token()
         return self.__parameters.get(parameter_key, quote)
 
     async def __safely_get_source_responses(self) -> SourceResponses:
