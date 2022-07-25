@@ -30,14 +30,16 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         """Override to set up common test data."""
 
-        class SourceMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
+        class SourceViolations(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
             """Register a fake collector automatically."""
 
             async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
                 """Override to return a source measurement fixture."""
                 return SourceMeasurement(value="42", total="84")
 
-        self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
+        self.data_model = dict(
+            sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["violations"]))))
+        )
         self.collector = Collector(self.data_model)
         self.collector.data_model = self.data_model
         self.url = "https://url"
@@ -46,7 +48,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             metric_uuid=dict(
                 report_uuid="report_uuid",
                 addition="sum",
-                type="metric",
+                type="violations",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
             )
         )
@@ -119,7 +121,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
-        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
+        metrics = dict(metric_uuid=dict(type="violations", addition="sum", sources={}))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
         with self._patched_post() as post:
@@ -130,7 +132,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test fetching measurement for a metric with an unsupported source."""
         metrics = dict(
             metric_uuid=dict(
-                type="metric",
+                type="violations",
                 addition="sum",
                 sources=dict(source_id=dict(type="unsupported_source", parameters=dict(url=self.url))),
             )
@@ -227,7 +229,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",
-            type="metric",
+            type="violations",
             sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
         )
         mock_async_get_request = AsyncMock()
@@ -250,7 +252,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",
-            type="metric",
+            type="violations",
             sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
         )
         edited_metrics = deepcopy(self.metrics)
@@ -278,7 +280,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
         metrics = dict(
             metric_uuid=dict(
-                type="metric", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))
+                type="violations", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))
             )
         )
         mock_async_get_request = AsyncMock()
@@ -290,7 +292,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_missing_mandatory_parameter_with_default_value(self):
         """Test that a metric with sources and a missing mandatory parameter that has a default value is not skipped."""
         self.data_model["sources"]["source"]["parameters"]["token"] = dict(
-            default_value="xxx", mandatory=True, metrics=["metric"]
+            default_value="xxx", mandatory=True, metrics=["violations"]
         )
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = self.metrics
