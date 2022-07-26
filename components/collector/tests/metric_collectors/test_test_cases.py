@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import AsyncMock
 
-from metric_collectors import TestCases
+from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 
 
@@ -81,7 +81,10 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
     async def collect(self, sources) -> MetricMeasurement | None:
         """Collect the measurement."""
         metric = dict(type="test_cases", sources=sources)
-        return await TestCases(self.session, metric).collect()
+        # Instead of instantiating the TestCases collector directly, we look up the collector by the metric type
+        # to get full coverage:
+        test_cases_collector_class = MetricCollector.get_subclass(metric["type"])
+        return await test_cases_collector_class(self.session, metric).collect()
 
     async def test_missing_sources(self):
         """Test missing sources."""
