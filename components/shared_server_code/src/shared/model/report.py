@@ -99,7 +99,7 @@ class Report(dict):
             sources.update(metric.sources_dict)
         return sources
 
-    def summarize(self, measurements: dict[str, list[Measurement]]) -> dict:
+    def summarize(self, measurements: dict[MetricId, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
         summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
