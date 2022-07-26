@@ -1,5 +1,7 @@
 """SonarQube tests collector."""
 
+from typing import cast
+
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.type import URL
@@ -30,7 +32,7 @@ class SonarQubeTests(SonarQubeCollector):
         """Override to parse the number of tests."""
         tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
-        test_results = DATA_MODEL.sources[self.source_type].parameters["test_result"].values
+        test_results = cast(list[str], DATA_MODEL.sources[self.source_type].parameters["test_result"].values)
         total = str(sum(tests[test_result] for test_result in test_results))
         return SourceMeasurement(value=value, total=total)
 

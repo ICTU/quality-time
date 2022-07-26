@@ -46,9 +46,9 @@ class SourceParameters:
         if parameter_info.type == "multiple_choice":
             # If the user didn't pick any values, select the default value if any, otherwise select all values:
             default_value = parameter_info.default_value
-            value = self.__parameters.get(parameter_key) or default_value or parameter_info.values
+            value = self.__parameters.get(parameter_key) or default_value or parameter_info.values or []
             # Ensure all values picked by the user are still allowed. Remove any values that are no longer allowed:
-            value = [v for v in value if v in parameter_info.values]
+            value = [v for v in value if v in (parameter_info.values or [])]
         else:
             default_value = parameter_info.default_value
             value = self.__parameters.get(parameter_key) or default_value
