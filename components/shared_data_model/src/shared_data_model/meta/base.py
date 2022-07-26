@@ -1,7 +1,7 @@
 """Data model base classes."""
 
 import string
-from collections.abc import MappingView
+from collections.abc import ItemsView, ValuesView
 from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
@@ -37,6 +37,14 @@ class MappedModel(GenericModel, Generic[ValueT]):
         """Return the model with the specified key."""
         return self.__root__[key]
 
-    def items(self) -> MappingView:
+    def get(self, key: str) -> ValueT | None:
+        """Return the model with the specified key or None if the key does not exist."""
+        return self.__root__.get(key)
+
+    def items(self) -> ItemsView:
         """Return all keys and values."""
         return self.__root__.items()
+
+    def values(self) -> ValuesView:
+        """Return all values."""
+        return self.__root__.values()

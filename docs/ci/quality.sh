@@ -16,6 +16,7 @@ run () {
 }
 
 run ./node_modules/markdownlint-cli/markdownlint.js src/*.md
+run mypy src
 # The vale Docker image doesn't support the linux/arm64/v8 architecture, so a locally installed vale if possible
 if ! vale -v &> /dev/null
 then
@@ -25,7 +26,6 @@ else
     run vale sync
     run vale --no-wrap src/*.md
 fi
-run mypy src
 run pylint --rcfile=../.pylintrc src tests
 run python -m flake8 --select=DUO src
 run isort **/*.py --check-only

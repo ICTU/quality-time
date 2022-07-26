@@ -30,7 +30,7 @@ class Source(DescribedModel):
 
     url: Optional[HttpUrl] = None
     documentation: Optional[Documentation] = None  # Documentation in Markdown format
-    configuration: Optional[Configurations] = None
+    configuration: Configurations = cast(Configurations, {})
     parameters: Parameters
     entities: Entities = cast(Entities, {})
     issue_tracker: Optional[bool] = False
