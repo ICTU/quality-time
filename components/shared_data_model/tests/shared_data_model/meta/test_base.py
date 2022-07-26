@@ -34,8 +34,17 @@ class DescribedModelTest(MetaModelTestCase):
 class MappedModelTest(MetaModelTestCase):
     """Unit tests for mapped models."""
 
+    def setUp(self):
+        """Extend to setup the model."""
+        super().setUp()
+        described_model_kwargs = dict(name="Name", description="Description")
+        self.mapped_model = MappedModel[DescribedModel].parse_obj(dict(described_model_type=described_model_kwargs))
+        self.expected_described_model = DescribedModel(**described_model_kwargs)
+
     def test_get_item(self):
         """Test that values can be retrieved by key."""
-        described_model_kwargs = dict(name="Name", description="Description")
-        mapped_model = MappedModel[DescribedModel].parse_obj(dict(described_model_type=described_model_kwargs))
-        self.assertEqual(DescribedModel(**described_model_kwargs), mapped_model["described_model_type"])
+        self.assertEqual(self.expected_described_model, self.mapped_model["described_model_type"])
+
+    def test_items(self):
+        """Test that the items can be retrieved."""
+        self.assertEqual([("described_model_type", self.expected_described_model)], list(self.mapped_model.items()))

@@ -28,7 +28,7 @@ class DescribedModel(NamedModel):  # pylint: disable=too-few-public-methods
 ValueT = TypeVar("ValueT")
 
 
-class MappedModel(GenericModel, Generic[ValueT]):  # pylint: disable=too-few-public-methods
+class MappedModel(GenericModel, Generic[ValueT]):
     """Extend the Pydantic base model with a mapping."""
 
     __root__: dict[str, ValueT]
@@ -37,6 +37,6 @@ class MappedModel(GenericModel, Generic[ValueT]):  # pylint: disable=too-few-pub
         """Return the model with the specified key."""
         return self.__root__[key]
 
-    def items(self) -> MappingView[str, ValueT]:
+    def items(self) -> MappingView:
         """Return all keys and values."""
         return self.__root__.items()
