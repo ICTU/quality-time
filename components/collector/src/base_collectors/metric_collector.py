@@ -5,6 +5,8 @@ from typing import Coroutine
 
 import aiohttp
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.type import JSONDict
 from model import MetricMeasurement
 
@@ -72,13 +74,17 @@ class MetricCollector:
 
     def __has_all_mandatory_parameters(self, source) -> bool:
         """Return whether the user has specified all mandatory parameters for the source."""
-        parameters = self.__data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
+        try:
+            parameters = DATA_MODEL.sources[source["type"]].parameters
+        except KeyError:
+            # This can happen if the source type has been removed from the data model, problem will be logged elsewhere
+            return True
         for parameter_key, parameter in parameters.items():
             if (
-                parameter.get("mandatory")
-                and self._metric["type"] in parameter.get("metrics")
+                parameter.mandatory
+                and self._metric["type"] in parameter.metrics
                 and not source.get("parameters", {}).get(parameter_key)
-                and not parameter.get("default_value")
+                and not parameter.default_value
             ):
                 return False
         return True

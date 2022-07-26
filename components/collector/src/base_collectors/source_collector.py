@@ -6,7 +6,7 @@ import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, cast, Final
+from typing import Any, cast
 
 import aiohttp
 from packaging.version import Version
