@@ -30,7 +30,7 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
     @staticmethod
     def __user_friendly_status(metric_status) -> str:
         """Get the user friendly status name from the data model."""
-        statuses = DATA_MODEL.sources["quality_time"].parameters["status"].api_values
+        statuses = DATA_MODEL.sources["quality_time"].parameters["status"].api_values or {}
         inverted_statuses = {statuses[key]: key for key in statuses}
         human_readable_status, color = (
             str(inverted_statuses.get(metric_status, "unknown (white)")).strip(")").split(" (")
