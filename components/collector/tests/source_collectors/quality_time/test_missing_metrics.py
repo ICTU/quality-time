@@ -1,5 +1,9 @@
 """Unit tests for the Quality-time missing metrics collector."""
 
+import json
+
+from shared_data_model import DATA_MODEL_JSON
+
 from .base import QualityTimeTestCase
 
 
@@ -11,6 +15,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
     def setUp(self):
         """Set up test data."""
         super().setUp()
+        self.data_model = json.loads(DATA_MODEL_JSON)
         self.set_source_parameter("reports", ["r1", "r3"])
         self.expected_software_metrics = str(2 * len(self.data_model["subjects"]["software"]["metrics"]))
         self.reports["reports"].append(

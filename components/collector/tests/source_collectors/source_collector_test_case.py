@@ -10,8 +10,6 @@ import aiohttp
 
 from base_collectors import MetricCollector
 
-from ..data_model_fixture import DATA_MODEL
-
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-W0046
     """Base class for source collector unit tests."""
@@ -23,7 +21,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
     def setUpClass(cls) -> None:
         """Override to disable logging and load the data model so it is available for all unit tests."""
         logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
-        cls.data_model = DATA_MODEL
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -62,7 +59,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         post = AsyncMock(return_value=post_response, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", get), patch("aiohttp.ClientSession.post", post):
             async with aiohttp.ClientSession() as session:
-                return await MetricCollector(session, self.metric, self.data_model).collect()
+                return await MetricCollector(session, self.metric).collect()
 
     @staticmethod
     def __get_response(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:

@@ -7,7 +7,6 @@ import aiohttp
 
 from shared_data_model import DATA_MODEL
 
-from collector_utilities.type import JSONDict
 from model import MetricMeasurement
 
 from .source_collector import SourceCollector, SourceParameters
@@ -18,12 +17,11 @@ class MetricCollector:
 
     subclasses: set[type["MetricCollector"]] = set()  # skipcq: TYP-067
 
-    def __init__(self, session: aiohttp.ClientSession, metric, data_model: JSONDict) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric) -> None:
         self.__session = session
         self._metric = metric
-        self.__data_model = data_model
         self._parameters = {
-            source_uuid: SourceParameters(source, data_model) for source_uuid, source in self._metric["sources"].items()
+            source_uuid: SourceParameters(source) for source_uuid, source in self._metric["sources"].items()
         }
 
     def __init_subclass__(cls) -> None:
@@ -57,7 +55,7 @@ class MetricCollector:
             if not self.__has_all_mandatory_parameters(source):
                 return []
             if collector_class := SourceCollector.get_subclass(source["type"], self._metric["type"]):
-                collectors.append(collector_class(self.__session, source, self.__data_model).collect())
+                collectors.append(collector_class(self.__session, source).collect())
         return collectors
 
     def __issue_status_collectors(self) -> list[Coroutine]:
@@ -67,7 +65,7 @@ class MetricCollector:
         has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
         if has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
             return [
-                collector_class(self.__session, tracker, self.__data_model).collect_issue_status(issue_id)
+                collector_class(self.__session, tracker).collect_issue_status(issue_id)
                 for issue_id in self._metric.get("issue_ids", [])
             ]
         return []

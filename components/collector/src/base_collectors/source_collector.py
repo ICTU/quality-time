@@ -33,10 +33,10 @@ class SourceCollector(ABC):
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: set[type["SourceCollector"]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
+    def __init__(self, session: aiohttp.ClientSession, source) -> None:
         self._session = session
         self._issue_id = ""
-        self.__parameters = SourceParameters(source, data_model)
+        self.__parameters = SourceParameters(source)
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
@@ -329,9 +329,9 @@ class TransactionEntity(Entity):
 class SlowTransactionsCollector(SourceCollector):
     """Base class for slow transactions collectors."""
 
-    def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
+    def __init__(self, session: aiohttp.ClientSession, source) -> None:
         """Extend to set up the parameters."""
-        super().__init__(session, source, data_model)
+        super().__init__(session, source)
         self.__transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         self.__transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         self.__response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))

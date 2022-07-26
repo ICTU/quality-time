@@ -52,11 +52,11 @@ class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm 
 class AzureDevopsSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either jobs or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source, data_model):
+    def __new__(cls, session: aiohttp.ClientSession, source):
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = AzureDevopsFileUpToDateness if file_path else AzureDevopsJobUpToDateness
-        instance = collector_class(session, source, data_model)
+        instance = collector_class(session, source)
         instance.source_type = cls.source_type
         return instance
 
