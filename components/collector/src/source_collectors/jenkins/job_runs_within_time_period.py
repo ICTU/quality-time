@@ -1,7 +1,8 @@
 """Jenkins job runs within time period collector."""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
+from collector_utilities.functions import days_ago
 from collector_utilities.type import Job
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -14,8 +15,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
         build_datetime = datetime.utcfromtimestamp(int(build["timestamp"] / 1000.0))
-        lookback_days = int(self._parameter(parameter_key="lookback_days"))
-        return build_datetime > datetime.now() - timedelta(days=lookback_days)
+        return days_ago(build_datetime) <= int(self._parameter(parameter_key="lookback_days"))
 
     def _builds_within_timeperiod(self, job: Job) -> int:
         """Return the amount of job builds within timeperiod."""

@@ -121,7 +121,7 @@ METRICS = Metrics.parse_obj(
             direction=Direction.MORE_IS_BETTER,
             target="30",
             near_target="25",
-            sources=["jenkins"],  # ["azure_devops", "jenkins", "gitlab", "manual_number"],
+            sources=["jenkins", "gitlab", "manual_number"],  # TODO - add "azure_devops",
             tags=[Tag.CI],
         ),
         loc=dict(
