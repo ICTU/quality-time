@@ -3,6 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
+from shared_data_model import DATA_MODEL
 from shared.model.metric import Metric
 from shared.utils.type import MetricId
 
@@ -17,11 +18,13 @@ class MetricsTest(unittest.TestCase):
     def setUp(self):
         """Override to create a mock database fixture."""
         self.database = Mock()
-        self.database.datamodels.find_one.return_value = self.data_model = dict(_id="id", metrics=dict(metric_type={}))
+        self.data_model = DATA_MODEL.dict()
+        self.data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = self.data_model
         report = dict(
             _id="1",
             report_uuid=REPORT_ID,
-            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(type="metric_type", tags=[])))),
+            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(type="violations", tags=[])))),
         )
         self.database.reports.find.return_value = [report]
         self.database.reports.find_one.return_value = report
@@ -37,7 +40,7 @@ class MetricsTest(unittest.TestCase):
             )
         ]
         self.assertEqual(
-            Metric(self.data_model, dict(tags=[], type="metric_type"), METRIC_ID),
+            Metric(self.data_model, dict(tags=[], type="violations"), METRIC_ID),
             latest_metric(self.database, REPORT_ID, METRIC_ID),
         )
 

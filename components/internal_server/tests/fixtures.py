@@ -6,6 +6,7 @@ from shared.utils.type import MetricId, ReportId, SourceId, SubjectId, Notificat
 
 
 METRIC_ID = cast(MetricId, "metric_uuid")
+METRIC_ID2 = cast(MetricId, "metric_uuid2")
 NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination_uuid")
 REPORT_ID = cast(ReportId, "report_uuid")
 SOURCE_ID = cast(SourceId, "source_uuid")
@@ -27,7 +28,7 @@ def create_report():
                 metrics={
                     METRIC_ID: dict(
                         name="Metric",
-                        type="metric_type",
+                        type="violations",
                         addition="sum",
                         target="0",
                         accept_debt=False,
@@ -35,7 +36,7 @@ def create_report():
                         scales=["count", "percentage"],
                         sources={
                             SOURCE_ID: dict(
-                                type="source_type",
+                                type="sonarqube",
                                 name="Source",
                                 parameters=dict(url="https://url", password="password"),
                             )

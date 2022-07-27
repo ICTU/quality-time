@@ -3,6 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
+from shared_data_model import DATA_MODEL
 from shared.model.report import Report
 
 from routes import get_report
@@ -16,7 +17,9 @@ class ReportTest(unittest.TestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up a database with a report."""
         self.database = Mock()
-        self.database.datamodels.find_one.return_value = data_model = dict(_id="id", metrics=dict(metric_type={}))
+        data_model = DATA_MODEL.dict()
+        data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = data_model
         self.database.reports.find.return_value = [Report(data_model, create_report())]
         self.database.measurements.find.return_value = []
 
