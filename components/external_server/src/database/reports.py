@@ -7,11 +7,11 @@ from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import MetricId, SubjectId
+from shared.utils.type import ItemId, MetricId, SubjectId
 
 from model.report import Report
 from utils.functions import unique
-from utils.type import Change, ItemId
+from utils.type import Change
 
 
 # Sort order:

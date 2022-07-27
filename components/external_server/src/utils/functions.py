@@ -20,7 +20,7 @@ from cryptography.fernet import Fernet
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
 
-from shared.utils.type import ReportId
+from shared.utils.type import ItemId
 from shared.utils.functions import iso_timestamp
 
 from .type import URL
@@ -159,9 +159,9 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
             yield item
 
 
-def uuid() -> ReportId:
+def uuid() -> ItemId:
     """Return a UUID."""
-    return ReportId(str(_uuid.uuid4()))
+    return ItemId(str(_uuid.uuid4()))
 
 
 def md5_hash(string: str) -> str:

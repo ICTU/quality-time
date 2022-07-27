@@ -15,11 +15,11 @@ SessionId = NewType("SessionId", str)
 NotificationDestinationId = NewType("NotificationDestinationId", str)
 Value = Optional[str]
 
-
-ReportId = NewType("ReportId", str)
-SubjectId = NewType("SubjectId", str)
-MetricId = NewType("MetricId", str)
-SourceId = NewType("SourceId", str)
+ItemId = NewType("ItemId", str)
+ReportId = NewType("ReportId", ItemId)
+SubjectId = NewType("SubjectId", ItemId)
+MetricId = NewType("MetricId", ItemId)
+SourceId = NewType("SourceId", ItemId)
 
 
 @dataclass

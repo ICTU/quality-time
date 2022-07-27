@@ -209,7 +209,7 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
 
 
 @bottle.get("/api/v3/report/<report_uuid>/issue_tracker/suggestions/<query>", authentication_required=True)
-def get_report_issue_tracker_suggestions(report_uuid: Report, query: str, database: Database):
+def get_report_issue_tracker_suggestions(report_uuid: ReportId, query: str, database: Database):
     """Get suggestions for issue ids from the issue tracker using the query string."""
     data_model = latest_datamodel(database)
     report = latest_report(database, data_model, report_uuid)
