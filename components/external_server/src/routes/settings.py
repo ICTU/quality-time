@@ -1,7 +1,8 @@
 """Define all routes about settings."""
 
-
+from collections import defaultdict
 from typing import cast
+
 import bottle
 from pymongo.database import Database
 
@@ -33,8 +34,7 @@ def get_settings(database: Database) -> dict:
 def update_settings(database: Database) -> dict[str, bool]:
     """Update the settings for the logged-in user."""
     new_settings = dict(bottle.request.json)
-    user = find_user(database)
-    # Ignore MyPy because there is always a user since auth_required is true for this endpoint
-    user.settings = new_settings  # type: ignore
+    user = cast(User, find_user(database))  # There is always a user since auth_required is true for this endpoint
+    user.settings = cast(defaultdict, new_settings)
     upsert_user(database, user)
     return dict(ok=True)

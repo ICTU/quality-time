@@ -1,10 +1,12 @@
 """Model operations."""
 
-from typing import Any
+from collections.abc import MutableMapping
+from typing import Any, cast
 
 from shared.model.subject import Subject
 from shared.model.metric import Metric
 from shared.model.source import Source
+from shared.utils.type import ItemId
 
 from model.report import Report
 from utils.functions import uuid
@@ -63,12 +65,14 @@ def move_item(
     container: Report | Subject | Metric, item_to_move: Subject | Metric | Source, new_position: Position
 ) -> tuple[int, int]:
     """Change the item position."""
+    ItemsDictType = MutableMapping[ItemId, Metric | Source | Subject]
+    items_dict: ItemsDictType
     if isinstance(container, Report):
-        items_dict = container.subjects_dict
+        items_dict = cast(ItemsDictType, container.subjects_dict)
     elif isinstance(container, Subject):
-        items_dict = container.metrics_dict
+        items_dict = cast(ItemsDictType, container.metrics_dict)
     else:
-        items_dict = container.sources_dict
+        items_dict = cast(ItemsDictType, container.sources_dict)
 
     nr_items = len(items_dict)
     old_index = list(items_dict.keys()).index(item_to_move.uuid)

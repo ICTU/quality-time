@@ -27,9 +27,8 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     reports = latest_reports(database, data_model)
     report = latest_report_for_uuids(reports, report_uuid)[0]
     subject_type = str(dict(bottle.request.json)["type"])
-    report.subjects_dict[(subject_uuid := cast(SubjectId, uuid()))] = cast(
-        Subject, default_subject_attributes(database, subject_type)
-    )
+    subject_uuid = cast(SubjectId, uuid())
+    report.subjects_dict[subject_uuid] = cast(Subject, default_subject_attributes(database, subject_type))
     delta_description = f"{{user}} created a new subject in report '{report.name}'."
     uuids = [report_uuid, subject_uuid]
     result = insert_new_report(database, delta_description, uuids, report)
@@ -46,7 +45,8 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
     subject = source_report.subjects_dict[subject_uuid]
-    target_report.subjects_dict[(subject_copy_uuid := cast(SubjectId, uuid()))] = copy_subject(subject, data_model)
+    subject_copy_uuid = cast(SubjectId, uuid())
+    target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject, data_model)
     delta_description = (
         f"{{user}} copied the subject '{subject.name}' from report "
         f"'{source_report.name}' to report '{target_report.name}'."

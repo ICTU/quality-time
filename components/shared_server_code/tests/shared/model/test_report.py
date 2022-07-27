@@ -109,3 +109,7 @@ class ReportTest(unittest.TestCase):
             (source, metric, subject),
             self.report.instance_and_parents_for_uuid(source_uuid=SOURCE_ID),
         )
+
+    def test_find_without_source_and_metric_uuid(self):
+        """Test that passing neither a source or a metric uuid throws an exception."""
+        self.assertRaises(RuntimeError, self.report.instance_and_parents_for_uuid)

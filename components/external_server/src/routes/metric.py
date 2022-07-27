@@ -1,6 +1,6 @@
 """Metric routes."""
 
-from typing import Any
+from typing import Any, cast
 
 import bottle
 from pymongo.database import Database
@@ -27,7 +27,8 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     report = latest_report_for_uuids(all_reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
     metric_type = str(dict(bottle.request.json)["type"])
-    subject.metrics_dict[(metric_uuid := uuid())] = default_metric_attributes(database, metric_type)
+    metric_uuid = cast(MetricId, uuid())
+    subject.metrics_dict[metric_uuid] = cast(Metric, default_metric_attributes(database, metric_type))
     description = f"{{user}} added a new metric to subject '{subject.name}' in report '{report.name}'."
     uuids = [report.uuid, subject.uuid, metric_uuid]
     result = insert_new_report(database, description, uuids, report)
@@ -45,7 +46,8 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     target_report = source_and_target_reports[1]
     source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     target_subject = target_report.subjects_dict[subject_uuid]
-    target_subject.metrics_dict[(metric_copy_uuid := uuid())] = copy_metric(source_metric, data_model)
+    metric_copy_uuid = cast(MetricId, uuid())
+    target_subject.metrics_dict[metric_copy_uuid] = copy_metric(source_metric, data_model)
     description = (
         f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."

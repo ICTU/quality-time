@@ -56,7 +56,8 @@ def _get_change_key(change: Change) -> str:
 
 def metrics_of_subject(database: Database, subject_uuid: SubjectId, max_iso_timestamp: str = "") -> list[MetricId]:
     """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
-    report_filter = {f"subjects.{subject_uuid}": DOES_EXIST}
+    report_filter: dict[str, bool | dict[str, bool] | dict[str, str]] = {}
+    report_filter[f"subjects.{subject_uuid}"] = DOES_EXIST
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
         report_filter["timestamp"] = {"$lt": max_iso_timestamp}
     else:
