@@ -55,13 +55,14 @@ def _get_change_key(change: Change) -> str:
 
 
 def metrics_of_subject(database: Database, subject_uuid: SubjectId, max_iso_timestamp: str = "") -> list[MetricId]:
-    """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
+    """Return all metric uuid's for one subject."""
+    # As we filter reports by subject uuid and either timestamp or the 'last' flag, its type is a bit complicated:
     report_filter: dict[str, bool | dict[str, bool] | dict[str, str]] = {}
-    report_filter[f"subjects.{subject_uuid}"] = DOES_EXIST
+    report_filter[f"subjects.{subject_uuid}"] = DOES_EXIST  # Select reports that have the subject uuid
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter["timestamp"] = {"$lt": max_iso_timestamp}
+        report_filter["timestamp"] = {"$lt": max_iso_timestamp}  # Filter by timestamp if we're time traveling
     else:
-        report_filter["last"] = True
+        report_filter["last"] = True  # Otherwise select only reports that are the most recent ones
     projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
     report = database.reports.find_one(report_filter, projection=projection)
     return list(report["subjects"][subject_uuid]["metrics"].keys()) if report else []
