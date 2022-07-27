@@ -42,9 +42,17 @@ class MappedModelTest(MetaModelTestCase):
         self.expected_described_model = DescribedModel(**described_model_kwargs)
 
     def test_get_item(self):
-        """Test that values can be retrieved by key."""
+        """Test that values can be retrieved by key using __getitem__()."""
         self.assertEqual(self.expected_described_model, self.mapped_model["described_model_type"])
+
+    def test_get(self):
+        """Test that values can be retrieved by key using get()."""
+        self.assertEqual(self.expected_described_model, self.mapped_model.get("described_model_type"))
 
     def test_items(self):
         """Test that the items can be retrieved."""
         self.assertEqual([("described_model_type", self.expected_described_model)], list(self.mapped_model.items()))
+
+    def test_values(self):
+        """Test that the values can be retrieved."""
+        self.assertEqual([self.expected_described_model], list(self.mapped_model.values()))
