@@ -65,14 +65,14 @@ def move_item(
     container: Report | Subject | Metric, item_to_move: Subject | Metric | Source, new_position: Position
 ) -> tuple[int, int]:
     """Change the item position."""
-    itemsDictType = MutableMapping[ItemId, Metric | Source | Subject]
-    items_dict: itemsDictType
+    items_dict_type = MutableMapping[ItemId, Metric | Source | Subject]
+    items_dict: items_dict_type
     if isinstance(container, Report):
-        items_dict = cast(itemsDictType, container.subjects_dict)
+        items_dict = cast(items_dict_type, container.subjects_dict)
     elif isinstance(container, Subject):
-        items_dict = cast(itemsDictType, container.metrics_dict)
+        items_dict = cast(items_dict_type, container.metrics_dict)
     else:
-        items_dict = cast(itemsDictType, container.sources_dict)
+        items_dict = cast(items_dict_type, container.sources_dict)
 
     nr_items = len(items_dict)
     old_index = list(items_dict.keys()).index(item_to_move.uuid)
