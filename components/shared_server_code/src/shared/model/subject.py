@@ -64,7 +64,7 @@ class Subject(dict):
         data["name"] = self.report.name + " ❯ " + self.name
         return Subject(self.__data_model, data, self.uuid, self.report)
 
-    def summarize(self, measurements: dict[str, list[Measurement]]):
+    def summarize(self, measurements: dict[MetricId, list[Measurement]]):
         """Create a summary dict of this subject."""
         summary = dict(self)
         summary["metrics"] = {}
