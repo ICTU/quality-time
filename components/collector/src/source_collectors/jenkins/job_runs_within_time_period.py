@@ -11,12 +11,11 @@ from .base import JenkinsJobs
 class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
     """Collector class to measure the amount of Jenkins jobs run within a specified time period."""
 
-    days_ago: int = 90   # TODO - pass from metric args
-
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
         build_datetime = datetime.utcfromtimestamp(int(build["timestamp"] / 1000.0))
-        return build_datetime > datetime.now() - timedelta(days=self.days_ago)
+        lookback_days = int(self._parameter(parameter_key="lookback_days"))
+        return build_datetime > datetime.now() - timedelta(days=lookback_days)
 
     def _builds_within_timeperiod(self, job: Job) -> int:
         """Return the amount of job builds within timeperiod."""
