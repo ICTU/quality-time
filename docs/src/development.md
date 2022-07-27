@@ -143,17 +143,84 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 *Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed.
 
-#### Adding new metrics
+#### Adding a new metric
 
-To add a new metric you need to add a specification of the metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared data model component after adding a metric to the data model, to check the integrity of the data model. Other than changing the data model, no code changes are needed to support new metrics.
+To add a new metric you need to make two changes to the data model:
 
-#### Adding new sources
+1. Add a specification of the new metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model and the different metric fields.
+2. Update the `metric_type` parameter of the `quality_time` source in the data model. You need to add the human readable name of the new metric to the `values` list of the `metric_type` parameter and you need to add a key-value pair to the `api_values` mapping of the `metric_type` parameter, where the key is the human readable name of the metric and the value is the metric key.
+
+Be sure to run the unit tests of the shared data model component after adding a metric to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail. Other than changing the data model, no code changes are needed to support new metrics.
+
+Suppose we want to add a lines of code metric to the data model, to measure the size of software. We would add the metric to the `METRICS` model in `src/shared_data_model/metrics.py`:
+
+```python
+"""Data model metrics."""
+
+from .meta.metric import ..., Metrics, Tag, Unit
+
+...
+
+METRICS = Metrics.parse_obj(
+    dict(
+        ...
+        loc=dict(
+            name="Size (LOC)",
+            description="The size of the software in lines of code.",
+            rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
+            "one of the most widely used metrics to measure size of software.",
+            unit=Unit.LINES,
+            target="30000",
+            near_target="35000",
+            sources=["manual_number"],
+            tags=[Tag.MAINTAINABILITY],
+        ),
+        ...
+    )
+)
+```
+
+Since we have no (automated) source for the size metric yet, we have added manual number to the list of sources. We also need to add the size metric to the list of metrics that the manual number source supports:
+
+```python
+"""Manual number source."""
+
+from ..meta.source import Source
+...
+from ..parameters import IntegerParameter
+
+
+MANUAL_NUMBER = Source(
+    name="Manual number",
+    description="A number entered manually by a Quality-time user.",
+    parameters=dict(
+        number=IntegerParameter(
+            ...
+            metrics=[
+                ...
+                "loc",  # Add the size metric here
+                ...
+            ],
+        )
+    ),
+)
+```
+
+After restart of the external server component, you should be able to add the new metric to a quality report and select manual number as a source for the new metric.
+
+#### Adding a new source
 
 To add support for a new source, the source (including a logo) needs to be added to the data model. In addition, code to retrieve and parse the source data needs to be added to the collector component, including unit tests of course.
 
-##### Adding the new source to the data model
+##### Adding a new source to the data model
 
-To add a new source you need to add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model. Be sure to run the unit tests of the shared data model component after adding a source to the data model, to check the integrity of the data model.
+To add a new source you need to make three changes to the data model:
+
+1. Add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model and the different source fields.
+2. Update the `source_type` parameter of the `quality_time` source in the data model. You need to add the human readable name of the new source to the `values` list of the `source_type` parameter and you need to add a key-value pair to the `api_values` mapping of the `source_type` parameter, where the key is the human readable name of the source and the value is the metric source key (`cloc` in the example below).
+3. Add a small PNG file of the logo in [`components/shared_data_model/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`. The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
+
+Be sure to run the unit tests of the shared data model component after adding a source to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail.
 
 Suppose we want to add [cloc](https://github.com/AlDanial/cloc) as source for the LOC (size) metric and read the size of source code from the JSON file that cloc can produce. We would add a `cloc.py` to `src/shared_data_model/sources/`:
 
@@ -175,7 +242,29 @@ CLOC = Source(
 )
 ```
 
-##### Adding the new source to the collector
+Because cloc can be used to measure the lines of code metric, we need to add the cloc source to the list of sources that can measure lines of code:
+
+```python
+METRICS = Metrics.parse_obj(
+    dict(
+        ...
+        loc=dict(
+            name="Size (LOC)",
+            description="The size of the software in lines of code.",
+            rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
+            "one of the most widely used metrics to measure size of software.",
+            unit=Unit.LINES,
+            target="30000",
+            near_target="35000",
+            sources=["cloc", "manual_number"],  # Add cloc here
+            tags=[Tag.MAINTAINABILITY],
+        ),
+        ...
+    )
+)
+```
+
+##### Adding a new source to the collector
 
 To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py) needs to be created.
 
@@ -277,12 +366,6 @@ src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' 
 ```
 
 Add `Cloc*` to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
-
-##### Adding a logo for the new source to the data model
-
-Add a small PNG file of the logo in [`components/shared_data_model/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`.
-
-The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
 ## Testing
 

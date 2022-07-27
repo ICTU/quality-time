@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 
 ### Fixed
 
+- In the [development documentation](https://quality-time.readthedocs.io/en/latest/development.html#adding-metrics-and-sources), mention that the parameters of the 'Quality-time' source need to be changed when adding new metrics or sources to the data model. Fixes [#4278](https://github.com/ICTU/quality-time/issues/4278).
 - When time traveling, metrics would be incorrectly flagged as not having been measured recently. Fixes [#4279](https://github.com/ICTU/quality-time/issues/4279).
 
 ## v4.2.0 - 2022-07-22
