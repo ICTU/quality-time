@@ -143,7 +143,7 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 *Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed.
 
-#### Adding new metrics
+#### Adding a new metric
 
 To add a new metric you need to make two changes to the data model:
 
@@ -172,7 +172,7 @@ METRICS = Metrics.parse_obj(
             unit=Unit.LINES,
             target="30000",
             near_target="35000",
-            sources=["sonarqube"],
+            sources=["manual_number"],
             tags=[Tag.MAINTAINABILITY],
         ),
         ...
@@ -180,11 +180,39 @@ METRICS = Metrics.parse_obj(
 )
 ```
 
-#### Adding new sources
+Since we have no (automated) source for the size metric yet, we have added manual number to the list of sources. We also need to add the size metric to the list of metrics that the manual number source supports:
+
+```python
+"""Manual number source."""
+
+from ..meta.source import Source
+...
+from ..parameters import IntegerParameter
+
+
+MANUAL_NUMBER = Source(
+    name="Manual number",
+    description="A number entered manually by a Quality-time user.",
+    parameters=dict(
+        number=IntegerParameter(
+            ...
+            metrics=[
+                ...
+                "loc",  # Add the size metric here
+                ...
+            ],
+        )
+    ),
+)
+```
+
+After restart of the external server component, you should be able to add the new metric to a quality report and select manual number as a source for the new metric.
+
+#### Adding a new source
 
 To add support for a new source, the source (including a logo) needs to be added to the data model. In addition, code to retrieve and parse the source data needs to be added to the collector component, including unit tests of course.
 
-##### Adding the new source to the data model
+##### Adding a new source to the data model
 
 To add a new source you need to make three changes to the data model:
 
@@ -228,7 +256,7 @@ METRICS = Metrics.parse_obj(
             unit=Unit.LINES,
             target="30000",
             near_target="35000",
-            sources=["cloc", "sonarqube"],  # Add cloc here
+            sources=["cloc", "manual_number"],  # Add cloc here
             tags=[Tag.MAINTAINABILITY],
         ),
         ...
@@ -236,7 +264,7 @@ METRICS = Metrics.parse_obj(
 )
 ```
 
-##### Adding the new source to the collector
+##### Adding a new source to the collector
 
 To specify how *Quality-time* can collect data from the source, a new subclass of [`SourceCollector`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py) needs to be created.
 
