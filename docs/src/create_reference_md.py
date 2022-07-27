@@ -175,7 +175,7 @@ def metric_source_section(metric_key: str, source_key: str) -> str:
     metric_link = f"[{metric.name.lower()}]({slugify(metric.name)})"
     source_link = f"[{source.name}]({slugify(source.name)})"
     markdown = markdown_paragraph(f"{source_link} can be used to measure {metric_link.lower()}.")
-    if documentation := source.documentation and source.documentation.get(metric_key):
+    if documentation := (source.documentation and source.documentation.get(metric_key)):
         markdown += markdown_paragraph(documentation)
     parameters = [p for p in source.parameters.values() if metric_key in p.metrics]
     for mandatory in True, False:
@@ -198,10 +198,7 @@ def parameter_paragraph(parameters: list[Parameter], mandatory: bool) -> str:
 def parameter_description(parameter: Parameter) -> str:
     """Return the Markdown version of the parameter."""
     short_name = parameter.short_name
-    if help_text := parameter.help:
-        help_text = " " + help_text
-    else:
-        help_text = ""
+    help_text = " " + parameter.help if parameter.help else ""
     if parameter.type in ("single_choice", "multiple_choice"):
         parameter_type = parameter.type.replace("_", " ")
         values = ", ".join(sorted([f"`{value}`" for value in parameter.values or []]))
