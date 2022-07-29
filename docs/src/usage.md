@@ -639,7 +639,7 @@ The public key endpoint returns a JSON like this:
 To be able to pass the public key as query parameter to the export endpoint, it needs to be encoded. Download the public key as file:
 
 ```console
-$ curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
+curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
 ```
 
 And then encode the public key as follows:
