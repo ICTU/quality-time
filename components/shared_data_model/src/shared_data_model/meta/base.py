@@ -35,16 +35,16 @@ class MappedModel(GenericModel, Generic[ValueT]):
 
     def __getitem__(self, key: str) -> ValueT:
         """Return the model with the specified key."""
-        return self.__root__[key]
+        return self.__root__[key]  # pragma: no cover-behave
 
     def get(self, key: str) -> ValueT | None:
         """Return the model with the specified key or None if the key does not exist."""
-        return self.__root__.get(key)
+        return self.__root__.get(key)  # pragma: no cover-behave
 
     def items(self) -> ItemsView:
         """Return all keys and values."""
-        return self.__root__.items()
+        return self.__root__.items()  # pragma: no cover-behave
 
     def values(self) -> ValuesView:
         """Return all values."""
-        return self.__root__.values()
+        return self.__root__.values()  # pragma: no cover-behave
