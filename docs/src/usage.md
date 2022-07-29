@@ -614,7 +614,7 @@ To use the import and export endpoints you need to be authenticated. For example
 curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.example.org/api/v3/login
 ```
 
-### Export API
+### Exporting reports
 
 The exporting endpoint is available via `https://quality-time.source.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The exporting endpoint returns JSON content only.
 
@@ -649,7 +649,7 @@ $ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key
 -----BEGIN+PUBLIC+KEY----- ... encoded public key ... -----END+PUBLIC+KEY-----%0A
 ```
 
-### Import API
+### Importing reports
 
 The importing endpoint is available via `https://quality-time.destination.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_server_code/src/shared/example-reports) for the format.
 
@@ -666,9 +666,9 @@ If the report contains encrypted credentials, the importing *Quality-time* insta
 
 To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials. These unencrypted credentials will be imported unchanged.
 
-### Tying it all together
+### Copying reports from one *Quality-time* instance to another
 
-To summarize, use these steps to export a report from a source *Quality-time* instance and import it into a destination instance:
+Tying the previous two sections together, these steps export a report from a source *Quality-time* instance and import it into a destination instance:
 
 ```console
 # Get the public key of the destination Quality-time
