@@ -1,15 +1,12 @@
 """Notifier."""
 
 import asyncio
-import json
 import logging
 import os
 from datetime import datetime, timezone
 from typing import NoReturn
 
 import aiohttp
-
-from shared_data_model import DATA_MODEL_JSON
 
 from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
@@ -24,7 +21,7 @@ async def notify(log_level: int = None) -> NoReturn:
         f"{os.environ.get('INTERNAL_SERVER_PORT', '5002')}/api/report"
     )
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
-    notification_finder = NotificationFinder(json.loads(DATA_MODEL_JSON))
+    notification_finder = NotificationFinder()
     while True:
         record_health()
         logging.info("Determining notifications...")
@@ -42,8 +39,9 @@ async def notify(log_level: int = None) -> NoReturn:
         await asyncio.sleep(sleep_duration)
 
 
-def record_health(filename: str = "/home/notifier/health_check.txt") -> None:
+def record_health() -> None:
     """Record the current date and time in a file to allow for health checks."""
+    filename = "/home/notifier/health_check.txt"
     try:
         with open(filename, "w", encoding="utf-8") as health_check:
             health_check.write(datetime.now().isoformat())

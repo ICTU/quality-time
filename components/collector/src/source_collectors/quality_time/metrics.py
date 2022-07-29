@@ -6,6 +6,8 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_date
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.type import Response, URL, Value
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -58,7 +60,7 @@ class QualityTimeMetrics(QualityTimeCollector):
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
                         metric["report_uuid"] = report["report_uuid"]
                         metric["subject_uuid"] = subject_uuid
-                        subject_name = str(subject.get("name") or self._data_model["subjects"][subject["type"]]["name"])
+                        subject_name = str(subject.get("name") or DATA_MODEL.subjects[subject["type"]].name)
                         entity = Entity(key=metric_uuid, report=report["title"], subject=subject_name)
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
@@ -70,15 +72,15 @@ class QualityTimeMetrics(QualityTimeCollector):
         entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
         entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
         entity["metric_url"] = f"{report_url}#{entity['key']}"
-        entity["metric"] = str(metric.get("name") or self._data_model["metrics"][metric["type"]]["name"])
+        entity["metric"] = str(metric.get("name") or DATA_MODEL.metrics[metric["type"]].name)
         entity["status"] = status
         status_start = self.__metric_status_start(metric)
         entity["status_start_date"] = status_start.isoformat() if status_start else ""
-        entity["unit"] = metric.get("unit") or self._data_model["metrics"][metric["type"]]["unit"]
+        entity["unit"] = metric.get("unit") or DATA_MODEL.metrics[metric["type"]].unit.value
         entity["measurement"] = value
-        direction = str(metric.get("direction") or self._data_model["metrics"][metric["type"]]["direction"])
+        direction = str(metric.get("direction") or DATA_MODEL.metrics[metric["type"]].direction.value)
         direction = {"<": "≦", ">": "≧"}.get(direction, direction)
-        target = metric.get("target") or self._data_model["metrics"][metric["type"]]["target"]
+        target = metric.get("target") or DATA_MODEL.metrics[metric["type"]].target
         entity["target"] = f"{direction} {target}"
 
     @staticmethod

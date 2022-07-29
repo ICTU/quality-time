@@ -28,7 +28,9 @@ def insert_new_measurement(database: Database, measurement: Measurement) -> Meas
     return measurement
 
 
-def recent_measurements(database: Database, metrics_dict: dict[str, Metric], max_iso_timestamp: str = "", days=7):
+def recent_measurements(
+    database: Database, metrics_dict: dict[MetricId, Metric], max_iso_timestamp: str = "", days: int = 7
+) -> dict[MetricId, list[Measurement]]:
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()

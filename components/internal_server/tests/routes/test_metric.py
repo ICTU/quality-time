@@ -3,6 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
+from shared_data_model import DATA_MODEL
+
 from routes import get_metrics
 
 from ..fixtures import METRIC_ID, REPORT_ID, SUBJECT_ID, create_report
@@ -14,10 +16,12 @@ class MetricTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the mock database."""
         self.database = Mock()
+        data_model = DATA_MODEL.dict()
+        data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = data_model
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.datamodels.find_one.return_value = {"_id": "data_model_id", "metrics": {"metric_type": {}}}
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved."""
@@ -28,7 +32,7 @@ class MetricTest(unittest.TestCase):
                     name="Metric",
                     addition="sum",
                     accept_debt=False,
-                    type="metric_type",
+                    type="violations",
                     tags=["security"],
                     target="0",
                     scales=["count", "percentage"],
@@ -39,7 +43,7 @@ class MetricTest(unittest.TestCase):
                     status_start=None,
                     sources=dict(
                         source_uuid=dict(
-                            name="Source", type="source_type", parameters=dict(url="https://url", password="password")
+                            name="Source", type="sonarqube", parameters=dict(url="https://url", password="password")
                         )
                     ),
                 )
@@ -58,7 +62,7 @@ class MetricTest(unittest.TestCase):
                     name="Metric",
                     addition="sum",
                     accept_debt=False,
-                    type="metric_type",
+                    type="violations",
                     tags=["security"],
                     target="0",
                     issue_ids=["FOO-42"],
@@ -71,7 +75,7 @@ class MetricTest(unittest.TestCase):
                     scales=["count", "percentage"],
                     sources=dict(
                         source_uuid=dict(
-                            name="Source", type="source_type", parameters=dict(url="https://url", password="password")
+                            name="Source", type="sonarqube", parameters=dict(url="https://url", password="password")
                         )
                     ),
                 )

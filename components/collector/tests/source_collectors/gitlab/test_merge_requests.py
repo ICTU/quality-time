@@ -73,7 +73,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
     async def collect_merge_requests(self, execute_mock):
         """Return the source responses."""
         with patch("aiogqlc.GraphQLClient.execute", execute_mock):
-            collector = MetricCollector(None, self.metric, self.data_model)
+            collector = MetricCollector(None, self.metric)
             return await collector.collect()
 
     async def test_merge_requests(self):

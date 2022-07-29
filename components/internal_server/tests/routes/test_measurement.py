@@ -4,9 +4,11 @@ import unittest
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
+from shared_data_model import DATA_MODEL
+
 from routes import post_measurement
 
-from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
+from ..fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -28,7 +30,7 @@ class PostMeasurementTests(unittest.TestCase):
                     metrics={
                         METRIC_ID: dict(
                             name="name",
-                            type="metric_type",
+                            type="violations",
                             scale="count",
                             addition="sum",
                             direction="<",
@@ -38,19 +40,24 @@ class PostMeasurementTests(unittest.TestCase):
                             accept_debt=False,
                             tags=[],
                             sources={SOURCE_ID: dict(type="junit"), SOURCE_ID2: dict(type="junit")},
-                        )
+                        ),
+                        METRIC_ID2: dict(
+                            direction="<",
+                            scale="version_number",
+                            type="source_version",
+                            target="0",
+                            near_target="10",
+                            sources={SOURCE_ID: dict(type="junit")},
+                        ),
                     }
                 ),
             },
         )
         self.database.reports.find.return_value = [self.report]
         self.database.reports.find_one.return_value = self.report
-        self.data_model = dict(
-            _id="",
-            metrics=dict(metric_type=dict(direction="<", scales=["count"])),
-            sources=dict(junit=dict(entities={})),
-        )
-        self.database.datamodels.find_one.return_value = self.data_model
+        data_model = DATA_MODEL.dict()
+        data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = data_model
 
         def set_measurement_id(measurement):
             """Fake setting a measurement id on the inserted measurement."""
@@ -116,7 +123,7 @@ class PostMeasurementTests(unittest.TestCase):
     def test_first_measurement_two_scales(self, request):
         """Post the first measurement for a metric with two scales."""
         self.database.measurements.find_one.return_value = None
-        self.data_model["metrics"]["metric_type"]["scales"].append("percentage")
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["type"] = "complex_units"
         sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         request.json = self.posted_measurement
         post_measurement(self.database)
@@ -131,14 +138,13 @@ class PostMeasurementTests(unittest.TestCase):
     def test_first_measurement_version_number_scale(self, request):
         """Post the first measurement on the version number scale."""
         self.database.measurements.find_one.return_value = None
-        self.data_model["metrics"]["metric_type"]["scales"] = ["version_number"]
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
         self.posted_measurement["sources"] = [self.source(value="1.1.3")]
+        self.posted_measurement["metric_uuid"] = METRIC_ID2
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
             self.measurement(
+                metric_uuid=METRIC_ID2,
                 sources=[self.source(value="1.1.3")],
                 version_number=self.scale_measurement(value="1.1.3", status="near_target_met"),
             )

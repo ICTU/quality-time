@@ -1,12 +1,12 @@
 """Unit tests for the base models."""
 
-from shared_data_model.meta.base import DescribedModel
+from shared_data_model.meta.base import DescribedModel, MappedModel
 
 from .base import MetaModelTestCase
 
 
 class DescribedModelTest(MetaModelTestCase):
-    """Data meta model unit tests."""
+    """Unit tests for described models."""
 
     MODEL = DescribedModel
 
@@ -29,3 +29,30 @@ class DescribedModelTest(MetaModelTestCase):
     def test_empty_description(self):
         """Test that the description has a non-zero length."""
         self.check_validation_error('description\n  string does not match regex ".+"', name="Name", description="")
+
+
+class MappedModelTest(MetaModelTestCase):
+    """Unit tests for mapped models."""
+
+    def setUp(self):
+        """Extend to setup the model."""
+        super().setUp()
+        described_model_kwargs = dict(name="Name", description="Description")
+        self.mapped_model = MappedModel[DescribedModel].parse_obj(dict(described_model_type=described_model_kwargs))
+        self.expected_described_model = DescribedModel(**described_model_kwargs)
+
+    def test_get_item(self):
+        """Test that values can be retrieved by key using __getitem__()."""
+        self.assertEqual(self.expected_described_model, self.mapped_model["described_model_type"])
+
+    def test_get(self):
+        """Test that values can be retrieved by key using get()."""
+        self.assertEqual(self.expected_described_model, self.mapped_model.get("described_model_type"))
+
+    def test_items(self):
+        """Test that the items can be retrieved."""
+        self.assertEqual([("described_model_type", self.expected_described_model)], list(self.mapped_model.items()))
+
+    def test_values(self):
+        """Test that the values can be retrieved."""
+        self.assertEqual([self.expected_described_model], list(self.mapped_model.values()))

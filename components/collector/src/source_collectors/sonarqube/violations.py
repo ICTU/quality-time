@@ -1,5 +1,7 @@
 """SonarQube violations collector."""
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -36,7 +38,7 @@ class SonarQubeViolations(SonarQubeCollector):
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
         rules = (
-            self._data_model["sources"][self.source_type]["configuration"][self.rules_configuration]["value"]
+            DATA_MODEL.sources[self.source_type].configuration[self.rules_configuration].value
             if self.rules_configuration
             else []
         )

@@ -27,6 +27,6 @@ def delete(database: Database, session_id: SessionId) -> None:
     database.sessions.delete_one(dict(session_id=session_id))
 
 
-def get(database, session_id) -> SessionId:
+def get(database, session_id: SessionId):
     """Return the session object belonging to a session id."""
     return database.sessions.find_one({"session_id": session_id})

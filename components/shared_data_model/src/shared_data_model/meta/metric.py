@@ -3,9 +3,9 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
+from pydantic import Field, validator
 
-from .base import DescribedModel
+from .base import DescribedModel, MappedModel
 from .unit import Unit
 
 
@@ -61,7 +61,5 @@ class Metric(DescribedModel):
         return scales[0] if len(scales) == 1 else default_scale
 
 
-class Metrics(BaseModel):  # pylint: disable=too-few-public-methods
+class Metrics(MappedModel[Metric]):  # pylint: disable=too-few-public-methods
     """Metrics mapping."""
-
-    __root__: dict[str, Metric]

@@ -99,7 +99,7 @@ class Report(dict):
             sources.update(metric.sources_dict)
         return sources
 
-    def summarize(self, measurements: dict[str, list[Measurement]]) -> dict:
+    def summarize(self, measurements: dict[MetricId, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
         summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
@@ -123,7 +123,7 @@ class Report(dict):
 
         return summary
 
-    def instance_and_parents_for_uuid(self, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> tuple | None:
+    def instance_and_parents_for_uuid(self, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> tuple:
         """Find an instance and its parents.
 
         For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in
@@ -135,10 +135,9 @@ class Report(dict):
             metric = self.metrics_dict[metric_uuid]
             subject = self.subjects_dict[metric.subject_uuid]
             return (metric, subject)
-
         if source_uuid is not None:
             source = self.sources_dict[source_uuid]
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return (source, metric, subject)
-        return None  # pragma: no cover-behave
+        raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no cover-behave

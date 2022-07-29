@@ -5,8 +5,6 @@ import unittest
 
 from strategies.notification_strategy import NotificationFinder
 
-from ..data_model import DATA_MODEL
-
 
 class StrategiesTests(unittest.TestCase):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
@@ -15,7 +13,7 @@ class StrategiesTests(unittest.TestCase):
         """Override to create a reports JSON fixture."""
         self.old_timestamp = "2019-01-01T00:00:00+00:00"
         self.new_timestamp = "2020-01-01T00:00:00+00:00"
-        self.notification_finder = NotificationFinder(DATA_MODEL)
+        self.notification_finder = NotificationFinder()
         self.most_recent_measurement_seen = datetime.min.replace(tzinfo=timezone.utc)
         self.white_metric_status = "unknown"
         self.red_metric = self.metric(

@@ -2,6 +2,8 @@
 
 from typing import cast
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 from model import Entities, Entity, SourceMeasurement, SourceResponses
@@ -16,7 +18,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
         """Override to parse the tests from the Robot Framework XML."""
         nr_of_tests, total_nr_of_tests, test_entities = 0, 0, Entities()
         test_results = cast(list[str], self._parameter("test_result"))
-        all_test_results = self._data_model["sources"][self.source_type]["parameters"]["test_result"]["values"]
+        all_test_results = DATA_MODEL.sources[self.source_type].parameters["test_result"].values or []
         for response in responses:
             count, total, entities = await self._parse_source_response(response, test_results, all_test_results)
             nr_of_tests += count

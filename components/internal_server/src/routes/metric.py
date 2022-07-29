@@ -5,17 +5,15 @@ from typing import Any
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
-
 from database.reports import latest_reports
 
 
 @bottle.get("/api/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
-    data_model = latest_datamodel(database)
     metrics: dict[str, Any] = {}
-    for report in latest_reports(database, data_model):
+    # DeepSource somehow confuses latest_reports() with another latest_reports() that needs two arguments, suppress.
+    for report in latest_reports(database):  # skipcq: PYL-E1120
         issue_tracker = report.get("issue_tracker", {})
         has_issue_tracker = bool(issue_tracker.get("type") and issue_tracker.get("parameters", {}).get("url"))
         for metric in report.metrics:

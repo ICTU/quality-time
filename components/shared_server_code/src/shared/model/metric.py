@@ -31,7 +31,7 @@ class Metric(dict):
         data_model,
         metric_data,
         metric_uuid: MetricId,
-        subject_uuid: SubjectId = SubjectId(""),
+        subject_uuid: SubjectId = cast(SubjectId, ""),
     ) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid

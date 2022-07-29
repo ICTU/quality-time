@@ -1,6 +1,5 @@
 """Unit tests for the collector main script."""
 
-import json
 import logging
 import unittest
 from copy import deepcopy
@@ -10,8 +9,7 @@ from unittest.mock import AsyncMock, Mock, call, mock_open, patch
 import aiohttp
 
 import quality_time_collector
-from base_collectors import Collector, MetricCollector, SourceCollector
-from model import SourceMeasurement, SourceResponses
+from base_collectors import Collector
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
@@ -29,27 +27,18 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         """Override to set up common test data."""
-
-        class SourceMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
-            """Register a fake collector automatically."""
-
-            async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-                """Override to return a source measurement fixture."""
-                return SourceMeasurement(value="42", total="84")
-
-        self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
-        self.collector = Collector(self.data_model)
-        self.collector.data_model = self.data_model
+        self.collector = Collector()
         self.url = "https://url"
         self.measurement_api_url = "http://localhost:5002/api/measurements"
         self.metrics = dict(
             metric_uuid=dict(
                 report_uuid="report_uuid",
                 addition="sum",
-                type="metric",
-                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
+                type="dependencies",
+                sources=dict(source_id=dict(type="pip", parameters=dict(url=self.url))),
             )
         )
+        self.pip_json = [dict(name="a dependency")]
 
     @staticmethod
     def _patched_get(mock_async_get_request, side_effect=None):
@@ -76,12 +65,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def _source(self, **kwargs):
         """Create a source."""
         connection_error = kwargs.get("connection_error")
+        entities = kwargs.get(
+            "entities", [dict(name="a dependency", key="a dependency@?", version="unknown", latest="unknown")]
+        )
         return dict(
             api_url=kwargs.get("api_url", self.url),
             landing_url=kwargs.get("landing_url", self.url),
-            value=None if connection_error else kwargs.get("value", "42"),
-            total=None if connection_error else kwargs.get("total", "84"),
-            entities=[],
+            value=None if connection_error else kwargs.get("value", "1"),
+            total=None if connection_error else kwargs.get("total", "100"),
+            entities=[] if connection_error else entities,
             connection_error=connection_error,
             parse_error=None,
             source_uuid="source_id",
@@ -89,27 +81,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_successful(self):
         """Test fetching a test metric."""
-
-        class TestMetric(MetricCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
-            """Register a fake metric collector automatically."""
-
-        class SourceTestMetric(SourceCollector):  # pylint: disable=unused-variable # skipcq: PTC-W0065
-            """Register a fake source collector for the test metric automatically."""
-
-            async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-                """Override to return a source measurement fixture."""
-                return SourceMeasurement(value="42", total="84")
-
-        metrics = dict(
-            metric_uuid=dict(
-                report_uuid="report_uuid",
-                type="test_metric",
-                addition="sum",
-                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
-            )
-        )
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = metrics
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json]
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
@@ -119,24 +92,18 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
-        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
+        self.metrics["metric_uuid"]["sources"] = {}
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = metrics
+        mock_async_get_request.json.return_value = self.metrics
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
 
     async def test_fetch_with_unsupported_collector(self):
         """Test fetching measurement for a metric with an unsupported source."""
-        metrics = dict(
-            metric_uuid=dict(
-                type="metric",
-                addition="sum",
-                sources=dict(source_id=dict(type="unsupported_source", parameters=dict(url=self.url))),
-            )
-        )
+        self.metrics["metric_uuid"]["sources"]["source_id"] = dict(type="unsopported_source")
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = metrics
+        mock_async_get_request.json.return_value = self.metrics
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -189,7 +156,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_fetch_with_post_error(self):
         """Test fetching measurement when posting fails."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = self.metrics
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json]
         with self._patched_post(side_effect=RuntimeError) as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
@@ -202,9 +169,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_collect(self):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.metrics]
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json]
         with self._patched_get(mock_async_get_request), self._patched_post() as post, self.assertRaises(RuntimeError):
-            await quality_time_collector.collect(json.dumps(self.data_model))
+            await quality_time_collector.collect()
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
@@ -213,7 +180,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_fetch_twice(self):
         """Test that the metric is skipped on the second fetch."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.metrics, self.metrics]
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json, self.metrics, self.pip_json]
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request, number=2)
         post.assert_called_once_with(
@@ -227,11 +194,11 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",
-            type="metric",
-            sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
+            type="dependencies",
+            sources=dict(source_id=dict(type="pip", parameters=dict(url=self.url))),
         )
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.metrics, self.metrics]
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json, self.metrics, self.pip_json]
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request, number=2)
         expected_call1 = call(
@@ -250,13 +217,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",
-            type="metric",
-            sources=dict(source_id=dict(type="source", parameters=dict(url=self.url))),
+            type="dependencies",
+            sources=dict(source_id=dict(type="pip", parameters=dict(url=self.url))),
         )
         edited_metrics = deepcopy(self.metrics)
         edited_url = edited_metrics["metric_uuid"]["sources"]["source_id"]["parameters"]["url"] = "https://edited_url"
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.metrics, edited_metrics]
+        mock_async_get_request.json.side_effect = [self.metrics, self.pip_json, edited_metrics, self.pip_json]
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request, number=2)
         expected_call1 = call(
@@ -276,29 +243,28 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
-        metrics = dict(
-            metric_uuid=dict(
-                type="metric", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))
-            )
-        )
+        self.metrics["metric_uuid"]["sources"]["source_id"]["parameters"]["url"] = ""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.return_value = metrics
+        mock_async_get_request.json.return_value = self.metrics
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
 
     async def test_missing_mandatory_parameter_with_default_value(self):
         """Test that a metric with sources and a missing mandatory parameter that has a default value is not skipped."""
-        self.data_model["sources"]["source"]["parameters"]["token"] = dict(
-            default_value="xxx", mandatory=True, metrics=["metric"]
-        )
+        self.metrics["metric_uuid"]["sources"]["source_id"] = dict(type="manual_number")
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = self.metrics
         with self._patched_post() as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
             self.measurement_api_url,
-            json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
+            json=dict(
+                has_error=False,
+                sources=[self._source(value="0", entities=[], api_url="", landing_url="")],
+                metric_uuid="metric_uuid",
+                report_uuid="report_uuid",
+            ),
         )
 
     @patch("builtins.open", new_callable=mock_open)

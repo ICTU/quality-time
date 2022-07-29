@@ -5,7 +5,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
 
-from .base import NamedModel
+from .base import MappedModel, NamedModel
 
 
 class Color(str, Enum):
@@ -55,6 +55,11 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
         """Set the key to the lower case version of the name if there's no key."""
         return values["name"].lower().replace(" ", "_") if not key else key
 
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic configuration for this model class."""
+
+        use_enum_values = True  # Use the value property of enums, needed so model.dict() gets the value of enums
+
 
 class Entity(BaseModel):
     """Measurement entity (violation, warning, etc.)."""
@@ -84,7 +89,5 @@ class Entity(BaseModel):
         return measured_attribute
 
 
-class Entities(BaseModel):  # pylint: disable=too-few-public-methods
+class Entities(MappedModel[Entity]):  # pylint: disable=too-few-public-methods
     """Entity mapping."""
-
-    __root__: dict[str, Entity]

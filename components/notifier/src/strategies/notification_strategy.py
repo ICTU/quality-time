@@ -9,10 +9,6 @@ from models.metric_notification_data import MetricNotificationData
 class NotificationFinder:
     """Handle notification contents and status."""
 
-    def __init__(self, data_model):
-        """Store the data model, we need it to retrieve default metric values, such as the metric name."""
-        self.data_model = data_model
-
     def get_notifications(self, json, most_recent_measurement_seen: datetime) -> list[Notification]:
         """Return the reports that have a webhook and metrics that require notifying."""
         notifications = []
@@ -21,7 +17,7 @@ class NotificationFinder:
             for subject in report["subjects"].values():
                 for metric in subject["metrics"].values():
                     if self.status_changed(metric, most_recent_measurement_seen):
-                        notable_metrics.append(MetricNotificationData(metric, subject, self.data_model))
+                        notable_metrics.append(MetricNotificationData(metric, subject))
             if notable_metrics:
                 for destination_uuid, destination in report.get("notification_destinations", {}).items():
                     notifications.append(Notification(report, notable_metrics, destination_uuid, destination))

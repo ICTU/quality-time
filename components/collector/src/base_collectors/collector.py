@@ -51,11 +51,10 @@ class Collector:
     MEASUREMENT_LIMIT = int(os.environ.get("COLLECTOR_MEASUREMENT_LIMIT", 30))
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
-    def __init__(self, data_model: JSONDict) -> None:
+    def __init__(self) -> None:
         internal_server_host = os.environ.get("INTERNAL_SERVER_HOST", "localhost")
         internal_server_port = os.environ.get("INTERNAL_SERVER_PORT", "5002")
         self.server_url: Final[URL] = URL(f"http://{internal_server_host}:{internal_server_port}")
-        self.data_model = data_model
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
 
@@ -110,7 +109,7 @@ class Collector:
         self.__previous_metrics[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
         metric_collector_class = MetricCollector.get_subclass(metric["type"])
-        metric_collector = metric_collector_class(session, metric, self.data_model)
+        metric_collector = metric_collector_class(session, metric)
         if measurement := await metric_collector.collect():
             measurement.metric_uuid = metric_uuid
             measurement.report_uuid = metric["report_uuid"]

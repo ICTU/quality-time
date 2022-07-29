@@ -3,9 +3,9 @@
 from enum import Enum
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, HttpUrl, validator  # pylint: disable=no-name-in-module
+from pydantic import Field, HttpUrl, validator  # pylint: disable=no-name-in-module
 
-from .base import NamedModel
+from .base import MappedModel, NamedModel
 
 
 class ParameterType(str, Enum):
@@ -99,7 +99,5 @@ class Parameter(NamedModel):
         return bool(values.get("type") == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
 
 
-class Parameters(BaseModel):  # pylint: disable=too-few-public-methods
+class Parameters(MappedModel[Parameter]):  # pylint: disable=too-few-public-methods
     """Parameter mapping."""
-
-    __root__: dict[str, Parameter]

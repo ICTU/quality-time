@@ -1,8 +1,8 @@
 """Data model subject."""
 
-from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
+from pydantic import Field
 
-from .base import DescribedModel
+from .base import DescribedModel, MappedModel
 
 
 class Subject(DescribedModel):  # pylint: disable=too-few-public-methods
@@ -11,7 +11,5 @@ class Subject(DescribedModel):  # pylint: disable=too-few-public-methods
     metrics: list[str] = Field(..., min_items=1)
 
 
-class Subjects(BaseModel):  # pylint: disable=too-few-public-methods
+class Subjects(MappedModel[Subject]):  # pylint: disable=too-few-public-methods
     """Subjects mapping."""
-
-    __root__: dict[str, Subject]
