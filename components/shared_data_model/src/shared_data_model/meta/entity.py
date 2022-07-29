@@ -55,6 +55,11 @@ class EntityAttribute(NamedModel):  # pylint: disable=too-few-public-methods
         """Set the key to the lower case version of the name if there's no key."""
         return values["name"].lower().replace(" ", "_") if not key else key
 
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic configuration for this model class."""
+
+        use_enum_values = True  # Use the value property of enums, needed so model.dict() gets the value of enums
+
 
 class Entity(BaseModel):
     """Measurement entity (violation, warning, etc.)."""
