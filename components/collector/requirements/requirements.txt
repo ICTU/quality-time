@@ -8,9 +8,9 @@ aiodns==3.0.0 \
     --hash=sha256:2b19bc5f97e5c936638d28e665923c093d8af2bf3aa88d35c43417fa25d136a2 \
     --hash=sha256:946bdfabe743fceeeb093c8a010f5d1645f708a241be849e17edfb0e49e08cd6
     # via -r requirements.in
-aiogqlc==3.0.0 \
-    --hash=sha256:61067be1be9cb3cbe53f6e47e5152fd21559c30831d9bb45577ea6335c5f1968 \
-    --hash=sha256:c694a954440c2baffdd49bd25c5b454af2851fe56059c053d0894cc1721d8fe2
+aiogqlc==3.1.0 \
+    --hash=sha256:19ab1cc5a586f3c31a501316a1ea44d249311d6bfed07406d95eedca2b9d0542 \
+    --hash=sha256:c123816d6f01241a92b4de411c29fe3cec0ee341793989ca731ee4393897dfb3
     # via -r requirements.in
 aiohttp==3.8.1 \
     --hash=sha256:01d7bdb774a9acc838e6b8f1d114f45303841b89b95984cbb7d80ea41172a9e3 \
