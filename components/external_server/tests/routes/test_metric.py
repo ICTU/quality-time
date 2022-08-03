@@ -197,13 +197,21 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
         self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(target="10")
-        self.assertEqual(
+        self.assertDictEqual(
             dict(
                 end="2019-01-01",
                 sources=[],
                 start="2019-01-01",
                 metric_uuid=METRIC_ID,
-                count=dict(status=None, value=None, target="10", near_target="10", debt_target=None, direction="<"),
+                count=dict(
+                    status=None,
+                    status_start="2019-01-01",
+                    value=None,
+                    target="10",
+                    near_target="10",
+                    debt_target=None,
+                    direction="<",
+                ),
             ),
             post_metric_attribute(METRIC_ID, "target", self.database),
         )
@@ -227,6 +235,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                 count=dict(
                     value=None,
                     status=None,
+                    status_start="2019-01-01",
                     target="0",
                     near_target="10",
                     debt_target=None,
@@ -278,7 +287,15 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
         self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(debt_end_date="2019-06-07")
-        count = dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<")
+        count = dict(
+            value=None,
+            status=None,
+            status_start="2019-01-01",
+            target="0",
+            near_target="10",
+            debt_target=None,
+            direction="<",
+        )
         new_measurement = dict(end="2019-01-01", sources=[], start="2019-01-01", metric_uuid=METRIC_ID, count=count)
         self.assertEqual(new_measurement, post_metric_attribute(METRIC_ID, "debt_end_date", self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]

@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 - In the [development documentation](https://quality-time.readthedocs.io/en/latest/development.html#adding-metrics-and-sources), mention that the parameters of the 'Quality-time' source need to be changed when adding new metrics or sources to the data model. Fixes [#4278](https://github.com/ICTU/quality-time/issues/4278).
 - When time traveling, metrics would be incorrectly flagged as not having been measured recently. Fixes [#4279](https://github.com/ICTU/quality-time/issues/4279).
 - The documentation about exporting and importing reports via the API did not mention that the public key of the destination *Quality-time* instance has to be encoded before being passed as parameter to the export endpoint of the source *Quality-time* instance. Fixes [#4313](https://github.com/ICTU/quality-time/issues/4313).
+- The status start date of metrics would only be set on their first status *change*, not on their first status. Fixes [#4327](https://github.com/ICTU/quality-time/issues/4327).
 
 ## v4.2.0 - 2022-07-22
 
