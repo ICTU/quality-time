@@ -1,4 +1,4 @@
-FROM python:3.10.5-bullseye AS compile-image
+FROM python:3.10.6-bullseye AS compile-image
 
 WORKDIR /home/collector
 
@@ -12,7 +12,7 @@ COPY shared_data_model /home/shared_data_model/
 COPY collector/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.10.5-bullseye
+FROM python:3.10.6-bullseye
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time collector"
