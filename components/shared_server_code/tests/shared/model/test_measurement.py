@@ -77,11 +77,12 @@ class ScaleMeasurementTest(MeasurementTestCase):
         self.assertEqual(status_start, "yesterday")
 
     def test_status_start_empty(self):
-        """The status_start should return None."""
-        measurement = Measurement(self.metric())
+        """The status_start should return the start of the measurement."""
+        measurement = Measurement(self.metric(), start="now")
         s_m = ScaleMeasurement(previous_scale_measurement=None, measurement=measurement)
+        s_m.update_value_and_status()
         status_start = s_m.status_start()
-        self.assertIs(status_start, None)
+        self.assertIs(status_start, "now")
 
     def test_set_status_start(self):
         """Test status_start."""
@@ -112,18 +113,6 @@ class ScaleMeasurementTest(MeasurementTestCase):
         s_m = ScaleMeasurement(previous_scale_measurement=previous_s_m, measurement=measurement)
         s_m._ScaleMeasurement__set_status_start("target_not_met")  # pylint: disable=protected-access
         self.assertEqual(s_m.status_start(), measurement["start"])
-
-    def test_set_status_start_no_status_start(self):
-        """Test status_start."""
-        measurement = Measurement(self.metric())
-        previous_s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=measurement,
-            status="target_met",
-        )
-        s_m = ScaleMeasurement(previous_scale_measurement=previous_s_m, measurement=measurement)
-        s_m._ScaleMeasurement__set_status_start("target_met")  # pylint: disable=protected-access
-        self.assertIs(s_m.status_start(), None)
 
     @patch.object(
         ScaleMeasurement,
