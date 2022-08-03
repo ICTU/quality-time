@@ -112,6 +112,7 @@ export function ViewPanel({
                     <VisibleColumnMenuItem column="target" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="unit" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="time_left" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
@@ -126,6 +127,7 @@ export function ViewPanel({
                     <SortColumnMenuItem column="target" disabled={multipleDateColumns || hiddenColumns.includes("target")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="unit" disabled={hiddenColumns.includes("unit")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="source" disabled={hiddenColumns.includes("source")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="time_left" disabled={hiddenColumns.includes("time_left")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="comment" disabled={hiddenColumns.includes("comment")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="issues" disabled={hiddenColumns.includes("issues")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="tags" disabled={hiddenColumns.includes("tags")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
@@ -207,7 +209,7 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenCo
     return (
         <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
             <Menu.Item active={disabled ? false : !hiddenColumns?.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
-                {capitalize(column)}
+                {capitalize(column).replaceAll('_', ' ')}
             </Menu.Item>
         </div>
     )
@@ -224,7 +226,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
     return (
         <div onKeyPress={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>
             <Menu.Item active={active} color={activeColor} disabled={disabled} onClick={() => handleSort(column)}>
-                {capitalize(column === "name" ? "metric" : column)} <span>{sortIndicator}</span>
+                {capitalize(column === "name" ? "metric" : column).replaceAll('_', ' ')} <span>{sortIndicator}</span>
             </Menu.Item>
         </div>
     )
