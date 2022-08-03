@@ -117,7 +117,10 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = self.posted_measurement
         post_measurement(self.database)
         self.database.measurements.insert_one.assert_called_once_with(
-            self.measurement(count=self.scale_measurement(value="2", status="near_target_met"), sources=sources)
+            self.measurement(
+                count=self.scale_measurement(value="2", status="near_target_met", status_start="2019-01-01"),
+                sources=sources,
+            )
         )
 
     def test_first_measurement_two_scales(self, request):
@@ -130,8 +133,8 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.insert_one.assert_called_once_with(
             self.measurement(
                 sources=sources,
-                count=self.scale_measurement(value="2", status="near_target_met"),
-                percentage=dict(direction="<", value="1", status="target_not_met"),
+                count=self.scale_measurement(value="2", status="near_target_met", status_start="2019-01-01"),
+                percentage=dict(direction="<", value="1", status="target_not_met", status_start="2019-01-01"),
             )
         )
 
@@ -146,7 +149,9 @@ class PostMeasurementTests(unittest.TestCase):
             self.measurement(
                 metric_uuid=METRIC_ID2,
                 sources=[self.source(value="1.1.3")],
-                version_number=self.scale_measurement(value="1.1.3", status="near_target_met"),
+                version_number=self.scale_measurement(
+                    value="1.1.3", status="near_target_met", status_start="2019-01-01"
+                ),
             )
         )
 
