@@ -13,10 +13,19 @@ export function TimeLeft({ status, statusStart }) {
     const now = new Date()
     const timeLeft = deadline.getTime() - now.getTime()
     let daysLeft = 0
-    let deadlineLabel = "Deadline was"
+    let deadlineLabel = "Deadline to address this metric was"
     if (timeLeft >= 0) {
         daysLeft = Math.round(timeLeft / (24 * 60 * 60 * 1000))
-        deadlineLabel = "Time left"
+        deadlineLabel = "Time left to address this metric"
     }
-    return (<Popup trigger={<span>{`${daysLeft} ${pluralize("day", daysLeft)}`}</span>} flowing hoverable><TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate></Popup>)
+    return (
+        <Popup
+            flowing
+            hoverable
+            trigger={<span>{`${daysLeft} ${pluralize("day", daysLeft)}`}</span>}
+        >
+            <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.
+            Configure the deadlines in the report header.
+        </Popup>
+    )
 }
