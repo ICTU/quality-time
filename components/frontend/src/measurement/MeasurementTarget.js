@@ -25,7 +25,7 @@ function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
         }
         text += ` technical debt was accepted until ${endDate.toLocaleDateString()}`
     }
-    return text + "."
+    return text + (text.endsWith(".") ? "" : ".")
 }
 
 export function MeasurementTarget({ metric }) {
