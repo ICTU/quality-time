@@ -55,6 +55,7 @@ function Logout({ user, email, set_user }) {
 export function Menubar({
     atHome,
     clearVisibleDetailsTabs,
+    setVisibleDetailsTabs,
     email,
     go_home,
     onDate,
@@ -105,7 +106,7 @@ export function Menubar({
                                         aria-label="Collapse all metrics"
                                         basic
                                         disabled={visibleDetailsTabs?.length === 0}
-                                        onClick={() => clearVisibleDetailsTabs()}
+                                        onClick={() => setVisibleDetailsTabs([])}
                                         icon={
                                             <Icon
                                                 name={`caret ${visibleDetailsTabs?.length === 0 ? "right" : "down"}`}

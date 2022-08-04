@@ -4,8 +4,8 @@ import { ViewPanel } from './ViewPanel';
 
 function eventHandlers() {
     return {
-        clearHiddenColumns: jest.fn(),
-        clearVisibleDetailsTabs: jest.fn(),
+        setHiddenColumns: jest.fn(),
+        setVisibleDetailsTabs: jest.fn(),
         handleSort: jest.fn(),
         setDateInterval: jest.fn(),
         setDateOrder: jest.fn(),
@@ -48,8 +48,8 @@ it('resets the settings', () => {
         />
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
-    expect(props.clearVisibleDetailsTabs).toHaveBeenCalled()
-    expect(props.clearHiddenColumns).toHaveBeenCalled()
+    expect(props.setVisibleDetailsTabs).toHaveBeenCalledWith([])
+    expect(props.setHiddenColumns).toHaveBeenCalledWith([])
     expect(props.handleSort).toHaveBeenCalled()
     expect(props.setDateInterval).toHaveBeenCalled()
     expect(props.setDateOrder).toHaveBeenCalled()
@@ -91,8 +91,8 @@ it('does not reset the settings when all have the default value', () => {
         />
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
-    expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
-    expect(props.clearHiddenColumns).not.toHaveBeenCalled()
+    expect(props.setVisibleDetailsTabs).not.toHaveBeenCalled()
+    expect(props.setHiddenColumns).not.toHaveBeenCalled()
     expect(props.handleSort).not.toHaveBeenCalled()
     expect(props.setDateInterval).not.toHaveBeenCalled()
     expect(props.setDateOrder).not.toHaveBeenCalled()

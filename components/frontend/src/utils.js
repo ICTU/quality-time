@@ -189,20 +189,23 @@ const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
 
 export function useURLSearchQuery(history, key, state_type, default_value) {
     // state_type can either be "boolean", "integer", "string", or "array"
+    if (state_type === "array" && !default_value) {
+        default_value = []
+    }
+
     const [state, setState] = useState(getState());
     registeredURLSearchQueryKeys.add(key);
 
     function getState() {
         const parsed_state = parseURLSearchQuery().get(key);
         if (state_type === "boolean") {
-            return parsed_state === "true"
+            return parsed_state ? parsed_state === "true" : default_value
         } else if (state_type === "integer") {
             return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
         } else if (state_type === "string") {
             return parsed_state ?? default_value
         }
-        // else state_type is "array"
-        return parsed_state?.split(",") ?? []
+        return parsed_state?.split(",") ?? default_value
     }
 
     function parseURLSearchQuery() {
@@ -210,6 +213,9 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
     }
 
     function setURLSearchQuery(new_state) {
+        if (state_type === "array" && !new_state) {
+            new_state = default_value
+        }
         let parsed = parseURLSearchQuery();
         if ((state_type === "array" && new_state.length === 0) || (new_state === default_value)) {
             parsed.delete(key)
@@ -228,11 +234,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
         setURLSearchQuery(new_state);
     }
 
-    function clearURLSearchQuery() {
-        setURLSearchQuery([]);
-    }
-
-    return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
+    return state_type === "array" ? [state, toggleURLSearchQuery, setURLSearchQuery] : [state, setURLSearchQuery]
 }
 
 export function registeredURLSearchParams(history) {
@@ -279,4 +281,26 @@ export function dropdownOptions(options) {
 
 export function slugify(name) {
     return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "")}`
+}
+
+export const DEFAULT_SETTINGS = {
+    date_interval: 7,
+    date_order: "descending",
+    hidden_columns: [],
+    hide_metrics_not_requiring_action: false,
+    nr_dates: 1,
+    sort_column: null,
+    sort_direction: "ascending",
+    tabs: [],
+    show_issue_summary: false,
+    show_issue_creation_date: false,
+    show_issue_update_date: false,
+    show_issue_due_date: false,
+    show_issue_release: false,
+    show_issue_sprint: false,
+    ui_mode: null
+}
+
+export function getDefaultSettings() {
+    return DEFAULT_SETTINGS
 }

@@ -7,8 +7,8 @@ import './ViewPanel.css';
 const activeColor = "grey"
 
 export function ViewPanel({
-    clearHiddenColumns,
-    clearVisibleDetailsTabs,
+    setHiddenColumns,
+    setVisibleDetailsTabs,
     dateInterval,
     dateOrder,
     handleSort,
@@ -65,9 +65,9 @@ export function ViewPanel({
                                     uiMode === null
                                 }
                                 onClick={() => {
-                                    clearVisibleDetailsTabs();
+                                    setVisibleDetailsTabs([]);
                                     setHideMetricsNotRequiringAction(false);
-                                    clearHiddenColumns();
+                                    setHiddenColumns([]);
                                     handleSort(null);
                                     setNrDates(1);
                                     setDateInterval(7);
