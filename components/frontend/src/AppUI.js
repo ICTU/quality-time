@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { DEFAULT_SETTINGS, getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getDefaultSettings, getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -51,21 +51,22 @@ export function AppUI({
     const user_permissions = getUserPermissions(
         user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
     )
+    const defaultSettings = getDefaultSettings() 
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
-    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", DEFAULT_SETTINGS.date_interval);
-    const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", DEFAULT_SETTINGS.date_order);
-    const [hiddenColumns, toggleHiddenColumn, setHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array", DEFAULT_SETTINGS.hidden_columns);
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", DEFAULT_SETTINGS.hide_metrics_not_requiring_action);
-    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", DEFAULT_SETTINGS.nr_dates);
-    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", DEFAULT_SETTINGS.sort_column);
-    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", DEFAULT_SETTINGS.sort_direction);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, setVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array", DEFAULT_SETTINGS.tabs);
-    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", DEFAULT_SETTINGS.show_issue_summary);
-    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", DEFAULT_SETTINGS.show_issue_creation_date);
-    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", DEFAULT_SETTINGS.show_issue_update_date);
-    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", DEFAULT_SETTINGS.show_issue_due_date);
-    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", DEFAULT_SETTINGS.show_issue_release);
-    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", DEFAULT_SETTINGS.show_issue_sprint);
+    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", defaultSettings.date_interval);
+    const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", defaultSettings.date_order);
+    const [hiddenColumns, toggleHiddenColumn, setHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array", defaultSettings.hidden_columns);
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", defaultSettings.hide_metrics_not_requiring_action);
+    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", defaultSettings.nr_dates);
+    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", defaultSettings.sort_column);
+    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", defaultSettings.sort_direction);
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, setVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array", defaultSettings.tabs);
+    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", defaultSettings.show_issue_summary);
+    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", defaultSettings.show_issue_creation_date);
+    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", defaultSettings.show_issue_update_date);
+    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", defaultSettings.show_issue_due_date);
+    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", defaultSettings.show_issue_release);
+    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", defaultSettings.show_issue_sprint);
     const issueSettings = {
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
