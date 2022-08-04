@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { put_settings } from '../api/settings';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
@@ -31,11 +32,13 @@ export function ViewPanel({
     sortDirection,
     toggleHiddenColumn,
     uiMode,
-    visibleDetailsTabs
+    visibleDetailsTabs,
+    defaultSettings
 }) {
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
     hiddenColumns = hiddenColumns ?? [];
+
     return (
         <Segment.Group
             horizontal
@@ -48,41 +51,84 @@ export function ViewPanel({
                         <Grid.Column>
                             <Button
                                 disabled={
-                                    visibleDetailsTabs?.length === 0 &&
-                                    !hideMetricsNotRequiringAction &&
-                                    hiddenColumns?.length === 0 &&
-                                    nrDates === 1 &&
-                                    dateInterval === 7 &&
-                                    dateOrder === "descending" &&
-                                    !issueSettings.showIssueCreationDate &&
-                                    !issueSettings.showIssueSummary &&
-                                    !issueSettings.showIssueUpdateDate &&
-                                    !issueSettings.showIssueDueDate &&
-                                    !issueSettings.showIssueRelease &&
-                                    !issueSettings.showIssueSprint &&
-                                    sortColumn === null &&
-                                    sortDirection === "ascending" &&
-                                    uiMode === null
+                                    visibleDetailsTabs === defaultSettings.tabs &&
+                                    hideMetricsNotRequiringAction === defaultSettings.hide_metrics_not_requiring_action &&
+                                    hiddenColumns === defaultSettings.hidden_columns &&
+                                    nrDates === defaultSettings.nr_dates &&
+                                    dateInterval === defaultSettings.date_interval &&
+                                    dateOrder === defaultSettings.date_order &&
+                                    issueSettings.showIssueCreationDate === defaultSettings.show_issue_creation_date &&
+                                    issueSettings.showIssueSummary === defaultSettings.show_issue_summary &&
+                                    issueSettings.showIssueUpdateDate === defaultSettings.show_issue_update_date &&
+                                    issueSettings.showIssueDueDate === defaultSettings.show_issue_due_date &&
+                                    issueSettings.showIssueRelease === defaultSettings.show_issue_release &&
+                                    issueSettings.showIssueSprint === defaultSettings.show_issue_sprint &&
+                                    sortColumn === defaultSettings.sort_column &&
+                                    sortDirection === defaultSettings.sort_direction &&
+                                    uiMode === defaultSettings.ui_mode
                                 }
                                 onClick={() => {
-                                    setVisibleDetailsTabs([]);
-                                    setHideMetricsNotRequiringAction(false);
-                                    setHiddenColumns([]);
-                                    handleSort(null);
-                                    setNrDates(1);
-                                    setDateInterval(7);
-                                    setDateOrder("descending");
-                                    setShowIssueCreationDate(false);
-                                    setShowIssueSummary(false);
-                                    setShowIssueUpdateDate(false);
-                                    setShowIssueDueDate(false);
-                                    setShowIssueRelease(false);
-                                    setShowIssueSprint(false);
-                                    setUIMode(null);
+                                    setVisibleDetailsTabs(defaultSettings.tabs);
+                                    setHideMetricsNotRequiringAction(defaultSettings.hide_metrics_not_requiring_action);
+                                    setHiddenColumns(defaultSettings.hidden_columns);
+                                    handleSort(defaultSettings.sort_column);
+                                    setNrDates(defaultSettings.nr_dates);
+                                    setDateInterval(defaultSettings.date_interval);
+                                    setDateOrder(defaultSettings.date_order);
+                                    setShowIssueCreationDate(defaultSettings.show_issue_creation_date);
+                                    setShowIssueSummary(defaultSettings.show_issue_summary);
+                                    setShowIssueUpdateDate(defaultSettings.show_issue_update_date);
+                                    setShowIssueDueDate(defaultSettings.show_issue_due_date);
+                                    setShowIssueRelease(defaultSettings.show_issue_release);
+                                    setShowIssueSprint(defaultSettings.show_issue_sprint);
+                                    setUIMode(defaultSettings.ui_mode);
                                 }}
                                 inverted
                             >
                                 Reset all settings
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button
+                                disabled={
+                                    visibleDetailsTabs === defaultSettings.tabs &&
+                                    hideMetricsNotRequiringAction === defaultSettings.hide_metrics_not_requiring_action &&
+                                    hiddenColumns === defaultSettings.hidden_columns &&
+                                    nrDates === defaultSettings.nr_dates &&
+                                    dateInterval === defaultSettings.date_interval &&
+                                    dateOrder === defaultSettings.date_order &&
+                                    issueSettings.showIssueCreationDate === defaultSettings.show_issue_creation_date &&
+                                    issueSettings.showIssueSummary === defaultSettings.show_issue_summary &&
+                                    issueSettings.showIssueUpdateDate === defaultSettings.show_issue_update_date &&
+                                    issueSettings.showIssueDueDate === defaultSettings.show_issue_due_date &&
+                                    issueSettings.showIssueRelease === defaultSettings.show_issue_release &&
+                                    issueSettings.showIssueSprint === defaultSettings.show_issue_sprint &&
+                                    sortColumn === defaultSettings.sort_column &&
+                                    sortDirection === defaultSettings.sort_direction &&
+                                    uiMode === defaultSettings.ui_mode
+                                }
+                                onClick={() => put_settings({
+                                    tabs: visibleDetailsTabs,
+                                    hide_metrics_not_requiring_action: hideMetricsNotRequiringAction,
+                                    hidden_columns: hiddenColumns,
+                                    nr_dates: nrDates,
+                                    date_interval: dateInterval,
+                                    date_order: dateOrder,
+                                    show_issue_creation_date: issueSettings.showIssueCreationDate,
+                                    show_issue_summary: issueSettings.showIssueSummary,
+                                    show_issue_update_date: issueSettings.showIssueUpdateDate,
+                                    show_issue_due_date: issueSettings.showIssueDueDate,
+                                    show_issue_release: issueSettings.showIssueRelease,
+                                    show_issue_sprint: issueSettings.showIssueSprint,
+                                    sort_column: sortColumn,
+                                    sort_direction: sortDirection,
+                                    ui_mode: uiMode,
+                                })}
+                                inverted
+                            >
+                                Save settings
                             </Button>
                         </Grid.Column>
                     </Grid.Row>

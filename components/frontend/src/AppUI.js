@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getDefaultSettings, getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getDefaultSettings, getUserPermissions, userPrefersDarkMode, useURLSearchQuery, DEFAULT_SETTINGS } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -33,6 +33,7 @@ export function AppUI({
     set_user,
     user
 }) {
+    const [defaultSettings, setDefaultSettings] = useState(DEFAULT_SETTINGS)
     const [uiMode, setUIMode] = useURLSearchQuery(history, "ui_mode", "string", null);
     useEffect(() => {
         const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
@@ -51,7 +52,6 @@ export function AppUI({
     const user_permissions = getUserPermissions(
         user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
     )
-    const defaultSettings = getDefaultSettings() 
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
     const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", defaultSettings.date_interval);
     const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", defaultSettings.date_order);
@@ -75,6 +75,26 @@ export function AppUI({
         showIssueRelease: showIssueRelease,
         showIssueSprint: showIssueSprint
     }
+
+    useEffect(() => {
+        getDefaultSettings().then((receivedSettings) => {
+            setDefaultSettings(receivedSettings)
+            setDateInterval(receivedSettings.date_interval)
+            setDateOrder(receivedSettings.date_order)
+            setHiddenColumns(receivedSettings.hidden_columns)
+            setHideMetricsNotRequiringAction(receivedSettings.hide_metrics_not_requiring_action)
+            setNrDates(receivedSettings.nr_dates)
+            setSortColumn(receivedSettings.sort_column)
+            setVisibleDetailsTabs(receivedSettings.tabs)
+            setShowIssueSummary(receivedSettings.show_issue_summary)
+            setShowIssueCreationDate(receivedSettings.show_issue_creation_date)
+            setShowIssueUpdateDate(receivedSettings.show_issue_update_date)
+            setShowIssueDueDate(receivedSettings.show_issue_due_date)
+            setShowIssueRelease(receivedSettings.show_issue_release)
+            setShowIssueSprint(receivedSettings.show_issue_sprint)
+            setUIMode(receivedSettings.ui_mode)
+        })
+    }, [])
 
     function handleSort(column) {
         if (column === null) {
@@ -111,7 +131,9 @@ export function AppUI({
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                        defaultSettings={defaultSettings}
                         setVisibleDetailsTabs={setVisibleDetailsTabs}
+                        visibleDetailsTabs={visibleDetailsTabs}
                         setHiddenColumns={setHiddenColumns}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}

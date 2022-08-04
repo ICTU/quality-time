@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DEFAULT_SETTINGS } from '../utils';
 import { ViewPanel } from './ViewPanel';
 
 function eventHandlers() {
@@ -68,25 +69,25 @@ it('does not reset the settings when all have the default value', () => {
     const props = eventHandlers();
     render(
         <ViewPanel
-            dateInterval={7}
-            dateOrder="descending"
-            hiddenColumns={[]}
-            hideMetricsNotRequiringAction={false}
+            dateInterval={DEFAULT_SETTINGS.date_interval}
+            dateOrder={DEFAULT_SETTINGS.date_order}
+            hiddenColumns={DEFAULT_SETTINGS.hidden_columns}
+            hideMetricsNotRequiringAction={DEFAULT_SETTINGS.hide_metrics_not_requiring_action}
             issueSettings={
                 {
-                    showIssueCreationDate: false,
-                    showIssueSummary: false,
-                    showIssueUpdateDate: false,
-                    showIssueDueDate: false,
-                    showIssueRelease: false,
-                    showIssueSprint: false
+                    showIssueCreationDate: DEFAULT_SETTINGS.show_issue_creation_date,
+                    showIssueSummary: DEFAULT_SETTINGS.show_issue_summary,
+                    showIssueUpdateDate: DEFAULT_SETTINGS.show_issue_update_date,
+                    showIssueDueDate: DEFAULT_SETTINGS.show_issue_due_date,
+                    showIssueRelease: DEFAULT_SETTINGS.show_issue_release,
+                    showIssueSprint: DEFAULT_SETTINGS.show_issue_sprint
                 }
             }
-            nrDates={1}
-            sortColumn={null}
-            sortDirection="ascending"
-            uiMode={null}
-            visibleDetailsTabs={[]}
+            nrDates={DEFAULT_SETTINGS.nr_dates}
+            sortColumn={DEFAULT_SETTINGS.sort_column}
+            sortDirection={DEFAULT_SETTINGS.sort_direction}
+            uiMode={DEFAULT_SETTINGS.ui_mode}
+            visibleDetailsTabs={DEFAULT_SETTINGS.tabs}
             {...props}
         />
     )

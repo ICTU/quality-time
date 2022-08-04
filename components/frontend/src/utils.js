@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { get_settings } from './api/settings';
 import { PERMISSIONS } from './context/Permissions';
 import { metricReactionDeadline } from './defaults';
 
@@ -301,6 +302,7 @@ export const DEFAULT_SETTINGS = {
     ui_mode: null
 }
 
-export function getDefaultSettings() {
-    return DEFAULT_SETTINGS
+export async function getDefaultSettings() {
+    const settingsResponse = await get_settings()
+    return {...DEFAULT_SETTINGS, ...settingsResponse.settings}
 }

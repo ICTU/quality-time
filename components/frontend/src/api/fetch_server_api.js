@@ -13,7 +13,7 @@ export function fetch_server_api(method, api, body, content_type) {
             'Content-Type': content_type || 'application/json'
         }
     }
-    if (method === 'post') {
+    if (method === 'post' || method === 'put') {
         options['body'] = JSON.stringify(body)
     }
     return fetch(`/api/${api_version}/${api}`, options).then(
