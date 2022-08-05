@@ -1,7 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { put_settings } from '../api/settings';
 import { DEFAULT_SETTINGS } from '../utils';
 import { ViewPanel } from './ViewPanel';
+
+jest.mock('../api/settings')
 
 function eventHandlers() {
     return {
@@ -110,7 +113,89 @@ it('does not reset the settings when all have the default value', () => {
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 
-it("sets dark mode", () => {
+it('saves the settings', async () => {
+    const props = eventHandlers();
+    await act(async () => {
+        render(
+            <ViewPanel
+                setDefaultSettings={jest.fn()}
+                defaultSettings={DEFAULT_SETTINGS}
+                dateInterval={14}
+                dateOrder="ascending"
+                hiddenColumns={["trend"]}
+                hideMetricsNotRequiringAction={true}
+                issueSettings={
+                    {
+                        showIssueCreationDate: true,
+                        showIssueSummary: true,
+                        showIssueUpdateDate: true,
+                        showIssueDueDate: true,
+                        showIssueRelease: true,
+                        showIssueSprint: true
+                    }
+                }
+                nrDates={7}
+                sortColumn="status"
+                sortDirection="descending"
+                uiMode="dark"
+                visibleDetailsTabs={["tab"]}
+                {...props}
+            />
+        )
+        fireEvent.click(screen.getByText(/Save settings/))
+    });
+    expect(put_settings).toHaveBeenCalledWith({
+        "date_interval": 14,
+        "date_order": "ascending",
+        "hidden_columns": ["trend"],
+        "hide_metrics_not_requiring_action": true,
+        "nr_dates": 7, "show_issue_creation_date": true,
+        "show_issue_due_date": true,
+        "show_issue_release": true,
+        "show_issue_sprint": true,
+        "show_issue_summary": true,
+        "show_issue_update_date": true,
+        "sort_column": "status",
+        "sort_direction": "descending",
+        "tabs": ["tab"],
+        "ui_mode": "dark"
+    })
+})
+
+it('does not save the settings when all have the default value', async () => {
+    const props = eventHandlers();
+    await act(async () => {
+        render(
+            <ViewPanel
+                defaultSettings={DEFAULT_SETTINGS}
+                dateInterval={DEFAULT_SETTINGS.date_interval}
+                dateOrder={DEFAULT_SETTINGS.date_order}
+                hiddenColumns={DEFAULT_SETTINGS.hidden_columns}
+                hideMetricsNotRequiringAction={DEFAULT_SETTINGS.hide_metrics_not_requiring_action}
+                issueSettings={
+                    {
+                        showIssueCreationDate: DEFAULT_SETTINGS.show_issue_creation_date,
+                        showIssueSummary: DEFAULT_SETTINGS.show_issue_summary,
+                        showIssueUpdateDate: DEFAULT_SETTINGS.show_issue_update_date,
+                        showIssueDueDate: DEFAULT_SETTINGS.show_issue_due_date,
+                        showIssueRelease: DEFAULT_SETTINGS.show_issue_release,
+                        showIssueSprint: DEFAULT_SETTINGS.show_issue_sprint
+                    }
+                }
+                nrDates={DEFAULT_SETTINGS.nr_dates}
+                sortColumn={DEFAULT_SETTINGS.sort_column}
+                sortDirection={DEFAULT_SETTINGS.sort_direction}
+                uiMode={DEFAULT_SETTINGS.ui_mode}
+                visibleDetailsTabs={DEFAULT_SETTINGS.tabs}
+                {...props}
+            />
+        )
+        fireEvent.click(screen.getByText(/Reset all settings/))
+    });
+    expect(put_settings).not.toHaveBeenCalledWith()
+})
+
+it("sets dark mode", async () => {
     const setUIMode = jest.fn();
     render(<ViewPanel defaultSettings={DEFAULT_SETTINGS} hideMetricsNotRequiringAction={false} setUIMode={setUIMode} />)
     fireEvent.click(screen.getByText(/Dark mode/))
