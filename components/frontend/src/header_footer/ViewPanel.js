@@ -8,6 +8,7 @@ import './ViewPanel.css';
 const activeColor = "grey"
 
 export function ViewPanel({
+    setDefaultSettings,
     setHiddenColumns,
     setVisibleDetailsTabs,
     dateInterval,
@@ -109,23 +110,28 @@ export function ViewPanel({
                                     sortDirection === defaultSettings.sort_direction &&
                                     uiMode === defaultSettings.ui_mode
                                 }
-                                onClick={() => put_settings({
-                                    tabs: visibleDetailsTabs,
-                                    hide_metrics_not_requiring_action: hideMetricsNotRequiringAction,
-                                    hidden_columns: hiddenColumns,
-                                    nr_dates: nrDates,
-                                    date_interval: dateInterval,
-                                    date_order: dateOrder,
-                                    show_issue_creation_date: issueSettings.showIssueCreationDate,
-                                    show_issue_summary: issueSettings.showIssueSummary,
-                                    show_issue_update_date: issueSettings.showIssueUpdateDate,
-                                    show_issue_due_date: issueSettings.showIssueDueDate,
-                                    show_issue_release: issueSettings.showIssueRelease,
-                                    show_issue_sprint: issueSettings.showIssueSprint,
-                                    sort_column: sortColumn,
-                                    sort_direction: sortDirection,
-                                    ui_mode: uiMode,
-                                })}
+                                onClick={() => {
+                                        const currentSettings = {
+                                            tabs: visibleDetailsTabs,
+                                            hide_metrics_not_requiring_action: hideMetricsNotRequiringAction,
+                                            hidden_columns: hiddenColumns,
+                                            nr_dates: nrDates,
+                                            date_interval: dateInterval,
+                                            date_order: dateOrder,
+                                            show_issue_creation_date: issueSettings.showIssueCreationDate,
+                                            show_issue_summary: issueSettings.showIssueSummary,
+                                            show_issue_update_date: issueSettings.showIssueUpdateDate,
+                                            show_issue_due_date: issueSettings.showIssueDueDate,
+                                            show_issue_release: issueSettings.showIssueRelease,
+                                            show_issue_sprint: issueSettings.showIssueSprint,
+                                            sort_column: sortColumn,
+                                            sort_direction: sortDirection,
+                                            ui_mode: uiMode,
+                                        }
+                                        put_settings(currentSettings)
+                                        setDefaultSettings(currentSettings)
+                                    }
+                                }
                                 inverted
                             >
                                 Save settings

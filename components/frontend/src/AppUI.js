@@ -78,24 +78,28 @@ export function AppUI({
 
     useEffect(() => {
         getDefaultSettings().then((receivedSettings) => {
-            setDefaultSettings(receivedSettings)
-            setDateIntervalDefault(receivedSettings.date_interval)
-            setDateOrderDefault(receivedSettings.date_order)
-            setHiddenColumnsDefault(receivedSettings.hidden_columns)
-            setHideMetricsNotRequiringActionDefault(receivedSettings.hide_metrics_not_requiring_action)
-            setNrDatesDefault(receivedSettings.nr_dates)
-            setSortColumnDefault(receivedSettings.sort_column)
-            setSortDirectionDefault(receivedSettings.sort_direction)
-            setVisibleDetailsTabsDefault(receivedSettings.tabs)
-            setShowIssueSummaryDefault(receivedSettings.show_issue_summary)
-            setShowIssueCreationDateDefault(receivedSettings.show_issue_creation_date)
-            setShowIssueUpdateDateDefault(receivedSettings.show_issue_update_date)
-            setShowIssueDueDateDefault(receivedSettings.show_issue_due_date)
-            setShowIssueReleaseDefault(receivedSettings.show_issue_release)
-            setShowIssueSprintDefault(receivedSettings.show_issue_sprint)
-            setUIModeDefault(receivedSettings.ui_mode)
+            setNewDefaultSettings(receivedSettings)
         })
     }, [])
+
+    function setNewDefaultSettings(newSettings) {
+        setDefaultSettings(newSettings)
+        setDateIntervalDefault(newSettings.date_interval)
+        setDateOrderDefault(newSettings.date_order)
+        setHiddenColumnsDefault(newSettings.hidden_columns)
+        setHideMetricsNotRequiringActionDefault(newSettings.hide_metrics_not_requiring_action)
+        setNrDatesDefault(newSettings.nr_dates)
+        setSortColumnDefault(newSettings.sort_column)
+        setSortDirectionDefault(newSettings.sort_direction)
+        setVisibleDetailsTabsDefault(newSettings.tabs)
+        setShowIssueSummaryDefault(newSettings.show_issue_summary)
+        setShowIssueCreationDateDefault(newSettings.show_issue_creation_date)
+        setShowIssueUpdateDateDefault(newSettings.show_issue_update_date)
+        setShowIssueDueDateDefault(newSettings.show_issue_due_date)
+        setShowIssueReleaseDefault(newSettings.show_issue_release)
+        setShowIssueSprintDefault(newSettings.show_issue_sprint)
+        setUIModeDefault(newSettings.ui_mode)
+    }
 
     function handleSort(column) {
         if (column === null) {
@@ -132,6 +136,7 @@ export function AppUI({
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                        setDefaultSettings={setNewDefaultSettings}
                         defaultSettings={defaultSettings}
                         setVisibleDetailsTabs={setVisibleDetailsTabs}
                         visibleDetailsTabs={visibleDetailsTabs}
