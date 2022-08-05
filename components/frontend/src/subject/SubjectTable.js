@@ -118,7 +118,7 @@ export function SubjectTable({
                             {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
                             {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
                             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
-                            {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} /></Table.Cell>}
+                            {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
                             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
                             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
                                 <IssueStatus

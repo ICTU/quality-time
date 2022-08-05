@@ -52,28 +52,44 @@ function ReportConfiguration({ report, reload }) {
 }
 
 function ReactionTimes({ report, reload}) {
+    const desiredResponseTimes = report.desired_response_times ?? {}
     return (
         <Grid stackable>
             <Grid.Row columns={3}>
                 <Grid.Column>
                     <IntegerInput
+                        id="desired-response-time-white"
                         label="Time to resolve metrics with unknown status (white)"
+                        set_value={(value) => {
+                            desiredResponseTimes["unknown"] = parseInt(value)
+                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                        }}
                         unit="days"
-                        value={report.desired_response_time_unknown ?? metricReactionDeadline["unknown"]}
+                        value={report?.desired_response_times?.["unknown"] ?? metricReactionDeadline["unknown"]}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <IntegerInput
+                        id="desired-response-time-red"
                         label="Time to resolve metrics not meeting their target (red)"
+                        set_value={(value) => {
+                            desiredResponseTimes["target_not_met"] = parseInt(value)
+                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                        }}
                         unit="days"
-                        value={report.desired_response_time_target_not_met ?? metricReactionDeadline["target_not_met"]}
+                        value={report?.desired_response_times?.["target_not_met"] ?? metricReactionDeadline["target_not_met"]}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <IntegerInput
+                        id="desired-response-time-yellow"
                         label="Time to resolve metrics near their target (yellow)"
+                        set_value={(value) => {
+                            desiredResponseTimes["near_target_met"] = parseInt(value)
+                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                        }}
                         unit="days"
-                        value={report.desired_response_time_near_target_met ?? metricReactionDeadline["near_target_met"]}
+                        value={report?.desired_response_times?.["near_target_met"] ?? metricReactionDeadline["near_target_met"]}
                     />
                 </Grid.Column>
             </Grid.Row>

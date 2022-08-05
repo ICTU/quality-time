@@ -9,7 +9,7 @@ function toLocaleString(date, noTime) {
     return date.toLocaleString([], options)
 }
 
-export function TimeAgoWithDate({ children, date, dateFirst, noTime, now }) {
+export function TimeAgoWithDate({ children, date, dateFirst, noTime }) {
     const the_date = new Date(date);
     const prefix = children ? children + " " : ""
     if (dateFirst) {

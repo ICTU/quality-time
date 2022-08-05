@@ -32,15 +32,16 @@ export function getMetricUnit(metric, dataModel) {
     return formatMetricUnit(metricType, metric)
 }
 
-export function getMetricDeadline(metric) {
+export function getMetricDeadline(metric, report) {
     const statusStart = metric.status_start || "3000-01-01"
+    const desiredResponseTime = report?.desired_response_times?.[metric.status] ?? (metricReactionDeadline[metric.status] ?? 0)
     let deadline = new Date(statusStart)
-    deadline.setDate(deadline.getDate() + (metricReactionDeadline[metric.status] ?? 0))
+    deadline.setDate(deadline.getDate() + desiredResponseTime)
     return deadline
 }
 
-export function getMetricTimeLeft(metric) {
-    const deadline = getMetricDeadline(metric)
+export function getMetricTimeLeft(metric, report) {
+    const deadline = getMetricDeadline(metric, report)
     const now = new Date()
     return deadline.getTime() - now.getTime()
 }

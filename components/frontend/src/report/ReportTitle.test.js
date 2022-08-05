@@ -38,7 +38,7 @@ it('sets the title', async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    await userEvent.type(screen.getByLabelText(/Report title/), 'New title{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 12});
+    await userEvent.type(screen.getByLabelText(/Report title/), 'New title{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 12 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/title", { title: "New title" });
 });
 
@@ -47,7 +47,7 @@ it('sets the subtitle', async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
     })
-    await userEvent.type(screen.getByLabelText(/Report subtitle/), 'New subtitle{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 12});
+    await userEvent.type(screen.getByLabelText(/Report subtitle/), 'New subtitle{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 12 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
@@ -56,9 +56,45 @@ it('sets the comment', async () => {
         render_report_title();
         fireEvent.click(screen.getByTitle(/expand/));
     });
-    await userEvent.type(screen.getByLabelText(/Comment/), 'New comment{Shift>}{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 8});
+    await userEvent.type(screen.getByLabelText(/Comment/), 'New comment{Shift>}{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 8 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/comment", { comment: "New comment" });
 });
+
+it('sets the unknown status reaction time', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/reaction times/));
+    });
+    await userEvent.type(screen.getByLabelText(/unknown status/), '4{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 1 });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/desired_response_times", { desired_response_times: { "unknown": 4 } });
+})
+
+it('sets the target not met status reaction time', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/reaction times/));
+    });
+    await userEvent.type(screen.getByLabelText(/not meeting their target/), '5{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 1 });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/desired_response_times", { desired_response_times: { "target_not_met": 5 } });
+})
+
+it('sets the near target met status reaction time', async () => {
+    await act(async () => {
+        render_report_title();
+        fireEvent.click(screen.getByTitle(/expand/));
+    });
+    await act(async () => {
+        fireEvent.click(screen.getByText(/reaction times/));
+    });
+    await userEvent.type(screen.getByLabelText(/near their target/), '6{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 2 });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/attribute/desired_response_times", { desired_response_times: { "near_target_met": 6 } });
+})
 
 it('sets the issue tracker type', async () => {
     await act(async () => {
