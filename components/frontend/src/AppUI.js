@@ -34,7 +34,7 @@ export function AppUI({
     user
 }) {
     const [defaultSettings, setDefaultSettings] = useState(DEFAULT_SETTINGS)
-    const [uiMode, setUIMode] = useURLSearchQuery(history, "ui_mode", "string", null);
+    const [uiMode, setUIMode, setUIModeDefault] = useURLSearchQuery(history, "ui_mode", "string", null);
     useEffect(() => {
         const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
         mediaQueryList.addEventListener("change", changeMode);
@@ -53,20 +53,20 @@ export function AppUI({
         user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
-    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", defaultSettings.date_interval);
-    const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", defaultSettings.date_order);
-    const [hiddenColumns, toggleHiddenColumn, setHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array", defaultSettings.hidden_columns);
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", defaultSettings.hide_metrics_not_requiring_action);
-    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", defaultSettings.nr_dates);
-    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", defaultSettings.sort_column);
-    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", defaultSettings.sort_direction);
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, setVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array", defaultSettings.tabs);
-    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", defaultSettings.show_issue_summary);
-    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", defaultSettings.show_issue_creation_date);
-    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", defaultSettings.show_issue_update_date);
-    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", defaultSettings.show_issue_due_date);
-    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", defaultSettings.show_issue_release);
-    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", defaultSettings.show_issue_sprint);
+    const [dateInterval, setDateInterval, setDateIntervalDefault] = useURLSearchQuery(history, "date_interval", "integer", defaultSettings.date_interval);
+    const [dateOrder, setDateOrder, setDateOrderDefault] = useURLSearchQuery(history, "date_order", "string", defaultSettings.date_order);
+    const [hiddenColumns, toggleHiddenColumn, setHiddenColumns, setHiddenColumnsDefault] = useURLSearchQuery(history, "hidden_columns", "array", defaultSettings.hidden_columns);
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction, setHideMetricsNotRequiringActionDefault] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", defaultSettings.hide_metrics_not_requiring_action);
+    const [nrDates, setNrDates, setNrDatesDefault] = useURLSearchQuery(history, "nr_dates", "integer", defaultSettings.nr_dates);
+    const [sortColumn, setSortColumn, setSortColumnDefault] = useURLSearchQuery(history, "sort_column", "string", defaultSettings.sort_column);
+    const [sortDirection, setSortDirection, setSortDirectionDefault] = useURLSearchQuery(history, "sort_direction", "string", defaultSettings.sort_direction);
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, setVisibleDetailsTabs, setVisibleDetailsTabsDefault] = useURLSearchQuery(history, "tabs", "array", defaultSettings.tabs);
+    const [showIssueSummary, setShowIssueSummary, setShowIssueSummaryDefault] = useURLSearchQuery(history, "show_issue_summary", "boolean", defaultSettings.show_issue_summary);
+    const [showIssueCreationDate, setShowIssueCreationDate, setShowIssueCreationDateDefault] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", defaultSettings.show_issue_creation_date);
+    const [showIssueUpdateDate, setShowIssueUpdateDate, setShowIssueUpdateDateDefault] = useURLSearchQuery(history, "show_issue_update_date", "boolean", defaultSettings.show_issue_update_date);
+    const [showIssueDueDate, setShowIssueDueDate, setShowIssueDueDateDefault] = useURLSearchQuery(history, "show_issue_due_date", "boolean", defaultSettings.show_issue_due_date);
+    const [showIssueRelease, setShowIssueRelease, setShowIssueReleaseDefault] = useURLSearchQuery(history, "show_issue_release", "boolean", defaultSettings.show_issue_release);
+    const [showIssueSprint, setShowIssueSprint, setShowIssueSprintDefault] = useURLSearchQuery(history, "show_issue_sprint", "boolean", defaultSettings.show_issue_sprint);
     const issueSettings = {
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
@@ -79,20 +79,21 @@ export function AppUI({
     useEffect(() => {
         getDefaultSettings().then((receivedSettings) => {
             setDefaultSettings(receivedSettings)
-            setDateInterval(receivedSettings.date_interval)
-            setDateOrder(receivedSettings.date_order)
-            setHiddenColumns(receivedSettings.hidden_columns)
-            setHideMetricsNotRequiringAction(receivedSettings.hide_metrics_not_requiring_action)
-            setNrDates(receivedSettings.nr_dates)
-            setSortColumn(receivedSettings.sort_column)
-            setVisibleDetailsTabs(receivedSettings.tabs)
-            setShowIssueSummary(receivedSettings.show_issue_summary)
-            setShowIssueCreationDate(receivedSettings.show_issue_creation_date)
-            setShowIssueUpdateDate(receivedSettings.show_issue_update_date)
-            setShowIssueDueDate(receivedSettings.show_issue_due_date)
-            setShowIssueRelease(receivedSettings.show_issue_release)
-            setShowIssueSprint(receivedSettings.show_issue_sprint)
-            setUIMode(receivedSettings.ui_mode)
+            setDateIntervalDefault(receivedSettings.date_interval)
+            setDateOrderDefault(receivedSettings.date_order)
+            setHiddenColumnsDefault(receivedSettings.hidden_columns)
+            setHideMetricsNotRequiringActionDefault(receivedSettings.hide_metrics_not_requiring_action)
+            setNrDatesDefault(receivedSettings.nr_dates)
+            setSortColumnDefault(receivedSettings.sort_column)
+            setSortDirectionDefault(receivedSettings.sort_direction)
+            setVisibleDetailsTabsDefault(receivedSettings.tabs)
+            setShowIssueSummaryDefault(receivedSettings.show_issue_summary)
+            setShowIssueCreationDateDefault(receivedSettings.show_issue_creation_date)
+            setShowIssueUpdateDateDefault(receivedSettings.show_issue_update_date)
+            setShowIssueDueDateDefault(receivedSettings.show_issue_due_date)
+            setShowIssueReleaseDefault(receivedSettings.show_issue_release)
+            setShowIssueSprintDefault(receivedSettings.show_issue_sprint)
+            setUIModeDefault(receivedSettings.ui_mode)
         })
     }, [])
 
