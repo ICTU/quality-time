@@ -237,6 +237,12 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
 
     function setDefaultValue(newDefault) {
         default_value = newDefault
+        // set the current state to the default state if it has not been specified
+        let parsed = parseURLSearchQuery();
+        const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
+        if(!search.includes(key)) {
+            setState(default_value)
+        }
     }
 
     return state_type === "array" ? [state, toggleURLSearchQuery, setURLSearchQuery, setDefaultValue] : [state, setURLSearchQuery, setDefaultValue]
