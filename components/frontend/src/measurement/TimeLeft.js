@@ -1,17 +1,14 @@
 import React from 'react';
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { pluralize } from '../utils';
-import { metricReactionDeadline } from '../defaults';
+import { getMetricDeadline, getMetricTimeLeft, pluralize } from '../utils';
 
-export function TimeLeft({ status, statusStart }) {
-    if (["target_met", "debt_target_met", "informative"].indexOf(status) >= 0 || !statusStart) {
+export function TimeLeft({ metric }) {
+    if (["target_met", "debt_target_met", "informative"].indexOf(metric.status) >= 0 || !metric.status_start) {
         return null
     }
-    let deadline = new Date(statusStart)
-    deadline.setDate(deadline.getDate() + metricReactionDeadline[status])
-    const now = new Date()
-    const timeLeft = deadline.getTime() - now.getTime()
+    const deadline = getMetricDeadline(metric)
+    const timeLeft = getMetricTimeLeft(metric)
     const daysLeft = Math.max(0, Math.round(timeLeft / (24 * 60 * 60 * 1000)))
     const triggerText = `${daysLeft} ${pluralize("day", daysLeft)}`
     let deadlineLabel = "Deadline to address this metric was"

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
+import { metricReactionDeadline } from './defaults';
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
@@ -29,6 +30,19 @@ export function get_metric_target(metric) {
 export function getMetricUnit(metric, dataModel) {
     const metricType = dataModel.metrics[metric.type];
     return formatMetricUnit(metricType, metric)
+}
+
+export function getMetricDeadline(metric) {
+    const statusStart = metric.status_start || "3000-01-01"
+    let deadline = new Date(statusStart)
+    deadline.setDate(deadline.getDate() + (metricReactionDeadline[metric.status] ?? 0))
+    return deadline
+}
+
+export function getMetricTimeLeft(metric) {
+    const deadline = getMetricDeadline(metric)
+    const now = new Date()
+    return deadline.getTime() - now.getTime()
 }
 
 export function get_metric_value(metric) {
