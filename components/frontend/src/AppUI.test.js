@@ -9,7 +9,7 @@ import { DEFAULT_SETTINGS } from './utils';
 jest.mock('./api/settings')
 
 it('shows an error message when there are no reports', () => {
-    act(() => {
+    waitFor(() => {
         render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
     })
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
