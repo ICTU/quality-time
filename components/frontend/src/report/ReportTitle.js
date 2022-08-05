@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
+import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -12,6 +13,7 @@ import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { IssueTracker } from './IssueTracker';
+import { metricReactionDeadline } from '../defaults';
 
 function ReportConfiguration({ report, reload }) {
     return (
@@ -49,6 +51,36 @@ function ReportConfiguration({ report, reload }) {
     )
 }
 
+function ReactionTimes({ report, reload}) {
+    return (
+        <Grid stackable>
+            <Grid.Row columns={3}>
+                <Grid.Column>
+                    <IntegerInput
+                        label="Time to resolve metrics with unknown status (white)"
+                        unit="days"
+                        value={report.desired_response_time_unknown ?? metricReactionDeadline["unknown"]}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <IntegerInput
+                        label="Time to resolve metrics not meeting their target (red)"
+                        unit="days"
+                        value={report.desired_response_time_target_not_met ?? metricReactionDeadline["target_not_met"]}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <IntegerInput
+                        label="Time to resolve metrics near their target (yellow)"
+                        unit="days"
+                        value={report.desired_response_time_near_target_met ?? metricReactionDeadline["near_target_met"]}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+    )
+}
+
 function ButtonRow({ report_uuid, go_home, history }) {
     return (
         <>
@@ -70,6 +102,10 @@ export function ReportTitle({ report, go_home, history, reload }) {
         {
             menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane><ReportConfiguration report={report} reload={reload} /></Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key="reaction_times"><Icon name="time" /><FocusableTab>{"Desired reaction times"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><ReactionTimes report={report} reload={reload} /></Tab.Pane>
         },
         {
             menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>,
