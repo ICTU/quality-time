@@ -80,7 +80,8 @@ export function AppUI({
         getDefaultSettings().then((receivedSettings) => {
             setNewDefaultSettings(receivedSettings)
         })
-    }, [])
+    // ignore exhaustive deps linter because adding the requested dependencies would lead to cyclical reloads
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     function setNewDefaultSettings(newSettings) {
         setDefaultSettings(newSettings)
