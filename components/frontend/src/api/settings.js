@@ -1,7 +1,6 @@
 import { fetch_server_api } from "./fetch_server_api";
 
 export function put_settings(settings) {
-    console.log(settings)
     return fetch_server_api('put', 'settings', settings)
 }
 
