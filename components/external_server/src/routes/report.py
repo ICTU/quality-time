@@ -80,7 +80,7 @@ def post_report_import(database: Database):
         }
 
     replace_report_uuids(report)
-    result = insert_new_report(database, "{{user}} imported a new report", [report["report_uuid"]], report)
+    result = insert_new_report(database, "{user} imported a new report", [report["report_uuid"]], report)
     result["new_report_uuid"] = report["report_uuid"]
     return result
 
