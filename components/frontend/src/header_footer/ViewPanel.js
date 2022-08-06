@@ -39,6 +39,26 @@ export function ViewPanel({
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
     hiddenColumns = hiddenColumns ?? [];
+    
+    function disabled() {
+        return (
+            visibleDetailsTabs === defaultSettings.tabs &&
+            hideMetricsNotRequiringAction === defaultSettings.hide_metrics_not_requiring_action &&
+            hiddenColumns === defaultSettings.hidden_columns &&
+            nrDates === defaultSettings.nr_dates &&
+            dateInterval === defaultSettings.date_interval &&
+            dateOrder === defaultSettings.date_order &&
+            issueSettings.showIssueCreationDate === defaultSettings.show_issue_creation_date &&
+            issueSettings.showIssueSummary === defaultSettings.show_issue_summary &&
+            issueSettings.showIssueUpdateDate === defaultSettings.show_issue_update_date &&
+            issueSettings.showIssueDueDate === defaultSettings.show_issue_due_date &&
+            issueSettings.showIssueRelease === defaultSettings.show_issue_release &&
+            issueSettings.showIssueSprint === defaultSettings.show_issue_sprint &&
+            sortColumn === defaultSettings.sort_column &&
+            sortDirection === defaultSettings.sort_direction &&
+            uiMode === defaultSettings.ui_mode
+        )
+    }
 
     return (
         <Segment.Group
@@ -51,23 +71,7 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={
-                                    visibleDetailsTabs === defaultSettings.tabs &&
-                                    hideMetricsNotRequiringAction === defaultSettings.hide_metrics_not_requiring_action &&
-                                    hiddenColumns === defaultSettings.hidden_columns &&
-                                    nrDates === defaultSettings.nr_dates &&
-                                    dateInterval === defaultSettings.date_interval &&
-                                    dateOrder === defaultSettings.date_order &&
-                                    issueSettings.showIssueCreationDate === defaultSettings.show_issue_creation_date &&
-                                    issueSettings.showIssueSummary === defaultSettings.show_issue_summary &&
-                                    issueSettings.showIssueUpdateDate === defaultSettings.show_issue_update_date &&
-                                    issueSettings.showIssueDueDate === defaultSettings.show_issue_due_date &&
-                                    issueSettings.showIssueRelease === defaultSettings.show_issue_release &&
-                                    issueSettings.showIssueSprint === defaultSettings.show_issue_sprint &&
-                                    sortColumn === defaultSettings.sort_column &&
-                                    sortDirection === defaultSettings.sort_direction &&
-                                    uiMode === defaultSettings.ui_mode
-                                }
+                                disabled={disabled()}
                                 onClick={() => {
                                     setVisibleDetailsTabs(defaultSettings.tabs);
                                     setHideMetricsNotRequiringAction(defaultSettings.hide_metrics_not_requiring_action);
@@ -93,23 +97,7 @@ export function ViewPanel({
                     <Grid.Row>
                         <Grid.Column>
                             <Button
-                                disabled={
-                                    visibleDetailsTabs === defaultSettings.tabs &&
-                                    hideMetricsNotRequiringAction === defaultSettings.hide_metrics_not_requiring_action &&
-                                    hiddenColumns === defaultSettings.hidden_columns &&
-                                    nrDates === defaultSettings.nr_dates &&
-                                    dateInterval === defaultSettings.date_interval &&
-                                    dateOrder === defaultSettings.date_order &&
-                                    issueSettings.showIssueCreationDate === defaultSettings.show_issue_creation_date &&
-                                    issueSettings.showIssueSummary === defaultSettings.show_issue_summary &&
-                                    issueSettings.showIssueUpdateDate === defaultSettings.show_issue_update_date &&
-                                    issueSettings.showIssueDueDate === defaultSettings.show_issue_due_date &&
-                                    issueSettings.showIssueRelease === defaultSettings.show_issue_release &&
-                                    issueSettings.showIssueSprint === defaultSettings.show_issue_sprint &&
-                                    sortColumn === defaultSettings.sort_column &&
-                                    sortDirection === defaultSettings.sort_direction &&
-                                    uiMode === defaultSettings.ui_mode
-                                }
+                                disabled={disabled()}
                                 onClick={() => {
                                         const currentSettings = {
                                             tabs: visibleDetailsTabs,
