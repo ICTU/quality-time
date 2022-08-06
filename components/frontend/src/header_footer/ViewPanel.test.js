@@ -25,7 +25,7 @@ function eventHandlers() {
     }
 }
 
-function renderDefaultSettings() {
+function renderDefaultSettings(props) {
     return (
         <ViewPanel
             defaultSettings={DEFAULT_SETTINGS}
@@ -99,7 +99,7 @@ it('resets the settings', () => {
 
 it('does not reset the settings when all have the default value', () => {
     const props = eventHandlers();
-    render(renderDefaultSettings())
+    render(renderDefaultSettings(props))
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.setVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.setHiddenColumns).not.toHaveBeenCalled()
@@ -169,7 +169,7 @@ it('saves the settings', async () => {
 it('does not save the settings when all have the default value', async () => {
     const props = eventHandlers();
     await act(async () => {
-        render(renderDefaultSettings())
+        render(renderDefaultSettings(props))
         fireEvent.click(screen.getByText(/Reset all settings/))
     });
     expect(put_settings).not.toHaveBeenCalledWith()
