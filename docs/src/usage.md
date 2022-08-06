@@ -81,7 +81,7 @@ To add a new report, be sure to be logged in and click the "Add report" button o
 
 #### Editing reports
 
-To change the title or subtitle of a report, expand the report header and enter a new title and/or subtitle in their respective fields. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
+To change the title or subtitle of a report, expand the report header and enter a new title and/or subtitle in their respective fields. For the desired reaction times, see the [Customizing quality reports](#customizing-quality-reports) section below. For the issue tracker, see the [Issue tracker](#issue-tracker) section below. For notifications, see the [Notifications](#notifications) section below.
 
 The "{index}`Comment <pair: Comment;Report>`" field can be used to describe the report, or any other information. HTML and URLs are supported. The entered comments are shown between the report title and the dashboard.
 
@@ -517,14 +517,27 @@ Example generic JSON file:
 
 ## Customizing quality reports
 
-You can customize quality reports by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
+You can customize quality reports by changing the dashboard layout, by changing the desired metric reaction times, by filtering metrics, and by filtering metric entities.
+
+```{note}
+Settings that you change via the 'Settings' panel are not shared with other users.
+```
 
 ```{index} Dashboard
 ```
 
 ### Customizing dashboards
 
-Both the reports dashboard on the *Quality-time* landing page and the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
+Both the reports dashboard on the *Quality-time* landing page and the dashboard of individual projects can be customized by dragging and dropping the cards.
+
+The dashboard layout is persisted in the database and thus shared with other users.
+
+```{index} Reaction time
+```
+
+### Desired reaction times
+
+The default desired metric reaction times can be changed via the report's title. Expand the title and navigate to the 'Desired reaction times' tab. Each of the metric states that require action - target not met (red), near target (yellow), and status unknown (white) - has a desired reaction time in days that can be changed.
 
 ```{index} Trend table
 ```
