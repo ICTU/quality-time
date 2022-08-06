@@ -25,6 +25,34 @@ function eventHandlers() {
     }
 }
 
+function renderDefaultSettings() {
+    return (
+        <ViewPanel
+            defaultSettings={DEFAULT_SETTINGS}
+            dateInterval={DEFAULT_SETTINGS.date_interval}
+            dateOrder={DEFAULT_SETTINGS.date_order}
+            hiddenColumns={DEFAULT_SETTINGS.hidden_columns}
+            hideMetricsNotRequiringAction={DEFAULT_SETTINGS.hide_metrics_not_requiring_action}
+            issueSettings={
+                {
+                    showIssueCreationDate: DEFAULT_SETTINGS.show_issue_creation_date,
+                    showIssueSummary: DEFAULT_SETTINGS.show_issue_summary,
+                    showIssueUpdateDate: DEFAULT_SETTINGS.show_issue_update_date,
+                    showIssueDueDate: DEFAULT_SETTINGS.show_issue_due_date,
+                    showIssueRelease: DEFAULT_SETTINGS.show_issue_release,
+                    showIssueSprint: DEFAULT_SETTINGS.show_issue_sprint
+                }
+            }
+            nrDates={DEFAULT_SETTINGS.nr_dates}
+            sortColumn={DEFAULT_SETTINGS.sort_column}
+            sortDirection={DEFAULT_SETTINGS.sort_direction}
+            uiMode={DEFAULT_SETTINGS.ui_mode}
+            visibleDetailsTabs={DEFAULT_SETTINGS.tabs}
+            {...props}
+        />
+    )
+}
+
 it('resets the settings', () => {
     const props = eventHandlers();
     render(
@@ -71,31 +99,7 @@ it('resets the settings', () => {
 
 it('does not reset the settings when all have the default value', () => {
     const props = eventHandlers();
-    render(
-        <ViewPanel
-            defaultSettings={DEFAULT_SETTINGS}
-            dateInterval={DEFAULT_SETTINGS.date_interval}
-            dateOrder={DEFAULT_SETTINGS.date_order}
-            hiddenColumns={DEFAULT_SETTINGS.hidden_columns}
-            hideMetricsNotRequiringAction={DEFAULT_SETTINGS.hide_metrics_not_requiring_action}
-            issueSettings={
-                {
-                    showIssueCreationDate: DEFAULT_SETTINGS.show_issue_creation_date,
-                    showIssueSummary: DEFAULT_SETTINGS.show_issue_summary,
-                    showIssueUpdateDate: DEFAULT_SETTINGS.show_issue_update_date,
-                    showIssueDueDate: DEFAULT_SETTINGS.show_issue_due_date,
-                    showIssueRelease: DEFAULT_SETTINGS.show_issue_release,
-                    showIssueSprint: DEFAULT_SETTINGS.show_issue_sprint
-                }
-            }
-            nrDates={DEFAULT_SETTINGS.nr_dates}
-            sortColumn={DEFAULT_SETTINGS.sort_column}
-            sortDirection={DEFAULT_SETTINGS.sort_direction}
-            uiMode={DEFAULT_SETTINGS.ui_mode}
-            visibleDetailsTabs={DEFAULT_SETTINGS.tabs}
-            {...props}
-        />
-    )
+    render(renderDefaultSettings())
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.setVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.setHiddenColumns).not.toHaveBeenCalled()
@@ -165,31 +169,7 @@ it('saves the settings', async () => {
 it('does not save the settings when all have the default value', async () => {
     const props = eventHandlers();
     await act(async () => {
-        render(
-            <ViewPanel
-                defaultSettings={DEFAULT_SETTINGS}
-                dateInterval={DEFAULT_SETTINGS.date_interval}
-                dateOrder={DEFAULT_SETTINGS.date_order}
-                hiddenColumns={DEFAULT_SETTINGS.hidden_columns}
-                hideMetricsNotRequiringAction={DEFAULT_SETTINGS.hide_metrics_not_requiring_action}
-                issueSettings={
-                    {
-                        showIssueCreationDate: DEFAULT_SETTINGS.show_issue_creation_date,
-                        showIssueSummary: DEFAULT_SETTINGS.show_issue_summary,
-                        showIssueUpdateDate: DEFAULT_SETTINGS.show_issue_update_date,
-                        showIssueDueDate: DEFAULT_SETTINGS.show_issue_due_date,
-                        showIssueRelease: DEFAULT_SETTINGS.show_issue_release,
-                        showIssueSprint: DEFAULT_SETTINGS.show_issue_sprint
-                    }
-                }
-                nrDates={DEFAULT_SETTINGS.nr_dates}
-                sortColumn={DEFAULT_SETTINGS.sort_column}
-                sortDirection={DEFAULT_SETTINGS.sort_direction}
-                uiMode={DEFAULT_SETTINGS.ui_mode}
-                visibleDetailsTabs={DEFAULT_SETTINGS.tabs}
-                {...props}
-            />
-        )
+        render(renderDefaultSettings())
         fireEvent.click(screen.getByText(/Reset all settings/))
     });
     expect(put_settings).not.toHaveBeenCalledWith()
