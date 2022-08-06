@@ -523,6 +523,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         post_report_import(self.database)
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual("Report", inserted["title"])
+        self.assertEqual("Jenny Doe imported a new report", inserted["delta"]["description"])
         self.assertNotEqual(REPORT_ID, inserted[REPORT_ID])
 
     @patch("bottle.request")
