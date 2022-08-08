@@ -1,6 +1,18 @@
 import { Table } from "semantic-ui-react";
 import { SortableTableHeaderCell } from '../widgets/SortableTableHeaderCell';
 
+const timeLeftHelp = <>
+    <p>
+        The number of days left to address the metric.
+    </p>
+    <p>
+        If the metric needs action, the time left is based on the desired reaction times.
+        The desired reaction times can be changed in the report header.</p>
+    <p>
+        If the metric has accepted technical debt, the time left is based on the technical debt end date.
+    </p>
+</>
+
 export function SubjectTableHeader(
     {
         columnDates,
@@ -22,7 +34,7 @@ export function SubjectTableHeader(
                 {nrDates === 1 && !hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' textAlign="right" {...sortProps} />}
                 {!hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" {...sortProps} />}
                 {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Source' {...sortProps} />}
-                {!hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' {...sortProps} />}
+                {!hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' help={timeLeftHelp} {...sortProps} />}
                 {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' {...sortProps} />}
                 {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' {...sortProps} />}
                 {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' {...sortProps} />}

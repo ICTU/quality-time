@@ -12,6 +12,16 @@ it("does not render the time left if there is no status start date", () => {
     expect(screen.queryAllByText(/day/).length).toBe(0)
 })
 
+it("does render the time left if technical debt is accepted with an end date", () => {
+    render(<TimeLeft metric={{ status: "debt_target_met", status_start: "2022-01-01", debt_end_date: "3000-01-01" }} report={{}} />)
+    expect(screen.queryAllByText(/day/).length).toBe(1)
+})
+
+it("does not render the time left if technical debt is accepted without an end date", () => {
+    render(<TimeLeft metric={{ status: "debt_target_met", status_start: "2022-01-01" }} report={{}} />)
+    expect(screen.queryAllByText(/day/).length).toBe(0)
+})
+
 it("renders 0 days left if the deadline is in the past", () => {
     render(<TimeLeft metric={{ status: "target_not_met", status_start: "2022-01-01" }} report={{}} />)
     expect(screen.queryAllByText(/0 days/).length).toBe(1)

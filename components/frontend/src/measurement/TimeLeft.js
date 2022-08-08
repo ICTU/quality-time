@@ -1,10 +1,18 @@
 import React from 'react';
-import { Label, Popup } from '../semantic_ui_react_wrappers';
+import { Icon, Label, Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { getMetricDeadline, getMetricTimeLeft, pluralize } from '../utils';
 
+function noActionRequired(metric) {
+    return (["target_met", "informative"].indexOf(metric.status) >= 0)
+}
+
+function acceptedDebtWithoutEndDate(metric) {
+    return (metric.status === "debt_target_met" && !metric.debt_end_date)
+}
+
 export function TimeLeft({ metric, report }) {
-    if (["target_met", "debt_target_met", "informative"].indexOf(metric.status) >= 0 || !metric.status_start) {
+    if (noActionRequired(metric) || acceptedDebtWithoutEndDate(metric) || !metric.status_start) {
         return null
     }
     const deadline = getMetricDeadline(metric, report)
@@ -19,8 +27,7 @@ export function TimeLeft({ metric, report }) {
     }
     return (
         <Popup flowing hoverable trigger={trigger}>
-            <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.<br/>
-            You can configure the desired reaction times in the report header.
+            <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.
         </Popup>
     )
 }

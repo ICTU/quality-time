@@ -539,6 +539,8 @@ The dashboard layout is persisted in the database and thus shared with other use
 
 The default desired metric reaction times can be changed via the report's title. Expand the title and navigate to the 'Desired reaction times' tab. Each of the metric states that require action - target not met (red), near target (yellow), and status unknown (white) - has a desired reaction time in days that can be changed.
 
+Metrics with accepted technical debt don't have a default desired reaction time. If a metric has accepted technical debt with an explicit end date though, that date will be used to show how much time is left in the metrics table.
+
 ```{index} Trend table
 ```
 

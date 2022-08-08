@@ -33,10 +33,15 @@ export function getMetricUnit(metric, dataModel) {
 }
 
 export function getMetricDeadline(metric, report) {
-    const statusStart = metric.status_start || "3000-01-01"
-    const desiredResponseTime = report?.desired_response_times?.[metric.status] ?? (metricReactionDeadline[metric.status] ?? 0)
-    let deadline = new Date(statusStart)
-    deadline.setDate(deadline.getDate() + desiredResponseTime)
+    let deadline;
+    if (metric.status === "debt_target_met" && metric.debt_end_date) {
+        deadline = new Date(metric.debt_end_date)
+    } else {
+        const statusStart = metric.status_start || "3000-01-01"
+        const desiredResponseTime = report?.desired_response_times?.[metric.status] ?? (metricReactionDeadline[metric.status] ?? 0)
+        deadline = new Date(statusStart)
+        deadline.setDate(deadline.getDate() + desiredResponseTime)
+    }
     return deadline
 }
 
