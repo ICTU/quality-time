@@ -23,9 +23,8 @@ it('shows the label', () => {
 
 it('shows the help', async () => {
     renderSortableTableHeaderCell("Help")
-    expect(screen.queryAllByText(/Header/).length).toBe(1)
     await userEvent.hover(screen.queryByText(/Header/))
     await waitFor(() => {
-        expect(screen.queryAllByText(/Help/).length).toBe(0)
+        expect(screen.queryAllByText(/Help/).length).toBe(1)
     })
 });
