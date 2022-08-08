@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Label, Popup } from '../semantic_ui_react_wrappers';
+import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { getMetricDeadline, getMetricTimeLeft, pluralize } from '../utils';
 
