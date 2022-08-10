@@ -38,7 +38,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Return the start date of the status."""
         if status_start := self.get("status_start"):
             return cast(str, status_start)
-        return None
+        return None  # pragma: no cover-behave
 
     def update_value_and_status(self) -> None:
         """Update the measurement value and status."""
