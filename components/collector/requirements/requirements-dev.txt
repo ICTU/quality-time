@@ -110,8 +110,8 @@ dill==0.3.5.1 \
     --hash=sha256:33501d03270bbe410c72639b350e941882a8b0fd55357580fbc873fba0c59302 \
     --hash=sha256:d75e41f3eff1eee599d738e76ba8f4ad98ea229db8b085318aa2b3333a208c86
     # via pylint
-dlint==0.12.0 \
-    --hash=sha256:344823d299439aa94fe276b2b3b90733026787d25713c664e137cf5f7d0645f7
+dlint==0.13.0 \
+    --hash=sha256:72094f35711a338eed4b8f95cbbaade5ec1d784bec516933bdbc2863676c4298
     # via -r ../../../requirements/dev.in
 dparse==0.5.1 \
     --hash=sha256:a1b5f169102e1c894f9a7d5ccf6f9402a836a5d24be80a986c7ce9eaed78f367 \
