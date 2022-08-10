@@ -10,6 +10,7 @@ jobs:
     env:
       QUALITY_TIME_VERSION: v4.2.0
       ENV: ci
+      CI: true
       COMPOSE_PATH_SEPARATOR: ":"
       COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
 
