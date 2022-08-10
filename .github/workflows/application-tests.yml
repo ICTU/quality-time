@@ -19,7 +19,7 @@ jobs:
         run: |
           mkdir -p build
           docker compose build && docker compose up -d
-          docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.5-bullseye tests/application_tests/ci/test.sh
+          docker run -t -w `pwd` -v `pwd`:`pwd` --network=quality-time_default python:3.10.5-bullseye tests/application_tests/ci/test.sh
       - name: Save container logs
         if: always()
         run: |
