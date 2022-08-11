@@ -7,18 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      QUALITY_TIME_VERSION: v4.2.0
-      ENV: ci
-      COMPOSE_PATH_SEPARATOR: ":"
-      COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
-
     steps:
       - uses: actions/checkout@v3
       - name: Run application tests
+        env:
+          QUALITY_TIME_VERSION: v4.2.0
+          ENV: ci
         run: |
           mkdir -p build
-          docker compose build && docker compose up -d
+          docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml --project-name quality-time up --build --detach --wait
           docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.5-bullseye tests/application_tests/ci/test.sh
       - name: Save container logs
         if: always()

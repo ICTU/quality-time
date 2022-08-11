@@ -1,5 +1,5 @@
 # Extra services and overridden parameters for testing in a CI-environment.
-# The renderer, Mongo-express and PHPLDAPAdmin are not started.
+# Mongo-express and PHPLDAPAdmin are not started.
 
 version: "3"
 services:
