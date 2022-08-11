@@ -17,7 +17,7 @@ jobs:
           COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
         run: |
           mkdir -p build
-          docker compose --file docker/docker-compose.yml:docker/docker-compose.ci.yml up --build --detach --wait
+          docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml up --build --detach --wait
           docker run -t -w `pwd` -v `pwd`:`pwd` --network=quality-time_default python:3.10.5-bullseye tests/application_tests/ci/test.sh
       - name: Save container logs
         if: always()
