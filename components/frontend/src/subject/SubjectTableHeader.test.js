@@ -14,7 +14,7 @@ it('shows the column dates and unit', () => {
             />
         </Table>
     );
-    [date1.toLocaleDateString(), date2.toLocaleDateString(), "Unit", "Source", "Comment", "Issues", "Tags"].forEach(
+    [date1.toLocaleDateString(), date2.toLocaleDateString(), "Unit", "Sources", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.getAllByText(header).length).toBe(1)
     );
     ["Trend (7 days)", "Status", "Measurement", "Target"].forEach(
@@ -35,7 +35,7 @@ it('does not show the column dates', () => {
     [date1.toLocaleDateString()].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(0)
     );
-    ["Trend (7 days)", "Status", "Measurement", "Target", "Unit", "Source", "Comment", "Issues", "Tags"].forEach(
+    ["Trend (7 days)", "Status", "Measurement", "Target", "Unit", "Sources", "Time left", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(1)
     );
 })
@@ -50,7 +50,7 @@ it('hides columns', () => {
             />
         </Table>
     );
-    ["Trend (7 days)", "Status", "Measurement", "Target", "Source", "Comment", "Issues", "Tags"].forEach(
+    ["Trend (7 days)", "Status", "Measurement", "Target", "Sources", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(0)
     );
 })
