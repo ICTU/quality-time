@@ -7,21 +7,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      QUALITY_TIME_VERSION: v4.2.0
-      ENV: ci
-      COMPOSE_PATH_SEPARATOR: ":"
-      COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
-
     steps:
       - uses: actions/checkout@v3
       - name: Run application tests
+        env:
+          QUALITY_TIME_VERSION: v4.2.0
+          ENV: ci
+          COMPOSE_PATH_SEPARATOR: ':'
+          COMPOSE_FILE: docker/docker-compose.yml:docker/docker-compose.ci.yml
         run: |
           mkdir -p build
-          export ENV=ci
-          export QUALITY_TIME_VERSION=v4.2.0
-          export COMPOSE_PATH_SEPARATOR=':'
-          export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
+          echo "Echoing environment vars"
+          echo $COMPOSE_PATH_SEPARATOR
+          echo $COMPOSE_FILE
+          echo $CI
+          echo "/Echoing environment vars"
           docker compose build && docker compose up -d
           docker run -t -w `pwd` -v `pwd`:`pwd` --network=quality-time_default python:3.10.5-bullseye tests/application_tests/ci/test.sh
       - name: Save container logs
