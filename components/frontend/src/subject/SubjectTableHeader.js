@@ -11,12 +11,15 @@ const metricHelp = <>
     <p>
         Expand the metric (click <Icon fitted name="triangle right" />) to edit its name in the configuration tab.
     </p>
+    <p>
+        Click the column header to sort the metrics by name.
+    </p>
 </>
 
 const trendHelp = <>
     <p>
-        The recent measurements of the metric displayed as
-        <HyperLink url="https://en.wikipedia.org/wiki/Sparkline">sparkline graph</HyperLink>.
+        The recent measurements of the metric displayed
+        as <HyperLink url="https://en.wikipedia.org/wiki/Sparkline">sparkline graph</HyperLink>.
     </p>
     <p>
         If the sparkline graph is empty, either the metric has not been measured yet or the metric has the version
@@ -59,6 +62,9 @@ const statusHelp = <>
     <p>
         Hover over the status to see how long the metric has had the current status.
     </p>
+    <p>
+        Click the column header to sort the metrics by status.
+    </p>
 </>
 
 const measurementHelp = <>
@@ -78,6 +84,9 @@ const measurementHelp = <>
     <p>
         Hover over the measurement value to see when the metric was last measured.
     </p>
+    <p>
+        Click the column header to sort the metrics by measurement value.
+    </p>
 </>
 
 const targetHelp = <>
@@ -86,12 +95,15 @@ const targetHelp = <>
     </p>
     <p>
         The target value has a <Label horizontal color="grey">grey background</Label> if the metric has accepted
-        technical debt that is ignored because the technical debt end date is in the past or all issues linked to the
-        metric have been resolved.
+        technical debt that is not applied because the technical debt end date is in the past or all issues linked to
+        the metric have been resolved.
     </p>
     <p>
         Expand the metric (click <Icon fitted name="triangle right" />) to edit the target value in the configuration
         tab.
+    </p>
+    <p>
+        Click the column header to sort the metrics by target value.
     </p>
 </>
 
@@ -102,6 +114,9 @@ const unitHelp = <>
     </p>
     <p>
         Expand the metric (click <Icon fitted name="triangle right" />) to edit the unit name in the configuration tab.
+    </p>
+    <p>
+        Click the column header to sort the metrics by unit.
     </p>
 </>
 
@@ -120,6 +135,9 @@ const timeLeftHelp = <>
     <p>
         Hover the number of days to see the exact deadline.
     </p>
+    <p>
+        Click the column header to sort the metrics by time left.
+    </p>
 </>
 
 const commentHelp = <>
@@ -134,7 +152,7 @@ const commentHelp = <>
 
 const sourcesHelp = <>
     <p>
-        The tools and reports accessed to collect the measurement data.
+        The tools and reports accessed to collect the measurement data. One metric can have multiple sources.
     </p>
     <p>
         If a source has a <Label horizontal color="red">red background</Label>, the source could not be accessed or the
@@ -147,11 +165,15 @@ const sourcesHelp = <>
     <p>
         Click a source to open the tool or report in a new tab.
     </p>
+    <p>
+        Click the column header to sort the metrics by source.
+    </p>
 </>
 
 const issuesHelp = <>
     <p>
         Links to issues, opened in an issue tracker such as Jira, to track progress of addressing the metric.
+        One metric can have multiple issues linked to it.
     </p>
     <p>
         If an issue has a <Label horizontal color="red">red background</Label>, the issue tracker could not be accessed
@@ -163,11 +185,14 @@ const issuesHelp = <>
     <p>
         Click an issue to open the issue in a new tab.
     </p>
+    <p>
+        Click the column header to sort the metrics by issue identifier.
+    </p>
 </>
 
 const tagsHelp = <>
     <p>
-        Tags are arbitrary metric labels that can be used to group metrics.
+        Tags are arbitrary metric labels that can be used to group metrics. One metrics can have multiple tags.
     </p>
     <p>
         For each tag, a tag card is added to the report dashboard.
@@ -177,7 +202,10 @@ const tagsHelp = <>
         Selecting multiple tags shows metrics that have at least one of the selected tags.
     </p>
     <p>
-        Expand the metric (click <Icon fitted name="triangle right" />) to edit the metric tags.
+        Expand the metric (click <Icon fitted name="triangle right" />) to add or remove tags.
+    </p>
+    <p>
+        Click the column header to sort the metrics by tag.
     </p>
 </>
 
