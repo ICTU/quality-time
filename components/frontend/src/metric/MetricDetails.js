@@ -10,7 +10,11 @@ import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { get_source_name } from '../utils';
-import { MetricConfiguration } from './MetricConfiguration';
+import { ChangeLog } from '../changelog/ChangeLog';
+import { Share } from '../share/Share';
+import { MetricConfigurationParameters } from './MetricConfigurationParameters';
+import { MetricDebtParameters } from './MetricDebtParameters';
+import { MetricTypeHeader } from './MetricTypeHeader';
 import { TrendGraph } from './TrendGraph';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }) {
@@ -67,9 +71,15 @@ export function MetricDetails({
     let panes = [];
     panes.push(
         {
-            menuItem: <Menu.Item key='metric'><Icon name="check circle" /><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
+            menuItem: <Menu.Item key='configuration'><Icon name="cogs" /><FocusableTab>{'Configuration'}</FocusableTab></Menu.Item>,
             render: () => <Tab.Pane>
-                <MetricConfiguration metric={metric} metric_uuid={metric_uuid} subject={subject} report={report} reload={reload} />
+                <MetricConfigurationParameters subject={subject} metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
+            </Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key='debt'><Icon name="money" /><FocusableTab>{'Technical debt'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
             </Tab.Pane>
         },
         {
@@ -89,14 +99,6 @@ export function MetricDetails({
         }
     );
     if (measurements.length > 0) {
-        if (metric.scale !== "version_number") {
-            panes.push(
-                {
-                    menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
-                    render: () => <Tab.Pane><TrendGraph metric={metric} measurements={measurements} /></Tab.Pane>
-                }
-            )
-        }
         last_measurement.sources.forEach((source) => {
             const report_source = metric.sources[source.source_uuid];
             if (!report_source) { return }  // source was deleted, continue
@@ -108,7 +110,28 @@ export function MetricDetails({
                 render: () => <Tab.Pane><SourceEntities metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
             });
         });
+        if (metric.scale !== "version_number") {
+            panes.push(
+                {
+                    menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
+                    render: () => <Tab.Pane><TrendGraph metric={metric} measurements={measurements} /></Tab.Pane>
+                }
+            )
+        }
     }
+    const metricUrl = `${window.location}#${metric_uuid}`
+    panes.push(
+        {
+            menuItem: <Menu.Item key='changelog'><Icon name="history" /><FocusableTab>{'Changelog'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+                <ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />
+            </Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key="share"><Icon name="share square" /><FocusableTab>{'Share'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><Share title="Metric permanent link" url={metricUrl} /></Tab.Pane>
+        }
+    )
 
     function onTabChange(_event, data) {
         const old_tab = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid))[0];
@@ -118,8 +141,10 @@ export function MetricDetails({
 
     const visible_tabs = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid));
     const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
+    const metricType = dataModel.metrics[metric.type];
     return (
         <>
+            <MetricTypeHeader metricType={metricType} />
             <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
             <Buttons metric_uuid={metric_uuid} first_metric={first_metric} last_metric={last_metric} stopSorting={stopSorting} reload={reload} />
         </>
