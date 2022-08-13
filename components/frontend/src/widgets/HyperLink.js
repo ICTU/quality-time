@@ -8,7 +8,14 @@ export function HyperLink({ url, children, error }) {
         className += " error"
     }
     return (
-        <a className={className} href={url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer">
+        <a
+            className={className}
+            href={url}
+            onClick={(event) => event.stopPropagation()}
+            rel="noopener noreferrer"
+            target="_blank"
+            title="Opens new window or tab"
+        >
             {children}
         </a>
     )

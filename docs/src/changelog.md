@@ -21,6 +21,10 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 - The documentation about exporting and importing reports via the API did not mention that the public key of the destination *Quality-time* instance has to be encoded before being passed as parameter to the export endpoint of the source *Quality-time* instance. Fixes [#4313](https://github.com/ICTU/quality-time/issues/4313).
 - The status start date of metrics would only be set on their first status *change*, not on their first status. Fixes [#4327](https://github.com/ICTU/quality-time/issues/4327).
 
+### Added
+
+- Metrics that require action now have a desired reaction time. *Quality-time* shows the time left in the metric tables. The desired reaction times can be configured via the report header. Closes [#4190](https://github.com/ICTU/quality-time/issues/4190).
+
 ## v4.2.0 - 2022-07-22
 
 ### Deployment notes

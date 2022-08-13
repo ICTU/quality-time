@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { DarkMode } from '../context/DarkMode';
 import { HyperLink } from './HyperLink';
 
@@ -16,4 +16,11 @@ it('is grey in dark mode', () => {
 it('is can be in error mode', () => {
     const { container } = render(<HyperLink url="https://url" error>Link</HyperLink>)
     expect(container.firstChild.className).toEqual(expect.stringContaining("error"));
+})
+
+it('does not propagate a click event', () => {
+    const eventHandler = jest.fn()
+    render(<div onClick={() => eventHandler()}><HyperLink url="https://url">Link</HyperLink></div>)
+    fireEvent.click(screen.getByText(/Link/))
+    expect(eventHandler).not.toBeCalled()
 })
