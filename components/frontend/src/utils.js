@@ -38,7 +38,8 @@ export function getMetricDeadline(metric, report) {
         deadline = new Date(metric.debt_end_date)
     } else {
         const statusStart = metric.status_start || "3000-01-01"
-        const desiredResponseTime = report?.desired_response_times?.[metric.status] ?? (metricReactionDeadline[metric.status] ?? 0)
+        const status = metric.status
+        const desiredResponseTime = report?.desired_response_times?.[status] ?? (metricReactionDeadline[status] ?? metricReactionDeadline["unknown"])
         deadline = new Date(statusStart)
         deadline.setDate(deadline.getDate() + desiredResponseTime)
     }
