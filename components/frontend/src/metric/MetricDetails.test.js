@@ -46,7 +46,10 @@ async function renderMetricDetails(stopSorting, connection_error) {
         ok: true,
         measurements: [
             {
-                count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
+                count: { value: "42" },
+                version_number: { value: "1.1" },
+                start: "2020-02-29T10:25:52.252Z",
+                end: "2020-02-29T11:25:52.252Z",
                 sources: [
                     {},
                     { source_uuid: "source_uuid" },
@@ -83,6 +86,13 @@ it('switches tabs', async () => {
     expect(screen.getAllByText(/Source name/).length).toBe(1);
 });
 
+it('switches tabs to technical debt', async () => {
+    await renderMetricDetails();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Technical debt/)))
+    expect(screen.getAllByText(/Accepted technical debt/).length).toBe(1);
+})
+
 it('switches tabs to measurement entities', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
@@ -95,6 +105,19 @@ it('switches tabs to the trend graph', async () => {
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
     expect(screen.getAllByText(/Time/).length).toBe(1);
+})
+
+it('does not show the trend graph tab if the metric scale is version number', async () => {
+    report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
+    await renderMetricDetails();
+    expect(screen.queryAllByText(/Trend graph/).length).toBe(0);
+})
+
+it('switches tabs to the share tab', async () => {
+    await renderMetricDetails();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Share/)))
+    expect(screen.getAllByText(/Metric permanent link/).length).toBe(1);
 })
 
 it('displays whether sources have errors', async () => {

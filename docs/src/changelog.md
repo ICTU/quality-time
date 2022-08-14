@@ -25,6 +25,10 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 
 - Metrics that require action now have a desired reaction time. *Quality-time* shows the time left in the metric tables. The desired reaction times can be configured via the report header. Closes [#4190](https://github.com/ICTU/quality-time/issues/4190).
 
+### Changed
+
+- The metric detail tabs were flattened to simplify the user interface. The tabs that were previously nested tabs under 'Metric' are now top-level tabs. Closes [#4390](https://github.com/ICTU/quality-time/issues/4390).
+
 ## v4.2.0 - 2022-07-22
 
 ### Deployment notes
