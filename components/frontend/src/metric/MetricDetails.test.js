@@ -46,8 +46,10 @@ async function renderMetricDetails(stopSorting, connection_error) {
         ok: true,
         measurements: [
             {
-                count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
-                version_number: { value: "1.1" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
+                count: { value: "42" },
+                version_number: { value: "1.1" },
+                start: "2020-02-29T10:25:52.252Z",
+                end: "2020-02-29T11:25:52.252Z",
                 sources: [
                     {},
                     { source_uuid: "source_uuid" },
