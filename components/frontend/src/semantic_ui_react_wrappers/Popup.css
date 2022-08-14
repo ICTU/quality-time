@@ -1,5 +1,6 @@
 .ui.inverted.popup {
     background-color: rgba(60, 65, 70);
+    box-shadow: 0 2px 4px 0 rgba(255,255,255,.10), 0 2px 8px 0 rgba(255,255,255,.15);
 }
 
 .ui.inverted.popup .negative.message .header {
