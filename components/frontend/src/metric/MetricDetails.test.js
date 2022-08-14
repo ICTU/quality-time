@@ -83,6 +83,13 @@ it('switches tabs', async () => {
     expect(screen.getAllByText(/Source name/).length).toBe(1);
 });
 
+it('switches tabs to technical debt', async () => {
+    await renderMetricDetails();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Technical debt/)))
+    expect(screen.getAllByText(/Accepted technical debt/).length).toBe(1);
+})
+
 it('switches tabs to measurement entities', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
@@ -95,6 +102,20 @@ it('switches tabs to the trend graph', async () => {
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
     expect(screen.getAllByText(/Time/).length).toBe(1);
+})
+
+it('does not show the trend graph tab if the metric scale is version number', async () => {
+    await renderMetricDetails();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
+    expect(screen.getAllByText(/Time/).length).toBe(1);
+})
+
+it('switches tabs to the share tab', async () => {
+    await renderMetricDetails();
+    expect(screen.getAllByText(/Metric name/).length).toBe(1);
+    await act(async () => fireEvent.click(screen.getByText(/Share/)))
+    expect(screen.getAllByText(/Metric permanent link/).length).toBe(1);
 })
 
 it('displays whether sources have errors', async () => {
