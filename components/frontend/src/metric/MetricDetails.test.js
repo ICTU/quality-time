@@ -47,6 +47,7 @@ async function renderMetricDetails(stopSorting, connection_error) {
         measurements: [
             {
                 count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
+                version_number: { value: "1.1" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z",
                 sources: [
                     {},
                     { source_uuid: "source_uuid" },
@@ -105,10 +106,9 @@ it('switches tabs to the trend graph', async () => {
 })
 
 it('does not show the trend graph tab if the metric scale is version number', async () => {
+    report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
     await renderMetricDetails();
-    expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
-    expect(screen.getAllByText(/Time/).length).toBe(1);
+    expect(screen.queryAllByText(/Trend graph/).length).toBe(0);
 })
 
 it('switches tabs to the share tab', async () => {
