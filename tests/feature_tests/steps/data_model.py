@@ -8,7 +8,7 @@ from behave import then, when
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()  # skipcq: PYL-E1123
+    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()  # skipcq: PYL-E1123,PTC-W1003
 
 
 @when("the client gets the most recent data model")
