@@ -1,6 +1,7 @@
 """Utility functions."""
 
 import contextlib
+from curses import use_default_colors
 import hashlib
 import re
 import time
@@ -63,12 +64,12 @@ def hashless(url: URL) -> URL:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
+    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
-    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec # Not used for cryptography
+    return hashlib.sha1(string.encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 def days_ago(date_time: datetime) -> int:

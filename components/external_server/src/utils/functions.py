@@ -166,8 +166,7 @@ def uuid() -> ItemId:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    # Not used for cryptography, so suppress warnings about md5 being insecure
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, # skipcq: PTC-W1003
+    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 def report_date_time() -> str:

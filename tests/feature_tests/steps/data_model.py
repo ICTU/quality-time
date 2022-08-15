@@ -8,7 +8,7 @@ from behave import then, when
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 @when("the client gets the most recent data model")
