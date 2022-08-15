@@ -418,7 +418,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker-compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.10.5-bullseye tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.10.6-bullseye tests/application_tests/ci/test.sh
 ```
 
 ## Documentation and changelog
@@ -528,7 +528,7 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Internal server](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile): the Python base image.
 - [Collector](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile): the Python base image.
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
-- [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, and the serve version.
+- [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, the npm version, and the serve version.
 - [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the MongoDB base image.
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
