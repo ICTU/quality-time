@@ -571,9 +571,9 @@ tomlkit==0.11.0 \
     --hash=sha256:0f4050db66fd445b885778900ce4dd9aea8c90c4721141fde0d6ade893820ef1 \
     --hash=sha256:71ceb10c0eefd8b8f11fe34e8a51ad07812cb1dc3de23247425fbc9ddc47b9dd
     # via pylint
-types-cryptography==3.3.21 \
-    --hash=sha256:ad1b9c63159c009f8676c7e41a4d595dfb96e8c03affa2e693e1617908bb409e \
-    --hash=sha256:bdeb6dd07280ac724e05f02e0d8ef01fdef729b18bb07d635d64de83171a4e70
+types-cryptography==3.3.22 \
+    --hash=sha256:0da551cd9affe869e2a25628b87be4b5e070ed294804ecfd91a22707fbb32cdc \
+    --hash=sha256:d0d7c1f7fc85fee4b92da762f516afdd8d9efccc916872abe193080f7936b446
     # via -r requirements-dev.in
 types-requests==2.28.8 \
     --hash=sha256:7a9f7b152d594a1c18dd4932cdd2596b8efbeedfd73caa4e4abb3755805b4685 \
