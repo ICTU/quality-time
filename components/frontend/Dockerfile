@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine3.15
+FROM node:16.17.0-alpine3.15
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
