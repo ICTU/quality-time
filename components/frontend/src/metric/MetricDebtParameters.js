@@ -121,7 +121,7 @@ export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
                                     icon='plus'
                                     item_type='issue'
                                     onClick={() => add_metric_issue(metric_uuid, reload)}
-                                    popup={`Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.${issueTrackerInstruction}`}
+                                    popup={<p>Create a new issue for this metric in the configured issue tracker and add its identifier to the tracked issue identifiers.{issueTrackerInstruction}</p>}
                                     position='top center'
                                 />
                             </Grid.Column>
