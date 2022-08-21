@@ -9,7 +9,8 @@ import { ItemBreadcrumb } from './ItemBreadcrumb';
 export function ActionButton(props) {
     const { action, icon, item_type, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
-    const button = <span><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></span>;
+    // Put the button in a div so that a disabled button can still have a popup
+    const button = <div><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></div>;
     return (
         popup ?
             <Popup
