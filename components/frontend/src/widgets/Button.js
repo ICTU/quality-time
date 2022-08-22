@@ -10,6 +10,7 @@ export function ActionButton(props) {
     const { action, icon, item_type, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
     // Put the button in a div so that a disabled button can still have a popup
+    // See https://github.com/Semantic-Org/Semantic-UI-React/issues/2804
     const button = <div><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></div>;
     return (
         popup ?
