@@ -7,11 +7,15 @@ import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 export function ActionButton(props) {
-    const { action, disabled, icon, item_type, popup, position, ...other } = props;
+    const { action, disabled, icon, item_type, floated, fluid, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
-    // Put the button in a div so that a disabled button can still have a popup
+    // Put the button in a span so that a disabled button can still have a popup
     // See https://github.com/Semantic-Org/Semantic-UI-React/issues/2804
-    const button = <Button basic disabled={disabled} icon primary {...other} ><Icon name={icon} /> {label}</Button>;
+    const button = (
+        <span style={{float: floated ?? "none", display: fluid ? "" : "inline-block" }}>
+            <Button basic disabled={disabled} icon fluid={fluid} primary {...other} ><Icon name={icon} /> {label}</Button>
+        </span>
+    )
     return (
         <Popup
             content={popup}
