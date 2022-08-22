@@ -7,19 +7,22 @@ import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 export function ActionButton(props) {
-    const { action, icon, item_type, popup, position, ...other } = props;
+    const { action, disabled, icon, item_type, floated, fluid, popup, position, ...other } = props;
     const label = `${action} ${item_type}`;
-    // Put the button in a div so that a disabled button can still have a popup
-    const button = <div><Button basic icon primary {...other} ><Icon name={icon} /> {label}</Button></div>;
+    // Put the button in a span so that a disabled button can still have a popup
+    // See https://github.com/Semantic-Org/Semantic-UI-React/issues/2804
+    const button = (
+        <span style={{float: floated ?? "none", display: fluid ? "" : "inline-block" }}>
+            <Button basic disabled={disabled} icon fluid={fluid} primary {...other} ><Icon name={icon} /> {label}</Button>
+        </span>
+    )
     return (
-        popup ?
-            <Popup
-                content={popup}
-                on={['focus', 'hover']}
-                position={position || 'top left'}
-                trigger={button}
-            /> :
-            button
+        <Popup
+            content={popup}
+            on={['focus', 'hover']}
+            position={position || 'top left'}
+            trigger={button}
+        />
     )
 }
 
@@ -161,9 +164,8 @@ function download_pdf(report_uuid, query_string, callback) {
         }).finally(() => callback());
 }
 
-export function DownloadAsPDFButton(props) {
+export function DownloadAsPDFButton({ report_uuid, history }) {
     const [loading, setLoading] = useState(false);
-    const { report_uuid, history, ...otherProps } = props;
     // Make sure the report_url contains only registered query parameters
     const query = registeredURLSearchParams(history);
     const queryString = query.toString() ? ("?" + query.toString()) : ""
@@ -172,7 +174,7 @@ export function DownloadAsPDFButton(props) {
         <ActionButton
             action='Download'
             icon="file pdf"
-            item_type='report as pdf'
+            item_type='report as PDF'
             loading={loading}
             onClick={() => {
                 if (!loading) {
@@ -180,7 +182,7 @@ export function DownloadAsPDFButton(props) {
                     download_pdf(report_uuid, `?${query.toString()}`, () => { setLoading(false) })
                 }
             }}
-            {...otherProps}
+            popup="Generate a PDF version of the report as currently displayed and download it. This may take a few seconds."
         />
     )
 }
