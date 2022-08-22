@@ -157,7 +157,7 @@ const history = { location: { search: "" } };
 
 test("DownloadAsPDFButton has the correct label", () => {
     render(<DownloadAsPDFButton history={history} />);
-    expect(screen.getAllByText(/report as pdf/).length).toBe(1);
+    expect(screen.getAllByText(/report as PDF/).length).toBe(1);
 
 });
 
