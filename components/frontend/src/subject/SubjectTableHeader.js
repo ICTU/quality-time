@@ -77,9 +77,9 @@ const measurementHelp = <>
         sources tab to add sources or see the error details.
     </p>
     <p>
-        If the measurement value has a <Label horizontal color="red">red background</Label>, the metric has not been
-        measured recently. This indicates a problem with <em>Quality-time</em> itself, and a system administrator should
-        be notified.
+        If the measurement value has a <Label as="span" horizontal color="red">red background</Label>, the metric has
+        not been measured recently. This indicates a problem with <em>Quality-time</em> itself, and a system
+        administrator should be notified.
     </p>
     <p>
         Hover over the measurement value to see when the metric was last measured.
@@ -94,9 +94,9 @@ const targetHelp = <>
         The value against which measurements are evaluated to determine whether a metric needs action.
     </p>
     <p>
-        The target value has a <Label horizontal color="grey">grey background</Label> if the metric has accepted
-        technical debt that is not applied because the technical debt end date is in the past or all issues linked to
-        the metric have been resolved.
+        The target value has a <Label as="span" horizontal color="grey">grey background</Label> if the metric has
+        accepted technical debt that is not applied because the technical debt end date is in the past or all issues
+        linked to the metric have been resolved.
     </p>
     <p>
         Expand the metric (click <Icon fitted name="triangle right" />) to edit the target value in the configuration
@@ -155,9 +155,9 @@ const sourcesHelp = <>
         The tools and reports accessed to collect the measurement data. One metric can have multiple sources.
     </p>
     <p>
-        If a source has a <Label horizontal color="red">red background</Label>, the source could not be accessed or the
-        data could not be parsed. Expand the metric (click <Icon fitted name="triangle right" />) and navigate to the
-        source to see the error details.
+        If a source has a <Label as="span" horizontal color="red">red background</Label>, the source could not be
+        accessed or the data could not be parsed. Expand the metric (click <Icon fitted name="triangle right" />) and
+        navigate to the source to see the error details.
     </p>
     <p>
         Expand the metric (click <Icon fitted name="triangle right" />) to configure sources.
@@ -176,8 +176,9 @@ const issuesHelp = <>
         One metric can have multiple issues linked to it.
     </p>
     <p>
-        If an issue has a <Label horizontal color="red">red background</Label>, the issue tracker could not be accessed
-        or the data could not be parsed. Expand the metric and navigate to the technical debt tab to see the error details.
+        If an issue has a <Label as="span" horizontal color="red">red background</Label>, the issue tracker could not
+        be accessed or the data could not be parsed. Expand the metric and navigate to the technical debt tab to see
+        the error details.
     </p>
     <p>
         Hover over an issue to see more information about the issue.
