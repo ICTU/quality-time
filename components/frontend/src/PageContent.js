@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from 'semantic-ui-react';
+import { Container, Loader } from 'semantic-ui-react';
 import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
@@ -44,7 +44,7 @@ export function PageContent({
 }) {
     let content;
     if (loading) {
-        content = <Segment basic placeholder loading size="massive" aria-label="Loading..." />
+        content = <Segment basic placeholder aria-label="Loading..."><Loader active size="massive" /></Segment>
     } else {
         const dates = getColumnDates(report_date, dateInterval, dateOrder, nrDates)
         if (report_uuid) {
