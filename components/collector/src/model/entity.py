@@ -1,6 +1,10 @@
 """Measurement entity model class."""
 
 from collections.abc import Iterable
+import re
+
+
+QUOTED_SLASH = re.compile("%2f", re.IGNORECASE)
 
 
 class Entity(dict):
@@ -13,8 +17,8 @@ class Entity(dict):
 
     @staticmethod
     def safe_entity_key(key: str) -> str:
-        """Return a escaped version of the key that is safe in URLs and as Mongo document key."""
-        return str(key).replace("/", "-").replace(".", "_")
+        """Return an escaped version of the key that is safe in URLs and as Mongo document key."""
+        return re.sub(QUOTED_SLASH, "-", str(key).replace("/", "-").replace(".", "_"))
 
 
 class Entities(list[Entity]):

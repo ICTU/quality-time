@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.3.0-rc.1 - 2022-08-15
+## [Unreleased]
 
 ### Deployment notes
 
@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 - When time traveling, metrics would be incorrectly flagged as not having been measured recently. Fixes [#4279](https://github.com/ICTU/quality-time/issues/4279).
 - The documentation about exporting and importing reports via the API did not mention that the public key of the destination *Quality-time* instance has to be encoded before being passed as parameter to the export endpoint of the source *Quality-time* instance. Fixes [#4313](https://github.com/ICTU/quality-time/issues/4313).
 - The status start date of metrics would only be set on their first status *change*, not on their first status. Fixes [#4327](https://github.com/ICTU/quality-time/issues/4327).
+- When measuring failed or unused CI-jobs, Jenkins multi-branch pipeline jobs based on branch names containing forward slashes (for example 'feature/432-new-customer') could not be marked as false positive. Fixes [#4434](https://github.com/ICTU/quality-time/issues/4434).
 
 ### Added
 
