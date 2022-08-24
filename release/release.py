@@ -31,7 +31,9 @@ def parse_arguments() -> tuple[str, str, bool]:
     epilog = """preconditions for release:
   - the current folder is the release folder
   - the current branch is master
+  - the local HEAD of master is equal to the remote HEAD of master
   - the workspace has no uncommitted changes
+  - the workspace has no untracked files
   - the changelog has an '[Unreleased]' header
   - the changelog contains no release candidates"""
     parser = ArgumentParser(description=description, epilog=epilog, formatter_class=RawDescriptionHelpFormatter)
@@ -53,20 +55,36 @@ def check_preconditions(bump: str) -> None:
     if pathlib.Path.cwd() != release_folder:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
     root = release_folder.parent
+    messages.extend(failed_preconditions_repo(root))
+    messages.extend(failed_preconditions_changelog(bump, root))
+    if messages:
+        formatted_messages = "\n".join([f"- {message}" for message in messages])
+        sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
+
+
+def failed_preconditions_repo(root: pathlib.Path) -> list[str]:
+    """Check that the repo is in pristine condition."""
+    messages = []
     repo = git.Repo(root)
     origin = git.Remote(repo, "origin")
     origin.fetch()
     if repo.active_branch.name != "master":
         messages.append("The current branch is not the master branch.")
-    if repo.heads.master != repo.remotes.origin.refs.master:
+    if repo.heads.master.commit != repo.remotes.origin.refs.master.commit:
         messages.append(
-            f"The local HEAD of master ({repo.refs.master.commit}) is not equal to the remote HEAD of "
+            f"The local HEAD of master ({repo.heads.master.commit}) is not equal to the remote HEAD of "
             f"master ({repo.remotes.origin.refs.master.commit})."
         )
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
     if repo.untracked_files:
         messages.append("The workspace has untracked files.")
+    return messages
+
+
+def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
+    """Check that the changelog is properly prepared."""
+    messages = []
     changelog = root / "docs" / "src" / "changelog.md"
     with changelog.open() as changelog_file:
         changelog_text = changelog_file.read()
@@ -77,9 +95,7 @@ def check_preconditions(bump: str) -> None:
             f"The changelog ({changelog}) still contains release candidates; remove "
             "the release candidates and move their changes under the '[Unreleased]' header."
         )
-    if messages:
-        formatted_messages = "\n".join([f"- {message}" for message in messages])
-        sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
+    return messages
 
 
 def main() -> None:
