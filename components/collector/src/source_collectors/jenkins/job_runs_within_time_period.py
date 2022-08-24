@@ -38,5 +38,6 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Count the sum of jobs ran."""
-        job_runs = [job['build_count'] for job in await self._parse_entities(responses)]
-        return SourceMeasurement(value=str(sum(job_runs)))
+        parsed_entities = await self._parse_entities(responses)
+        job_runs = [job['build_count'] for job in parsed_entities]
+        return SourceMeasurement(value=str(sum(job_runs)), entities=parsed_entities)
