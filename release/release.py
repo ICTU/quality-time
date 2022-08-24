@@ -54,10 +54,19 @@ def check_preconditions(bump: str) -> None:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
     root = release_folder.parent
     repo = git.Repo(root)
+    origin = git.Remote(repo, "origin")
+    origin.fetch()
     if repo.active_branch.name != "master":
         messages.append("The current branch is not the master branch.")
+    if repo.heads.master != repo.remotes.origin.refs.master:
+        messages.append(
+            f"The local HEAD of master ({repo.refs.master.commit}) is not equal to the remote HEAD of "
+            f"master ({repo.remotes.origin.refs.master.commit})."
+        )
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
+    if repo.untracked_files:
+        messages.append("The workspace has untracked files.")
     changelog = root / "docs" / "src" / "changelog.md"
     with changelog.open() as changelog_file:
         changelog_text = changelog_file.read()
