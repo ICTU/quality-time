@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
+from shared_data_model import DATA_MODEL
 from shared.model.report import Report
 
 from routes import (
@@ -522,7 +523,7 @@ class MetricIssueTest(unittest.TestCase):
             dict(
                 report_uuid=REPORT_ID,
                 issue_tracker=dict(parameters=dict(url="https://tracker", project_key="KEY", issue_type="BUG")),
-                subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="name")})},
+                subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(type="violations", name="name")})},
             ),
         )
         self.database.reports.find.return_value = [report]
@@ -548,7 +549,8 @@ class MetricIssueTest(unittest.TestCase):
                     "issuetype": {"name": "BUG"},
                     "summary": "Quality-time metric 'name'",
                     "description": "Metric '[name|https://quality_time/metric42]' of subject "
-                    "'Subject' in Quality-time report '' needs attention.",
+                    "'Subject' in Quality-time report '' needs attention.\n\n"
+                    f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
                 }
             },
         )
