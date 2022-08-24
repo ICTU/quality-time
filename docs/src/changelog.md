@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v4.3.0, please read the v4.3.0 deployment notes.
+
+### Added
+
+- When creating issues, include the rationale for the metric in the created issue so that people encountering the issue in the issue tracker have a better understanding of why the issue needs addressing. Closes [#4232](https://github.com/ICTU/quality-time/issues/4232).
+
 ## v4.3.0 - 2022-08-24
 
 ### Deployment notes

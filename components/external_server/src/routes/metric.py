@@ -5,6 +5,7 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
+from shared_data_model import DATA_MODEL
 from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database.reports import insert_new_report
@@ -172,5 +173,6 @@ def create_issue_description(metric, subject, report) -> str:
     metric_url = dict(bottle.request.json)["metric_url"]
     return (
         f"Metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
-        f"in Quality-time report '{report.name}' needs attention."
+        f"in Quality-time report '{report.name}' needs attention.\n\n"
+        f"Why address '{metric.name}'? {DATA_MODEL.metrics[metric.type()].rationale}"
     )
