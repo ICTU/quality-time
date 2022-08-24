@@ -58,6 +58,8 @@ def check_preconditions(bump: str) -> None:
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
+    if repo.untracked_files:
+        messages.append("The workspace has untracked files.")
     changelog = root / "docs" / "src" / "changelog.md"
     with changelog.open() as changelog_file:
         changelog_text = changelog_file.read()
