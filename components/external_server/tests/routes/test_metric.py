@@ -25,6 +25,7 @@ from ..fixtures import (
     REPORT_ID,
     REPORT_ID2,
     SOURCE_ID,
+    SOURCE_ID2,
     SUBJECT_ID,
     SUBJECT_ID2,
     create_report,
@@ -42,7 +43,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.data_model = dict(
             _id="id",
             metrics=dict(
-                old_type=dict(name="Old type", scales=["count"]),
+                old_type=dict(name="Old type", scales=["count"], sources=["source_type1", "source_type2"]),
                 new_type=dict(
                     scales=["count", "version_number"],
                     default_scale="count",
@@ -51,7 +52,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                     target="0",
                     near_target="1",
                     tags=[],
-                    sources=["source_type"],
+                    sources=["source_type1"],
                 ),
             ),
         )
@@ -78,7 +79,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                                 debt_target=None,
                                 accept_debt=False,
                                 tags=[],
-                                sources={SOURCE_ID: {}},
+                                sources={SOURCE_ID: dict(type="source_type1"), SOURCE_ID2: dict(type="source_type2")},
                             ),
                             METRIC_ID2: dict(name="name2", type="old_type"),
                         },
@@ -115,11 +116,15 @@ class PostMetricAttributeTest(unittest.TestCase):
         )
 
     def test_post_metric_type(self, request):
-        """Test that the metric type can be changed."""
+        """Test that the metric type can be changed and that sources that support the new type are not removed."""
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual(
+            {SOURCE_ID: dict(type="source_type1")},  # The new metric type can only be measured by source type 1, not 2
+            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"],
+        )
         self.assert_delta(
             "type of metric 'name' of subject 'Subject' in report 'Report' from 'old_type' to 'new_type'",
             report=updated_report,
@@ -419,7 +424,7 @@ class MetricTest(unittest.TestCase):
                     tags=[],
                 ),
             ),
-            sources=dict(source_type=dict(name="Source type")),
+            sources=dict(source_type1=dict(name="Source type")),
         )
         self.database.datamodels.find_one.return_value = self.data_model
         self.report = Report(self.data_model, create_report())
