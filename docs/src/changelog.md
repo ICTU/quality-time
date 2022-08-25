@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not v4.3.0, please read the v4.3.0 deployment notes.
 
+###  Fixed
+
+- When changing the type of a metric with configured sources, don't remove the sources that support both the old and the new metric type. Fixes [#4443](https://github.com/ICTU/quality-time/issues/4443).
+
 ### Added
 
 - When creating issues, include the rationale for the metric in the created issue so that people encountering the issue in the issue tracker have a better understanding of why the issue needs addressing. Closes [#4232](https://github.com/ICTU/quality-time/issues/4232).

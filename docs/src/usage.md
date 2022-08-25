@@ -205,7 +205,11 @@ After you've added a metric, the metric is visible in the subject's metric table
 :class: only-dark
 ```
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field. When you change the metric type, the sources you can select in the "Sources" tab change accordingly.
+
+```{warning}
+If you change the type of a metric that has sources configured, sources that do not support the new metric type will be removed.
+```
 
 Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 

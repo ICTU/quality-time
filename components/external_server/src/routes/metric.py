@@ -131,13 +131,17 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         return dict(ok=True)  # Nothing to do
     metric[metric_attribute] = new_value
     if metric_attribute == "type":
-        metric.update(default_metric_attributes(database, new_value))
+        sources_to_keep = {
+            key: source
+            for key, source in metric["sources"].items()
+            if source["type"] in data_model["metrics"][new_value]["sources"]
+        }
+        metric.update(default_metric_attributes(database, new_value), sources=sources_to_keep)
     description = (
         f"{{user}} changed the {metric_attribute} of metric '{old_metric_name}' of subject "
         f"'{subject.name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
     )
-    uuids = [report.uuid, subject.uuid, metric.uuid]
-    insert_new_report(database, description, uuids, report)
+    insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
     metric = Metric(data_model, metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
