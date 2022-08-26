@@ -26,10 +26,3 @@ class JenkinsJobRunsWithinTimePeriodTest(JenkinsTestCase):
 
         expected_entities = [dict(build_count=1, key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, value='1', entities=expected_entities)
-
-    async def test_job_without_builds(self):
-        """Test that the count is 0 when the job has no builds."""
-        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="notbuilt", builds=[])])
-        response = await self.collect(get_request_json_return_value=jenkins_json)
-        expected_entities = [dict(build_count=0, key="job", name="job", url=self.job_url)]
-        self.assert_measurement(response, value='0', entities=expected_entities)

@@ -50,11 +50,6 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
         )]
         self.assert_measurement(response, value='1', entities=expected_entities)
 
-    async def test_job_without_builds(self):
-        """Test that the count is 0 when the job has no builds."""
-        response = await self.collect(get_request_json_return_value=[])
-        self.assert_measurement(response, value='0', entities=[])
-
     async def test_jobs_not_deduplicated(self):
         """Test that the job runs are not deduplicated."""
         now_timestamp = datetime.now().isoformat()

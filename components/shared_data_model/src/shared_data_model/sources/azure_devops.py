@@ -22,12 +22,13 @@ from ..parameters import (
 ALL_AZURE_DEVOPS_METRICS = [
     "failed_jobs",
     "issues",
+    "job_runs_within_time_period",
     "merge_requests",
-    "user_story_points",
     "source_up_to_dateness",
     "tests",
     "unmerged_branches",
     "unused_jobs",
+    "user_story_points",
 ]
 
 PIPELINE_ATTRIBUTES = [
@@ -135,14 +136,20 @@ AZURE_DEVOPS = Source(
             help="Pipelines to include can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             placeholder="all",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         jobs_to_ignore=MultipleChoiceWithAdditionParameter(
             name="Pipelines to ignore (regular expressions or pipeline names)",
             short_name="pipelines to ignore",
             help="Pipelines to ignore can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+        ),
+        lookback_days=Days(
+            name="Number of days to look back in selecting job builds to consider",
+            short_name="number of days ago",
+            default_value="90",
+            metrics=["job_runs_within_time_period"],
         ),
         failure_type=FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],
