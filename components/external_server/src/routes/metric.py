@@ -132,12 +132,8 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         return dict(ok=True)  # Nothing to do
     metric[metric_attribute] = new_value
     if metric_attribute == "type":
-        sources_to_keep = {
-            key: source
-            for key, source in metric["sources"].items()
-            if source["type"] in data_model["metrics"][new_value]["sources"]
-        }
-        metric.update(default_metric_attributes(database, new_value), sources=sources_to_keep)
+        # Update the metric attributes, but keep the sources
+        metric.update(default_metric_attributes(database, new_value), sources=metric["sources"])
     description = (
         f"{{user}} changed the {metric_attribute} of metric '{old_metric_name}' of subject "
         f"'{subject.name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
