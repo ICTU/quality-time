@@ -108,6 +108,7 @@ ATTRIBUTES_IMPACTING_STATUS = (
     "issue_ids",
     "near_target",
     "target",
+    "type",
 )
 
 
