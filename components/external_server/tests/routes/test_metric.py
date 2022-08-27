@@ -90,6 +90,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
 
     @staticmethod
     def set_measurement_id(measurement):
@@ -115,10 +116,46 @@ class PostMetricAttributeTest(unittest.TestCase):
             "name of metric 'name' of subject 'Subject' in report 'Report' from 'name' to 'ABC'", report=updated_report
         )
 
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed and that sources that support the new type are not removed."""
+        sources = [
+            dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="0"),
+            dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="0"),
+        ]
+        previous_measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            sources=sources,
+            count=dict(status="target_met", value="0", target="0", near_target="10", debt_target=None, direction="<"),
+        )
+        self.database.measurements.find_one.return_value = previous_measurement
+        expected_new_measurement = dict(
+            metric_uuid=METRIC_ID,
+            sources=[
+                dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="0"),
+                dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="0"),
+            ],
+            count=dict(
+                status_start="2019-01-01",
+                status=None,
+                value=None,
+                target="0",
+                near_target="1",
+                debt_target=None,
+                direction="<",
+            ),
+            version_number=dict(
+                status_start="2019-01-01",
+                status=None,
+                value=None,
+                direction="<",
+            ),
+            end="2019-01-01",
+            start="2019-01-01",
+        )
         request.json = dict(type="new_type")
-        self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "type", self.database))
+        self.assertDictEqual(expected_new_measurement, post_metric_attribute(METRIC_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
@@ -166,7 +203,6 @@ class PostMetricAttributeTest(unittest.TestCase):
                 status="target_met", value="1.0", target="1.2", near_target="1.4", debt_target=None, direction="<"
             ),
         )
-        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["target"] = "1.2"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["near_target"] = "1.4"
@@ -201,7 +237,6 @@ class PostMetricAttributeTest(unittest.TestCase):
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(target="10")
         self.assertDictEqual(
             dict(
@@ -230,7 +265,6 @@ class PostMetricAttributeTest(unittest.TestCase):
     def test_post_metric_technical_debt(self, request):
         """Test that accepting technical debt also sets the technical debt value."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(accept_debt=True)
         self.assertDictEqual(
             dict(
@@ -261,7 +295,6 @@ class PostMetricAttributeTest(unittest.TestCase):
         """Test that accepting technical debt when the metric has no sources also sets the status to debt target met."""
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = {}
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(accept_debt=True)
         self.assertDictEqual(
             dict(
@@ -291,7 +324,6 @@ class PostMetricAttributeTest(unittest.TestCase):
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(debt_end_date="2019-06-07")
         count = dict(
             value=None,
