@@ -101,7 +101,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_with_unsupported_collector(self):
         """Test fetching measurement for a metric with an unsupported source."""
-        self.metrics["metric_uuid"]["sources"]["source_id"] = dict(type="unsopported_source")
+        self.metrics["metric_uuid"]["sources"]["source_id"] = dict(type="unsupported_source")
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = self.metrics
         with self._patched_post() as post:
