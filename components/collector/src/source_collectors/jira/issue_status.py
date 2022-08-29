@@ -23,12 +23,13 @@ class JiraIssueStatus(JiraBase):
         """Override to get the issue, including the status field, from Jira."""
         url = await super()._api_url()
         fields = "created,status,summary,updated,duedate,fixVersions,sprint"
-        return URL(f"{url}/rest/agile/1.0/issue/{self._issue_id}?fields={fields}")
+        # Capitalize the issue id because for some reason the URL is case sensitive and Jira ids are always full caps
+        return URL(f"{url}/rest/agile/1.0/issue/{self._issue_id.upper()}?fields={fields}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the issue to the landing URL."""
         url = await super()._api_url()
-        return URL(f"{url}/browse/{self._issue_id}")
+        return URL(f"{url}/browse/{self._issue_id}")  # Don't need upper() here; the browse URL is not case sensitive
 
     async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
         """Override to get the issue status from the responses."""
