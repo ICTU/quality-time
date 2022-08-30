@@ -29,7 +29,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_path = "project/security_hotspots"
         return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:  # skipcq: PYL-W0613
         """Extend to add urls for the selected security types."""
         api_urls = []
         security_types = self._parameter(self.types_parameter)

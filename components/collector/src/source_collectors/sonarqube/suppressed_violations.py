@@ -12,7 +12,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_configuration = "suppression_rules"
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:  # skipcq: PYL-W0613
         """Override to not include the rules parameter in the landing URL.
 
         This collector uses two SonarQube endpoints to get the suppressed violations. As we can't include both URLs in
