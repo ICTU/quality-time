@@ -127,5 +127,9 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that by default only the vulnerabilities are returned."""
         response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(
-            response, value="2", total="100", entities=self.vulnerability_entities, landing_url=self.issues_landing_url
+            response,
+            value="2",
+            total="100",
+            entities=self.vulnerability_entities,
+            landing_url="https://sonarqube/project/issues?id=id&branch=master&resolved=false&types=VULNERABILITY",
         )

@@ -20,7 +20,12 @@ class SonarQubeViolations(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         landing_url = f"{url}/project/issues?id={component}&resolved=false&branch={branch}"
-        return URL(landing_url + self.__rules_url_parameter())
+        return URL(
+            landing_url
+            + self._query_parameter("severities")
+            + self._query_parameter(self.types_parameter)
+            + self.__rules_url_parameter()
+        )
 
     async def _api_url(self) -> URL:
         """Extend to add the issue search path and parameters."""
@@ -29,11 +34,18 @@ class SonarQubeViolations(SonarQubeCollector):
         branch = self._parameter("branch")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
-        api = (
-            f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
-            f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
+        api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&branch={branch}"
+        return URL(
+            api
+            + self._query_parameter("severities")
+            + self._query_parameter(self.types_parameter)
+            + self.__rules_url_parameter()
         )
-        return URL(api + self.__rules_url_parameter())
+
+    def _query_parameter(self, parameter_key: str) -> str:
+        """Return the multiple choice parameter as query parameter that can be passed to SonarQube."""
+        values = ",".join(value.upper() for value in sorted(list(self._parameter(parameter_key))))
+        return "" if values == self.__default_value(parameter_key) else f"&{parameter_key}={values}"
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
@@ -74,17 +86,10 @@ class SonarQubeViolations(SonarQubeCollector):
             update_date=issue["updateDate"],
         )
 
-    def _violation_types(self) -> str:
-        """Return the violation types."""
-        return ",".join(violation_type.upper() for violation_type in list(self._parameter(self.types_parameter)))
-
-    def _violation_severities(self) -> str:
-        """Return the severities parameter."""
-        return ",".join(severity.upper() for severity in self._parameter("severities"))
-
-    def _review_priorities(self) -> str:
-        """Return the review priorities parameter."""
-        return ",".join(priority.upper() for priority in self._parameter("review_priorities"))
+    def __default_value(self, parameter_key: str) -> str:
+        """Return the default value for the parameter."""
+        defaults = DATA_MODEL.sources[self.source_type].parameters[parameter_key].values or []
+        return ",".join(value.upper() for value in sorted(defaults))
 
 
 class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
