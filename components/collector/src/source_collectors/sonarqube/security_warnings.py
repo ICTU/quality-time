@@ -26,7 +26,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_path = "project/issues"
             extra_url_parameters = f"{self._query_parameter('severities')}&resolved=false&types=VULNERABILITY"
         else:
-            landing_path = "security_hotspots"
+            landing_path = "project/security_hotspots"
         return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:

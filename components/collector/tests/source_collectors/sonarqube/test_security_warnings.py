@@ -120,7 +120,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             value="2",
             total="100",
             entities=self.hotspot_entities,
-            landing_url="https://sonarqube/security_hotspots?id=id&branch=master",
+            landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
         )
 
     async def test_security_warnings_vulnerabilities_only(self):
