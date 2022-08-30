@@ -26,7 +26,7 @@ class JiraIssueStatus(JiraBase):
         # Capitalize the issue id because for some reason the URL is case sensitive and Jira ids are always full caps
         return URL(f"{url}/rest/agile/1.0/issue/{self._issue_id.upper()}?fields={fields}")
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:  # skipcq: PYL-W0613
         """Override to add the issue to the landing URL."""
         url = await super()._api_url()
         return URL(f"{url}/browse/{self._issue_id}")  # Don't need upper() here; the browse URL is not case sensitive
