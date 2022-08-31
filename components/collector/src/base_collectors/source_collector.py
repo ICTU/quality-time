@@ -89,19 +89,19 @@ class SourceCollector(ABC):
         This method should not be overridden because it makes sure the collection of source data never causes the
         collector to fail.
         """
-        api_url = safe_api_url = self.__class__.__name__
+        api_url = safe_api_url = class_name = self.__class__.__name__
         try:
             api_url = await self._api_url()
-            safe_api_url = tokenless(api_url) or self.__class__.__name__
+            safe_api_url = tokenless(api_url) or class_name
             responses = await self._get_source_responses(api_url)
-            logging.info("Retrieved %s", safe_api_url)
+            logging.info("%s retrieved %s", class_name, safe_api_url)
             return responses
         except (CollectorException, aiohttp.ClientError) as reason:
             error = self.__logsafe_exception(reason)
-            logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
+            logging.warning("%s failed to retrieve %s: %s", class_name, safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.error("Failed to retrieve %s: %s", safe_api_url, self.__logsafe_exception(reason))
+            logging.error("%s failed to retrieve %s: %s", class_name, safe_api_url, self.__logsafe_exception(reason))
         return SourceResponses(api_url=URL(api_url), connection_error=error)
 
     @staticmethod
