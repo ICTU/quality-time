@@ -159,19 +159,16 @@ class SourceCollector(ABC):
             value=await self._parse_value(responses),
         )
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:  # skipcq: PYL-R0201
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:  # pylint: disable=unused-argument
         """Parse the entities from the responses."""
-        # pylint: disable=unused-argument
         return Entities()  # pragma: no cover
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:  # skipcq: PYL-R0201
+    async def _parse_value(self, responses: SourceResponses) -> Value:  # pylint: disable=unused-argument
         """Parse the value from the responses."""
-        # pylint: disable=unused-argument
         return None  # pragma: no cover
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:  # skipcq: PYL-R0201
+    async def _parse_total(self, responses: SourceResponses) -> Value:  # pylint: disable=unused-argument
         """Parse the total from the responses."""
-        # pylint: disable=unused-argument
         return "100"  # pragma: no cover
 
     async def __safely_parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
