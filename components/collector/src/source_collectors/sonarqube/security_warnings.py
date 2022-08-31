@@ -19,19 +19,18 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         base_landing_url = await SourceCollector._landing_url(self, responses)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
+        common_url_parameters, extra_url_parameters = f"?id={component}&branch={branch}", ""
         if "vulnerability" in security_types and "security_hotspot" in security_types:
-            landing_url = f"{base_landing_url}/dashboard?id={component}&branch={branch}"
+            landing_path = "dashboard"
         elif "vulnerability" in security_types:
-            landing_url = f"{base_landing_url}/project/issues?id={component}&resolved=false&branch={branch}"
+            landing_path = "project/issues"
+            # We don't use self._query_parameter() because when we get here, the value of the types parameter is fixed
+            extra_url_parameters = f"{self._query_parameter('severities')}&resolved=false&types=VULNERABILITY"
         else:
-            landing_url = f"{base_landing_url}/security_hotspots?id={component}&branch={branch}"
-        return URL(landing_url)
+            landing_path = "project/security_hotspots"
+        return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
 
-    def _violation_types(self) -> str:
-        """Override to return the violation types this collector collects."""
-        return "VULNERABILITY"
-
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:  # skipcq: PYL-W0613
         """Extend to add urls for the selected security types."""
         api_urls = []
         security_types = self._parameter(self.types_parameter)
@@ -41,8 +40,8 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         if "vulnerability" in security_types:
             api_urls.append(
                 URL(
-                    f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
-                    f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
+                    f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
+                    f"{self._query_parameter('severities')}&types=VULNERABILITY&branch={branch}"
                 )
             )
         if "security_hotspot" in security_types:
@@ -54,6 +53,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the selected security types."""
         security_types = self._parameter(self.types_parameter)
+        review_priorities = [priority.upper() for priority in self._parameter("review_priorities")]
         vulnerabilities = (
             await super()._parse_source_responses(SourceResponses(responses=[responses[0]]))
             if "vulnerability" in security_types
@@ -64,7 +64,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             hotspots = [
                 await self.__entity(hotspot)
                 for hotspot in json.get("hotspots", [])
-                if hotspot["vulnerabilityProbability"] in self._review_priorities()
+                if hotspot["vulnerabilityProbability"] in review_priorities
             ]
         else:
             hotspots = []

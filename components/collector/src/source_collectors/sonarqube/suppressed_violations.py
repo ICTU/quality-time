@@ -12,7 +12,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_configuration = "suppression_rules"
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:  # skipcq: PYL-W0613
         """Override to not include the rules parameter in the landing URL.
 
         This collector uses two SonarQube endpoints to get the suppressed violations. As we can't include both URLs in
@@ -34,8 +34,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(
-            f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500&"
-            f"severities={self._violation_severities()}&types={self._violation_types()}"
+            f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500"
+            f"{self._query_parameter('severities')}{self._query_parameter(self.types_parameter)}"
         )
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)), **kwargs)
 
