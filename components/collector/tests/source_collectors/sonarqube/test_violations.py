@@ -75,3 +75,14 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
             entities=self.expected_entities,
             landing_url=self.issues_landing_url + "&severities=MAJOR",
         )
+
+    async def test_multiple_violation_severities(self):
+        """Test that the number of violations is returned and that the landing URL points to the selected severities."""
+        self.set_source_parameter("severities", ["info", "minor", "major"])
+        response = await self.collect(get_request_json_return_value=self.json)
+        self.assert_measurement(
+            response,
+            value="2",
+            entities=self.expected_entities,
+            landing_url=self.issues_landing_url + "&severities=INFO,MAJOR,MINOR",
+        )

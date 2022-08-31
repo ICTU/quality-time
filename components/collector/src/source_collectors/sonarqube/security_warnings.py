@@ -24,6 +24,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_path = "dashboard"
         elif "vulnerability" in security_types:
             landing_path = "project/issues"
+            # We don't use self._query_parameter() because when we get here, the value of the types parameter is fixed
             extra_url_parameters = f"{self._query_parameter('severities')}&resolved=false&types=VULNERABILITY"
         else:
             landing_path = "project/security_hotspots"
