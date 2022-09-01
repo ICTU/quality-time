@@ -66,7 +66,7 @@ If you're new to Python virtual environments, note that:
 
 ```{seealso}
 - See the [Python docs](https://docs.python.org/3/library/venv.html) for more information on creating virtual environments.
-- See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python vertual environments when changing directories.
+- See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python virtual environments when changing directories.
 ```
 
 #### Start the {index}`internal server <Internal server component>`
