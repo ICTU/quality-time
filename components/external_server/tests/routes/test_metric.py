@@ -41,22 +41,6 @@ class PostMetricAttributeTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the database."""
         self.database = Mock()
-        self.data_model = dict(
-            _id="id",
-            metrics=dict(
-                security_warnings=dict(name="Old type", scales=["count"], sources=["owasp_dependency_check", "snyk"]),
-                dependencies=dict(
-                    scales=["count"],
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                    sources=["owasp_dependency_check"],
-                ),
-            ),
-        )
         data_model = json.loads(DATA_MODEL_JSON)
         data_model["_id"] = "id"
         self.database.datamodels.find_one.return_value = data_model
