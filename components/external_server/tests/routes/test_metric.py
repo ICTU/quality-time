@@ -1,12 +1,13 @@
 """Unit tests for the metric routes."""
 
+import json
 import logging
 import unittest
 from unittest.mock import Mock, patch
 
 import requests
 
-from shared_data_model import DATA_MODEL
+from shared_data_model import DATA_MODEL, DATA_MODEL_JSON
 from shared.model.report import Report
 
 from routes import (
@@ -43,22 +44,24 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.data_model = dict(
             _id="id",
             metrics=dict(
-                old_type=dict(name="Old type", scales=["count"], sources=["source_type1", "source_type2"]),
-                new_type=dict(
-                    scales=["count", "version_number"],
+                security_warnings=dict(name="Old type", scales=["count"], sources=["owasp_dependency_check", "snyk"]),
+                dependencies=dict(
+                    scales=["count"],
                     default_scale="count",
                     addition="sum",
                     direction="<",
                     target="0",
                     near_target="1",
                     tags=[],
-                    sources=["source_type1"],
+                    sources=["owasp_dependency_check"],
                 ),
             ),
         )
-        self.database.datamodels.find_one.return_value = self.data_model
+        data_model = json.loads(DATA_MODEL_JSON)
+        data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = data_model
         self.report = Report(
-            self.data_model,
+            data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -70,7 +73,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                         metrics={
                             METRIC_ID: dict(
                                 name="name",
-                                type="old_type",
+                                type="security_warnings",
                                 scale="count",
                                 addition="sum",
                                 direction="<",
@@ -79,9 +82,9 @@ class PostMetricAttributeTest(unittest.TestCase):
                                 debt_target=None,
                                 accept_debt=False,
                                 tags=[],
-                                sources={SOURCE_ID: dict(type="source_type1"), SOURCE_ID2: dict(type="source_type2")},
+                                sources={SOURCE_ID: dict(type="owasp_dependency_check"), SOURCE_ID2: dict(type="snyk")},
                             ),
-                            METRIC_ID2: dict(name="name2", type="old_type"),
+                            METRIC_ID2: dict(name="name2", type="security_warnings"),
                         },
                     ),
                 },
@@ -141,29 +144,30 @@ class PostMetricAttributeTest(unittest.TestCase):
                 status=None,
                 value=None,
                 target="0",
-                near_target="1",
+                near_target="10",
                 debt_target=None,
                 direction="<",
             ),
-            version_number=dict(
+            percentage=dict(
                 status_start="2019-01-01",
                 status=None,
-                value=None,
                 direction="<",
+                value=None,
             ),
             end="2019-01-01",
             start="2019-01-01",
         )
-        request.json = dict(type="new_type")
+        request.json = dict(type="dependencies")
+        self.maxDiff = None
         self.assertDictEqual(expected_new_measurement, post_metric_attribute(METRIC_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
-            {SOURCE_ID: dict(type="source_type1")},  # The new metric type can only be measured by source type 1, not 2
+            {SOURCE_ID: dict(type="owasp_dependency_check")},
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"],
         )
         self.assert_delta(
-            "type of metric 'name' of subject 'Subject' in report 'Report' from 'old_type' to 'new_type'",
+            "type of metric 'name' of subject 'Subject' in report 'Report' from 'security_warnings' to 'dependencies'",
             report=updated_report,
         )
 
@@ -175,62 +179,6 @@ class PostMetricAttributeTest(unittest.TestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'", report=updated_report
-        )
-
-    def test_post_metric_target_invalid_version_number(self, request):
-        """Test that changing the target to an invalid version works."""
-        self.data_model["metrics"]["old_type"]["scales"].append("version_number")
-        self.database.measurements.find_one.return_value = None
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
-        request.json = dict(target="invalid")
-        self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assert_delta(
-            "target of metric 'name' of subject 'Subject' in report 'Report' from '0' to 'invalid'",
-            report=updated_report,
-        )
-
-    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
-    def test_post_metric_target_invalid_version_number_with_measurements(self, request):
-        """Test that changing the target to an invalid version adds a new measurement if one or more exist."""
-        sources = [dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="1.0")]
-        self.data_model["metrics"]["old_type"]["scales"] = ["version_number"]
-        self.database.measurements.find_one.return_value = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            sources=sources,
-            version_number=dict(
-                status="target_met", value="1.0", target="1.2", near_target="1.4", debt_target=None, direction="<"
-            ),
-        )
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["scale"] = "version_number"
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["target"] = "1.2"
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["near_target"] = "1.4"
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["status"] = "target_met"
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["addition"] = "min"
-        request.json = dict(target="invalid")
-        self.assertDictEqual(
-            dict(
-                end="2019-01-01",
-                sources=sources,
-                start="2019-01-01",
-                metric_uuid=METRIC_ID,
-                version_number=dict(
-                    status="near_target_met",
-                    value="1.0",
-                    target="invalid",
-                    near_target="1.4",
-                    debt_target=None,
-                    direction="<",
-                    status_start="2019-01-01",
-                ),
-            ),
-            post_metric_attribute(METRIC_ID, "target", self.database),
-        )
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assert_delta(
-            "target of metric 'name' of subject 'Subject' in report 'Report' from '1.2' to 'invalid'",
-            report=updated_report,
         )
 
     @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -456,7 +404,7 @@ class MetricTest(unittest.TestCase):
                     tags=[],
                 ),
             ),
-            sources=dict(source_type1=dict(name="Source type")),
+            sources=dict(owasp_dependency_check=dict(name="Source type")),
         )
         self.database.datamodels.find_one.return_value = self.data_model
         self.report = Report(self.data_model, create_report())
