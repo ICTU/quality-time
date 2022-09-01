@@ -92,7 +92,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = dict(
             _id=123,
             metrics=dict(violations=dict(direction="<", default_scale="count", scales=["count"])),
-            sources=dict(source_type=dict(entities={})),
+            sources=dict(sonarqube=dict(entities={})),
         )
 
     def test_set_attribute(self):

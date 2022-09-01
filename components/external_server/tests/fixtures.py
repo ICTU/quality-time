@@ -48,7 +48,7 @@ def create_report():
                         scales=["count", "percentage"],
                         sources={
                             SOURCE_ID: dict(
-                                type="source_type",
+                                type="sonarqube",
                                 name="Source",
                                 parameters=dict(url="https://url", password="password"),
                             )
