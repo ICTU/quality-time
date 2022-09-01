@@ -365,36 +365,13 @@ class MetricTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the mock database."""
         self.database = Mock()
-        self.data_model = dict(
-            _id="",
-            metrics=dict(
-                metric_type=dict(
-                    name="Metric type",
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                ),
-                other_type=dict(
-                    name="Other type",
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                ),
-            ),
-            sources=dict(owasp_dependency_check=dict(name="Source type")),
-        )
-        self.database.datamodels.find_one.return_value = self.data_model
-        self.report = Report(self.data_model, create_report())
+        data_model = json.loads(DATA_MODEL_JSON)
+        data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = data_model
+        self.report = Report(data_model, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
-        self.database.datamodels.find_one.return_value = self.data_model
 
     def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
@@ -405,11 +382,11 @@ class MetricTest(unittest.TestCase):
     @patch("bottle.request")
     def test_add_metric(self, request):
         """Test that a metric can be added."""
-        request.json = dict(type="metric_type")
+        request.json = dict(type="violations")
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         metric_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]
-        self.assertEqual("metric_type", updated_report["subjects"][SUBJECT_ID]["metrics"][metric_uuid]["type"])
+        self.assertEqual("violations", updated_report["subjects"][SUBJECT_ID]["metrics"][metric_uuid]["type"])
         self.assert_delta(
             "John Doe added a new metric to subject 'Subject' in report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, metric_uuid],
