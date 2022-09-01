@@ -33,19 +33,27 @@ from ..fixtures import (
 )
 
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
-@patch("bottle.request")
-class PostMetricAttributeTest(unittest.TestCase):
-    """Unit tests for the post metric attribute route."""
+class MetricTestCase(unittest.TestCase):
+    """Base class for metric route unit tests."""
 
     def setUp(self):
         """Override to set up the database."""
         self.database = Mock()
-        data_model = json.loads(DATA_MODEL_JSON)
-        data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = data_model
+        self.data_model = json.loads(DATA_MODEL_JSON)
+        self.data_model["_id"] = "id"
+        self.database.datamodels.find_one.return_value = self.data_model
+
+
+@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
+@patch("bottle.request")
+class PostMetricAttributeTest(MetricTestCase):
+    """Unit tests for the post metric attribute route."""
+
+    def setUp(self):
+        """Extend to set up the database."""
+        super().setUp()
         self.report = Report(
-            data_model,
+            self.data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -359,16 +367,13 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
 
-class MetricTest(unittest.TestCase):
+class MetricTest(MetricTestCase):
     """Unit tests for adding and deleting metrics."""
 
     def setUp(self):
-        """Override to set up the mock database."""
-        self.database = Mock()
-        data_model = json.loads(DATA_MODEL_JSON)
-        data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = data_model
-        self.report = Report(data_model, create_report())
+        """Extend to set up the report fixture."""
+        super().setUp()
+        self.report = Report(self.data_model, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
@@ -455,14 +460,12 @@ class MetricTest(unittest.TestCase):
 
 @patch("bottle.request")
 @patch("model.issue_tracker.requests.post")
-class MetricIssueTest(unittest.TestCase):
+class MetricIssueTest(MetricTestCase):
     """Unit tests for metric issue routes."""
 
     def setUp(self):
-        """Override to set up the mock database."""
-        self.database = Mock()
-        self.data_model = dict(_id="id")
-        self.database.datamodels.find_one.return_value = self.data_model
+        """Extend to set up the report fixture."""
+        super().setUp()
         report = Report(
             self.data_model,
             dict(
