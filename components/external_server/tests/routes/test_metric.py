@@ -158,7 +158,6 @@ class PostMetricAttributeTest(unittest.TestCase):
             start="2019-01-01",
         )
         request.json = dict(type="dependencies")
-        self.maxDiff = None
         self.assertDictEqual(expected_new_measurement, post_metric_attribute(METRIC_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
