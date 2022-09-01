@@ -49,7 +49,7 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the client changes the metric type to "violations"
-    Then the source does not exist
+    Then the metric contains 1 source
 
   Scenario: change metric type of metric with source and measurement
     Given an existing metric
@@ -57,7 +57,7 @@ Feature: metric
     When the collector measures "100"
     Then the metric status is "target_not_met"
     When the client changes the metric type to "violations"
-    Then the source does not exist
+    Then the metric contains 1 source
     And the metric status is "None"
 
   Scenario: change technical debt target after changing metric type of metric with source and measurement
