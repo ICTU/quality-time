@@ -36,7 +36,7 @@ def create_report():
         subjects={
             SUBJECT_ID: dict(
                 name="Subject",
-                type="subject_type",
+                type="software",
                 metrics={
                     METRIC_ID: dict(
                         name="Metric",
