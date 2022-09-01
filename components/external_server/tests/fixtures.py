@@ -40,7 +40,7 @@ def create_report():
                 metrics={
                     METRIC_ID: dict(
                         name="Metric",
-                        type="metric_type",
+                        type="violations",
                         addition="sum",
                         target="0",
                         accept_debt=False,

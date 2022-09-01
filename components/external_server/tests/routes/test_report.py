@@ -40,7 +40,7 @@ class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             scales=["count", "percentage"],
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(
-                metric_type=dict(
+                violations=dict(
                     name="Metric type",
                     scales=["count", "percentage"],
                 )
@@ -298,8 +298,8 @@ class ReportTest(ReportTestCase):
                         name="Subject",
                         type="subject_type",
                         metrics=dict(
-                            metric_with_tag=dict(type="metric_type", tags=["tag"]),
-                            metric_without_tag=dict(type="metric_type", tags=["other tag"]),
+                            metric_with_tag=dict(type="violations", tags=["tag"]),
+                            metric_without_tag=dict(type="violations", tags=["other tag"]),
                         ),
                     ),
                 },
@@ -329,7 +329,7 @@ class ReportTest(ReportTestCase):
                                         sources={},
                                         recent_measurements=[],
                                         latest_measurement=None,
-                                        type="metric_type",
+                                        type="violations",
                                         tags=["tag"],
                                     )
                                 ),
