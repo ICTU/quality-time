@@ -1,33 +1,22 @@
 """Unit tests for the datamodel routes."""
 
 import http
-import json
-import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import bottle
-
-from shared_data_model import DATA_MODEL_JSON
 
 from database.datamodels import default_metric_attributes, default_source_parameters, default_subject_attributes
 from routes import get_data_model
 from utils.functions import md5_hash
 
+from .base import DataModelTestCase
 
-class DataModelTest(unittest.TestCase):
+
+class DataModelTest(DataModelTestCase):
     """Unit tests for the data model route."""
-
-    def setUp(self):
-        """Override to set up the database."""
-        self.database = Mock()
-        self.data_model = json.loads(DATA_MODEL_JSON)
-        self.data_model["_id"] = "id"
-        self.data_model["timestamp"] = "now"
-        self.database.datamodels.find_one.return_value = self.data_model
 
     def test_get_data_model(self):
         """Test that the data model can be retrieved."""
-        # data_model = self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
         self.assertEqual(self.data_model, get_data_model(self.database))
 
     def test_get_data_model_missing(self):

@@ -1,13 +1,11 @@
 """Unit tests for the metric routes."""
 
-import json
 import logging
-import unittest
 from unittest.mock import Mock, patch
 
 import requests
 
-from shared_data_model import DATA_MODEL, DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL
 from shared.model.report import Report
 
 from routes import (
@@ -32,21 +30,11 @@ from ..fixtures import (
     create_report,
 )
 
-
-class MetricTestCase(unittest.TestCase):
-    """Base class for metric route unit tests."""
-
-    def setUp(self):
-        """Override to set up the database."""
-        self.database = Mock()
-        self.data_model = json.loads(DATA_MODEL_JSON)
-        self.data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = self.data_model
+from .base import DataModelTestCase
 
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
 @patch("bottle.request")
-class PostMetricAttributeTest(MetricTestCase):
+class PostMetricAttributeTest(DataModelTestCase):
     """Unit tests for the post metric attribute route."""
 
     def setUp(self):
@@ -367,7 +355,7 @@ class PostMetricAttributeTest(MetricTestCase):
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
 
-class MetricTest(MetricTestCase):
+class MetricTest(DataModelTestCase):
     """Unit tests for adding and deleting metrics."""
 
     def setUp(self):
@@ -460,7 +448,7 @@ class MetricTest(MetricTestCase):
 
 @patch("bottle.request")
 @patch("model.issue_tracker.requests.post")
-class MetricIssueTest(MetricTestCase):
+class MetricIssueTest(DataModelTestCase):
     """Unit tests for metric issue routes."""
 
     def setUp(self):

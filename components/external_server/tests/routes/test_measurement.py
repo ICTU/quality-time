@@ -7,6 +7,8 @@ from routes import get_measurements, set_entity_attribute, stream_nr_measurement
 
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
+from .base import DataModelTestCase
+
 
 class GetMeasurementsTest(unittest.TestCase):
     """Unit tests for the get measurements route."""
@@ -57,12 +59,12 @@ class GetMeasurementsTest(unittest.TestCase):
         self.assertEqual(dict(measurements=[]), get_measurements(METRIC_ID, self.database))
 
 
-class SetEntityAttributeTest(unittest.TestCase):
+class SetEntityAttributeTest(DataModelTestCase):
     """Unit tests for the set entity attribute route."""
 
     def setUp(self):
         """Set up test mocks."""
-        self.database = Mock()
+        super().setUp()
         self.database.sessions.find_one.return_value = JOHN
         self.measurement = self.database.measurements.find_one.return_value = dict(
             _id="id",
@@ -88,12 +90,6 @@ class SetEntityAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one = insert_one
         self.database.reports = Mock()
         self.database.reports.find.return_value = [create_report()]
-        self.database.datamodels = Mock()
-        self.database.datamodels.find_one.return_value = dict(
-            _id=123,
-            metrics=dict(violations=dict(direction="<", default_scale="count", scales=["count"])),
-            sources=dict(sonarqube=dict(entities={})),
-        )
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
