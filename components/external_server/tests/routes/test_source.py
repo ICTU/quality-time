@@ -55,7 +55,7 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
             _id="id",
             metrics=dict(metric_type={}),
             sources=dict(
-                source_type=dict(
+                sonarqube=dict(
                     name="Source type",
                     parameters=dict(
                         url=dict(type="url", metrics=["metric_type"], default_value=""),
@@ -70,12 +70,12 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
                         ),
                     ),
                 ),
-                new_source_type=dict(parameters={}),
+                new_sonarqube=dict(parameters={}),
             ),
         )
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username", choices=["D"])),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID: dict(name="Source", type="sonarqube", parameters=dict(username="username", choices=["D"])),
+            SOURCE_ID2: dict(name="Source 2", type="sonarqube", parameters=dict(username="username")),
         }
         self.database.datamodels.find_one.return_value = self.data_model
         self.report = Report(
@@ -121,15 +121,15 @@ class PostSourceAttributeTest(SourceTestCase):
             report=updated_report,
         )
 
-    def test_post_source_type(self, request):
+    def test_post_sonarqube(self, request):
         """Test that the source type can be changed."""
-        request.json = dict(type="new_source_type")
+        request.json = dict(type="new_sonarqube")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'source_type' to "
-            "'new_source_type'",
+            "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'sonarqube' to "
+            "'new_sonarqube'",
             report=updated_report,
         )
 
@@ -262,7 +262,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_url_no_url_type(self, mock_get, request):
         """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
-        self.data_model["sources"]["source_type"]["parameters"]["url"]["type"] = "string"
+        self.data_model["sources"]["sonarqube"]["parameters"]["url"]["type"] = "string"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
@@ -294,7 +294,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_url_with_token_and_validation_path(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        self.data_model["sources"]["source_type"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
+        self.data_model["sources"]["sonarqube"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
         self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
@@ -310,7 +310,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
-        self.data_model["sources"]["source_type"]["parameters"]["url"]["validate_on"] = "password"
+        self.data_model["sources"]["sonarqube"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
@@ -380,24 +380,24 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Extend to add a report fixture."""
         super().setUp()
         self.source_3 = Source(
-            SOURCE_ID3, None, dict(name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
+            SOURCE_ID3, None, dict(name="Source 3", type="sonarqube", parameters=dict(username=self.UNCHANGED_VALUE))
         )
         self.source_4 = Source(
-            SOURCE_ID4, None, dict(name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
+            SOURCE_ID4, None, dict(name="Source 4", type="owasp_zap", parameters=dict(username=self.OLD_VALUE))
         )
         self.sources2 = {
             SOURCE_ID5: Source(
-                SOURCE_ID5, None, dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID5, None, dict(name="Source 5", type="sonarqube", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.sources3 = {
             SOURCE_ID6: Source(
-                SOURCE_ID6, None, dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID6, None, dict(name="Source 6", type="sonarqube", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.sources4 = {
             SOURCE_ID7: Source(
-                SOURCE_ID7, None, dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID7, None, dict(name="Source 7", type="sonarqube", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
@@ -553,7 +553,7 @@ class SourceTest(SourceTestCase):
     @patch("bottle.request")
     def test_add_source(self, request):
         """Test that a new source is added."""
-        request.json = dict(type="new_source_type")
+        request.json = dict(type="new_sonarqube")
         self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
@@ -562,7 +562,7 @@ class SourceTest(SourceTestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
         self.assertEqual(
-            "new_source_type",
+            "new_sonarqube",
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]["type"],
         )
 

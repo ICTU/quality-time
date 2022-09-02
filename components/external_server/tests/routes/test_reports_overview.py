@@ -1,6 +1,6 @@
 """Unit tests for the reports routes."""
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from routes import get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
@@ -16,7 +16,6 @@ class ReportsOverviewTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the database contents."""
         super().setUp()
-        self.database = Mock()
         self.email = "jenny@example.org"
         self.other_mail = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)

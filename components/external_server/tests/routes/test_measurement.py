@@ -1,21 +1,20 @@
 """Unit tests for the measurement routes."""
 
-import unittest
 from unittest.mock import Mock, patch
 
 from routes import get_measurements, set_entity_attribute, stream_nr_measurements
 
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
-from .base import DataModelTestCase
+from .base import DataModelTestCase, RouteTestCase
 
 
-class GetMeasurementsTest(unittest.TestCase):
+class GetMeasurementsTest(RouteTestCase):
     """Unit tests for the get measurements route."""
 
     def setUp(self):
-        """Override to create a mock database fixture."""
-        self.database = Mock()
+        """Extend to set up the measurements."""
+        super().setUp()
         self.measurements = [dict(start="0"), dict(start="1")]
         self.database.measurements.find_one.return_value = self.measurements[-1]
         self.database.measurements.find.return_value = self.measurements
@@ -107,7 +106,7 @@ class SetEntityAttributeTest(DataModelTestCase):
         )
 
 
-class StreamNrMeasurementsTest(unittest.TestCase):
+class StreamNrMeasurementsTest(RouteTestCase):
     """Unit tests for the number of measurements stream."""
 
     def test_stream(self):
@@ -117,10 +116,9 @@ class StreamNrMeasurementsTest(unittest.TestCase):
             """Fake the time.sleep method."""
             return seconds
 
-        database = Mock()
-        database.measurements.estimated_document_count.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
+        self.database.measurements.estimated_document_count.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):
-            stream = stream_nr_measurements(database)
+            stream = stream_nr_measurements(self.database)
             try:
                 self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
                 self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))

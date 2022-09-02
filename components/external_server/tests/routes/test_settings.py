@@ -1,19 +1,20 @@
 """Unit tests for the settings routes."""
 
-import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from routes.settings import find_user, get_settings, update_settings
+
+from .base import RouteTestCase
 
 USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class SettingsTest(unittest.TestCase):  # skipcq: PTC-W0046
+class SettingsTest(RouteTestCase):  # skipcq: PTC-W0046
     """Test class for settings endpoints."""
 
     def setUp(self):
-        """Override to set up a mock database."""
-        self.database = Mock()
+        """Extend to set up the database."""
+        super().setUp()
         self.database.users.find_one.return_value = {"username": "test", "settings": {"test_setting": True}}
 
     def test_find_user(self):
