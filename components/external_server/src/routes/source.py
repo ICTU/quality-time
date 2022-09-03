@@ -157,10 +157,8 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     changed_ids, changed_source_ids = change_source_parameter(
         reports, items, parameter_key, old_value, new_value, edit_scope
     )
-
     if is_password_parameter(data_model, items[0].type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
-
     source_description = _source_description(data_model, items, edit_scope, parameter_key, old_value)
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
