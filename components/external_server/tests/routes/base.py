@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from shared_data_model import DATA_MODEL_JSON
 
 
-class RouteTestCase(unittest.TestCase):
+class RouteTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for route unit tests."""
 
     def setUp(self):
@@ -15,7 +15,7 @@ class RouteTestCase(unittest.TestCase):
         self.database = Mock()
 
 
-class DataModelTestCase(RouteTestCase):
+class DataModelTestCase(RouteTestCase):  # skipcq: PTC-W0046
     """Base class for unit tests that use the data model."""
 
     def setUp(self):
