@@ -36,11 +36,11 @@ def create_report():
         subjects={
             SUBJECT_ID: dict(
                 name="Subject",
-                type="subject_type",
+                type="software",
                 metrics={
                     METRIC_ID: dict(
                         name="Metric",
-                        type="metric_type",
+                        type="violations",
                         addition="sum",
                         target="0",
                         accept_debt=False,
@@ -48,7 +48,7 @@ def create_report():
                         scales=["count", "percentage"],
                         sources={
                             SOURCE_ID: dict(
-                                type="source_type",
+                                type="sonarqube",
                                 name="Source",
                                 parameters=dict(url="https://url", password="password"),
                             )

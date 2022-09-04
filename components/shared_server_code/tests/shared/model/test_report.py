@@ -1,9 +1,8 @@
 """Unit tests for the report class."""
 
-import json
 import unittest
 
-from shared_data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL
 
 from shared.model.metric import Metric
 from shared.model.report import Report
@@ -16,9 +15,13 @@ from ...fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 class ReportTest(unittest.TestCase):
     """Report unit tests."""
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Override to set up the data model."""
+        cls.data_model = DATA_MODEL.dict(exclude_none=True)
+
     def setUp(self) -> None:
         """Override to create a database fixture."""
-        self.data_model = json.loads(DATA_MODEL_JSON)
         self.source_data = {}
         self.metric_data = dict(type="violations", sources={SOURCE_ID: self.source_data}, tags=["tag"])
         self.subject_data = dict(metrics={METRIC_ID: self.metric_data})

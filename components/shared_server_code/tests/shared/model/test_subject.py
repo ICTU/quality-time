@@ -1,9 +1,8 @@
 """Test the subject model."""
 
-import json
 import unittest
 
-from shared_data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL
 
 from shared.model.metric import Metric
 from shared.model.report import Report
@@ -15,9 +14,13 @@ from ...fixtures import METRIC_ID, SUBJECT_ID
 class SubjectTest(unittest.TestCase):
     """Unit tests for the subject model."""
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Override to set up the data model."""
+        cls.data_model = DATA_MODEL.dict(exclude_none=True)
+
     def setUp(self) -> None:
         """Override to create a database fixture."""
-        self.data_model = json.loads(DATA_MODEL_JSON)
         self.report = Report(self.data_model, dict(title="Report"))
 
     def test_equality(self):

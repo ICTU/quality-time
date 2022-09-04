@@ -1,7 +1,6 @@
 """Unit tests for the source routes."""
 
 import socket
-import unittest
 from unittest.mock import Mock, patch
 
 import requests
@@ -40,44 +39,25 @@ from ..fixtures import (
     create_report,
 )
 
+from .base import DataModelTestCase
 
-class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+
+class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Common fixtures for the source route unit tests."""
 
     def setUp(self):
-        """Override to set unit test fixtures."""
+        """Override to set up unit test fixtures."""
+        super().setUp()
         self.url = "https://url"
-        self.database = Mock()
         self.database.measurements.find.return_value = []
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
-        self.data_model = dict(
-            _id="id",
-            metrics=dict(metric_type={}),
-            sources=dict(
-                source_type=dict(
-                    name="Source type",
-                    parameters=dict(
-                        url=dict(type="url", metrics=["metric_type"], default_value=""),
-                        username=dict(type="string", metrics=["metric_type"], default_value=""),
-                        password=dict(type="password", metrics=["metric_type"], default_value=""),
-                        private_token=dict(type="password", metrics=["metric_type"], default_value=""),
-                        choices=dict(
-                            type="multiple_choice", metrics=["metric_type"], values=["A", "B", "C"], default_value=[]
-                        ),
-                        choices_with_addition=dict(
-                            type="multiple_choice_with_addition", metrics=["metric_type"], values=[], default_value=[]
-                        ),
-                    ),
-                ),
-                new_source_type=dict(parameters={}),
-            ),
-        )
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username", choices=["D"])),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID: dict(
+                name="Source", type="owasp_zap", parameters=dict(username="username", risks=["high", "blocker"])
+            ),
+            SOURCE_ID2: dict(name="Source 2", type="owasp_zap", parameters=dict(username="username")),
         }
-        self.database.datamodels.find_one.return_value = self.data_model
         self.report = Report(
             self.data_model,
             dict(
@@ -87,7 +67,7 @@ class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
                 subjects={
                     SUBJECT_ID: dict(
                         name="Subject",
-                        metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)},
+                        metrics={METRIC_ID: dict(name="Metric", type="security_warnings", sources=self.sources)},
                     )
                 },
             ),
@@ -105,7 +85,7 @@ class PostSourceAttributeTest(SourceTestCase):
     """Unit tests for the post source attribute route."""
 
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
-        """Extend to set up fixed parameters."""
+        """Extend to add common information to the assertion checking the changelog entry."""
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID] + (uuids or [SOURCE_ID])
         super().assert_delta(f"Jenny changed the {description}.", uuids, report)
 
@@ -121,15 +101,15 @@ class PostSourceAttributeTest(SourceTestCase):
             report=updated_report,
         )
 
-    def test_post_source_type(self, request):
+    def test_post_new_source_type(self, request):
         """Test that the source type can be changed."""
-        request.json = dict(type="new_source_type")
+        request.json = dict(type="ojaudit")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'source_type' to "
-            "'new_source_type'",
+            "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'owasp_zap' to "
+            "'ojaudit'",
             report=updated_report,
         )
 
@@ -166,9 +146,8 @@ class PostSourceParameterTest(SourceTestCase):
         """Extend to add a report fixture."""
         super().setUp()
         self.report["subjects"][SUBJECT_ID2] = dict(
-            name="Subject 2", metrics={METRIC_ID2: dict(name="Metric 2", type="metric_type", sources={})}
+            name="Subject 2", metrics={METRIC_ID2: dict(name="Metric 2", type="security_warnings", sources={})}
         )
-        self.database.reports.find.return_value = [self.report]
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
     def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
@@ -262,7 +241,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_url_no_url_type(self, mock_get, request):
         """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
-        self.data_model["sources"]["source_type"]["parameters"]["url"]["type"] = "string"
+        self.data_model["sources"]["owasp_zap"]["parameters"]["url"]["type"] = "string"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
@@ -294,7 +273,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_url_with_token_and_validation_path(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        self.data_model["sources"]["source_type"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
+        self.data_model["sources"]["owasp_zap"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
         self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
@@ -310,7 +289,7 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
-        self.data_model["sources"]["source_type"]["parameters"]["url"]["validate_on"] = "password"
+        self.data_model["sources"]["owasp_zap"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
@@ -320,7 +299,7 @@ class PostSourceParameterTest(SourceTestCase):
 
     def test_password(self, request):
         """Test that the password can be changed and is not logged."""
-        request.json = dict(url="unimportant", password="secret")
+        request.json = dict(password="secret")
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assertEqual(response, dict(ok=True, nr_sources_mass_edited=0, availability=[]))
         self.database.reports.insert_one.assert_called_once_with(self.report)
@@ -342,11 +321,11 @@ class PostSourceParameterTest(SourceTestCase):
     def test_obsolete_multiple_choice_value(self, request):
         """Test that obsolete multiple choice values are removed."""
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        self.assertEqual(["D"], parameters["choices"])
-        request.json = dict(choices=["A", "D"])
-        response = post_source_parameter(SOURCE_ID, "choices", self.database)
+        self.assertEqual(["high", "blocker"], parameters["risks"])
+        request.json = dict(risks=["medium", "high", "critical"])
+        response = post_source_parameter(SOURCE_ID, "risks", self.database)
         self.assertEqual(response, dict(ok=True, nr_sources_mass_edited=0, availability=[]))
-        self.assertEqual(["A"], parameters["choices"])
+        self.assertEqual(["medium", "high"], parameters["risks"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
 
     def test_regexp_with_curly_braces(self, request):
@@ -355,14 +334,14 @@ class PostSourceParameterTest(SourceTestCase):
         Curly braces shouldn't be interpreted as string formatting fields.
         """
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        request.json = dict(choices_with_addition=[r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"])
-        response = post_source_parameter(SOURCE_ID, "choices_with_addition", self.database)
+        request.json = dict(variable_url_regexp=[r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"])
+        response = post_source_parameter(SOURCE_ID, "variable_url_regexp", self.database)
         self.assertEqual(response, dict(ok=True, nr_sources_mass_edited=0, availability=[]))
-        self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["choices_with_addition"])
+        self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["variable_url_regexp"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "choices_with_addition of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
+            "variable_url_regexp of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
             r"from '' to '['[\\w]{3}-[\\w]{3}-[\\w]{4}-[\\w]{3}\\/']'",
             report=updated_report,
         )
@@ -380,35 +359,41 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Extend to add a report fixture."""
         super().setUp()
         self.source_3 = Source(
-            SOURCE_ID3, None, dict(name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
+            SOURCE_ID3, None, dict(name="Source 3", type="owasp_zap", parameters=dict(username=self.UNCHANGED_VALUE))
         )
         self.source_4 = Source(
-            SOURCE_ID4, None, dict(name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
+            SOURCE_ID4,
+            None,
+            dict(name="Source 4", type="owasp_dependency_check", parameters=dict(username=self.OLD_VALUE)),
         )
         self.sources2 = {
             SOURCE_ID5: Source(
-                SOURCE_ID5, None, dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID5, None, dict(name="Source 5", type="owasp_zap", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.sources3 = {
             SOURCE_ID6: Source(
-                SOURCE_ID6, None, dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID6, None, dict(name="Source 6", type="owasp_zap", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.sources4 = {
             SOURCE_ID7: Source(
-                SOURCE_ID7, None, dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
+                SOURCE_ID7, None, dict(name="Source 7", type="owasp_zap", parameters=dict(username=self.OLD_VALUE))
             )
         }
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID4] = self.source_4
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
-            self.data_model, dict(name="Metric 2", type="metric_type", sources=self.sources2), METRIC_ID2, SUBJECT_ID
+            self.data_model,
+            dict(name="Metric 2", type="security_warnings", sources=self.sources2),
+            METRIC_ID2,
+            SUBJECT_ID,
         )
         self.report["subjects"][SUBJECT_ID2] = Subject(
             self.data_model,
             dict(
-                name="Subject 2", metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)}
+                name="Subject 2",
+                metrics={METRIC_ID3: dict(name="Metric 3", type="security_warnings", sources=self.sources3)},
             ),
             SUBJECT_ID2,
             self.report,
@@ -422,7 +407,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 subjects={
                     SUBJECT_ID3: dict(
                         name="Subject 3",
-                        metrics={METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)},
+                        metrics={METRIC_ID4: dict(name="Metric 4", type="security_warnings", sources=self.sources4)},
                     )
                 },
             ),
@@ -439,7 +424,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Extend to set up fixed parameters."""
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2] + (uuids or [])
         description = (
-            f"Jenny changed the username of all sources of type 'Source type' with username 'username' {description}."
+            f"Jenny changed the username of all sources of type 'OWASP ZAP' with username 'username' {description}."
         )
         super().assert_delta(description, uuids, report)
 
@@ -546,14 +531,14 @@ class SourceTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.report = Report(None, create_report())
+        self.report = Report(self.data_model, create_report())
         self.database.reports.find.return_value = [self.report]
         self.target_metric_name = "Target metric"
 
     @patch("bottle.request")
     def test_add_source(self, request):
         """Test that a new source is added."""
-        request.json = dict(type="new_source_type")
+        request.json = dict(type="ojaudit")
         self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
         self.database.reports.insert_one.assert_called_once_with(self.report)
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
@@ -562,7 +547,7 @@ class SourceTest(SourceTestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
         self.assertEqual(
-            "new_source_type",
+            "ojaudit",
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]["type"],
         )
 
@@ -586,7 +571,10 @@ class SourceTest(SourceTestCase):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
         target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
-            self.data_model, dict(name=self.target_metric_name, type="metric_type", sources={}), METRIC_ID2, SUBJECT_ID
+            self.data_model,
+            dict(name=self.target_metric_name, type="security_warnings", sources={}),
+            METRIC_ID2,
+            SUBJECT_ID,
         )
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
@@ -602,7 +590,7 @@ class SourceTest(SourceTestCase):
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
-        target_metric = dict(name=self.target_metric_name, type="metric_type", sources={})
+        target_metric = dict(name=self.target_metric_name, type="security_warnings", sources={})
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         self.report["subjects"][SUBJECT_ID2] = target_subject
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
@@ -619,7 +607,7 @@ class SourceTest(SourceTestCase):
     def test_move_source_across_reports(self):
         """Test that a source can be moved to a different metric in a different report."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
-        target_metric = dict(name=self.target_metric_name, type="metric_type", sources={})
+        target_metric = dict(name=self.target_metric_name, type="security_warnings", sources={})
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         target_report = dict(
             _id="target_report", title="Target report", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject}

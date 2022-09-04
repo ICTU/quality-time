@@ -1,13 +1,11 @@
 """Unit tests for the metric routes."""
 
-import json
 import logging
-import unittest
 from unittest.mock import Mock, patch
 
 import requests
 
-from shared_data_model import DATA_MODEL, DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL
 from shared.model.report import Report
 
 from routes import (
@@ -32,36 +30,18 @@ from ..fixtures import (
     create_report,
 )
 
+from .base import DataModelTestCase
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
+
 @patch("bottle.request")
-class PostMetricAttributeTest(unittest.TestCase):
+class PostMetricAttributeTest(DataModelTestCase):
     """Unit tests for the post metric attribute route."""
 
     def setUp(self):
-        """Override to set up the database."""
-        self.database = Mock()
-        self.data_model = dict(
-            _id="id",
-            metrics=dict(
-                security_warnings=dict(name="Old type", scales=["count"], sources=["owasp_dependency_check", "snyk"]),
-                dependencies=dict(
-                    scales=["count"],
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                    sources=["owasp_dependency_check"],
-                ),
-            ),
-        )
-        data_model = json.loads(DATA_MODEL_JSON)
-        data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = data_model
+        """Extend to set up the database."""
+        super().setUp()
         self.report = Report(
-            data_model,
+            self.data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -375,42 +355,16 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
 
-class MetricTest(unittest.TestCase):
+class MetricTest(DataModelTestCase):
     """Unit tests for adding and deleting metrics."""
 
     def setUp(self):
-        """Override to set up the mock database."""
-        self.database = Mock()
-        self.data_model = dict(
-            _id="",
-            metrics=dict(
-                metric_type=dict(
-                    name="Metric type",
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                ),
-                other_type=dict(
-                    name="Other type",
-                    default_scale="count",
-                    addition="sum",
-                    direction="<",
-                    target="0",
-                    near_target="1",
-                    tags=[],
-                ),
-            ),
-            sources=dict(owasp_dependency_check=dict(name="Source type")),
-        )
-        self.database.datamodels.find_one.return_value = self.data_model
+        """Extend to set up the report fixture."""
+        super().setUp()
         self.report = Report(self.data_model, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
-        self.database.datamodels.find_one.return_value = self.data_model
 
     def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
@@ -421,11 +375,11 @@ class MetricTest(unittest.TestCase):
     @patch("bottle.request")
     def test_add_metric(self, request):
         """Test that a metric can be added."""
-        request.json = dict(type="metric_type")
+        request.json = dict(type="violations")
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         metric_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]
-        self.assertEqual("metric_type", updated_report["subjects"][SUBJECT_ID]["metrics"][metric_uuid]["type"])
+        self.assertEqual("violations", updated_report["subjects"][SUBJECT_ID]["metrics"][metric_uuid]["type"])
         self.assert_delta(
             "John Doe added a new metric to subject 'Subject' in report 'Report'.",
             uuids=[REPORT_ID, SUBJECT_ID, metric_uuid],
@@ -494,14 +448,12 @@ class MetricTest(unittest.TestCase):
 
 @patch("bottle.request")
 @patch("model.issue_tracker.requests.post")
-class MetricIssueTest(unittest.TestCase):
+class MetricIssueTest(DataModelTestCase):
     """Unit tests for metric issue routes."""
 
     def setUp(self):
-        """Override to set up the mock database."""
-        self.database = Mock()
-        self.data_model = dict(_id="id")
-        self.database.datamodels.find_one.return_value = self.data_model
+        """Extend to set up the report fixture."""
+        super().setUp()
         report = Report(
             self.data_model,
             dict(

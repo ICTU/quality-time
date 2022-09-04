@@ -1,7 +1,6 @@
 """Unit tests for the notification routes."""
 
-import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from shared.model.report import Report
 
@@ -13,16 +12,17 @@ from routes import (
 
 from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
+from .base import DataModelTestCase
 
-class NotificationTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+
+class NotificationTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Base class for notification unit tests."""
 
     def setUp(self):
-        """Set up the database."""
-        self.database = Mock()
-        self.report = Report({}, create_report())
+        """Extend to set up the database."""
+        super().setUp()
+        self.report = Report(self.data_model, create_report())
         self.database.reports.find_one.return_value = self.report
-        self.database.datamodels.find_one.return_value = dict(_id="id")
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
 

@@ -1,28 +1,24 @@
 """Unit tests for the reports routes."""
 
-import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from routes import get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from ..fixtures import METRIC_ID, SOURCE_ID
 
+from .base import DataModelTestCase
 
-class ReportsOverviewTest(unittest.TestCase):
+
+class ReportsOverviewTest(DataModelTestCase):
     """Unit tests for the reports routes."""
 
     def setUp(self):
-        """Override to set up a mock database with contents."""
-        self.database = Mock()
+        """Extend to set up the database contents."""
+        super().setUp()
         self.email = "jenny@example.org"
         self.other_mail = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            sources=dict(source_type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))),
-            metrics=dict(metric_type=dict(default_scale="count")),
-        )
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.measurement = dict(
             _id="id",

@@ -18,9 +18,8 @@ def hide_credentials(data_model, *reports) -> None:
     """Hide the credentials in the reports."""
     hidden = "this string replaces credentials"
     for source in iter_sources(*reports):
-        for parameter_key, parameter_value in source.get("parameters", {}).items():
-            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
-                source["parameters"][parameter_key] = hidden
+        for parameter_key in __password_parameter_keys(data_model, source):
+            source["parameters"][parameter_key] = hidden
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
@@ -36,12 +35,11 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
 def encrypt_source_credentials(data_model, public_key: str, *reports: dict):
     """Encrypt all source credentials in the reports."""
     for source in iter_sources(*reports):
-        for parameter_key, parameter_value in source.get("parameters", {}).items():
-            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
-                password = source["parameters"][parameter_key]
-                if isinstance(password, (dict, list)):
-                    password = json.dumps(password)
-                source["parameters"][parameter_key] = asymmetric_encrypt(public_key, password)
+        for parameter_key in __password_parameter_keys(data_model, source):
+            password = source["parameters"][parameter_key]
+            if isinstance(password, (dict, list)):
+                password = json.dumps(password)
+            source["parameters"][parameter_key] = asymmetric_encrypt(public_key, password)
 
 
 def encrypt_issue_tracker_credentials(public_key: str, *reports: dict):
@@ -62,10 +60,9 @@ def decrypt_credentials(data_model, private_key: str, *reports: dict):
 def decrypt_source_credentials(data_model, private_key: str, *reports: dict):
     """Decrypt all source credentials in the reports."""
     for source in iter_sources(*reports):
-        for parameter_key, parameter_value in source.get("parameters", {}).items():
-            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
-                credential = decrypt_credential(private_key, source["parameters"][parameter_key])
-                source["parameters"][parameter_key] = credential
+        for parameter_key in __password_parameter_keys(data_model, source):
+            credential = decrypt_credential(private_key, source["parameters"][parameter_key])
+            source["parameters"][parameter_key] = credential
 
 
 def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
@@ -152,3 +149,9 @@ def _metrics_to_change(subject, metric, scope: EditScope) -> Iterator:
 def __sources_to_change(metric, source, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
     yield from {source.uuid: source}.items() if scope == "source" else metric.sources_dict.items()
+
+
+def __password_parameter_keys(data_model, source) -> list[str]:
+    """Return the password parameter keys of the source."""
+    parameters = source.get("parameters", {}).items()
+    return [key for key, value in parameters if value and is_password_parameter(data_model, source["type"], key)]

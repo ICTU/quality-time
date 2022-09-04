@@ -17,6 +17,8 @@ from routes import (
 
 from ..fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
+from .base import DataModelTestCase
+
 
 class GetSubjectTest(unittest.TestCase):
     """Unit tests for the get subject measurements endpoint."""
@@ -51,25 +53,23 @@ class GetSubjectTest(unittest.TestCase):
 
 
 @patch("bottle.request")
-class PostSubjectAttributeTest(unittest.TestCase):
+class PostSubjectAttributeTest(DataModelTestCase):
     """Unit tests for the post subject report attribute route."""
 
     def setUp(self):
-        """Override to create a mock database fixture."""
-        self.data_model = dict(_id="id", subjects=dict(subject_type=dict(name="subject2")))
-        self.database = Mock()
+        """Extend to create the database contents."""
+        super().setUp()
         self.report = Report(
             self.data_model,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
                 title="Report",
-                subjects={SUBJECT_ID: dict(name="subject1"), SUBJECT_ID2: dict(type="subject_type")},
+                subjects={SUBJECT_ID: dict(name="subject1"), SUBJECT_ID2: dict(type="software")},
             ),
         )
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = self.data_model
         self.email = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 
@@ -98,7 +98,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
-            "position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
+            "position of subject 'Software' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
         )
 
     def test_post_position_last(self, request):
@@ -120,7 +120,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
-            "position of subject 'subject2' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
+            "position of subject 'Software' in report 'Report' from '1' to '0'", SUBJECT_ID2, updated_report
         )
 
     def test_post_position_next(self, request):
@@ -159,25 +159,17 @@ class PostSubjectAttributeTest(unittest.TestCase):
         )
 
 
-class SubjectTest(unittest.TestCase):
+class SubjectTest(DataModelTestCase):
     """Unit tests for adding and deleting subjects."""
 
     def setUp(self):
-        """Override to create a mock database fixture."""
-        self.database = Mock()
+        """Extend to set up database contents."""
+        super().setUp()
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
         self.report = Report(None, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            metrics=dict(metric_type=dict(name="Metric type")),
-            subjects=dict(
-                subject_type=dict(name="Subject", description=""), other_type=dict(name="Other", description="")
-            ),
-            sources=dict(source_type=dict(name="Source type")),
-        )
 
     def assert_delta(self, delta: str, uuids, report=None) -> None:
         """Check that the delta is correct."""
@@ -190,14 +182,14 @@ class SubjectTest(unittest.TestCase):
     @patch("bottle.request")
     def test_add_subject(self, request):
         """Test that a subject can be added."""
-        request.json = dict(type="subject_type")
+        request.json = dict(type="software")
         result = post_new_subject(REPORT_ID, self.database)
         self.assertTrue(result["ok"])
         self.assertIn("new_subject_uuid", result)
         subject_uuid = result["new_subject_uuid"]
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta("created a new subject in report 'Report'", [REPORT_ID, subject_uuid], report=updated_report)
-        self.assertEqual("subject_type", updated_report["subjects"][subject_uuid]["type"])
+        self.assertEqual("software", updated_report["subjects"][subject_uuid]["type"])
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""

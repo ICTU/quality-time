@@ -1,8 +1,5 @@
 """Unit tests for the changelog routes."""
 
-import unittest
-from unittest.mock import Mock
-
 from routes import (
     get_changelog,
     get_metric_changelog,
@@ -13,13 +10,15 @@ from routes import (
 
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
+from .base import RouteTestCase
 
-class ChangeLogTest(unittest.TestCase):
+
+class ChangeLogTest(RouteTestCase):
     """Unit tests for getting the changelog."""
 
     def setUp(self):
-        """Override to set up the database."""
-        self.database = Mock()
+        """Extend to set up the database."""
+        super().setUp()
         self.database.sessions.find_one.return_value = JENNY
         self.database.reports_overviews.find.return_value = []
         self.database.reports.find.return_value = [

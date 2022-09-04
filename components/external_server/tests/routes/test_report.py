@@ -1,6 +1,5 @@
 """Unit tests for the report routes."""
 
-import unittest
 from datetime import datetime
 from typing import cast
 from unittest.mock import Mock, patch
@@ -25,31 +24,18 @@ from utils.functions import asymmetric_encrypt
 
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
+from .base import DataModelTestCase
 
-class ReportTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+
+class ReportTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Base class for report route unit tests."""
 
     ISSUE_TRACKER_URL = "https://jira"
 
     def setUp(self):
-        """Override to set up a database with a report and a user session."""
-        self.database = Mock()
+        """Extend to set up a report and a user session."""
+        super().setUp()
         self.database.sessions.find_one.return_value = JENNY
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            scales=["count", "percentage"],
-            subjects=dict(subject_type=dict(name="Subject type")),
-            metrics=dict(
-                metric_type=dict(
-                    name="Metric type",
-                    scales=["count", "percentage"],
-                )
-            ),
-            sources=dict(
-                source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}}),
-                jira=dict(name="Jira", parameters={"url": {"type": "not a password"}}),
-            ),
-        )
         self.report = Report(self.database.datamodels.find_one(), create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.reports.find_one.return_value = self.report
@@ -296,10 +282,10 @@ class ReportTest(ReportTestCase):
                     "subject_without_metrics": dict(metrics={}),
                     SUBJECT_ID: dict(
                         name="Subject",
-                        type="subject_type",
+                        type="software",
                         metrics=dict(
-                            metric_with_tag=dict(type="metric_type", tags=["tag"]),
-                            metric_without_tag=dict(type="metric_type", tags=["other tag"]),
+                            metric_with_tag=dict(type="violations", tags=["tag"]),
+                            metric_without_tag=dict(type="violations", tags=["other tag"]),
                         ),
                     ),
                 },
@@ -320,7 +306,7 @@ class ReportTest(ReportTestCase):
                         subjects={
                             SUBJECT_ID: dict(
                                 name="Report ❯ Subject",
-                                type="subject_type",
+                                type="software",
                                 metrics=dict(
                                     metric_with_tag=dict(
                                         status=None,
@@ -329,7 +315,7 @@ class ReportTest(ReportTestCase):
                                         sources={},
                                         recent_measurements=[],
                                         latest_measurement=None,
-                                        type="metric_type",
+                                        type="violations",
                                         tags=["tag"],
                                     )
                                 ),
@@ -354,7 +340,7 @@ class ReportTest(ReportTestCase):
                     "subject_without_metrics": dict(metrics={}),
                     SUBJECT_ID: dict(
                         name="Subject",
-                        type="subject_type",
+                        type="software",
                         metrics=dict(
                             metric_with_tag=dict(type="metric_type", tags=["tag"]),
                             metric_without_tag=dict(type="metric_type", tags=["other tag"]),

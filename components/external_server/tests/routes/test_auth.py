@@ -1,7 +1,6 @@
 """Unit tests for the authorization routes."""
 
 import logging
-import unittest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 
@@ -12,19 +11,21 @@ from ldap3.core import exceptions
 from database import sessions
 from routes import login, logout, get_public_key
 
+from .base import RouteTestCase
+
 USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class AuthTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+class AuthTestCase(RouteTestCase):  # skipcq: PTC-W0046
     """Base class for authorization tests."""
 
     def setUp(self):
-        """Override to set up a mock database."""
-        self.database = Mock()
+        """Extend to set up the secrets."""
+        super().setUp()
         self.database.secrets.find_one.return_value = {"public_key": "this_is_a_public_key"}
 
-    def tearDown(self):
+    def tearDown(self):  # skipcq: PYL-R0201
         """Override to remove the cookies and reset the logging."""
         bottle.response._cookies = None  # pylint: disable=protected-access
         logging.disable(logging.NOTSET)  # skipcq: PY-A6006

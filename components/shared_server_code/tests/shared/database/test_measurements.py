@@ -1,10 +1,9 @@
 """Unit tests for the measurements collection."""
 
-import json
 import unittest
 from unittest.mock import Mock
 
-from shared_data_model import DATA_MODEL_JSON
+from shared_data_model import DATA_MODEL
 
 from shared.database.measurements import insert_new_measurement, latest_measurement, recent_measurements
 from shared.model.measurement import Measurement
@@ -16,11 +15,16 @@ from tests.fixtures import METRIC_ID, METRIC_ID2
 class MeasurementsTest(unittest.TestCase):
     """Unit test for getting and inserting measurements."""
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Override to prepare the data model."""
+        cls.data_model = DATA_MODEL.dict(exclude_none=True)
+
     def setUp(self) -> None:
         """Override to create a database fixture."""
         self.database = Mock()
         self.database.measurements.insert_one = self.insert_one_measurement
-        self.metric = Metric(json.loads(DATA_MODEL_JSON), dict(type="violations"), "metric_uuid")
+        self.metric = Metric(self.data_model, dict(type="violations"), "metric_uuid")
         self.measurements = [
             {"_id": 1, "start": "0", "end": "1", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},

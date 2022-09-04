@@ -1,19 +1,20 @@
 """Unit tests for the measurement routes."""
 
-import unittest
 from unittest.mock import Mock, patch
 
 from routes import get_measurements, set_entity_attribute, stream_nr_measurements
 
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
+from .base import DataModelTestCase, RouteTestCase
 
-class GetMeasurementsTest(unittest.TestCase):
+
+class GetMeasurementsTest(RouteTestCase):
     """Unit tests for the get measurements route."""
 
     def setUp(self):
-        """Override to create a mock database fixture."""
-        self.database = Mock()
+        """Extend to set up the measurements."""
+        super().setUp()
         self.measurements = [dict(start="0"), dict(start="1")]
         self.database.measurements.find_one.return_value = self.measurements[-1]
         self.database.measurements.find.return_value = self.measurements
@@ -57,12 +58,12 @@ class GetMeasurementsTest(unittest.TestCase):
         self.assertEqual(dict(measurements=[]), get_measurements(METRIC_ID, self.database))
 
 
-class SetEntityAttributeTest(unittest.TestCase):
+class SetEntityAttributeTest(DataModelTestCase):
     """Unit tests for the set entity attribute route."""
 
     def setUp(self):
         """Set up test mocks."""
-        self.database = Mock()
+        super().setUp()
         self.database.sessions.find_one.return_value = JOHN
         self.measurement = self.database.measurements.find_one.return_value = dict(
             _id="id",
@@ -88,12 +89,6 @@ class SetEntityAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one = insert_one
         self.database.reports = Mock()
         self.database.reports.find.return_value = [create_report()]
-        self.database.datamodels = Mock()
-        self.database.datamodels.find_one.return_value = dict(
-            _id=123,
-            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count"])),
-            sources=dict(source_type=dict(entities={})),
-        )
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
@@ -111,7 +106,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         )
 
 
-class StreamNrMeasurementsTest(unittest.TestCase):
+class StreamNrMeasurementsTest(RouteTestCase):
     """Unit tests for the number of measurements stream."""
 
     def test_stream(self):
@@ -121,10 +116,9 @@ class StreamNrMeasurementsTest(unittest.TestCase):
             """Fake the time.sleep method."""
             return seconds
 
-        database = Mock()
-        database.measurements.estimated_document_count.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
+        self.database.measurements.estimated_document_count.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):
-            stream = stream_nr_measurements(database)
+            stream = stream_nr_measurements(self.database)
             try:
                 self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
                 self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
