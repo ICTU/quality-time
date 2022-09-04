@@ -2,21 +2,21 @@
 
 import json
 import pathlib
-import unittest
 from unittest.mock import Mock, mock_open, patch
 
-from shared_data_model import DATA_MODEL
 from shared.initialization.report import import_example_reports, import_report
 
+from ..base import DataModelTestCase
 
-class ReportInitTest(unittest.TestCase):
+
+class ReportInitTest(DataModelTestCase):
     """Unit tests for the report import code."""
 
     def setUp(self) -> None:
         """Override to create database and JSON fixtures."""
         self.database = Mock()
         self.database.reports.distinct.return_value = []
-        self.database.datamodels.find_one.return_value = DATA_MODEL.dict(exclude_none=True)
+        self.database.datamodels.find_one.return_value = self.data_model
         self.report_json = json.dumps(
             dict(
                 report_uuid="id",

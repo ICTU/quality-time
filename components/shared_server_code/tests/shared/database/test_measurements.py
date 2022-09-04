@@ -1,9 +1,6 @@
 """Unit tests for the measurements collection."""
 
-import unittest
 from unittest.mock import Mock
-
-from shared_data_model import DATA_MODEL
 
 from shared.database.measurements import insert_new_measurement, latest_measurement, recent_measurements
 from shared.model.measurement import Measurement
@@ -11,17 +8,15 @@ from shared.model.metric import Metric
 
 from tests.fixtures import METRIC_ID, METRIC_ID2
 
+from ..base import DataModelTestCase
 
-class MeasurementsTest(unittest.TestCase):
+
+class MeasurementsTest(DataModelTestCase):
     """Unit test for getting and inserting measurements."""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Override to prepare the data model."""
-        cls.data_model = DATA_MODEL.dict(exclude_none=True)
 
     def setUp(self) -> None:
         """Override to create a database fixture."""
+        super().setUp()
         self.database = Mock()
         self.database.measurements.insert_one = self.insert_one_measurement
         self.metric = Metric(self.data_model, dict(type="violations"), "metric_uuid")

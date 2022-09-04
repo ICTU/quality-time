@@ -1,19 +1,18 @@
 """Unit tests for importing the data model."""
 
-import unittest
 from unittest.mock import Mock
-
-from shared_data_model import DATA_MODEL
 
 from shared.initialization.datamodel import import_datamodel
 
+from ..base import DataModelTestCase
 
-class DataModelImportTest(unittest.TestCase):
+
+class DataModelImportTest(DataModelTestCase):
     """Unit tests for the data model import function."""
 
     def setUp(self):
         """Override to set up the database."""
-        self.data_model = DATA_MODEL.dict(exclude_none=True)
+        self.data_model = self.data_model.copy()
         self.database = Mock()
         self.database.datamodels.find_one.return_value = self.data_model
 

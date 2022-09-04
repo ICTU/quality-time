@@ -1,23 +1,16 @@
 """Test the subject model."""
 
-import unittest
-
-from shared_data_model import DATA_MODEL
-
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.model.subject import Subject
 
 from ...fixtures import METRIC_ID, SUBJECT_ID
 
+from ..base import DataModelTestCase
 
-class SubjectTest(unittest.TestCase):
+
+class SubjectTest(DataModelTestCase):
     """Unit tests for the subject model."""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Override to set up the data model."""
-        cls.data_model = DATA_MODEL.dict(exclude_none=True)
 
     def setUp(self) -> None:
         """Override to create a database fixture."""
