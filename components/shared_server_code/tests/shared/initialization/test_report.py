@@ -5,6 +5,7 @@ import pathlib
 import unittest
 from unittest.mock import Mock, mock_open, patch
 
+from shared_data_model import DATA_MODEL
 from shared.initialization.report import import_example_reports, import_report
 
 
@@ -15,27 +16,17 @@ class ReportInitTest(unittest.TestCase):
         """Override to create database and JSON fixtures."""
         self.database = Mock()
         self.database.reports.distinct.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            subjects=dict(subject_type=dict(name="name", description="")),
-            metrics=dict(metric_type=dict(default_scale="count", addition="sum", target="0", near_target="0", tags=[])),
-            sources=dict(
-                source_type=dict(
-                    parameters=dict(
-                        p1=dict(default_value="p1", metrics=["metric_type"]),
-                        p2=dict(default_value="p2", metrics=["metric_type"]),
-                    )
-                )
-            ),
-        )
+        self.database.datamodels.find_one.return_value = DATA_MODEL.dict(exclude_none=True)
         self.report_json = json.dumps(
             dict(
                 report_uuid="id",
                 subjects=[
                     dict(
                         name="name",
-                        type="subject_type",
-                        metrics=[dict(type="metric_type", sources=[dict(type="source_type", parameters=dict(p1={}))])],
+                        type="software",
+                        metrics=[
+                            dict(type="security_warnings", sources=[dict(type="sonarqube", parameters=dict(url={}))])
+                        ],
                     )
                 ],
             )
