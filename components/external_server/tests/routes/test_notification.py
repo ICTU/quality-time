@@ -23,7 +23,6 @@ class NotificationTestCase(DataModelTestCase):  # skipcq: PTC-W0046
         super().setUp()
         self.report = Report(self.data_model, create_report())
         self.database.reports.find_one.return_value = self.report
-        self.database.datamodels.find_one.return_value = dict(_id="id")
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
 
