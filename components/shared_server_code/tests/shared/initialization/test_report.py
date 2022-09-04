@@ -16,7 +16,7 @@ class ReportInitTest(DataModelTestCase):
         """Override to create database and JSON fixtures."""
         self.database = Mock()
         self.database.reports.distinct.return_value = []
-        self.database.datamodels.find_one.return_value = self.data_model
+        self.database.datamodels.find_one.return_value = self.DATA_MODEL
         self.report_json = json.dumps(
             dict(
                 report_uuid="id",

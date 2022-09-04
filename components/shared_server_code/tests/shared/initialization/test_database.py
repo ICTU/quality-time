@@ -45,7 +45,7 @@ class DatabaseInitTest(DataModelTestCase):
 
     def test_init_initialized_database(self):
         """Test the initialization of an initialized database."""
-        self.database.datamodels.find_one.return_value = self.data_model
+        self.database.datamodels.find_one.return_value = self.DATA_MODEL
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.reports.count_documents.return_value = 10
         self.database.measurements.count_documents.return_value = 20

@@ -34,7 +34,7 @@ class MeasurementTestCase(DataModelTestCase):  # skipcq: PTC-W0046
             else sources,
             **kwargs,
         )
-        return Metric(self.data_model, metric_data, METRIC_ID)
+        return Metric(self.DATA_MODEL, metric_data, METRIC_ID)
 
     @staticmethod
     def measurement(metric: Metric, **kwargs) -> Measurement:
@@ -272,14 +272,14 @@ class MeasurementTest(MeasurementTestCase):
 
     def test_accept_missing_sources_as_tech_debt(self):
         """Test that the fact that no sources have been configured can be accepted as technical debt."""
-        metric = Metric(self.data_model, dict(addition="sum", type="tests", accept_debt=True), METRIC_ID)
+        metric = Metric(self.DATA_MODEL, dict(addition="sum", type="tests", accept_debt=True), METRIC_ID)
         measurement = self.measurement(metric)
         self.assertEqual("debt_target_met", measurement.status())
 
     def test_accept_missing_sources_as_tech_debt_expired(self):
         """Test that having no sources accepted as technical debt can also expire."""
         metric = Metric(
-            self.data_model,
+            self.DATA_MODEL,
             dict(addition="sum", type="tests", accept_debt=True, debt_end_date="2020-01-01"),
             METRIC_ID,
         )

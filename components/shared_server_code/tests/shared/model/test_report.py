@@ -23,7 +23,7 @@ class ReportTest(DataModelTestCase):
             title="Report",
             subjects={SUBJECT_ID: self.subject_data},
         )
-        self.report = Report(self.data_model, report_data)
+        self.report = Report(self.DATA_MODEL, report_data)
 
     def test_uuid(self):
         """Test that the report uuid can be retrieved."""
@@ -31,7 +31,7 @@ class ReportTest(DataModelTestCase):
 
     def test_id(self):
         """Test that a Mongo ID is stringified."""
-        report = Report(self.data_model, dict(_id=123))
+        report = Report(self.DATA_MODEL, dict(_id=123))
         self.assertEqual("123", report["_id"])
 
     def test_name(self):
@@ -41,16 +41,16 @@ class ReportTest(DataModelTestCase):
     def test_subjects_dict(self):
         """Test that the subjects can be retrieved."""
         self.assertEqual(
-            {SUBJECT_ID: Subject(self.data_model, {}, SUBJECT_ID, self.report)},
+            {SUBJECT_ID: Subject(self.DATA_MODEL, {}, SUBJECT_ID, self.report)},
             self.report.subjects_dict,
         )
 
     def test_subject_dict_with_instantiated_subjects(self):
         """Test that instantiated subjects can be retrieved."""
-        subject = Subject(self.data_model, {}, SUBJECT_ID, self.report)
-        report = Report(self.data_model, dict(subjects={SUBJECT_ID: subject}))
+        subject = Subject(self.DATA_MODEL, {}, SUBJECT_ID, self.report)
+        report = Report(self.DATA_MODEL, dict(subjects={SUBJECT_ID: subject}))
         self.assertEqual(
-            {SUBJECT_ID: Subject(self.data_model, {}, SUBJECT_ID, self.report)},
+            {SUBJECT_ID: Subject(self.DATA_MODEL, {}, SUBJECT_ID, self.report)},
             report.subjects_dict,
         )
 
@@ -89,8 +89,8 @@ class ReportTest(DataModelTestCase):
 
     def test_find_metric(self):
         """Test finding a metric in a report."""
-        metric = Metric(self.data_model, self.metric_data, METRIC_ID)
-        subject = Subject(self.data_model, self.subject_data, SUBJECT_ID, self.report)
+        metric = Metric(self.DATA_MODEL, self.metric_data, METRIC_ID)
+        subject = Subject(self.DATA_MODEL, self.subject_data, SUBJECT_ID, self.report)
         self.assertEqual(
             (metric, subject),
             self.report.instance_and_parents_for_uuid(metric_uuid=METRIC_ID),
@@ -98,9 +98,9 @@ class ReportTest(DataModelTestCase):
 
     def test_find_source(self):
         """Test finding a source in a report."""
-        metric = Metric(self.data_model, self.metric_data, METRIC_ID)
+        metric = Metric(self.DATA_MODEL, self.metric_data, METRIC_ID)
         source = Source(SOURCE_ID, metric, self.source_data)
-        subject = Subject(self.data_model, self.subject_data, SUBJECT_ID, self.report)
+        subject = Subject(self.DATA_MODEL, self.subject_data, SUBJECT_ID, self.report)
         self.assertEqual(
             (source, metric, subject),
             self.report.instance_and_parents_for_uuid(source_uuid=SOURCE_ID),

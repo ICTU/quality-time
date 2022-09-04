@@ -19,7 +19,7 @@ class MeasurementsTest(DataModelTestCase):
         super().setUp()
         self.database = Mock()
         self.database.measurements.insert_one = self.insert_one_measurement
-        self.metric = Metric(self.data_model, dict(type="violations"), "metric_uuid")
+        self.metric = Metric(self.DATA_MODEL, dict(type="violations"), "metric_uuid")
         self.measurements = [
             {"_id": 1, "start": "0", "end": "1", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},

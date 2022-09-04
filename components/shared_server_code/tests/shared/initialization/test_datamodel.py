@@ -12,7 +12,7 @@ class DataModelImportTest(DataModelTestCase):
 
     def setUp(self):
         """Override to set up the database."""
-        self.data_model = self.data_model.copy()
+        self.data_model = self.DATA_MODEL.copy()
         self.database = Mock()
         self.database.datamodels.find_one.return_value = self.data_model
 
