@@ -6,7 +6,7 @@ import unittest
 from shared_data_model import DATA_MODEL_JSON
 
 
-class DataModelTestCase(unittest.TestCase):
+class DataModelTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Base class for unit tests that use the data model from the database."""
 
     @classmethod
