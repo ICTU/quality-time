@@ -4,7 +4,7 @@ import logging
 import unittest
 from unittest.mock import Mock, patch
 
-from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker
+from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker, IssueTrackerCredentials
 
 
 class IssueTrackerTest(unittest.TestCase):
@@ -26,14 +26,16 @@ class IssueTrackerTest(unittest.TestCase):
 
     def test_username_and_password(self):
         """Test the issue tracker credentials."""
-        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, "username", "password")
-        self.assertEqual("username", issue_tracker.username)
-        self.assertEqual("password", issue_tracker.password)
+        credentials = IssueTrackerCredentials("username", "password")
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, credentials)
+        self.assertEqual("username", issue_tracker.credentials.username)
+        self.assertEqual("password", issue_tracker.credentials.password)
 
     def test_private_token(self):
         """Test the issue tracker credentials."""
-        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, private_token="token")
-        self.assertEqual("token", issue_tracker.private_token)
+        credentials = IssueTrackerCredentials(private_token="token")
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, credentials)
+        self.assertEqual("token", issue_tracker.credentials.private_token)
 
     def test_issue_labels(self):
         """Test the issue tracker issue labels."""

@@ -22,6 +22,23 @@ class IssueSuggestion:
 
 
 @dataclass
+class IssueTrackerCredentials:
+    """Issue tracker credentials needed to create issues."""
+
+    username: str = ""
+    password: str = ""
+    private_token: str = ""
+
+    def basic_auth_credentials(self) -> tuple[str, str] | None:
+        """Return the basic authentication credentials, if any."""
+        return (self.username, self.password) if self.username or self.password else None
+
+    def auth_headers(self) -> dict[str, str]:
+        """Return the authorization headers, if any."""
+        return dict(Authorization=f"Bearer {self.private_token}") if self.private_token else {}
+
+
+@dataclass
 class IssueParameters:
     """Parameters to create issues with."""
 
@@ -39,9 +56,7 @@ class IssueTracker:
 
     url: URL
     issue_parameters: IssueParameters
-    username: str = ""
-    password: str = ""
-    private_token: str = ""
+    credentials: IssueTrackerCredentials = IssueTrackerCredentials()
     issue_creation_api = "%s/rest/api/2/issue"
     issue_browse_url = "%s/browse/%s"
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
@@ -67,7 +82,10 @@ class IssueTracker:
         )
         try:
             response = requests.post(
-                api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers(), json=json
+                api_url,
+                auth=self.credentials.basic_auth_credentials(),
+                headers=self.credentials.auth_headers(),
+                json=json,
             )
             response.raise_for_status()  # pragma: no cover behave
         except Exception as reason:  # pylint: disable=broad-except
@@ -79,7 +97,9 @@ class IssueTracker:
         """Get a list of issue id suggestions based on the query string."""
         api_url = self.suggestions_api % (self.url.rstrip("/"), query)
         try:
-            response = requests.get(api_url, auth=self._basic_auth_credentials(), headers=self._auth_headers())
+            response = requests.get(
+                api_url, auth=self.credentials.basic_auth_credentials(), headers=self.credentials.auth_headers()
+            )
             response.raise_for_status()  # pragma: no cover behave
             json = response.json()  # pragma: no cover behave
         except Exception as reason:  # pylint: disable=broad-except
@@ -96,11 +116,3 @@ class IssueTracker:
         """Parse the suggestions from the JSON."""
         issues = json.get("issues", [])
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
-
-    def _basic_auth_credentials(self) -> tuple[str, str] | None:
-        """Return the basic authentication credentials, if any."""
-        return (self.username, self.password) if self.username or self.password else None
-
-    def _auth_headers(self) -> dict[str, str]:
-        """Return the authorization headers, if any."""
-        return dict(Authorization=f"Bearer {self.private_token}") if self.private_token else {}
