@@ -48,7 +48,6 @@ class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up unit test fixtures."""
         super().setUp()
-        self.database.datamodels.find_one.return_value = self.data_model = self.load_data_model()
         self.url = "https://url"
         self.database.measurements.find.return_value = []
         self.email = "jenny@example.org"
@@ -59,21 +58,19 @@ class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
             ),
             SOURCE_ID2: dict(name="Source 2", type="owasp_zap", parameters=dict(username="username")),
         }
-        self.report = Report(
-            self.data_model,
-            dict(
-                _id=REPORT_ID,
-                title="Report",
-                report_uuid=REPORT_ID,
-                subjects={
-                    SUBJECT_ID: dict(
-                        name="Subject",
-                        metrics={METRIC_ID: dict(name="Metric", type="security_warnings", sources=self.sources)},
-                    )
-                },
-            ),
+        report_dict = dict(
+            _id=REPORT_ID,
+            title="Report",
+            report_uuid=REPORT_ID,
+            subjects={
+                SUBJECT_ID: dict(
+                    name="Subject",
+                    metrics={METRIC_ID: dict(name="Metric", type="security_warnings", sources=self.sources)},
+                )
+            },
         )
-        self.database.reports.find.return_value = [self.report]
+        self.report = Report(self.DATA_MODEL, report_dict)
+        self.database.reports.find.return_value = [report_dict]
 
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Check that the report has the correct delta."""
@@ -241,11 +238,10 @@ class PostSourceParameterTest(SourceTestCase):
 
     @patch.object(requests, "get")
     def test_url_no_url_type(self, mock_get, request):
-        """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
-        self.data_model["sources"]["owasp_zap"]["parameters"]["url"]["type"] = "string"
+        """Test that the landing url can be changed but that availability is not checked because it's not a url type."""
         mock_get.return_value = self.url_check_get_response
-        request.json = dict(url="unimportant")
-        response = post_source_parameter(SOURCE_ID, "url", self.database)
+        request.json = dict(landing_url="unimportant")
+        response = post_source_parameter(SOURCE_ID, "landing_url", self.database)
         self.assertEqual(response, dict(ok=True, nr_sources_mass_edited=0, availability=[]))
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_not_called()
@@ -274,15 +270,17 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_url_with_token_and_validation_path(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        self.data_model["sources"]["owasp_zap"]["parameters"]["private_token"]["validation_path"] = "/rest/api"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
-        self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
+        metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
+        metric["sources"][SOURCE_ID] = Source(
+            SOURCE_ID, metric, dict(type="jira", parameters=dict(private_token="xxx"))
+        )
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(
-            self.url + "/rest/api",
+            self.url + "/rest/api/2/myself",
             auth=None,
             headers={"Private-Token": "xxx", "Authorization": "Bearer xxx"},
         )
@@ -290,7 +288,6 @@ class PostSourceParameterTest(SourceTestCase):
     @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
-        self.data_model["sources"]["owasp_zap"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
@@ -385,13 +382,13 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID4] = self.source_4
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
-            self.data_model,
+            self.DATA_MODEL,
             dict(name="Metric 2", type="security_warnings", sources=self.sources2),
             METRIC_ID2,
             SUBJECT_ID,
         )
         self.report["subjects"][SUBJECT_ID2] = Subject(
-            self.data_model,
+            self.DATA_MODEL,
             dict(
                 name="Subject 2",
                 metrics={METRIC_ID3: dict(name="Metric 3", type="security_warnings", sources=self.sources3)},
@@ -400,7 +397,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             self.report,
         )
         self.report2 = Report(
-            self.data_model,
+            self.DATA_MODEL,
             dict(
                 _id=REPORT_ID2,
                 title="Report 2",
@@ -532,8 +529,8 @@ class SourceTest(SourceTestCase):
     def setUp(self):
         """Extend to add a report fixture."""
         super().setUp()
-        self.report = Report(self.data_model, create_report())
-        self.database.reports.find.return_value = [self.report]
+        self.report = Report(self.DATA_MODEL, report_dict := create_report())
+        self.database.reports.find.return_value = [report_dict]
         self.target_metric_name = "Target metric"
 
     @patch("bottle.request")
@@ -572,7 +569,7 @@ class SourceTest(SourceTestCase):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
         target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
-            self.data_model,
+            self.DATA_MODEL,
             dict(name=self.target_metric_name, type="security_warnings", sources={}),
             METRIC_ID2,
             SUBJECT_ID,
