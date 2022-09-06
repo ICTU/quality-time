@@ -1,7 +1,7 @@
 """Issue tracker."""
 
 from dataclasses import asdict, dataclass
-from typing import cast
+from typing import cast, Optional
 import logging
 
 import requests
@@ -21,6 +21,15 @@ class IssueSuggestion:
         return asdict(self)  # pragma: no cover behave
 
 
+@dataclass
+class IssueParameters:
+    """Parameters to create issues with."""
+
+    project_key: str
+    issue_type: str
+    issue_labels: Optional[list[str]] = None
+
+
 JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 
 
@@ -29,9 +38,7 @@ class IssueTracker:
     """Issue tracker. Only supports Jira at the moment."""
 
     url: URL
-    project_key: str
-    issue_type: str
-    issue_labels: list[str] = None
+    issue_parameters: IssueParameters
     username: str = ""
     password: str = ""
     private_token: str = ""
@@ -41,17 +48,21 @@ class IssueTracker:
 
     def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
         """Create a new issue and return its key or an error message if creating the issue failed."""
-        for attribute, name in [(self.url, "URL"), (self.project_key, "project key"), (self.issue_type, "issue type")]:
+        for attribute, name in [
+            (self.url, "URL"),
+            (self.issue_parameters.project_key, "project key"),
+            (self.issue_parameters.issue_type, "issue type"),
+        ]:
             if not attribute:
                 return "", f"Issue tracker has no {name} configured."
         api_url = self.issue_creation_api % (self.url.rstrip("/"))
         json = dict(
             fields=dict(
-                project=dict(key=self.project_key),
-                issuetype=dict(name=self.issue_type),
+                project=dict(key=self.issue_parameters.project_key),
+                issuetype=dict(name=self.issue_parameters.issue_type),
                 summary=summary,
                 description=description,
-                labels=self.issue_labels or [],
+                labels=self.issue_parameters.issue_labels or [],
             )
         )
         try:
