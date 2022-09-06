@@ -86,4 +86,5 @@ ignore-failures:
   python:
     - behave
   javascript:
-    - semantic-ui-css
+    - react-hash-link  # No alternative available AFAICT
+    - semantic-ui-css  # https://github.com/Semantic-Org/Semantic-UI-CSS/issues/81
