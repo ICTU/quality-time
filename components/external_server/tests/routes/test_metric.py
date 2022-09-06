@@ -483,6 +483,7 @@ class MetricIssueTest(DataModelTestCase):
                 "fields": {
                     "project": {"key": "KEY"},
                     "issuetype": {"name": "BUG"},
+                    "labels": [],
                     "summary": "Quality-time metric 'name'",
                     "description": "Metric '[name|https://quality_time/metric42]' of subject "
                     "'Subject' in Quality-time report '' needs attention.\n\n"

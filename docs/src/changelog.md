@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not v4.3.0, please read th
 - When creating issues, include the rationale for the metric in the created issue so that people encountering the issue in the issue tracker have a better understanding of why the issue needs addressing. Closes [#4232](https://github.com/ICTU/quality-time/issues/4232).
 - When measuring violations with SonarQube as source, add the selected issue types (bug, vulnerability, and/or code smell) and severities (info, minor, major, critical, and/or blocker) to the landing URL so that the user sees only the relevant violations when navigating to SonarQube. Closes [#4449](https://github.com/ICTU/quality-time/issues/4449).
 - Make Jira issue identifiers uppercase when querying Jira for the status of issues, so that users don't have to enter uppercase Jira identifiers in *Quality-time*. Closes [#4450](https://github.com/ICTU/quality-time/issues/4450).
+- Allow for setting default labels on Jira issues created from *Quality-time*. The labels can be configured in the issue tracker tab under the report header. Closes [#4468](https://github.com/ICTU/quality-time/issues/4468).
 
 ## v4.3.0 - 2022-08-24
 

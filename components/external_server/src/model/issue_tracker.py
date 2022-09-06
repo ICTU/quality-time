@@ -31,6 +31,7 @@ class IssueTracker:
     url: URL
     project_key: str
     issue_type: str
+    issue_labels: list[str] = None
     username: str = ""
     password: str = ""
     private_token: str = ""
@@ -50,6 +51,7 @@ class IssueTracker:
                 issuetype=dict(name=self.issue_type),
                 summary=summary,
                 description=description,
+                labels=self.issue_labels or [],
             )
         )
         try:

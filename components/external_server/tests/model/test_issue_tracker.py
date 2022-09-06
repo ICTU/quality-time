@@ -25,7 +25,9 @@ class IssueTrackerTest(unittest.TestCase):
 
     def test_username_and_password(self):
         """Test the issue tracker credentials."""
-        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, "username", "password")
+        issue_tracker = IssueTracker(
+            self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, [], "username", "password"
+        )
         self.assertEqual("username", issue_tracker.username)
         self.assertEqual("password", issue_tracker.password)
 
@@ -33,6 +35,11 @@ class IssueTrackerTest(unittest.TestCase):
         """Test the issue tracker credentials."""
         issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, private_token="token")
         self.assertEqual("token", issue_tracker.private_token)
+
+    def test_issue_labels(self):
+        """Test the issue tracker issue labels."""
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, ["Label"])
+        self.assertEqual(["Label"], issue_tracker.issue_labels)
 
     @patch("requests.get")
     def test_get_suggestions(self, requests_get):
@@ -70,7 +77,7 @@ class IssueTrackerTest(unittest.TestCase):
         )
         logging.disable(logging.NOTSET)
 
-    def test_create_issue_withoutd_url(self):
+    def test_create_issue_without_url(self):
         """Test that without a URL an error message is returned."""
         issue_tracker = IssueTracker("", "", "")
         logging.disable(logging.CRITICAL)
