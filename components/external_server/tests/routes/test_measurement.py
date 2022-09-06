@@ -4,12 +4,11 @@ from unittest.mock import Mock, patch
 
 from routes import get_measurements, set_entity_attribute, stream_nr_measurements
 
+from ..base import DatabaseTestCase, DataModelTestCase
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
-from .base import DataModelTestCase, RouteTestCase
 
-
-class GetMeasurementsTest(RouteTestCase):
+class GetMeasurementsTest(DatabaseTestCase):
     """Unit tests for the get measurements route."""
 
     def setUp(self):
@@ -106,7 +105,7 @@ class SetEntityAttributeTest(DataModelTestCase):
         )
 
 
-class StreamNrMeasurementsTest(RouteTestCase):
+class StreamNrMeasurementsTest(DatabaseTestCase):
     """Unit tests for the number of measurements stream."""
 
     def test_stream(self):

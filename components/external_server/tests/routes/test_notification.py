@@ -10,9 +10,8 @@ from routes import (
     post_notification_destination_attributes,
 )
 
+from ..base import DataModelTestCase
 from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
-
-from .base import DataModelTestCase
 
 
 class NotificationTestCase(DataModelTestCase):  # skipcq: PTC-W0046
@@ -21,7 +20,7 @@ class NotificationTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Extend to set up the database."""
         super().setUp()
-        self.report = Report(self.data_model, create_report())
+        self.report = Report(self.DATA_MODEL, create_report())
         self.database.reports.find_one.return_value = self.report
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)

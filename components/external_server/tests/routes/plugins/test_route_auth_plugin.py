@@ -1,9 +1,7 @@
 """Unit tests for the route authentication plugin."""
 
 import logging
-import unittest
 from datetime import datetime, timezone
-from unittest.mock import Mock
 
 import bottle
 
@@ -11,14 +9,16 @@ from shared.routes.plugins import InjectionPlugin
 
 from routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 
+from ...base import DatabaseTestCase
 
-class AuthPluginTest(unittest.TestCase):
+
+class AuthPluginTest(DatabaseTestCase):
     """Unit tests for the route authentication and authorization plugin."""
 
     def setUp(self):
         """Override to set up a mock database and install the plugins."""
+        super().setUp()
         logging.disable()
-        self.database = Mock()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.sessions.find_one.return_value = None
         self.success = '{"ok": true}'

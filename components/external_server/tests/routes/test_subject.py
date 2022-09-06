@@ -1,7 +1,6 @@
 """Unit tests for the subject routes."""
 
-import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from shared.model.report import Report
 from shared.utils.type import SubjectId
@@ -15,17 +14,12 @@ from routes import (
     post_subject_copy,
 )
 
+from ..base import DatabaseTestCase, DataModelTestCase
 from ..fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
-from .base import DataModelTestCase
 
-
-class GetSubjectTest(unittest.TestCase):
+class GetSubjectTest(DatabaseTestCase):
     """Unit tests for the get subject measurements endpoint."""
-
-    def setUp(self):
-        """Override to create a mock database fixture."""
-        self.database = Mock()
 
     def test_get_subject_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
@@ -60,7 +54,7 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Extend to create the database contents."""
         super().setUp()
         self.report = Report(
-            self.data_model,
+            self.DATA_MODEL,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,

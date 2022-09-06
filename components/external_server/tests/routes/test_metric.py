@@ -30,7 +30,7 @@ from ..fixtures import (
     create_report,
 )
 
-from .base import DataModelTestCase
+from ..base import DataModelTestCase
 
 
 @patch("bottle.request")
@@ -41,7 +41,7 @@ class PostMetricAttributeTest(DataModelTestCase):
         """Extend to set up the database."""
         super().setUp()
         self.report = Report(
-            self.data_model,
+            self.DATA_MODEL,
             dict(
                 _id="id",
                 report_uuid=REPORT_ID,
@@ -361,7 +361,7 @@ class MetricTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the report fixture."""
         super().setUp()
-        self.report = Report(self.data_model, create_report())
+        self.report = Report(self.DATA_MODEL, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
@@ -455,7 +455,7 @@ class MetricIssueTest(DataModelTestCase):
         """Extend to set up the report fixture."""
         super().setUp()
         report = Report(
-            self.data_model,
+            self.DATA_MODEL,
             dict(
                 report_uuid=REPORT_ID,
                 issue_tracker=dict(parameters=dict(url="https://tracker", project_key="KEY", issue_type="BUG")),

@@ -39,7 +39,7 @@ from ..fixtures import (
     create_report,
 )
 
-from .base import DataModelTestCase
+from ..base import DataModelTestCase
 
 
 class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
@@ -48,6 +48,7 @@ class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Override to set up unit test fixtures."""
         super().setUp()
+        self.database.datamodels.find_one.return_value = self.data_model = self.load_data_model()
         self.url = "https://url"
         self.database.measurements.find.return_value = []
         self.email = "jenny@example.org"

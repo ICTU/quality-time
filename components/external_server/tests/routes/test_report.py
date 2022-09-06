@@ -22,9 +22,8 @@ from routes import (
 )
 from utils.functions import asymmetric_encrypt
 
+from ..base import DataModelTestCase
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
-
-from .base import DataModelTestCase
 
 
 class ReportTestCase(DataModelTestCase):  # skipcq: PTC-W0046
