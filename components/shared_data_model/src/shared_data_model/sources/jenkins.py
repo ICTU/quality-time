@@ -27,7 +27,8 @@ def jenkins_access_parameters(*args, **kwargs):
 JENKINS_TOKEN_DOCS = """To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username
 and password or a username and
 [API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike
-other sources, when using the API token Jenkins also requires the username to which the token belongs."""
+other sources, when using the API token Jenkins also requires the username to which the token
+belongs."""  # nosec hardcoded_password_string
 
 ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
 
