@@ -26,12 +26,12 @@ def jenkins_access_parameters(*args, **kwargs):
 
 # Put the Jenkins token documentation in a temporary variable that doesn't trigger a security warning so we can
 # suppress the false positive Bandit warning below.
-_tmp_doc = """To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username
+_TMP_DOC = """To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username
 and password or a username and
 [API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike
 other sources, when using the API token Jenkins also requires the username to which the token
 belongs."""
-JENKINS_TOKEN_DOCS = _tmp_doc  # nosec hardcoded_password_string
+JENKINS_TOKEN_DOCS = _TMP_DOC  # nosec hardcoded_password_string
 
 ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
 
