@@ -4,4 +4,4 @@
 -r ../../../requirements/pymongo.in
 -r ../../../requirements/requests.in
 ldap3==2.9.1
-cryptography==37.0.4
+cryptography==38.0.0
