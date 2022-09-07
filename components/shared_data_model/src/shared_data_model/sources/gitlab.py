@@ -64,7 +64,8 @@ gitlab.com/ee/api/job_artifacts.html#download-a-single-artifact-file-from-specif
     `https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?\
 job=<job-name>`
 
-    The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+    The project id can be found under the
+    [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
     If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
 profile/personal_access_tokens.html) with the scope `read_api` in the private token field.
@@ -75,7 +76,8 @@ gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
     `https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?\
 ref=<branch>`
 
-    The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+    The project id can be found under the
+    [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
 
     If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
 profile/personal_access_tokens.html) with the scope `read_repository` in the private token field.

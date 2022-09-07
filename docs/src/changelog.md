@@ -459,7 +459,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - When measuring merge requests with GitLab Premium as source, the merge requests can be filtered by approval state. Closes [#1979](https://github.com/ICTU/quality-time/issues/1979).
 - Include the key of Jira issues in the measurement details of the 'issues', 'manual test duration', 'manual test execution', and 'user story points' metrics. Prepares for [#2139](https://github.com/ICTU/quality-time/issues/2139).
-- Add a test cases metric to count the number of test cases that have been executed, possibly limited to passed, failed, and/or skipped test cases. See the [user manual](usage.md#test-cases). Closes [#2139](https://github.com/ICTU/quality-time/issues/2139).
+- Add a test cases metric to count the number of test cases that have been executed, possibly limited to passed, failed, and/or skipped test cases. See the [reference manual](reference.md#test-cases). Closes [#2139](https://github.com/ICTU/quality-time/issues/2139).
 - Include the tests from TestNG XML reports in the measurement details of the 'tests' metric. Closes [#2388](https://github.com/ICTU/quality-time/issues/2388).
 - The API has a new endpoint in REST style, `/api/v3/report`, to retrieve all reports.
 - Publish *Quality-time* [documentation at Read the Docs](https://quality-time.readthedocs.io/en/latest/index.html).
@@ -728,7 +728,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [user manual](usage.md#generic-json-format-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
+- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [reference manual](reference.md#generic-json-format-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
 - In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
