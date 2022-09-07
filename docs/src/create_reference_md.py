@@ -79,9 +79,12 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
     """Return the metric as Markdown section."""
     markdown = markdown_header(metric.name, level=level, index=True)
     markdown += markdown_paragraph(metric.description)
-    markdown += markdown_paragraph(f"*Why measure {decapitalize(metric.name)}?* {metric.rationale}")
+    name = decapitalize(metric.name)
+    markdown += markdown_paragraph(f"*Why measure {name}?* {metric.rationale}")
     if rationale_urls := metric.rationale_urls:
         markdown += see_also_links(rationale_urls)
+    if documentation := metric.documentation:
+        markdown += markdown_paragraph(f"*How to configure {name}?* {documentation}")
     if explanation := metric.explanation:
         markdown += markdown_paragraph(f"*More information* {explanation}")
         if explanation_urls := metric.explanation_urls:  # pragma: no branch
@@ -142,6 +145,8 @@ def source_section(source: Source, source_key: str, level: int) -> str:
     """Return the source as Markdown section."""
     markdown = markdown_header(source.name, level, index=True)
     markdown += markdown_paragraph(source.description)
+    if documentation := (source.documentation and source.documentation.get("generic")):
+        markdown += markdown_paragraph(documentation)
     markdown += "```{admonition} Supported metrics\n"
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
     for metric in metrics:

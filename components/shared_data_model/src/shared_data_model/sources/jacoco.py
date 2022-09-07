@@ -3,7 +3,7 @@
 from ..meta.source import Source
 from ..parameters import access_parameters
 
-from .jenkins import jenkins_access_parameters
+from .jenkins import jenkins_access_parameters, JENKINS_TOKEN_DOCS
 
 
 ALL_JACOCO_METRICS = ["source_up_to_dateness", "uncovered_branches", "uncovered_lines"]
@@ -18,6 +18,11 @@ JACOCO = Source(
 JACOCO_JENKINS_PLUGIN = Source(
     name="JaCoCo Jenkins plugin",
     description="A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin.",
+    documentation=dict(
+        source_up_to_dateness=JENKINS_TOKEN_DOCS,
+        uncovered_branches=JENKINS_TOKEN_DOCS,
+        uncovered_lines=JENKINS_TOKEN_DOCS,
+    ),
     url="https://plugins.jenkins.io/jacoco",
     parameters=jenkins_access_parameters(
         ALL_JACOCO_METRICS,

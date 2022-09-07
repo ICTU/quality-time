@@ -176,6 +176,11 @@ METRICS = Metrics.parse_obj(
             description="The amount of merge requests.",
             rationale="Merge requests need to be reviewed and approved. This metric allows for measuring the number of "
             "merge requests without the required approvals.",
+            documentation="""In itself, the number of merge requests is not indicative of software quality. However, by
+setting the parameter "Minimum number of upvotes", the metric can report on merge requests that have fewer than the
+minimum number of upvotes. The parameter "Merge request state" can be used to exclude closed merge requests, for
+example. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge
+requests that target specific branches, for example the "develop" branch.""",
             scales=["count", "percentage"],
             unit=Unit.MERGE_REQUESTS,
             sources=["azure_devops", "gitlab", "manual_number"],
@@ -187,6 +192,30 @@ METRICS = Metrics.parse_obj(
             rationale="Use this metric to monitor other quality reports. For example, count the number of metrics that "
             "don't meet their target value, or count the number of metrics that have been marked as technical debt for "
             "more than two months.",
+            documentation="""After adding *Quality-time* as a source to a "Metrics"-metric, one can configure which
+statuses to count and which metrics to consider by filtering on report names or identifiers, on metric types, on source
+types, and on tags.
+
+```{image} screenshots/editing_quality_time_source.png
+:alt: Screenshot of dialog to edit *Quality-time* source showing fields for source type, source name, and source \
+    parameters such as URL, metric statuses, report names, and metric types
+:class: only-light
+```
+
+```{image} screenshots/editing_quality_time_source_dark.png
+:alt: Screenshot of dialog to edit *Quality-time* source showing fields for source type, source name, and source \
+    parameters such as URL, metric statuses, report names, and metric types
+:class: only-dark
+```
+
+```{note}
+If the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've
+configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be
+counted as well. For example, if the target is at most five red metrics, and the number of red metrics increases from
+five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is
+not in the set of counted metrics, for example by putting it in a different report and only count metrics in the other
+report(s).
+```""",
             scales=["count", "percentage"],
             unit=Unit.METRICS,
             near_target="5",
@@ -417,6 +446,58 @@ METRICS = Metrics.parse_obj(
             description="The amount of test cases.",
             rationale="Track the test results of test cases so there is traceability from the test cases, "
             "defined in Jira, to the test results in test reports produced by tools such as Robot Framework or Junit.",
+            documentation="""The test cases metric reports on the number of test cases, and their test results. The
+test case metric is different than other metrics because it combines data from two types of sources: it needs one or
+more sources for the test cases, and one or more sources for the test results. The test case metric then matches the
+test results with the test cases.
+
+Currently, only {index}`Jira` is supported as source for the test cases. {index}`JUnit`, {index}`TestNG`, and
+{index}`Robot Framework` are supported as source for the test results. So, to configure the test cases metric, you need
+to add at least one Jira source and one JUnit, TestNG, Robot Framework source. In addition, to allow the test case
+metric to match test cases from Jira with test results from the JUnit, TestNG, or Robot Framework XML files, the test
+results should mention Jira issue keys in their title or description.
+
+Suppose you have configured Jira with the query: `project = "My Project" and type = "Logical Test Case"` and this
+results in these test cases:
+
+| Key  | Summary     |
+|------|-------------|
+| MP-1 | Test case 1 |
+| MP-2 | Test case 2 |
+| MP-3 | Test case 3 |
+| MP-4 | Test case 4 |
+
+Also suppose your JUnit XML has the following test results:
+
+```xml
+<testsuite tests="5" errors="0" failures="1" skipped="1">
+    <testcase name="MP-1; step 1">
+        <failure />
+    </testcase>
+    <testcase name="MP-1; step 2">
+        <skipped />
+    </testcase>
+    <testcase name="MP-2">
+        <skipped />
+    </testcase>
+    <testcase name="MP-3; step 1"/>
+    <testcase name="MP-3; step 2"/>
+</testsuite>
+```
+
+The test case metric will combine the JUnit XML file with the test cases from Jira and report one failed, one skipped,
+one passed, and one untested test case:
+
+| Key  | Summary     | Test result |
+|------|-------------|-------------|
+| MP-1 | Test case 1 | failed      |
+| MP-2 | Test case 2 | skipped     |
+| MP-3 | Test case 3 | passed      |
+| MP-4 | Test case 4 | untested    |
+
+If multiple test results in the JUnit, TestNG, or Robot Framework XML file map to one Jira test case (as with MP-1 and
+MP-3 above), the 'worst' test result is reported. Possible test results from worst to best are: errored, failed,
+skipped, and passed. Test cases not found in the test results are listed as untested (as with MP-4 above).""",
             scales=["count", "percentage"],
             unit=Unit.TEST_CASES,
             direction=Direction.MORE_IS_BETTER,
@@ -505,6 +586,14 @@ METRICS = Metrics.parse_obj(
             rationale="It is strange if branches have had no activity for a while and have not been merged to the "
             "default branch. Maybe commits have been cherry picked, or maybe the work has been postponed, but it "
             "also sometimes happen that someone simply forgets to merge the branch.",
+            documentation="""To change how soon *Quality-time* should consider branches to be inactive, use the
+parameter "Number of days since last commit after which to consider branches inactive".
+
+What exactly is the default branch is configured in GitLab or Azure DevOps. If you want to use a different branch
+as default branch, you need to configure this in the source, see the documentation for
+[GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/default.html) or
+[Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#\
+change-your-default-branch).""",
             unit=Unit.BRANCHES,
             near_target="5",
             sources=["azure_devops", "gitlab", "manual_number"],

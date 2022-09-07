@@ -24,6 +24,11 @@ def jenkins_access_parameters(*args, **kwargs):
     return access_parameters(*args, **kwargs)
 
 
+JENKINS_TOKEN_DOCS = """To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username
+and password or a username and
+[API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike
+other sources, when using the API token Jenkins also requires the username to which the token belongs."""
+
 ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
 
 JOB_ENTITY = dict(
@@ -42,6 +47,12 @@ JOB_ENTITY = dict(
 JENKINS = Source(
     name="Jenkins",
     description="Jenkins is an open source continuous integration/continuous deployment server.",
+    documentation=dict(
+        unused_jobs=JENKINS_TOKEN_DOCS,
+        failed_jobs=JENKINS_TOKEN_DOCS,
+        source_up_to_dateness=JENKINS_TOKEN_DOCS,
+        source_version=JENKINS_TOKEN_DOCS,
+    ),
     url="https://www.jenkins.io/",
     parameters=dict(
         inactive_days=Days(
@@ -103,6 +114,9 @@ TEST_ENTITIES = dict(
 JENKINS_TEST_REPORT = Source(
     name="Jenkins test report",
     description="A Jenkins job with test results.",
+    documentation=dict(
+        test_cases=JENKINS_TOKEN_DOCS, tests=JENKINS_TOKEN_DOCS, source_up_to_dateness=JENKINS_TOKEN_DOCS
+    ),
     url="https://plugins.jenkins.io/junit",
     parameters=dict(
         test_result=TestResult(values=["failed", "passed", "skipped"]),

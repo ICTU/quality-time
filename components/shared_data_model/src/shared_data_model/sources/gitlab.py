@@ -49,6 +49,38 @@ GITLAB = Source(
     description="GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous "
     "deployment pipelines.",
     url="https://about.gitlab.com/",
+    documentation=dict(
+        generic="""```{note}
+Some metric sources are documents in JSON, XML, CSV, or HTML format. Examples include JUnit XML reports, JaCoCo XML
+reports and Axe CSV reports. Usually, you add a JUnit (or JaCoCo, or Axe...) source and then simply configure the same
+URL that you use to access the document via the browser. Unfortunately, this does not work if the document is stored in
+GitLab. In that case, you still use the JUnit (or JaCoCo, or Axe...) source, but provide a GitLab API URL as URL.
+Depending on where the document is stored in GitLab, there are two scenarios; the source is a build artifact of a GitLab
+CI pipeline, or the source is stored in a GitLab repository:
+
+1. When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.\
+gitlab.com/ee/api/job_artifacts.html#download-a-single-artifact-file-from-specific-tag-or-branch):
+
+    `https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?\
+job=<job-name>`
+
+    The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+
+    If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
+profile/personal_access_tokens.html) with the scope `read_api` in the private token field.
+
+2.  When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.\
+gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
+
+    `https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?\
+ref=<branch>`
+
+    The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+
+    If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
+profile/personal_access_tokens.html) with the scope `read_repository` in the private token field.
+```"""
+    ),
     parameters=dict(
         url=URL(
             name="GitLab instance URL",

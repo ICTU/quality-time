@@ -25,6 +25,10 @@ If your currently installed *Quality-time* version is not v4.3.0, please read th
 - Make Jira issue identifiers uppercase when querying Jira for the status of issues, so that users don't have to enter uppercase Jira identifiers in *Quality-time*. Closes [#4450](https://github.com/ICTU/quality-time/issues/4450).
 - Allow for setting default labels on Jira issues created from *Quality-time*. The labels can be configured in the issue tracker tab under the report header. Closes [#4468](https://github.com/ICTU/quality-time/issues/4468).
 
+### Changed
+
+- Move the contents of the "Notes on specific metrics" and "Notes on specific sources" from the user manual to the reference manual. Closes [#4446](https://github.com/ICTU/quality-time/issues/4446).
+
 ## v4.3.0 - 2022-08-24
 
 ### Deployment notes

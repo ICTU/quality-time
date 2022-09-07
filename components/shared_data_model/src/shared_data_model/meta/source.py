@@ -79,7 +79,7 @@ class Sources(MappedModel[Source]):
     def check_urls(cls, values):
         """Check that all sources, except the ones specified below, have a URL."""
         for source_type, source in values.items():
-            if source_type not in ("calendar", "manual_number") and not source.url:
+            if source_type not in ("calendar", "generic_json", "manual_number") and not source.url:
                 raise ValueError(f"Source {source_type} has no URL")
 
     @classmethod
