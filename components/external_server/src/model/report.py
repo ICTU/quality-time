@@ -2,7 +2,7 @@
 
 from shared.model.report import Report as SharedReport
 
-from .issue_tracker import IssueTracker
+from .issue_tracker import IssueParameters, IssueTracker, IssueTrackerCredentials
 
 
 class Report(SharedReport):
@@ -13,9 +13,10 @@ class Report(SharedReport):
         issue_tracker_data = self.get("issue_tracker", {})
         parameters = issue_tracker_data.get("parameters", {})
         url = parameters.get("url", "")
-        project_key = parameters.get("project_key", "")
-        issue_type = parameters.get("issue_type", "")
-        username = parameters.get("username", "")
-        password = parameters.get("password", "")
-        private_token = parameters.get("private_token", "")
-        return IssueTracker(url, project_key, issue_type, username, password, private_token)
+        issue_parameters = IssueParameters(
+            parameters.get("project_key", ""), parameters.get("issue_type", ""), parameters.get("issue_labels", [])
+        )
+        credentials = IssueTrackerCredentials(
+            parameters.get("username", ""), parameters.get("password", ""), parameters.get("private_token", "")
+        )
+        return IssueTracker(url, issue_parameters, credentials)

@@ -710,7 +710,7 @@ $ curl --cookie cookie.txt --request POST --header "Content-Type: application/js
 
 ## Issue tracker
 
-To track work being done on metrics, for example to resolve technical debt, it's possible to add (identifiers of) issues to metrics. *Quality-time* uses these issue identifiers to check the status of the issue with an issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps or GitLab.
+To track work being done on metrics, for example to resolve technical debt, it's possible to add (identifiers of) issues to metrics. *Quality-time* uses these issue identifiers to check the status of the issue with an issue tracker. For this to work, an issue tracker needs to be added to the report. Expand the report header and configure the issue tracker in the issue tracker tab. Currently, only Jira can be used as issue tracker. Please consider submitting a pull request if you need support for other issue trackers such as Azure DevOps Server or GitLab.
 
 Multiple issues can be linked to one metric. At most one issue tracker can be configured per report.
 

@@ -103,3 +103,11 @@ it('sets the issue tracker issue type', async () => {
     await userEvent.type(screen.getByText(/Issue type/), 'bug{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/issue_type", { issue_type: "bug" });
 });
+
+it('sets the issue tracker issue labels', async () => {
+    await act(async () => {
+        render_issue_tracker();
+    });
+    await userEvent.type(screen.getByText(/No results found/), 'Label{Enter}');
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/report_uuid/issue_tracker/issue_labels", { issue_labels: ["Label"] });
+});

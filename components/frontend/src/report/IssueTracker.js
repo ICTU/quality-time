@@ -4,6 +4,7 @@ import { StringInput } from '../fields/StringInput';
 import { HyperLink } from '../widgets/HyperLink';
 import { set_report_issue_tracker_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
@@ -120,6 +121,18 @@ export function IssueTracker({ report, reload }) {
                         label="Issue type for new issues"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "issue_type", value, reload)}
                         value={report.issue_tracker?.parameters?.issue_type}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={1}>
+                <Grid.Column>
+                    <MultipleChoiceInput
+                        allowAdditions
+                        id="tracker-issue-labels"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label="Labels for new issues"
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "issue_labels", value, reload)}
+                        value={report.issue_tracker?.parameters?.issue_labels}
                     />
                 </Grid.Column>
             </Grid.Row>

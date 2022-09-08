@@ -4,7 +4,7 @@ import logging
 import unittest
 from unittest.mock import Mock, patch
 
-from model.issue_tracker import IssueSuggestion, IssueTracker
+from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker, IssueTrackerCredentials
 
 
 class IssueTrackerTest(unittest.TestCase):
@@ -17,7 +17,8 @@ class IssueTrackerTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up the issue tracker."""
-        self.issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE)
+        self.issue_parameters = IssueParameters(self.PROJECT_KEY, self.ISSUE_TYPE)
+        self.issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters)
 
     def test_url(self):
         """Test the issue tracker url."""
@@ -25,14 +26,22 @@ class IssueTrackerTest(unittest.TestCase):
 
     def test_username_and_password(self):
         """Test the issue tracker credentials."""
-        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, "username", "password")
-        self.assertEqual("username", issue_tracker.username)
-        self.assertEqual("password", issue_tracker.password)
+        credentials = IssueTrackerCredentials("username", "password")
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, credentials)
+        self.assertEqual("username", issue_tracker.credentials.username)
+        self.assertEqual("password", issue_tracker.credentials.password)
 
     def test_private_token(self):
         """Test the issue tracker credentials."""
-        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.PROJECT_KEY, self.ISSUE_TYPE, private_token="token")
-        self.assertEqual("token", issue_tracker.private_token)
+        credentials = IssueTrackerCredentials(private_token="token")
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, credentials)
+        self.assertEqual("token", issue_tracker.credentials.private_token)
+
+    def test_issue_labels(self):
+        """Test the issue tracker issue labels."""
+        self.issue_parameters.issue_labels = ["Label"]
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters)
+        self.assertEqual(["Label"], issue_tracker.issue_parameters.issue_labels)
 
     @patch("requests.get")
     def test_get_suggestions(self, requests_get):
@@ -58,7 +67,7 @@ class IssueTrackerTest(unittest.TestCase):
 
     def test_create_issue_with_invalid_url(self):
         """Test that without a valid URL an error message is returned."""
-        issue_tracker = IssueTracker("invalid", self.PROJECT_KEY, self.ISSUE_TYPE)
+        issue_tracker = IssueTracker("invalid", self.issue_parameters)
         logging.disable(logging.CRITICAL)
         self.assertEqual(
             (
@@ -70,9 +79,9 @@ class IssueTrackerTest(unittest.TestCase):
         )
         logging.disable(logging.NOTSET)
 
-    def test_create_issue_withoutd_url(self):
+    def test_create_issue_without_url(self):
         """Test that without a URL an error message is returned."""
-        issue_tracker = IssueTracker("", "", "")
+        issue_tracker = IssueTracker("", self.issue_parameters)
         logging.disable(logging.CRITICAL)
         self.assertEqual(("", "Issue tracker has no URL configured."), issue_tracker.create_issue(self.ISSUE_SUMMARY))
         logging.disable(logging.NOTSET)
