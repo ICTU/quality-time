@@ -9,17 +9,17 @@ import * as fetch_server_api from '../api/fetch_server_api';
 jest.mock("../api/fetch_server_api.js")
 
 const datamodel = {
-    metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },
+    metrics: { metric_type: { sources: ["source_type1", "source_type2"] }, unsupported_metric: { sources: [] } },
     sources: {
         source_type1: { name: "Source type 1", parameters: {} },
         source_type2: { name: "Source type 2", parameters: {} }
     }
 };
 const source = { type: "source_type1" };
-const metric = { type: "metric_type", sources: {"source_uuid": source}}
+const metric = { type: "metric_type", sources: { "source_uuid": source } }
 const report = { report_uuid: "report_uuid", subjects: {} };
 
-function render_source(props) {
+function render_source(metric, props) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
@@ -37,7 +37,7 @@ function render_source(props) {
 it('invokes the callback on clicking delete', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_source();
+        render_source(metric);
         fireEvent.click(screen.getByText(/Delete source/));
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {});
@@ -45,7 +45,7 @@ it('invokes the callback on clicking delete', async () => {
 
 it('changes the source type', async () => {
     await act(async () => {
-        render_source();
+        render_source(metric);
         fireEvent.click(screen.getAllByText(/Source type 1/)[0]);
     })
     fireEvent.click(screen.getByText(/Source type 2/));
@@ -54,7 +54,7 @@ it('changes the source type', async () => {
 
 it('changes the source name', async () => {
     await act(async () => {
-        render_source();
+        render_source(metric);
     })
     await userEvent.type(screen.getByLabelText(/Source name/), 'New source name{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", { name: "New source name" });
@@ -62,23 +62,28 @@ it('changes the source name', async () => {
 
 it('shows a connection error message', async () => {
     await act(async () => {
-        render_source({ measurement_source: { connection_error: "Oops" }});
-        fireEvent.click(screen.getByText(/Configuration/));
+        render_source(metric, { measurement_source: { connection_error: "Oops" } });
     });
     expect(screen.getAllByText(/Connection error/).length).toBe(1);
 });
 
 it('shows a parse error message', async () => {
     await act(async () => {
-        render_source({ measurement_source: { parse_error: "Oops" }});
-        fireEvent.click(screen.getByText(/Configuration/));
+        render_source(metric, { measurement_source: { parse_error: "Oops" } });
     });
     expect(screen.getAllByText(/Parse error/).length).toBe(1);
 });
 
+it('shows a config error message', async () => {
+    await act(async () => {
+        render_source({ type: "unsupported_metric", sources: { "source_uuid": source } });
+    });
+    expect(screen.getAllByText(/Configuration error/).length).toBe(1);
+});
+
 it('loads the changelog', async () => {
     await act(async () => {
-        render_source();
+        render_source(metric);
         fireEvent.click(screen.getByText(/Changelog/));
     });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5");
