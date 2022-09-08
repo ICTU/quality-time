@@ -1,26 +1,20 @@
 """Test the reports collection."""
 
-import unittest
-from unittest.mock import Mock
-
-from shared_data_model import DATA_MODEL
 from shared.model.metric import Metric
 from shared.utils.type import MetricId
 
 from database.reports import latest_metric
 
+from ..base import DataModelTestCase
 from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID
 
 
-class MetricsTest(unittest.TestCase):
+class MetricsTest(DataModelTestCase):
     """Unit tests for getting metrics from the reports collection."""
 
     def setUp(self):
-        """Override to create a mock database fixture."""
-        self.database = Mock()
-        self.data_model = DATA_MODEL.dict()
-        self.data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = self.data_model
+        """Extend to create a report fixture."""
+        super().setUp()
         report = dict(
             _id="1",
             report_uuid=REPORT_ID,
@@ -40,7 +34,7 @@ class MetricsTest(unittest.TestCase):
             )
         ]
         self.assertEqual(
-            Metric(self.data_model, dict(tags=[], type="violations"), METRIC_ID),
+            Metric(self.DATA_MODEL, dict(tags=[], type="violations"), METRIC_ID),
             latest_metric(self.database, REPORT_ID, METRIC_ID),
         )
 

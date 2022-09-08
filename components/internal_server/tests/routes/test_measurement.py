@@ -1,13 +1,11 @@
 """Unit tests for the measurement routes."""
 
-import unittest
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
-from shared_data_model import DATA_MODEL
-
 from routes import post_measurement
 
+from ..base import DataModelTestCase
 from ..fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
@@ -15,12 +13,12 @@ from ..fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, 
 @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("shared.model.source.iso_timestamp", new=Mock(return_value="2020-01-01"))
 @patch("bottle.request")
-class PostMeasurementTests(unittest.TestCase):
+class PostMeasurementTests(DataModelTestCase):
     """Unit tests for the post measurement route."""
 
     def setUp(self):
-        """Override to setup a mock database fixture with some content."""
-        self.database = Mock()
+        """Extend to setup a report fixture."""
+        super().setUp()
         self.report = dict(
             _id="id",
             report_uuid=REPORT_ID,
@@ -55,9 +53,6 @@ class PostMeasurementTests(unittest.TestCase):
         )
         self.database.reports.find.return_value = [self.report]
         self.database.reports.find_one.return_value = self.report
-        data_model = DATA_MODEL.dict()
-        data_model["_id"] = "id"
-        self.database.datamodels.find_one.return_value = data_model
 
         def set_measurement_id(measurement):
             """Fake setting a measurement id on the inserted measurement."""

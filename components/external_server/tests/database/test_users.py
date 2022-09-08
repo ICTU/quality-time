@@ -1,19 +1,18 @@
 """Test the sessions."""
 
-import unittest
-from unittest.mock import Mock
-
 from shared.utils.type import User
 
 from database import users
 
+from ..base import DatabaseTestCase
 
-class UsersTest(unittest.TestCase):
+
+class UsersTest(DatabaseTestCase):
     """Unit tests for user database functions."""
 
     def setUp(self):
-        """Override to set up the database."""
-        self.database = Mock()
+        """Extend to set up the users collection."""
+        super().setUp()
         self.database.users.find_one.return_value = dict(username="username")
 
     def test_upsert(self):

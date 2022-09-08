@@ -9,7 +9,7 @@ from database.datamodels import default_metric_attributes, default_source_parame
 from routes import get_data_model
 from utils.functions import md5_hash
 
-from .base import DataModelTestCase
+from ..base import DataModelTestCase
 
 
 class DataModelTest(DataModelTestCase):
@@ -17,7 +17,7 @@ class DataModelTest(DataModelTestCase):
 
     def test_get_data_model(self):
         """Test that the data model can be retrieved."""
-        self.assertEqual(self.data_model, get_data_model(self.database))
+        self.assertEqual(self.DATA_MODEL, get_data_model(self.database))
 
     def test_get_data_model_missing(self):
         """Test that the data model is None if it's not there."""

@@ -1,22 +1,21 @@
 """Test the sessions."""
 
-import unittest
 from datetime import datetime
-from unittest.mock import Mock
 
 from shared.utils.type import SessionId, User
 
 from database import sessions
 
+from ..base import DatabaseTestCase
 from ..fixtures import JENNY
 
 
-class SessionsTest(unittest.TestCase):
+class SessionsTest(DatabaseTestCase):
     """Unit tests for sessions class."""
 
     def setUp(self):
         """Override to set up the database."""
-        self.database = Mock()
+        super().setUp()
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.sessions.find_one.return_value = dict(_id="session_id")
 

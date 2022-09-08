@@ -11,13 +11,13 @@ from ldap3.core import exceptions
 from database import sessions
 from routes import login, logout, get_public_key
 
-from .base import RouteTestCase
+from ..base import DatabaseTestCase
 
 USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class AuthTestCase(RouteTestCase):  # skipcq: PTC-W0046
+class AuthTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
     """Base class for authorization tests."""
 
     def setUp(self):

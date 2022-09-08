@@ -1,7 +1,6 @@
 """Test the measurements model."""
 
 from datetime import datetime, timedelta, timezone
-import unittest
 from unittest.mock import patch
 
 from packaging.version import Version
@@ -16,31 +15,26 @@ from shared.model.source import Source
 
 from ...fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
 
+from ..base import DataModelTestCase
 
-class MeasurementTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+
+class MeasurementTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Base class for measurement unit tests."""
 
-    def setUp(self):
-        """Override to set up the data model."""
-        self.data_model = dict(
-            metrics=dict(metric_type=dict(direction="<", default_scale="count", scales=["count", "percentage"])),
-            sources=dict(
-                source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
-            ),
-        )
-
-    def metric(self, addition="sum", **kwargs) -> Metric:
+    def metric(self, addition="sum", sources=None, **kwargs) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
-            type="metric_type",
+            type="tests",
             sources={
-                SOURCE_ID: dict(type="source_type"),
-                SOURCE_ID2: dict(type="source_type"),
-            },
+                SOURCE_ID: dict(type="azure_devops"),
+                SOURCE_ID2: dict(type="azure_devops"),
+            }
+            if sources is None
+            else sources,
             **kwargs,
         )
-        return Metric(self.data_model, metric_data, METRIC_ID)
+        return Metric(self.DATA_MODEL, metric_data, METRIC_ID)
 
     @staticmethod
     def measurement(metric: Metric, **kwargs) -> Measurement:
@@ -206,7 +200,7 @@ class MeasurementTest(MeasurementTestCase):
             sources=[
                 dict(
                     source_uuid=SOURCE_ID,
-                    type="source_type",
+                    type="azure_devops",
                     entity_user_data={"key": {}},
                 )
             ],
@@ -214,8 +208,8 @@ class MeasurementTest(MeasurementTestCase):
         measurement_2 = Measurement(
             self.metric(),
             sources=[
-                dict(source_uuid=SOURCE_ID, type="source_type"),
-                dict(source_uuid=SOURCE_ID2, type="source_type"),
+                dict(source_uuid=SOURCE_ID, type="azure_devops"),
+                dict(source_uuid=SOURCE_ID2, type="azure_devops"),
             ],
         )
 
@@ -278,15 +272,15 @@ class MeasurementTest(MeasurementTestCase):
 
     def test_accept_missing_sources_as_tech_debt(self):
         """Test that the fact that no sources have been configured can be accepted as technical debt."""
-        metric = Metric(self.data_model, dict(addition="sum", type="metric_type", accept_debt=True), METRIC_ID)
+        metric = Metric(self.DATA_MODEL, dict(addition="sum", type="tests", accept_debt=True), METRIC_ID)
         measurement = self.measurement(metric)
         self.assertEqual("debt_target_met", measurement.status())
 
     def test_accept_missing_sources_as_tech_debt_expired(self):
         """Test that having no sources accepted as technical debt can also expire."""
         metric = Metric(
-            self.data_model,
-            dict(addition="sum", type="metric_type", accept_debt=True, debt_end_date="2020-01-01"),
+            self.DATA_MODEL,
+            dict(addition="sum", type="tests", accept_debt=True, debt_end_date="2020-01-01"),
             METRIC_ID,
         )
         measurement = self.measurement(metric)
@@ -326,13 +320,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         super().setUp()
         self.source_count = 0
 
-    def source(
-        self,
-        metric: Metric,
-        parse_error: str = None,
-        total: str = None,
-        value: str = None,
-    ) -> Source:
+    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
         """Create a source fixture."""
         self.source_count += 1
         source_number = "" if self.source_count == 1 else str(self.source_count)
@@ -379,7 +367,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_ignored_entities(self):
         """Test that the number of ignored entities is subtracted."""
-        metric = self.metric()
+        metric = self.metric(sources={SOURCE_ID: dict(type="junit")})
         source = self.source(metric, value="10")
         source["entities"] = [
             dict(key="entity1"),
@@ -397,14 +385,13 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_value_ignored_entities(self):
         """Test that the summed value of ignored entities is subtracted, if an entity attribute should be used."""
-        self.data_model["sources"]["source_type"]["entities"]["metric_type"]["measured_attribute"] = "story_points"
         metric = self.metric()
         source = self.source(metric, value="10")
         source["entities"] = [
-            dict(key="entity1", story_points=3),
-            dict(key="entity2", story_points=5),
-            dict(key="entity3", story_points=2),
-            dict(key="entity4", story_points=10),
+            dict(key="entity1", counted_tests=3),
+            dict(key="entity2", counted_tests=5),
+            dict(key="entity3", counted_tests=2),
+            dict(key="entity4", counted_tests=10),
         ]
         source["entity_user_data"] = dict(
             entity1=dict(status="fixed"),
@@ -426,7 +413,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_percentage_is_zero(self):
         """Test that the percentage is zero when the total is zero and the direction is 'fewer is better'."""
-        metric = self.metric()
+        metric = self.metric(direction="<")
         sources = [self.source(metric, value="0", total="0")]
         measurement = self.measurement(metric, sources=sources)
         self.assertEqual("0", measurement["percentage"]["value"])
@@ -440,7 +427,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_min_of_percentages(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        metric = self.metric(addition="min")
+        metric = self.metric(direction="<", addition="min")
         sources = [
             self.source(metric, value="10", total="70"),
             self.source(metric, value="20", total="50"),
@@ -450,7 +437,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_min_of_percentages_with_zero_denominator(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        metric = self.metric(addition="min")
+        metric = self.metric(direction="<", addition="min")
         sources = [
             self.source(metric, value="10", total="70"),
             self.source(metric, value="0", total="0"),

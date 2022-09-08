@@ -5,9 +5,8 @@ from unittest.mock import patch
 from routes import get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
+from ..base import DataModelTestCase
 from ..fixtures import METRIC_ID, SOURCE_ID
-
-from .base import DataModelTestCase
 
 
 class ReportsOverviewTest(DataModelTestCase):

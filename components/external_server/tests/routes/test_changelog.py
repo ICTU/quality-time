@@ -10,10 +10,10 @@ from routes import (
 
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
-from .base import RouteTestCase
+from ..base import DatabaseTestCase
 
 
-class ChangeLogTest(RouteTestCase):
+class ChangeLogTest(DatabaseTestCase):
     """Unit tests for getting the changelog."""
 
     def setUp(self):
