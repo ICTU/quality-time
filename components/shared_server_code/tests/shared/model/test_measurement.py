@@ -21,11 +21,11 @@ from ..base import DataModelTestCase
 class MeasurementTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Base class for measurement unit tests."""
 
-    def metric(self, addition="sum", sources=None, **kwargs) -> Metric:
+    def metric(self, metric_type="tests", addition="sum", sources=None, **kwargs) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
             addition=addition,
-            type="tests",
+            type=metric_type,
             sources={
                 SOURCE_ID: dict(type="azure_devops"),
                 SOURCE_ID2: dict(type="azure_devops"),
@@ -332,6 +332,17 @@ class MeasurementTest(MeasurementTestCase):
             self.metric(),
             sources=[
                 dict(source_uuid=SOURCE_ID, value=None, total=None, parse_error=None, connection_error="Oops!"),
+                dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertFalse(measurement.sources_ok())
+
+    def test_sources_not_ok_on_config_error(self):
+        """Test that the measurement sources are not ok if they have errors."""
+        measurement = self.measurement(
+            self.metric(metric_type="sentiment"),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="5", total="100", parse_error=None, connection_error=None),
                 dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
             ],
         )
