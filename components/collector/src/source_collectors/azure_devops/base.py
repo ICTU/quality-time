@@ -96,6 +96,7 @@ class AzureDevopsPipelines(SourceCollector):
     async def _api_url(self, pipeline_id: int = None) -> URL:
         """Extend to add the pipelines API path."""
         pipeline_id_runs = f"/{pipeline_id}/runs" if pipeline_id else ""
+        # currently the pipelines api is not available in any version which is not a -preview version
         return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
 
     async def _active_pipeline_ids(self) -> list[int]:
