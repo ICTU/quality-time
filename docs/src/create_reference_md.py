@@ -145,7 +145,9 @@ def source_section(source: Source, source_key: str, level: int) -> str:
     """Return the source as Markdown section."""
     markdown = markdown_header(source.name, level, index=True)
     markdown += markdown_paragraph(source.description)
-    if documentation := (source.documentation and source.documentation.get("generic")):
+    if source.documentation and (documentation := source.documentation.get("generic")):
+        # Add generic documentation, meaning documentation that applies to all metrics that the source supports, here.
+        # Documentation for specific metrics is added in the metric-source sections, see metric_source_section() below.
         markdown += markdown_paragraph(documentation)
     markdown += "```{admonition} Supported metrics\n"
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
@@ -180,7 +182,7 @@ def metric_source_section(metric_key: str, source_key: str) -> str:
     metric_link = f"[{metric.name.lower()}]({slugify(metric.name)})"
     source_link = f"[{source.name}]({slugify(source.name)})"
     markdown = markdown_paragraph(f"{source_link} can be used to measure {metric_link.lower()}.")
-    if documentation := (source.documentation and source.documentation.get(metric_key)):
+    if source.documentation and (documentation := source.documentation.get(metric_key)):
         markdown += markdown_paragraph(documentation)
     parameters = [p for p in source.parameters.values() if metric_key in p.metrics]
     for mandatory in True, False:
