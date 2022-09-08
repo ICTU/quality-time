@@ -4,7 +4,7 @@ from ..meta.entity import Color
 from ..meta.source import Source
 from ..parameters import access_parameters, TestResult
 
-from .jenkins import jenkins_access_parameters
+from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
 
 
 ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "test_cases", "tests"]
@@ -35,6 +35,7 @@ ROBOT_FRAMEWORK_JENKINS_PLUGIN = Source(
     name="Robot Framework Jenkins plugin",
     description="A Jenkins plugin for Robot Framework, a generic open source automation framework for acceptance "
     "testing, acceptance test driven development, and robotic process automation.",
+    documentation=dict(source_up_to_dateness=JENKINS_TOKEN_DOCS, tests=JENKINS_TOKEN_DOCS),
     url="https://plugins.jenkins.io/robot/",
     parameters=dict(
         test_result=TestResult(values=["fail", "pass"], api_values={"fail": "overallFailed", "pass": "overallPassed"}),

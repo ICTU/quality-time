@@ -49,10 +49,11 @@ class Metric(DescribedModel):
     near_target: str = "10"
     sources: list[str] = Field(..., min_items=1)
     tags: list[Tag] = []
-    rationale: Optional[str] = ""
+    rationale: str = ""  # Answers the question "Why measure this metric?", included in documentation and UI
     rationale_urls: list[str] = []
-    explanation: Optional[str] = ""
+    explanation: Optional[str] = ""  # Optional explanation of concepts in text format, included in documentation and UI
     explanation_urls: list[str] = []
+    documentation: Optional[str] = ""  # Optional documentation in Markdown format, only included in the documentation
 
     @validator("default_scale", always=True)
     def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument

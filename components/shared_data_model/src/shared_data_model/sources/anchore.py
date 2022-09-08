@@ -6,7 +6,7 @@ from ..meta.entity import Color
 from ..meta.source import Source
 from ..parameters import access_parameters, Severities, URL
 
-from .jenkins import jenkins_access_parameters
+from .jenkins import jenkins_access_parameters, JENKINS_TOKEN_DOCS
 
 
 ALL_ANCHORE_METRICS = ["security_warnings", "source_up_to_dateness"]
@@ -52,6 +52,7 @@ ANCHORE = Source(
 ANCHORE_JENKINS_PLUGIN = Source(
     name="Anchore Jenkins plugin",
     description="A Jenkins job with an Anchore report produced by the Anchore Jenkins plugin.",
+    documentation=dict(security_warnings=JENKINS_TOKEN_DOCS, source_up_to_dateness=JENKINS_TOKEN_DOCS),
     url="https://plugins.jenkins.io/anchore-container-scanner/",
     parameters=dict(
         severities=SEVERITIES,

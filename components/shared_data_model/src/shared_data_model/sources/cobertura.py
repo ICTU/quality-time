@@ -3,7 +3,8 @@
 from ..meta.source import Source
 from ..parameters import access_parameters
 
-from .jenkins import jenkins_access_parameters
+from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
+
 
 COBERTURA = Source(
     name="Cobertura",
@@ -25,6 +26,11 @@ COBERTURA_JENKINS_PLUGIN = Source(
     name="Cobertura Jenkins plugin",
     description="Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed "
     "by tests.",
+    documentation=dict(
+        source_up_to_dateness=JENKINS_TOKEN_DOCS,
+        uncovered_branches=JENKINS_TOKEN_DOCS,
+        uncovered_lines=JENKINS_TOKEN_DOCS,
+    ),
     url="https://plugins.jenkins.io/cobertura/",
     parameters=jenkins_access_parameters(
         ["source_up_to_dateness", "uncovered_branches", "uncovered_lines"],
