@@ -56,7 +56,9 @@ Feature: metric
     And an existing source
     When the collector measures "100"
     Then the metric status is "target_not_met"
-    When the client changes the metric type to "violations"
+    When the client waits a second
+    And the client changes the metric type to "violations"
+    And the client waits a second
     Then the metric contains 1 source
     And the metric status is "None"
 
