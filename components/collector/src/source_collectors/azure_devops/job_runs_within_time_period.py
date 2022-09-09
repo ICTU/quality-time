@@ -1,5 +1,7 @@
 """Azure DevOps Server pipeline runs within time period collector."""
 
+from typing import cast
+
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
@@ -16,4 +18,4 @@ class AzureDevopsJobRunsWithinTimePeriod(AzureDevopsPipelines):
         if not super()._include_pipeline_run(job):
             return False
 
-        return days_ago(parse(job["finishedDate"])) <= int(self._parameter(parameter_key="lookback_days"))
+        return days_ago(parse(job["finishedDate"])) <= int(cast(str, self._parameter(parameter_key="lookback_days")))
