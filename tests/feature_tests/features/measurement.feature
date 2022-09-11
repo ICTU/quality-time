@@ -5,7 +5,7 @@ Feature: measurement
     Given a logged-in client
     And an existing report
     And an existing subject
-    And an existing metric with type "complex_units"
+    And an existing metric
 
   Scenario: the metric has no source
     When the collector gets the metrics to measure
@@ -77,7 +77,19 @@ Feature: measurement
     And the collector measures "100"
     Then the metric has no measurements
 
-  Scenario: the metric is not measured and this is accepted as technical debt (e.g. because there's no source yet)
+  Scenario: the metric has not source and therefor is not measured yet and this is accepted as technical debt
+    When the client changes the metric accept_debt to "True"
+    Then the metric status is "debt_target_met"
+
+  Scenario: the metric has a source but is not measured yet and this is accepted as technical debt
+    Given an existing source
+    When the client changes the metric accept_debt to "True"
+    Then the metric status is "debt_target_met"
+
+   Scenario: the metric has a source that measured, but without value, and this is accepted as technical debt
+    Given an existing source
+    When the collector encounters a parse error
+    Then the metric status is "None"
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
