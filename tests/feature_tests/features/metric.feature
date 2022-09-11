@@ -62,7 +62,7 @@ Feature: metric
     Then the metric contains 1 source
     And the metric status is "None"
 
-  Scenario: change technical debt target after changing metric type of metric with source and measurement
+  Scenario: change technical debt target after changing metric type of metric with measurement
     Given an existing metric
     And an existing source
     When the collector measures "100"
