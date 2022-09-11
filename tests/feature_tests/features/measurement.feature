@@ -86,7 +86,7 @@ Feature: measurement
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
-   Scenario: the metric has a source that measured, but without value, and this is accepted as technical debt
+  Scenario: the metric has a source that measured, but without value, and this is accepted as technical debt
     Given an existing source
     When the collector encounters a parse error
     Then the metric status is "None"
