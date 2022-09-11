@@ -66,7 +66,8 @@ Feature: metric
     When the collector measures "100"
     Then the metric status is "target_not_met"
     When the client changes the metric type to "violations"
-    And the client changes the metric accept_debt to "True"
+    Then the metric status is "None"
+    When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
   Scenario: change metric name
