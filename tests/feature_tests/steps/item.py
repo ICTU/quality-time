@@ -21,7 +21,7 @@ def add_item(context, item, attribute=None, value=None, parameter=None, paramete
         item_type = value
         attribute = value = None
     else:
-        item_type = dict(source="anchore", metric="accessibility", subject="ci").get(item)
+        item_type = dict(source="axe_core", metric="accessibility", subject="software").get(item)
     if "tries to" in context.step.name:
         context.post(api, {"type": item_type})
         return
