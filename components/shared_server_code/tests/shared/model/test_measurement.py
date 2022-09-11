@@ -286,6 +286,39 @@ class MeasurementTest(MeasurementTestCase):
         measurement = self.measurement(metric)
         self.assertIsNone(measurement.status())
 
+    def test_sources_ok(self):
+        """Test that the measurement sources are ok if they support the metric and don't have errors."""
+        measurement = self.measurement(
+            self.metric(),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="5", total="100", parse_error=None, connection_error=None),
+                dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertTrue(measurement.sources_ok())
+
+    def test_sources_not_ok_on_parse_error(self):
+        """Test that the measurement sources are not ok if they have errors."""
+        measurement = self.measurement(
+            self.metric(),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value=None, total=None, parse_error="Oops!", connection_error=None),
+                dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertFalse(measurement.sources_ok())
+
+    def test_sources_not_ok_on_connection_error(self):
+        """Test that the measurement sources are not ok if they have errors."""
+        measurement = self.measurement(
+            self.metric(),
+            sources=[
+                dict(source_uuid=SOURCE_ID, value=None, total=None, parse_error=None, connection_error="Oops!"),
+                dict(source_uuid=SOURCE_ID2, value="7", total="100", parse_error=None, connection_error=None),
+            ],
+        )
+        self.assertFalse(measurement.sources_ok())
+
 
 class SummarizeMeasurementTest(MeasurementTestCase):
     """Unit tests for the measurement summary."""

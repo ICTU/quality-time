@@ -1,8 +1,8 @@
 """A class that represents a report."""
 
 from typing import cast
-from shared.model.source import Source
 
+from shared.model.source import Source
 from shared.utils.type import Color, MetricId, ReportId, SourceId, Status, SubjectId
 
 from .measurement import Measurement
