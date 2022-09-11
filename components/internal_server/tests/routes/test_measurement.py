@@ -28,7 +28,7 @@ class PostMeasurementTests(DataModelTestCase):
                     metrics={
                         METRIC_ID: dict(
                             name="name",
-                            type="violations",
+                            type="security_warnings",
                             scale="count",
                             addition="sum",
                             direction="<",
@@ -37,7 +37,7 @@ class PostMeasurementTests(DataModelTestCase):
                             debt_target=None,
                             accept_debt=False,
                             tags=[],
-                            sources={SOURCE_ID: dict(type="junit"), SOURCE_ID2: dict(type="junit")},
+                            sources={SOURCE_ID: dict(type="bandit"), SOURCE_ID2: dict(type="bandit")},
                         ),
                         METRIC_ID2: dict(
                             direction="<",
@@ -45,7 +45,7 @@ class PostMeasurementTests(DataModelTestCase):
                             type="source_version",
                             target="0",
                             near_target="10",
-                            sources={SOURCE_ID: dict(type="junit")},
+                            sources={SOURCE_ID: dict(type="owasp_dependency_check")},
                         ),
                     }
                 ),
@@ -129,7 +129,10 @@ class PostMeasurementTests(DataModelTestCase):
     def test_first_measurement_two_scales(self, request):
         """Post the first measurement for a metric with two scales."""
         self.database.measurements.find_one.return_value = None
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["type"] = "complex_units"
+        metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
+        metric["type"] = "complex_units"
+        for source in metric["sources"].values():
+            source["type"] = "sonarqube"
         sources = self.posted_measurement["sources"] = [self.source(), self.source(source_uuid=SOURCE_ID2)]
         request.json = self.posted_measurement
         post_measurement(self.database)
