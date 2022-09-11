@@ -9,8 +9,8 @@ Feature: source
 
   Scenario: add source
     When the client creates a source
-    Then the source type is "anchore"
-    And "components/shared_data_model/src/shared_data_model/logos/anchore.png" is returned as source logo
+    Then the source type is "axe_core"
+    And "components/shared_data_model/src/shared_data_model/logos/axe_core.png" is returned as source logo
 
   Scenario: delete source
     Given an existing source
@@ -20,7 +20,7 @@ Feature: source
   Scenario: copy source
     Given an existing source
     When the client copies the source
-    Then the source name is "Anchore (copy)"
+    Then the source name is "Axe-core (copy)"
 
   Scenario: move source to another report
     Given an existing source

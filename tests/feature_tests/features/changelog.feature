@@ -49,25 +49,25 @@ Feature: changelog
     And the client creates a metric
     Then the changelog reads
       """
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
       Jane Doe changed the title of the reports overview from 'Reports' to 'Reports overview'.
       """
     And the report changelog reads
       """
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
       """
     And the subject changelog reads
       """
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       """
     And the metric changelog reads
       """
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       """
 
   Scenario: create a report, a subject, a metric, and a source
@@ -80,31 +80,31 @@ Feature: changelog
     And the client creates a source
     Then the changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'CI-environment' in report 'New report'.
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
       Jane Doe changed the title of the reports overview from 'Reports' to 'Reports overview'.
       """
     And the report changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'CI-environment' in report 'New report'.
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
       """
     And the subject changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'CI-environment' in report 'New report'.
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       """
     And the metric changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'CI-environment' in report 'New report'.
-      Jane Doe added a new metric to subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
       """
     And the source changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'CI-environment' in report 'New report'.
+      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
       """

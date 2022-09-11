@@ -7,7 +7,7 @@ Feature: subject
 
   Scenario: add subject
     When the client creates a subject
-    Then the subject type is "ci"
+    Then the subject type is "software"
 
   Scenario: delete subject
     Given an existing subject
@@ -17,13 +17,13 @@ Feature: subject
   Scenario: copy subject
     Given an existing subject
     When the client copies the subject
-    Then the subject name is "CI-environment (copy)"
+    Then the subject name is "Software (copy)"
 
   Scenario: copy subject with metric
     Given an existing subject
     And an existing metric
     When the client copies the subject
-    Then the subject name is "CI-environment (copy)"
+    Then the subject name is "Software (copy)"
     And the subject contains 1 metric
 
   Scenario: move subject
