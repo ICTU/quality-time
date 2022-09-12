@@ -24,7 +24,7 @@ app.get("/api/render", async (req, res) => {
             timeout: 60000
         });
         console.log(`URL ${url}: opened`);
-        await webPage.waitForSelector(".loading", { hidden: true });
+        await webPage.waitForSelector(".loader", { hidden: true });
         console.log(`URL ${url}: spinner hidden`);
         const pdf = await webPage.pdf({
             printBackground: true,
