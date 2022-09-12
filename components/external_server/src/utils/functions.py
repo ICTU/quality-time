@@ -1,6 +1,5 @@
 """Utility functions."""
 
-from audioop import add
 import hashlib
 import re
 import uuid as _uuid
@@ -20,7 +19,7 @@ from cryptography.fernet import Fernet
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
-import lxml
+import lxml  # noqa: DUO107, # nosec
 
 from shared.utils.type import ItemId
 from shared.utils.functions import iso_timestamp
