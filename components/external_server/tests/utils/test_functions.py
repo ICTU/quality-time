@@ -55,7 +55,7 @@ class UtilTests(unittest.TestCase):
         )
 
     def test_sanitize_html_does_not_add_target_without_href(self):
-        """Test that a target attributes is not added when there's no href."""
+        """Test that a target attribute is not added when there's no href attribute."""
         self.assertEqual(f"<a>{self.URL}</a>", sanitize_html(f"<a>{self.URL}</a>"))
 
 
