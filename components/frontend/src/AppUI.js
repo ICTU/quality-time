@@ -109,6 +109,7 @@ export function AppUI({
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
+                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
                         handleSort={handleSort}

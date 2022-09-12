@@ -99,8 +99,8 @@ export function ViewPanel({
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
                 <Menu vertical inverted size="small">
-                    <MetricMenuItem hide={true} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
                     <MetricMenuItem hide={false} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
+                    <MetricMenuItem hide={true} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
