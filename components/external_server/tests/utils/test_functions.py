@@ -15,6 +15,7 @@ from utils.functions import (
     asymmetric_encrypt,
     md5_hash,
     report_date_time,
+    sanitize_html,
     symmetric_decrypt,
     symmetric_encrypt,
     uuid,
@@ -24,6 +25,8 @@ from utils.functions import (
 class UtilTests(unittest.TestCase):
     """Unit tests for the utility methods."""
 
+    URL = "https://example-url.org/"
+
     def test_uuid(self):
         """Test the expected length of the uuid."""
         self.assertEqual(36, len(uuid()))
@@ -31,6 +34,29 @@ class UtilTests(unittest.TestCase):
     def test_md5_hash(self):
         """Test that the hash works."""
         self.assertEqual("bc9189406be84ec297464a514221406d", md5_hash("XXX"))
+
+    def test_sanitize_html(self):
+        """Test that URLs are converted to anchors."""
+        self.assertEqual(f'<p><a href="{self.URL}" target="_blank">{self.URL}</a></p>', sanitize_html(self.URL))
+
+    def test_sanitize_html_does_mot_convert_text_to_html(self):
+        """Test that text without HTML does not get converted to HTML."""
+        self.assertEqual("Text.", sanitize_html("Text."))
+
+    def test_sanitize_html_does_not_change_target(self):
+        """Test that existing target attributes are not changed."""
+        self.assertEqual(
+            f'<a href="{self.URL}" target="_top">{self.URL}</a>',
+            sanitize_html(f'<a href="{self.URL}" target="_top">{self.URL}</a>'),
+        )
+        self.assertEqual(
+            f'<a href="{self.URL}" target="_blank">{self.URL}</a>',
+            sanitize_html(f'<a href="{self.URL}" target="_blank">{self.URL}</a>'),
+        )
+
+    def test_sanitize_html_does_not_add_target_without_href(self):
+        """Test that a target attributes is not added when there's no href."""
+        self.assertEqual(f"<a>{self.URL}</a>", sanitize_html(f"<a>{self.URL}</a>"))
 
 
 @patch("utils.functions.bottle.request")
