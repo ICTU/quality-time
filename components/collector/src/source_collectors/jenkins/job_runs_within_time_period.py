@@ -16,7 +16,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
         build_datetime = datetime.utcfromtimestamp(int(build["timestamp"] / 1000.0))
-        return days_ago(build_datetime) <= int(cast(str, self._parameter(parameter_key="lookback_days")))
+        return days_ago(build_datetime) <= int(cast(str, self._parameter("lookback_days")))
 
     def _builds_within_timeperiod(self, job: Job) -> int:
         """Return the amount of job builds within timeperiod."""

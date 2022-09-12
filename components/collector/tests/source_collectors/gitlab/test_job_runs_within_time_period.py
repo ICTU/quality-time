@@ -10,15 +10,16 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
 
     METRIC_TYPE = "job_runs_within_time_period"
 
-    _job3_url = "https://gitlab/job3"
+    _job3_url = "https://gitlab/job3"  # extending gitlab_jobs_json which already includes job 1 and job 2
     _job4_url = "https://gitlab/job4"
 
     async def test_job_lookback_days(self):
         """Test that the job lookback_days are verified."""
         self.set_source_parameter("lookback_days", "3")
 
-        now_timestamp = datetime.now().isoformat()
-        last_week_timestamp = (datetime.now() - timedelta(weeks=1)).isoformat()
+        now_dt = datetime.now()
+        now_timestamp = now_dt.isoformat()
+        last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()
 
         self.gitlab_jobs_json.extend([
             dict(
@@ -49,14 +50,15 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
             build_status="failed",
             branch="master",
             stage="stage",
-            build_date=str(datetime.now().date()),
+            build_date=str(now_dt.date()),
         )]
         self.assert_measurement(response, value='1', entities=expected_entities)
 
     async def test_jobs_not_deduplicated(self):
         """Test that the job runs are not deduplicated."""
-        now_timestamp = datetime.now().isoformat()
-        yesterday_timestamp = (datetime.now() - timedelta(days=1)).isoformat()
+        now_dt = datetime.now()
+        now_timestamp = now_dt.isoformat()
+        yesterday_timestamp = (now_dt - timedelta(days=1)).isoformat()
 
         self.gitlab_jobs_json.extend([
             dict(
@@ -88,7 +90,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 build_status="failed",
                 branch="master",
                 stage="stage",
-                build_date=str(datetime.now().date()),
+                build_date=str(now_dt.date()),
             ),
             dict(
                 key="4",
@@ -97,7 +99,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 build_status="failed",
                 branch="master",
                 stage="stage",
-                build_date=str((datetime.now() - timedelta(days=1)).date()),
+                build_date=str((now_dt - timedelta(days=1)).date()),
             )
         ]
         self.assert_measurement(response, value='2', entities=expected_entities)

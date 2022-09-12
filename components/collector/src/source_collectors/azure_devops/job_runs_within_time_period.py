@@ -18,4 +18,4 @@ class AzureDevopsJobRunsWithinTimePeriod(AzureDevopsPipelines):
         if not super()._include_pipeline_run(job):
             return False
 
-        return days_ago(parse(job["finishedDate"])) <= int(cast(str, self._parameter(parameter_key="lookback_days")))
+        return days_ago(parse(job["finishedDate"])) <= int(cast(str, self._parameter("lookback_days")))

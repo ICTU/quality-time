@@ -147,7 +147,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         lookback_days=Days(
             name="Number of days to look back in selecting job builds to consider",
-            short_name="number of days ago",
+            short_name="number of days to look back",
             default_value="90",
             metrics=["job_runs_within_time_period"],
         ),

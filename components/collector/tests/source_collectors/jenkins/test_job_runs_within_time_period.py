@@ -14,8 +14,9 @@ class JenkinsJobRunsWithinTimePeriodTest(JenkinsTestCase):
         """Test that the build lookback_days are verified."""
         self.set_source_parameter("lookback_days", "3")
 
-        now_timestamp = int(datetime.timestamp(datetime.now()) * 1000)
-        last_week_timestamp = int(datetime.timestamp(datetime.now() - timedelta(weeks=1)) * 1000)
+        now_dt = datetime.now()
+        now_timestamp = int(datetime.timestamp(now_dt) * 1000)
+        last_week_timestamp = int(datetime.timestamp(now_dt - timedelta(weeks=1)) * 1000)
         self.builds.extend([
             dict(result="SUCCESS", timestamp=now_timestamp),
             dict(result="SUCCESS", timestamp=last_week_timestamp)

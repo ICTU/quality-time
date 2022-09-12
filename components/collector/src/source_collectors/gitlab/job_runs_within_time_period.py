@@ -13,7 +13,7 @@ from .base import GitLabJobsBase
 
 
 class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
-    """Collector class to measure the amount of GitLab CI builds ran within a specified time period."""
+    """Collector class to measure the amount of GitLab CI builds run within a specified time period."""
 
     async def _jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count, not deduplicated to latest branch or tag run."""
@@ -23,7 +23,7 @@ class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
         return [job for job in jobs if self._count_job(job)]
 
     def _count_job(self, job: Job) -> bool:
-        """Return whether the job was ran within the specified time period."""
+        """Return whether the job was run within the specified time period."""
         within_time_period = days_ago(parse(job["created_at"])) <= int(
-            cast(str, self._parameter(parameter_key="lookback_days")))
+            cast(str, self._parameter("lookback_days")))
         return within_time_period and super()._count_job(job)

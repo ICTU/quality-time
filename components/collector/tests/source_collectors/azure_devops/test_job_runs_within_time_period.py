@@ -45,7 +45,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
         now_dt = datetime.now()
         now_timestamp = now_dt.isoformat()
-        last_week_timestamp = (datetime.now() - timedelta(weeks=1)).isoformat()
+        last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()
 
         self.pipeline_runs['value'].extend([
             dict(
