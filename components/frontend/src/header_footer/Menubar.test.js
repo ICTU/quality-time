@@ -37,7 +37,7 @@ it('logs out', async () => {
 it('does not go to home page if on reports overview', async () => {
     const go_home = jest.fn();
     await act(async () => {
-        render(<Menubar go_home={go_home} />);
+        render(<Menubar atHome={true} go_home={go_home} />);
         fireEvent.click(screen.getByAltText(/Go home/));
     });
     expect(go_home).not.toHaveBeenCalled();
@@ -46,7 +46,7 @@ it('does not go to home page if on reports overview', async () => {
 it('goes to home page if on report', async () => {
     const go_home = jest.fn();
     await act(async () => {
-        render(<Menubar current_report={{}} go_home={go_home} />);
+        render(<Menubar atHome={false} go_home={go_home} />);
         fireEvent.click(screen.getByAltText(/Go home/));
     });
     expect(go_home).toHaveBeenCalled();
@@ -72,7 +72,7 @@ it('shows the view panel on menu item click', async () => {
 ["{Enter}", " ", "x"].forEach(key => {
     it('shows the view panel on enter', async () => {
         await act(async () => {
-            render(<Menubar panel={<div>Hello</div>} />);
+            render(<Menubar atHome={true} panel={<div>Hello</div>} />);
         });
         await userEvent.tab()  // Move focus to the settings button
         await userEvent.keyboard(key)

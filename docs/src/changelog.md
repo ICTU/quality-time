@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not v4.3.0, please read th
 - When changing the type of a metric with configured sources, don't remove the sources that support both the old and the new metric type. Fixes [#4443](https://github.com/ICTU/quality-time/issues/4443).
 - The button in the settings panel to 'Reset all settings' didn't work. Fixes [#4527](https://github.com/ICTU/quality-time/issues/4527).
 - Due to a small change to the loading spinner, *Quality-time* would no longer wait for the spinner to disappear before converting a report to PDF, causing the PDF to be empty for big reports. Fixes [#4542](https://github.com/ICTU/quality-time/issues/4542).
+- Clicking the *Quality-time* logo should navigate to the home page, but this did not work if the user traveled to a point in time where the report did not exist yet. Closes [#4526](https://github.com/ICTU/quality-time/issues/4526).
 
 ### Added
 
