@@ -105,7 +105,7 @@ class AzureDevopsPipelines(SourceCollector):
         pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
         return [pipeline['id'] for pipeline in pipelines if 'id' in pipeline and self._include_pipeline(pipeline)]
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:  # skipcq: PYL-W0613
         """Override to parse the pipelines."""
         entities = Entities()
 
@@ -134,6 +134,6 @@ class AzureDevopsPipelines(SourceCollector):
             return False
         return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
 
-    def _include_pipeline_run(self, job: Job) -> bool:
+    def _include_pipeline_run(self, job: Job) -> bool:  # skipcq: PYL-R0201
         """Return whether this pipeline run should be included."""
         return bool(job.get("finishedDate"))

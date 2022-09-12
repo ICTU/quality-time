@@ -10,6 +10,9 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
 
     METRIC_TYPE = "job_runs_within_time_period"
 
+    _job3_url = "https://gitlab/job3"
+    _job4_url = "https://gitlab/job4"
+
     async def test_job_lookback_days(self):
         """Test that the job lookback_days are verified."""
         self.set_source_parameter("lookback_days", "3")
@@ -24,7 +27,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 name="job3",
                 stage="stage",
                 created_at=now_timestamp,
-                web_url="https://gitlab/job3",
+                web_url=self._job3_url,
                 ref="master",
             ),
             dict(
@@ -33,7 +36,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 name="job4",
                 stage="stage",
                 created_at=last_week_timestamp,
-                web_url="https://gitlab/job4",
+                web_url=self._job4_url,
                 ref="master",
             )
         ])
@@ -42,7 +45,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
         expected_entities = [dict(
             key="3",
             name="job3",
-            url="https://gitlab/job3",
+            url=self._job3_url,
             build_status="failed",
             branch="master",
             stage="stage",
@@ -62,7 +65,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 name="job3",
                 stage="stage",
                 created_at=now_timestamp,
-                web_url="https://gitlab/job3",
+                web_url=self._job3_url,
                 ref="master",
             ),
             dict(
@@ -71,7 +74,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 name="job4",
                 stage="stage",
                 created_at=yesterday_timestamp,
-                web_url="https://gitlab/job4",
+                web_url=self._job4_url,
                 ref="master",
             )
         ])
@@ -81,7 +84,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
             dict(
                 key="3",
                 name="job3",
-                url="https://gitlab/job3",
+                url=self._job3_url,
                 build_status="failed",
                 branch="master",
                 stage="stage",
@@ -90,7 +93,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
             dict(
                 key="4",
                 name="job4",
-                url="https://gitlab/job4",
+                url=self._job4_url,
                 build_status="failed",
                 branch="master",
                 stage="stage",
