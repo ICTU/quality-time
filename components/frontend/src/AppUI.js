@@ -98,8 +98,8 @@ export function AppUI({
             <DarkMode.Provider value={darkMode}>
                 <HashLinkObserver />
                 <Menubar
+                    atHome={report_uuid === ""}
                     clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                    current_report={current_report}
                     email={email}
                     go_home={go_home}
                     onDate={handleDateChange}

@@ -53,8 +53,8 @@ function Logout({ user, email, set_user }) {
 }
 
 export function Menubar({
+    atHome,
     clearVisibleDetailsTabs,
-    current_report,
     email,
     go_home,
     onDate,
@@ -77,10 +77,10 @@ export function Menubar({
                 <Menu.Menu position="left">
                     <Popup
                         content="Go to reports overview"
-                        disabled={!current_report}
+                        disabled={atHome}
                         trigger={
-                            <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={current_report ? 0 : -1}>
-                                <Menu.Item header onClick={current_report ? () => { setPanelVisible(false); go_home() } : null}>
+                            <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
+                                <Menu.Item header onClick={atHome ? null : () => { setPanelVisible(false); go_home() } }>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
