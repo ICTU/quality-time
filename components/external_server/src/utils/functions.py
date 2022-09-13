@@ -19,6 +19,7 @@ from cryptography.fernet import Fernet
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
+from lxml.html import fromstring, tostring  # noqa: DUO107, # nosec
 
 from shared.utils.type import ItemId
 from shared.utils.functions import iso_timestamp
@@ -71,6 +72,13 @@ def _headers(source_parameters) -> dict:
 def sanitize_html(html_text: str) -> str:
     """Clean dangerous tags from the HTML and convert urls into anchors."""
     sanitized_html = str(autolink_html(clean_html(html_text)))
+    html_tree = fromstring(sanitized_html)
+    # Give anchors without target a default target of _blank so they open in a new tab or window:
+    for anchor in html_tree.iter("a"):
+        keys = anchor.keys()
+        if "href" in keys and "target" not in keys:
+            anchor.set("target", "_blank")
+    sanitized_html = tostring(html_tree, encoding=str)
     # The clean_html function creates HTML elements. That means if the user enters a simple text string it gets
     # enclosed in a <p> tag. Remove it to not confuse users that haven't entered any HTML:
     if sanitized_html.count("<") == 2:

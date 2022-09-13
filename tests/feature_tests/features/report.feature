@@ -30,27 +30,37 @@ Feature: report
     And the client changes the report title to "New title"
     Then the report title is "New title"
 
-  Scenario: add comment without html
+  Scenario: add comment without HTML
    Given an existing report
    When the client changes the report comment to "Text"
    Then the report comment is "Text"
 
-  Scenario: add comment with html
+  Scenario: add comment with HTML
     Given an existing report
     When the client changes the report comment to "<b><i>Emphasized text</i></b>"
     Then the report comment is "<b><i>Emphasized text</i></b>"
 
-  Scenario: add comment with dangerous html
+  Scenario: add comment with dangerous HTML
     Given an existing report
     When the client changes the report comment to "Text<script>alert('Danger')</script>"
     Then the report comment is "Text"
+
+  Scenario: add comment with URL
+    Given an existing report
+    When the client changes the report comment to "https://example-url.org"
+    Then the report comment is "<p><a href="https://example-url.org" target="_blank">https://example-url.org</a></p>"
+
+  Scenario: add comment with link that has a target
+    Given an existing report
+    When the client changes the report comment to "<a href='https://example-url.org' target='_top'>https://example-url.org</a>"
+    Then the report comment is "<a href="https://example-url.org" target="_top">https://example-url.org</a>"
 
   Scenario: export report as PDF
     When the client creates a report
     And the client downloads the report as PDF
     Then the client receives the PDF
 
-  Scenario: export report as json
+  Scenario: export report as JSON
     When the client creates a report
     And the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
@@ -63,11 +73,11 @@ Feature: report
     And the client downloads the report as json
     Then the client receives the json
 
-  Scenario: export nonexisting report as json
+  Scenario: export nonexisting report as JSON
     When the client downloads the report non_existing_report_uuid as json
     Then the client receives no json
 
-  Scenario: export report as json with own public key
+  Scenario: export report as JSON with own public key
     When the client creates a report
     And the client creates a subject
     And the client creates a metric
@@ -76,7 +86,7 @@ Feature: report
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
-  Scenario: export json report by unauthenticated client
+  Scenario: export JSON report by unauthenticated client
     When the client creates a report
     And the client logs out
     And the client downloads the report as json

@@ -288,7 +288,7 @@ class PostMetricAttributeTest(DataModelTestCase):
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             """comment of metric 'name' of subject 'Subject' in report 'Report' from '' to '<p>Comment with url """
-            """<a href="https://google.com">https://google.com</a></p>'""",
+            """<a href="https://google.com" target="_blank">https://google.com</a></p>'""",
             report=updated_report,
         )
 
