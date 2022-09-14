@@ -92,7 +92,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         )
 
     def test_two_metrics_with_two_equal_measurements_each(self):
-        """Test that measurements are merged for multiple metrics if they habe two equal measurements."""
+        """Test that measurements are merged for multiple metrics if they have two equal measurements."""
         self.database.measurements.distinct.return_value = [METRIC_ID, METRIC_ID2]
         self.database.measurements.find.side_effect = [
             [

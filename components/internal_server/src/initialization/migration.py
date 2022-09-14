@@ -26,7 +26,7 @@ def merge_unmerged_measurements(database: Database) -> None:
     metric_uuids = database.measurements.distinct("metric_uuid")
     nr_metrics = len(metric_uuids)
     logging.info("Measurements collection has %d measurements for %d metrics", nr_measurements, nr_metrics)
-    for index, metric_uuid in enumerate(metric_uuids):
+    for index, metric_uuid in enumerate(metric_uuids):  # pragma: no cover-behave
         logging.info("Merging measurements for metric %s (%d/%d)...", metric_uuid, index + 1, nr_metrics)
         nr_updated, nr_deleted = _merge_unmerged_measurements_for_metric(database, metric_uuid)
         logging.info("...updated %d measurements, deleted %s measurements", nr_updated, nr_deleted)
@@ -34,7 +34,9 @@ def merge_unmerged_measurements(database: Database) -> None:
     logging.info("Finished migration 'merge unmerged measurements' at %s, took %s", stop, stop - start)
 
 
-def _merge_unmerged_measurements_for_metric(database: Database, metric_uuid: str) -> tuple[int, int]:
+def _merge_unmerged_measurements_for_metric(
+    database: Database, metric_uuid: str
+) -> tuple[int, int]:  # pragma: no cover-behave
     """Merge the unmerged measurements of the specified metric. Returns the number of updates and deletes."""
     updates = {}  # Mongo object ids (keys) of measurements that will be updated with a new end-timestamp (values)
     deletes = set()  # The Mongo object ids of measurements that have been merged and will be deleted
@@ -52,7 +54,7 @@ def _merge_unmerged_measurements_for_metric(database: Database, metric_uuid: str
     return len(updates), len(deletes)
 
 
-def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:
+def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no cover-behave
     """Return whether the measurements are equal."""
     scales_equal = all(measurement1.get(scale) == measurement2.get(scale) for scale in SCALES)
     issues_statuses_equal = measurement1.get("issue_status") == measurement2.get("issue_status")
