@@ -188,10 +188,16 @@ class MeasurementTest(MeasurementTestCase):
         self.assertNotIn(timestamp, measurement_copy["start"], measurement_copy["end"])
 
     def test_equals(self):
-        """Test that metrics are equal."""
+        """Test that equal measurements compare equal."""
         measurement_1 = Measurement(self.metric())
         measurement_2 = Measurement(self.metric())
         self.assertTrue(measurement_1.equals(measurement_2))
+
+    def test_not_equal(self):
+        """Test that measurements with different status are not equal."""
+        measurement_1 = Measurement(self.metric(), dict(count=dict(status="target_met")))
+        measurement_2 = Measurement(self.metric(), dict(count=dict(status="target_not_met")))
+        self.assertFalse(measurement_1.equals(measurement_2))
 
     def test_entity_user_data(self):
         """Copy the user data."""

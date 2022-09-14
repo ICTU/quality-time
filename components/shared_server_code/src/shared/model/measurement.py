@@ -214,11 +214,10 @@ class Measurement(dict):  # lgtm [py/missing-equals]
 
     def equals(self, other: Measurement) -> bool:
         """Return whether this measurement is unchanged compared to an (older) measurement."""
-        return (
-            not other.debt_target_expired()
-            and other.sources() == self.sources()
-            and other.get("issue_status") == self.get("issue_status")
-        )
+        scales_equal = all(self[scale] == other[scale] for scale in self.metric.scales())
+        issues_statuses_equal = other.get("issue_status") == self.get("issue_status")
+        sources_equal = other.sources() == self.sources()
+        return scales_equal and issues_statuses_equal and sources_equal
 
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.
