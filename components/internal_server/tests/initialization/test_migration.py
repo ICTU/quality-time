@@ -6,7 +6,7 @@ from unittest.mock import call, Mock
 from bson.objectid import ObjectId
 from pymongo.operations import UpdateOne, DeleteMany
 
-from initialization.migration import equal, merge_unmerged_measurements
+from initialization.migration import merge_unmerged_measurements
 
 from ..fixtures import METRIC_ID, METRIC_ID2
 
