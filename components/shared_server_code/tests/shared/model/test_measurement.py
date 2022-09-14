@@ -193,10 +193,22 @@ class MeasurementTest(MeasurementTestCase):
         measurement_2 = Measurement(self.metric())
         self.assertTrue(measurement_1.equals(measurement_2))
 
-    def test_not_equal(self):
+    def test_equals_with_different_scales(self):
         """Test that measurements with different status are not equal."""
         measurement_1 = Measurement(self.metric(), dict(count=dict(status="target_met")))
         measurement_2 = Measurement(self.metric(), dict(count=dict(status="target_not_met")))
+        self.assertFalse(measurement_1.equals(measurement_2))
+
+    def test_equals_with_different_sources(self):
+        """Test that measurements with different sources are not equal."""
+        measurement_1 = Measurement(self.metric(), sources=[dict(source_uuid=SOURCE_ID)])
+        measurement_2 = Measurement(self.metric())
+        self.assertFalse(measurement_1.equals(measurement_2))
+
+    def test_equals_with_different_issue_statuses(self):
+        """Test that measurements with different issue statuses are not equal."""
+        measurement_1 = Measurement(self.metric(), issue_status=[dict(issue_id="issue_id")])
+        measurement_2 = Measurement(self.metric())
         self.assertFalse(measurement_1.equals(measurement_2))
 
     def test_entity_user_data(self):
