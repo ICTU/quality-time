@@ -62,7 +62,15 @@ class PostMeasurementTests(DataModelTestCase):
         self.old_measurement = dict(
             _id="id",
             metric_uuid=METRIC_ID,
-            count=dict(status="target_met"),
+            count=dict(
+                status="near_target_met",
+                debt_target=None,
+                direction="<",
+                near_target="10",
+                target="0",
+                value="1",
+                status_start="2019-01-01",
+            ),
             sources=[self.source(value="0"), self.source(source_uuid=SOURCE_ID2)],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
@@ -240,6 +248,7 @@ class PostMeasurementTests(DataModelTestCase):
                 entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
             )
         ]
+        self.old_measurement["count"].update(value="0", status="target_met")
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         post_measurement(self.database)
