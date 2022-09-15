@@ -89,4 +89,4 @@ def log_stats(updated: int, deleted: int, total: int, always: bool = False) -> N
 
 def percentage(value: int, total: int) -> int:  # pragma: no cover-behave
     """Calculate the percentage."""
-    return round(100 * value / total)
+    return round(100 * value / total) if total > 0 else 0
