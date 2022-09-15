@@ -85,6 +85,7 @@ additional-deps:
 ignore-failures:
   python:
     - behave
+    - sseclient  # Only used in one feature test
   javascript:
     - react-hash-link  # No alternative available AFAICT
     - semantic-ui-css  # https://github.com/Semantic-Org/Semantic-UI-CSS/issues/81
