@@ -22,26 +22,21 @@ def merge_unmerged_measurements(database: Database) -> None:
     """
     start = datetime.now()
     logging.info("Starting migration 'merge unmerged measurements' at %s", start)
-    total_nr_measurements = int(database.measurements.estimated_document_count())
+    estimated_nr_measurements = int(database.measurements.estimated_document_count())
     metric_uuids = database.measurements.distinct("metric_uuid")
     nr_metrics = len(metric_uuids)
-    logging.info("Measurements collection has %d measurements for %d metrics", total_nr_measurements, nr_metrics)
+    logging.info("Measurements collection has %d measurements for %d metrics", estimated_nr_measurements, nr_metrics)
+    total_nr_updated = total_nr_deleted = total_nr_measurements = 0
     for index, metric_uuid in enumerate(metric_uuids):  # pragma: no cover-behave
         logging.info("Merging measurements for metric %s (%d/%d)", metric_uuid, index + 1, nr_metrics)
         nr_updated, nr_deleted, nr_measurements = _merge_unmerged_measurements_for_metric(database, metric_uuid)
-        if nr_updated > 0 or nr_deleted > 0:
-            percentage_updated = round(100 * nr_updated / nr_measurements)
-            percentage_deleted = round(100 * nr_deleted / nr_measurements)
-            logging.info(
-                "...updated %d (%d%%) measurements and deleted %d (%d%%) measurements of %d measurements",
-                nr_updated,
-                percentage_updated,
-                nr_deleted,
-                percentage_deleted,
-                nr_measurements,
-            )
+        log_stats(nr_updated, nr_deleted, nr_measurements)
+        total_nr_updated += nr_updated
+        total_nr_deleted += nr_deleted
+        total_nr_measurements += nr_measurements
     stop = datetime.now()
     logging.info("Finished migration 'merge unmerged measurements' at %s, took %s", stop, stop - start)
+    log_stats(total_nr_updated, total_nr_deleted, total_nr_measurements, always=True)
 
 
 def _merge_unmerged_measurements_for_metric(
@@ -77,3 +72,21 @@ def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool
     issues_statuses_equal = measurement1.get("issue_status") == measurement2.get("issue_status")
     sources_equal = measurement1.get("sources") == measurement2.get("sources")
     return scales_equal and issues_statuses_equal and sources_equal
+
+
+def log_stats(updated: int, deleted: int, total: int, always: bool = False) -> None:  # pragma: no cover-behave
+    """Log the update and deletion statistics, if any."""
+    if updated > 0 or deleted > 0 or always:
+        logging.info(
+            "...updated %d (%d%%) measurements and deleted %d (%d%%) measurements of %d measurements",
+            updated,
+            percentage(updated, total),
+            deleted,
+            percentage(deleted, total),
+            total,
+        )
+
+
+def percentage(value: int, total: int) -> int:  # pragma: no cover-behave
+    """Calculate the percentage."""
+    return round(100 * value / total) if total > 0 else 0
