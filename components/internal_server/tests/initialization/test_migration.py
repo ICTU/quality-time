@@ -35,12 +35,22 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         merge_unmerged_measurements(self.database)
         self.database.bulk_write.assert_not_called()
 
-    def test_two_different_measurements(self):
+    def test_two_measurements_with_same_scale_different_values(self):
         """Test that no measurements are merged if there are two different measurements."""
         self.database.measurements.distinct.return_value = [METRIC_ID]
         self.database.measurements.find.return_value = [
             {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
             {"_id": ObjectId(), "count": dict(value="2"), "end": "2020-01-02"},
+        ]
+        merge_unmerged_measurements(self.database)
+        self.database.bulk_write.assert_not_called()
+
+    def test_two_measurements_with_differtent_scale_same_values(self):
+        """Test that no measurements are merged if there are two different measurements."""
+        self.database.measurements.distinct.return_value = [METRIC_ID]
+        self.database.measurements.find.return_value = [
+            {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
+            {"_id": ObjectId(), "percentage": dict(value="1"), "end": "2020-01-02"},
         ]
         merge_unmerged_measurements(self.database)
         self.database.bulk_write.assert_not_called()
