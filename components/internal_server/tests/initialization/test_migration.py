@@ -54,7 +54,10 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         ]
         merge_unmerged_measurements(self.database)
         self.database.measurements.bulk_write.assert_called_once_with(
-            [UpdateOne({"_id": object_id1}, update=dict(end="2020-01-02")), DeleteMany({"_id": {"$in": {object_id2}}})]
+            [
+                UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
+                DeleteMany({"_id": {"$in": [object_id2]}}),
+            ]
         )
 
     def test_three_equal_measurements(self):
@@ -68,8 +71,8 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         merge_unmerged_measurements(self.database)
         self.database.measurements.bulk_write.assert_called_once_with(
             [
-                UpdateOne({"_id": object_id1}, update=dict(end="2020-01-03")),
-                DeleteMany({"_id": {"$in": {object_id2, object_id3}}}),
+                UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-03")}),
+                DeleteMany({"_id": {"$in": [object_id2, object_id3]}}),
             ]
         )
 
@@ -85,9 +88,9 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         merge_unmerged_measurements(self.database)
         self.database.measurements.bulk_write.assert_called_once_with(
             [
-                UpdateOne({"_id": object_id1}, update=dict(end="2020-01-02")),
-                UpdateOne({"_id": object_id3}, update=dict(end="2020-01-04")),
-                DeleteMany({"_id": {"$in": {object_id2, object_id4}}}),
+                UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
+                UpdateOne({"_id": object_id3}, {"$set": dict(end="2020-01-04")}),
+                DeleteMany({"_id": {"$in": [object_id2, object_id4]}}),
             ]
         )
 
@@ -109,14 +112,14 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             [
                 call(
                     [
-                        UpdateOne({"_id": object_id1}, update=dict(end="2020-01-02")),
-                        DeleteMany({"_id": {"$in": {object_id2}}}),
+                        UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
+                        DeleteMany({"_id": {"$in": [object_id2]}}),
                     ]
                 ),
                 call(
                     [
-                        UpdateOne({"_id": object_id3}, update=dict(end="2020-01-04")),
-                        DeleteMany({"_id": {"$in": {object_id4}}}),
+                        UpdateOne({"_id": object_id3}, {"$set": dict(end="2020-01-04")}),
+                        DeleteMany({"_id": {"$in": [object_id4]}}),
                     ]
                 ),
             ]

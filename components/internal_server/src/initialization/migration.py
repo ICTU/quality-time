@@ -22,36 +22,53 @@ def merge_unmerged_measurements(database: Database) -> None:
     """
     start = datetime.now()
     logging.info("Starting migration 'merge unmerged measurements' at %s", start)
-    nr_measurements = int(database.measurements.estimated_document_count())
+    total_nr_measurements = int(database.measurements.estimated_document_count())
     metric_uuids = database.measurements.distinct("metric_uuid")
     nr_metrics = len(metric_uuids)
-    logging.info("Measurements collection has %d measurements for %d metrics", nr_measurements, nr_metrics)
+    logging.info("Measurements collection has %d measurements for %d metrics", total_nr_measurements, nr_metrics)
     for index, metric_uuid in enumerate(metric_uuids):  # pragma: no cover-behave
-        logging.info("Merging measurements for metric %s (%d/%d)...", metric_uuid, index + 1, nr_metrics)
-        nr_updated, nr_deleted = _merge_unmerged_measurements_for_metric(database, metric_uuid)
-        logging.info("...updated %d measurements, deleted %s measurements", nr_updated, nr_deleted)
+        logging.info("Merging measurements for metric %s (%d/%d)", metric_uuid, index + 1, nr_metrics)
+        nr_updated, nr_deleted, nr_measurements = _merge_unmerged_measurements_for_metric(database, metric_uuid)
+        if nr_updated > 0 or nr_deleted > 0:
+            percentage_updated = round(100 * nr_updated / nr_measurements)
+            percentage_deleted = round(100 * nr_deleted / nr_measurements)
+            logging.info(
+                "...updated %d (%d%%) measurements and deleted %d (%d%%) measurements of %d measurements",
+                nr_updated,
+                percentage_updated,
+                nr_deleted,
+                percentage_deleted,
+                nr_measurements,
+            )
     stop = datetime.now()
     logging.info("Finished migration 'merge unmerged measurements' at %s, took %s", stop, stop - start)
 
 
 def _merge_unmerged_measurements_for_metric(
     database: Database, metric_uuid: str
-) -> tuple[int, int]:  # pragma: no cover-behave
-    """Merge the unmerged measurements of the specified metric. Returns the number of updates and deletes."""
+) -> tuple[int, int, int]:  # pragma: no cover-behave
+    """Merge the unmerged measurements of the specified metric.
+
+    Returns the number of updates, deletes, and total number of measurements.
+    """
     updates = {}  # Mongo object ids (keys) of measurements that will be updated with a new end-timestamp (values)
-    deletes = set()  # The Mongo object ids of measurements that have been merged and will be deleted
+    deletes = []  # The Mongo object ids of measurements that have been merged and will be deleted
     current: MeasurementJSON = {}  # The current measurement that will be updated if it is equal to a later measurement
+    nr_measurements = 0
     for measurement in database.measurements.find(dict(metric_uuid=metric_uuid), sort=OLD_TO_NEW):
+        nr_measurements += 1
         if _equal(current, measurement):
             updates[current["_id"]] = measurement["end"]
-            deletes.add(measurement["_id"])
+            deletes.append(measurement["_id"])
         else:
             current = measurement
     mongo_operations: list[UpdateOne | DeleteMany] = []
-    mongo_operations.extend(UpdateOne({"_id": object_id}, update=dict(end=end)) for object_id, end in updates.items())
+    mongo_operations.extend(
+        UpdateOne({"_id": object_id}, {"$set": dict(end=end)}) for object_id, end in updates.items()
+    )
     mongo_operations.append(DeleteMany({"_id": {"$in": deletes}}))
     database.measurements.bulk_write(mongo_operations)
-    return len(updates), len(deletes)
+    return len(updates), len(deletes), nr_measurements
 
 
 def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no cover-behave
