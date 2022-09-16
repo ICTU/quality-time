@@ -15,7 +15,7 @@ MeasurementJSON = dict[str, dict]
 
 
 @dataclass
-class Stats:
+class Stats:  # pragma: no cover-behave
     """Keep track of the number of measurements merged."""
 
     nr_measurements_updated: int = 0
@@ -117,6 +117,6 @@ def log_stats(stats: Stats, dry_run: bool) -> None:  # pragma: no cover-behave
         )
 
 
-def percentage(value: int, total: int) -> int:
+def percentage(value: int, total: int) -> int:  # pragma: no cover-behave
     """Calculate the percentage."""
     return round(100 * value / total) if total > 0 else 0
