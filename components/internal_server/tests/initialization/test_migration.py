@@ -23,12 +23,32 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         """Merge the measurements."""
         return merge_unmerged_measurements(self.database, dry_run=dry_run)
 
+    def check_backups(self, *backups: tuple[list[ObjectId], list[ObjectId]]) -> None:
+        """Check that the correct measurements were backed up."""
+        if backups:
+            calls = []
+            for backup in backups:
+                for object_ids, operation in zip(backup, ("updated", "deleted")):
+                    destination_collection = f"backup_{operation}_measurements"
+                    calls.append(
+                        call(
+                            [
+                                {"$match": {"_id": {"$in": object_ids}}},
+                                {"$merge": {"into": destination_collection, "on": "_id", "whenMatched": "replace"}},
+                            ]
+                        )
+                    )
+            self.database.measurements.aggregate.assert_has_calls(calls)
+        else:
+            self.database.measurements.aggregate.assert_not_called()
+
     def test_no_metrics(self):
         """Test that no measurements are merged if there are no metrics."""
         self.database.measurements.distinct.return_value = []
         self.database.measurements.find.return_value = []
         self.assertEqual(Stats(0, 0, 0, 0), self.merge())
         self.database.bulk_write.assert_not_called()
+        self.check_backups()
 
     def test_one_measurement(self):
         """Test that no measurements are merged if there is just one measurement."""
@@ -38,6 +58,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         ]
         self.assertEqual(Stats(0, 0, 1, 1), self.merge())
         self.database.bulk_write.assert_not_called()
+        self.check_backups()
 
     def test_two_measurements_with_same_scale_different_values(self):
         """Test that no measurements are merged if there are two different measurements."""
@@ -48,6 +69,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         ]
         self.assertEqual(Stats(0, 0, 2, 1), self.merge())
         self.database.bulk_write.assert_not_called()
+        self.check_backups()
 
     def test_two_measurements_with_differtent_scale_same_values(self):
         """Test that no measurements are merged if there are two different measurements."""
@@ -58,6 +80,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         ]
         self.assertEqual(Stats(0, 0, 2, 1), self.merge())
         self.database.bulk_write.assert_not_called()
+        self.check_backups()
 
     def test_two_equal_measurements(self):
         """Test that measurements are merged if there are two equal measurements."""
@@ -73,6 +96,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 DeleteMany({"_id": {"$in": [object_id2]}}),
             ]
         )
+        self.check_backups(([object_id1], [object_id2]))
 
     def test_two_equal_measurements_where_later_one_ends_earlier(self):
         """Test that measurements are merged if there are two equal measurements."""
@@ -88,6 +112,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 DeleteMany({"_id": {"$in": [object_id2]}}),
             ]
         )
+        self.check_backups(([object_id1], [object_id2]))
 
     def test_three_equal_measurements(self):
         """Test that measurements are merged if there are three equal measurements."""
@@ -104,6 +129,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 DeleteMany({"_id": {"$in": [object_id2, object_id3]}}),
             ]
         )
+        self.check_backups(([object_id1], [object_id2, object_id3]))
 
     def test_two_times_two_equal_measurements(self):
         """Test that measurements are merged if there are two times two equal measurements."""
@@ -122,6 +148,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 DeleteMany({"_id": {"$in": [object_id2, object_id4]}}),
             ]
         )
+        self.check_backups(([object_id1, object_id3], [object_id2, object_id4]))
 
     def test_two_metrics_with_two_equal_measurements_each(self):
         """Test that measurements are merged for multiple metrics if they have two equal measurements."""
@@ -153,6 +180,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 ),
             ]
         )
+        self.check_backups(([object_id1], [object_id2]), ([object_id3], [object_id4]))
 
     def test_two_equal_measurements_with_dry_run(self):
         """Test that measurements are not merged if there are two equal measurements but we're dry running."""
@@ -163,3 +191,4 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         ]
         self.assertEqual(Stats(1, 1, 2, 1), self.merge(dry_run=True))
         self.database.bulk_write.assert_not_called()
+        self.check_backups()
