@@ -69,11 +69,11 @@ def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> St
     for index, metric_uuid in enumerate(metric_uuids):  # pragma: no cover-behave
         logger.info("Merging measurements for metric %s (%d/%d)", metric_uuid, index + 1, nr_metrics)
         stats = _merge_unmerged_measurements_for_metric(database, metric_uuid, dry_run)
-        log_stats(stats, dry_run)
+        log_stats(logger, stats, dry_run)
         total_stats += stats
     stop = datetime.now()
     logger.info("Finished migration 'merge unmerged measurements' at %s, took %s", stop, stop - start)
-    log_stats(total_stats, dry_run)
+    log_stats(logger, total_stats, dry_run)
     return total_stats
 
 
@@ -125,11 +125,11 @@ def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool
     return scales_equal and issues_statuses_equal and sources_equal
 
 
-def log_stats(stats: Stats, dry_run: bool) -> None:  # pragma: no cover-behave
+def log_stats(logger: logging.Logger, stats: Stats, dry_run: bool) -> None:  # pragma: no cover-behave
     """Log the update and deletion statistics, if any."""
     if stats.nr_measurements_updated > 0 or stats.nr_measurements_deleted > 0 or stats.nr_metrics > 1:
         dry_run_label = "...DRY RUN, so not " if dry_run else "..."
-        logging.info(
+        logger.info(
             "%supdated %d (%d%%) measurements and deleted %d (%d%%) measurements of %d measurements",
             dry_run_label,
             stats.nr_measurements_updated,
