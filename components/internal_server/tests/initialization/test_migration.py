@@ -6,7 +6,7 @@ from unittest.mock import call, Mock
 from bson.objectid import ObjectId
 from pymongo.operations import UpdateOne, DeleteMany
 
-from initialization.migration import merge_unmerged_measurements
+from initialization.migration import merge_unmerged_measurements, Stats
 
 from ..fixtures import METRIC_ID, METRIC_ID2
 
@@ -19,11 +19,15 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         self.database = Mock()
         self.database.measurements.estimated_document_count.return_value = 42  # Only used for logging
 
+    def merge(self, dry_run: bool = False) -> Stats:
+        """Merge the measurements."""
+        return merge_unmerged_measurements(self.database, dry_run=dry_run)
+
     def test_no_metrics(self):
         """Test that no measurements are merged if there are no metrics."""
         self.database.measurements.distinct.return_value = []
         self.database.measurements.find.return_value = []
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(0, 0, 0, 0), self.merge())
         self.database.bulk_write.assert_not_called()
 
     def test_one_measurement(self):
@@ -32,7 +36,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         self.database.measurements.find.return_value = [
             {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(0, 0, 1, 1), self.merge())
         self.database.bulk_write.assert_not_called()
 
     def test_two_measurements_with_same_scale_different_values(self):
@@ -42,7 +46,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
             {"_id": ObjectId(), "count": dict(value="2"), "end": "2020-01-02"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(0, 0, 2, 1), self.merge())
         self.database.bulk_write.assert_not_called()
 
     def test_two_measurements_with_differtent_scale_same_values(self):
@@ -52,7 +56,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
             {"_id": ObjectId(), "percentage": dict(value="1"), "end": "2020-01-02"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(0, 0, 2, 1), self.merge())
         self.database.bulk_write.assert_not_called()
 
     def test_two_equal_measurements(self):
@@ -62,7 +66,22 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             {"_id": (object_id1 := ObjectId()), "count": dict(value="1"), "end": "2020-01-01"},
             {"_id": (object_id2 := ObjectId()), "count": dict(value="1"), "end": "2020-01-02"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(1, 1, 2, 1), self.merge())
+        self.database.measurements.bulk_write.assert_called_once_with(
+            [
+                UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
+                DeleteMany({"_id": {"$in": [object_id2]}}),
+            ]
+        )
+
+    def test_two_equal_measurements_where_later_one_ends_earlier(self):
+        """Test that measurements are merged if there are two equal measurements."""
+        self.database.measurements.distinct.return_value = [METRIC_ID]
+        self.database.measurements.find.return_value = [
+            {"_id": (object_id1 := ObjectId()), "count": dict(value="1"), "end": "2020-01-02"},
+            {"_id": (object_id2 := ObjectId()), "count": dict(value="1"), "end": "2020-01-01"},
+        ]
+        self.assertEqual(Stats(1, 1, 2, 1), self.merge())
         self.database.measurements.bulk_write.assert_called_once_with(
             [
                 UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
@@ -78,7 +97,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             {"_id": (object_id2 := ObjectId()), "count": dict(value="1"), "end": "2020-01-02"},
             {"_id": (object_id3 := ObjectId()), "count": dict(value="1"), "end": "2020-01-03"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(1, 2, 3, 1), self.merge())
         self.database.measurements.bulk_write.assert_called_once_with(
             [
                 UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-03")}),
@@ -95,7 +114,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
             {"_id": (object_id3 := ObjectId()), "count": dict(value="2"), "end": "2020-01-03"},
             {"_id": (object_id4 := ObjectId()), "count": dict(value="2"), "end": "2020-01-04"},
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(2, 2, 4, 1), self.merge())
         self.database.measurements.bulk_write.assert_called_once_with(
             [
                 UpdateOne({"_id": object_id1}, {"$set": dict(end="2020-01-02")}),
@@ -117,7 +136,7 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 {"_id": (object_id4 := ObjectId()), "count": dict(value="2"), "end": "2020-01-04"},
             ],
         ]
-        merge_unmerged_measurements(self.database)
+        self.assertEqual(Stats(2, 2, 4, 2), self.merge())
         self.database.measurements.bulk_write.assert_has_calls(
             [
                 call(
@@ -134,3 +153,13 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
                 ),
             ]
         )
+
+    def test_two_equal_measurements_with_dry_run(self):
+        """Test that measurements are not merged if there are two equal measurements but we're dry running."""
+        self.database.measurements.distinct.return_value = [METRIC_ID]
+        self.database.measurements.find.return_value = [
+            {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-01"},
+            {"_id": ObjectId(), "count": dict(value="1"), "end": "2020-01-02"},
+        ]
+        self.assertEqual(Stats(1, 1, 2, 1), self.merge(dry_run=True))
+        self.database.bulk_write.assert_not_called()
