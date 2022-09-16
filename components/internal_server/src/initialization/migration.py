@@ -1,9 +1,16 @@
-"""Database migration code."""
+"""Database migration code.
+
+This migration code was added when the most recent version of Quality-time was 4.3.0.
+Bug issue: https://github.com/ICTU/quality-time/issues/4554
+Cleanup issue: https://github.com/ICTU/quality-time/issues/4556.
+"""
 
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Iterable, TypedDict
 import logging
 
+from bson.objectid import ObjectId
 from pymongo.database import Database
 from pymongo.operations import DeleteMany, UpdateOne
 import pymongo
@@ -11,7 +18,13 @@ import pymongo
 
 SCALES = ("count", "percentage", "version_number")  # All scales Quality-time has ever supported
 OLD_TO_NEW = [("start", pymongo.ASCENDING)]
-MeasurementJSON = dict[str, dict]
+
+
+class MeasurementJSON(TypedDict):
+    """The relevant attributes of the measurement JSON as returned by MongoDB."""
+
+    _id: ObjectId
+    end: str
 
 
 @dataclass
@@ -43,13 +56,8 @@ class Stats:  # pragma: no cover-behave
         return percentage(self.nr_measurements_deleted, self.nr_measurements)
 
 
-def merge_unmerged_measurements(database: Database, dry_run: bool = True) -> Stats:
-    """Due to a bug, measurements were not properly merged. Clean up by merging measurements where possible.
-
-    This migration code was added when the most recent version of Quality-time was 4.3.0.
-    Bug issue: https://github.com/ICTU/quality-time/issues/4554
-    Cleanup issue: https://github.com/ICTU/quality-time/issues/4556.
-    """
+def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> Stats:
+    """Due to a bug, measurements were not properly merged. Clean up by merging measurements where possible."""
     start = datetime.now()
     logger = logging.getLogger(__name__)
     logger.info("Starting %smigration 'merge unmerged measurements' at %s", "DRY RUN " if dry_run else "", start)
@@ -73,9 +81,10 @@ def _merge_unmerged_measurements_for_metric(
     database: Database, metric_uuid: str, dry_run: bool
 ) -> Stats:  # pragma: no cover-behave
     """Merge the unmerged measurements of the specified metric."""
-    updates = {}  # Mongo object ids (keys) of measurements that will be updated with a new end-timestamp (values)
-    deletes = []  # The Mongo object ids of measurements that have been merged and will be deleted
-    current: MeasurementJSON = {}  # The current measurement that will be updated if it is equal to a later measurement
+    updates: dict[ObjectId, str] = {}  # Mongo object ids of measurements that will be updated with a new end-timestamp
+    deletes: list[ObjectId] = []  # The Mongo object ids of measurements that have been merged and will be deleted
+    # The current measurement that will be updated if it is equal to a later measurement:
+    current: MeasurementJSON = {"_id": ObjectId(), "end": ""}
     nr_measurements = 0
     for measurement in database.measurements.find(dict(metric_uuid=metric_uuid), sort=OLD_TO_NEW):
         nr_measurements += 1
@@ -84,14 +93,28 @@ def _merge_unmerged_measurements_for_metric(
             deletes.append(measurement["_id"])
         else:
             current = measurement
-    mongo_operations: list[UpdateOne | DeleteMany] = []
-    mongo_operations.extend(
+    mongo_operations: list[UpdateOne | DeleteMany] = [
         UpdateOne({"_id": object_id}, {"$set": dict(end=end)}) for object_id, end in updates.items()
-    )
-    mongo_operations.append(DeleteMany({"_id": {"$in": deletes}}))
-    if not dry_run:
+    ]
+    if deletes:
+        mongo_operations.append(DeleteMany({"_id": {"$in": deletes}}))
+    if mongo_operations and not dry_run:
+        _backup_measurements(database, updates.keys(), "backup_updated_measurements")
+        _backup_measurements(database, deletes, "backup_deleted_measurements")
         database.measurements.bulk_write(mongo_operations)
     return Stats(len(updates), len(deletes), nr_measurements, nr_metrics=1)
+
+
+def _backup_measurements(
+    database: Database, object_ids: Iterable[ObjectId], destination_collection: str
+) -> None:  # pragma: no cover-behave
+    """Backup the specified measurements to the specified collection."""
+    database.measurements.aggregate(
+        [
+            {"$match": {"_id": {"$in": list(object_ids)}}},
+            {"$merge": {"into": destination_collection, "on": "_id", "whenMatched": "replace"}},
+        ]
+    )
 
 
 def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no cover-behave
