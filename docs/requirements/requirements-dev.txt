@@ -155,9 +155,9 @@ flake8==4.0.1 \
     # via
     #   dlint
     #   pep8-naming
-furo==2022.6.21 \
-    --hash=sha256:061b68e323345e27fcba024cf33a1e77f3dfd8d9987410be822749a706e2add6 \
-    --hash=sha256:9aa983b7488a4601d13113884bfb7254502c8729942e073a0acb87a5512af223
+furo==2022.9.15 \
+    --hash=sha256:4a7ef1c8a3b615171592da4d2ad8a53cc4aacfbe111958890f5f9ff7279066ab \
+    --hash=sha256:9129dead1f75e9fb4fa407612f1d5a0d0320767e6156c925aafe36f362f9b11a
     # via -r requirements-dev.in
 gitdb==4.0.9 \
     --hash=sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd \
