@@ -513,7 +513,7 @@ $ curl --cookie cookie.txt --request POST --header "Content-Type: application/js
 {"ok": true, "new_report_uuid": "97a3e341-44ce-4f2b-4471-36e5f2f34cf6"}
 ```
 
-On import, all UUID's contained in the report (UUID's of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
+On import, all UUIDs contained in the report (UUIDs of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
 
 If the report contains encrypted credentials, the importing *Quality-time* instance will decrypt the credentials using its public key. Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, an error will occur, and the import will fail.
 
