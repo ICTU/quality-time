@@ -34,6 +34,12 @@ Feature: measurement
     When the collector measures "50"
     Then the metric status is "target_not_met"
 
+  Scenario: the metric has a percentage scale with sum as addition method
+    Given an existing metric with type "complex_units"
+    And an existing source with type "sonarqube"
+    When the collector measures "420"
+    Then the metric status is "target_not_met"
+
   Scenario: the metric has a percentage scale and measures total 0
     Given an existing metric with type "performancetest_stability"
     And an existing source with type "performancetest_runner"
