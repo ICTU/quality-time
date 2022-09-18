@@ -118,7 +118,7 @@ See the [documentation on the MongoDB image](https://hub.docker.com/_/mongo) for
 
 ## Configuring renderer localisation (optional)
 
-The date/time format and timezone of the reports that user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDF's, the renderer can be configured as follows:
+The date/time format and timezone of the reports that user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDFs, the renderer can be configured as follows:
 
 ```yaml
   renderer:

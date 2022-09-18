@@ -674,7 +674,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Fixed
 
 - Undo the fix for [#1656](https://github.com/ICTU/quality-time/issues/1656) as it causes timeouts. This fix was meant to prevent 403 responses (access forbidden) from GitLab when using HEAD requests. If they do still happen (can't reproduce at the moment) we'll need to find another solution. Fixes [#1675](https://github.com/ICTU/quality-time/issues/1675).
-- Turn on processing of all DTD's (despite the fact that security tools complain that this is insecure) because otherwise XML reports referring to a DTD can't be read. Fixes [#1676](https://github.com/ICTU/quality-time/issues/1676).
+- Turn on processing of all DTDs (despite the fact that security tools complain that this is insecure) because otherwise XML reports referring to a DTD can't be read. Fixes [#1676](https://github.com/ICTU/quality-time/issues/1676).
 
 ## v3.14.0 - 2020-11-15
 
@@ -694,7 +694,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Fixed
 
 - In Microsoft Teams notifications, show missing values as "?" rather than "None". Fixes [#1637](https://github.com/ICTU/quality-time/issues/1637).
-- Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655).
+- Turn on processing of DTDs (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655).
 - When using folders and/or files in GitLab as source for the 'source up-to-dateness' metric, *Quality-time* would use HEAD requests to get the ids of commits from GitLab. For issue [#1638](https://github.com/ICTU/quality-time/issues/1638), it was necessary to pass the private token as header instead of URL parameter. Unfortunately, this results in 403 (access forbidden) responses for HEAD requests. It's unclear why. Using GET requests instead does work, so we use that as a work-around. Fixes [#1656](https://github.com/ICTU/quality-time/issues/1656).
 
 ## v3.13.0 - 2020-11-08
@@ -713,7 +713,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Fixed
 
-- Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
+- Introduce separate namespace for internal APIs. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
 - When using the same Microsoft Teams webhook in multiple reports, notifications for one report could also contain metrics of other reports.
 
 ## v3.12.0 - 2020-10-31
