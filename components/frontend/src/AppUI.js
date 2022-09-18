@@ -125,7 +125,6 @@ export function AppUI({
                 <HashLinkObserver />
                 <Menubar
                     atHome={report_uuid === ""}
-                    clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                     setVisibleDetailsTabs={setVisibleDetailsTabs}
                     email={email}
                     go_home={go_home}
@@ -135,8 +134,6 @@ export function AppUI({
                     user={user}
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
-                        clearHiddenColumns={clearHiddenColumns}
-                        clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         setDefaultSettings={setNewDefaultSettings}
                         defaultSettings={defaultSettings}
                         setVisibleDetailsTabs={setVisibleDetailsTabs}

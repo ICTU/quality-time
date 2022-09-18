@@ -54,7 +54,6 @@ function Logout({ user, email, set_user }) {
 
 export function Menubar({
     atHome,
-    clearVisibleDetailsTabs,
     setVisibleDetailsTabs,
     email,
     go_home,
