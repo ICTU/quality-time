@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v4.4.0, please read the v4.4.0 deployment notes.
+
+### Fixed
+
+- It looked like removing an issue tracker password or private token did not work: the user interface would still show a series of black dots in the password or private token field when later revisiting the issue tracker tab, even though passwords and private tokens were in fact being removed from the report. Fixes [#4564](https://github.com/ICTU/quality-time/issues/4564).
+
 ## v4.4.0 - 2022-09-16
 
 ### Deployment notes
