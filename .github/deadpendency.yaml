@@ -85,7 +85,8 @@ additional-deps:
 ignore-failures:
   python:
     - behave
-    - sseclient  # Only used in one feature test
+    - sseclient  # Used in one feature test. Issue to find alternative: https://github.com/ICTU/quality-time/issues/4560
   javascript:
     - react-hash-link  # No alternative available AFAICT
     - semantic-ui-css  # https://github.com/Semantic-Org/Semantic-UI-CSS/issues/81
+    - semantic-ui-calendar-react-17  # Issue to find alternative: https://github.com/ICTU/quality-time/issues/4467
