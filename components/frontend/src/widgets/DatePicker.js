@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { DateInput } from 'semantic-ui-calendar-react-17';
 import { isValidDate_DDMMYYYY } from '../utils';
 
+const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
+
 export function DatePicker(props) {
     const [date, setDate] = useState("");
-    const dateOptions = {year: 'numeric', month: '2-digit', day: '2-digit'}
-    useEffect(() => { setDate(props.value ? props.value.toLocaleDateString(undefined, dateOptions) : "") }, [props.value]);
+    useEffect(
+        () => { setDate(props.value ? props.value.toLocaleDateString(undefined, dateOptions) : "") },
+        [props.value, dateOptions]
+    );
     const today = new Date();
     const today_string = today.toLocaleDateString(undefined, dateOptions);
     function onChange(event, { name, value }) {
