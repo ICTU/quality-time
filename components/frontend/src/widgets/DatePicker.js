@@ -3,10 +3,11 @@ import { DateInput } from 'semantic-ui-calendar-react-17';
 import { isValidDate_DDMMYYYY } from '../utils';
 
 export function DatePicker(props) {
-    const [date, setDate] = useState(props.value);
-    useEffect(() => { setDate(props.value); }, [props.value]);
+    const [date, setDate] = useState("");
+    const dateOptions = {year: 'numeric', month: '2-digit', day: '2-digit'}
+    useEffect(() => { setDate(props.value ? props.value.toLocaleDateString(undefined, dateOptions) : "") }, [props.value]);
     const today = new Date();
-    const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    const today_string = today.toLocaleDateString(undefined, dateOptions);
     function onChange(event, { name, value }) {
         setDate(value);
         if (isValidDate_DDMMYYYY(value)) {
@@ -25,7 +26,6 @@ export function DatePicker(props) {
             iconPosition="left"
             initialDate={today}
             maxDate={today}
-            name={props.name}
             onChange={onChange}
             onClear={onClear}
             placeholder={today_string}
