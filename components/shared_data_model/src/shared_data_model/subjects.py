@@ -10,6 +10,7 @@ SUBJECTS = Subjects.parse_obj(
             description="A continuous integration environment.",
             metrics=[
                 "failed_jobs",
+                "job_runs_within_time_period",
                 "merge_requests",
                 "performancetest_duration",
                 "software_version",
@@ -50,6 +51,7 @@ SUBJECTS = Subjects.parse_obj(
                 "dependencies",
                 "duplicated_lines",
                 "issues",
+                "job_runs_within_time_period",
                 "loc",
                 "long_units",
                 "manual_test_duration",

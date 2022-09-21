@@ -33,7 +33,13 @@ other sources, when using the API token Jenkins also requires the username to wh
 belongs."""
 JENKINS_TOKEN_DOCS = _TMP_DOC  # nosec hardcoded_password_string
 
-ALL_JENKINS_METRICS = ["failed_jobs", "source_up_to_dateness", "source_version", "unused_jobs"]
+ALL_JENKINS_METRICS = [
+    "failed_jobs",
+    "job_runs_within_time_period",
+    "source_up_to_dateness",
+    "source_version",
+    "unused_jobs",
+]
 
 JOB_ENTITY = dict(
     name="job",
@@ -71,14 +77,20 @@ JENKINS = Source(
             help="Jobs to include can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             placeholder="all",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         jobs_to_ignore=MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
-            metrics=["failed_jobs", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+        ),
+        lookback_days=Days(
+            name="Number of days to look back in selecting job builds to consider",
+            short_name="number of days ago",
+            default_value="90",
+            metrics=["job_runs_within_time_period"],
         ),
         result_type=MultipleChoiceParameter(
             name="Build result types",

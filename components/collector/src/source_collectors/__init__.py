@@ -16,6 +16,7 @@ from .axe_html_reporter.accessibility import AxeHTMLReporterAccessibility
 
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
 from .azure_devops.issues import AzureDevopsIssues
+from .azure_devops.job_runs_within_time_period import AzureDevopsJobRunsWithinTimePeriod
 from .azure_devops.merge_requests import AzureDevopsMergeRequests
 from .azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
 from .azure_devops.tests import AzureDevopsTests
@@ -56,6 +57,7 @@ from .gatling.tests import GatlingTests
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
 
 from .gitlab.failed_jobs import GitLabFailedJobs
+from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
 from .gitlab.merge_requests import GitLabMergeRequests
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .gitlab.source_version import GitLabSourceVersion
@@ -71,6 +73,7 @@ from .jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncover
 from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
 
 from .jenkins.failed_jobs import JenkinsFailedJobs
+from .jenkins.job_runs_within_time_period import JenkinsJobRunsWithinTimePeriod
 from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
 from .jenkins.source_version import JenkinsSourceVersion
 from .jenkins.unused_jobs import JenkinsUnusedJobs

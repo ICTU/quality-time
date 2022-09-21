@@ -13,7 +13,7 @@ class JenkinsUnusedJobsTest(JenkinsTestCase):
         jenkins_json = dict(
             jobs=[
                 dict(
-                    name="job", url=self.job_url, buildable=True, color="red", builds=[dict(timestamp="1548311610349")]
+                    name="job", url=self.job_url, buildable=True, color="red", builds=[dict(timestamp=1548311610349)]
                 )
             ]
         )

@@ -20,6 +20,7 @@ from ..parameters import (
 
 ALL_GITLAB_METRICS = [
     "failed_jobs",
+    "job_runs_within_time_period",
     "merge_requests",
     "source_up_to_dateness",
     "source_version",
@@ -98,6 +99,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             help_url="https://docs.gitlab.com/ee/user/project/",
             metrics=[
                 "failed_jobs",
+                "job_runs_within_time_period",
                 "merge_requests",
                 "source_up_to_dateness",
                 "unmerged_branches",
@@ -122,7 +124,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
-            metrics=["failed_jobs", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         inactive_days=Days(
             name="Number of days since last commit after which to consider branches inactive",
@@ -141,7 +143,13 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
-            metrics=["failed_jobs", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+        ),
+        lookback_days=Days(
+            name="Number of days to look back in selecting job builds to consider",
+            short_name="number of days to look back",
+            default_value="90",
+            metrics=["job_runs_within_time_period"],
         ),
         merge_request_state=MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         approval_state=MultipleChoiceParameter(

@@ -75,11 +75,11 @@ class GitLabJobsBase(GitLabProjectBase):
                     stage=job["stage"],
                     build_date=str(parse(job.get("finished_at") or job["created_at"]).date()),
                 )
-                for job in await self.__jobs(responses)
+                for job in await self._jobs(responses)
             ]
         )
 
-    async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
+    async def _jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""
 
         def newer(job1: Job, job2: Job) -> Job:
