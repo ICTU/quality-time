@@ -129,9 +129,9 @@ dill==0.3.4 \
 dlint==0.13.0 \
     --hash=sha256:72094f35711a338eed4b8f95cbbaade5ec1d784bec516933bdbc2863676c4298
     # via -r ../../../requirements/dev.in
-dparse==0.5.1 \
-    --hash=sha256:a1b5f169102e1c894f9a7d5ccf6f9402a836a5d24be80a986c7ce9eaed78f367 \
-    --hash=sha256:e953a25e44ebb60a5c6efc2add4420c177f1d8404509da88da9729202f306994
+dparse==0.6.2 \
+    --hash=sha256:8097076f1dd26c377f30d4745e6ec18fef42f3bf493933b842ac5bafad8c345f \
+    --hash=sha256:d45255bda21f998bc7ddf2afd5e62505ba6134756ba2d42a84c56b0826614dfe
     # via safety
 flake8==4.0.1 \
     --hash=sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d \
@@ -585,9 +585,7 @@ pyyaml==6.0 \
     --hash=sha256:daf496c58a8c52083df09b80c860005194014c3698698d1a57cbcfa182142a3a \
     --hash=sha256:e61ceaab6f49fb8bdfaa0f92c4b57bcfbea54c09277b1b4f7ac376bfb7a7c174 \
     --hash=sha256:f84fbc98b019fef2ee9a1cb3ce93e3187a6df0b2538a651bfb890254ba9f90b5
-    # via
-    #   bandit
-    #   dparse
+    # via bandit
 requests==2.28.1 \
     --hash=sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983 \
     --hash=sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349
@@ -635,9 +633,9 @@ ruamel-yaml-clib==0.2.6 \
     --hash=sha256:dc6a613d6c74eef5a14a214d433d06291526145431c3b964f5e16529b1842bed \
     --hash=sha256:de9c6b8a1ba52919ae919f3ae96abb72b994dd0350226e28f3686cb4f142165c
     # via ruamel-yaml
-safety==2.1.1 \
-    --hash=sha256:05ba551fb61ef24c864835d21089f75bc8b37292680047b9f29693a6552e2fc7 \
-    --hash=sha256:dbc5dffa2e47da76cc43dfe8cbbbfca99d29118d0c6c54dfcfa11c2bd349dff6
+safety==2.2.0 \
+    --hash=sha256:6745de12acbd60a58001fe66cb540355187d7b991b30104d9ef14ff4e4826073 \
+    --hash=sha256:b1a0f4c34fb41c502a7a5c54774c18376da382bc9d866ee26b39b2c747c0de40
     # via -r ../../../requirements/dev.in
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
@@ -677,9 +675,9 @@ tomlkit==0.11.0 \
     --hash=sha256:0f4050db66fd445b885778900ce4dd9aea8c90c4721141fde0d6ade893820ef1 \
     --hash=sha256:71ceb10c0eefd8b8f11fe34e8a51ad07812cb1dc3de23247425fbc9ddc47b9dd
     # via pylint
-types-requests==2.28.10 \
-    --hash=sha256:45b485725ed58752f2b23461252f1c1ad9205b884a1e35f786bb295525a3e16a \
-    --hash=sha256:97d8f40aa1ffe1e58c3726c77d63c182daea9a72d9f1fa2cafdea756b2a19f2c
+types-requests==2.28.11 \
+    --hash=sha256:7ee827eb8ce611b02b5117cfec5da6455365b6a575f5e3ff19f655ba603e6b4e \
+    --hash=sha256:af5f55e803cabcfb836dad752bd6d8a0fc8ef1cd84243061c0e27dee04ccf4fd
     # via -r ../../../requirements/types-requests.in
 types-setuptools==57.4.14 \
     --hash=sha256:828f7e7e51e157876f47c80518b23ba0c3c36aa8081efd39d5d39f393938aec9 \
