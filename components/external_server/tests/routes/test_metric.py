@@ -445,7 +445,7 @@ class MetricTest(DataModelTestCase):
         )
 
 
-@patch("bottle.request")
+@patch("bottle.request", Mock(json=dict(metric_url="https://quality_time/metric42")))
 @patch("model.issue_tracker.requests.post")
 class MetricIssueTest(DataModelTestCase):
     """Unit tests for metric issue routes."""
@@ -464,9 +464,8 @@ class MetricIssueTest(DataModelTestCase):
         self.database.reports.find.return_value = [self.report]
         self.database.sessions.find_one.return_value = JOHN
 
-    def test_add_metric_issue(self, requests_post, request):
+    def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
-        request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
@@ -491,7 +490,7 @@ class MetricIssueTest(DataModelTestCase):
         )
 
     @patch("model.issue_tracker.requests.get")
-    def test_add_metric_issue_with_labels(self, requests_get, requests_post, request):
+    def test_add_metric_issue_with_labels(self, requests_get, requests_post):
         """Test that an issue can be added to the issue tracker."""
         self.report["issue_tracker"]["parameters"]["issue_labels"] = ["label", "label with spaces"]
         project_response = Mock()
@@ -501,7 +500,6 @@ class MetricIssueTest(DataModelTestCase):
         fields_response = Mock()
         fields_response.json.return_value = dict(values=[dict(fieldId="labels", name="Labels")])
         requests_get.side_effect = [project_response, issue_types_response, fields_response]
-        request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
@@ -527,9 +525,8 @@ class MetricIssueTest(DataModelTestCase):
         )
 
     @disable_logging
-    def test_add_metric_issue_failure(self, requests_post, request):
+    def test_add_metric_issue_failure(self, requests_post):
         """Test that an error message is returned if an issue cannot be added to the issue tracker."""
-        request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
