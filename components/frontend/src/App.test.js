@@ -49,5 +49,6 @@ it('handles a date change', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<App />);
     await userEvent.type(screen.getByLabelText("Report date"), "13-03-2020")
-    expect(screen.getAllByDisplayValue(/13-03-2020/).length).toBe(1)
+    const expectedDate = new Date("2020-03-13").toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })
+    expect(screen.getAllByDisplayValue(expectedDate).length).toBe(1)
 });
