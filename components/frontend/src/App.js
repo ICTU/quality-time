@@ -67,8 +67,8 @@ class App extends Component {
 
     loadAndSetState(show_error) {
         const report_uuid = this.state.report_uuid;
-        const report_date = this.state.report_date
-        Promise.all([get_datamodel(report_date), get_reports_overview(report_date), get_reports(this.state.report_uuid, report_date)]).then(
+        const reportDate = this.state.report_date
+        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_reports(report_uuid, reportDate)]).then(
             ([data_model, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
                     return  // User navigated to a different report or to the overview page, cancel update
@@ -101,13 +101,12 @@ class App extends Component {
         const today = new Date();
         const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
         const new_report_date_string = value === today_string ? '' : value;
-        let reportDate;
+        let reportDate = null;
         let parsed = registeredURLSearchParams(this.history);
         if (new_report_date_string === "") {
             parsed.delete("report_date")
-            reportDate = null;
         } else {
-            const isoDateString =  new_report_date_string.split("-").reverse().join("-");
+            const isoDateString = new_report_date_string.split("-").reverse().join("-");
             parsed.set("report_date", isoDateString);
             reportDate = new Date(isoDateString)
             reportDate.setHours(23, 59, 59);
