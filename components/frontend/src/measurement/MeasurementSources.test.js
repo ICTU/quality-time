@@ -11,7 +11,7 @@ it('renders one measurement source', () => {
             <MeasurementSources metric={
                 {
                     type: "metric_type",
-                    sources: { source_uuid: { type: "sourcr_type", name: "Source name" } },
+                    sources: { source_uuid: { type: "source_type", name: "Source name" } },
                     latest_measurement: { sources: [{ source_uuid: "source_uuid" }] }
                 }
             }

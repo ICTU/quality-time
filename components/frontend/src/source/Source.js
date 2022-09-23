@@ -108,7 +108,7 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
             metric is changed to a metric type that is not supported by the configured source type(s).
         </p>
         <p>
-            There are several ways to remediate this error:
+            There are several ways to fix this:
         </p>
         <ul>
             <li>Change the type of the metric (back) to a type that is supported by <HyperLink url={`${referenceManualURL}#${source.type}`}>{sourceName}</HyperLink>.</li>
