@@ -463,6 +463,16 @@ class MetricIssueTest(DataModelTestCase):
         )
         self.database.reports.find.return_value = [self.report]
         self.database.sessions.find_one.return_value = JOHN
+        self.expected_json = dict(
+            fields=dict(
+                project=dict(key="KEY"),
+                issuetype=dict(name="BUG"),
+                summary="Quality-time metric 'name'",
+                description="Metric '[name|https://quality_time/metric42]' of subject "
+                "'Subject' in Quality-time report '' needs attention.\n\n"
+                f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
+            )
+        )
 
     def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
@@ -474,19 +484,7 @@ class MetricIssueTest(DataModelTestCase):
             add_metric_issue(METRIC_ID, self.database),
         )
         requests_post.assert_called_once_with(
-            "https://tracker/rest/api/2/issue",
-            auth=None,
-            headers={},
-            json={
-                "fields": {
-                    "project": {"key": "KEY"},
-                    "issuetype": {"name": "BUG"},
-                    "summary": "Quality-time metric 'name'",
-                    "description": "Metric '[name|https://quality_time/metric42]' of subject "
-                    "'Subject' in Quality-time report '' needs attention.\n\n"
-                    f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
-                }
-            },
+            "https://tracker/rest/api/2/issue", auth=None, headers={}, json=self.expected_json
         )
 
     @patch("model.issue_tracker.requests.get")
@@ -507,21 +505,9 @@ class MetricIssueTest(DataModelTestCase):
             dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
             add_metric_issue(METRIC_ID, self.database),
         )
+        self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
         requests_post.assert_called_once_with(
-            "https://tracker/rest/api/2/issue",
-            auth=None,
-            headers={},
-            json={
-                "fields": {
-                    "project": {"key": "KEY"},
-                    "issuetype": {"name": "BUG"},
-                    "summary": "Quality-time metric 'name'",
-                    "description": "Metric '[name|https://quality_time/metric42]' of subject "
-                    "'Subject' in Quality-time report '' needs attention.\n\n"
-                    f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
-                    "labels": ["label", "label_with_spaces"],
-                }
-            },
+            "https://tracker/rest/api/2/issue", auth=None, headers={}, json=self.expected_json
         )
 
     @disable_logging
