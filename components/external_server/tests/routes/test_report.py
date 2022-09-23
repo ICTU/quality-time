@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import cast
 from unittest.mock import Mock, patch
 import copy
+import logging
 
 from shared.model.report import Report
 from shared.utils.type import ReportId
@@ -14,6 +15,7 @@ from routes import (
     export_report_as_pdf,
     get_report,
     get_report_issue_tracker_suggestions,
+    get_report_issue_tracker_options,
     post_report_attribute,
     post_report_copy,
     post_report_import,
@@ -92,7 +94,7 @@ class PostReportAttributeTest(ReportTestCase):
 
 
 @patch("bottle.request")
-class ReportIssueTrackerTest(ReportTestCase):
+class ReportIssueTrackerPostAttributeTest(ReportTestCase):
     """Unit tests for the post report issue tracker attribute route."""
 
     def test_post_report_issue_tracker_type(self, request):
@@ -180,8 +182,8 @@ class ReportIssueTrackerTest(ReportTestCase):
         self.database.reports.insert_one.assert_not_called()
 
 
-class ReportIssueTrackerSuggestionsTest(ReportTestCase):
-    """Unit tests for the get report issue tracker suggestions route."""
+class ReportIssueTrackerGetTest(ReportTestCase):
+    """Unit tests for the issue tracker GET routes."""
 
     @patch("requests.get")
     def test_get_issue_suggestions(self, requests_get):
@@ -192,6 +194,62 @@ class ReportIssueTrackerSuggestionsTest(ReportTestCase):
         requests_get.return_value = response
         suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
         self.assertEqual(dict(suggestions=[dict(key="FOO-42", text="Summary")]), suggested_issues)
+
+    @patch("requests.get")
+    def test_get_issue_tracker_options_without_configured_report(self, requests_get):
+        """Test the the issue tracker attribute options are retrieved from the issue tracker."""
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="FOO", name="Foo")]
+        requests_get.return_value = project_response
+        expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
+        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+
+    @patch("requests.get")
+    def test_get_issue_tracker_options_without_configured_issue_type(self, requests_get):
+        """Test the the issue tracker attribute options are retrieved from the issue tracker."""
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO"))
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="FOO", name="Foo")]
+        issue_types_response = Mock()
+        issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
+        requests_get.side_effect = [project_response, issue_types_response]
+        expected_options = dict(
+            projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="Bug", name="Bug")], fields=[]
+        )
+        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+
+    @patch("requests.get")
+    def test_get_issue_tracker_options_with_configured_issue_type(self, requests_get):
+        """Test the the issue tracker attribute options are retrieved from the issue tracker."""
+        self.report["issue_tracker"] = dict(
+            type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
+        )
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="FOO", name="Foo")]
+        issue_types_response = Mock()
+        issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
+        fields_response = Mock()
+        fields_response.json.return_value = dict(values=[dict(fieldId="labels", name="Labels")])
+        requests_get.side_effect = [project_response, issue_types_response, fields_response]
+        expected_options = dict(
+            projects=[dict(key="FOO", name="Foo")],
+            issue_types=[dict(key="Bug", name="Bug")],
+            fields=[dict(key="labels", name="Labels")],
+        )
+        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+
+    @patch("requests.get")
+    def test_get_issue_tracker_options_error(self, requests_get):
+        """Test the the issue tracker attribute options are retrieved from the issue tracker."""
+        logging.disable(logging.CRITICAL)
+        self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="FOO", name="Foo")]
+        requests_get.side_effect = RuntimeError("yo")
+        expected_options = dict(projects=[], issue_types=[], fields=[])
+        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        logging.disable(logging.NOTSET)
 
 
 class ReportTest(ReportTestCase):

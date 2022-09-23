@@ -217,6 +217,19 @@ def get_report_issue_tracker_suggestions(report_uuid: ReportId, query: str, data
     return dict(suggestions=[issue.as_dict() for issue in issue_tracker.get_suggestions(query)])
 
 
+@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=True)
+def get_report_issue_tracker_options(report_uuid: ReportId, database: Database):
+    """Get options for the issue tracker attributes such as project key and issue type."""
+    data_model = latest_datamodel(database)
+    report = latest_report(database, data_model, report_uuid)
+    issue_tracker = report.issue_tracker()
+    options = issue_tracker.get_options()
+    serializable_options = {}
+    for attribute, options in options.items():
+        serializable_options[attribute] = [option.as_dict() for option in options]
+    return serializable_options
+
+
 def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
     """Create a report for a tag."""
     subjects = {}

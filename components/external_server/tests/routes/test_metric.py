@@ -453,7 +453,7 @@ class MetricIssueTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the report fixture."""
         super().setUp()
-        report = Report(
+        self.report = Report(
             self.DATA_MODEL,
             dict(
                 report_uuid=REPORT_ID,
@@ -461,7 +461,7 @@ class MetricIssueTest(DataModelTestCase):
                 subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(type="violations", name="name")})},
             ),
         )
-        self.database.reports.find.return_value = [report]
+        self.database.reports.find.return_value = [self.report]
         self.database.sessions.find_one.return_value = JOHN
 
     def test_add_metric_issue(self, requests_post, request):
@@ -482,11 +482,46 @@ class MetricIssueTest(DataModelTestCase):
                 "fields": {
                     "project": {"key": "KEY"},
                     "issuetype": {"name": "BUG"},
-                    "labels": [],
                     "summary": "Quality-time metric 'name'",
                     "description": "Metric '[name|https://quality_time/metric42]' of subject "
                     "'Subject' in Quality-time report '' needs attention.\n\n"
                     f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
+                }
+            },
+        )
+
+    @patch("model.issue_tracker.requests.get")
+    def test_add_metric_issue_with_labels(self, requests_get, requests_post, request):
+        """Test that an issue can be added to the issue tracker."""
+        self.report["issue_tracker"]["parameters"]["issue_labels"] = ["label", "label with spaces"]
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="KEY", name="Foo")]
+        issue_types_response = Mock()
+        issue_types_response.json.return_value = dict(values=[dict(id="1", name="BUG", subtask=False)])
+        fields_response = Mock()
+        fields_response.json.return_value = dict(values=[dict(fieldId="labels", name="Labels")])
+        requests_get.side_effect = [project_response, issue_types_response, fields_response]
+        request.json = dict(metric_url="https://quality_time/metric42")
+        response = Mock()
+        response.json.return_value = dict(key="FOO-42")
+        requests_post.return_value = response
+        self.assertEqual(
+            dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
+            add_metric_issue(METRIC_ID, self.database),
+        )
+        requests_post.assert_called_once_with(
+            "https://tracker/rest/api/2/issue",
+            auth=None,
+            headers={},
+            json={
+                "fields": {
+                    "project": {"key": "KEY"},
+                    "issuetype": {"name": "BUG"},
+                    "summary": "Quality-time metric 'name'",
+                    "description": "Metric '[name|https://quality_time/metric42]' of subject "
+                    "'Subject' in Quality-time report '' needs attention.\n\n"
+                    f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
+                    "labels": ["label", "label_with_spaces"],
                 }
             },
         )
