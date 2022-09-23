@@ -8,6 +8,7 @@ from typing import Optional, cast
 
 from packaging.version import InvalidVersion, Version
 
+from shared_data_model import DATA_MODEL
 from shared.utils.functions import iso_timestamp, percentage
 from shared.utils.type import Scale, Status, Value
 
@@ -261,8 +262,12 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self[scale].update_value_and_status()
 
     def sources_ok(self) -> bool:
-        """Return whether there are sources and none have parse or connection errors."""
+        """Return whether there are sources and none have configuration, parse, or connection errors."""
         sources = self.sources()
+        for source in sources:
+            source_type = self.metric["sources"][source["source_uuid"]]["type"]
+            if source_type not in DATA_MODEL.metrics[self.metric["type"]].sources:
+                return False
         return bool(sources) and not any(source["parse_error"] or source["connection_error"] for source in sources)
 
     def sources_exist(self) -> bool:

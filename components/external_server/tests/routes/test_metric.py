@@ -101,7 +101,7 @@ class PostMetricAttributeTest(DataModelTestCase):
 
     @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_type(self, request):
-        """Test that the metric type can be changed and that sources that support the new type are not removed."""
+        """Test that the metric type can be changed and that sources are not removed."""
         sources = [
             dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="0"),
             dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="0"),
@@ -142,7 +142,7 @@ class PostMetricAttributeTest(DataModelTestCase):
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
-            {SOURCE_ID: dict(type="owasp_dependency_check")},
+            {SOURCE_ID: dict(type="owasp_dependency_check"), SOURCE_ID2: dict(type="snyk")},
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"],
         )
         self.assert_delta(

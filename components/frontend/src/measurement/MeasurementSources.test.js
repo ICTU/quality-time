@@ -3,12 +3,15 @@ import { render, screen } from '@testing-library/react';
 import { DataModel } from '../context/DataModel';
 import { MeasurementSources } from './MeasurementSources';
 
+const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
+
 it('renders one measurement source', () => {
     render(
-        <DataModel.Provider value={{}}>
+        <DataModel.Provider value={dataModel}>
             <MeasurementSources metric={
                 {
-                    sources: { source_uuid: { name: "Source name" } },
+                    type: "metric_type",
+                    sources: { source_uuid: { type: "source_type", name: "Source name" } },
                     latest_measurement: { sources: [{ source_uuid: "source_uuid" }] }
                 }
             }
@@ -20,10 +23,11 @@ it('renders one measurement source', () => {
 
 it('renders multiple measurement sources', () => {
     render(
-        <DataModel.Provider value={{}}>
+        <DataModel.Provider value={dataModel}>
             <MeasurementSources metric={
                 {
-                    sources: { source_uuid1: { name: "Source name 1" }, source_uuid2: { name: "Source name 2" } },
+                    type: "metric_type",
+                    sources: { source_uuid1: { type: "source_type", name: "Source name 1" }, source_uuid2: { type: "source_type", name: "Source name 2" } },
                     latest_measurement: { sources: [{ source_uuid: "source_uuid1" }, { source_uuid: "source_uuid2"}] }
                 }
             }

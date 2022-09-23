@@ -57,7 +57,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     const dataModel = useContext(DataModel)
     const measurementSources = measurement?.sources ?? [];
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
-        dataModel.metrics[metric.type].sources.includes(metric.sources[sourceUuid].type)
+        Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type)
     );
 
     const reload_source = (json) => {

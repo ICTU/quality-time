@@ -49,24 +49,27 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the client changes the metric type to "violations"
-    Then the source does not exist
+    Then the metric contains 1 source
 
   Scenario: change metric type of metric with source and measurement
     Given an existing metric
     And an existing source
     When the collector measures "100"
     Then the metric status is "target_not_met"
-    When the client changes the metric type to "violations"
-    Then the source does not exist
+    When the client waits a second
+    And the client changes the metric type to "violations"
+    Then the metric contains 1 source
     And the metric status is "None"
 
-  Scenario: change technical debt target after changing metric type of metric with source and measurement
+  Scenario: change technical debt target after changing metric type of metric with measurement
     Given an existing metric
     And an existing source
     When the collector measures "100"
     Then the metric status is "target_not_met"
-    When the client changes the metric type to "violations"
-    Then the metric status is "None"
+    When the client waits a second
+    And the client changes the metric type to "violations"
+    Then the metric contains 1 source
+    And the metric status is "None"
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 

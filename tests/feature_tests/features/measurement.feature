@@ -34,6 +34,12 @@ Feature: measurement
     When the collector measures "50"
     Then the metric status is "target_not_met"
 
+  Scenario: the metric has a percentage scale with sum as addition method
+    Given an existing metric with type "complex_units"
+    And an existing source with type "sonarqube"
+    When the collector measures "420"
+    Then the metric status is "target_not_met"
+
   Scenario: the metric has a percentage scale and measures total 0
     Given an existing metric with type "performancetest_stability"
     And an existing source with type "performancetest_runner"
@@ -77,7 +83,7 @@ Feature: measurement
     And the collector measures "100"
     Then the metric has no measurements
 
-  Scenario: the metric has not source and therefor is not measured yet and this is accepted as technical debt
+  Scenario: the metric has no source and therefor is not measured yet and this is accepted as technical debt
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
@@ -86,11 +92,19 @@ Feature: measurement
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
-  Scenario: the metric has a source that measured, but without value, and this is accepted as technical debt
+  Scenario: the metric has a source that is measured, but without value, and this is accepted as technical debt
     Given an existing source
     When the collector encounters a parse error
     Then the metric status is "None"
     When the client changes the metric accept_debt to "True"
+    Then the metric status is "debt_target_met"
+
+  Scenario: the metric has a source that is measured, but then the source is removed, and this is accepted as technical debt
+    Given an existing source
+    When the collector encounters a parse error
+    Then the metric status is "None"
+    When the client deletes the source
+    And the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
   Scenario: the metric is measured, doesn't meet the target, and it's accepted as technical debt

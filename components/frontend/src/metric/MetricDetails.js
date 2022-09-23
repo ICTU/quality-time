@@ -66,7 +66,8 @@ export function MetricDetails({
     const subject = report.subjects[subject_uuid];
     const metric = subject.metrics[metric_uuid];
     const last_measurement = measurements[measurements.length - 1];
-    const any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
+    let any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
+    any_error = any_error || Object.values(metric.sources ?? {}).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
     const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
     let panes = [];
     panes.push(
