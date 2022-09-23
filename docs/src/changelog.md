@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not v4.4.0, please read th
 
 - It looked like removing an issue tracker password or private token did not work: the user interface would still show a series of black dots in the password or private token field when later revisiting the issue tracker tab, even though passwords and private tokens were in fact being removed from the report. Fixes [#4564](https://github.com/ICTU/quality-time/issues/4564).
 
+### Added
+
+- New metric "Job runs within time period", to keep track of deployment frequency in Jenkins, GitLab and/or Azure DevOps. Closes [#3498](https://github.com/ICTU/quality-time/issues/3498).
+
 ## v4.4.0 - 2022-09-16
 
 ### Deployment notes
@@ -39,7 +43,6 @@ If your currently installed *Quality-time* version is not v4.3.0, please read th
 - Make Jira issue identifiers uppercase when querying Jira for the status of issues, so that users don't have to enter uppercase Jira identifiers in *Quality-time*. Closes [#4450](https://github.com/ICTU/quality-time/issues/4450).
 - Allow for setting default labels on Jira issues created from *Quality-time*. The labels can be configured in the issue tracker tab under the report header. Closes [#4468](https://github.com/ICTU/quality-time/issues/4468).
 - Add a `target="_blank"` to URLs added in comments so that links open in a new tab by default. Can be prevented by adding an explicit `target="_top"` to URLs, for example: `This is an <a href="https://example.org" target="_top">example</a>`. Closes [#4521](https://github.com/ICTU/quality-time/issues/4521).
-- Metric "Job runs within time period", to keep track of deployment frequency in Jenkins, GitLab and/or Azure DevOps. Closes [#3498](https://github.com/ICTU/quality-time/issues/3498).
 
 ### Changed
 
