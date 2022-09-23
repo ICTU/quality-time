@@ -8,7 +8,7 @@ export function DatePicker(props) {
     const [date, setDate] = useState("");
     useEffect(
         () => { setDate(props.value ? props.value.toLocaleDateString(undefined, dateOptions) : "") },
-        [props.value, dateOptions]
+        [props.value]
     );
     const today = new Date();
     const today_string = today.toLocaleDateString(undefined, dateOptions);
