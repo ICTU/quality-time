@@ -14,16 +14,19 @@ from .iterators import sources as iter_sources
 from .queries import is_password_parameter
 
 
+CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
+
+
 def hide_credentials(data_model, *reports) -> None:
     """Hide the credentials in the reports."""
-    hidden = "this string replaces credentials"
     for source in iter_sources(*reports):
         for parameter_key in __password_parameter_keys(data_model, source):
-            source["parameters"][parameter_key] = hidden
+            source["parameters"][parameter_key] = CREDENTIALS_REPLACEMENT_TEXT
     for report in reports:
+        issue_tracker_parameters = report.get("issue_tracker", {}).get("parameters", {})
         for secret_attribute in ("password", "private_token"):
-            if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
-                report["issue_tracker"]["parameters"][secret_attribute] = hidden
+            if issue_tracker_parameters.get(secret_attribute):
+                issue_tracker_parameters[secret_attribute] = CREDENTIALS_REPLACEMENT_TEXT
 
 
 def encrypt_credentials(data_model, public_key: str, *reports: dict):
