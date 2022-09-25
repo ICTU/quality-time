@@ -28,6 +28,10 @@ Feature: metric issues
     And the issue status connection_error is 'None'
     And the issue status parse_error is 'None'
 
+  Scenario: issue tracker options
+    When the client retrieves the issue tracker options
+    Then the issue tracker options are missing
+
   Scenario: issue id suggestions
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"

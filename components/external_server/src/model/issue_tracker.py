@@ -94,7 +94,7 @@ class IssueTracker:
             )
         )
         try:
-            if labels and "labels" in [field.key for field in self.get_options()["fields"]]:
+            if labels and "labels" in [field.key for field in self.get_options()["fields"]]:  # pragma: no cover behave
                 labels = [label.replace(" ", "_") for label in labels]  # Jira doesn't allow spaces in labels
                 json["fields"]["labels"] = labels  # Only add labels if the current project and issue type support them
             response_json = self.__post_json(api_url, json)
@@ -103,7 +103,7 @@ class IssueTracker:
             return "", str(reason)
         return response_json["key"], ""  # pragma: no cover behave
 
-    def get_options(self) -> dict[str, list[Option]]:
+    def get_options(self) -> dict[str, list[Option]]:  # pragma: no cover behave
         """Return the possible values for the issue tracker attributes."""
         # See https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#creating-an-issue-examples
         options: dict[str, list[Option]] = dict(projects=[], fields=[], issue_types=[])
@@ -150,14 +150,14 @@ class IssueTracker:
         issues = json.get("issues", [])
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
 
-    def __get_json(self, api_url: str):
+    def __get_json(self, api_url: str):  # pragma: no cover behave
         """Return the API JSON response."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.get(api_url, auth=auth, headers=headers)
         response.raise_for_status()
         return response.json()
 
-    def __post_json(self, api_url: str, json):
+    def __post_json(self, api_url: str, json):  # pragma: no cover behave
         """Post the JSON to the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.post(api_url, auth=auth, headers=headers, json=json)
