@@ -27,17 +27,9 @@ export function IssueTracker({ report, reload }) {
         let didCancel = false;
         get_report_issue_tracker_options(report.report_uuid).then(function (json) {
             if (!didCancel) {
-                setProjectOptions(json.projects.map(({key, name}) => ({
-                    key: key,
-                    value: key,
-                    text: name,
-                })) || []);
-                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({
-                    key: key,
-                    value: key,
-                    text: name,
-                })) || []);
-                const fieldKeys = json.fields.map((field) => field.key)
+                setProjectOptions(json.projects.map(({key, name}) => ({ key: key, value: key, text: name, })));
+                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: key, text: name, })));
+                const fieldKeys = json.fields.map((field) => field.key);
                 setLabelFieldSupported(fieldKeys.includes("labels"))
             }
         });
