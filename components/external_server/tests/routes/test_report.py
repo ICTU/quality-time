@@ -242,14 +242,14 @@ class ReportIssueTrackerGetTest(ReportTestCase):
     @patch("requests.get")
     def test_get_issue_tracker_options_error(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
-        logging.disable(logging.CRITICAL)
+        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
         project_response = Mock()
         project_response.json.return_value = [dict(key="FOO", name="Foo")]
         requests_get.side_effect = RuntimeError("yo")
         expected_options = dict(projects=[], issue_types=[], fields=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
-        logging.disable(logging.NOTSET)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
 
 class ReportTest(ReportTestCase):
