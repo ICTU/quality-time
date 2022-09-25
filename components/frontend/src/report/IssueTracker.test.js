@@ -10,16 +10,25 @@ jest.mock("../api/report.js")
 report_api.get_report_issue_tracker_options.mockImplementation(
     () => Promise.resolve(
         {
-            projects: [{key: "PRJ", name: "Project name"}],
-            issue_types: [{key: "Bug", name: "Bug"}],
-            fields: [{key: "labels", name: "Labels"}]})
+            projects: [{ key: "PRJ", name: "Project name" }],
+            issue_types: [{ key: "Bug", name: "Bug" }],
+            fields: [{key: "labels", name: "Labels"}]
+        }
+    )
 )
 
 const reload = () => { /* Dummy implementation */ }
 
 function render_issue_tracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
     return render(
-        <DataModel.Provider value={{ sources: { jira: { name: "Jira", issue_tracker: true, parameters: { private_token: { help_url: help_url } } } } }}>
+        <DataModel.Provider value={
+            {
+                sources:
+                {
+                    jira: { name: "Jira", issue_tracker: true, parameters: { private_token: { help_url: help_url } } }
+                }
+            }
+        }>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <IssueTracker
                     report={report}
@@ -100,4 +109,49 @@ it('sets the issue tracker issue labels', async () => {
     await act(async () => { render_issue_tracker() });
     await userEvent.type(screen.getByText(/Enter one or more labels here/), 'Label{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_labels", ["Label"], reload);
+});
+
+it('does not show the issue labels warning without tracker project', async () => {
+    await act(async () => {
+        render_issue_tracker(
+            { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } } }
+        )
+    });
+    expect((screen.queryAllByText(/Labels not supported/)).length).toBe(0)
+});
+
+it('does not show the issue labels warning without issue type', async () => {
+    await act(async () => {
+        render_issue_tracker(
+            { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ" } } } }
+        )
+    });
+    expect((screen.queryAllByText(/Labels not supported/)).length).toBe(0)
+});
+
+it('does not show the issue labels warning with issue type that supports labels', async () => {
+    await act(async () => {
+        render_issue_tracker(
+            { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "Bug" } } } }
+        )
+    });
+    expect((screen.queryAllByText(/Labels not supported/)).length).toBe(0)
+});
+
+it('does show the issue labels warning with issue type that does not support labels', async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(
+        () => Promise.resolve(
+            {
+                projects: [{ key: "PRJ", name: "Project name" }],
+                issue_types: [{ key: "Bug", name: "Bug" }],
+                fields: []
+            }
+        )
+    )
+    await act(async () => {
+        render_issue_tracker(
+            { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "Bug" } } } }
+        )
+    });
+    expect((screen.queryAllByText(/Labels not supported/)).length).toBe(1)
 });
