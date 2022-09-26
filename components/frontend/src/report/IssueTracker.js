@@ -27,8 +27,10 @@ export function IssueTracker({ report, reload }) {
         let didCancel = false;
         get_report_issue_tracker_options(report.report_uuid).then(function (json) {
             if (!didCancel) {
+                // For projects, use the project key as value to store because that's what users entered when this wasn't a single choice option yet
                 setProjectOptions(json.projects.map(({key, name}) => ({ key: key, value: key, text: name, })));
-                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: key, text: name, })));
+                // For issue types, use the name as value to store because that's what users entered when this wasn't a single choice option yet
+                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: name, text: name, })));
                 const fieldKeys = json.fields.map((field) => field.key);
                 setLabelFieldSupported(fieldKeys.includes("labels"))
             }
