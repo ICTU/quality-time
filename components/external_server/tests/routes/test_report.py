@@ -185,6 +185,14 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
 class ReportIssueTrackerGetTest(ReportTestCase):
     """Unit tests for the issue tracker GET routes."""
 
+    def setUp(self):
+        """Extend to add fixtures."""
+        super().setUp()
+        self.project_response = Mock()
+        self.project_response.json.return_value = [dict(key="FOO", name="Foo")]
+        self.issue_types_response = Mock()
+        self.issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
+
     @patch("requests.get")
     def test_get_issue_suggestions(self, requests_get):
         """Test that issue id suggestions can be retrieved from the issue tracker."""
@@ -199,9 +207,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
     def test_get_issue_tracker_options_without_configured_report(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
-        project_response = Mock()
-        project_response.json.return_value = [dict(key="FOO", name="Foo")]
-        requests_get.return_value = project_response
+        requests_get.return_value = self.project_response
         expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
@@ -209,11 +215,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
     def test_get_issue_tracker_options_without_configured_issue_type(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO"))
-        project_response = Mock()
-        project_response.json.return_value = [dict(key="FOO", name="Foo")]
-        issue_types_response = Mock()
-        issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
-        requests_get.side_effect = [project_response, issue_types_response]
+        requests_get.side_effect = [self.project_response, self.issue_types_response]
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[]
         )
@@ -225,13 +227,9 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
-        project_response = Mock()
-        project_response.json.return_value = [dict(key="FOO", name="Foo")]
-        issue_types_response = Mock()
-        issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
         fields_response = Mock()
         fields_response.json.return_value = dict(values=[dict(fieldId="labels", name="Labels")])
-        requests_get.side_effect = [project_response, issue_types_response, fields_response]
+        requests_get.side_effect = [self.project_response, self.issue_types_response, fields_response]
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")],
             issue_types=[dict(key="1", name="Bug")],
@@ -258,9 +256,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
-        project_response = Mock()
-        project_response.json.return_value = [dict(key="FOO", name="Foo")]
-        requests_get.side_effect = [project_response, RuntimeError("yo")]
+        requests_get.side_effect = [self.project_response, RuntimeError("yo")]
         expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
         logging.disable(logging.NOTSET)  # skipcq: PY-A6006
@@ -272,11 +268,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
-        project_response = Mock()
-        project_response.json.return_value = [dict(key="FOO", name="Foo")]
-        issue_types_response = Mock()
-        issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
-        requests_get.side_effect = [project_response, issue_types_response, RuntimeError("yo")]
+        requests_get.side_effect = [self.project_response, self.issue_types_response, RuntimeError("yo")]
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[]
         )
