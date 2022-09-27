@@ -1,6 +1,8 @@
 """Base classes for the model unit tests."""
 
+import functools
 import json
+import logging
 import unittest
 from unittest.mock import Mock
 
@@ -35,3 +37,17 @@ class DataModelTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
         data_model["_id"] = "id"
         data_model["timestamp"] = "now"
         return data_model
+
+
+def disable_logging(func):
+    """Decorator to temporarily disable logging."""
+
+    @functools.wraps(func)
+    def wrapper_decorator(*args, **kwargs):
+        """Disable logging before calling func and reenable it afterwards."""
+        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
+        result = func(*args, **kwargs)
+        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
+        return result
+
+    return wrapper_decorator
