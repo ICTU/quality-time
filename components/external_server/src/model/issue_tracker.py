@@ -10,7 +10,7 @@ from utils.type import URL
 
 
 class AsDictMixin:  # pylint: disable=too-few-public-methods
-    """Mixin class to give data classes a as_dict method."""
+    """Mixin class to give data classes an as_dict method."""
 
     def as_dict(self) -> dict[str, str]:
         """Convert data class to dict."""
@@ -56,10 +56,19 @@ JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 
 @dataclass
 class Option(AsDictMixin):
-    """Option for an issue tracker attribute."""
+    """Option for a single choice issue tracker attribute."""
 
     key: str
     name: str
+
+
+@dataclass
+class Options(AsDictMixin):
+    """Options for an issue tracker."""
+
+    projects: list[Option]
+    issue_types: list[Option]
+    fields: list[Option]
 
 
 @dataclass
@@ -76,7 +85,7 @@ class IssueTracker:
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
 
     def __post_init__(self) -> None:
-        """Strip the URL of trailing slash so we can add paths without worrying about double slashes."""
+        """Strip any trailing slash from the URL so we can add paths without worrying about double slashes."""
         self.url = URL(str(self.url).rstrip("/"))
 
     def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
@@ -102,13 +111,14 @@ class IssueTracker:
             return "", str(reason)
         return response_json["key"], ""  # pragma: no cover-behave
 
-    def get_options(self) -> dict[str, list[Option]]:  # pragma: no cover-behave
+    def get_options(self) -> Options:  # pragma: no cover-behave
         """Return the possible values for the issue tracker attributes."""
         # See https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#creating-an-issue-examples
+        # for more information on how to use the Jira API to discover meta data needed to create issues
         projects = self.__get_project_options()
         issue_types = self.__get_issue_type_options(projects)
         fields = self.__get_field_options(issue_types)
-        return dict(projects=projects, issue_types=issue_types, fields=fields)
+        return Options(projects, issue_types, fields)
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
@@ -126,7 +136,7 @@ class IssueTracker:
 
     def __labels_supported(self) -> bool:  # pragma: no cover-behave
         """Return whether the current project and issue type support labels."""
-        return "labels" in [field.key for field in self.get_options()["fields"]]
+        return "labels" in [field.key for field in self.get_options().fields]
 
     @staticmethod
     def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no cover-behave
@@ -136,23 +146,24 @@ class IssueTracker:
     def __get_project_options(self) -> list[Option]:
         """Return the issue tracker projects options, given the current credentials."""
         projects = []
-        url = self.project_api % self.url
+        api_url = self.project_api % self.url
         try:
-            projects = self.__get_json(url)
+            projects = self.__get_json(api_url)
         except Exception as reason:  # pylint: disable=broad-except
-            logging.warning("Getting issue tracker project options at %s failed: %s", url, reason)
+            logging.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
     def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no cover-behave
         """Return the issue tracker issue type options, given the current project."""
         if self.issue_parameters.project_key not in [project.key for project in projects]:
-            return []  # Current project is not an option, maybe the credentials were changed, so no issue types as well
+            # Current project is not an option, maybe the credentials were changed? Anyhow, no use getting issue types
+            return []
         issue_types = []
-        url = self.issue_types_api % (self.url, self.issue_parameters.project_key)
+        api_url = self.issue_types_api % (self.url, self.issue_parameters.project_key)
         try:
-            issue_types = self.__get_json(url)["values"]
+            issue_types = self.__get_json(api_url)["values"]
         except Exception as reason:  # pylint: disable=broad-except
-            logging.warning("Getting issue tracker issue type options at %s failed: %s", url, reason)
+            logging.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
@@ -160,14 +171,15 @@ class IssueTracker:
         """Return the issue tracker fields for the current project and issue type."""
         current_issue_type = self.issue_parameters.issue_type
         if current_issue_type not in [issue_type.name for issue_type in issue_types]:
-            return []  # Current issue type is not an option, maybe the project was changed, so no fields as well
+            # Current issue type is not an option, maybe the project was changed? Anyhpw, no use getting fields
+            return []
         fields = []
         issue_type_id = [issue_type for issue_type in issue_types if issue_type.name == current_issue_type][0].key
-        url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
+        api_url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
         try:
-            fields = self.__get_json(url)["values"]
+            fields = self.__get_json(api_url)["values"]
         except Exception as reason:  # pylint: disable=broad-except
-            logging.warning("Getting issue tracker field options at %s failed: %s", url, reason)
+            logging.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
 
     @staticmethod
@@ -177,7 +189,7 @@ class IssueTracker:
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
 
     def __get_json(self, api_url: str):  # pragma: no cover-behave
-        """Return the API JSON response."""
+        """Get a response from the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.get(api_url, auth=auth, headers=headers)
         response.raise_for_status()

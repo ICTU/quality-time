@@ -223,11 +223,7 @@ def get_report_issue_tracker_options(report_uuid: ReportId, database: Database):
     data_model = latest_datamodel(database)
     report = latest_report(database, data_model, report_uuid)
     issue_tracker = report.issue_tracker()
-    options = issue_tracker.get_options()
-    serializable_options = {}
-    for attribute, options in options.items():
-        serializable_options[attribute] = [option.as_dict() for option in options]
-    return serializable_options
+    return issue_tracker.get_options().as_dict()
 
 
 def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
