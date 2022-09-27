@@ -30,7 +30,7 @@ class Entities(list[Entity]):
         self.__keys: set[str] = set()  # Keep track of the keys in a set to make adding entities faster
         self.extend(entities)
 
-    def __add__(self, other) -> "Entities":
+    def __add__(self, other):
         """Return the concatenation of the entities."""
         return self.__class__(super().__add__(other))
 
