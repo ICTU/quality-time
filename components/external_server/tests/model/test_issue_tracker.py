@@ -1,10 +1,11 @@
 """Unit tests for the issue tracker model class."""
 
-import logging
 import unittest
 from unittest.mock import Mock, patch
 
 from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker, IssueTrackerCredentials
+
+from ..base import disable_logging
 
 
 class IssueTrackerTest(unittest.TestCase):
@@ -51,11 +52,10 @@ class IssueTrackerTest(unittest.TestCase):
         requests_get.return_value = response
         self.assertEqual([IssueSuggestion("FOO-42", "Issue summary")], self.issue_tracker.get_suggestions("Summ"))
 
+    @disable_logging
     def test_get_suggestions_without_url(self):
         """Test that an empty list of issue suggestions is returned."""
-        logging.disable(logging.CRITICAL)
         self.assertEqual([], self.issue_tracker.get_suggestions("Query"))
-        logging.disable(logging.NOTSET)
 
     @patch("requests.post")
     def test_create_issue(self, requests_post):
@@ -65,10 +65,10 @@ class IssueTrackerTest(unittest.TestCase):
         requests_post.return_value = response
         self.assertEqual(("FOO-42", ""), self.issue_tracker.create_issue(self.ISSUE_SUMMARY))
 
+    @disable_logging
     def test_create_issue_with_invalid_url(self):
         """Test that without a valid URL an error message is returned."""
         issue_tracker = IssueTracker("invalid", self.issue_parameters)
-        logging.disable(logging.CRITICAL)
         self.assertEqual(
             (
                 "",
@@ -77,11 +77,9 @@ class IssueTrackerTest(unittest.TestCase):
             ),
             issue_tracker.create_issue("New issue"),
         )
-        logging.disable(logging.NOTSET)
 
+    @disable_logging
     def test_create_issue_without_url(self):
         """Test that without a URL an error message is returned."""
         issue_tracker = IssueTracker("", self.issue_parameters)
-        logging.disable(logging.CRITICAL)
         self.assertEqual(("", "Issue tracker has no URL configured."), issue_tracker.create_issue(self.ISSUE_SUMMARY))
-        logging.disable(logging.NOTSET)

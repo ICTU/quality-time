@@ -1,6 +1,5 @@
 """Unit tests for the metric routes."""
 
-import logging
 from unittest.mock import Mock, patch
 
 import requests
@@ -30,7 +29,7 @@ from ..fixtures import (
     create_report,
 )
 
-from ..base import DataModelTestCase
+from ..base import DataModelTestCase, disable_logging
 
 
 @patch("bottle.request")
@@ -492,12 +491,11 @@ class MetricIssueTest(DataModelTestCase):
             },
         )
 
+    @disable_logging
     def test_add_metric_issue_failure(self, requests_post, request):
         """Test that an error message is returned if an issue cannot be added to the issue tracker."""
-        logging.disable(logging.CRITICAL)
         request.json = dict(metric_url="https://quality_time/metric42")
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
         self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))
-        logging.disable(logging.NOTSET)
