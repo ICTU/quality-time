@@ -4,7 +4,6 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=security_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=coverage)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
-[![BCH compliance](https://bettercodehub.com/edge/badge/ICTU/quality-time?branch=master)](https://bettercodehub.com/)
 [![Documentation Status](https://readthedocs.org/projects/quality-time/badge/?version=latest)](https://quality-time.readthedocs.io/en/latest/?badge=latest)
 
 ## About *Quality-time*
