@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import cast
 from unittest.mock import Mock, patch
 import copy
-import logging
 
 from shared.model.report import Report
 from shared.utils.type import ReportId
