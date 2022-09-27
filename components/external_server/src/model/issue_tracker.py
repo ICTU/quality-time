@@ -124,12 +124,12 @@ class IssueTracker:
         """Return a URL to a human readable version of the issue."""
         return URL(self.issue_browse_url % (self.url, issue_key))  # pragma: no cover behave
 
-    def __labels_supported(self) -> bool:
+    def __labels_supported(self) -> bool:  # pragma: no cover behave
         """Return whether the current project and issue type support labels."""
         return "labels" in [field.key for field in self.get_options()["fields"]]
 
     @staticmethod
-    def __prepare_labels(labels: list[str]) -> list[str]:
+    def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no cover behave
         """Return the labels in a format accepted by the issue tracker."""
         return [label.replace(" ", "_") for label in labels]  # Jira doesn't allow spaces in labels
 
@@ -143,7 +143,7 @@ class IssueTracker:
             logging.warning("Getting issue tracker project options at %s failed: %s", url, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
-    def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:
+    def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no cover behave
         """Return the issue tracker issue type options, given the current project."""
         if self.issue_parameters.project_key not in [project.key for project in projects]:
             return []  # Current project is not an option, maybe the credentials were changed, so no issue types as well
@@ -156,7 +156,7 @@ class IssueTracker:
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
-    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:
+    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no cover behave
         """Return the issue tracker fields for the current project and issue type."""
         current_issue_type = self.issue_parameters.issue_type
         if current_issue_type not in [issue_type.name for issue_type in issue_types]:
