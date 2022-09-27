@@ -28,7 +28,6 @@ class AuthTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
     def tearDown(self):  # skipcq: PYL-R0201
         """Override to remove the cookies and reset the logging."""
         bottle.response._cookies = None  # pylint: disable=protected-access
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     def assert_cookie_has_session_id(self):
         """Assert that the response has a cookie with the session id."""

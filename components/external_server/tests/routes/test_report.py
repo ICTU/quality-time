@@ -24,7 +24,7 @@ from routes import (
 )
 from utils.functions import asymmetric_encrypt
 
-from ..base import DataModelTestCase
+from ..base import DataModelTestCase, disable_logging
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
@@ -238,33 +238,31 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
+    @disable_logging
     def test_get_issue_tracker_project_options_error(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
         requests_get.side_effect = RuntimeError("yo")
         expected_options = dict(projects=[], issue_types=[], fields=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     @patch("requests.get")
+    @disable_logging
     def test_get_issue_tracker_issue_type_options_error(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
         requests_get.side_effect = [self.project_response, RuntimeError("yo")]
         expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     @patch("requests.get")
+    @disable_logging
     def test_get_issue_tracker_field_options_error(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
@@ -273,7 +271,6 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[]
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
 
 class ReportTest(ReportTestCase):
