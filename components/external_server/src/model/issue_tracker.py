@@ -171,7 +171,7 @@ class IssueTracker:
         """Return the issue tracker fields for the current project and issue type."""
         current_issue_type = self.issue_parameters.issue_type
         if current_issue_type not in [issue_type.name for issue_type in issue_types]:
-            # Current issue type is not an option, maybe the project was changed? Anyhpw, no use getting fields
+            # Current issue type is not an option, maybe the project was changed? Anyhow, no use getting fields
             return []
         fields = []
         issue_type_id = [issue_type for issue_type in issue_types if issue_type.name == current_issue_type][0].key
