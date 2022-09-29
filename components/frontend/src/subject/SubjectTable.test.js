@@ -84,6 +84,39 @@ it('hides the source column', () => {
     expect(screen.queryAllByText(/Source/).length).toBe(0)
 })
 
+it('shows the time left column', () => {
+    renderSubjectTable()
+    expect(screen.queryAllByText(/Time left/).length).toBe(1)
+})
+
+it('hides the time left column', () => {
+    renderSubjectTable([], ["time_left"])
+    expect(screen.queryAllByText(/Time left/).length).toBe(0)
+})
+
+it('does not the deadlines missed column when showing one date', () => {
+    renderSubjectTable()
+    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(0)
+})
+
+it('shows the deadlines missed column when showing multiple dates', () => {
+    const dates = [
+        new Date("2020-01-15T00:00:00+00:00"),
+        new Date("2020-01-14T00:00:00+00:00"),
+    ]
+    renderSubjectTable(dates)
+    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(1)
+})
+
+it('hides the deadlines missed column when showing multiple dates', () => {
+    const dates = [
+        new Date("2020-01-15T00:00:00+00:00"),
+        new Date("2020-01-14T00:00:00+00:00"),
+    ]
+    renderSubjectTable(dates, ["deadlines_missed"])
+    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(0)
+})
+
 it('shows the comment column', () => {
     renderSubjectTable()
     expect(screen.queryAllByText(/Comment/).length).toBe(1)

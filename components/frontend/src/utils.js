@@ -46,6 +46,10 @@ export function getMetricDeadline(metric, report) {
     return deadline
 }
 
+export function getMetricDeadlinesMissed(metric, report) {
+    return 0;
+}
+
 export function getMetricTimeLeft(metric, report) {
     const deadline = getMetricDeadline(metric, report)
     const now = new Date()

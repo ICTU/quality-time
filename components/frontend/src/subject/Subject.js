@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricDeadlinesMissed, getMetricTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
@@ -71,6 +71,11 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
             const m1_time_left = getMetricTimeLeft(m1[1]);
             const m2_time_left = getMetricTimeLeft(m2[1]);
             return m1_time_left > m2_time_left
+        },
+        deadlines_missed: (m1, m2) => {
+            const m1_deadlines_missed = getMetricDeadlinesMissed(m1[1]);
+            const m2_deadlines_missed = getMetricDeadlinesMissed(m2[1]);
+            return m1_deadlines_missed > m2_deadlines_missed
         }
     }
     metrics.sort(sorters[sortColumn]);

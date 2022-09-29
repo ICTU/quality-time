@@ -113,6 +113,7 @@ export function ViewPanel({
                     <VisibleColumnMenuItem column="unit" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="time_left" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                    <VisibleColumnMenuItem column="deadlines_missed" disabled={nrDates === 1} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
                     <VisibleColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
@@ -128,6 +129,7 @@ export function ViewPanel({
                     <SortColumnMenuItem column="unit" disabled={hiddenColumns.includes("unit")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="source" disabled={hiddenColumns.includes("source")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="time_left" disabled={hiddenColumns.includes("time_left")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                    <SortColumnMenuItem column="deadlines_missed" disabled={nrDates === 1 || hiddenColumns.includes("deadlines_missed")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="comment" disabled={hiddenColumns.includes("comment")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="issues" disabled={hiddenColumns.includes("issues")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
                     <SortColumnMenuItem column="tags" disabled={hiddenColumns.includes("tags")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
