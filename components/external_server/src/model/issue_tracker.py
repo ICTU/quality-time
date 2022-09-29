@@ -141,7 +141,8 @@ class IssueTracker:
     @staticmethod
     def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no cover-behave
         """Return the labels in a format accepted by the issue tracker."""
-        return [label.replace(" ", "_") for label in labels]  # Jira doesn't allow spaces in labels
+        # Jira doesn't allow spaces in labels, so convert them to underscores before creating the issue
+        return [label.replace(" ", "_") for label in labels]
 
     def __get_project_options(self) -> list[Option]:
         """Return the issue tracker projects options, given the current credentials."""

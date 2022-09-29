@@ -28,7 +28,7 @@ Feature: metric issues
     And the issue status connection_error is 'None'
     And the issue status parse_error is 'None'
 
-  Scenario: issue tracker options
+  Scenario: issue tracker options are missing because there's no (mock) Jira in our feature test setup
     When the client retrieves the issue tracker options
     Then the issue tracker options are missing
 
