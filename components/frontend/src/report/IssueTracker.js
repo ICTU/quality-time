@@ -21,7 +21,9 @@ const NONE_OPTION = {
 export function IssueTracker({ report, reload }) {
     const dataModel = useContext(DataModel)
     const [projectOptions, setProjectOptions] = useState([])  // Possible projects for new issues
+    const [projectValid, setProjectValid] = useState(true)  // Is the current project a possible project?
     const [issueTypeOptions, setIssueTypeOptions] = useState([])  // Possible issue types for new issues in the current project
+    const [issueTypeValid, setIssueTypeValid] = useState(true)  // Is the current issue type a possible issue type?
     const [labelFieldSupported, setLabelFieldSupported] = useState(false)  // Does the current issue type support labels?
     useEffect(() => {
         let didCancel = false;
@@ -29,8 +31,10 @@ export function IssueTracker({ report, reload }) {
             if (!didCancel) {
                 // For projects, use the project key as value to store because that's what users entered when this wasn't a single choice option yet
                 setProjectOptions(json.projects.map(({key, name}) => ({ key: key, value: key, text: name, })));
+                setProjectValid(json.projects.some(({key}) => (key === report.issue_tracker?.parameters?.project_key)))
                 // For issue types, use the name as value to store because that's what users entered when this wasn't a single choice option yet
                 setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: name, text: name, })));
+                setIssueTypeValid(json.issue_types.some(({name}) => (name === report.issue_tracker?.parameters?.issue_type)))
                 const fieldKeys = json.fields.map((field) => field.key);
                 setLabelFieldSupported(fieldKeys.includes("labels"))
             }
@@ -126,6 +130,7 @@ export function IssueTracker({ report, reload }) {
                 <Grid.Column>
                     <SingleChoiceInput
                         id="tracker-project-key"
+                        error={!!report.issue_tracker?.type && !projectValid}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         required={!!report.issue_tracker?.type}
                         label={<label>Project for new issues <Popup on={['hover', 'focus']} content={"The projects available for new issues are determined by the configured credentials"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
@@ -138,6 +143,7 @@ export function IssueTracker({ report, reload }) {
                 <Grid.Column>
                     <SingleChoiceInput
                         id="tracker-issue-type"
+                        error={!!report.issue_tracker?.type && !issueTypeValid}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         required={!!report.issue_tracker?.type}
                         label={<label>Issue type for new issues <Popup on={['hover', 'focus']} content={"The issue types available for new issues are determined by the selected project"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
