@@ -9,16 +9,20 @@ import requests
 from utils.type import URL
 
 
+class AsDictMixin:  # pylint: disable=too-few-public-methods
+    """Mixin class to give data classes an as_dict method."""
+
+    def as_dict(self) -> dict[str, str]:
+        """Convert data class to dict."""
+        return asdict(self)  # pragma: no cover-behave
+
+
 @dataclass
-class IssueSuggestion:
+class IssueSuggestion(AsDictMixin):
     """Issue suggestion."""
 
     key: str
     text: str
-
-    def as_dict(self) -> dict[str, str]:
-        """Convert issue suggestion to dict."""
-        return asdict(self)  # pragma: no cover behave
 
 
 @dataclass
@@ -51,68 +55,150 @@ JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 
 
 @dataclass
+class Option(AsDictMixin):
+    """Option for a single choice issue tracker attribute."""
+
+    key: str
+    name: str
+
+
+@dataclass
+class Options(AsDictMixin):
+    """Options for an issue tracker."""
+
+    projects: list[Option]
+    issue_types: list[Option]
+    fields: list[Option]
+
+
+@dataclass
 class IssueTracker:
     """Issue tracker. Only supports Jira at the moment."""
 
     url: URL
     issue_parameters: IssueParameters
     credentials: IssueTrackerCredentials = IssueTrackerCredentials()
+    project_api = "%s/rest/api/2/project"
     issue_creation_api = "%s/rest/api/2/issue"
+    issue_types_api = issue_creation_api + "/createmeta/%s/issuetypes"
     issue_browse_url = "%s/browse/%s"
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
 
+    def __post_init__(self) -> None:
+        """Strip any trailing slash from the URL so we can add paths without worrying about double slashes."""
+        self.url = URL(str(self.url).rstrip("/"))
+
     def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
         """Create a new issue and return its key or an error message if creating the issue failed."""
-        for attribute, name in [
-            (self.url, "URL"),
-            (self.issue_parameters.project_key, "project key"),
-            (self.issue_parameters.issue_type, "issue type"),
-        ]:
+        project_key = self.issue_parameters.project_key
+        issue_type = self.issue_parameters.issue_type
+        labels = self.issue_parameters.issue_labels
+        for attribute, name in [(self.url, "URL"), (project_key, "project key"), (issue_type, "issue type")]:
             if not attribute:
                 return "", f"Issue tracker has no {name} configured."
-        api_url = self.issue_creation_api % (self.url.rstrip("/"))
+        api_url = self.issue_creation_api % self.url
         json = dict(
             fields=dict(
-                project=dict(key=self.issue_parameters.project_key),
-                issuetype=dict(name=self.issue_parameters.issue_type),
-                summary=summary,
-                description=description,
-                labels=self.issue_parameters.issue_labels or [],
+                project=dict(key=project_key), issuetype=dict(name=issue_type), summary=summary, description=description
             )
         )
         try:
-            response = requests.post(
-                api_url,
-                auth=self.credentials.basic_auth_credentials(),
-                headers=self.credentials.auth_headers(),
-                json=json,
-            )
-            response.raise_for_status()  # pragma: no cover behave
+            if labels and self.__labels_supported():  # pragma: no cover-behave
+                json["fields"]["labels"] = self.__prepare_labels(labels)
+            response_json = self.__post_json(api_url, json)
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
             return "", str(reason)
-        return response.json()["key"], ""  # pragma: no cover behave
+        return response_json["key"], ""  # pragma: no cover-behave
+
+    def get_options(self) -> Options:  # pragma: no cover-behave
+        """Return the possible values for the issue tracker attributes."""
+        # See https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#creating-an-issue-examples
+        # for more information on how to use the Jira API to discover meta data needed to create issues
+        projects = self.__get_project_options()
+        issue_types = self.__get_issue_type_options(projects)
+        fields = self.__get_field_options(issue_types)
+        return Options(projects, issue_types, fields)
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
-        api_url = self.suggestions_api % (self.url.rstrip("/"), query)
+        api_url = self.suggestions_api % (self.url, query)
         try:
-            response = requests.get(
-                api_url, auth=self.credentials.basic_auth_credentials(), headers=self.credentials.auth_headers()
-            )
-            response.raise_for_status()  # pragma: no cover behave
-            json = response.json()  # pragma: no cover behave
+            json = self.__get_json(api_url)
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
             return []
-        return self._parse_suggestions(json)  # pragma: no cover behave
+        return self._parse_suggestions(json)  # pragma: no cover-behave
 
     def browse_url(self, issue_key: str) -> URL:
         """Return a URL to a human readable version of the issue."""
-        return URL(self.issue_browse_url % (self.url.rstrip("/"), issue_key))  # pragma: no cover behave
+        return URL(self.issue_browse_url % (self.url, issue_key))  # pragma: no cover-behave
+
+    def __labels_supported(self) -> bool:  # pragma: no cover-behave
+        """Return whether the current project and issue type support labels."""
+        return "labels" in [field.key for field in self.get_options().fields]
 
     @staticmethod
-    def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover behave
+    def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no cover-behave
+        """Return the labels in a format accepted by the issue tracker."""
+        # Jira doesn't allow spaces in labels, so convert them to underscores before creating the issue
+        return [label.replace(" ", "_") for label in labels]
+
+    def __get_project_options(self) -> list[Option]:
+        """Return the issue tracker projects options, given the current credentials."""
+        projects = []
+        api_url = self.project_api % self.url
+        try:
+            projects = self.__get_json(api_url)
+        except Exception as reason:  # pylint: disable=broad-except
+            logging.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
+        return [Option(str(project["key"]), str(project["name"])) for project in projects]
+
+    def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no cover-behave
+        """Return the issue tracker issue type options, given the current project."""
+        if self.issue_parameters.project_key not in [project.key for project in projects]:
+            # Current project is not an option, maybe the credentials were changed? Anyhow, no use getting issue types
+            return []
+        issue_types = []
+        api_url = self.issue_types_api % (self.url, self.issue_parameters.project_key)
+        try:
+            issue_types = self.__get_json(api_url)["values"]
+        except Exception as reason:  # pylint: disable=broad-except
+            logging.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
+        issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
+        return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
+
+    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no cover-behave
+        """Return the issue tracker fields for the current project and issue type."""
+        current_issue_type = self.issue_parameters.issue_type
+        if current_issue_type not in [issue_type.name for issue_type in issue_types]:
+            # Current issue type is not an option, maybe the project was changed? Anyhow, no use getting fields
+            return []
+        fields = []
+        issue_type_id = [issue_type for issue_type in issue_types if issue_type.name == current_issue_type][0].key
+        api_url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
+        try:
+            fields = self.__get_json(api_url)["values"]
+        except Exception as reason:  # pylint: disable=broad-except
+            logging.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
+        return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
+
+    @staticmethod
+    def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover-behave
         """Parse the suggestions from the JSON."""
         issues = json.get("issues", [])
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
+
+    def __get_json(self, api_url: str):  # pragma: no cover-behave
+        """Get a response from the API endpoint and return the response JSON."""
+        auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
+        response = requests.get(api_url, auth=auth, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+    def __post_json(self, api_url: str, json):  # pragma: no cover-behave
+        """Post the JSON to the API endpoint and return the response JSON."""
+        auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
+        response = requests.post(api_url, auth=auth, headers=headers, json=json)
+        response.raise_for_status()
+        return response.json()

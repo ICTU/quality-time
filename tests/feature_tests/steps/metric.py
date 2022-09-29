@@ -24,6 +24,18 @@ def assert_issue_id_suggestions(context):
     assert_equal(dict(suggestions=[]), suggestions)
 
 
+@when("the client retrieves the issue tracker options")
+def retrieve_issue_tracker_options(context):
+    """Get the issue tracker options."""
+    context.response = context.get(f"report/{context.uuid['report']}/issue_tracker/options")
+
+
+@then("the issue tracker options are missing")
+def assert_issue_tracker_options(context):
+    """Check the issue tracker options."""
+    assert_equal(dict(fields=[], issue_types=[], projects=[]), context.response)
+
+
 @when("the client opens a new issue")
 def create_new_issue(context):
     """Create a new issue for the current metric."""

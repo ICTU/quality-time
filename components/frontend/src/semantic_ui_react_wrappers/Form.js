@@ -15,7 +15,13 @@ function Input(props) {
     )
 }
 
+function Dropdown(props) {
+    return (
+        <SemanticUIForm.Dropdown inverted={useContext(DarkMode)} {...props} />
+    )
+}
+
 Form.Button = SemanticUIForm.Button
-Form.Dropdown = SemanticUIForm.Dropdown
+Form.Dropdown = Dropdown
 Form.Input = Input
 Form.TextArea = SemanticUIForm.TextArea

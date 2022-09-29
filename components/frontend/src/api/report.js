@@ -36,10 +36,16 @@ function get_report_pdf(report_uuid, query_string) {
   return fetch_server_api('get', `report/${report_uuid}/pdf${query_string}`, {}, 'application/pdf')
 }
 
+function get_report_issue_tracker_options(report_uuid) {
+    return fetch_server_api('get', `report/${report_uuid}/issue_tracker/options`)
+}
+
 function get_report_issue_tracker_suggestions(report_uuid, query) {
     return fetch_server_api('get', `report/${report_uuid}/issue_tracker/suggestions/${query}`)
 }
 
 export {
   add_report, copy_report, delete_report, get_reports, get_reports_overview, get_report_pdf, set_report_attribute,
-  set_report_issue_tracker_attribute, set_reports_attribute, get_report_issue_tracker_suggestions }
+  set_report_issue_tracker_attribute, set_reports_attribute, get_report_issue_tracker_options,
+  get_report_issue_tracker_suggestions
+}
