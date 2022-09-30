@@ -84,6 +84,7 @@ from .jenkins_test_report.tests import JenkinsTestReportTests
 
 from .jira.issue_status import JiraIssueStatus
 from .jira.issues import JiraIssues
+from .jira.lead_time_for_changes import JiraLeadTimeForChanges
 from .jira.manual_test_duration import JiraManualTestDuration
 from .jira.manual_test_execution import JiraManualTestExecution
 from .jira.source_version import JiraSourceVersion
