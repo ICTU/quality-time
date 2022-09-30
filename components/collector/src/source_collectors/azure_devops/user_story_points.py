@@ -9,6 +9,11 @@ from .issues import AzureDevopsIssues
 class AzureDevopsUserStoryPoints(AzureDevopsIssues):
     """Collector to get user story points from Azure Devops Server."""
 
+    def _item_select_fields(self) -> list[str]:
+        """Also request date fields to calculate lead time."""
+        base_fields = super()._item_select_fields()
+        return base_fields + ["Microsoft.VSTS.Scheduling.StoryPoints", "Microsoft.VSTS.Scheduling.Effort"]
+
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to add the story points to the entities."""
         entities = await super()._parse_entities(responses)

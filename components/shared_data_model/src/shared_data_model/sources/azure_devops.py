@@ -73,8 +73,9 @@ AZURE_DEVOPS = Source(
         wiql=StringParameter(
             name="Issue query in WIQL (Work Item Query Language)",
             short_name="issue query",
-            mandatory=True,
-            help_url="https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
+            mandatory=False,
+            help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
+            "See: https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
             metrics=["issues", "lead_time_for_changes", "user_story_points"],
         ),
         file_path=StringParameter(

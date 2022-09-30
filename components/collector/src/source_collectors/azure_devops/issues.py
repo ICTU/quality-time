@@ -5,7 +5,7 @@ from typing import Final
 import aiohttp
 
 from base_collectors import SourceCollector
-from collector_utilities.type import URL, Value
+from collector_utilities.type import URL, Value, Responses
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
@@ -16,22 +16,44 @@ class AzureDevopsIssues(SourceCollector):
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
 
     async def _api_url(self) -> URL:
-        """Extend to add the WIQL API path."""
-        return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=4.1")
+        """Extend to add the WIQL or WorkItems API path."""
+        return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=6.0")
+
+    def _api_list_query(self) -> dict[str, str]:
+        """Combine API select and where fields to correct WIQL query."""
+        wiql_query_segments = [f"Select [System.Id] From WorkItems"]
+        wiql_parameter = self._parameter("wiql")
+        if wiql_parameter:
+            if not wiql_parameter.startswith("WHERE"):
+                wiql_query_segments.append("WHERE")
+            wiql_query_segments.append(wiql_parameter)
+        return dict(query=" ".join(wiql_query_segments))
+
+    def _item_select_fields(self) -> list[str]:
+        """Return the API fields to select for individual issues."""
+        return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
+
+    async def _get_work_items(self, auth: aiohttp.BasicAuth, ids: list[int]) -> Responses:
+        """Separately get each work item from the API."""
+        api_url = (await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch')
+        ids_list = ids[: min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)]
+        response = await self._session.post(api_url, auth=auth,
+                                            json=dict(ids=ids_list, fields=self._item_select_fields()))
+        work_items = [response]
+        return work_items
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
         api_url = urls[0]
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
-        response = await self._session.post(api_url, auth=auth, json=dict(query=self._parameter("wiql")))
-        ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
+        response = await self._session.post(api_url, auth=auth, json=self._api_list_query())
+        ids = [work_item["id"] for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return SourceResponses(responses=[response], api_url=api_url)
-        ids_string = ",".join(ids[: min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)])
-        work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
-        work_items = await super()._get_source_responses(work_items_url, **kwargs)
+        # TODO - do we need pagination in lead_time_for_changes?
+        work_items = await self._get_work_items(auth, ids)
         work_items.insert(0, response)
-        return work_items
+        return SourceResponses(responses=work_items, api_url=api_url)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the work items from the WIQL query response."""
@@ -54,7 +76,12 @@ class AzureDevopsIssues(SourceCollector):
         """
         return str(len((await responses[0].json())["workItems"]))
 
-    @staticmethod
-    async def _work_items(responses: SourceResponses):
+    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201
+        """Return whether this issue should be counted."""
+        return True
+
+    async def _work_items(self, responses: SourceResponses) -> list[dict]:
         """Return the work items, if any."""
-        return (await responses[1].json())["value"] if len(responses) > 1 else []
+        # TODO - why are we inspecting responses[1] only - should it not be [1:] ?
+        all_work_items = (await responses[1].json())["value"] if len(responses) > 1 else []
+        return [work_item for work_item in all_work_items if self._include_issue(work_item)]
