@@ -112,7 +112,12 @@ JENKINS = Source(
             ),
         )
     ),
-    entities=dict(failed_jobs=JOB_ENTITY, source_up_to_dateness=JOB_ENTITY, unused_jobs=JOB_ENTITY),
+    entities=dict(
+        failed_jobs=JOB_ENTITY,
+        job_runs_within_time_period=JOB_ENTITY,
+        source_up_to_dateness=JOB_ENTITY,
+        unused_jobs=JOB_ENTITY,
+    ),
 )
 
 ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "test_cases", "tests"]

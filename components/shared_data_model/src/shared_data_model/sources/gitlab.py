@@ -166,6 +166,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
     ),
     entities=dict(
         failed_jobs=JOB_ENTITY,
+        job_runs_within_time_period=JOB_ENTITY,
         merge_requests=dict(
             name="merge request",
             attributes=[

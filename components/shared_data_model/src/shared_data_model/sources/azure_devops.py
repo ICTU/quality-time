@@ -165,10 +165,8 @@ AZURE_DEVOPS = Source(
         ),
     ),
     entities=dict(
-        failed_jobs=dict(
-            name="failed pipeline",
-            attributes=PIPELINE_ATTRIBUTES,
-        ),
+        failed_jobs=dict(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
+        job_runs_within_time_period=dict(name="pipeline with runs within time period", attributes=PIPELINE_ATTRIBUTES),
         merge_requests=dict(
             name="merge request",
             attributes=[
