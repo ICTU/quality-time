@@ -584,9 +584,9 @@ types-cryptography==3.3.23 \
     --hash=sha256:913b3e66a502edbf4bfc3bb45e33ab476040c56942164a7ff37bd1f0ef8ef783 \
     --hash=sha256:b85c45fd4d3d92e8b18e9a5ee2da84517e8fff658e3ef5755c885b1c2a27c1fe
     # via -r requirements-dev.in
-types-requests==2.28.11 \
-    --hash=sha256:7ee827eb8ce611b02b5117cfec5da6455365b6a575f5e3ff19f655ba603e6b4e \
-    --hash=sha256:af5f55e803cabcfb836dad752bd6d8a0fc8ef1cd84243061c0e27dee04ccf4fd
+types-requests==2.28.11.1 \
+    --hash=sha256:02b1806c5b9904edcd87fa29236164aea0e6cdc4d93ea020cd615ef65cb43d65 \
+    --hash=sha256:1ff2c1301f6fe58b5d1c66cdf631ca19734cb3b1a4bbadc878d75557d183291a
     # via -r ../../../requirements/types-requests.in
 types-urllib3==1.26.15 \
     --hash=sha256:6011befa13f901fc934f59bb1fd6973be6f3acf4ebfce427593a27e7f492918f \
