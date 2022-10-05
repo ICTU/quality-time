@@ -58,7 +58,7 @@ function expectOrder(metricNames) {
     expect(screen.getAllByText(/M\d/).map((element) => element.innerHTML)).toStrictEqual(metricNames)
 }
 
-for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status", "time_left", "deadlines_missed"]) {
+for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status", "time_left", "overrun"]) {
     for (const order of ["ascending", "descending"]) {
         it('sorts metrics by attribute', async () => {
             await act(async () => { renderSubject([], false, attribute, order) });

@@ -94,27 +94,27 @@ it('hides the time left column', () => {
     expect(screen.queryAllByText(/Time left/).length).toBe(0)
 })
 
-it('does not the deadlines missed column when showing one date', () => {
+it('does not show the overrun column when showing one date', () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(0)
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
 })
 
-it('shows the deadlines missed column when showing multiple dates', () => {
+it('shows the overrun column when showing multiple dates', () => {
     const dates = [
         new Date("2020-01-15T00:00:00+00:00"),
         new Date("2020-01-14T00:00:00+00:00"),
     ]
     renderSubjectTable(dates)
-    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(1)
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(1)
 })
 
-it('hides the deadlines missed column when showing multiple dates', () => {
+it('hides the overrun column when showing multiple dates', () => {
     const dates = [
         new Date("2020-01-15T00:00:00+00:00"),
         new Date("2020-01-14T00:00:00+00:00"),
     ]
-    renderSubjectTable(dates, ["deadlines_missed"])
-    expect(screen.queryAllByText(/Deadlines missed/).length).toBe(0)
+    renderSubjectTable(dates, ["overrun"])
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
 })
 
 it('shows the comment column', () => {

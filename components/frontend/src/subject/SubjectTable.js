@@ -12,7 +12,7 @@ import { TimeLeft } from '../measurement/TimeLeft';
 import { TrendSparkline } from '../measurement/TrendSparkline';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
-import { formatMetricScale, get_metric_name, get_metric_tags, getMetricUnit, getMetricDeadlinesMissed } from '../utils';
+import { formatMetricScale, get_metric_name, get_metric_tags, getMetricUnit, getMetricOverrun } from '../utils';
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
@@ -118,8 +118,8 @@ export function SubjectTable({
                             {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
                             {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
                             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
-                            {nrDates> 1 && !hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
-                            {!hiddenColumns.includes("deadlines_missed") && <Table.Cell style={style}>{getMetricDeadlinesMissed(metric, report)}</Table.Cell>}
+                            {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
+                            {nrDates > 1 && !hiddenColumns.includes("overrun") && <Table.Cell style={style}>{getMetricOverrun(metric, report)}</Table.Cell>}
                             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
                             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
                                 <IssueStatus

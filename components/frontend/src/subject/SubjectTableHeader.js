@@ -140,15 +140,15 @@ const timeLeftHelp = <>
     </p>
 </>
 
-const deadlinesMissedHelp = <>
+const overrunHelp = <>
     <p>
-        The number of times the desired reaction time to address the metric was exceeded in the displayed period.
+        The amount of days the desired reaction time to address the metric was exceeded in the displayed period.
     </p>
     <p>
         Expand the report title (click <Icon fitted name="triangle right" />) to changed the desired reaction times.
     </p>
     <p>
-        Click the column header to sort the metrics by number of times the deadline was missed.
+        Click the column header to sort the metrics by overrun.
     </p>
 </>
 
@@ -244,7 +244,7 @@ export function SubjectTableHeader(
                 {!hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />}
                 {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Sources' help={sourcesHelp} {...sortProps} />}
                 {!hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' help={timeLeftHelp} {...sortProps} />}
-                {nrDates > 1 && !hiddenColumns.includes("deadlines_missed") && <SortableTableHeaderCell column='deadlines_missed' label='Deadlines missed' help={deadlinesMissedHelp} {...sortProps} />}
+                {nrDates > 1 && !hiddenColumns.includes("overrun") && <SortableTableHeaderCell column='overrun' label='Overrun' help={overrunHelp} {...sortProps} />}
                 {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' help={commentHelp} {...sortProps} />}
                 {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' help={issuesHelp} {...sortProps} />}
                 {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' help={tagsHelp} {...sortProps} />}

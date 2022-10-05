@@ -46,7 +46,7 @@ export function getMetricDeadline(metric, report) {
     return deadline
 }
 
-export function getMetricDeadlinesMissed(metric, report) {
+export function getMetricOverrun(metric, report) {
     return 0;
 }
 
