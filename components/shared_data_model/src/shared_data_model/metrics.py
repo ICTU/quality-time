@@ -125,6 +125,18 @@ METRICS = Metrics.parse_obj(
             sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
             tags=[Tag.CI],
         ),
+        lead_time_for_changes=dict(
+            name="Lead time for changes",
+            description="The average lead time of changes completed in a certain time period.",
+            rationale="The shorter the lead time of changes, the sooner the new features can be used. Also, the "
+            "shorter the lead time of changes, the fewer changes are in progress at the same time. Less context "
+            "switching is needed and the risk of interfering changes is reduced.",
+            unit=Unit.DAYS,
+            target="10",
+            near_target="7",
+            sources=["azure_devops", "jira"],
+            tags=[Tag.PROCESS_EFFICIENCY],
+        ),
         loc=dict(
             name="Size (LOC)",
             description="The size of the software in lines of code.",

@@ -25,6 +25,7 @@ SUBJECTS = Subjects.parse_obj(
             description="A software development and/or maintenance process.",
             metrics=[
                 "issues",
+                "lead_time_for_changes",
                 "manual_test_duration",
                 "manual_test_execution",
                 "merge_requests",
@@ -52,6 +53,7 @@ SUBJECTS = Subjects.parse_obj(
                 "duplicated_lines",
                 "issues",
                 "job_runs_within_time_period",
+                "lead_time_for_changes",
                 "loc",
                 "long_units",
                 "manual_test_duration",

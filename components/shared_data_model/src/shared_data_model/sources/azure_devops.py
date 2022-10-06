@@ -23,12 +23,20 @@ ALL_AZURE_DEVOPS_METRICS = [
     "failed_jobs",
     "issues",
     "job_runs_within_time_period",
+    "lead_time_for_changes",
     "merge_requests",
     "source_up_to_dateness",
     "tests",
     "unmerged_branches",
     "unused_jobs",
     "user_story_points",
+]
+
+ISSUE_ATTRIBUTES = [
+    dict(name="Project"),
+    dict(name="Title", url="url"),
+    dict(name="Work item type"),
+    dict(name="State"),
 ]
 
 PIPELINE_ATTRIBUTES = [
@@ -67,7 +75,7 @@ AZURE_DEVOPS = Source(
             short_name="issue query",
             mandatory=True,
             help_url="https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
-            metrics=["issues", "user_story_points"],
+            metrics=["issues", "lead_time_for_changes", "user_story_points"],
         ),
         file_path=StringParameter(
             name="File or folder path",
@@ -149,7 +157,7 @@ AZURE_DEVOPS = Source(
             name="Number of days to look back in selecting pipeline runs to consider",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["job_runs_within_time_period"],
+            metrics=["job_runs_within_time_period", "lead_time_for_changes"],
         ),
         failure_type=FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],
@@ -167,6 +175,7 @@ AZURE_DEVOPS = Source(
     entities=dict(
         failed_jobs=dict(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
+        lead_time_for_changes=dict(name="lead time", attributes=ISSUE_ATTRIBUTES),
         merge_requests=dict(
             name="merge request",
             attributes=[
@@ -205,15 +214,7 @@ AZURE_DEVOPS = Source(
                 dict(name="Date of most recent commit", key="commit_date", type=EntityAttributeType.DATE),
             ],
         ),
-        issues=dict(
-            name="issue",
-            attributes=[
-                dict(name="Project"),
-                dict(name="Title", url="url"),
-                dict(name="Work item type"),
-                dict(name="State"),
-            ],
-        ),
+        issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
         user_story_points=dict(
             name="user story",
             name_plural="user stories",
