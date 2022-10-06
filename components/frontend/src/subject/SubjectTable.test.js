@@ -26,6 +26,12 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
+const dates = [
+    new Date("2020-01-15T00:00:00+00:00"),
+    new Date("2020-01-14T00:00:00+00:00"),
+    new Date("2020-01-13T00:00:00+00:00"),
+]
+
 function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
     const toggleVisibleDetailsTab = jest.fn();
     render(
@@ -63,11 +69,6 @@ it('displays all the metrics', () => {
 });
 
 it('shows the date columns', () => {
-    const dates = [
-        new Date("2020-01-15T00:00:00+00:00"),
-        new Date("2020-01-14T00:00:00+00:00"),
-        new Date("2020-01-13T00:00:00+00:00"),
-    ]
     renderSubjectTable(dates)
     dates.forEach((date) => {
         expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
@@ -100,19 +101,11 @@ it('does not show the overrun column when showing one date', () => {
 })
 
 it('shows the overrun column when showing multiple dates', () => {
-    const dates = [
-        new Date("2020-01-15T00:00:00+00:00"),
-        new Date("2020-01-14T00:00:00+00:00"),
-    ]
     renderSubjectTable(dates)
     expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(1)
 })
 
 it('hides the overrun column when showing multiple dates', () => {
-    const dates = [
-        new Date("2020-01-15T00:00:00+00:00"),
-        new Date("2020-01-14T00:00:00+00:00"),
-    ]
     renderSubjectTable(dates, ["overrun"])
     expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
 })
