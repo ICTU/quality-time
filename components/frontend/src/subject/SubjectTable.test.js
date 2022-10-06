@@ -44,6 +44,7 @@ function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
                     [
                         { metric_uuid: "1", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00", count: { status: "target_met"} },
                         { metric_uuid: "1", start: "2020-01-15T00:00:00+00:00", end: "2020-01-16T00:00:00+00:00", count: { status: "target_met"} },
+                        { metric_uuid: "1", start: "2020-01-16T00:00:00+00:00", end: "2020-01-17T00:00:00+00:00", count: { status: "target_not_met"} },
                         { metric_uuid: "2", start: "2020-01-10T00:00:00+00:00", end: "2020-01-10T00:00:00+00:00", count: { status: "target_not_met"} },
                         { metric_uuid: "3", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00", count: { status: "target_not_met"} },
                     ]
