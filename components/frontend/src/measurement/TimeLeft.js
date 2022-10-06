@@ -1,7 +1,7 @@
 import React from 'react';
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { getMetricDeadline, getMetricTimeLeft, pluralize } from '../utils';
+import { days, getMetricResponseDeadline, getMetricResponseTimeLeft, pluralize } from '../utils';
 
 function noActionRequired(metric) {
     return (["target_met", "informative"].indexOf(metric.status) >= 0)
@@ -15,9 +15,9 @@ export function TimeLeft({ metric, report }) {
     if (noActionRequired(metric) || acceptedDebtWithoutEndDate(metric) || !metric.status_start) {
         return null
     }
-    const deadline = getMetricDeadline(metric, report)
-    const timeLeft = getMetricTimeLeft(metric, report)
-    const daysLeft = Math.max(0, Math.round(timeLeft / (24 * 60 * 60 * 1000)))
+    const deadline = getMetricResponseDeadline(metric, report)
+    const timeLeft = getMetricResponseTimeLeft(metric, report)
+    const daysLeft = days(timeLeft)
     const triggerText = `${daysLeft} ${pluralize("day", daysLeft)}`
     let deadlineLabel = "Deadline to address this metric was"
     let trigger = <Label color="red">{triggerText}</Label>

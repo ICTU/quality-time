@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { DataModel } from '../context/DataModel';
 import { get_subject_measurements } from '../api/subject';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricOverrun, getMetricTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
@@ -17,7 +17,7 @@ function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
     return metrics
 }
 
-function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
+function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, measurements) {
     const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4", informative: "5" };
     const sorters = {
         name: (m1, m2) => {
@@ -68,13 +68,13 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn) {
             return m1_unit.localeCompare(m2_unit)
         },
         time_left: (m1, m2) => {
-            const m1_time_left = getMetricTimeLeft(m1[1]);
-            const m2_time_left = getMetricTimeLeft(m2[1]);
+            const m1_time_left = getMetricResponseTimeLeft(m1[1]);
+            const m2_time_left = getMetricResponseTimeLeft(m2[1]);
             return m1_time_left > m2_time_left
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricOverrun(m1[1]);
-            const m2_overrun = getMetricOverrun(m2[1]);
+            const m1_overrun = getMetricResponseOverrun(m1[1].metric_uuid, m1[1], report, measurements);
+            const m2_overrun = getMetricResponseOverrun(m2[1].metric_uuid, m2[1], report, measurements);
             return m1_overrun > m2_overrun
         }
     }
@@ -124,7 +124,7 @@ export function Subject({
 
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
-        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn);
+        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn, report, measurements);
     }
 
     return (
