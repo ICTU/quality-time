@@ -8,5 +8,5 @@ def get_measurements(context, has_or_had, expected_number):
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
 
-    response = context.get(f"subject/{context.uuid['subject']}/measurements")
+    response = context.get(f"subject/{context.uuid['subject']}/measurements?min_report_date=2020-11-17")
     assert_equal(int(expected_number), len(response["measurements"]))
