@@ -1,7 +1,7 @@
 export const api_version = 'v3'
 
 export function api_with_report_date(api, date) {
-    return date === null ? api : api + `?report_date=${date.toISOString()}`
+    return date ? api + `?report_date=${date.toISOString()}` : api
 }
 
 export function fetch_server_api(method, api, body, content_type) {
