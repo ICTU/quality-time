@@ -164,7 +164,7 @@ export function formatMetricScaleAndUnit(metricType, metric) {
 }
 
 export function days(timeInMs) {
-    return Math.max(0, Math.round(timeInMs / (24 * 60 * 60 * 1000)))
+    return Math.round(timeInMs / (24 * 60 * 60 * 1000))
 }
 
 const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
