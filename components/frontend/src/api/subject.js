@@ -1,4 +1,4 @@
-import { fetch_server_api } from "./fetch_server_api";
+import { api_with_report_date, fetch_server_api } from "./fetch_server_api";
 
 export function add_subject(report_uuid, subjectType, reload) {
   return fetch_server_api('post', `subject/new/${report_uuid}`, { type: subjectType }).then(reload)
@@ -21,5 +21,5 @@ export function set_subject_attribute(subject_uuid, attribute, value, reload) {
 }
 
 export function get_subject_measurements(subject_uuid, date) {
-  return fetch_server_api('get', `subject/${subject_uuid}/measurements`, date)
+  return fetch_server_api('get', api_with_report_date(`subject/${subject_uuid}/measurements`, date))
 }
