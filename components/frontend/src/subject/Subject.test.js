@@ -4,13 +4,14 @@ import * as fetch_server_api from '../api/fetch_server_api';
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(dates, hideMetricsNotRequiringAction, sortColumn, sortDirection) {
+function renderSubject(dates, hideMetricsNotRequiringAction, sortColumn, sortDirection, reportDate) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
                 dates={dates}
                 handleSort={() => { /* Dummy implementation */ }}
                 report={report}
+                report_date={reportDate}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 subject_uuid="subject_uuid"
@@ -26,7 +27,14 @@ it('fetches measurements if nr dates > 1', async () => {
     jest.mock("../api/fetch_server_api.js")
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, measurements: [] });
     await act(async () => { renderSubject([new Date(2022, 3, 25), new Date(2022, 3, 26)]) });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "subject/subject_uuid/measurements", undefined);
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "subject/subject_uuid/measurements");
+})
+
+it('fetches measurements if nr dates > 1 and time traveling', async () => {
+    jest.mock("../api/fetch_server_api.js")
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, measurements: [] });
+    await act(async () => { renderSubject([new Date(2022, 3, 25), new Date(2022, 3, 26)], false, null, null, new Date(Date.UTC(2022, 3, 26))) });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "subject/subject_uuid/measurements?report_date=2022-04-26T00:00:00.000Z");
 })
 
 it('does not fetch measurements if nr dates == 1', async () => {
