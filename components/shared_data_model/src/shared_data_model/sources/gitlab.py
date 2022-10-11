@@ -146,7 +146,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         lookback_days=Days(
-            name="Number of days to look back in selecting items to consider",
+            name="Number of days to look back in selecting pipeline jobs to consider",
             short_name="number of days to look back",
             default_value="90",
             metrics=["job_runs_within_time_period"],
