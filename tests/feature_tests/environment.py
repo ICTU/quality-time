@@ -19,7 +19,8 @@ def before_all(context):
         """Get the resource."""
         url = api_url(api, internal)
         if context.report_date:
-            url += f"?report_date={context.report_date}"
+            sep = "&" if "?" in url else "?"
+            url += f"{sep}report_date={context.report_date}"
         context.response = response = requests.get(url, headers=headers, cookies=cookies())
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
