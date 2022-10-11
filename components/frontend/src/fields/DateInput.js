@@ -1,32 +1,29 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Form } from '../semantic_ui_react_wrappers';
-import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react-17';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 import { ReadOnlyOrEditable } from '../context/Permissions';
-import { isValidDate_YYYYMMDD } from '../utils';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { DarkMode } from '../context/DarkMode';
+import './DateInput.css';
 
 function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
-    // We don't use the minDate property because having a value < minDate can crash the date picker,
-    // see https://github.com/ICTU/quality-time/issues/1534
-    const [date, setDate] = useState(value);
+    value = value ? new Date(value) : null
     return (
-        <CalendarDateInput
+        <SemanticDatepicker
             aria-labelledby={ariaLabelledBy}
-            clearable
-            closable
-            dateFormat="YYYY-MM-DD"
-            error={(required && !isValidDate_YYYYMMDD(date)) || (date !== "" && !isValidDate_YYYYMMDD(date))}
+            clearable={!required}
+            error={(required && !value)}
+            inverted={useContext(DarkMode)}
             label={label}
             onChange={(event, { value: newDate }) => {
-                if (!event) { return }
-                if ((date !== newDate) && isValidDate_YYYYMMDD(newDate)) {
-                    set_value(newDate)
+                if (!!newDate) {
+                    const dateString = `${String(newDate.getFullYear())}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+                    set_value(dateString)
                 }
-                setDate(newDate)
             }}
-            onClear={() => { setDate(""); set_value("") }}
             placeholder={placeholder}
-            value={date}
+            value={value}
         />
     )
 }

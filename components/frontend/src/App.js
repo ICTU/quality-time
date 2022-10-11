@@ -98,22 +98,15 @@ class App extends Component {
     }
 
     handleDateChange(_event, { name, value }) {
-        const today = new Date();
-        const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
-        const new_report_date_string = value === today_string ? '' : value;
-        let reportDate = null;
         let parsed = registeredURLSearchParams(this.history);
-        if (new_report_date_string === "") {
-            parsed.delete("report_date")
+        if (!!value) {
+            parsed.set("report_date", value.toISOString().split("T")[0]);
         } else {
-            const isoDateString = new_report_date_string.split("-").reverse().join("-");
-            parsed.set("report_date", isoDateString);
-            reportDate = new Date(isoDateString)
-            reportDate.setHours(23, 59, 59);
+            parsed.delete("report_date")
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         this.history.replace({ search: search.length > 0 ? "?" + search : "" })
-        this.setState({ report_date: reportDate, loading: true }, () => this.reload())
+        this.setState({ report_date: value, loading: true }, () => this.reload())
     }
 
     go_home() {

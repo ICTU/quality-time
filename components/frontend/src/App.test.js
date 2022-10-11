@@ -48,15 +48,13 @@ it('resets the user when the session is expired on mount', () => {
 it('handles a date change', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<App />);
-    await userEvent.type(screen.getByLabelText("Report date"), "13-03-2020")
-    const expectedDate = new Date("2020-03-13").toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })
-    expect(screen.getAllByDisplayValue(expectedDate).length).toBe(1)
+    await userEvent.type(screen.getByTestId("datepicker-input"), "2020-03-13")
+    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 });
 
-it('read the report date query parameter', async () => {
+it('reads the report date query parameter', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<App />);
     history.pushState({}, "", "/?report_date=2020-03-13")
-    const expectedDate = new Date("2020-03-13").toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' })
-    expect(screen.getAllByDisplayValue(expectedDate).length).toBe(1)
+    render(<App />);
+    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 });

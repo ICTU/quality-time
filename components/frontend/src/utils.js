@@ -198,13 +198,6 @@ export function useDelayedRender() {
     return visible;
 }
 
-export function isValidDate_DDMMYYYY(string) {
-    if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(string)) {
-        return isValidDate_YYYYMMDD(string.split("-").reverse().join("-"))
-    }
-    return false
-}
-
 export function isValidDate_YYYYMMDD(string) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(string)) {
         const milliseconds_since_epoch = Date.parse(string);
