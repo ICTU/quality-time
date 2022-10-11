@@ -107,7 +107,8 @@ export function Subject({
 
     useEffect(() => {
         if (dates.length > 1) {
-            get_subject_measurements(subject_uuid, report_date).then(json => {
+            const minReportDate = dates.slice().sort((d1, d2) => {return (d1.toISOString() > d2.toISOString())}).at(0);
+            get_subject_measurements(subject_uuid, report_date, minReportDate).then(json => {
                 if (json.ok !== false) {
                     setMeasurements(json.measurements)
                 }

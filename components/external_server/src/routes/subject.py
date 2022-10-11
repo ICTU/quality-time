@@ -1,6 +1,5 @@
 """Subject routes."""
 
-from datetime import datetime, timedelta, timezone
 from typing import cast
 
 import bottle
@@ -119,18 +118,14 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
 
 @bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)
 def get_subject_measurements(subject_uuid: SubjectId, database: Database):
-    """Return all measurements for the subject within the last 28 weeks."""
+    """Return all measurements for the subject between the date of the report and the minimum date."""
     date_time = report_date_time()
+    min_date_time = report_date_time("min_report_date")
     metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid, date_time)
-
-    report_timestamp = datetime.fromisoformat(date_time) if date_time else datetime.now(timezone.utc)
-    min_datetime = report_timestamp - timedelta(weeks=28)
-    min_iso_timestamp = min_datetime.isoformat()
-
     return dict(
         measurements=list(
             measurements_by_metric(
-                database, *metric_uuids, min_iso_timestamp=min_iso_timestamp, max_iso_timestamp=date_time
+                database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time
             )
         )
     )

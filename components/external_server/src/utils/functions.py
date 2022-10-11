@@ -178,9 +178,9 @@ def md5_hash(string: str) -> str:
     return md5.hexdigest()
 
 
-def report_date_time() -> str:
+def report_date_time(attribute_name: str = "report_date") -> str:
     """Return the report date requested as query parameter if it's in the past, else return an empty string."""
-    if report_date_string := dict(bottle.request.query).get("report_date"):
+    if report_date_string := dict(bottle.request.query).get(attribute_name):
         iso_report_date_string = str(report_date_string).replace("Z", "+00:00")
         if iso_report_date_string < iso_timestamp():
             return iso_report_date_string
