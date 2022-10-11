@@ -87,8 +87,8 @@ JENKINS = Source(
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         lookback_days=Days(
-            name="Number of days to look back in selecting job builds to consider",
-            short_name="number of days ago",
+            name="Number of days to look back in selecting items to consider",
+            short_name="number of days to look back",
             default_value="90",
             metrics=["job_runs_within_time_period"],
         ),

@@ -150,7 +150,7 @@ class SourceCollector(ABC):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
 
-        Either this method or self._create_entities() need to be overridden in the subclass to implement the actual
+        Either this method or self._parse_entities() need to be overridden in the subclass to implement the actual
         parsing of the source responses.
         """
         return SourceMeasurement(
