@@ -18,9 +18,12 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the sum of the user story points from the responses."""
-        return str(sum([self.__story_points(work_item) for work_item in await self._work_items(responses)], 0.0))
+        calculated_value = sum(self.__story_points(work_item) for work_item in await self._work_items(responses))
+        return str(int(calculated_value))
 
     @staticmethod
     def __story_points(work_item: dict[str, dict[str, None | float]]) -> float:
         """Return the number of story points from the work item."""
-        return work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints") or 0.0
+        story_points = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
+        effort = work_item["fields"].get("Microsoft.VSTS.Scheduling.Effort")
+        return story_points or effort or 0.0
