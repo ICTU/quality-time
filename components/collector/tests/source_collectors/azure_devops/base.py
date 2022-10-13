@@ -23,7 +23,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                 "System.Title": "Title",
                 "System.WorkItemType": "Task",
                 "System.State": "New",
-                "Microsoft.VSTS.Scheduling.StoryPoints": 2.0,
+                "Microsoft.VSTS.Scheduling.Effort": 2.0,
             },
         )
 

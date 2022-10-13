@@ -10,10 +10,10 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = await self.collect(
-            get_request_json_return_value=dict(value=[self.work_item, self.work_item]),
-            post_request_json_return_value=dict(workItems=[dict(id="id1"), dict(id="id2")]),
-        )
+        response = await self.collect(post_request_json_side_effect=[
+            dict(workItems=[dict(id="id1"), dict(id="id2")]),
+            dict(value=[self.work_item, self.work_item])
+        ])
         self.assert_measurement(response, value="2")
 
     async def test_no_issues(self):
@@ -24,8 +24,7 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
     async def test_issues(self):
         """Test that the issues are returned."""
         response = await self.collect(
-            get_request_json_return_value=dict(value=[self.work_item]),
-            post_request_json_return_value=dict(workItems=[dict(id="id")]),
+            post_request_json_side_effect=[dict(workItems=[dict(id="id")]), dict(value=[self.work_item])]
         )
         self.assert_measurement(
             response,

@@ -44,6 +44,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         get_request_links=None,
         post_request_side_effect=None,
         post_request_json_return_value=None,
+        post_request_json_side_effect=None,
     ):
         """Collect the metric."""
         get_response = self.__get_response(
@@ -54,7 +55,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             get_request_headers,
             get_request_links,
         )
-        post_response = self.__post_response(post_request_json_return_value)
+        post_response = self.__post_response(post_request_json_return_value, post_request_json_side_effect)
         get = AsyncMock(return_value=get_response, side_effect=get_request_side_effect)
         post = AsyncMock(return_value=post_response, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", get), patch("aiohttp.ClientSession.post", post):
@@ -75,10 +76,11 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         return get_response
 
     @staticmethod
-    def __post_response(json_return_value) -> AsyncMock:
+    def __post_response(json_return_value, json_side_effect=None) -> AsyncMock:
         """Create the mock post response."""
         post_response = AsyncMock()
         post_response.json.return_value = json_return_value
+        post_response.json.side_effect = json_side_effect
         return post_response
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
