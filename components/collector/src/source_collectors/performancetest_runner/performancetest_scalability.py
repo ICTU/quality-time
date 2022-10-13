@@ -15,7 +15,7 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
         return str(min(breaking_points))
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
-        """Override to compute the total number of vusers from the responses."""
+        """Override to compute the total number of virtual users from the responses."""
         breaking_points = [
             (await self.__breaking_point_vusers(response), await self.__max_vusers(response)) for response in responses
         ]
