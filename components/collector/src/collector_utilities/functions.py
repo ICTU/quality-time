@@ -5,9 +5,11 @@ import hashlib
 import re
 import time
 import urllib
-from collections.abc import Collection, Generator
+from collections.abc import Collection, Generator, Iterable
 from datetime import datetime
-from typing import cast
+from decimal import ROUND_HALF_UP, Decimal
+from itertools import islice
+from typing import cast, Union
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -98,6 +100,17 @@ def match_string_or_regular_expression(string: str, strings_and_or_regular_expre
             if string_or_regular_expression == string:
                 return True
     return False
+
+
+def iterable_to_batches(iterable: Iterable, batch_size: int) -> Iterable:
+    """Produce batches of iterables, from a given iterable."""
+    iterable = iter(iterable)
+    return iter(lambda: tuple(islice(iterable, batch_size)), ())
+
+
+def decimal_round_half_up(dec: Union[Decimal, float]) -> int:
+    """Round decimal or float to nearest integer, with ties going away from zero."""
+    return int(Decimal(dec).to_integral_value(ROUND_HALF_UP))
 
 
 class Clock:  # pylint: disable=too-few-public-methods

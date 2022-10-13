@@ -1,10 +1,12 @@
 """Azure DevOps Server issues collector."""
 
+from itertools import chain
 from typing import Final
 
 import aiohttp
 
 from base_collectors import SourceCollector
+from collector_utilities.functions import iterable_to_batches
 from collector_utilities.type import URL, Value, Responses
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -36,11 +38,12 @@ class AzureDevopsIssues(SourceCollector):
     async def _get_work_items(self, auth: aiohttp.BasicAuth, ids: list[int]) -> Responses:
         """Separately get each work item from the API."""
         api_url = (await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch')
-        ids_list = ids[: min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)]
-        response = await self._session.post(api_url, auth=auth,
-                                            json=dict(ids=ids_list, fields=self._item_select_fields()))
-        work_items = [response]
-        return work_items
+        id_iter = iterable_to_batches(ids, min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES))
+        responses = [
+            await self._session.post(api_url, auth=auth, json=dict(ids=id_batch, fields=self._item_select_fields()))
+            for id_batch in id_iter
+        ]
+        return responses
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
@@ -50,7 +53,6 @@ class AzureDevopsIssues(SourceCollector):
         ids = [work_item["id"] for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return SourceResponses(responses=[response], api_url=api_url)
-        # TODO - do we need pagination in lead_time_for_changes?
         work_items = await self._get_work_items(auth, ids)
         work_items.insert(0, response)
         return SourceResponses(responses=work_items, api_url=api_url)
@@ -82,6 +84,8 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _work_items(self, responses: SourceResponses) -> list[dict]:
         """Return the work items, if any."""
-        # TODO - why are we inspecting responses[1] only - should it not be [1:] ?
-        all_work_items = (await responses[1].json())["value"] if len(responses) > 1 else []
+        if len(responses) <= 1:  # the first call is to workItems, which only returns ids
+            return []
+
+        all_work_items = chain.from_iterable([(await response.json()).get("value") for response in responses[1:]])
         return [work_item for work_item in all_work_items if self._include_issue(work_item)]
