@@ -56,15 +56,11 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
     const consolidatedMeasurements = [];
     const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)
     filteredMeasurements.forEach((measurement) => {
-        if (consolidatedMeasurements.length === 0) {
-            consolidatedMeasurements.push(measurement);  // Always keep the oldest measurement
-            return
-        }
         const status = measurement?.[scale]?.status || "unknown"
         if (status === previousStatus) {
             consolidatedMeasurements.at(-1).end = measurement.end  // Status unchanged so merge this measurement with the previous one
         } else {
-            consolidatedMeasurements.push(measurement)  // Status changed so keep this measurement
+            consolidatedMeasurements.push(measurement);  // Status changed or first one, so keep this measurement
         }
         previousStatus = status
     })
