@@ -17,10 +17,11 @@ function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_v
             inverted={useContext(DarkMode)}
             label={label}
             onChange={(event, { value: newDate }) => {
+                let dateValue = null
                 if (!!newDate) {
-                    const dateString = `${String(newDate.getFullYear())}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
-                    set_value(dateString)
+                    dateValue = `${String(newDate.getFullYear())}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
                 }
+                set_value(dateValue)
             }}
             placeholder={placeholder}
             value={value}

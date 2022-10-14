@@ -27,6 +27,7 @@ it('clears the value', () => {
     renderDateInput({ value: "2019-09-30", set_value: set_value, required: false });
     fireEvent.click(screen.queryByTestId("datepicker-clear-icon"))
     expect(screen.queryByDisplayValue("2019-09-30")).toBe(null);
+    expect(set_value).toHaveBeenCalledWith(null)
 })
 
 it('renders in error state if a value is missing and required', () => {
@@ -57,5 +58,5 @@ it('does not submit the value when the value is not valid', async () => {
     renderDateInput({ value: date, set_value: set_value })
     await userEvent.type(screen.getByDisplayValue(date), "invalid{Tab}", {initialSelectionStart: 0, initialSelectionEnd: 10})
     expect(screen.queryByDisplayValue(/inva/)).toBe(null)
-    expect(set_value).not.toHaveBeenCalled()
+    expect(set_value).toHaveBeenCalledWith(null)
 })
