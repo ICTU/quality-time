@@ -4,7 +4,7 @@ import io
 import logging
 import unittest
 import zipfile
-from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import AsyncMock, PropertyMock, patch, DEFAULT as STOP_SENTINEL
 
 import aiohttp
 
@@ -76,11 +76,14 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         return get_response
 
     @staticmethod
-    def __post_response(json_return_value, json_side_effect=None) -> AsyncMock:
+    def __post_response(json_return_value, json_side_effect: list = None) -> AsyncMock:
         """Create the mock post response."""
         post_response = AsyncMock()
-        post_response.json.return_value = json_return_value
-        post_response.json.side_effect = json_side_effect
+        if json_side_effect:
+            if not json_return_value:  # put the last side effect into return value, if it was not already given
+                json_return_value = json_side_effect[-1]
+            json_side_effect = json_side_effect + [STOP_SENTINEL]  # AsyncMock apparently does catch StopAsyncIteration
+        post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:

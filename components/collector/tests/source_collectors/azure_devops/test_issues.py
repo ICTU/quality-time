@@ -23,9 +23,10 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
 
     async def test_issues(self):
         """Test that the issues are returned."""
-        response = await self.collect(
-            post_request_json_side_effect=[dict(workItems=[dict(id="id")]), dict(value=[self.work_item])]
-        )
+        response = await self.collect(post_request_json_side_effect=[
+            dict(workItems=[dict(id="id")]),
+            dict(value=[self.work_item])
+        ])
         self.assert_measurement(
             response,
             entities=[

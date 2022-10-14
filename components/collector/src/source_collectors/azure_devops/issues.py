@@ -1,6 +1,5 @@
 """Azure DevOps Server issues collector."""
 
-from itertools import chain
 from typing import Final
 
 import aiohttp
@@ -16,6 +15,8 @@ class AzureDevopsIssues(SourceCollector):
 
     MAX_IDS_PER_WORK_ITEMS_API_CALL: Final[int] = 200  # See
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
+
+    _issue_ids_to_fetch: list[int]
 
     async def _api_url(self) -> URL:
         """Extend to add the WIQL or WorkItems API path."""
@@ -35,10 +36,11 @@ class AzureDevopsIssues(SourceCollector):
         """Return the API fields to select for individual issues."""
         return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
 
-    async def _get_work_items(self, auth: aiohttp.BasicAuth, ids: list[int]) -> Responses:
+    async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> Responses:
         """Separately get each work item from the API."""
         api_url = (await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch')
-        id_iter = iterable_to_batches(ids, min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES))
+        batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
+        id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
             await self._session.post(api_url, auth=auth, json=dict(ids=id_batch, fields=self._item_select_fields()))
             for id_batch in id_iter
@@ -50,10 +52,10 @@ class AzureDevopsIssues(SourceCollector):
         api_url = urls[0]
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
         response = await self._session.post(api_url, auth=auth, json=self._api_list_query())
-        ids = [work_item["id"] for work_item in (await response.json()).get("workItems", [])]
-        if not ids:
+        self._issue_ids_to_fetch = [work_item["id"] for work_item in (await response.json()).get("workItems", [])]
+        if not self._issue_ids_to_fetch:
             return SourceResponses(responses=[response], api_url=api_url)
-        work_items = await self._get_work_items(auth, ids)
+        work_items = await self._get_work_item_responses(auth)
         work_items.insert(0, response)
         return SourceResponses(responses=work_items, api_url=api_url)
 
@@ -76,7 +78,7 @@ class AzureDevopsIssues(SourceCollector):
 
         We can't just count the entities because due to pagination the response may not contain all work items.
         """
-        return str(len((await responses[0].json())["workItems"]))
+        return str(len(self._issue_ids_to_fetch))
 
     def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201
         """Return whether this issue should be counted."""
@@ -86,6 +88,10 @@ class AzureDevopsIssues(SourceCollector):
         """Return the work items, if any."""
         if len(responses) <= 1:  # the first call is to workItems, which only returns ids
             return []
-
-        all_work_items = chain.from_iterable([(await response.json()).get("value") for response in responses[1:]])
+        all_work_items = []
+        for response in responses[1:]:
+            response_json = (await response.json())
+            if not response_json:
+                continue
+            all_work_items.extend(response_json.get("value"))
         return [work_item for work_item in all_work_items if self._include_issue(work_item)]
