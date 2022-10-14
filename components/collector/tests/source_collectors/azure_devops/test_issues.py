@@ -21,6 +21,14 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
         response = await self.collect(post_request_json_return_value=dict(workItems=[]))
         self.assert_measurement(response, value="0", entities=[])
 
+    async def test_empty_issue_response(self):
+        """Test that value is taken from workItems total call, instead of empty item response json."""
+        response = await self.collect(post_request_json_side_effect=[
+            dict(workItems=[dict(id="id")]),
+            None
+        ])
+        self.assert_measurement(response, value="1", entities=[])
+
     async def test_issues(self):
         """Test that the issues are returned."""
         response = await self.collect(post_request_json_side_effect=[

@@ -79,7 +79,7 @@ JIRA = Source(
             ],
         ),
         lookback_days=Days(
-            name="Number of days to look back in selecting items to consider",
+            name="Number of days to look back in selecting issues to consider",
             short_name="number of days to look back",
             default_value="90",
             metrics=["lead_time_for_changes"],

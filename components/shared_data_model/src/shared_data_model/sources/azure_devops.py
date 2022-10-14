@@ -155,7 +155,7 @@ AZURE_DEVOPS = Source(
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         lookback_days=Days(
-            name="Number of days to look back in selecting pipeline runs to consider",
+            name="Number of days to look back in selecting pipeline runs or work items to consider",
             short_name="number of days to look back",
             default_value="90",
             metrics=["job_runs_within_time_period", "lead_time_for_changes"],
@@ -176,7 +176,10 @@ AZURE_DEVOPS = Source(
     entities=dict(
         failed_jobs=dict(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
-        lead_time_for_changes=dict(name="lead time", attributes=ISSUE_ATTRIBUTES),
+        lead_time_for_changes=dict(
+            name="lead time",
+            attributes=ISSUE_ATTRIBUTES + [dict(name="Issue lead time in days", key="lead_time")]  # type int / days?
+        ),
         merge_requests=dict(
             name="merge request",
             attributes=[
