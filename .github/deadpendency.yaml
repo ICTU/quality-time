@@ -84,6 +84,7 @@ additional-deps:
 
 ignore-failures:
   python:
+    - asserts  # Issue to ask for a new release: https://github.com/srittau/python-asserts/issues/84
     - behave
     - bump2version  # Issue to find alternative: https://github.com/ICTU/quality-time/issues/4619
     - sseclient  # Used in one feature test. Issue to find alternative: https://github.com/ICTU/quality-time/issues/4560
