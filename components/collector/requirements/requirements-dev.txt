@@ -569,9 +569,9 @@ tomlkit==0.11.1 \
     --hash=sha256:1c5bebdf19d5051e2e1de6cf70adfc5948d47221f097fcff7a3ffc91e953eaf5 \
     --hash=sha256:61901f81ff4017951119cd0d1ed9b7af31c821d6845c8c477587bbdcd5e5854e
     # via pylint
-types-python-dateutil==2.8.19.1 \
-    --hash=sha256:a560f63b31ece652e891f9659216fb315abd6dc169f9356c077d11b4f432aa7d \
-    --hash=sha256:d642f7af2bb99fe78f5a776fd0ca4e32932720047f400e25ad62bc2a5b18dc94
+types-python-dateutil==2.8.19.2 \
+    --hash=sha256:3f4dbe465e7e0c6581db11fd7a4855d1355b78712b3f292bd399cd332247e9c0 \
+    --hash=sha256:e6e32ce18f37765b08c46622287bc8d8136dc0c562d9ad5b8fd158c59963d7a7
     # via -r requirements-dev.in
 typing-extensions==4.4.0 \
     --hash=sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa \
