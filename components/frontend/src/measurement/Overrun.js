@@ -18,14 +18,14 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
         <>
         <Header>
             <Header.Content>
-                Metric desired response time overruns<Header.Subheader>In the period {period}</Header.Subheader>
+                Metric reaction time overruns<Header.Subheader>In the period {period}</Header.Subheader>
             </Header.Content>
         </Header>
         <Table compact size="small">
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell textAlign="center" colSpan="3">Metric status with overrun</Table.HeaderCell>
-                    <Table.HeaderCell textAlign="center" colSpan="3">Metric response time</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center" colSpan="3">When did the metric need action?</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center" colSpan="3">How long did it take to react?</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
                     <Table.HeaderCell textAlign="center">Status</Table.HeaderCell>
