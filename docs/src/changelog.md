@@ -20,7 +20,7 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 ### Added
 
-- Datepickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
+- Date pickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
 - When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
 
 ## v4.5.0 - 2022-10-04

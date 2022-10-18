@@ -126,7 +126,7 @@ const timeLeftHelp = <>
     </p>
     <p>
         If the metric needs action, the time left is based on the desired reaction times. Expand the report title
-        (click <Icon fitted name="triangle right" />) to changed the desired reaction times.
+        (click <Icon fitted name="triangle right" />) to change the desired reaction times.
     </p>
     <p>
         If the metric has accepted technical debt, the time left is based on the technical debt end date. Expand the
@@ -145,7 +145,10 @@ const overrunHelp = <>
         The amount of days the desired reaction time to address the metric was exceeded in the displayed period.
     </p>
     <p>
-        Expand the report title (click <Icon fitted name="triangle right" />) to changed the desired reaction times.
+        Expand the report title (click <Icon fitted name="triangle right" />) to change the desired reaction times.
+    </p>
+    <p>
+        Hover the number of days to see an overview of when and for which statuses the metric had overruns in the displayed period.
     </p>
     <p>
         Click the column header to sort the metrics by overrun.

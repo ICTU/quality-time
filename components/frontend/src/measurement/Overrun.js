@@ -9,7 +9,7 @@ function formatDays(days) {
 
 export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
     const { totalOverrun, overruns } = getMetricResponseOverrun(metric_uuid, metric, report, measurements);
-    if (!(totalOverrun > 0)) { return null }
+    if (totalOverrun === 0) { return null }
     const triggerText = formatDays(totalOverrun)
     let trigger = <span>{triggerText}</span>
     const sortedDates = dates.slice().sort((d1, d2) => d1.getTime() > d2.getTime())
@@ -24,12 +24,13 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
         <Table compact size="small">
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell rowSpan="2">Status</Table.HeaderCell>
-                    <Table.HeaderCell rowSpan="2">Start</Table.HeaderCell>
-                    <Table.HeaderCell rowSpan="2">End</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center" colSpan="3">Metric status with overrun</Table.HeaderCell>
                     <Table.HeaderCell textAlign="center" colSpan="3">Metric response time</Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
+                    <Table.HeaderCell textAlign="center">Status</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center">Start</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center">End</Table.HeaderCell>
                     <Table.HeaderCell textAlign="right">Actual</Table.HeaderCell>
                     <Table.HeaderCell textAlign="right">Desired</Table.HeaderCell>
                     <Table.HeaderCell textAlign="right">Overrun</Table.HeaderCell>
