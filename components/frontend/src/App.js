@@ -14,7 +14,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            datamodel: {}, reports: [], report_uuid: '', report_date_string: '', reports_overview: {},
+            datamodel: {}, reports: [], report_uuid: '', report_date: null, reports_overview: {},
             nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
         };
         this.history = createBrowserHistory();
@@ -33,7 +33,11 @@ class App extends Component {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
         const report_date_iso_string = registeredURLSearchParams(this.history).get("report_date") || "";
-        const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
+        let reportDate = null;
+        if (isValidDate_YYYYMMDD(report_date_iso_string)) {
+            reportDate = new Date(report_date_iso_string);
+            reportDate.setHours(23, 59, 59);
+        }
         this.login_forwardauth();
         this.connect_to_nr_measurements_event_source();
         if (new Date(localStorage.getItem("session_expiration_datetime")) < new Date()) {
@@ -41,7 +45,7 @@ class App extends Component {
         }
         this.setState(
             {
-                report_uuid: report_uuid, report_date_string: report_date_string, loading: true,
+                report_uuid: report_uuid, report_date: reportDate, loading: true,
                 user: localStorage.getItem("user"), email: localStorage.getItem("email")
             },
             () => this.reload());
@@ -57,14 +61,14 @@ class App extends Component {
             this.changed_fields = json.availability ? json.availability.filter((url_key) => url_key.status_code !== 200) : null;
             this.check_session(json)
         }
-        const report_date = this.report_date();
         const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
-        this.loadAndSetState(report_date, show_error)
+        this.loadAndSetState(show_error)
     }
 
-    loadAndSetState(report_date, show_error) {
+    loadAndSetState(show_error) {
         const report_uuid = this.state.report_uuid;
-        Promise.all([get_datamodel(report_date), get_reports_overview(report_date), get_reports(this.state.report_uuid, report_date)]).then(
+        const reportDate = this.state.report_date
+        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_reports(report_uuid, reportDate)]).then(
             ([data_model, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
                     return  // User navigated to a different report or to the overview page, cancel update
@@ -94,18 +98,15 @@ class App extends Component {
     }
 
     handleDateChange(_event, { name, value }) {
-        const today = new Date();
-        const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
-        const new_report_date_string = value === today_string ? '' : value;
         let parsed = registeredURLSearchParams(this.history);
-        if (new_report_date_string === "") {
-            parsed.delete("report_date")
+        if (!!value) {
+            parsed.set("report_date", value.toISOString().split("T")[0]);
         } else {
-            parsed.set("report_date", new_report_date_string.split("-").reverse().join("-"));
+            parsed.delete("report_date")
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         this.history.replace({ search: search.length > 0 ? "?" + search : "" })
-        this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
+        this.setState({ report_date: value, loading: true }, () => this.reload())
     }
 
     go_home() {
@@ -142,15 +143,6 @@ class App extends Component {
         }, false);
     }
 
-    report_date() {
-        let report_date = null;
-        if (this.state.report_date_string) {
-            report_date = new Date(this.state.report_date_string.split("-").reverse().join("-"));
-            report_date.setHours(23, 59, 59);
-        }
-        return report_date;
-    }
-
     current_report_is_tag_report() {
         return this.state.report_uuid.slice(0, 4) === "tag-"
     }
@@ -182,8 +174,6 @@ class App extends Component {
     }
 
     render() {
-        const report_date = this.report_date();
-
         return (
             <AppUI
                 changed_fields={this.changed_fields}
@@ -197,8 +187,7 @@ class App extends Component {
                 nr_measurements={this.state.nr_measurements}
                 open_report={(e, r) => this.open_report(e, r)}
                 reload={(json) => this.reload(json)}
-                report_date={report_date}
-                report_date_string={this.state.report_date_string}
+                report_date={this.state.report_date}
                 report_uuid={this.state.report_uuid}
                 reports={this.state.reports}
                 reports_overview={this.state.reports_overview}

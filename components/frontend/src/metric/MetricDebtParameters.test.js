@@ -47,7 +47,7 @@ it('accepts technical debt', async () => {
 it('sets the technical debt end date', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => { renderMetricDebtParameters() });
-    await userEvent.type(screen.getByLabelText(/Technical debt end date/), '2022-12-31{Enter}');
+    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), '2022-12-31{Tab}', {initialSelectionStart: 0, initialSelectionEnd: 10} );
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: "2022-12-31" });
 });
 

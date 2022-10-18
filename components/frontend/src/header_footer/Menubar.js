@@ -59,7 +59,7 @@ export function Menubar({
     go_home,
     onDate,
     panel,
-    report_date_string,
+    report_date,
     set_user,
     user,
     visibleDetailsTabs
@@ -124,7 +124,7 @@ export function Menubar({
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" position="left center" trigger={
                         <Menu.Item>
-                            <DatePicker onDate={onDate} name="report_date_string" value={report_date_string} label="Report date" />
+                            <DatePicker onDate={onDate} value={report_date} label="Report date" />
                         </Menu.Item>}
                     />
                     <Menu.Item>

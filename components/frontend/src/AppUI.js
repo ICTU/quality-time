@@ -27,7 +27,6 @@ export function AppUI({
     open_report,
     reload,
     report_date,
-    report_date_string,
     report_uuid,
     reports,
     reports_overview,
@@ -103,7 +102,7 @@ export function AppUI({
                     email={email}
                     go_home={go_home}
                     onDate={handleDateChange}
-                    report_date_string={report_date_string}
+                    report_date={report_date}
                     set_user={set_user}
                     user={user}
                     visibleDetailsTabs={visibleDetailsTabs}
