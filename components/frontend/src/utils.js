@@ -50,7 +50,7 @@ export function getMetricResponseTimeLeft(metric, report) {
     return deadline.getTime() - now.getTime()
 }
 
-export function getMetricResponseOverrun(metric_uuid, metric, report, measurements) {
+export function getMetricResponseOverruns(metric_uuid, metric, report, measurements) {
     const scale = metric?.scale ?? "count"
     let previousStatus;
     const consolidatedMeasurements = [];
@@ -64,17 +64,36 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
         }
         previousStatus = status
     })
+    return consolidatedMeasurements
+}
+
+export function getMetricResponseOverrun(metric_uuid, metric, report, measurements) {
+    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, report, measurements)
+    const scale = metric?.scale ?? "count"
     let totalOverrun = 0;  // Amount of time the desired response time was not achieved for this metric
+    const overruns = []
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status in metricReactionDeadline) {
             const desiredResponseTime = getMetricDesiredResponseTime(report, status) * 24 * 60 * 60 * 1000
             const actualResponseTime = (new Date(measurement.end)).getTime() - (new Date(measurement.start)).getTime()
             const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
-            totalOverrun += overrun
+            if (overrun > 0) {
+                overruns.push(
+                    {
+                        status: status,
+                        start: measurement.start,
+                        end: measurement.end,
+                        desired_response_time: days(desiredResponseTime),
+                        actual_response_time: days(actualResponseTime),
+                        overrun: days(overrun)
+                    }
+                )
+                totalOverrun += overrun
+            }
         }
     })
-    return days(totalOverrun)
+    return { totalOverrun: days(totalOverrun), overruns: overruns }
 }
 
 function getMetricDesiredResponseTime(report, status) {

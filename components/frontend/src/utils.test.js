@@ -261,15 +261,31 @@ it("returns false when the user prefers light mode", () => {
 })
 
 it("returns the metric response overrun when there are no measurements", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [])).toBe(0)
+    expect(getMetricResponseOverrun("uuid", {}, {}, [])).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })
 
 it("returns the metric response overrun when there is no overrun", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-04"}])).toBe(0)
+    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-04"}])).toStrictEqual(
+        {"overruns": [], "totalOverrun": 0}
+    )
 })
 
 it("returns the metric response overrun when there is one long measurement", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}])).toBe(27)
+    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}])).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "unknown",
+                    "start": "2000-01-01",
+                    "end": "2000-01-31",
+                    "actual_response_time": 30,
+                    "desired_response_time": 3,
+                    "overrun": 27
+                }
+            ],
+            "totalOverrun": 27
+        }
+    )
 })
 
 it("returns the metric response overrun when there are two consecutive measurements that together overrun", () => {
@@ -277,7 +293,21 @@ it("returns the metric response overrun when there are two consecutive measureme
         {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05"}
     ]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toBe(1)
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "unknown",
+                    "start": "2000-01-01",
+                    "end": "2000-01-05",
+                    "actual_response_time": 4,
+                    "desired_response_time": 3,
+                    "overrun": 1
+                }
+            ],
+            "totalOverrun": 1
+        }
+    )
 })
 
 it("returns the metric response overrun when there are two measurements with different statuses", () => {
@@ -285,5 +315,5 @@ it("returns the metric response overrun when there are two measurements with dif
         {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05", count: {status: "target_met"}}
     ]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toBe(0)
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })
