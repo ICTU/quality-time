@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 - When showing multiple dates in a quality report, the *Quality-time* frontend retrieves 28 weeks of measurements so that the maximum period (seven weeks times a four-week interval) can be displayed. However, the frontend would always get the most recent 28 weeks, even if the user was time traveling. Fixes [#4705](https://github.com/ICTU/quality-time/issues/4705).
 
+### Added
+
+- Datepickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
+
 ## v4.5.0 - 2022-10-04
 
 ### Deployment notes
