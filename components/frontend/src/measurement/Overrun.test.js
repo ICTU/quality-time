@@ -14,10 +14,10 @@ it("renders the days overrun if the metric has overrun its deadline", () => {
         <Overrun
             dates={dates}
             metric_uuid="uuid"
-            measurements={[{metric_uuid: "uuid", start: "2020-01-01", end: "2020-12-31"}]}
+            measurements={[{metric_uuid: "uuid", start: "2020-01-01", end: "2020-01-31"}]}
         />
     )
-    expect(screen.queryAllByText(/days/).length).toBe(1)
+    expect(screen.queryAllByText(/27 days/).length).toBe(1)
 })
 
 it("merges the days overrun if the metric has consecutive measurements", () => {
@@ -25,8 +25,13 @@ it("merges the days overrun if the metric has consecutive measurements", () => {
         <Overrun
             dates={dates}
             metric_uuid="uuid"
-            measurements={[{metric_uuid: "uuid", start: "2020-01-01", end: "2020-12-31"}]}
+            measurements={
+                [
+                    {metric_uuid: "uuid", start: "2020-01-01", end: "2020-01-10"},
+                    {metric_uuid: "uuid", start: "2020-01-10", end: "2020-01-20"}
+                ]
+            }
         />
     )
-    expect(screen.queryAllByText(/days/).length).toBe(1)
+    expect(screen.queryAllByText(/16 days/).length).toBe(1)
 })

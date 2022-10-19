@@ -133,7 +133,7 @@ const timeLeftHelp = <>
         metric (click <Icon fitted name="triangle right" />) to edit technical debt end date in the technical debt tab.
      </p>
     <p>
-        Hover the number of days to see the exact deadline.
+        Hover over the number of days to see the exact deadline.
     </p>
     <p>
         Click the column header to sort the metrics by time left.
@@ -142,16 +142,16 @@ const timeLeftHelp = <>
 
 const overrunHelp = <>
     <p>
-        The amount of days the desired reaction time to address the metric was exceeded in the displayed period.
+        The number of days that the desired reaction time was exceeded, in the displayed period.
     </p>
     <p>
         Expand the report title (click <Icon fitted name="triangle right" />) to change the desired reaction times.
     </p>
     <p>
-        Hover the number of days to see an overview of when and for which statuses the metric had overruns in the displayed period.
+        Hover over the number of days to see an overview of when and for which statuses the metric had overruns, in the displayed period.
     </p>
     <p>
-        Click the column header to sort the metrics by overrun.
+        Click the column header to sort the metrics by the number of days overrun.
     </p>
 </>
 

@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 import { metricReactionDeadline } from './defaults';
 
+export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
+
+
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
     return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || dataModel.metrics[metric.type].direction];
@@ -75,7 +79,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status in metricReactionDeadline) {
-            const desiredResponseTime = getMetricDesiredResponseTime(report, status) * 24 * 60 * 60 * 1000
+            const desiredResponseTime = getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY;
             const actualResponseTime = (new Date(measurement.end)).getTime() - (new Date(measurement.start)).getTime()
             const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
             if (overrun > 0) {
@@ -179,7 +183,7 @@ export function formatMetricScaleAndUnit(metricType, metric) {
 }
 
 export function days(timeInMs) {
-    return Math.round(timeInMs / (24 * 60 * 60 * 1000))
+    return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
 const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
