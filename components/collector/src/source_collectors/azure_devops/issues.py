@@ -36,16 +36,16 @@ class AzureDevopsIssues(SourceCollector):
         """Return the API fields to select for individual issues."""
         return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
 
-    async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> Responses:
+    async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> SourceResponses:
         """Separately get each work item from the API."""
-        api_url = (await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch')
+        api_url = URL((await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch'))
         batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
             await self._session.post(api_url, auth=auth, json=dict(ids=id_batch, fields=self._item_select_fields()))
             for id_batch in id_iter
         ]
-        return responses
+        return SourceResponses(responses=responses, api_url=api_url)
 
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
@@ -57,7 +57,7 @@ class AzureDevopsIssues(SourceCollector):
             return SourceResponses(responses=[response], api_url=api_url)
         work_items = await self._get_work_item_responses(auth)
         work_items.insert(0, response)
-        return SourceResponses(responses=work_items, api_url=api_url)
+        return work_items
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the work items from the WIQL query response."""

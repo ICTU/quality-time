@@ -1,5 +1,7 @@
 """Unit tests for the Azure DevOps Server issues collector."""
 
+from unittest.mock import ANY
+
 from .base import AzureDevopsTestCase
 
 
@@ -23,11 +25,21 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
 
     async def test_empty_issue_response(self):
         """Test that value is taken from workItems total call, instead of empty item response json."""
-        response = await self.collect(post_request_json_side_effect=[
-            dict(workItems=[dict(id="id")]),
-            None
-        ])
+        ret_value = [dict(workItems=[dict(id="id")]), None]  # needed for line coverage in source_collector_test_case.py
+        response = await self.collect(post_request_json_return_value=ret_value, post_request_json_side_effect=ret_value)
         self.assert_measurement(response, value="1", entities=[])
+
+    async def test_wiql_with_where(self):
+        """Test wiql parameter is used."""
+        self.set_source_parameter("wiql", "WHERE 1")
+        _, _, post_mock = await self.collect(post_request_json_return_value=dict(workItems=[]), return_mocks=True)
+        post_mock.assert_called_once_with(ANY, auth=ANY, json=dict(query="Select [System.Id] From WorkItems WHERE 1"))
+
+    async def test_wiql_without_where(self):
+        """Test wiql parameter is used."""
+        self.set_source_parameter("wiql", "42")
+        _, _, post_mock = await self.collect(post_request_json_return_value=dict(workItems=[]), return_mocks=True)
+        post_mock.assert_called_once_with(ANY, auth=ANY, json=dict(query="Select [System.Id] From WorkItems WHERE 42"))
 
     async def test_issues(self):
         """Test that the issues are returned."""
