@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.collector.name }}
+  name: {{ .Values.collector.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.collector.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.collector.name }}
+    spec:
+      containers:
+        - env:
+            - name: INTERNAL_SERVER_HOST
+              value: {{ .Values.internal_server.name }}
+            - name: INTERNAL_SERVER_PORT
+              value: "5002"
+          image: {{ .Values.collector.image }}
+          imagePullPolicy: Always
+          name: {{ .Values.collector.name }}
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+      imagePullSecrets: 
+        - name: quality-time-pullsecret
+

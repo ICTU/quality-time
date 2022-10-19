@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.notifier.name }}
+  name: {{ .Values.notifier.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.notifier.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.notifier.name }}
+    spec:
+      containers:
+        - env:
+            - name: INTERNAL_SERVER_HOST
+              value: {{ .Values.internal_server.name }}
+            - name: INTERNAL_SERVER_PORT
+              value: "5002"
+            - name: NOTIFIER_SLEEP_DURATION
+              value: "60"
+          image: {{ .Values.notifier.image }}
+          imagePullPolicy: Always
+          name: {{ .Values.notifier.name }}
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+      imagePullSecrets: 
+        - name: quality-time-pullsecret

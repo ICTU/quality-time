@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.database.name }}
+spec:
+  ports:
+  - name: 27017-tcp
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: {{ .Values.database.name }}
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  ports:
+  - name: 5000-tcp
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: {{ .Values.frontend.name }}
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.external_server.name }}
+spec:
+  ports:
+  - name: 5001-tcp
+    port: 5001
+    protocol: TCP
+    targetPort: 5001
+  selector:
+    app: {{ .Values.external_server.name }}
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.internal_server.name }}
+spec:
+  ports:
+  - name: 5002-tcp
+    port: 5002
+    protocol: TCP
+    targetPort: 5002
+  selector:
+    app: {{ .Values.internal_server.name }}
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.www.name }}
+spec:
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: {{ .Values.www.name }}
+  sessionAffinity: None
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: quality-route
+spec:
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  path: /
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: {{ .Values.www.name }}
+    weight: 100
+  wildcardPolicy: None

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.frontend.name }}
+  name: {{ .Values.frontend.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.frontend.name }}
+    spec:
+      containers:
+        - env:
+            - name: FRONTEND_PORT
+              value: "5000"
+          image: {{ .Values.frontend.image }}
+          imagePullPolicy: Always
+          name: {{ .Values.frontend.name }}
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+      imagePullSecrets: 
+        - name: quality-time-pullsecret
