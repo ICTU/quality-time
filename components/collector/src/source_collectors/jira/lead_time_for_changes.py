@@ -16,9 +16,6 @@ class JiraLeadTimeForChanges(JiraIssues):
     """Jira collector for lead time for changes."""
 
     def _include_issue(self, issue: dict) -> bool:
-        if not super()._include_issue(issue):
-            return False
-
         if not issue["fields"]["status"]["statusCategory"]["key"] == "done":
             return False
 
