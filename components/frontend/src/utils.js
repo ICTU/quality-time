@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 import { metricReactionDeadline } from './defaults';
 
+export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
+
+
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
     return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || dataModel.metrics[metric.type].direction];
@@ -32,24 +36,72 @@ export function getMetricUnit(metric, dataModel) {
     return formatMetricUnit(metricType, metric)
 }
 
-export function getMetricDeadline(metric, report) {
+export function getMetricResponseDeadline(metric, report) {
     let deadline;
     if (metric.status === "debt_target_met" && metric.debt_end_date) {
         deadline = new Date(metric.debt_end_date)
     } else {
         const statusStart = metric.status_start || "3000-01-01"
-        const status = metric.status
-        const desiredResponseTime = report?.desired_response_times?.[status] ?? (metricReactionDeadline[status] ?? metricReactionDeadline["unknown"])
         deadline = new Date(statusStart)
-        deadline.setDate(deadline.getDate() + desiredResponseTime)
+        deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))
     }
     return deadline
 }
 
-export function getMetricTimeLeft(metric, report) {
-    const deadline = getMetricDeadline(metric, report)
+export function getMetricResponseTimeLeft(metric, report) {
+    const deadline = getMetricResponseDeadline(metric, report)
     const now = new Date()
     return deadline.getTime() - now.getTime()
+}
+
+export function getMetricResponseOverruns(metric_uuid, metric, report, measurements) {
+    const scale = metric?.scale ?? "count"
+    let previousStatus;
+    const consolidatedMeasurements = [];
+    const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)
+    filteredMeasurements.forEach((measurement) => {
+        const status = measurement?.[scale]?.status || "unknown"
+        if (status === previousStatus) {
+            consolidatedMeasurements.at(-1).end = measurement.end  // Status unchanged so merge this measurement with the previous one
+        } else {
+            consolidatedMeasurements.push(measurement);  // Status changed or first one, so keep this measurement
+        }
+        previousStatus = status
+    })
+    return consolidatedMeasurements
+}
+
+export function getMetricResponseOverrun(metric_uuid, metric, report, measurements) {
+    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, report, measurements)
+    const scale = metric?.scale ?? "count"
+    let totalOverrun = 0;  // Amount of time the desired response time was not achieved for this metric
+    const overruns = []
+    consolidatedMeasurements.forEach((measurement) => {
+        const status = measurement?.[scale]?.status || "unknown"
+        if (status in metricReactionDeadline) {
+            const desiredResponseTime = getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY;
+            const actualResponseTime = (new Date(measurement.end)).getTime() - (new Date(measurement.start)).getTime()
+            const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
+            if (overrun > 0) {
+                overruns.push(
+                    {
+                        status: status,
+                        start: measurement.start,
+                        end: measurement.end,
+                        desired_response_time: days(desiredResponseTime),
+                        actual_response_time: days(actualResponseTime),
+                        overrun: days(overrun)
+                    }
+                )
+                totalOverrun += overrun
+            }
+        }
+    })
+    return { totalOverrun: days(totalOverrun), overruns: overruns }
+}
+
+function getMetricDesiredResponseTime(report, status) {
+    return report?.desired_response_times?.[status] ?? (metricReactionDeadline[status] ?? metricReactionDeadline["unknown"])
 }
 
 export function get_metric_value(metric) {
@@ -128,6 +180,10 @@ export function formatMetricScaleAndUnit(metricType, metric) {
     const unit = formatMetricUnit(metricType, metric);
     const sep = unit ? " " : "";
     return `${scale}${sep}${unit}`;
+}
+
+export function days(timeInMs) {
+    return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
 const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);

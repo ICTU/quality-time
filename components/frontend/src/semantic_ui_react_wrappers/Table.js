@@ -11,6 +11,7 @@ export function Table(props) {
 
 Table.Body = SemanticUITable.Body
 Table.Cell = SemanticUITable.Cell
+Table.Footer = SemanticUITable.Footer
 Table.Header = SemanticUITable.Header
 Table.HeaderCell = SemanticUITable.HeaderCell
 Table.Row = SemanticUITable.Row

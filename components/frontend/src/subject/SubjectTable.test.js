@@ -26,6 +26,12 @@ const datamodel = {
 }
 const reportDate = new Date("2020-01-15T00:00:00+00:00")
 
+const dates = [
+    new Date("2020-01-15T00:00:00+00:00"),
+    new Date("2020-01-14T00:00:00+00:00"),
+    new Date("2020-01-13T00:00:00+00:00"),
+]
+
 function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
     const toggleVisibleDetailsTab = jest.fn();
     render(
@@ -36,10 +42,11 @@ function renderSubjectTable(dates, hiddenColumns, visibleDetailsTabs) {
                 report={{ report_uuid: "report_uuid", subjects: { subject_uuid: { type: "subject_type", metrics: { 1: metric, 2: metric2 } } } }}
                 measurements={
                     [
-                        { metric_uuid: "1", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00" },
-                        { metric_uuid: "1", start: "2020-01-15T00:00:00+00:00", end: "2020-01-16T00:00:00+00:00" },
-                        { metric_uuid: "2", start: "2020-01-10T00:00:00+00:00", end: "2020-01-10T00:00:00+00:00" },
-                        { metric_uuid: "3", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00" },
+                        { metric_uuid: "1", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00", count: { status: "target_met"} },
+                        { metric_uuid: "1", start: "2020-01-15T00:00:00+00:00", end: "2020-01-16T00:00:00+00:00", count: { status: "target_met"} },
+                        { metric_uuid: "1", start: "2020-01-16T00:00:00+00:00", end: "2020-01-17T00:00:00+00:00", count: { status: "target_not_met"} },
+                        { metric_uuid: "2", start: "2020-01-10T00:00:00+00:00", end: "2020-01-10T00:00:00+00:00", count: { status: "target_not_met"} },
+                        { metric_uuid: "3", start: "2020-01-14T00:00:00+00:00", end: "2020-01-15T00:00:00+00:00", count: { status: "target_not_met"} },
                     ]
                 }
                 metricEntries={Object.entries({ 1: metric, 2: metric2 })}
@@ -63,11 +70,6 @@ it('displays all the metrics', () => {
 });
 
 it('shows the date columns', () => {
-    const dates = [
-        new Date("2020-01-15T00:00:00+00:00"),
-        new Date("2020-01-14T00:00:00+00:00"),
-        new Date("2020-01-13T00:00:00+00:00"),
-    ]
     renderSubjectTable(dates)
     dates.forEach((date) => {
         expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
@@ -82,6 +84,31 @@ it('shows the source column', () => {
 it('hides the source column', () => {
     renderSubjectTable([], ["source"])
     expect(screen.queryAllByText(/Source/).length).toBe(0)
+})
+
+it('shows the time left column', () => {
+    renderSubjectTable()
+    expect(screen.queryAllByText(/Time left/).length).toBe(1)
+})
+
+it('hides the time left column', () => {
+    renderSubjectTable([], ["time_left"])
+    expect(screen.queryAllByText(/Time left/).length).toBe(0)
+})
+
+it('does not show the overrun column when showing one date', () => {
+    renderSubjectTable()
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
+})
+
+it('shows the overrun column when showing multiple dates', () => {
+    renderSubjectTable(dates)
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(1)
+})
+
+it('hides the overrun column when showing multiple dates', () => {
+    renderSubjectTable(dates, ["overrun"])
+    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
 })
 
 it('shows the comment column', () => {

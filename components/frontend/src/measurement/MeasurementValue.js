@@ -1,7 +1,7 @@
 import { Message } from 'semantic-ui-react';
 import { Label, Popup } from "../semantic_ui_react_wrappers";
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { get_metric_value } from '../utils';
+import { get_metric_value, MILLISECONDS_PER_HOUR } from '../utils';
 
 export function MeasurementValue({ metric, reportDate }) {
     const metricValue = get_metric_value(metric)
@@ -10,7 +10,7 @@ export function MeasurementValue({ metric, reportDate }) {
     if (metric.latest_measurement) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()
-        const staleMeasurementValue = now - end > 1000 * 3600  // No new measurement for more than one hour means something is wrong
+        const staleMeasurementValue = now - end > MILLISECONDS_PER_HOUR  // No new measurement for more than one hour means something is wrong
         const trigger = staleMeasurementValue ? <Label color="red">{value}</Label> : <span>{value}</span>;
         return (
             <Popup trigger={trigger} flowing hoverable>

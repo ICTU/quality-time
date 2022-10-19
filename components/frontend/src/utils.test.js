@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { createMemoryHistory } from 'history';
 import {
     capitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
-    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery
+    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery, getMetricResponseOverrun
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
@@ -258,4 +258,62 @@ it("returns true when the user prefers dark mode", () => {
 it("returns false when the user prefers light mode", () => {
     matchMediaMatches = false
     expect(userPrefersDarkMode(null)).toBe(false)
+})
+
+it("returns the metric response overrun when there are no measurements", () => {
+    expect(getMetricResponseOverrun("uuid", {}, {}, [])).toStrictEqual({"overruns": [], "totalOverrun": 0})
+})
+
+it("returns the metric response overrun when there is no overrun", () => {
+    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-04"}])).toStrictEqual(
+        {"overruns": [], "totalOverrun": 0}
+    )
+})
+
+it("returns the metric response overrun when there is one long measurement", () => {
+    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}])).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "unknown",
+                    "start": "2000-01-01",
+                    "end": "2000-01-31",
+                    "actual_response_time": 30,
+                    "desired_response_time": 3,
+                    "overrun": 27
+                }
+            ],
+            "totalOverrun": 27
+        }
+    )
+})
+
+it("returns the metric response overrun when there are two consecutive measurements that together overrun", () => {
+    const measurements = [
+        {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
+        {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05"}
+    ]
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "unknown",
+                    "start": "2000-01-01",
+                    "end": "2000-01-05",
+                    "actual_response_time": 4,
+                    "desired_response_time": 3,
+                    "overrun": 1
+                }
+            ],
+            "totalOverrun": 1
+        }
+    )
+})
+
+it("returns the metric response overrun when there are two measurements with different statuses", () => {
+    const measurements = [
+        {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
+        {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05", count: {status: "target_met"}}
+    ]
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })

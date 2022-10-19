@@ -8,6 +8,7 @@ import { MeasurementSources } from '../measurement/MeasurementSources';
 import { MeasurementTarget } from '../measurement/MeasurementTarget';
 import { MeasurementValue } from '../measurement/MeasurementValue';
 import { StatusIcon } from '../measurement/StatusIcon';
+import { Overrun } from '../measurement/Overrun';
 import { TimeLeft } from '../measurement/TimeLeft';
 import { TrendSparkline } from '../measurement/TrendSparkline';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
@@ -72,7 +73,7 @@ export function SubjectTable({
     const nrDates = dates.length
     const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
-    measurements.sort((m1, m2) => m1.start < m2.start ? 1 : -1)
+    const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
         <Table sortable className={className} style={{ marginTop: "0px" }}>
             <SubjectTableHeader
@@ -111,7 +112,7 @@ export function SubjectTable({
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
-                            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={measurements} />}
+                            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={reversedMeasurements} />}
                             {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} /></Table.Cell>}
@@ -119,6 +120,7 @@ export function SubjectTable({
                             {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
                             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
                             {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
+                            {nrDates > 1 && !hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
                             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
                             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
                                 <IssueStatus

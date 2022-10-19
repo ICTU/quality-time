@@ -126,17 +126,32 @@ const timeLeftHelp = <>
     </p>
     <p>
         If the metric needs action, the time left is based on the desired reaction times. Expand the report title
-        (click <Icon fitted name="triangle right" />) to changed the desired reaction times.
+        (click <Icon fitted name="triangle right" />) to change the desired reaction times.
     </p>
     <p>
         If the metric has accepted technical debt, the time left is based on the technical debt end date. Expand the
         metric (click <Icon fitted name="triangle right" />) to edit technical debt end date in the technical debt tab.
      </p>
     <p>
-        Hover the number of days to see the exact deadline.
+        Hover over the number of days to see the exact deadline.
     </p>
     <p>
         Click the column header to sort the metrics by time left.
+    </p>
+</>
+
+const overrunHelp = <>
+    <p>
+        The number of days that the desired reaction time was exceeded, in the displayed period.
+    </p>
+    <p>
+        Expand the report title (click <Icon fitted name="triangle right" />) to change the desired reaction times.
+    </p>
+    <p>
+        Hover over the number of days to see an overview of when and for which statuses the metric had overruns, in the displayed period.
+    </p>
+    <p>
+        Click the column header to sort the metrics by the number of days overrun.
     </p>
 </>
 
@@ -232,6 +247,7 @@ export function SubjectTableHeader(
                 {!hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />}
                 {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Sources' help={sourcesHelp} {...sortProps} />}
                 {!hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' help={timeLeftHelp} {...sortProps} />}
+                {nrDates > 1 && !hiddenColumns.includes("overrun") && <SortableTableHeaderCell column='overrun' label='Overrun' help={overrunHelp} {...sortProps} />}
                 {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' help={commentHelp} {...sortProps} />}
                 {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' help={issuesHelp} {...sortProps} />}
                 {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' help={tagsHelp} {...sortProps} />}
