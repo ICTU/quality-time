@@ -84,10 +84,10 @@ additional-deps:
 
 ignore-failures:
   python:
-    - asserts  # Issue to ask for a new release: https://github.com/srittau/python-asserts/issues/84
-    - behave
+    - behave  # Behave doesn't release to PyPI apparently: https://github.com/behave/behave/issues/1059#issuecomment-1271522090
     - bump2version  # Issue to find alternative: https://github.com/ICTU/quality-time/issues/4619
     - sseclient  # Used in one feature test. Issue to find alternative: https://github.com/ICTU/quality-time/issues/4560
   javascript:
     - react-hash-link  # No alternative available AFAICT
     - semantic-ui-css  # https://github.com/Semantic-Org/Semantic-UI-CSS/issues/81
+
