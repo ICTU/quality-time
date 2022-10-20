@@ -68,8 +68,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_unit.localeCompare(m2_unit)
         },
         time_left: (m1, m2) => {
-            const m1_time_left = getMetricResponseTimeLeft(m1[1], report);
-            const m2_time_left = getMetricResponseTimeLeft(m2[1], report);
+            const m1_time_left = getMetricResponseTimeLeft(m1[1], report) ?? 0;
+            const m2_time_left = getMetricResponseTimeLeft(m2[1], report) ?? 0;
             return m1_time_left - m2_time_left
         },
         overrun: (m1, m2) => {
