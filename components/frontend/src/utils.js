@@ -37,14 +37,12 @@ export function getMetricUnit(metric, dataModel) {
 }
 
 export function getMetricResponseDeadline(metric, report) {
-    let deadline;
+    let deadline = null;
     if (metric.status === "debt_target_met" && metric.debt_end_date) {
         deadline = new Date(metric.debt_end_date)
-    } else if (metric.status in metricReactionDeadline) {
-        deadline = metric.status_start ? new Date(metric.status_start) : new Date()
+    } else if ((metric.status || "unknown") in metricReactionDeadline && metric.status_start) {
+        deadline = new Date(metric.status_start)
         deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))
-    } else {
-        deadline = new Date("3000-01-01")  // No response needed, so return an 'infinite' deadline
     }
     return deadline
 }
@@ -52,7 +50,7 @@ export function getMetricResponseDeadline(metric, report) {
 export function getMetricResponseTimeLeft(metric, report) {
     const deadline = getMetricResponseDeadline(metric, report)
     const now = new Date()
-    return deadline.getTime() - now.getTime()
+    return deadline === null ? null : deadline.getTime() - now.getTime()
 }
 
 function getMetricResponseOverruns(metric_uuid, metric, measurements) {
