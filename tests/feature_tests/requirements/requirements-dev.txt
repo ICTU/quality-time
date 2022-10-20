@@ -4,8 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes requirements-dev.in
 #
-asserts==0.11.1 \
-    --hash=sha256:dfe3a45a311c727f516e9375eac85e5f5dd1df846b60ae52f559d8534b24df5d
+asserts==0.12.0 \
+    --hash=sha256:7009950d1baa3238862ee8410b1fd2842993982e7d8d15fc4b8e1a40f5211469 \
+    --hash=sha256:fbf0143dc12132f043ac8296fce6e0a5ab72dbaa0b7369cdd33868426f2487f9
     # via -r requirements-dev.in
 astroid==2.11.6 \
     --hash=sha256:4f933d0bf5e408b03a6feb5d23793740c27e07340605f236496cd6ce552043d6 \
