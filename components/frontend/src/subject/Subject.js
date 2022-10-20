@@ -68,14 +68,14 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_unit.localeCompare(m2_unit)
         },
         time_left: (m1, m2) => {
-            const m1_time_left = getMetricResponseTimeLeft(m1[1]);
-            const m2_time_left = getMetricResponseTimeLeft(m2[1]);
-            return m1_time_left > m2_time_left
+            const m1_time_left = getMetricResponseTimeLeft(m1[1], report);
+            const m2_time_left = getMetricResponseTimeLeft(m2[1], report);
+            return m1_time_left - m2_time_left
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricResponseOverrun(m1[1].metric_uuid, m1[1], report, measurements);
-            const m2_overrun = getMetricResponseOverrun(m2[1].metric_uuid, m2[1], report, measurements);
-            return m1_overrun > m2_overrun
+            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements);
+            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements);
+            return m1_overrun.totalOverrun - m2_overrun.totalOverrun;
         }
     }
     metrics.sort(sorters[sortColumn]);

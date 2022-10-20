@@ -40,10 +40,11 @@ export function getMetricResponseDeadline(metric, report) {
     let deadline;
     if (metric.status === "debt_target_met" && metric.debt_end_date) {
         deadline = new Date(metric.debt_end_date)
-    } else {
-        const statusStart = metric.status_start || "3000-01-01"
-        deadline = new Date(statusStart)
+    } else if (metric.status in metricReactionDeadline) {
+        deadline = metric.status_start ? new Date(metric.status_start) : new Date()
         deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))
+    } else {
+        deadline = new Date("3000-01-01")  // No response needed, so return an 'infinite' deadline
     }
     return deadline
 }
@@ -54,7 +55,7 @@ export function getMetricResponseTimeLeft(metric, report) {
     return deadline.getTime() - now.getTime()
 }
 
-export function getMetricResponseOverruns(metric_uuid, metric, report, measurements) {
+function getMetricResponseOverruns(metric_uuid, metric, measurements) {
     const scale = metric?.scale ?? "count"
     let previousStatus;
     const consolidatedMeasurements = [];
@@ -72,7 +73,7 @@ export function getMetricResponseOverruns(metric_uuid, metric, report, measureme
 }
 
 export function getMetricResponseOverrun(metric_uuid, metric, report, measurements) {
-    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, report, measurements)
+    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, measurements)
     const scale = metric?.scale ?? "count"
     let totalOverrun = 0;  // Amount of time the desired response time was not achieved for this metric
     const overruns = []
