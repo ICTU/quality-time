@@ -42,7 +42,8 @@ class AzureDevopsIssues(SourceCollector):
         batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
-            await self._session.post(api_url, auth=auth, json=dict(ids=id_batch, fields=self._item_select_fields()))
+            await self._session.post(api_url, auth=auth,
+                                     json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"})
             for id_batch in id_iter
         ]
         return SourceResponses(responses=responses, api_url=api_url)
@@ -68,7 +69,7 @@ class AzureDevopsIssues(SourceCollector):
                 title=work_item["fields"]["System.Title"],
                 work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"],
-                url=work_item["url"],
+                url=work_item["_links"]["html"]["href"],
             )
             for work_item in await self._work_items(responses)
         )

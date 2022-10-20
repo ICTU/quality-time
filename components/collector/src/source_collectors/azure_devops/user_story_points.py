@@ -24,7 +24,7 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
                 title=work_item["fields"]["System.Title"],
                 work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"],
-                url=work_item["url"],
+                url=work_item["_links"]["html"]["href"],
                 story_points=self.__story_points(work_item),
             )
             for work_item in await self._work_items(responses)

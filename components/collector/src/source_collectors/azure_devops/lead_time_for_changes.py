@@ -48,7 +48,7 @@ class AzureDevopsLeadTimeForChanges(AzureDevopsIssues):
                 title=work_item["fields"]["System.Title"],
                 work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"],
-                url=work_item["url"],
+                url=work_item["_links"]["html"]["href"],
                 lead_time=self.__lead_time(work_item),
             )
             for work_item in await self._work_items(responses)

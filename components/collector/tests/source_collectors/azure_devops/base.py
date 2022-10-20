@@ -16,7 +16,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.set_source_parameter("url", self.url)
         self.work_item = dict(
             id="id",
-            url=self.work_item_url,
+            _links=dict(html=dict(href=self.work_item_url)),
             fields={
                 "System.TeamProject": "Project",
                 "System.Title": "Title",

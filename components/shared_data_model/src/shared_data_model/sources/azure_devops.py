@@ -75,6 +75,7 @@ AZURE_DEVOPS = Source(
             short_name="issue query",
             mandatory=False,
             help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
+            "For example, use the following clause to hide issues marked as done: \"[System.State] <> 'Done'\". "
             "See: https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
             metrics=["issues", "lead_time_for_changes", "user_story_points"],
         ),
