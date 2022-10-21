@@ -23,12 +23,12 @@ class AzureDevopsLeadTimeForChangesTest(AzureDevopsTestCase):
         self.work_item1 = deepcopy(self.work_item)
         self.work_item1["fields"]["System.State"] = "Done"
         self.work_item1["fields"]["System.CreatedDate"] = yesterday_timestamp
-        self.work_item1["fields"]["System.ChangedDate"] = now_timestamp
+        self.work_item1["fields"]["System.ChangedDate"] = now_timestamp  # NOSONAR
 
         self.work_item2 = deepcopy(self.work_item)
         self.work_item2["fields"]["System.State"] = "Done"
         self.work_item2["fields"]["System.CreatedDate"] = last_week_timestamp
-        self.work_item2["fields"]["System.ChangedDate"] = now_timestamp
+        self.work_item2["fields"]["System.ChangedDate"] = now_timestamp  # NOSONAR
 
     async def test_lead_time(self):
         """Test that the lead time is returned."""

@@ -1,7 +1,7 @@
 """Azure DevOps Server lead time for changes collector."""
 
 from statistics import mean
-from typing import cast
+from typing import cast, Final
 
 from dateutil.parser import parse
 
@@ -15,15 +15,17 @@ from .issues import AzureDevopsIssues
 class AzureDevopsLeadTimeForChanges(AzureDevopsIssues):
     """Collector to calculate lead time for changes from Azure Devops Server."""
 
+    _CHANGED_DATE_FIELD: Final[str] = "System.ChangedDate"
+
     def _item_select_fields(self) -> list[str]:
         """Extend to also request date fields to calculate lead time."""
-        return super()._item_select_fields() + ["System.CreatedDate", "System.ChangedDate"]
+        return super()._item_select_fields() + ["System.CreatedDate", self._CHANGED_DATE_FIELD]
 
     def _include_issue(self, issue: dict) -> bool:
         """Return whether this issue should be counted."""
         if issue["fields"]["System.State"] not in ["Closed", "Done"]:
             return False
-        if not (finished_date := issue["fields"].get("System.ChangedDate")):
+        if not (finished_date := issue["fields"].get(self._CHANGED_DATE_FIELD)):
             return False
         return days_ago(parse(finished_date)) <= int(cast(str, self._parameter("lookback_days")))
 
