@@ -137,6 +137,7 @@ The options for configuring logging are limited at the moment. The MongoDB daemo
 ```
 
 Other logging settings are currently fixed. These include:
+
 - The proxy access log is turned off.
 - The log level of the collector component is set to `WARNING`.
 - The log level of the notifier, the external server, and the internal server is set to `INFO`.
