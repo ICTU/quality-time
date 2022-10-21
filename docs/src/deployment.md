@@ -127,6 +127,22 @@ The date/time format and timezone of the reports that user sees are determined b
       - TZ=Europe/Amsterdam  # To get Central European Time
 ```
 
+## Configuring logging (optional)
+
+The options for configuring logging are limited at the moment. The MongoDB daemon can be told to produce less logging by passing the `--quiet` flag:
+
+```yaml
+  database:
+    command: --quiet
+```
+
+Other logging settings are currently fixed. These include:
+- The proxy access log is turned off.
+- The log level of the collector component is set to `WARNING`.
+- The log level of the notifier, the external server, and the internal server is set to `INFO`.
+
+Please submit an issue if you need these and other logging settings to be configurable.
+
 ## Moving *Quality-time*
 
 The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied.
