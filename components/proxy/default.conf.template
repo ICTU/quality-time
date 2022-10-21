@@ -5,6 +5,7 @@ server {
     add_header      X-Frame-Options "DENY";
     gzip            on;
     server_tokens   off;
+    access_log      off;
 
     location /api/v3/nr_measurements {
         gzip                off;

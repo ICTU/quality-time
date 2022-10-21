@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.6.0-rc.3 - 2022-10-20
+## [Unreleased]
 
 ### Deployment notes
 
@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 - Date pickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
 - When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
+
+### Changed
+
+- Reduce the considerable amount of logging that *Quality-time* generates by turning off the proxy access log, turning off the asyncio debug logging in the collector, increasing the log level to warning in the collector, and by passing `--quiet` to MongoDB. Closes [#4736](https://github.com/ICTU/quality-time/issues/4736).
 
 ## v4.5.0 - 2022-10-04
 
