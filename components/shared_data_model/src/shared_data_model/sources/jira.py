@@ -158,7 +158,9 @@ JIRA = Source(
     ),
     entities=dict(
         issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
-        lead_time_for_changes=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
+        lead_time_for_changes=dict(name="issue", attributes=ISSUE_ATTRIBUTES + [dict(
+            name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
+        )]),
         manual_test_duration=dict(
             name=TEST_CASE,
             measured_attribute="duration",

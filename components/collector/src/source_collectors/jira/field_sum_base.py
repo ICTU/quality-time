@@ -14,10 +14,9 @@ class JiraFieldSumBase(JiraIssues):
     field_parameter = "subclass responsibility"
     entity_key = "subclass responsibility"
 
-    @classmethod
-    def _compute_value(cls, entities: Entities) -> Value:
+    def _compute_value(self, entities: Entities) -> Value:
         """Override to sum the field, as specified by the entity key, from the entities."""
-        return str(round(sum(float(entity[cls.entity_key]) for entity in entities)))
+        return str(round(sum(float(entity[self.entity_key]) for entity in entities)))
 
     def _create_entity(self, issue: dict, url: URL) -> Entity:
         """Extend to also add the summed field to the entity."""

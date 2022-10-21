@@ -18,7 +18,7 @@ class JiraLeadTimeForChangesTest(JiraTestCase):
         )
         issues_json = dict(total=1, issues=[status_issue])
         response = await self.get_response(issues_json)
-        self.assert_measurement(response, value="3", entities=[self.entity(updated=updated_value)])
+        self.assert_measurement(response, value="3", entities=[self.entity(updated=updated_value, lead_time=3)])
 
     async def test_exclude_status_category(self):
         """Test that issues are excluded if statusCategory is not done."""
