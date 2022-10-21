@@ -180,7 +180,7 @@ AZURE_DEVOPS = Source(
         lead_time_for_changes=dict(
             name="lead time",
             attributes=ISSUE_ATTRIBUTES + [dict(
-                name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
+                name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
             )]
         ),
         merge_requests=dict(

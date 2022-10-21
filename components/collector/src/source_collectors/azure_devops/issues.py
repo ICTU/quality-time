@@ -62,19 +62,20 @@ class AzureDevopsIssues(SourceCollector):
         work_items.insert(0, response)
         return work_items
 
+    def _parse_entity(self, work_item: dict) -> dict:  # skipcq: PYL-R0201
+        """Parse the default work item entity from fields."""
+        return dict(
+            key=work_item["id"],
+            project=work_item["fields"]["System.TeamProject"],
+            title=work_item["fields"]["System.Title"],
+            work_item_type=work_item["fields"]["System.WorkItemType"],
+            state=work_item["fields"]["System.State"],
+            url=work_item["_links"]["html"]["href"],
+        )
+
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the work items from the WIQL query response."""
-        return Entities(
-            Entity(
-                key=work_item["id"],
-                project=work_item["fields"]["System.TeamProject"],
-                title=work_item["fields"]["System.Title"],
-                work_item_type=work_item["fields"]["System.WorkItemType"],
-                state=work_item["fields"]["System.State"],
-                url=work_item["_links"]["html"]["href"],
-            )
-            for work_item in await self._work_items(responses)
-        )
+        return Entities(Entity(**self._parse_entity(work_item)) for work_item in await self._work_items(responses))
 
     async def _parse_value(self, responses: SourceResponses) -> Value:  # skipcq: PYL-W0613
         """Override to parse the value from the responses.

@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
 from collector_utilities.type import Value
-from model import Entity, Entities, SourceResponses
+from model import SourceResponses
 
 from .issues import AzureDevopsIssues
 
@@ -34,20 +34,11 @@ class AzureDevopsLeadTimeForChanges(AzureDevopsIssues):
             return str(round(mean(lead_times)))
         return None
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to add the lead time for changes to the entities."""
-        return Entities(
-            Entity(
-                key=work_item["id"],
-                project=work_item["fields"]["System.TeamProject"],
-                title=work_item["fields"]["System.Title"],
-                work_item_type=work_item["fields"]["System.WorkItemType"],
-                state=work_item["fields"]["System.State"],
-                url=work_item["_links"]["html"]["href"],
-                lead_time=self.__lead_time(work_item),
-            )
-            for work_item in await self._work_items(responses)
-        )
+    def _parse_entity(self, work_item: dict) -> dict:
+        """Add the lead time to the work item entity"""
+        parsed_entity = super()._parse_entity(work_item)
+        parsed_entity['lead_time'] = self.__lead_time(work_item)
+        return parsed_entity
 
     @staticmethod
     def __lead_time(work_item: dict[str, dict[str, str]]) -> int:
