@@ -179,7 +179,9 @@ AZURE_DEVOPS = Source(
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
         lead_time_for_changes=dict(
             name="lead time",
-            attributes=ISSUE_ATTRIBUTES + [dict(name="Issue lead time in days", key="lead_time")]  # type int / days?
+            attributes=ISSUE_ATTRIBUTES + [dict(
+                name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
+            )]
         ),
         merge_requests=dict(
             name="merge request",

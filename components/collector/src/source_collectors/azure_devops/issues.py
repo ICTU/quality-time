@@ -1,12 +1,12 @@
 """Azure DevOps Server issues collector."""
 
-from typing import Final
+from typing import Final, cast
 
 import aiohttp
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import iterable_to_batches
-from collector_utilities.type import URL, Value, Responses
+from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
@@ -24,15 +24,17 @@ class AzureDevopsIssues(SourceCollector):
 
     def _api_list_query(self) -> dict[str, str]:
         """Combine API select and where fields to correct WIQL query."""
-        wiql_query_segments = [f"Select [System.Id] From WorkItems"]
+        wiql_query_segments = ["Select [System.Id] From WorkItems"]
         wiql_parameter = self._parameter("wiql")
-        if wiql_parameter:
+        if wiql_parameter := cast(  # type: ignore[redundant-cast]
+                str, wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter
+        ):
             if not wiql_parameter.startswith("WHERE"):
                 wiql_query_segments.append("WHERE")
             wiql_query_segments.append(wiql_parameter)
         return dict(query=" ".join(wiql_query_segments))
 
-    def _item_select_fields(self) -> list[str]:
+    def _item_select_fields(self) -> list[str]:  # skipcq: PYL-R0201
         """Return the API fields to select for individual issues."""
         return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
 
@@ -74,14 +76,14 @@ class AzureDevopsIssues(SourceCollector):
             for work_item in await self._work_items(responses)
         )
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses) -> Value:  # skipcq: PYL-W0613
         """Override to parse the value from the responses.
 
         We can't just count the entities because due to pagination the response may not contain all work items.
         """
         return str(len(self._issue_ids_to_fetch))
 
-    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201
+    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201,PYL-W0613
         """Return whether this issue should be counted."""
         return True
 
@@ -91,8 +93,6 @@ class AzureDevopsIssues(SourceCollector):
             return []
         all_work_items = []
         for response in responses[1:]:
-            response_json = (await response.json())
-            if not response_json:
-                continue
-            all_work_items.extend(response_json.get("value"))
+            if response_json := (await response.json()):
+                all_work_items.extend(response_json.get("value"))
         return [work_item for work_item in all_work_items if self._include_issue(work_item)]

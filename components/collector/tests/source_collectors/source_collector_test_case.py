@@ -46,7 +46,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         post_request_json_return_value=None,
         post_request_json_side_effect=None,
         return_mocks=False,
-    ):
+    ):  # pylint: disable=too-many-locals
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
@@ -61,9 +61,8 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         post = AsyncMock(return_value=post_response, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", get), patch("aiohttp.ClientSession.post", post):
             async with aiohttp.ClientSession() as session:
-                if return_mocks:
-                    return await MetricCollector(session, self.metric).collect(), get, post
-                return await MetricCollector(session, self.metric).collect()
+                result = await MetricCollector(session, self.metric).collect()
+                return (result, get, post) if return_mocks else result
 
     @staticmethod
     def __get_response(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
@@ -85,7 +84,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         if json_side_effect:
             if not json_return_value:  # put the last side effect into return value, if it was not already given
                 json_return_value = json_side_effect[-1]
-            json_side_effect = json_side_effect + [STOP_SENTINEL]  # AsyncMock apparently does catch StopAsyncIteration
+            json_side_effect.append(STOP_SENTINEL)  # AsyncMock apparently does catch StopAsyncIteration
         post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 

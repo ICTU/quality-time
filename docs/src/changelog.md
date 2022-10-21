@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 - Date pickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
 - When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
+- New metric "Lead time for changes", to keep track of the average lead time of changes completed in a certain time period in Jira and/or Azure DevOps. Closes [#3501](https://github.com/ICTU/quality-time/issues/3501).
 
 ### Changed
 
@@ -43,7 +44,6 @@ If your currently installed *Quality-time* version is not v4.4.0, please read th
 
 - New metric "Job runs within time period", to keep track of deployment frequency in Jenkins, GitLab and/or Azure DevOps. Closes [#3498](https://github.com/ICTU/quality-time/issues/3498).
 - Retrieve the possible projects and issue types for issue trackers from the configured issue tracker and present them via dropdown menus so the user can't enter non-existing projects or issue types. Closes [#4586](https://github.com/ICTU/quality-time/issues/4586).
-- New metric "Lead Time for Changes", to keep track of the average lead time of changes completed in a certain time period in Jira and/or Azure DevOps. Closes [#3501](https://github.com/ICTU/quality-time/issues/3501).
 
 ## v4.4.0 - 2022-09-16
 

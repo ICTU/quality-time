@@ -16,31 +16,26 @@ class AzureDevopsLeadTimeForChanges(AzureDevopsIssues):
     """Collector to calculate lead time for changes from Azure Devops Server."""
 
     def _item_select_fields(self) -> list[str]:
-        """Also request date fields to calculate lead time."""
-        base_fields = super()._item_select_fields()
-        return base_fields + ["System.CreatedDate", "System.ChangedDate"]
+        """Extend to also request date fields to calculate lead time."""
+        return super()._item_select_fields() + ["System.CreatedDate", "System.ChangedDate"]
 
     def _include_issue(self, issue: dict) -> bool:
         """Return whether this issue should be counted."""
-        if not issue["fields"]["System.State"] in ["Closed", "Done"]:
+        if issue["fields"]["System.State"] not in ["Closed", "Done"]:
             return False
-
-        finished_date = issue["fields"].get("System.ChangedDate")  # TODO - how to find out System.State update ?
-        if not finished_date:
+        if not (finished_date := issue["fields"].get("System.ChangedDate")):
             return False
-
         return days_ago(parse(finished_date)) <= int(cast(str, self._parameter("lookback_days")))
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
-        work_items = (await self._work_items(responses))
-        if not work_items:
-            return None
-
-        lead_times = [self.__lead_time(item) for item in work_items]
-        return str(round(mean(lead_times)))
+        """Calculate the average lead time of the completed work items."""
+        if work_items := (await self._work_items(responses)):
+            lead_times = [self.__lead_time(item) for item in work_items]
+            return str(round(mean(lead_times)))
+        return None
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to add the story points to the entities."""
+        """Override to add the lead time for changes to the entities."""
         return Entities(
             Entity(
                 key=work_item["id"],
