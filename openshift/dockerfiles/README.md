@@ -7,9 +7,11 @@ Also the proxy image is adjusted so it will be able to run as non-root on opensh
 
 You can build the images from the ICTU base images. so either pull does images or first build these images. Then you can build and tag your extensions.
 
-    podman build -t containers.local/somenamespace/quality-time_proxy:v4.5.0 --build-arg IMAGE_NAME=registry.access.redhat.com/ubi8/nginx-120 -f Dockerfile.proxy .
+	podman build -t containers.local/somenamespace/quality-time_proxy:v4.5.0 --build-arg IMAGE_NAME=registry.access.redhat.com/ubi8/nginx-120 -f Dockerfile.proxy .
+	podman build -t containers.local/somenamespace/quality-time_collector:v4.5.0 --build-arg IMAGE_NAME=docker.io/ictu/quality-time_collector:v4.5.0 -f Dockerfile.collector .
+	# and more builds followed by login and pushes to containers.local repo
 	
-Make sure to adjust the docker-compose.yml or the helm chart values.yml with your extension images.
+Make sure to adjust the [docker-compose.yml](../../docker/docker-compose.yml) or the helm chart [values.yaml](../helm/values.yaml) with your extension images (such as containers.local/somenamespace/quality-time_collector:v4.5.0).
 	
 ## Changes for custom Certificate Authorities
 
