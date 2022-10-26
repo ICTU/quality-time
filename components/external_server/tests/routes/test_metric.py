@@ -6,6 +6,8 @@ import requests
 
 from shared_data_model import DATA_MODEL
 from shared.model.report import Report
+from shared.utils.type import User
+
 
 from routes import (
     add_metric_issue,
@@ -470,7 +472,8 @@ class MetricIssueTest(DataModelTestCase):
                 summary="Quality-time metric 'name'",
                 description="Metric '[name|https://quality_time/metric42]' of subject "
                 "'Subject' in Quality-time report '' needs attention.\n\n"
-                f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}",
+                f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}\n\n"
+                "This issue was created by user.\n",
             )
         )
 
@@ -481,7 +484,7 @@ class MetricIssueTest(DataModelTestCase):
         requests_post.return_value = response
         self.assertEqual(
             dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
-            add_metric_issue(METRIC_ID, self.database),
+            add_metric_issue(METRIC_ID, self.database, User("user")),
         )
         requests_post.assert_called_once_with(
             "https://tracker/rest/api/2/issue", auth=None, headers={}, json=self.expected_json
@@ -503,7 +506,7 @@ class MetricIssueTest(DataModelTestCase):
         requests_post.return_value = response
         self.assertEqual(
             dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
-            add_metric_issue(METRIC_ID, self.database),
+            add_metric_issue(METRIC_ID, self.database, User("user")),
         )
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
         requests_post.assert_called_once_with(
@@ -516,4 +519,4 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
-        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))
+        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database, User("user")))

@@ -51,6 +51,9 @@ class AuthPlugin:
                 if not session.is_authorized(authorized_users):
                     cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
 
+            if config.get("pass_user"):
+                kwargs["user"] = session.user()
+
             return callback(*args, **kwargs)
 
         # Replace the route callback with the wrapped one.

@@ -3,6 +3,8 @@
 from datetime import datetime, timezone
 from typing import cast
 
+from shared.utils.type import User
+
 
 class Session:
     """Class representing a user session."""
@@ -20,3 +22,11 @@ class Session:
         if authorized_users:
             return bool({self.__session_data["user"], self.__session_data.get("email")} & set(authorized_users))
         return True
+
+    def user(self) -> User:
+        """Return the session's user."""
+        return User(
+            str(self.__session_data["user"]),
+            str(self.__session_data.get("email", "")),
+            str(self.__session_data.get("common_name", "")),
+        )

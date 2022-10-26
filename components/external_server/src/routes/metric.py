@@ -10,7 +10,7 @@ from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database.reports import insert_new_report
 from shared.model.metric import Metric
-from shared.utils.type import MetricId, SubjectId
+from shared.utils.type import MetricId, SubjectId, User
 
 from database.datamodels import default_metric_attributes
 from database.reports import latest_report_for_uuids, latest_reports
@@ -145,15 +145,15 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     return dict(ok=True)
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
-def add_metric_issue(metric_uuid: MetricId, database: Database):
+@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION], pass_user=True)
+def add_metric_issue(metric_uuid: MetricId, database: Database, user: User):
     """Add a new issue to the metric using the configured issue tracker."""
     reports = latest_reports(database, latest_datamodel(database))
     report = latest_report_for_uuids(reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     issue_tracker = report.issue_tracker()
     issue_summary = f"Quality-time metric '{metric.name}'"
-    issue_description = create_issue_description(metric, subject, report)
+    issue_description = create_issue_description(metric, subject, report, user)
     issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
     if error:  # pylint: disable=no-else-return
         return dict(ok=False, error=error)
@@ -169,11 +169,12 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
         return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
 
 
-def create_issue_description(metric, subject, report) -> str:
+def create_issue_description(metric, subject, report, user: User) -> str:
     """Create an issue description for the metric."""
     metric_url = dict(bottle.request.json)["metric_url"]
     return (
         f"Metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
         f"in Quality-time report '{report.name}' needs attention.\n\n"
-        f"Why address '{metric.name}'? {DATA_MODEL.metrics[metric.type()].rationale}"
+        f"Why address '{metric.name}'? {DATA_MODEL.metrics[metric.type()].rationale}\n\n"
+        f"This issue was created by {user.name_and_email()}.\n"
     )
