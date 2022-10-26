@@ -38,7 +38,7 @@ class GitLabBase(SourceCollector, ABC):
             headers["Private-Token"] = str(private_token)
         return headers
 
-    async def _next_urls(self, responses: SourceResponses) -> list[URL]:
+    async def _next_urls(self, responses: SourceResponses) -> list[URL]:  # skipcq: PYL-R0201
         """Return the next (pagination) links from the responses."""
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
