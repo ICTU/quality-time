@@ -2,7 +2,7 @@
 
 from collector_utilities.functions import decimal_round_half_up
 from collector_utilities.type import Value
-from model import SourceResponses
+from model import SourceResponses, Entity
 
 from .issues import AzureDevopsIssues
 
@@ -15,10 +15,10 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
         base_fields = super()._item_select_fields()
         return base_fields + ["Microsoft.VSTS.Scheduling.StoryPoints", "Microsoft.VSTS.Scheduling.Effort"]
 
-    def _parse_entity(self, work_item: dict) -> dict:
+    def _parse_entity(self, work_item: dict) -> Entity:
         """Add the story points to the work item entity"""
         parsed_entity = super()._parse_entity(work_item)
-        parsed_entity['story_points'] = self.__story_points(work_item)
+        parsed_entity["story_points"] = self.__story_points(work_item)
         return parsed_entity
 
     async def _parse_value(self, responses: SourceResponses) -> Value:

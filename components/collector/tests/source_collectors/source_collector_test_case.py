@@ -82,9 +82,12 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         """Create the mock post response."""
         post_response = AsyncMock()
         if json_side_effect:
-            if not json_return_value:  # put the last side effect into return value, if it was not already given
+            # Convenience: put the last side effect into return value, so we don't need to specify it separately.
+            # This is particularly useful as AsyncMock apparently does not stop iterating upon StopAsyncIteration.
+            # Therefore STOP_SENTINEL is passed, which makes the mock default to return value instead of side effects.
+            if not json_return_value:
                 json_return_value = json_side_effect[-1]
-            json_side_effect.append(STOP_SENTINEL)  # AsyncMock apparently does catch StopAsyncIteration
+            json_side_effect.append(STOP_SENTINEL)
         post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 

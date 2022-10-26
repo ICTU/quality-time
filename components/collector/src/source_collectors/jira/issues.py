@@ -73,7 +73,8 @@ class JiraIssues(JiraBase):
             issues.extend(json.get("issues", []))
         return issues
 
-    def _compute_value(self, entities: Entities) -> Value:  # pylint: disable=unused-argument
+    @classmethod
+    def _compute_value(cls, entities: Entities) -> Value:  # pylint: disable=unused-argument
         """Allow subclasses to compute the value from the entities."""
         return None
 
