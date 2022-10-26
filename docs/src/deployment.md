@@ -2,7 +2,7 @@
 
 This document describes how to deploy, and if needed move, the *Quality-time* application. It is aimed at *Quality-time* operators.
 
-*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a docker-composition. An alternative deployment based on a helm chart and intended for an OpenShift kubernetes cluster is described in [Helm for OpenShift README](../../openshift/helm/README.md)
+*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a docker-composition. An alternative deployment based on a helm chart and intended for an OpenShift (Kubernetes) cluster is described in [Helm for OpenShift README](../../openshift/helm/README.md)
 
 *Quality-time* furthermore assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
 
