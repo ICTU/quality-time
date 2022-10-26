@@ -1,0 +1,12 @@
+ARG  IMAGE_NAME=registry.access.redhat.com/ubi8/nginx-120
+FROM $IMAGE_NAME
+
+ENV FRONTEND_HOST frontend
+ENV FRONTEND_PORT 5000
+ENV EXTERNAL_SERVER_HOST external_server
+ENV EXTERNAL_SERVER_PORT 5001
+
+EXPOSE 8080
+
+ADD nginx.conf "${NGINX_CONF_PATH}"
+CMD nginx -g "daemon off;"

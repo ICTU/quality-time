@@ -1,0 +1,9 @@
+ARG  IMAGE_NAME=docker.io/ictu/quality-time_collector
+FROM $IMAGE_NAME
+USER root
+COPY *.crt /usr/local/share/ca-certificates/
+COPY *.crt /etc/ssl/certs/ 
+RUN /usr/sbin/update-ca-certificates
+RUN cd /usr/local/share/ca-certificates/ ; for key in $(ls *.crt) ;do cat $key >> /usr/lib/ssl/cert.pem ; done 
+RUN chgrp -R 0 /home/collector && chmod -R g=u /home/collector
+ENV REQUESTS_CA_BUNDLE /usr/lib/ssl/cert.pem
