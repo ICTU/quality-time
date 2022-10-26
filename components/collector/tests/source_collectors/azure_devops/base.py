@@ -14,16 +14,15 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         self.url = "https://azure_devops/org/project"
         self.work_item_url = "https://work_item"
         self.set_source_parameter("url", self.url)
-        self.set_source_parameter("wiql", "wiql")
         self.work_item = dict(
             id="id",
-            url=self.work_item_url,
+            _links=dict(html=dict(href=self.work_item_url)),
             fields={
                 "System.TeamProject": "Project",
                 "System.Title": "Title",
                 "System.WorkItemType": "Task",
                 "System.State": "New",
-                "Microsoft.VSTS.Scheduling.StoryPoints": 2.0,
+                "Microsoft.VSTS.Scheduling.Effort": 2.0,
             },
         )
 

@@ -4,7 +4,7 @@ import io
 import logging
 import unittest
 import zipfile
-from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import AsyncMock, PropertyMock, patch, DEFAULT as STOP_SENTINEL
 
 import aiohttp
 
@@ -44,7 +44,9 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         get_request_links=None,
         post_request_side_effect=None,
         post_request_json_return_value=None,
-    ):
+        post_request_json_side_effect=None,
+        return_mocks=False,
+    ):  # pylint: disable=too-many-locals
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
@@ -54,12 +56,13 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
             get_request_headers,
             get_request_links,
         )
-        post_response = self.__post_response(post_request_json_return_value)
+        post_response = self.__post_response(post_request_json_return_value, post_request_json_side_effect)
         get = AsyncMock(return_value=get_response, side_effect=get_request_side_effect)
         post = AsyncMock(return_value=post_response, side_effect=post_request_side_effect)
         with patch("aiohttp.ClientSession.get", get), patch("aiohttp.ClientSession.post", post):
             async with aiohttp.ClientSession() as session:
-                return await MetricCollector(session, self.metric).collect()
+                result = await MetricCollector(session, self.metric).collect()
+                return (result, get, post) if return_mocks else result
 
     @staticmethod
     def __get_response(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
@@ -75,10 +78,17 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):  # skipcq: PTC-
         return get_response
 
     @staticmethod
-    def __post_response(json_return_value) -> AsyncMock:
+    def __post_response(json_return_value, json_side_effect: list = None) -> AsyncMock:
         """Create the mock post response."""
         post_response = AsyncMock()
-        post_response.json.return_value = json_return_value
+        if json_side_effect:
+            # Convenience: put the last side effect into return value, so we don't need to specify it separately.
+            # This is particularly useful as AsyncMock apparently does not stop iterating upon StopAsyncIteration.
+            # Therefore STOP_SENTINEL is passed, which makes the mock default to return value instead of side effects.
+            if not json_return_value:
+                json_return_value = json_side_effect[-1]
+            json_side_effect.append(STOP_SENTINEL)
+        post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:

@@ -36,6 +36,7 @@ ISSUE_ATTRIBUTES = [
 
 ALL_JIRA_METRICS = [
     "issues",
+    "lead_time_for_changes",
     "manual_test_duration",
     "manual_test_execution",
     "source_version",
@@ -55,6 +56,13 @@ JIRA = Source(
     url="https://www.atlassian.com/software/jira",
     issue_tracker=True,
     parameters=dict(
+        board=StringParameter(
+            name="Board (name or id)",
+            short_name="board",
+            help_url="https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/",
+            mandatory=True,
+            metrics=["velocity"],
+        ),
         jql=StringParameter(
             name="Issue query in JQL (Jira Query Language)",
             short_name="issue query",
@@ -63,18 +71,18 @@ JIRA = Source(
             "use-advanced-search-with-jira-query-language-jql/",
             metrics=[
                 "issues",
+                "lead_time_for_changes",
                 "manual_test_duration",
                 "manual_test_execution",
                 "test_cases",
                 "user_story_points",
             ],
         ),
-        board=StringParameter(
-            name="Board (name or id)",
-            short_name="board",
-            help_url="https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/",
-            mandatory=True,
-            metrics=["velocity"],
+        lookback_days=Days(
+            name="Number of days to look back in selecting issues to consider",
+            short_name="number of days to look back",
+            default_value="90",
+            metrics=["lead_time_for_changes"],
         ),
         manual_test_duration_field=StringParameter(
             name="Manual test duration field (name or id)",
@@ -97,6 +105,18 @@ JIRA = Source(
             mandatory=True,
             default_value="21",
             metrics=["manual_test_execution"],
+        ),
+        story_points_field=StringParameter(
+            name="Story points field (name or id)",
+            short_name="story points field",
+            help_url=CUSTOM_FIELD_ID_HELP_URL,
+            mandatory=True,
+            default_value="Story Points",
+            metrics=["user_story_points"],
+        ),
+        test_result=TestResult(
+            metrics=["test_cases"],
+            values=["errored", "failed", "passed", "skipped", "untested"]
         ),
         velocity_sprints=IntegerParameter(
             name="Number of sprints to base velocity on",
@@ -122,15 +142,6 @@ JIRA = Source(
             },
             metrics=["velocity"],
         ),
-        story_points_field=StringParameter(
-            name="Story points field (name or id)",
-            short_name="story points field",
-            help_url=CUSTOM_FIELD_ID_HELP_URL,
-            mandatory=True,
-            default_value="Story Points",
-            metrics=["user_story_points"],
-        ),
-        test_result=TestResult(metrics=["test_cases"], values=["errored", "failed", "passed", "skipped", "untested"]),
         **access_parameters(
             ALL_JIRA_METRICS,
             kwargs=dict(
@@ -147,6 +158,9 @@ JIRA = Source(
     ),
     entities=dict(
         issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
+        lead_time_for_changes=dict(name="issue", attributes=ISSUE_ATTRIBUTES + [dict(
+            name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
+        )]),
         manual_test_duration=dict(
             name=TEST_CASE,
             measured_attribute="duration",

@@ -2,8 +2,10 @@
 
 import unittest
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 
-from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback, tokenless
+from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback, tokenless, \
+    iterable_to_batches, decimal_round_half_up
 from collector_utilities.type import URL
 
 
@@ -103,3 +105,23 @@ class IsRegularExpressionTest(unittest.TestCase):
         self.assertTrue(is_regexp(".*"))
         self.assertTrue(is_regexp("bar?foo"))
         self.assertTrue(is_regexp("[a-z]+foo"))
+
+
+class IterableToBatchesTest(unittest.TestCase):
+    """Unit tests for the iterable_to_batches function."""
+
+    def test_iterable_to_batches(self):
+        """Test that iterable is split in batches."""
+        self.assertEqual([(0, 1, 2)], list(iterable_to_batches(range(3), 5)))
+        self.assertEqual([(0, 1, 2), (3, 4, 5), (6,)], list(iterable_to_batches(range(7), 3)))
+
+
+class DecimalRoundHalfUpTest(unittest.TestCase):
+    """Unit tests for the decimal_round_half_up function."""
+
+    def test_decimal_round_half_up(self):
+        """Test that decimal inputs are rounded according to the ROUND_HALF_UP mode."""
+        self.assertEqual(1, decimal_round_half_up(1.0))
+        self.assertEqual(1, decimal_round_half_up(1.1))
+        self.assertEqual(2, decimal_round_half_up(1.5))
+        self.assertEqual(2, decimal_round_half_up(Decimal(1.5)))
