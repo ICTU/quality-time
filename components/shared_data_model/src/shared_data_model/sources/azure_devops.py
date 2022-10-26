@@ -82,7 +82,7 @@ AZURE_DEVOPS = Source(
         file_path=StringParameter(
             name="File or folder path",
             short_name="path",
-            help="Use the date and time the path was last changed to determine the up-to-dateness. If no file path "
+            help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
             "is specified, the pipeline is used to determine the up-to-dateness.",
             placeholder="none",
             metrics=["source_up_to_dateness"],
