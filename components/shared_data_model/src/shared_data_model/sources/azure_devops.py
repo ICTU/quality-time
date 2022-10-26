@@ -82,9 +82,8 @@ AZURE_DEVOPS = Source(
         file_path=StringParameter(
             name="File or folder path",
             short_name="path",
-            help="Use the date and time the path was last changed to determine the up-to-dateness. Note that if a "
-            "pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is "
-            "ignored.",
+            help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
+            "is specified, the pipeline is used to determine the up-to-dateness.",
             placeholder="none",
             metrics=["source_up_to_dateness"],
         ),
@@ -179,9 +178,8 @@ AZURE_DEVOPS = Source(
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
         lead_time_for_changes=dict(
             name="lead time",
-            attributes=ISSUE_ATTRIBUTES + [dict(
-                name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
-            )]
+            attributes=ISSUE_ATTRIBUTES
+            + [dict(name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER)],
         ),
         merge_requests=dict(
             name="merge request",

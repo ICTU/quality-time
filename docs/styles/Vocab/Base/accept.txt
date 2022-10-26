@@ -44,7 +44,7 @@ sparkline
 subfolders
 submenus
 suppressions
-tooltips
+tooltips?
 tracebacks?
 unencrypted
 unicode
