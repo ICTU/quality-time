@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import bottle
 
 from shared.routes.plugins import InjectionPlugin
+from shared.utils.type import User
 
 from routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 
@@ -21,7 +22,6 @@ class AuthPluginTest(DatabaseTestCase):
         logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.sessions.find_one.return_value = None
-        self.success = '{"ok": true}'
         self.session = dict(
             user="jadoe",
             email="jadoe@example.org",
@@ -37,9 +37,9 @@ class AuthPluginTest(DatabaseTestCase):
         logging.disable(logging.NOTSET)  # skipcq: PY-A6006
 
     @staticmethod
-    def route(database):  # pylint: disable=unused-argument
-        """Route handler with database parameter."""
-        return dict(ok=True)
+    def route(database, user: User = None):
+        """Route handler with injected parameters. Returns the parameters for test purposes."""
+        return database, user
 
     def test_route_without_specified_auth(self):
         """Test that the auth plugin will crash."""
@@ -53,7 +53,7 @@ class AuthPluginTest(DatabaseTestCase):
             session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc)
         )
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
-        self.assertEqual(self.success, route.call())
+        self.assertEqual((self.database, None), route.call())
 
     def test_expired_session(self):
         """Test that the session is invalid when it's expired."""
@@ -82,7 +82,7 @@ class AuthPluginTest(DatabaseTestCase):
         self.database.reports_overviews.find_one.return_value = dict(_id="id", permissions={})
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
-        self.assertEqual(self.success, route.call())
+        self.assertEqual((self.database, None), route.call())
 
     def test_post_route_with_permissions_required(self):
         """Test that an authenticated user can post if they have the required permissions."""
@@ -91,14 +91,22 @@ class AuthPluginTest(DatabaseTestCase):
         )
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
-        self.assertEqual(self.success, route.call())
+        self.assertEqual((self.database, None), route.call())
 
     def test_post_route_without_authentication_required(self):
         """Test that unauthenticated users can POST if no authentication is required."""
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=False)
-        self.assertEqual(self.success, route.call())
+        self.assertEqual((self.database, None), route.call())
 
     def test_get_route_without_authentication_required(self):
         """Test that unauthenticated users can GET if no authentication is required."""
         route = bottle.Route(bottle.app(), "/", "GET", self.route, authentication_required=False)
-        self.assertEqual(self.success, route.call())
+        self.assertEqual((self.database, None), route.call())
+
+    def test_pass_user(self):
+        """Test that the user can be passed to the route."""
+        self.database.sessions.find_one.return_value = dict(
+            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc), user="user"
+        )
+        route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True, pass_user=True)
+        self.assertEqual((self.database, User("user")), route.call())

@@ -23,8 +23,9 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 ### Added
 
 - Date pickers have a "today" button now. Closes [#378](https://github.com/ICTU/quality-time/issues/378).
-- When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
 - New metric "Lead time for changes", to keep track of the average lead time of changes completed in a certain time period in Jira and/or Azure DevOps. Closes [#3501](https://github.com/ICTU/quality-time/issues/3501).
+- When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
+- When creating issues in the issue tracker from *Quality-time*, mention the user who created the issue in the issue description for traceability. Closes [#4743](https://github.com/ICTU/quality-time/issues/4743).
 
 ### Changed
 
