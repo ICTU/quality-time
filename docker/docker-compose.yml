@@ -27,6 +27,9 @@ services:
     environment:
       - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
       - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
+      - COLLECTOR_MEASUREMENT_FREQUENCY=${COLLECTOR_MEASUREMENT_FREQUENCY:-900}
+      - COLLECTOR_MEASUREMENT_LIMIT=${COLLECTOR_MEASUREMENT_LIMIT:-30}
+      - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
     depends_on:
       - internal_server
     cap_drop:
@@ -36,7 +39,7 @@ services:
     environment:
       - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
       - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
-      - NOTIFIER_SLEEP_DURATION=60
+      - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
     depends_on:
       - internal_server
     cap_drop:
@@ -45,15 +48,17 @@ services:
     image: ictu/quality-time_external_server:${QUALITY_TIME_VERSION}
     environment:
       - EXTERNAL_SERVER_PORT=${EXTERNAL_SERVER_PORT:-5001}
-      - DATABASE_URL=mongodb://root:root@database:27017
-      - LDAP_URL=ldap://ldap:389
-      - LDAP_ROOT_DN=dc=example,dc=org
-      - LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
-      - LDAP_LOOKUP_USER_PASSWORD=admin
-      - LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))
-      - LOAD_EXAMPLE_REPORTS=True
-      - FORWARD_AUTH_ENABLED=False
-      - FORWARD_AUTH_HEADER=X-Forwarded-User
+      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
+      - LDAP_URL=${LDAP_URL:-ldap://ldap:389}
+      - LDAP_ROOT_DN=${LDAP_ROOT_DN:-dc=example,dc=org}
+      - LDAP_LOOKUP_USER_DN=${LDAP_LOOKUP_USER_DN:-cn=admin,dc=example,dc=org}
+      - LDAP_LOOKUP_USER_PASSWORD=${LDAP_LOOKUP_USER_PASSWORD:-admin}
+      - LDAP_SEARCH_FILTER=${LDAP_SEARCH_FILTER:-(|(uid=$$username)(cn=$$username))}
+      - LOAD_EXAMPLE_REPORTS=${LOAD_EXAMPLE_REPORTS:-True}
+      - FORWARD_AUTH_ENABLED=${FORWARD_AUTH_ENABLED:-False}
+      - FORWARD_AUTH_HEADER=${FORWARD_AUTH_HEADER:-X-Forwarded-User}
+      - RENDERER_HOST=${RENDERER_HOST:-renderer}
+      - RENDERER_PORT=${RENDERER_PORT:-9000}
     depends_on:
       - database
     cap_drop:
@@ -62,8 +67,8 @@ services:
     image: ictu/quality-time_internal_server:${QUALITY_TIME_VERSION}
     environment:
       - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
-      - DATABASE_URL=mongodb://root:root@database:27017
-      - LOAD_EXAMPLE_REPORTS=True
+      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
+      - LOAD_EXAMPLE_REPORTS=${LOAD_EXAMPLE_REPORTS:-True}
     depends_on:
       - database
     cap_drop:
@@ -73,8 +78,8 @@ services:
     command: --quiet
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
     volumes:
       - "dbdata:/data/db"
   renderer:
@@ -82,7 +87,7 @@ services:
     environment:
       - PROXY_HOST=${PROXY_HOST:-www}
       - PROXY_PORT=${PROXY_PORT:-80}
-      - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
-      - TZ=Europe/Amsterdam  # Make the PDF export use the correct timezone
+      - LC_ALL=${LC_ALL:-en_GB.UTF-8}  # Set the date format in the PDF export to DD-MM-YYYY
+      - TZ=${TZ:-Europe/Amsterdam}  # Make the PDF export use the correct timezone
 volumes:
   dbdata:
