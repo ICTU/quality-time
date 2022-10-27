@@ -2,6 +2,8 @@
 
 from abc import ABC
 from collections.abc import Sequence
+from datetime import date, timedelta
+from typing import cast
 
 from dateutil.parser import parse
 
@@ -17,7 +19,7 @@ class GitLabBase(SourceCollector, ABC):
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
         all_responses = responses = await super()._get_source_responses(*urls, **kwargs)
-        while next_urls := self.__next_urls(responses):
+        while next_urls := await self._next_urls(responses):
             # Retrieving consecutive big responses without reading the response hangs the client, see
             # https://github.com/aio-libs/aiohttp/issues/2217
             for response in responses:
@@ -36,8 +38,7 @@ class GitLabBase(SourceCollector, ABC):
             headers["Private-Token"] = str(private_token)
         return headers
 
-    @staticmethod
-    def __next_urls(responses: SourceResponses) -> list[URL]:
+    async def _next_urls(self, responses: SourceResponses) -> list[URL]:  # skipcq: PYL-R0201
         """Return the next (pagination) links from the responses."""
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
@@ -62,6 +63,20 @@ class GitLabJobsBase(GitLabProjectBase):
         """Override to return the jobs API."""
         return await self._gitlab_api_url("jobs")
 
+    async def _next_urls(self, responses: SourceResponses) -> list[URL]:
+        """Return the next (pagination) links from the responses as long as we're within lookback days."""
+        # Note: the GitLab documentation (https://docs.gitlab.com/ee/api/jobs.html#list-project-jobs) says:
+        # "Jobs are sorted in descending order of their IDs." The API has no query parameters to sort jobs by date
+        # created or by date run, so we're going to assume that descending order of IDs is roughly equal to descending
+        # order of date created and date run. As soon as all jobs on a page have a build date that is outside the
+        # lookback period we stop the pagination.
+        lookback_date = date.today() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
+        for response in responses:
+            for job in await response.json():
+                if self.__build_date(job) > lookback_date:
+                    return await super()._next_urls(responses)
+        return []
+
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs from the responses."""
         return Entities(
@@ -73,7 +88,7 @@ class GitLabJobsBase(GitLabProjectBase):
                     build_status=job["status"],
                     branch=job["ref"],
                     stage=job["stage"],
-                    build_date=str(parse(job.get("finished_at") or job["created_at"]).date()),
+                    build_date=str(self.__build_date(job)),
                 )
                 for job in await self._jobs(responses)
             ]
@@ -98,3 +113,8 @@ class GitLabJobsBase(GitLabProjectBase):
         return not match_string_or_regular_expression(
             job["name"], self._parameter("jobs_to_ignore")
         ) and not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
+
+    @staticmethod
+    def __build_date(job: Job) -> date:
+        """Return the build date of the job."""
+        return parse(job.get("finished_at") or job["created_at"]).date()

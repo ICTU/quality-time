@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 - When configuring Azure DevOps as source for the source up-to-dateness metric, the tooltip says files get preference, but in reality code pipelines get preference. Updated the tooltip. Fixes [#4685](https://github.com/ICTU/quality-time/issues/4685).
 - When showing multiple dates in a quality report, the *Quality-time* frontend retrieves 28 weeks of measurements so that the maximum period (seven weeks times a four-week interval) can be displayed. However, the frontend would always get the most recent 28 weeks, even if the user was time traveling. Fixes [#4705](https://github.com/ICTU/quality-time/issues/4705).
+- When measuring failed or unused CI-jobs with GitLab as source, *Quality-time* would try to retrieve all jobs to determine which ones have failed or are unused. Retrieving all jobs would fail, however, if the GitLab instance used has a large amount (tens of thousands) of jobs. To fix this, only jobs that ran in the "look-back period" will be retrieved. By default, the look-back period is 90 days. The look-back period can be changed in the GitLab source tab, if so desired. Fixes [#4737](https://github.com/ICTU/quality-time/issues/4737).
 
 ### Added
 
