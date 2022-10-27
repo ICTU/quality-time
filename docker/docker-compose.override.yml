@@ -44,8 +44,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=root
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
       - ME_CONFIG_MONGODB_SERVER=database
     depends_on:
       - database
@@ -58,7 +58,7 @@ services:
     image: osixia/phpldapadmin:0.9.0
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap
-      - PHPLDAPADMIN_HTTPS=false
+      - PHPLDAPADMIN_HTTPS=${PHPLDAPADMIN_HTTPS:-false}
     ports:
       - "3890:80"
     depends_on:
