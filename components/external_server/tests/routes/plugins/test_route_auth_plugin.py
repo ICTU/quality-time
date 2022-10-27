@@ -10,7 +10,6 @@ from shared.utils.type import User
 
 from routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 
-
 from ...base import DatabaseTestCase
 
 
