@@ -42,8 +42,3 @@ If you use a strict OpenShift environment it will not be allowed to access files
 	
 [Dockerfile.collector](./Dockerfile.collector) shows the fix for this in the collector image.
 
-
-
-
-	
-
