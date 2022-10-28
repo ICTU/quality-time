@@ -24,7 +24,9 @@ $ helm install --values myoverride-values.yaml quality-time .
 
 ## Uninstall
 
-    helm uninstall quality-time
+```console
+$ helm uninstall quality-time
+```    
 
 In a corporate environment with custom certificate authorities, you can create custom images as described in the [Custom docker files Readme](../dockerfiles/README.md).
 The adjusted image names can then be set in the myoverride-values.yaml which would be a kind of copy of the values.yaml.
