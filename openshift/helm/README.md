@@ -16,10 +16,11 @@ Login with the OC CLI and select a project/namespace. Then the helm commands can
 
 ## Install
 
-    helm install quality-time .
-    helm install --set pullsecret=mybase64encodeddockerjson quality-time .
-    helm install --values myoverride-values.yaml quality-time . 
-
+```console
+$ helm install quality-time .
+$ helm install --set pullsecret=mybase64encodeddockerjson quality-time .
+$ helm install --values myoverride-values.yaml quality-time . 
+```
 
 ## Uninstall
 
