@@ -43,6 +43,3 @@ www:
   name: www
   image: docker.io/ictu/quality-time_proxy:v4.5.0
 
-
-
-
