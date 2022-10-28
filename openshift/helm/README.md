@@ -5,7 +5,7 @@ Except for the Route these are all standard kubernetes elements. The Route defin
 Also in a corporate environment, it is usually required to define credentials for pulling the images. For this a [templates/pull-secret.yaml](templates/pull-secret.yaml) file is provided.
 All templates refer to standard values from [values.yaml](values.yaml) uneless these are overriden using the Helm way of value overrides. (Either by defining seperate values or your own values.yaml file).
 
-## Pre-requisites
+## Prerequisites
 
 You need the following CLI tools:
 
