@@ -15,7 +15,7 @@ Make sure to adjust the [docker-compose.yml](../../docker/docker-compose.yml) or
 	
 ## Changes for custom Certificate Authorities
 
-If your organization uses their own certificate authority, you need to add the certificate to the correct trust stores in the images that have connections to the resources that have certificates that were issued by this certificate authority.
+If your organization uses its own certificate authority, you need to add the certificate to the correct trust stores in the images that have connections to the resources that have certificates that were issued by this certificate authority.
 
     USER root
     COPY *.crt /usr/local/share/ca-certificates/
