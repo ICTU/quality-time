@@ -5,7 +5,7 @@ Also the proxy image is adjusted so it will be able to run as non-root on opensh
 
 ## podman build
 
-You can build the images from the ICTU base images. so either pull does images or first build these images. Then you can build and tag your extensions.
+You can build the images from the ICTU base images. so either pull those images or first build these images. Then you can build and tag your extensions.
 
 	podman build -t containers.local/somenamespace/quality-time_proxy:v4.5.0 --build-arg IMAGE_NAME=registry.access.redhat.com/ubi8/nginx-120 -f Dockerfile.proxy .
 	podman build -t containers.local/somenamespace/quality-time_collector:v4.5.0 --build-arg IMAGE_NAME=docker.io/ictu/quality-time_collector:v4.5.0 -f Dockerfile.collector .
