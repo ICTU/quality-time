@@ -207,7 +207,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL))
         requests_get.return_value = self.project_response
-        expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
+        expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[], epic_links=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
@@ -216,7 +216,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = dict(type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO"))
         requests_get.side_effect = [self.project_response, self.issue_types_response]
         expected_options = dict(
-            projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[]
+            projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[], epic_links=[]
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
@@ -233,6 +233,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             projects=[dict(key="FOO", name="Foo")],
             issue_types=[dict(key="1", name="Bug")],
             fields=[dict(key="labels", name="Labels")],
+            epic_links=[],
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
@@ -244,7 +245,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
         requests_get.side_effect = RuntimeError("yo")
-        expected_options = dict(projects=[], issue_types=[], fields=[])
+        expected_options = dict(projects=[], issue_types=[], fields=[], epic_links=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
@@ -255,7 +256,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
         requests_get.side_effect = [self.project_response, RuntimeError("yo")]
-        expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[])
+        expected_options = dict(projects=[dict(key="FOO", name="Foo")], issue_types=[], fields=[], epic_links=[])
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
@@ -267,7 +268,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         )
         requests_get.side_effect = [self.project_response, self.issue_types_response, RuntimeError("yo")]
         expected_options = dict(
-            projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[]
+            projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[], epic_links=[]
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 

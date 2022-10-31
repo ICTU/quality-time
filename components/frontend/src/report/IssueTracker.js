@@ -25,18 +25,23 @@ export function IssueTracker({ report, reload }) {
     const [issueTypeOptions, setIssueTypeOptions] = useState([])  // Possible issue types for new issues in the current project
     const [issueTypeValid, setIssueTypeValid] = useState(true)  // Is the current issue type a possible issue type?
     const [labelFieldSupported, setLabelFieldSupported] = useState(false)  // Does the current issue type support labels?
+    const [issueEpicOptions, setIssueEpicOptions] = useState([])  // Possible epic links for new issues in the current project
+    const [issueEpicFieldSupported, setEpicFieldSupported] = useState(false)  // Does the current project and issue type support epic links?
     useEffect(() => {
         let didCancel = false;
         get_report_issue_tracker_options(report.report_uuid).then(function (json) {
             if (!didCancel) {
                 // For projects, use the project key as value to store because that's what users entered when this wasn't a single choice option yet
-                setProjectOptions(json.projects.map(({key, name}) => ({ key: key, value: key, text: name, })));
+                setProjectOptions(json.projects.map(({key, name}) => ({ key: key, value: key, text: name })));
                 setProjectValid(json.projects.some(({key}) => (key === report.issue_tracker?.parameters?.project_key)))
                 // For issue types, use the name as value to store because that's what users entered when this wasn't a single choice option yet
-                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: name, text: name, })));
+                setIssueTypeOptions(json.issue_types.map(({key, name}) => ({ key: key, value: name, text: name })));
                 setIssueTypeValid(json.issue_types.some(({name}) => (name === report.issue_tracker?.parameters?.issue_type)))
+                setIssueEpicOptions(json.epic_links.map(({key, name}) => ({ key: key, value: key, text: name })));
                 const fieldKeys = json.fields.map((field) => field.key);
                 setLabelFieldSupported(fieldKeys.includes("labels"))
+                const fieldNames = json.fields.map((field) => field.name.toLowerCase());
+                setEpicFieldSupported(fieldNames.includes("epic link"))
             }
         });
         return () => { didCancel = true; };
@@ -69,6 +74,7 @@ export function IssueTracker({ report, reload }) {
     const report_uuid = report.report_uuid;
     const project_key = report.issue_tracker?.parameters?.project_key;
     const issue_type = report.issue_tracker?.parameters?.issue_type;
+    const epic_link = report.issue_tracker?.parameters?.epic_link;
 
     return (
         <Grid stackable>
@@ -154,7 +160,25 @@ export function IssueTracker({ report, reload }) {
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={1}>
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <SingleChoiceInput
+                        id="tracker-issue-epic-link"
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label={<label>Epic link for new issues <Popup on={['hover', 'focus']} content={"The epics available for new issues are determined by the selected project"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        placeholder="None"
+                        options={issueEpicOptions}
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "epic_link", value, reload)}
+                        value={epic_link}
+                    />
+                    {
+                        project_key && issue_type && !issueEpicFieldSupported && <Message
+                            warning
+                            header="Epic links not supported"
+                            content={`The issue type '${issue_type}' in project '${project_key}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
+                        />
+                    }
+                </Grid.Column>
                 <Grid.Column>
                     <MultipleChoiceInput
                         allowAdditions
