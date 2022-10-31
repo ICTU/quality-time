@@ -44,6 +44,12 @@ class IssueTrackerTest(unittest.TestCase):
         issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters)
         self.assertEqual(["Label"], issue_tracker.issue_parameters.issue_labels)
 
+    def test_issue_epic_link(self):
+        """Test the issue tracker epic link."""
+        self.issue_parameters.epic_link = "FOO-42"
+        issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters)
+        self.assertEqual("FOO-42", issue_tracker.issue_parameters.epic_link)
+
     @patch("requests.get")
     def test_get_suggestions(self, requests_get):
         """Test that issue suggestions are returned."""

@@ -201,7 +201,6 @@ class IssueTracker:
     def __get_epic_links(self, fields: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
         """Return the possible epic links for the current project."""
         field_names = [field.name.lower() for field in fields]
-        print(field_names)
         if "epic link" not in field_names:
             return []
         api_url = self.epics_api % (self.url, self.issue_parameters.project_key)

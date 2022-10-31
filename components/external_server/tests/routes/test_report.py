@@ -191,6 +191,10 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.project_response.json.return_value = [dict(key="FOO", name="Foo")]
         self.issue_types_response = Mock()
         self.issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
+        self.fields_response = Mock()
+        self.fields_response.json.return_value = dict(
+            values=[dict(fieldId="labels", name="Labels"), dict(fieldId="epic_field_id", name="Epic Link")]
+        )
 
     @patch("requests.get")
     def test_get_issue_suggestions(self, requests_get):
@@ -221,18 +225,17 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
+    @disable_logging
     def test_get_issue_tracker_options_with_configured_issue_type(self, requests_get):
         """Test the the issue tracker attribute options are retrieved from the issue tracker."""
         self.report["issue_tracker"] = dict(
             type="jira", parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug")
         )
-        fields_response = Mock()
-        fields_response.json.return_value = dict(values=[dict(fieldId="labels", name="Labels")])
-        requests_get.side_effect = [self.project_response, self.issue_types_response, fields_response]
+        requests_get.side_effect = [self.project_response, self.issue_types_response, self.fields_response]
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")],
             issue_types=[dict(key="1", name="Bug")],
-            fields=[dict(key="labels", name="Labels")],
+            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name="Epic Link")],
             epic_links=[],
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
@@ -269,6 +272,28 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         requests_get.side_effect = [self.project_response, self.issue_types_response, RuntimeError("yo")]
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")], issue_types=[dict(key="1", name="Bug")], fields=[], epic_links=[]
+        )
+        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+
+    @patch("requests.get")
+    @disable_logging
+    def test_get_issue_tracker_epic_links_error(self, requests_get):
+        """Test the the issue tracker attribute options are retrieved from the issue tracker."""
+        self.report["issue_tracker"] = dict(
+            type="jira",
+            parameters=dict(url=self.ISSUE_TRACKER_URL, project_key="FOO", issue_type="Bug", epic_link="FOO-420"),
+        )
+        requests_get.side_effect = [
+            self.project_response,
+            self.issue_types_response,
+            self.fields_response,
+            RuntimeError("yo"),
+        ]
+        expected_options = dict(
+            projects=[dict(key="FOO", name="Foo")],
+            issue_types=[dict(key="1", name="Bug")],
+            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name="Epic Link")],
+            epic_links=[],
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
