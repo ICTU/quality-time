@@ -11,7 +11,7 @@ concurrency =
 # Regexes for lines to exclude from consideration
 exclude_lines =
     pragma: no cover
-    pragma: no cover-behave
+    pragma: no feature-test-cover
     raise NotImplementedError
     raise ValueError
     if TYPE_CHECKING:

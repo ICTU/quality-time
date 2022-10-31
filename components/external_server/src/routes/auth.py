@@ -56,7 +56,7 @@ def check_password(ssha_ldap_salted_password, password) -> bool:
     # See https://www.openldap.org/doc/admin24/security.html#SSHA%20password%20storage%20scheme
     # We should (also) support SHA512 as SHA1 is no longer considered to be secure.
     ssha_prefix = b"{SSHA}"
-    if not ssha_ldap_salted_password.startswith(ssha_prefix):  # pragma: no cover-behave
+    if not ssha_ldap_salted_password.startswith(ssha_prefix):  # pragma: no feature-test-cover
         logging.warning("Only SSHA LDAP password digest supported!")
         raise exceptions.LDAPInvalidAttributeSyntaxResult
     digest_salt_b64 = ssha_ldap_salted_password.removeprefix(ssha_prefix)
@@ -101,7 +101,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
             user=ldap_config.get("ldap_lookup_user_dn"),
             password=ldap_config.get("ldap_lookup_user_pw"),
         ) as lookup_connection:
-            if not lookup_connection.bind():  # pragma: no cover-behave
+            if not lookup_connection.bind():  # pragma: no feature-test-cover
                 raise exceptions.LDAPBindError
             lookup_connection.search(
                 ldap_config.get("ldap_root_dn"),
@@ -114,7 +114,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
                 logging.info("LDAP salted password check for %s succeeded", username)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
-        else:  # pragma: no cover-behave
+        else:  # pragma: no feature-test-cover
             with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
                 logging.info("LDAP bind for %s succeeded", username)
     except Exception as reason:  # pylint: disable=broad-except
@@ -132,7 +132,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
 @bottle.post("/api/v3/login", authentication_required=False)
 def login(database: Database) -> dict[str, bool | str]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
-    if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
+    if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no feature-test-cover
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
         user = User(username, username or "", "", username is not None)

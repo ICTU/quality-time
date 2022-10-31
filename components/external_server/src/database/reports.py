@@ -102,7 +102,7 @@ def latest_report_for_uuids(all_reports: list[Report], *uuids: ItemId) -> list[R
     """
     reports = []
     for uuid in uuids:
-        for report in all_reports:  # pragma: no cover-behave
+        for report in all_reports:  # pragma: no feature-test-cover
             uuids_in_report = {report.uuid}.union(report.subject_uuids, report.metric_uuids, report.source_uuids)
             if uuid in uuids_in_report:
                 reports.append(report)

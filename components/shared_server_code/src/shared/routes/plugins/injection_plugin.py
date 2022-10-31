@@ -19,7 +19,7 @@ class InjectionPlugin:
     def setup(self, app) -> None:
         """Make sure that other installed plugins don't use the same keyword argument."""
         for other in app.plugins:
-            if isinstance(other, self.__class__) and other.keyword == self.keyword:  # pragma: no cover-behave
+            if isinstance(other, self.__class__) and other.keyword == self.keyword:  # pragma: no feature-test-cover
                 raise RuntimeError("InjectionPlugin found another plugin with the same keyword.")
 
     def apply(self, callback, context):

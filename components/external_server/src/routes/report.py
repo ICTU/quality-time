@@ -65,7 +65,7 @@ def post_report_import(database: Database):
     data_model = latest_datamodel(database, date_time)
 
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
-    if not secret:  # pragma: no cover-behave
+    if not secret:  # pragma: no feature-test-cover
         bottle.response.status = 500
         return {"error": "Cannot find the private key of this Quality-time instance."}
 
@@ -136,7 +136,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
             public_key = bottle.request.query["public_key"]
         else:  # default to own public key
             document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
-            if not document:  # pragma: no cover-behave
+            if not document:  # pragma: no feature-test-cover
                 bottle.response.status = 500
                 bottle.response.content_type = "application/json"
                 return {"error": "Cannot find the public key of this Quality-time instance."}

@@ -14,7 +14,7 @@ from shared.initialization.secrets import initialize_secrets
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
 
 
-def init_database() -> Database:  # pragma: no cover-behave
+def init_database() -> Database:  # pragma: no feature-test-cover
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
     client: pymongo.MongoClient = pymongo.MongoClient(database_url)

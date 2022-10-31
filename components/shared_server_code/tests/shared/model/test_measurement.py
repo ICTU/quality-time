@@ -177,6 +177,11 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
         version = VersionNumberScaleMeasurement.parse_version(None)
         self.assertEqual(Version("0"), version)
 
+    def test_parse_invalid_version(self):
+        """Parse an invalid version."""
+        version = VersionNumberScaleMeasurement.parse_version("This is not a version number")
+        self.assertEqual(Version("0"), version)
+
 
 class MeasurementTest(MeasurementTestCase):
     """Unit tests for the measurement class."""

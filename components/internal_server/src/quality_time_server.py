@@ -16,7 +16,7 @@ from shared.initialization.database import init_database  # skipcq: FLK-E402
 from initialization import init_bottle, merge_unmerged_measurements  # skipcq: FLK-E402
 
 
-def serve() -> None:  # pragma: no cover-behave
+def serve() -> None:  # pragma: no feature-test-cover
     """Connect to the database and start the application server."""
     logging.getLogger().setLevel(logging.INFO)
     database = init_database()
@@ -26,5 +26,5 @@ def serve() -> None:  # pragma: no cover-behave
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
-if __name__ == "__main__":  # pragma: no cover-behave
+if __name__ == "__main__":  # pragma: no feature-test-cover
     serve()

@@ -39,7 +39,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         """Return the start date of the status."""
         if status_start := self.get("status_start"):
             return cast(str, status_start)
-        return None  # pragma: no cover-behave
+        return None  # pragma: no feature-test-cover
 
     def update_value_and_status(self) -> None:
         """Update the measurement value and status."""
@@ -164,7 +164,7 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
     @staticmethod
     def parse_version(value: str | None) -> Version:
         """Parse the version."""
-        if value is not None:  # pragma: no cover-behave
+        if value is not None:  # pragma: no feature-test-cover
             try:
                 return Version(value)
             except InvalidVersion:
