@@ -28,7 +28,7 @@ class MeasurementJSON(TypedDict):
 
 
 @dataclass
-class Stats:  # pragma: no cover-behave
+class Stats:  # pragma: no feature-test-cover
     """Keep track of the number of measurements merged."""
 
     nr_measurements_updated: int = 0
@@ -66,7 +66,7 @@ def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> St
     nr_metrics = len(metric_uuids)
     logger.info("Measurements collection has %d measurements for %d metrics", estimated_nr_measurements, nr_metrics)
     total_stats = Stats()
-    for index, metric_uuid in enumerate(metric_uuids):  # pragma: no cover-behave
+    for index, metric_uuid in enumerate(metric_uuids):  # pragma: no feature-test-cover
         logger.info("Merging measurements for metric %s (%d/%d)", metric_uuid, index + 1, nr_metrics)
         stats = _merge_unmerged_measurements_for_metric(database, metric_uuid, dry_run)
         log_stats(logger, stats, dry_run)
@@ -79,7 +79,7 @@ def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> St
 
 def _merge_unmerged_measurements_for_metric(
     database: Database, metric_uuid: str, dry_run: bool
-) -> Stats:  # pragma: no cover-behave
+) -> Stats:  # pragma: no feature-test-cover
     """Merge the unmerged measurements of the specified metric."""
     updates: dict[ObjectId, str] = {}  # Mongo object ids of measurements that will be updated with a new end-timestamp
     deletes: list[ObjectId] = []  # The Mongo object ids of measurements that have been merged and will be deleted
@@ -107,7 +107,7 @@ def _merge_unmerged_measurements_for_metric(
 
 def _backup_measurements(
     database: Database, object_ids: Iterable[ObjectId], destination_collection: str
-) -> None:  # pragma: no cover-behave
+) -> None:  # pragma: no feature-test-cover
     """Backup the specified measurements to the specified collection."""
     database.measurements.aggregate(
         [
@@ -117,7 +117,7 @@ def _backup_measurements(
     )
 
 
-def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no cover-behave
+def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no feature-test-cover
     """Return whether the measurements are equal."""
     scales_equal = all(measurement1.get(scale) == measurement2.get(scale) for scale in SCALES)
     issues_statuses_equal = measurement1.get("issue_status") == measurement2.get("issue_status")
@@ -125,7 +125,7 @@ def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool
     return scales_equal and issues_statuses_equal and sources_equal
 
 
-def log_stats(logger: logging.Logger, stats: Stats, dry_run: bool) -> None:  # pragma: no cover-behave
+def log_stats(logger: logging.Logger, stats: Stats, dry_run: bool) -> None:  # pragma: no feature-test-cover
     """Log the update and deletion statistics, if any."""
     if stats.nr_measurements_updated > 0 or stats.nr_measurements_deleted > 0 or stats.nr_metrics > 1:
         dry_run_label = "...DRY RUN, so not " if dry_run else "..."
@@ -140,6 +140,6 @@ def log_stats(logger: logging.Logger, stats: Stats, dry_run: bool) -> None:  # p
         )
 
 
-def percentage(value: int, total: int) -> int:  # pragma: no cover-behave
+def percentage(value: int, total: int) -> int:  # pragma: no feature-test-cover
     """Calculate the percentage."""
     return round(100 * value / total) if total > 0 else 0

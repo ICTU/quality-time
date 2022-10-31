@@ -38,6 +38,10 @@ class ReportTest(DataModelTestCase):
         """Test that the report name equals the report title."""
         self.assertEqual("Report", self.report.name)
 
+    def test_equality(self):
+        """Test that reports are equal if their ids are."""
+        self.assertEqual(Report(self.DATA_MODEL, dict(report_uuid=REPORT_ID)), self.report)
+
     def test_subjects_dict(self):
         """Test that the subjects can be retrieved."""
         self.assertEqual(

@@ -63,7 +63,9 @@ class Source(dict):  # lgtm [py/missing-equals]
             else:
                 if "orphaned_since" in attributes:
                     days_since_orphaned = days_ago(datetime.fromisoformat(attributes["orphaned_since"]))
-                    if days_since_orphaned > max_days_to_keep_orphaned_entity_user_data:  # pragma: no cover-behave
+                    if (
+                        days_since_orphaned > max_days_to_keep_orphaned_entity_user_data
+                    ):  # pragma: no feature-test-cover
                         continue  # Don't copy this user data, it has been orphaned too long
                 else:
                     # The entity user data refers to a disappeared entity. Keep it around in case the entity

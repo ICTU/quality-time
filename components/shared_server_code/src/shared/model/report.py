@@ -58,7 +58,7 @@ class Report(dict):
     @property
     def uuid(self):
         """Return the uuid of this report."""
-        return cast(ReportId, self["report_uuid"])  # pragma: no cover-behave
+        return cast(ReportId, self["report_uuid"])  # pragma: no feature-test-cover
 
     @property
     def subjects_dict(self) -> dict[SubjectId, Subject]:
@@ -72,7 +72,7 @@ class Report(dict):
 
     def __eq__(self, other):
         """Return whether the reports are equal."""
-        return self.uuid == other.uuid  # pragma: no cover-behave
+        return self.uuid == other.uuid  # pragma: no feature-test-cover
 
     def _subjects(self, subject_data) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
@@ -140,4 +140,4 @@ class Report(dict):
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return (source, metric, subject)
-        raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no cover-behave
+        raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no feature-test-cover

@@ -30,7 +30,7 @@ class Subject(dict):
 
     def __eq__(self, other):
         """Return whether the subjects are equal."""
-        return self.uuid == other.uuid  # pragma: no cover-behave
+        return self.uuid == other.uuid  # pragma: no feature-test-cover
 
     def _instantiate_metrics(self, metric_data: dict) -> dict[str, Metric]:
         """Create metrics from metric_data."""

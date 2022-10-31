@@ -1,6 +1,6 @@
 """Test the source model."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import unittest
 
 from shared.model.source import Source
@@ -13,16 +13,18 @@ class SourceTest(unittest.TestCase):
 
     def test_copy_entity_user_data(self):
         """Test copy entity user data."""
-        now = str(datetime.now().isoformat())
+        now = datetime.now().isoformat()
+        long_ago = (datetime.now() - timedelta(days=30)).isoformat()
         old_eud = {
             "key_1": {"orphaned_since": now},
-            "key_2": {"orphaned_since": now},
-            "key_3": {},
+            "key_2": {"orphaned_since": long_ago},
+            "key_3": {"orphaned_since": now},
+            "key_4": {},
         }
 
         old_source = Source(SOURCE_ID, metric=None, entity_user_data=old_eud)
 
-        new_entities = [{"key": "key_2"}, {"key": "key_3"}]
+        new_entities = [{"key": "key_3"}, {"key": "key_4"}]
 
         new_source = Source(SOURCE_ID, metric=None, entities=new_entities)
 
@@ -30,9 +32,10 @@ class SourceTest(unittest.TestCase):
 
         self.assertIn("entity_user_data", new_source)
         self.assertIn("key_1", new_source["entity_user_data"])
-        self.assertIn("key_2", new_source["entity_user_data"])
+        self.assertNotIn("key_2", new_source["entity_user_data"])
         self.assertIn("key_3", new_source["entity_user_data"])
-        self.assertNotIn("orphaned_since", new_source["entity_user_data"]["key_2"])
+        self.assertIn("key_4", new_source["entity_user_data"])
+        self.assertNotIn("orphaned_since", new_source["entity_user_data"]["key_3"])
 
     def test_name(self):
         """Test that we get the expected name."""

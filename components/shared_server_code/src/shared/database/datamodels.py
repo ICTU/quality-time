@@ -16,7 +16,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
 
 def insert_new_datamodel(database: Database, data_model):
     """Insert a new data model in the data models collection."""
-    if "_id" in data_model:  # pragma: no cover-behave
+    if "_id" in data_model:  # pragma: no feature-test-cover
         del data_model["_id"]
     data_model["timestamp"] = iso_timestamp()
     return database.datamodels.insert_one(data_model)

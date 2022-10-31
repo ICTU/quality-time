@@ -85,7 +85,7 @@ class Sources(MappedModel[Source]):
     @classmethod
     def check_quality_time_source_types(cls, values):
         """Check that Quality-time lists all source types as possible values for its source_type parameter."""
-        if quality_time := values.get("quality_time"):  # pragma: no cover-behave
+        if quality_time := values.get("quality_time"):  # pragma: no feature-test-cover
             all_source_names = {source.name for source in values.values()}
             quality_time_source_names = set(quality_time.parameters.__root__["source_type"].values)
             if all_source_names != quality_time_source_names:

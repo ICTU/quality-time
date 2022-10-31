@@ -14,7 +14,7 @@ class AsDictMixin:  # pylint: disable=too-few-public-methods
 
     def as_dict(self) -> dict[str, str]:
         """Convert data class to dict."""
-        return asdict(self)  # pragma: no cover-behave
+        return asdict(self)  # pragma: no feature-test-cover
 
 
 @dataclass
@@ -103,15 +103,15 @@ class IssueTracker:
             )
         )
         try:
-            if labels and self.__labels_supported():  # pragma: no cover-behave
+            if labels and self.__labels_supported():  # pragma: no feature-test-cover
                 json["fields"]["labels"] = self.__prepare_labels(labels)
             response_json = self.__post_json(api_url, json)
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
             return "", str(reason)
-        return response_json["key"], ""  # pragma: no cover-behave
+        return response_json["key"], ""  # pragma: no feature-test-cover
 
-    def get_options(self) -> Options:  # pragma: no cover-behave
+    def get_options(self) -> Options:  # pragma: no feature-test-cover
         """Return the possible values for the issue tracker attributes."""
         # See https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#creating-an-issue-examples
         # for more information on how to use the Jira API to discover meta data needed to create issues
@@ -128,18 +128,18 @@ class IssueTracker:
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
             return []
-        return self._parse_suggestions(json)  # pragma: no cover-behave
+        return self._parse_suggestions(json)  # pragma: no feature-test-cover
 
     def browse_url(self, issue_key: str) -> URL:
         """Return a URL to a human readable version of the issue."""
-        return URL(self.issue_browse_url % (self.url, issue_key))  # pragma: no cover-behave
+        return URL(self.issue_browse_url % (self.url, issue_key))  # pragma: no feature-test-cover
 
-    def __labels_supported(self) -> bool:  # pragma: no cover-behave
+    def __labels_supported(self) -> bool:  # pragma: no feature-test-cover
         """Return whether the current project and issue type support labels."""
         return "labels" in [field.key for field in self.get_options().fields]
 
     @staticmethod
-    def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no cover-behave
+    def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no feature-test-cover
         """Return the labels in a format accepted by the issue tracker."""
         # Jira doesn't allow spaces in labels, so convert them to underscores before creating the issue
         return [label.replace(" ", "_") for label in labels]
@@ -154,7 +154,7 @@ class IssueTracker:
             logging.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
-    def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no cover-behave
+    def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
         """Return the issue tracker issue type options, given the current project."""
         if self.issue_parameters.project_key not in [project.key for project in projects]:
             # Current project is not an option, maybe the credentials were changed? Anyhow, no use getting issue types
@@ -168,7 +168,7 @@ class IssueTracker:
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
-    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no cover-behave
+    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
         """Return the issue tracker fields for the current project and issue type."""
         current_issue_type = self.issue_parameters.issue_type
         if current_issue_type not in [issue_type.name for issue_type in issue_types]:
@@ -184,19 +184,19 @@ class IssueTracker:
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
 
     @staticmethod
-    def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no cover-behave
+    def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no feature-test-cover
         """Parse the suggestions from the JSON."""
         issues = json.get("issues", [])
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
 
-    def __get_json(self, api_url: str):  # pragma: no cover-behave
+    def __get_json(self, api_url: str):  # pragma: no feature-test-cover
         """Get a response from the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.get(api_url, auth=auth, headers=headers)
         response.raise_for_status()
         return response.json()
 
-    def __post_json(self, api_url: str, json):  # pragma: no cover-behave
+    def __post_json(self, api_url: str, json):  # pragma: no feature-test-cover
         """Post the JSON to the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.post(api_url, auth=auth, headers=headers, json=json)
