@@ -27,6 +27,7 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 - New metric "Lead time for changes", to keep track of the average lead time of changes completed in a certain time period in Jira and/or Azure DevOps. Closes [#3501](https://github.com/ICTU/quality-time/issues/3501).
 - When displaying multiple dates, also show the metric deadline overrun. The deadline overrun is the number of days a metric was not addressed within the desired response time. Closes [#4538](https://github.com/ICTU/quality-time/issues/4538).
 - Create an SBOM for every *Quality-time* release. Closes [#4584](https://github.com/ICTU/quality-time/issues/4584).
+- When adding an issue tracker to a report, allow for configuring an epic to use as parent issue for issues created from *Quality-time*. Closes [#4614](https://github.com/ICTU/quality-time/issues/4614).
 - When creating issues in the issue tracker from *Quality-time*, mention the user who created the issue in the issue description for traceability. Closes [#4743](https://github.com/ICTU/quality-time/issues/4743).
 
 ### Changed
