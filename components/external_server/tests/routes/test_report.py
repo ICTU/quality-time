@@ -192,8 +192,12 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.issue_types_response = Mock()
         self.issue_types_response.json.return_value = dict(values=[dict(id="1", name="Bug", subtask=False)])
         self.fields_response = Mock()
+        self.epic_link_field_name = "Epic Link"
         self.fields_response.json.return_value = dict(
-            values=[dict(fieldId="labels", name="Labels"), dict(fieldId="epic_field_id", name="Epic Link")]
+            values=[
+                dict(fieldId="labels", name="Labels"),
+                dict(fieldId="epic_field_id", name=self.epic_link_field_name),
+            ]
         )
 
     @patch("requests.get")
@@ -235,7 +239,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")],
             issue_types=[dict(key="1", name="Bug")],
-            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name="Epic Link")],
+            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name=self.epic_link_field_name)],
             epic_links=[],
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
@@ -292,7 +296,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         expected_options = dict(
             projects=[dict(key="FOO", name="Foo")],
             issue_types=[dict(key="1", name="Bug")],
-            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name="Epic Link")],
+            fields=[dict(key="labels", name="Labels"), dict(key="epic_field_id", name=self.epic_link_field_name)],
             epic_links=[],
         )
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))

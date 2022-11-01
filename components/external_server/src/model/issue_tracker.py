@@ -150,7 +150,7 @@ class IssueTracker:
 
     def __epic_link_field_id(self) -> str:  # pragma: no feature-test-cover
         """Return the id of the epic link field, if any."""
-        epic_link_field = [field for field in self.get_options().fields if "epic link" == field.name.lower()]
+        epic_link_field = [field for field in self.get_options().fields if field.name.lower() == "epic link"]
         return epic_link_field[0].key if epic_link_field else ""
 
     @staticmethod
