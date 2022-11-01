@@ -11,7 +11,7 @@ jest.mock("../api/changelog.js");
 jest.mock("../api/report.js")
 
 report_api.get_report_issue_tracker_options.mockImplementation(
-    () => Promise.resolve({ projects: [], issue_types: [], fields: [] })
+    () => Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] })
 )
 
 changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));

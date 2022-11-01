@@ -127,8 +127,8 @@ class IssueTracker:
         projects = self.__get_project_options()
         issue_types = self.__get_issue_type_options(projects)
         fields = self.__get_field_options(issue_types)
-        epics = self.__get_epic_links(fields)
-        return Options(projects, issue_types, fields, epics)
+        epic_links = self.__get_epic_links(fields)
+        return Options(projects, issue_types, fields, epic_links)
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""

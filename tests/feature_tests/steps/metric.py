@@ -33,7 +33,7 @@ def retrieve_issue_tracker_options(context):
 @then("the issue tracker options are missing")
 def assert_issue_tracker_options(context):
     """Check the issue tracker options."""
-    assert_equal(dict(fields=[], issue_types=[], projects=[]), context.response)
+    assert_equal(dict(fields=[], issue_types=[], projects=[], epic_links=[]), context.response)
 
 
 @when("the client opens a new issue")

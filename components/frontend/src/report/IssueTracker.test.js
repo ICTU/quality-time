@@ -12,7 +12,8 @@ report_api.get_report_issue_tracker_options.mockImplementation(
         {
             projects: [{ key: "PRJ", name: "Project name" }],
             issue_types: [{ key: "Bug", name: "Bug" }],
-            fields: [{key: "labels", name: "Labels"}]
+            fields: [{key: "labels", name: "Labels"}],
+            epic_links: []
         }
     )
 )
@@ -144,7 +145,8 @@ it('does show the issue labels warning with issue type that does not support lab
             {
                 projects: [{ key: "PRJ", name: "Project name" }],
                 issue_types: [{ key: "Bug", name: "Bug" }],
-                fields: []
+                fields: [],
+                epic_links: []
             }
         )
     )
