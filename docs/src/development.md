@@ -508,7 +508,7 @@ To release *Quality-time*, issue the release command (in the release folder) usi
 python release.py <bump>  # Where bump is major, minor, patch, rc-major, rc-minor, rc-patch, rc, or drop-rc
 ```
 
-If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub. The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time).
+If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub. The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time). It will also create an {index}`Software Bill of Materials (SBOM) <Software Bill of Materials (SBOM)>` for the release, which can be found under the "Artifacts" header of the workflow run.
 
 The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_external server`, `quality-time_internal_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
 
