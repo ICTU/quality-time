@@ -6,7 +6,7 @@ orbs:
 jobs:
   unittest_backend:
     docker:
-      - image: cimg/python:3.10.8
+      - image: cimg/python:3.11.1
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -51,7 +51,7 @@ jobs:
       - run: |
           cd docs
           npm install
-          python3.10 -m venv venv
+          python3.11 -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
           ci/unittest.sh
@@ -70,7 +70,7 @@ jobs:
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.10.9-bullseye tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 python:3.11.1-bullseye tests/application_tests/ci/test.sh
           docker compose logs > build/containers.log
       - run:
           name: Save container logs on failure

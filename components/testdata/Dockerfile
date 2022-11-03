@@ -1,4 +1,4 @@
-FROM python:3.10.9-slim-bullseye
+FROM python:3.11.1-slim-bullseye
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time testdata"

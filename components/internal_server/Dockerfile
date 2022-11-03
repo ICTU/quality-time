@@ -1,4 +1,4 @@
-FROM python:3.10.9-bullseye AS compile-image
+FROM python:3.11.1-bullseye AS compile-image
 
 WORKDIR /home/server
 
@@ -13,7 +13,7 @@ COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.10.9-bullseye
+FROM python:3.11.1-bullseye
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time internal server"
