@@ -12,7 +12,8 @@ report_api.get_report_issue_tracker_options.mockImplementation(
         {
             projects: [{ key: "PRJ", name: "Project name" }],
             issue_types: [{ key: "Bug", name: "Bug" }],
-            fields: [{key: "labels", name: "Labels"}]
+            fields: [{key: "labels", name: "Labels"}],
+            epic_links: [{key: "FOO-420", name: "FOO-420"}]
         }
     )
 )
@@ -111,6 +112,13 @@ it('sets the issue tracker issue labels', async () => {
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_labels", ["Label"], reload);
 });
 
+it('sets the issue tracker epic link', async () => {
+    await act(async () => { render_issue_tracker() });
+    await act(async () => { fireEvent.click(screen.getByText(/Epic link/)) });
+    await act(async () => { fireEvent.click(screen.getByText(/FOO-420/)) });
+    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "epic_link", "FOO-420", reload);
+});
+
 it('does not show the issue labels warning without tracker project', async () => {
     await act(async () => {
         render_issue_tracker(
@@ -144,7 +152,8 @@ it('does show the issue labels warning with issue type that does not support lab
             {
                 projects: [{ key: "PRJ", name: "Project name" }],
                 issue_types: [{ key: "Bug", name: "Bug" }],
-                fields: []
+                fields: [],
+                epic_links: []
             }
         )
     )

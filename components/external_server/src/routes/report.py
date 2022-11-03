@@ -217,7 +217,7 @@ def get_report_issue_tracker_suggestions(report_uuid: ReportId, query: str, data
     return dict(suggestions=[issue.as_dict() for issue in issue_tracker.get_suggestions(query)])
 
 
-@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=True)
+@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=False)
 def get_report_issue_tracker_options(report_uuid: ReportId, database: Database):
     """Get options for the issue tracker attributes such as project key and issue type."""
     data_model = latest_datamodel(database)

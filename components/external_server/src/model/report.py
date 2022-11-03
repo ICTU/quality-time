@@ -14,7 +14,10 @@ class Report(SharedReport):
         parameters = issue_tracker_data.get("parameters", {})
         url = parameters.get("url", "")
         issue_parameters = IssueParameters(
-            parameters.get("project_key", ""), parameters.get("issue_type", ""), parameters.get("issue_labels", [])
+            parameters.get("project_key", ""),
+            parameters.get("issue_type", ""),
+            parameters.get("issue_labels", []),
+            parameters.get("epic_link", ""),
         )
         credentials = IssueTrackerCredentials(
             parameters.get("username", ""), parameters.get("password", ""), parameters.get("private_token", "")

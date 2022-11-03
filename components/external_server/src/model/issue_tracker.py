@@ -49,6 +49,7 @@ class IssueParameters:
     project_key: str
     issue_type: str
     issue_labels: Optional[list[str]] = None
+    epic_link: str = ""
 
 
 JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
@@ -69,6 +70,7 @@ class Options(AsDictMixin):
     projects: list[Option]
     issue_types: list[Option]
     fields: list[Option]
+    epic_links: list[Option]
 
 
 @dataclass
@@ -83,6 +85,10 @@ class IssueTracker:
     issue_types_api = issue_creation_api + "/createmeta/%s/issuetypes"
     issue_browse_url = "%s/browse/%s"
     suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
+    epics_api: str = (
+        '%s/rest/api/2/search?jql=type=epic and ("Epic Status" != Done or "Epic Status" is empty) and '
+        "project=%s&fields=summary&maxResults=100"
+    )
 
     def __post_init__(self) -> None:
         """Strip any trailing slash from the URL so we can add paths without worrying about double slashes."""
@@ -102,9 +108,12 @@ class IssueTracker:
                 project=dict(key=project_key), issuetype=dict(name=issue_type), summary=summary, description=description
             )
         )
+        if labels and self.__labels_supported():  # pragma: no feature-test-cover
+            json["fields"]["labels"] = self.__prepare_labels(labels)
+        epic_link = self.issue_parameters.epic_link
+        if epic_link and (epic_link_field_id := self.__epic_link_field_id()):  # pragma: no feature-test-cover
+            json["fields"][epic_link_field_id] = epic_link
         try:
-            if labels and self.__labels_supported():  # pragma: no feature-test-cover
-                json["fields"]["labels"] = self.__prepare_labels(labels)
             response_json = self.__post_json(api_url, json)
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
@@ -118,7 +127,8 @@ class IssueTracker:
         projects = self.__get_project_options()
         issue_types = self.__get_issue_type_options(projects)
         fields = self.__get_field_options(issue_types)
-        return Options(projects, issue_types, fields)
+        epic_links = self.__get_epic_links(fields)
+        return Options(projects, issue_types, fields, epic_links)
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
@@ -137,6 +147,11 @@ class IssueTracker:
     def __labels_supported(self) -> bool:  # pragma: no feature-test-cover
         """Return whether the current project and issue type support labels."""
         return "labels" in [field.key for field in self.get_options().fields]
+
+    def __epic_link_field_id(self) -> str:  # pragma: no feature-test-cover
+        """Return the id of the epic link field, if any."""
+        epic_link_field = [field for field in self.get_options().fields if field.name.lower() == "epic link"]
+        return epic_link_field[0].key if epic_link_field else ""
 
     @staticmethod
     def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no feature-test-cover
@@ -182,6 +197,19 @@ class IssueTracker:
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
+
+    def __get_epic_links(self, fields: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
+        """Return the possible epic links for the current project."""
+        field_names = [field.name.lower() for field in fields]
+        if "epic link" not in field_names:
+            return []
+        api_url = self.epics_api % (self.url, self.issue_parameters.project_key)
+        epics = []
+        try:
+            epics = self.__get_json(api_url)["issues"]
+        except Exception as reason:  # pylint: disable=broad-except
+            logging.warning("Getting epics at %s failed: %s", api_url, reason)
+        return [Option(str(epic["key"]), str(f'{epic["fields"]["summary"]} ({epic["key"]})')) for epic in epics]
 
     @staticmethod
     def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no feature-test-cover

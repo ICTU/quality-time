@@ -476,6 +476,8 @@ class MetricIssueTest(DataModelTestCase):
                 "This issue was created by user.\n",
             )
         )
+        self.issue_api = "https://tracker/rest/api/2/issue"
+        self.issue_url = "https://tracker/browse/FOO-42"
 
     def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
@@ -483,12 +485,10 @@ class MetricIssueTest(DataModelTestCase):
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
         self.assertEqual(
-            dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
+            dict(ok=True, issue_url=self.issue_url),
             add_metric_issue(METRIC_ID, self.database, User("user")),
         )
-        requests_post.assert_called_once_with(
-            "https://tracker/rest/api/2/issue", auth=None, headers={}, json=self.expected_json
-        )
+        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
 
     @patch("model.issue_tracker.requests.get")
     def test_add_metric_issue_with_labels(self, requests_get, requests_post):
@@ -505,13 +505,37 @@ class MetricIssueTest(DataModelTestCase):
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
         self.assertEqual(
-            dict(ok=True, issue_url="https://tracker/browse/FOO-42"),
+            dict(ok=True, issue_url=self.issue_url),
             add_metric_issue(METRIC_ID, self.database, User("user")),
         )
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
-        requests_post.assert_called_once_with(
-            "https://tracker/rest/api/2/issue", auth=None, headers={}, json=self.expected_json
+        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
+
+    @disable_logging
+    @patch("model.issue_tracker.requests.get")
+    def test_add_metric_issue_with_epic_link(self, requests_get, requests_post):
+        """Test that an issue can be added to the issue tracker."""
+        self.report["issue_tracker"]["parameters"]["epic_link"] = "FOO-420"
+        project_response = Mock()
+        project_response.json.return_value = [dict(key="KEY", name="Foo")]
+        issue_types_response = Mock()
+        issue_types_response.json.return_value = dict(values=[dict(id="1", name="BUG", subtask=False)])
+        fields_response = Mock()
+        fields_response.json.return_value = dict(values=[dict(fieldId="epic_link_field_id", name="Epic Link")])
+        epic_links_response = Mock()
+        epic_links_response.json.return_value = dict(
+            issues=[dict(key="FOO-420", fields=dict(summary="FOO-420 Summary"))]
         )
+        requests_get.side_effect = [project_response, issue_types_response, fields_response, epic_links_response]
+        response = Mock()
+        response.json.return_value = dict(key="FOO-42")
+        requests_post.return_value = response
+        self.assertEqual(
+            dict(ok=True, issue_url=self.issue_url),
+            add_metric_issue(METRIC_ID, self.database, User("user")),
+        )
+        self.expected_json["fields"]["epic_link_field_id"] = "FOO-420"
+        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
 
     @disable_logging
     def test_add_metric_issue_failure(self, requests_post):
