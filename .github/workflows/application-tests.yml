@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3.1.0
       - name: Run application tests
         env:
-          QUALITY_TIME_VERSION: v4.6.0-rc.5
+          QUALITY_TIME_VERSION: v4.6.0
           ENV: ci
         run: |
           mkdir -p build
