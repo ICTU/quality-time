@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+If your currently installed *Quality-time* version is not v4.6.0, please read the v4.6.0 deployment notes.
+
+### Fixed
+
+- When showing multiple dates in a quality report and also time traveling, *Quality-time* would not retrieve the most recent measurements for the selected dates. Fixes [#4793](https://github.com/ICTU/quality-time/issues/4793).
+
 ## v4.6.0 - 2022-11-03
 
 ### Deployment notes

@@ -64,7 +64,7 @@ def metrics_of_subject(database: Database, subject_uuid: SubjectId, max_iso_time
     else:
         report_filter["last"] = True  # Otherwise select only reports that are the most recent ones
     projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
-    report = database.reports.find_one(report_filter, projection=projection)
+    report = database.reports.find_one(report_filter, projection=projection, sort=TIMESTAMP_DESCENDING)
     return list(report["subjects"][subject_uuid]["metrics"].keys()) if report else []
 
 
