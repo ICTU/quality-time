@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [Unreleased]
+## v4.6.1 - 2022-11-07
 
 If your currently installed *Quality-time* version is not v4.6.0, please read the v4.6.0 deployment notes.
 
