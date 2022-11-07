@@ -10,7 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## v4.6.1 - 2022-11-07
 
-If your currently installed *Quality-time* version is not v4.6.0, please read the v4.6.0 deployment notes.
+### Deployment notes
+
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -20,7 +22,7 @@ If your currently installed *Quality-time* version is not v4.6.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.5.0, please read the v4.5.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -46,7 +48,7 @@ If your currently installed *Quality-time* version is not v4.5.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.4.0, please read the v4.4.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -63,7 +65,7 @@ If your currently installed *Quality-time* version is not v4.4.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.3.0, please read the v4.3.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -89,7 +91,7 @@ If your currently installed *Quality-time* version is not v4.3.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.2.0, please read the v4.2.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -111,7 +113,7 @@ If your currently installed *Quality-time* version is not v4.2.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.1.0, please read the v4.1.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
@@ -139,7 +141,7 @@ If your currently installed *Quality-time* version is not v4.1.0, please read th
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is not v4.0.0, please read the v4.0.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
 ### Fixed
 
