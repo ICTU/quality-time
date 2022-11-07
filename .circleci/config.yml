@@ -45,7 +45,7 @@ jobs:
 
   unittest_docs:
     machine:
-      image: ubuntu-2204:2022.04.2
+      image: ubuntu-2204:2022.10.1
     steps:
       - checkout
       - run: |
