@@ -4,10 +4,6 @@
 #
 #    pip-compile --generate-hashes requirements.in
 #
-aiodns==3.0.0 \
-    --hash=sha256:2b19bc5f97e5c936638d28e665923c093d8af2bf3aa88d35c43417fa25d136a2 \
-    --hash=sha256:946bdfabe743fceeeb093c8a010f5d1645f708a241be849e17edfb0e49e08cd6
-    # via -r requirements.in
 aiohttp==3.8.3 \
     --hash=sha256:02f9a2c72fc95d59b881cf38a4b2be9381b9527f9d328771e90f72ac76f31ad8 \
     --hash=sha256:059a91e88f2c00fe40aed9031b3606c3f311414f86a90d696dd982e7aec48142 \
@@ -353,7 +349,6 @@ pycares==4.2.2 \
     --hash=sha256:f6b5360e2278fae1e79479a4b56198fc7faf46ab350da18756c4de789835dbcd \
     --hash=sha256:f8b76c13275b319b850e28bb9b3f5815de7521b1e0a581453d1acf10011bafef \
     --hash=sha256:fe8e0f8ed7fd795868bfc2211e345963174a9f4d1e2125753e1715a60441c8a0
-    # via aiodns
 pycparser==2.21 \
     --hash=sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9 \
     --hash=sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206
