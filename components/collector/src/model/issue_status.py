@@ -75,10 +75,10 @@ class IssueStatus:  # pylint: disable=too-few-public-methods
         self,
         issue_id: str,
         *,
-        issue: Issue = None,
-        status_category: IssueStatusCategory = None,
-        connection_error: ErrorMessage = None,
-        parse_error: ErrorMessage = None
+        issue: Issue | None = None,
+        status_category: IssueStatusCategory | None = None,
+        connection_error: ErrorMessage | None = None,
+        parse_error: ErrorMessage | None = None
     ) -> None:
         self.issue_id = issue_id
         self.issue = issue or Issue()

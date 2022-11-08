@@ -17,7 +17,7 @@ from defusedxml import ElementTree
 from .type import URL, Namespaces, Response
 
 
-async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
+async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] | None = None) -> Element:
     """Parse the XML from the source response."""
     tree = cast(Element, ElementTree.fromstring(await response.text(), forbid_dtd=False))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
@@ -26,7 +26,7 @@ async def parse_source_response_xml(response: Response, allowed_root_tags: Colle
 
 
 async def parse_source_response_xml_with_namespace(
-    response: Response, allowed_root_tags: Collection[str] = None
+    response: Response, allowed_root_tags: Collection[str] | None = None
 ) -> tuple[Element, Namespaces]:
     """Parse the XML with namespace from the source response."""
     tree = await parse_source_response_xml(response, allowed_root_tags)

@@ -7,7 +7,11 @@ class SourceResponses:
     """Class the hold the source responses, and associated information such as api_url and connection error, if any."""
 
     def __init__(
-        self, *, responses: Responses = None, api_url: URL = None, connection_error: ErrorMessage = None
+        self,
+        *,
+        responses: Responses | None = None,
+        api_url: URL | None = None,
+        connection_error: ErrorMessage | None = None
     ) -> None:
         self.__responses: Responses = responses or []
         self.api_url = api_url

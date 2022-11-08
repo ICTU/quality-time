@@ -93,9 +93,9 @@ class AzureDevopsJobs(SourceCollector):
 class AzureDevopsPipelines(SourceCollector):
     """Base class for pipeline collectors."""
 
-    async def _api_url(self, pipeline_id: int = None) -> URL:
+    async def _api_url(self, pipeline_id: int | None = None) -> URL:
         """Extend to add the pipelines API path."""
-        pipeline_id_runs = f"/{pipeline_id}/runs" if pipeline_id else ""
+        pipeline_id_runs = "" if pipeline_id is None else f"/{pipeline_id}/runs"
         # currently the pipelines api is not available in any version which is not a -preview version
         return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
 
@@ -103,7 +103,7 @@ class AzureDevopsPipelines(SourceCollector):
         """Find all active pipeline ids to traverse."""
         api_pipelines_url = await self._api_url()
         pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
-        return [pipeline['id'] for pipeline in pipelines if 'id' in pipeline and self._include_pipeline(pipeline)]
+        return [pipeline["id"] for pipeline in pipelines if "id" in pipeline and self._include_pipeline(pipeline)]
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:  # skipcq: PYL-W0613
         """Override to parse the pipelines."""
@@ -122,7 +122,7 @@ class AzureDevopsPipelines(SourceCollector):
                         name=pipeline_run["name"],
                         url=pipeline_run["_links"]["web"]["href"],
                         build_date=str(parse(pipeline_run["finishedDate"]).date()),
-                        build_status=pipeline_run["state"]
+                        build_status=pipeline_run["state"],
                     )
                 )
         return entities

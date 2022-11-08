@@ -18,7 +18,7 @@ class SourceMeasurement:  # pylint: disable=too-many-instance-attributes
         *,
         value: Value = None,
         total: Value = "100",
-        entities: Entities = None,
+        entities: Entities | None = None,
         connection_error: ErrorMessage = None,
         parse_error: ErrorMessage = None,
     ) -> None:
