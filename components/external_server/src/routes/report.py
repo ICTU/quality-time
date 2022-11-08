@@ -31,7 +31,7 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.get("/api/v3/report", authentication_required=False)
 @bottle.get("/api/v3/report/", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
-def get_report(database: Database, report_uuid: ReportId = None):
+def get_report(database: Database, report_uuid: ReportId | None = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)

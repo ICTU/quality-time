@@ -188,10 +188,10 @@ class FailureType(MultipleChoiceParameter):
 
 def access_parameters(
     metrics: list[str],
-    include: dict[str, bool] = None,
+    include: dict[str, bool] | None = None,
     source_type: str = "",
     source_type_format: Literal["", "CSV", "HTML", "JSON", "XML"] = "",
-    kwargs: dict[str, dict[str, Union[str, bool, list[str]]]] = None,
+    kwargs: dict[str, dict[str, Union[str, bool, list[str]]]] | None = None,
 ) -> dict[str, Parameter]:
     """Create the access parameters, needed to access the source."""
     include = include or {}

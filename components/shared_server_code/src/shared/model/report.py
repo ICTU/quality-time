@@ -123,7 +123,9 @@ class Report(dict):
 
         return summary
 
-    def instance_and_parents_for_uuid(self, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> tuple:
+    def instance_and_parents_for_uuid(
+        self, metric_uuid: MetricId | None = None, source_uuid: SourceId | None = None
+    ) -> tuple:
         """Find an instance and its parents.
 
         For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in

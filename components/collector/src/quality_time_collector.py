@@ -9,9 +9,9 @@ import source_collectors  # pylint: disable=unused-import # lgtm [py/unused-impo
 from base_collectors import Collector
 
 
-async def collect(log_level: int = None) -> None:
+async def collect(log_level: int | None = None) -> None:
     """Collect the measurements indefinitely."""
-    logging.getLogger().setLevel(log_level or logging.ERROR)
+    logging.getLogger().setLevel(logging.ERROR if log_level is None else log_level)
     await Collector().start()
 
 
