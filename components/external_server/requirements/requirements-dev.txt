@@ -581,13 +581,13 @@ tomlkit==0.11.6 \
     --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
     --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
     # via pylint
-types-cryptography==3.3.23.1 \
-    --hash=sha256:b9f8aa93d9e4d7ff920961cdce3dc7cca479946890924d68356b66f15f4f35e3 \
-    --hash=sha256:f108e7a7161eedd9fe391e1a8ae5a98d40c1da2f0418bc0812a9119990272314
+types-cryptography==3.3.23.2 \
+    --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
+    --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via -r requirements-dev.in
-types-requests==2.28.11.2 \
-    --hash=sha256:14941f8023a80b16441b3b46caffcbfce5265fd14555844d6029697824b5a2ef \
-    --hash=sha256:fdcd7bd148139fb8eef72cf4a41ac7273872cad9e6ada14b11ff5dfdeee60ed3
+types-requests==2.28.11.4 \
+    --hash=sha256:bdb1f9811e53d0642c8347b09137363eb25e1a516819e190da187c29595a1df3 \
+    --hash=sha256:d4f342b0df432262e9e326d17638eeae96a5881e78e7a6aae46d33870d73952e
     # via -r ../../../requirements/types-requests.in
 types-urllib3==1.26.25.1 \
     --hash=sha256:a948584944b2412c9a74b9cf64f6c48caf8652cb88b38361316f6d15d8a184cd \
