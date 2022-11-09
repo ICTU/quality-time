@@ -29,7 +29,7 @@ def markdown_paragraph(text: str) -> str:
     return f"\n{text}\n\n"
 
 
-def markdown_link(url: str, anchor: str = None) -> str:
+def markdown_link(url: str, anchor: str | None = None) -> str:
     """Return a Markdown link."""
     anchor = anchor or url
     return f"[{anchor}]({url})"
