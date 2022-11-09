@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.database.name }}
+  name: {{ .Values.database.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.database.name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.name }}
+    spec:
+      volumes:
+        - name: {{ .Values.database.claimName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.database.claimName }}
+      containers:
+        - env:
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: root
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+          resources:
+            limits:
+              cpu: '2'
+              memory: 2Gi
+            requests:
+              cpu: '1'
+              memory: 1Gi
+          image: {{ .Values.database.image }}
+          imagePullPolicy: Always
+          name: {{ .Values.database.name }}
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/db
+              name: {{ .Values.database.claimName }}
+      restartPolicy: Always
+      imagePullSecrets: 
+        - name: quality-time-pullsecret

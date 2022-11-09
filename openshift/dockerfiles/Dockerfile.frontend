@@ -1,0 +1,8 @@
+ARG  IMAGE_NAME=docker.io/ictu/quality-time_frontend
+FROM $IMAGE_NAME
+USER root
+COPY *.crt /usr/local/share/ca-certificates/
+RUN /usr/sbin/update-ca-certificates
+RUN cd /usr/local/share/ca-certificates/ ; for key in $(ls *.crt) ;do cat $key >> /ca-cert.pem ; done 
+ENV REQUESTS_CA_BUNDLE /ca-cert.pem
+

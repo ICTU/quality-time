@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.internal_server.name }}
+  name: {{ .Values.internal_server.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.internal_server.name }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.internal_server.name }}
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              value: mongodb://root:root@{{ .Values.database.name }}:27017
+            - name: INTERNAL_SERVER_PORT
+              value: "5002"
+            - name: LOAD_EXAMPLE_REPORTS
+              value: "True"
+          image: {{ .Values.internal_server.image }}
+          imagePullPolicy: Always
+          name: {{ .Values.internal_server.name }}
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+      imagePullSecrets: 
+        - name: quality-time-pullsecret
