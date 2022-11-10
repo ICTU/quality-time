@@ -31,12 +31,10 @@ pyparsing==3.0.9 \
 tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
-    # via
-    #   build
-    #   pep517
-wheel==0.38.3 \
-    --hash=sha256:4066646ef77d0e56cc44004c100381ee1957955cfc3151345dda96886f9896a5 \
-    --hash=sha256:f3c99240da8d26989dca2d67a7a431015eb91fb301eecacc6e452133689d9d59
+    # via pep517
+wheel==0.38.4 \
+    --hash=sha256:965f5259b566725405b05e7cf774052044b1ed30119b5d586b2703aafe8719ac \
+    --hash=sha256:b60533f3f5d530e971d6737ca6d58681ee434818fab630c83a734bb10c083ce8
     # via
     #   -r ../../requirements/base.in
     #   pip-tools
