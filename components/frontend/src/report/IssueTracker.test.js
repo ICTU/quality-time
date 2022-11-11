@@ -86,10 +86,9 @@ it('does not show the issue tracker private token help url if the data model has
 });
 
 it('shows the issue tracker private token help url', async () => {
-    await act(async () => {
-        const { container } = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help" });
-        expect(container.querySelector("a")).toHaveAttribute('href', 'https://help')
-    });
+    let result;
+    await act(async () => { result = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help" }); });
+    expect(result.container.querySelector("a")).toHaveAttribute('href', 'https://help')
 });
 
 it('sets the issue tracker project', async () => {

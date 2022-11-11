@@ -32,8 +32,8 @@ async function render_subject_title(subject_type = "subject_type") {
                 </DataModel.Provider>
             </Permissions.Provider>
         )
-        fireEvent.click(screen.getByTitle(/expand/));
     });
+    fireEvent.click(screen.getByTitle(/expand/));
 }
 
 it('changes the subject type', async () => {

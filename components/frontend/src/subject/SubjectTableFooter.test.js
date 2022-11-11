@@ -48,8 +48,8 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
                     </Table>
                 </DataModel.Provider>
             </Permissions.Provider>);
-        fireEvent.click(screen.getByText(/Copy metric/));
     });
+    fireEvent.click(screen.getByText(/Copy metric/));
     await act(async () => {
         fireEvent.click(screen.getAllByText(/M1/)[0]);
     });
@@ -70,8 +70,8 @@ it('moves a metric when the move button is clicked and a metric is selected', as
                     </Table>
                 </Permissions.Provider>
             </DataModel.Provider>)
-        fireEvent.click(screen.getByText(/Move metric/));
     });
+    fireEvent.click(screen.getByText(/Move metric/));
     await act(async () => {
         fireEvent.click(screen.getByText(/Subject 2 title/));
     })

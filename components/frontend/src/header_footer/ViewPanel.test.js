@@ -48,8 +48,8 @@ it('resets the settings', async () => {
                 {...props}
             />
         )
-        fireEvent.click(screen.getByText(/Reset all settings/))
     });
+    act(() => { fireEvent.click(screen.getByText(/Reset all settings/)) });
     expect(props.clearVisibleDetailsTabs).toHaveBeenCalled()
     expect(props.clearHiddenColumns).toHaveBeenCalled()
     expect(props.handleSort).toHaveBeenCalled()
@@ -93,8 +93,8 @@ it('does not reset the settings when all have the default value', async () => {
                 {...props}
             />
         )
-        fireEvent.click(screen.getByText(/Reset all settings/))
     });
+    act(() => { fireEvent.click(screen.getByText(/Reset all settings/)) });
     expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
     expect(props.handleSort).not.toHaveBeenCalled()
@@ -113,198 +113,154 @@ it('does not reset the settings when all have the default value', async () => {
 
 it("sets dark mode", async () => {
     const setUIMode = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} />)
-        fireEvent.click(screen.getByText(/Dark mode/))
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} />) });
+    fireEvent.click(screen.getByText(/Dark mode/))
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })
 
 it("sets light mode", async () => {
     const setUIMode = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} uiMode="dark" />)
-        fireEvent.click(screen.getByText(/Light mode/))
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={false} setUIMode={setUIMode} uiMode="dark" />) });
+    fireEvent.click(screen.getByText(/Light mode/))
     expect(setUIMode).toHaveBeenCalledWith("light")
 })
 
 it("sets dark mode on keypress", async () => {
     const setUIMode = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />)
-        await userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />) });
+    await userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })
 
 it("hides the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={false} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
-        fireEvent.click(screen.getByText(/Metrics requiring action/))
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={false} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />) });
+    fireEvent.click(screen.getByText(/Metrics requiring action/))
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(true)
 })
 
 it("shows the metrics not requiring action", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
-        fireEvent.click(screen.getByText(/All metrics/))
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />) });
+    fireEvent.click(screen.getByText(/All metrics/))
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })
 
 it("shows the metrics not requiring action by keypress", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
-        await userEvent.type(screen.getByText(/All metrics/), "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />) });
+    await userEvent.type(screen.getByText(/All metrics/), "{Enter}")
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
 })
 
 it("hides a column", async () => {
     const toggleHiddenColumn = jest.fn();
-    await act(async () => {
-        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
-        fireEvent.click(screen.getByText(/Trend/))
-    });
+    await act(async () => { render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />) });
+    fireEvent.click(screen.getByText(/Trend/))
     expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
 })
 
 it("hides a column by keypress", async () => {
     const toggleHiddenColumn = jest.fn();
-    await act(async () => {
-        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
-        await userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />) });
+    await userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
 })
 
 it("shows a column", async () => {
     const toggleHiddenColumn = jest.fn();
-    await act(async () => {
-        render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
-        fireEvent.click(screen.getAllByText(/Status/)[0])
-    });
+    await act(async () => { render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />) });
+    fireEvent.click(screen.getAllByText(/Status/)[0])
     expect(toggleHiddenColumn).toHaveBeenCalledWith("status")
 })
 
 it("sorts a column", async () => {
     const handleSort = jest.fn();
-    await act(async () => {
-        render(<ViewPanel handleSort={handleSort} />)
-        fireEvent.click(screen.getAllByText(/Comment/)[1])
-    });
+    await act(async () => { render(<ViewPanel handleSort={handleSort} />) });
+    fireEvent.click(screen.getAllByText(/Comment/)[1])
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("sorts a column descending", async () => {
     const handleSort = jest.fn();
-    await act(async () => {
-        render(<ViewPanel sortColumn="comment" sortDirection="ascending" handleSort={handleSort} />)
-        fireEvent.click(screen.getAllByText(/Comment/)[1])
-    });
+    await act(async () => { render(<ViewPanel sortColumn="comment" sortDirection="ascending" handleSort={handleSort} />) });
+    fireEvent.click(screen.getAllByText(/Comment/)[1])
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("sorts a column by keypress", async () => {
     const handleSort = jest.fn();
-    await act(async () => {
-        render(<ViewPanel handleSort={handleSort} />)
-        await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel handleSort={handleSort} />) });
+    await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("ignores a keypress if the menu item is disabled", async () => {
     const handleSort = jest.fn();
-    await act(async () => {
-        render(<ViewPanel hiddenColumns={["comment"]} handleSort={handleSort} />)
-        await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel hiddenColumns={["comment"]} handleSort={handleSort} />) });
+    await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
     expect(handleSort).not.toHaveBeenCalledWith("comment")
 })
 
 it("sets the number of dates", async () => {
     const setNrDates = jest.fn();
-    await act(async () => {
-        render(<ViewPanel nrDates={2} setNrDates={setNrDates} />)
-        fireEvent.click(screen.getByText(/7 dates/))
-    });
+    await act(async () => { render(<ViewPanel nrDates={2} setNrDates={setNrDates} />) });
+    fireEvent.click(screen.getByText(/7 dates/))
     expect(setNrDates).toHaveBeenCalledWith(7)
 })
 
 it("sets the number of dates by keypress", async () => {
     const setNrDates = jest.fn();
-    await act(async () => {
-        render(<ViewPanel nrDates={1} setNrDates={setNrDates} />)
-        await userEvent.type(screen.getByText(/5 dates/), "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel nrDates={1} setNrDates={setNrDates} />) });
+    await userEvent.type(screen.getByText(/5 dates/), "{Enter}")
     expect(setNrDates).toHaveBeenCalledWith(5)
 })
 
 it("sets the date interval to weeks", async () => {
     const setDateInterval = jest.fn();
-    await act(async () => {
-        render(<ViewPanel dateInterval={1} setDateInterval={setDateInterval} />)
-        fireEvent.click(screen.getByText(/2 weeks/))
-    });
+    await act(async () => { render(<ViewPanel dateInterval={1} setDateInterval={setDateInterval} />) });
+    fireEvent.click(screen.getByText(/2 weeks/))
     expect(setDateInterval).toHaveBeenCalledWith(14)
 })
 
 it("sets the date interval to one day", async () => {
     const setDateInterval = jest.fn();
-    await act(async () => {
-        render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
-        fireEvent.click(screen.getByText(/1 day/))
-    });
+    await act(async () => { render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />) });
+    fireEvent.click(screen.getByText(/1 day/))
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
 
 it("sets the date interval by keypress", async () => {
     const setDateInterval = jest.fn();
-    await act(async () => {
-        render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
-        await userEvent.type(screen.getByText(/1 day/), "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />) });
+    await userEvent.type(screen.getByText(/1 day/), "{Enter}")
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
 
 it("sorts the dates descending", async () => {
     const setDateOrder = jest.fn();
-    await act(async () => {
-        render(<ViewPanel dateOrder="ascending" setDateOrder={setDateOrder} />)
-        fireEvent.click(screen.getByText(/Descending/))
-    });
+    await act(async () => { render(<ViewPanel dateOrder="ascending" setDateOrder={setDateOrder} />) });
+    fireEvent.click(screen.getByText(/Descending/))
     expect(setDateOrder).toHaveBeenCalledWith("descending")
 })
 
 it("sorts the dates ascending by keypress", async () => {
     const setDateOrder = jest.fn();
-    await act(async () => {
-        render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
-        await userEvent.type(screen.getByText(/Ascending/), "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />) });
+    await userEvent.type(screen.getByText(/Ascending/), "{Enter}")
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })
 
 it("shows issue summaries", async () => {
     const setShowIssueSummary = jest.fn();
-    await act(async () => {
-        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
-        fireEvent.click(screen.getAllByText(/Summary/)[0])
-    });
+    await act(async () => { render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />) });
+    await act(async () => { fireEvent.click(screen.getAllByText(/Summary/)[0]) });
     expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })
 
 it("shows issue summaries by keypress", async () => {
     const setShowIssueSummary = jest.fn();
-    await act(async () => {
-        render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
-        await userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
-    });
+    await act(async () => { render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />) });
+    await userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
     expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })

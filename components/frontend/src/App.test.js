@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import * as fetch_server_api from './api/fetch_server_api';
@@ -56,7 +56,7 @@ it('handles a date reset', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     history.pushState({}, "", "/?report_date=2020-03-13")
     render(<App />);
-    fireEvent.click(screen.getByTestId("datepicker-clear-icon"))
+    await act(async () => { fireEvent.click(screen.getByTestId("datepicker-clear-icon")) })
     expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)
 });
 
