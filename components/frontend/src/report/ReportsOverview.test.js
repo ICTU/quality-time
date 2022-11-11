@@ -42,7 +42,7 @@ it('shows the report tag cards', () => {
 
 it('adds a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_reports_overview([], {}) });
+    render_reports_overview([], {});
     fireEvent.click(screen.getByText(/Add report/));
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/new", {});
 });
@@ -50,7 +50,7 @@ it('adds a report', async () => {
 it('copies a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const reports = [{ report_uuid: "uuid", title: "Existing report", summary: { blue: 0, red: 0, green: 0, yellow: 0, grey: 0, white: 0 }, summary_by_tag: {} }]
-    await act(async () => { render_reports_overview(reports, {}) });
+    render_reports_overview(reports, {})
     fireEvent.click(screen.getByText(/Copy report/));
     await act(async () => { fireEvent.click(screen.getByRole("option")); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {});

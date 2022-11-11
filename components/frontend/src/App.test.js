@@ -52,17 +52,17 @@ it('handles a date change', async () => {
     expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 });
 
+it('reads the report date query parameter', () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    history.pushState({}, "", "/?report_date=2020-03-13")
+    render(<App />);
+    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
+});
+
 it('handles a date reset', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     history.pushState({}, "", "/?report_date=2020-03-13")
     render(<App />);
     await act(async () => { fireEvent.click(screen.getByTestId("datepicker-clear-icon")) })
     expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)
-});
-
-it('reads the report date query parameter', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    history.pushState({}, "", "/?report_date=2020-03-13")
-    render(<App />);
-    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 });

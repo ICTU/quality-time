@@ -41,32 +41,32 @@ function render_issue_tracker({ report = { report_uuid: "report_uuid", title: "R
 }
 
 it('sets the issue tracker type', async () => {
-    await act(async () => { render_issue_tracker() });
-    await act(async () => { fireEvent.click(screen.getByText(/Issue tracker type/)) });
+    render_issue_tracker();
+    fireEvent.click(screen.getByText(/Issue tracker type/));
     await act(async () => { fireEvent.click(screen.getByText(/Jira/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "type", "jira", reload);
 });
 
 it('sets the issue tracker url', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker();
     await userEvent.type(screen.getByText(/URL/), 'https://jira{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "url", "https://jira", reload);
 });
 
 it('sets the issue tracker username', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker();
     await userEvent.type(screen.getByText(/Username/), 'janedoe{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "username", "janedoe", reload);
 });
 
 it('sets the issue tracker password', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker();
     await userEvent.type(screen.getByText(/Password/), 'secret{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "password", "secret", reload);
 });
 
 it('sets the issue tracker private token', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker();
     await userEvent.type(screen.getByText(/Private token/), 'secret{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "private_token", "secret", reload);
 });
@@ -92,27 +92,27 @@ it('shows the issue tracker private token help url', async () => {
 });
 
 it('sets the issue tracker project', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker();
     await act(async () => { fireEvent.click(screen.getByText(/Project for new issues/)) });
     await act(async () => { fireEvent.click(screen.getByText(/Project name/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "project_key", "PRJ", reload);
 });
 
 it('sets the issue tracker issue type', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker()
     await act(async () => { fireEvent.click(screen.getByText(/Issue type/)) });
     await act(async () => { fireEvent.click(screen.getByText(/Bug/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_type", "Bug", reload);
 });
 
 it('sets the issue tracker issue labels', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker()
     await userEvent.type(screen.getByText(/Enter one or more labels here/), 'Label{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_labels", ["Label"], reload);
 });
 
 it('sets the issue tracker epic link', async () => {
-    await act(async () => { render_issue_tracker() });
+    render_issue_tracker()
     await act(async () => { fireEvent.click(screen.getByText(/Epic link/)) });
     await act(async () => { fireEvent.click(screen.getByText(/FOO-420/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "epic_link", "FOO-420", reload);

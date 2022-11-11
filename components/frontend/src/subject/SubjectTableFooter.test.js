@@ -11,7 +11,7 @@ const stopSorting = jest.fn()
 jest.mock("../api/fetch_server_api.js")
 fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
 
-it('shows the add metric button and adds a metric when clicked', async () => {
+it('shows the add metric button and adds a metric when clicked', () => {
     const { getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
@@ -24,56 +24,44 @@ it('shows the add metric button and adds a metric when clicked', async () => {
             </DataModel.Provider>
         </Permissions.Provider>
     );
-    await act(async () => {
-        fireEvent.click(getByText(/Add metric/))
-    });
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Metric type/));
-    });
+    fireEvent.click(getByText(/Add metric/))
+    fireEvent.click(screen.getByText(/Metric type/));
     expect(stopSorting).toBeCalled()
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", { type: "metric_type"});
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", { type: "metric_type" });
 });
 
 it('copies a metric when the copy button is clicked and a metric is selected', async () => {
-    await act(async () => {
-        render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={datamodel}>
-                    <Table>
-                        <SubjectTableFooter
-                            subjectUuid="subject_uuid"
-                            subject={report.subjects.subject_uuid}
-                            reports={[report]}
-                            stopSorting={stopSorting} />
-                    </Table>
-                </DataModel.Provider>
-            </Permissions.Provider>);
-    });
+    render(
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <DataModel.Provider value={datamodel}>
+                <Table>
+                    <SubjectTableFooter
+                        subjectUuid="subject_uuid"
+                        subject={report.subjects.subject_uuid}
+                        reports={[report]}
+                        stopSorting={stopSorting} />
+                </Table>
+            </DataModel.Provider>
+        </Permissions.Provider>);
     fireEvent.click(screen.getByText(/Copy metric/));
-    await act(async () => {
-        fireEvent.click(screen.getAllByText(/M1/)[0]);
-    });
+    await act(async () => { fireEvent.click(screen.getAllByText(/M1/)[0]); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
 });
 
 it('moves a metric when the move button is clicked and a metric is selected', async () => {
-    await act(async () => {
-        render(
-            <DataModel.Provider value={datamodel}>
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <Table>
-                        <SubjectTableFooter
-                            subjectUuid="subject_uuid"
-                            subject={report.subjects.subject_uuid}
-                            reports={[report]}
-                            stopSorting={stopSorting} />
-                    </Table>
-                </Permissions.Provider>
-            </DataModel.Provider>)
-    });
+    render(
+        <DataModel.Provider value={datamodel}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <Table>
+                    <SubjectTableFooter
+                        subjectUuid="subject_uuid"
+                        subject={report.subjects.subject_uuid}
+                        reports={[report]}
+                        stopSorting={stopSorting} />
+                </Table>
+            </Permissions.Provider>
+        </DataModel.Provider>)
     fireEvent.click(screen.getByText(/Move metric/));
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Subject 2 title/));
-    })
+    await act(async () => { fireEvent.click(screen.getByText(/Subject 2 title/)); })
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});
 });
