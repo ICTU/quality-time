@@ -3,7 +3,7 @@ bandit==1.7.4
 black==22.10.0
 coverage==6.5.0
 dlint==0.13.0
-mypy==0.990
+mypy==0.991
 pep8-naming==0.13.2
 pip-audit==2.4.5
 pydantic==1.10.2  # Needed for importing the data model from the shared data model component
