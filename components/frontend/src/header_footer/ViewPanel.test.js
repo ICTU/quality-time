@@ -117,37 +117,35 @@ it('does not reset the settings when all have the default value', () => {
     expect(props.setUIMode).not.toHaveBeenCalled()
 })
 
-it('saves the settings', async () => {
+it('saves the settings', () => {
     const props = eventHandlers();
-    await act(async () => {
-        render(
-            <ViewPanel
-                setDefaultSettings={jest.fn()}
-                defaultSettings={DEFAULT_SETTINGS}
-                dateInterval={14}
-                dateOrder="ascending"
-                hiddenColumns={["trend"]}
-                hideMetricsNotRequiringAction={true}
-                issueSettings={
-                    {
-                        showIssueCreationDate: true,
-                        showIssueSummary: true,
-                        showIssueUpdateDate: true,
-                        showIssueDueDate: true,
-                        showIssueRelease: true,
-                        showIssueSprint: true
-                    }
+    render(
+        <ViewPanel
+            setDefaultSettings={jest.fn()}
+            defaultSettings={DEFAULT_SETTINGS}
+            dateInterval={14}
+            dateOrder="ascending"
+            hiddenColumns={["trend"]}
+            hideMetricsNotRequiringAction={true}
+            issueSettings={
+                {
+                    showIssueCreationDate: true,
+                    showIssueSummary: true,
+                    showIssueUpdateDate: true,
+                    showIssueDueDate: true,
+                    showIssueRelease: true,
+                    showIssueSprint: true
                 }
-                nrDates={7}
-                sortColumn="status"
-                sortDirection="descending"
-                uiMode="dark"
-                visibleDetailsTabs={["tab"]}
-                {...props}
-            />
-        )
-        fireEvent.click(screen.getByText(/Save settings/))
-    });
+            }
+            nrDates={7}
+            sortColumn="status"
+            sortDirection="descending"
+            uiMode="dark"
+            visibleDetailsTabs={["tab"]}
+            {...props}
+        />
+    )
+    fireEvent.click(screen.getByText(/Save settings/))
     expect(put_settings).toHaveBeenCalledWith({
         "date_interval": 14,
         "date_order": "ascending",
@@ -166,12 +164,10 @@ it('saves the settings', async () => {
     })
 })
 
-it('does not save the settings when all have the default value', async () => {
+it('does not save the settings when all have the default value', () => {
     const props = eventHandlers();
-    await act(async () => {
-        render(renderDefaultSettings(props))
-        fireEvent.click(screen.getByText(/Reset all settings/))
-    });
+    render(renderDefaultSettings(props))
+    fireEvent.click(screen.getByText(/Reset all settings/))
     expect(put_settings).not.toHaveBeenCalledWith()
 })
 
@@ -318,7 +314,7 @@ it("sorts the dates ascending by keypress", async () => {
 it("shows issue summaries", async () => {
     const setShowIssueSummary = jest.fn();
     render(<ViewPanel defaultSettings={DEFAULT_SETTINGS} setShowIssueSummary={setShowIssueSummary} />)
-    fireEvent.click(screen.getAllByText(/Summary/)[0])
+    await act(async () => fireEvent.click(screen.getAllByText(/Summary/)[0]))
     expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })
 
