@@ -114,8 +114,9 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         file_path=StringParameter(
             name="File or folder path",
             short_name="path",
-            mandatory=True,
-            help_url="https://docs.gitlab.com/ee/api/repository_files.html",
+            help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
+            "is specified, the pipeline is used to determine the up-to-dateness.",
+            # help_url="https://docs.gitlab.com/ee/api/repository_files.html",
             metrics=["source_up_to_dateness"],
         ),
         branch=Branch(help_url=GITLAB_BRANCH_HELP_URL),
@@ -124,7 +125,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
-            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         inactive_days=Days(
             name="Number of days since last commit after which to consider branches inactive",
@@ -143,13 +144,13 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
-            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         lookback_days=Days(
             name="Number of days to look back in selecting pipeline jobs to consider",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
         merge_request_state=MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         approval_state=MultipleChoiceParameter(

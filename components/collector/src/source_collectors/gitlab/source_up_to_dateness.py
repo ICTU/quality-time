@@ -2,18 +2,22 @@
 
 import asyncio
 import itertools
+from abc import ABC
+from datetime import datetime
 from urllib.parse import quote
 
+import aiohttp
 from dateutil.parser import parse
 
+from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL, Value
-from model import SourceResponses
+from collector_utilities.type import Response, URL, Value
+from model import SourceMeasurement, SourceResponses
 
-from .base import GitLabProjectBase
+from .base import GitLabJobsBase, GitLabProjectBase
 
 
-class GitLabSourceUpToDateness(GitLabProjectBase):
+class GitLabFileUpToDateness(GitLabProjectBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     async def _api_url(self) -> URL:
@@ -68,3 +72,35 @@ class GitLabSourceUpToDateness(GitLabProjectBase):
         commit_responses = responses[1:]
         commit_dates = [parse((await response.json())["committed_date"]) for response in commit_responses]
         return str(days_ago(max(commit_dates)))
+
+
+class GitLabPipelineUpToDateness(TimePassedCollector, GitLabJobsBase):
+    """Collector class to measure the up-to-dateness of a job/pipeline."""
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to return a landing URL for the pipeline."""
+        if responses and (json := await responses[0].json()):
+            return URL(json[0]["pipeline"]["web_url"])
+        return await super()._landing_url(responses)
+
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        """Override to get the date and time of the commit or the pipeline."""
+        jobs = await self._jobs(SourceResponses(responses=[response]))
+        build_dates = [self._build_date(job) for job in jobs]
+        return datetime.combine(max(build_dates, default=datetime.min.date()), datetime.min.time())
+
+
+class GitLabSourceUpToDateness(SourceCollector, ABC):
+    """Factory class to create a collector to get the up-to-dateness of either jobs or files."""
+
+    def __new__(cls, session: aiohttp.ClientSession, source):
+        """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
+        file_path = source.get("parameters", {}).get("file_path")
+        collector_class = GitLabFileUpToDateness if file_path else GitLabPipelineUpToDateness
+        instance = collector_class(session, source)
+        instance.source_type = cls.source_type
+        return instance
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to document that this class does not parse responses itself."""
+        raise NotImplementedError

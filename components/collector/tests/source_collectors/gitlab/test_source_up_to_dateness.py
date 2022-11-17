@@ -1,6 +1,6 @@
 """Unit tests for the GitLab source up-to-dateness collector."""
 
-from datetime import datetime, timezone
+from datetime import datetime, date, timezone
 from unittest.mock import AsyncMock, Mock, patch
 
 from .base import GitLabTestCase
@@ -46,7 +46,22 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
             response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file"
         )
 
-    async def test_landing_url_on_failure(self):
+    async def test_source_up_to_dateness_pipeline(self):
+        """Test that the age of a pipeline can be measured."""
+        self.set_source_parameter("file_path", "")
+        build_date = datetime.fromisoformat(self.gitlab_jobs_json[0]["created_at"].strip("Z")).date()
+        expected_age = (date.today() - build_date).days
+        with patch("aiohttp.ClientSession.head", AsyncMock(return_value=self.head_response)):
+            response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")
+
+    async def test_file_landing_url_on_failure(self):
         """Test that the landing url is the API url when GitLab cannot be reached."""
+        response = await self.collect(get_request_json_side_effect=[ConnectionError])
+        self.assert_measurement(response, landing_url="https://gitlab", connection_error="Traceback")
+
+    async def test_pipeline_landing_url_on_failure(self):
+        """Test that the landing url is the API url when GitLab cannot be reached."""
+        self.set_source_parameter("file_path", "")
         response = await self.collect(get_request_json_side_effect=[ConnectionError])
         self.assert_measurement(response, landing_url="https://gitlab", connection_error="Traceback")
