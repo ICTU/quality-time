@@ -15,7 +15,6 @@
     "react-semantic-ui-datepickers": "^2.17.2",
     "react-timeago": "^7.1.0",
     "react-toastify": "^9.1.1",
-    "react-uid": "^2.3.2",
     "semantic-ui-react": "^2.1.3",
     "victory": "^36.6.8"
   },
