@@ -32,8 +32,8 @@ async function render_subject_title(subject_type = "subject_type") {
                 </DataModel.Provider>
             </Permissions.Provider>
         )
-        fireEvent.click(screen.getByTitle(/expand/));
     });
+    fireEvent.click(screen.getByTitle(/expand/));
 }
 
 it('changes the subject type', async () => {
@@ -73,34 +73,26 @@ it('changes the subject comment', async () => {
 
 it('loads the changelog', async () => {
     await render_subject_title();
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Changelog/));
-    });
+    await act(async () => { fireEvent.click(screen.getByText(/Changelog/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5");
 });
 
 it('shows the share tab', async () => {
     await render_subject_title();
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Share/));
-    });
+    await act(async () => { fireEvent.click(screen.getByText(/Share/)); });
     expect(screen.getAllByText(/Subject permanent link/).length).toBe(1);
 });
 
 it('moves the subject', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await render_subject_title();
-    await act(async () => {
-        fireEvent.click(screen.getByLabelText(/Move subject to the next position/));
-    });
+    await act(async () => { fireEvent.click(screen.getByLabelText(/Move subject to the next position/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/position", { position: "next" });
 });
 
 it('deletes the subject', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await render_subject_title();
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Delete subject/));
-    });
+    await act(async () => { fireEvent.click(screen.getByText(/Delete subject/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("delete", "subject/subject_uuid", {});
 });

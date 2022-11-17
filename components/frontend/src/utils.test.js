@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react'
 import { createMemoryHistory } from 'history';
 import {
     capitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
