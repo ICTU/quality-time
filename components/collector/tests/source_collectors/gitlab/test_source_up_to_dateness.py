@@ -18,10 +18,10 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         self.commit_json = dict(committed_date="2019-01-01T09:06:12+00:00")
         self.expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
 
-    def patched_client_session_head(self):
+    @staticmethod
+    def patched_client_session_head():
         """Return a patched version of the client session head method."""
-        head_response = Mock()
-        head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
+        head_response = Mock(headers={"X-Gitlab-Last-Commit-Id": "commit-sha"})
         return patch("aiohttp.ClientSession.head", AsyncMock(side_effect=[head_response, head_response]))
 
     async def test_source_up_to_dateness_file(self):
