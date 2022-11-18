@@ -84,14 +84,14 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabJobsBase):
         return await super()._landing_url(responses)
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        """Override to get the date and time of the commit or the pipeline."""
+        """Override to get the date and time of the pipeline."""
         jobs = await self._jobs(SourceResponses(responses=[response]))
         build_dates = [self._build_date(job) for job in jobs]
         return datetime.combine(max(build_dates, default=datetime.min.date()), datetime.min.time())
 
 
 class GitLabSourceUpToDateness(SourceCollector, ABC):
-    """Factory class to create a collector to get the up-to-dateness of either jobs or files."""
+    """Factory class to create a collector to get the up-to-dateness of either pipelines or files."""
 
     def __new__(cls, session: aiohttp.ClientSession, source):
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""

@@ -116,7 +116,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             short_name="path",
             help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
             "is specified, the pipeline is used to determine the up-to-dateness.",
-            # help_url="https://docs.gitlab.com/ee/api/repository_files.html",
             metrics=["source_up_to_dateness"],
         ),
         branch=Branch(help_url=GITLAB_BRANCH_HELP_URL),
