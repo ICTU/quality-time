@@ -8,11 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.7.0-rc.1 - 2022-11-21
+## [Unreleased]
 
 ### Deployment notes
 
 If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
+
+### Fixed
+
+- Chrome would not show all historic data when displaying multiple dates. Fixes [#4832](https://github.com/ICTU/quality-time/issues/4832).
 
 ### Added
 
