@@ -21,6 +21,7 @@ class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                 name="job1",
                 stage="stage",
                 created_at="2019-03-31T19:40:39.927Z",
+                pipeline=dict(web_url="https://gitlab/project/-/pipelines/1"),
                 web_url="https://gitlab/job1",
                 ref="master",
             ),

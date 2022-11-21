@@ -73,7 +73,7 @@ class GitLabJobsBase(GitLabProjectBase):
         lookback_date = date.today() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
         for response in responses:
             for job in await response.json():
-                if self.__build_date(job) > lookback_date:
+                if self._build_date(job) > lookback_date:
                     return await super()._next_urls(responses)
         return []
 
@@ -88,7 +88,7 @@ class GitLabJobsBase(GitLabProjectBase):
                     build_status=job["status"],
                     branch=job["ref"],
                     stage=job["stage"],
-                    build_date=str(self.__build_date(job)),
+                    build_date=str(self._build_date(job)),
                 )
                 for job in await self._jobs(responses)
             ]
@@ -115,6 +115,6 @@ class GitLabJobsBase(GitLabProjectBase):
         ) and not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
 
     @staticmethod
-    def __build_date(job: Job) -> date:
+    def _build_date(job: Job) -> date:
         """Return the build date of the job."""
         return parse(job.get("finished_at") or job["created_at"]).date()
