@@ -245,7 +245,7 @@ class TimeCollector(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the datetime from the parse data time method that subclasses should implement."""
         date_times = await self._parse_source_response_date_times(responses)
-        return SourceMeasurement(value=str(self.days(min(date_times))))
+        return SourceMeasurement(value=str(self.days(self.mininum(date_times))))
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Parse the source update datetimes from the responses and return the datetimes."""
@@ -259,6 +259,11 @@ class TimeCollector(SourceCollector):
     def days(date_time) -> int:
         """Return the time between the current date time and the specified date time."""
         raise NotImplementedError  # pragma: no cover
+
+    @staticmethod
+    def mininum(date_times: Sequence[datetime]) -> datetime:
+        """Allow for overriding what the minimum of the datetimes is: the newest or the oldest?"""
+        return min(date_times)
 
 
 class TimePassedCollector(TimeCollector):
