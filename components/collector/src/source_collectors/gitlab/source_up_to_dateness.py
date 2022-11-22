@@ -4,6 +4,7 @@ import asyncio
 import itertools
 from abc import ABC
 from datetime import datetime
+from typing import Sequence
 from urllib.parse import quote
 
 import aiohttp
@@ -88,6 +89,11 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabJobsBase):
         jobs = await self._jobs(SourceResponses(responses=[response]))
         build_dates = [self._build_date(job) for job in jobs]
         return datetime.combine(max(build_dates, default=datetime.min.date()), datetime.min.time())
+
+    @staticmethod
+    def mininum(date_times: Sequence[datetime]) -> datetime:
+        """Override to return the newest datetime."""
+        return max(date_times)
 
 
 class GitLabSourceUpToDateness(SourceCollector, ABC):
