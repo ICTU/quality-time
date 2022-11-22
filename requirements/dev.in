@@ -8,6 +8,6 @@ pep8-naming==0.13.2
 pip-audit==2.4.5
 pydantic==1.10.2  # Needed for importing the data model from the shared data model component
 pylint==2.14.5
-safety==2.3.1
+safety==2.3.2
 unittest-xml-reporting==3.2.0  # Needed to generate JUnit XML output for Sonarcloud.io
 vulture==2.6
