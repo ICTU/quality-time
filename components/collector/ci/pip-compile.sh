@@ -11,7 +11,7 @@ run () {
 
 # Update the compiled requirements files
 cd requirements
-run pip-compile --allow-unsafe --generate-hashes --quiet requirements-base.in
-run pip-compile --upgrade-package pycares --generate-hashes --quiet requirements.in  # Force upgrade of pycares to fix security issue
-run pip-compile --allow-unsafe --generate-hashes --quiet requirements-dev.in
+run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking requirements-base.in
+run pip-compile --generate-hashes --quiet --resolver=backtracking requirements.in 
+run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking requirements-dev.in
 
