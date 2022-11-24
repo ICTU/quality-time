@@ -5,11 +5,35 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "shared_server_code"
+version = "4.7.0-rc.2"
+authors = [
+  { name="FQuality-time team", email="quality-time@ictu.nl" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English"
+]
+dependencies = [
+    "bottle == 0.12.23",
+    "cryptography == 38.0.3",
+    "packaging == 21.3",
+    "pydantic == 1.10.2",
+    "pymongo == 4.3.2"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.black]
 line-length = 120
 include = '\.pyi?$'
 exclude = '''
-
 (
   /(
       \.eggs         # exclude a few common directories in the
@@ -18,3 +42,22 @@ exclude = '''
   )/
 )
 '''
+
+[tool.mypy]
+# The pydantic.mypy plugin fails since mypy 0.920 with this mypy error message:
+# setup.cfg:8: error: Error importing plugin "pydantic.mypy": cannot import name 'TypeVarDef' from 'mypy.types' (/.../quality-time/components/server/venv/lib/python3.10/site-packages/mypy/types.cpython-310-darwin.so)
+plugins = "pydantic.mypy"
+html_report = "build/mypy"
+ignore_missing_imports = false
+incremental = false
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pymongo",
+    "bottle"
+]
+ignore_missing_imports = true

@@ -35,7 +35,6 @@ where = ["src"]
 line-length = 120
 include = '\.pyi?$'
 exclude = '''
-
 (
   /(
       \.eggs         # exclude a few common directories in the
