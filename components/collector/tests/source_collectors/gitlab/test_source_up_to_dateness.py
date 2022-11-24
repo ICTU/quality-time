@@ -1,6 +1,6 @@
 """Unit tests for the GitLab source up-to-dateness collector."""
 
-from datetime import datetime, date, timezone
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, patch
 
 from .base import GitLabTestCase
@@ -53,10 +53,19 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
     async def test_source_up_to_dateness_pipeline(self):
         """Test that the age of a pipeline can be measured."""
         self.set_source_parameter("file_path", "")
-        build_date = datetime.fromisoformat(self.gitlab_jobs_json[0]["created_at"].strip("Z")).date()
-        expected_age = (date.today() - build_date).days
+        pipeline_json = [
+            dict(
+                updated_at="2020-11-24T10:00:00Z",
+                ref="ref",
+                status="status",
+                source="source",
+                web_url="https://gitlab/project/-/pipelines/1",
+            )
+        ]
+        build_date = datetime.fromisoformat(pipeline_json[0]["updated_at"].strip("Z"))
+        expected_age = (datetime.now() - build_date).days
         with self.patched_client_session_head():
-            response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+            response = await self.collect(get_request_json_return_value=pipeline_json)
         self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")
 
     async def test_file_landing_url_on_failure(self):
@@ -68,4 +77,4 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         """Test that the landing url is the API url when GitLab cannot be reached."""
         self.set_source_parameter("file_path", "")
         response = await self.collect(get_request_json_side_effect=[ConnectionError])
-        self.assert_measurement(response, landing_url="https://gitlab", connection_error="Traceback")
+        self.assert_measurement(response, landing_url="https://gitlab", parse_error="Traceback")
