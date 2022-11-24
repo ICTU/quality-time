@@ -43,8 +43,5 @@
     "@testing-library/user-event": "^14.4.3",
     "react-scripts": "5.0.1",
     "react-test-renderer": "^18.2.0"
-  },
-  "resolutions": {
-    "dayzed": "3.2.3"
   }
 }
