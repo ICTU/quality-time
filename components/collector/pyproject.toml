@@ -1,0 +1,14 @@
+[tool.mypy]
+html_report = "build/mypy"
+ignore_missing_imports = false
+incremental = false
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "defusedxml"
+]
+ignore_missing_imports = true

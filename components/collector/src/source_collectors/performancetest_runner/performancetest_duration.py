@@ -1,6 +1,10 @@
 """Performancetest-runner performancetest duration collector."""
 
-from collector_utilities.type import Value
+from typing import cast
+
+from bs4 import Tag
+
+from collector_utilities.type import Response, Value
 from model import SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
@@ -14,7 +18,12 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
         durations = []
         for response in responses:
             hours, minutes, seconds = [
-                int(part) for part in (await self._soup(response)).find(id="duration").string.split(":", 2)
+                int(part) for part in (await self.__duration(response)).split(":", 2)
             ]
             durations.append(60 * hours + minutes + round(seconds / 60.0))
         return str(sum(durations))
+
+    async def __duration(self, response: Response) -> str:
+        """Return the duration."""
+        field = (await self._soup(response)).find(id="duration")
+        return cast(Tag, field).string or "" if field else ""
