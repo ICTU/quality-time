@@ -88,5 +88,5 @@ def check_source_logo(context, path):
     """Check that the correct source logo is returned."""
     source_type = get_item(context, "source")["type"]
     logo_via_server = context.get(f"logo/{source_type}").content
-    with open(path, "rb").read() as logo_on_disk:
-        assert_equal(logo_via_server, logo_on_disk)
+    with open(path, "rb") as logo_on_disk:
+        assert_equal(logo_via_server, logo_on_disk.read())
