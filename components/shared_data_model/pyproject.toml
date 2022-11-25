@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "shared_data_model"
 version = "4.7.0-rc.2"
 authors = [
-  { name="FQuality-time team", email="quality-time@ictu.nl" },
+  { name="Quality-time team", email="quality-time@ictu.nl" },
 ]
 readme = "README.md"
 requires-python = ">=3.10"
