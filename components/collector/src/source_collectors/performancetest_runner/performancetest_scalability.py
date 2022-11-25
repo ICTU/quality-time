@@ -15,9 +15,7 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the scalability breaking point from the responses."""
-        breaking_points = [
-            await self.__breaking_point_vusers(response) for response in responses
-        ]
+        breaking_points = [await self.__breaking_point_vusers(response) for response in responses]
         return str(min(breaking_points))
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
@@ -33,9 +31,7 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
 
     async def __breaking_point_vusers(self, response: Response) -> int:
         """Parse the breaking point from the response."""
-        return int(
-            await self.__get_element_by_id("trendbreak_scalability_vusers", response)
-        )
+        return int(await self.__get_element_by_id("trendbreak_scalability_vusers", response))
 
     async def __max_vusers(self, response: Response) -> int:
         """Parse the maximum numer of virtual users from the response."""

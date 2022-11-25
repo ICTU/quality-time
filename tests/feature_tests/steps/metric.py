@@ -20,34 +20,26 @@ def assert_issue_status(context, attribute, value):
 @then("the issue id suggestions are missing")
 def assert_issue_id_suggestions(context):
     """Check the issue id suggestions."""
-    suggestions = context.get(
-        f"report/{context.uuid['report']}/issue_tracker/suggestions/random_query"
-    )
+    suggestions = context.get(f"report/{context.uuid['report']}/issue_tracker/suggestions/random_query")
     assert_equal(dict(suggestions=[]), suggestions)
 
 
 @when("the client retrieves the issue tracker options")
 def retrieve_issue_tracker_options(context):
     """Get the issue tracker options."""
-    context.response = context.get(
-        f"report/{context.uuid['report']}/issue_tracker/options"
-    )
+    context.response = context.get(f"report/{context.uuid['report']}/issue_tracker/options")
 
 
 @then("the issue tracker options are missing")
 def assert_issue_tracker_options(context):
     """Check the issue tracker options."""
-    assert_equal(
-        dict(fields=[], issue_types=[], projects=[], epic_links=[]), context.response
-    )
+    assert_equal(dict(fields=[], issue_types=[], projects=[], epic_links=[]), context.response)
 
 
 @when("the client opens a new issue")
 def create_new_issue(context):
     """Create a new issue for the current metric."""
-    context.post(
-        f"metric/{context.uuid['metric']}/issue/new", dict(metric_url="https://metric")
-    )
+    context.post(f"metric/{context.uuid['metric']}/issue/new", dict(metric_url="https://metric"))
 
 
 @then("the new issue response error is '{error}'")

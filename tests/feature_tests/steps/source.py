@@ -17,9 +17,7 @@ def sanitize_value(value: str):
 
 
 @when('the client sets the source parameter {parameter} to "{value}"')
-@when(
-    'the client sets the source parameter {parameter} to "{value}" with scope "{scope}"'
-)
+@when('the client sets the source parameter {parameter} to "{value}" with scope "{scope}"')
 def change_source_parameter(context, parameter, value, scope="source"):
     """Change the source parameter to value."""
     context.post(
@@ -49,12 +47,8 @@ def check_source_parameter_availability_status_code(context, status_code):
 
 @then('the availability status reason equals "{message1}"')
 @then('the availability status reason equals either "{message1}" or "{message2}"')
-@then(
-    'the availability status reason equals either "{message1}" or "{message2}" or "{message3}"'
-)
-def check_source_parameter_availability_reason(
-    context, message1, message2="", message3=""
-):
+@then('the availability status reason equals either "{message1}" or "{message2}" or "{message3}"')
+def check_source_parameter_availability_reason(context, message1, message2="", message3=""):
     """Check the availability message."""
     post_response = context.post_response.json()
     reason = str(post_response["availability"][0]["reason"])
@@ -73,9 +67,7 @@ def check_sources_parameter(context, parameter, container, value):
     else:
         report = get_item(context, "report")
         subjects = report["subjects"].values()
-        metrics = [
-            metric for subject in subjects for metric in subject["metrics"].values()
-        ]
+        metrics = [metric for subject in subjects for metric in subject["metrics"].values()]
     for metric in metrics:
         for source in metric["sources"].values():
             assert_equal(value, source["parameters"][parameter])

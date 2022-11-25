@@ -7,9 +7,7 @@ from behave import given, when, then  # pylint: disable=no-name-in-module
 
 @given("an existing {item}")
 @given('an existing {item} with {attribute} "{value}"')
-@given(
-    'an existing {item} with {attribute} "{value}" and parameter {parameter} "{parameter_value}"'
-)
+@given('an existing {item} with {attribute} "{value}" and parameter {parameter} "{parameter_value}"')
 @when("the client creates a {item}")
 @when('the client creates a {item} with {attribute} "{value}"')
 @when("the client tries to create a {item}")
@@ -25,21 +23,15 @@ def add_item(
         item_type = value
         attribute = value = None
     else:
-        item_type = dict(
-            source="axe_core", metric="accessibility", subject="software"
-        ).get(item)
+        item_type = dict(source="axe_core", metric="accessibility", subject="software").get(item)
     if "tries to" in context.step.name:
         context.post(api, {"type": item_type})
         return
     context.uuid[item] = context.post(api, {"type": item_type})[f"new_{item}_uuid"]
     if attribute and value:
-        context.execute_steps(
-            f'when the client changes the {item} {attribute} to "{value}"'
-        )
+        context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
     if parameter and parameter_value:
-        context.execute_steps(
-            f'when the client sets the source parameter {parameter} to "{parameter_value}"'
-        )
+        context.execute_steps(f'when the client sets the source parameter {parameter} to "{parameter_value}"')
 
 
 @when("the client copies the {item}")
@@ -70,11 +62,7 @@ def delete_item(context, item):
 @when('the client changes the {item} {attribute} to "{value}"')
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
-    item_fragment = (
-        "reports_overview"
-        if item == "reports_overview"
-        else f"{item}/{context.uuid[item]}"
-    )
+    item_fragment = "reports_overview" if item == "reports_overview" else f"{item}/{context.uuid[item]}"
     if attribute in ("tags", "issue_ids"):  # convert comma separated values to lists
         value = value.split(", ")
     elif attribute == "permissions":
@@ -94,9 +82,7 @@ def change_item_attribute(context, item, attribute, value):
             attribute_fragment = "issue_tracker"
         else:
             attribute_fragment = "attribute"
-        context.post(
-            f"{item_fragment}/{attribute_fragment}/{attribute}", json={attribute: value}
-        )
+        context.post(f"{item_fragment}/{attribute_fragment}/{attribute}", json={attribute: value})
 
 
 def get_item(context, item):
@@ -108,14 +94,10 @@ def get_item(context, item):
     )
     if item != "reports_overview":
         item_instance = [
-            report
-            for report in item_instance["reports"]
-            if report["report_uuid"] == context.uuid["report"]
+            report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
         ][0]
         if item == "notification_destination":
-            return item_instance["notification_destinations"][
-                context.uuid["notification_destination"]
-            ]
+            return item_instance["notification_destinations"][context.uuid["notification_destination"]]
         if item != "report":
             item_instance = item_instance["subjects"][context.uuid["subject"]]
             if item != "subject":
@@ -145,11 +127,7 @@ def check_item_attribute(context, item, attribute, value):
 def check_item_does_not_exist(context, item):
     """Check that the item does not exist."""
     uuids = []
-    reports = (
-        context.get(f"report/{context.uuid[item]}")
-        if item == "report"
-        else context.get("report/")
-    )
+    reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("report/")
     for report in reports["reports"]:
         uuids.append(report["report_uuid"])
         uuids.extend(report["subjects"].keys())
@@ -163,11 +141,7 @@ def check_item_does_not_exist(context, item):
 def get_container(context, container):
     """Return the container."""
     reports = context.get("report/")
-    container_instance = [
-        report
-        for report in reports["reports"]
-        if report["report_uuid"] == context.uuid["report"]
-    ][0]
+    container_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     if container != "report":
         container_instance = container_instance["subjects"][context.uuid["subject"]]
         if container != "subject":
@@ -182,9 +156,7 @@ def check_container_contains_item(context, container, item):
 
 
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
-def check_item_order(
-    context, container, position, item, attribute, value
-):  # pylint: disable=too-many-arguments
+def check_item_order(context, container, position, item, attribute, value):  # pylint: disable=too-many-arguments
     """Check that the container item at position has an attribute with the specified value."""
     index = dict(first=0, last=-1)[position]
     assert_equal(

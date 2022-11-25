@@ -13,7 +13,5 @@ def get_measurements(context, has_or_had, expected_number):
     else:
         min_report_date_parameter = ""
 
-    response = context.get(
-        f"subject/{context.uuid['subject']}/measurements{min_report_date_parameter}"
-    )
+    response = context.get(f"subject/{context.uuid['subject']}/measurements{min_report_date_parameter}")
     assert_equal(int(expected_number), len(response["measurements"]))

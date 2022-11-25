@@ -17,9 +17,7 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
         """Override to parse the performance test durations from the responses and return the sum in minutes."""
         durations = []
         for response in responses:
-            hours, minutes, seconds = [
-                int(part) for part in (await self.__duration(response)).split(":", 2)
-            ]
+            hours, minutes, seconds = [int(part) for part in (await self.__duration(response)).split(":", 2)]
             durations.append(60 * hours + minutes + round(seconds / 60.0))
         return str(sum(durations))
 

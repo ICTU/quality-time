@@ -16,11 +16,7 @@ def add_notification_destination(context):
 def get_notification_destionation(context):
     """Get the notification destination from the internal report endpoint."""
     reports = context.get("report", internal=True)
-    report = [
-        report
-        for report in reports["reports"]
-        if report["report_uuid"] == context.uuid["report"]
-    ][0]
+    report = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     assert_equal(
         dict(webhook="", name="Microsoft Teams webhook", sleep_duration=0),
         report["notification_destinations"][context.uuid["notification_destination"]],

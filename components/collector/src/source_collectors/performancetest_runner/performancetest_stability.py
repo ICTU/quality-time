@@ -15,9 +15,7 @@ class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseCla
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the trend break percentage from the responses and return the minimum percentage."""
-        trend_breaks = [
-            int(await self.__trendbreak_stability(response)) for response in responses
-        ]
+        trend_breaks = [int(await self.__trendbreak_stability(response)) for response in responses]
         return str(min(trend_breaks))
 
     async def __trendbreak_stability(self, response: Response) -> str:

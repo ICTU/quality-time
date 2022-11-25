@@ -8,19 +8,13 @@ from behave import then, when  # pylint: disable=no-name-in-module
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(
-        string.encode("utf-8"), usedforsecurity=False
-    ).hexdigest()  # skipcq: PYL-E1123,PTC-W1003
+    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()  # skipcq: PYL-E1123,PTC-W1003
 
 
 @when("the client gets the most recent data model")
 def get_data_model(context):
     """Get the most recent data model."""
-    headers = (
-        {"If-None-Match": f"W/{md5_hash(context.response.json()['timestamp'])}"}
-        if context.response
-        else {}
-    )
+    headers = {"If-None-Match": f"W/{md5_hash(context.response.json()['timestamp'])}"} if context.response else {}
     context.get("datamodel", headers=headers)
 
 

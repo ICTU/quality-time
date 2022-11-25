@@ -70,9 +70,7 @@ def measure_issue_status(context, issue_id, name):
                     entities=[],
                 )
             ],
-            issue_status=[
-                dict(issue_id=issue_id, name=name, status_category=status_category)
-            ],
+            issue_status=[dict(issue_id=issue_id, name=name, status_category=status_category)],
         ),
         internal=True,
     )
@@ -115,9 +113,7 @@ def set_entity_attribute(context, attribute, key, value):
 def connect_to_nr_of_measurements_stream(context, stream):
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
-    for message in SSEClient(
-        f"{context.base_api_url}/nr_measurements"
-    ):  # pragma: no feature-test-cover
+    for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no feature-test-cover
         context.sse_messages.append(message)
         if stream == "stream":
             break
@@ -156,6 +152,4 @@ def check_nr_of_measurements_stream(context, message_type):
     if message_type == "init":
         assert_equal("0", context.sse_messages[0].id)
     else:
-        assert_equal(
-            int(context.sse_messages[-2].data) + 1, int(context.sse_messages[-1].data)
-        )
+        assert_equal(int(context.sse_messages[-2].data) + 1, int(context.sse_messages[-1].data))

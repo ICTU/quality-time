@@ -16,21 +16,13 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     COLUMN_INDICES = dict(failed=7, success=1)
 
-    async def _parse_source_responses(
-        self, responses: SourceResponses
-    ) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the transactions from the responses and return the transactions with the desired status."""
-        transactions_to_include = cast(
-            list[str], self._parameter("transactions_to_include")
-        )
-        transactions_to_ignore = cast(
-            list[str], self._parameter("transactions_to_ignore")
-        )
+        transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
+        transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         counts = dict(failed=0, success=0)
         for response in responses:
-            count = await self.__parse_response(
-                response, transactions_to_include, transactions_to_ignore
-            )
+            count = await self.__parse_response(response, transactions_to_include, transactions_to_ignore)
             for status in count:
                 counts[status] += count[status]
         value = sum(counts[status] for status in self._parameter("test_result"))
@@ -46,13 +38,9 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
         """Parse the transactions from the response."""
         soup = await cls._soup(response)
         count = dict(failed=0, success=0)
-        for transaction in cast(Tag, soup.find(id="responsetimestable_begin")).select(
-            "tr.transaction"
-        ):
+        for transaction in cast(Tag, soup.find(id="responsetimestable_begin")).select("tr.transaction"):
             name = cls._name(transaction)
-            if transactions_to_include and not match_string_or_regular_expression(
-                name, transactions_to_include
-            ):
+            if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
                 continue
             if match_string_or_regular_expression(name, transactions_to_ignore):
                 continue
