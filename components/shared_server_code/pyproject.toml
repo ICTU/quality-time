@@ -44,8 +44,6 @@ exclude = '''
 '''
 
 [tool.mypy]
-# The pydantic.mypy plugin fails since mypy 0.920 with this mypy error message:
-# setup.cfg:8: error: Error importing plugin "pydantic.mypy": cannot import name 'TypeVarDef' from 'mypy.types' (/.../quality-time/components/server/venv/lib/python3.10/site-packages/mypy/types.cpython-310-darwin.so)
 plugins = "pydantic.mypy"
 html_report = "build/mypy"
 ignore_missing_imports = false
