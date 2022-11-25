@@ -1,5 +1,9 @@
 """Performancetest-runner performancetest scalability collector."""
 
+from typing import cast
+
+from bs4 import Tag
+
 from collector_utilities.type import Response, Value
 from model import SourceResponses
 
@@ -17,7 +21,11 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to compute the total number of virtual users from the responses."""
         breaking_points = [
-            (await self.__breaking_point_vusers(response), await self.__max_vusers(response)) for response in responses
+            (
+                await self.__breaking_point_vusers(response),
+                await self.__max_vusers(response),
+            )
+            for response in responses
         ]
         return str(min(breaking_points)[1])
 
@@ -31,4 +39,5 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
 
     async def __get_element_by_id(self, element_id: str, response: Response) -> str:
         """Parse the element with the given id from the response."""
-        return str((await self._soup(response)).find(id=element_id).string)
+        field = (await self._soup(response)).find(id=element_id)
+        return cast(Tag, field).string or "" if field else ""

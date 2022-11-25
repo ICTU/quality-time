@@ -1,7 +1,7 @@
 """Step implementations for notification destinations."""
 
 from asserts import assert_equal
-from behave import given, then, when
+from behave import given, then, when  # pylint: disable=no-name-in-module
 
 
 @given("a notification destination")

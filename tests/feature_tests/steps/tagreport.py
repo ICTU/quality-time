@@ -1,7 +1,7 @@
 """Step implementations for tag reports."""
 
 from asserts import assert_equal, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 @when('the client gets the tag report for the tag "{tag}"')

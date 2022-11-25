@@ -1,20 +1,42 @@
 [build-system]
 requires = [
-    "setuptools>=60.5",
-    "wheel"
+    "setuptools==65.6.0",
+    "wheel==0.38.4"
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-line-length = 120
-include = '\.pyi?$'
-exclude = '''
+[project]
+name = "shared_data_model"
+version = "4.7.0-rc.2"
+authors = [
+  { name="Quality-time team", email="quality-time@ictu.nl" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English"
+]
+dependencies = [
+    "pydantic == 1.10.2",
+]
 
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.venv
-  )/
-)
-'''
+[project.urls]
+"Homepage" = "https://github.com/ICTU/quality-time"
+"Issue tracker" = "https://github.com/ICTU/quality-time/issues"
+"Changelog" = "https://quality-time.readthedocs.io/en/latest/changelog.html"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+html_report = "build/mypy"
+ignore_missing_imports = false
+incremental = false
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true

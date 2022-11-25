@@ -1,7 +1,7 @@
 """Step implementations for sources."""
 
 from asserts import assert_equal, assert_not_equal, assert_in, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 from item import get_item
 
@@ -88,5 +88,5 @@ def check_source_logo(context, path):
     """Check that the correct source logo is returned."""
     source_type = get_item(context, "source")["type"]
     logo_via_server = context.get(f"logo/{source_type}").content
-    logo_on_disk = open(path, "rb").read()
-    assert_equal(logo_via_server, logo_on_disk)
+    with open(path, "rb") as logo_on_disk:
+        assert_equal(logo_via_server, logo_on_disk.read())

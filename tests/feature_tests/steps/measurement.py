@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import time
 
 from asserts import assert_equal, assert_true
-from behave import given, then, when
+from behave import given, then, when  # pylint: disable=no-name-in-module
 from sseclient import SSEClient
 
 
@@ -122,7 +122,7 @@ def connect_to_nr_of_measurements_stream(context, stream):
 
 
 @then("the server skips the next update because nothing changed")
-def skip_update(context):
+def skip_update(context):  # pylint: disable=unused-argument
     """Sleep > 10 seconds to give server a chance to skip the next update."""
     time.sleep(10.1)
 
@@ -140,7 +140,10 @@ def check_nr_of_measurements(context, has_or_had, count="one"):
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
     expected_number = dict(no=0, one=1, two=2).get(count, count)
-    assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
+    assert_equal(
+        int(expected_number),
+        len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]),
+    )
 
 
 @then("the server sends the number of measurements {message_type} message")

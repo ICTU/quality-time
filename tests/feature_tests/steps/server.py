@@ -1,7 +1,7 @@
 """Step implementations for server info."""
 
 from asserts import assert_equal
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 @when("the client gets the server information")

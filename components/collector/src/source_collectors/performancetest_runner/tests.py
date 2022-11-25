@@ -2,6 +2,8 @@
 
 from typing import cast
 
+from bs4 import Tag
+
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import Response
 from model import SourceMeasurement, SourceResponses
@@ -28,12 +30,15 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     @classmethod
     async def __parse_response(
-        cls, response: Response, transactions_to_include: list[str], transactions_to_ignore: list[str]
+        cls,
+        response: Response,
+        transactions_to_include: list[str],
+        transactions_to_ignore: list[str],
     ) -> dict[str, int]:
         """Parse the transactions from the response."""
         soup = await cls._soup(response)
         count = dict(failed=0, success=0)
-        for transaction in soup.find(id="responsetimestable_begin").select("tr.transaction"):
+        for transaction in cast(Tag, soup.find(id="responsetimestable_begin")).select("tr.transaction"):
             name = cls._name(transaction)
             if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
                 continue

@@ -1,10 +1,6 @@
-[isort]
-line_length = 120
-multi_line_output = 4
-src_paths = src
-
-[mypy]
-html_report = build/mypy
+[tool.mypy]
+plugins = "pydantic.mypy"
+html_report = "build/mypy"
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
@@ -12,6 +8,9 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
 
-[mypy-pymsteams]
+[[tool.mypy.overrides]]
+module = [
+    "bottle",
+    "gevent"
+]
 ignore_missing_imports = true
-

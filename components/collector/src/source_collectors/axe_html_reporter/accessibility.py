@@ -1,6 +1,6 @@
 """Axe HTML reporter accessibility collector."""
 
-from typing import Iterator
+from typing import cast, Iterator
 
 from bs4 import Tag
 
@@ -23,7 +23,7 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
 
     def __parse_html_soup(self, soup: Tag) -> Iterator[dict[str, str]]:
         """Parse the entity attributes from the HTML."""
-        page_url = soup.select_one("div.summary > a")["href"]
+        page_url = cast(str, cast(Tag, soup.select_one("div.summary > a"))["href"])
         for result_type in self._parameter("result_types"):
             if result_type == "violations":
                 yield from self.__parse_violations_from_html_soup(soup, page_url)
@@ -38,8 +38,8 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
             if not self._include_violation(impact, tags):
                 continue
             violation_type = violated_rule("h6")[0].get_text(strip=True)
-            description = violated_rule.select_one("p.card-text").get_text(strip=True)
-            help_url = violated_rule.select_one("a.learnMore")["href"]
+            description = cast(Tag, violated_rule.select_one("p.card-text")).get_text(strip=True)
+            help_url = cast(str, cast(Tag, violated_rule.select_one("a.learnMore"))["href"])
             for violation in violated_rule.select("div.violationNode tbody tr"):
                 element = self.__parse_element(violation)
                 yield dict(

@@ -3,7 +3,7 @@
 import hashlib
 
 from asserts import assert_equal, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 def md5_hash(string: str) -> str:

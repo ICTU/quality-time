@@ -1,11 +1,11 @@
 """Test the healthcheck feature."""
 
 from asserts import assert_equal
-from behave import given, when, then
+from behave import given, when, then  # pylint: disable=no-name-in-module
 
 
 @given("a healthy {server_type} server")
-def healthy_server(context, server_type):
+def healthy_server(context, server_type):  # pylint: disable=unused-argument
     """Server should be healthy by default, so no step implementation needed."""
 
 
@@ -16,6 +16,6 @@ def get_health(context, server_type):
 
 
 @then("the {server_type} server answers")
-def check_health(context, server_type):
+def check_health(context, server_type):  # pylint: disable=unused-argument
     """Check the server health."""
     assert_equal({}, context.response.json())

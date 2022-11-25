@@ -6,7 +6,7 @@ import urllib
 from datetime import datetime, timezone
 
 from asserts import assert_equal, assert_not_in
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 @when("the client downloads the report as PDF")

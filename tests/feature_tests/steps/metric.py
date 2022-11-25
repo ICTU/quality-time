@@ -1,7 +1,7 @@
 """Feature tests for metric specific attributes."""
 
 from asserts import assert_equal, assert_false, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 from item import get_item
 
@@ -12,7 +12,7 @@ def assert_issue_status(context, attribute, value):
     metric = get_item(context, "metric")
     issue_status = metric.get("issue_status")
     if value == "None":
-        assert_true(None == issue_status or None == issue_status[0].get(attribute))
+        assert_true(None is issue_status or None is issue_status[0].get(attribute))
     else:
         assert_equal(value, issue_status[0].get(attribute))
 

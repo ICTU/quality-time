@@ -2,7 +2,7 @@
 
 import json
 from asserts import assert_equal, assert_false, assert_true
-from behave import given, when, then
+from behave import given, when, then  # pylint: disable=no-name-in-module
 
 
 @given("an existing {item}")
@@ -11,7 +11,9 @@ from behave import given, when, then
 @when("the client creates a {item}")
 @when('the client creates a {item} with {attribute} "{value}"')
 @when("the client tries to create a {item}")
-def add_item(context, item, attribute=None, value=None, parameter=None, parameter_value=None):
+def add_item(
+    context, item, attribute=None, value=None, parameter=None, parameter_value=None
+):  # pylint: disable=too-many-arguments
     """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
     container = dict(source="metric", metric="subject", subject="report").get(item)
@@ -70,7 +72,10 @@ def change_item_attribute(context, item, attribute, value):
     else:
         value = dict(true=True, false=False, none=None).get(value.lower(), value)
     if item == "notification_destination":
-        context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
+        context.post(
+            f"report/{context.uuid['report']}/{item_fragment}/attributes",
+            {attribute: value},
+        )
     else:
         if item == "report" and attribute.startswith("tracker"):
             attribute = attribute.split("_", 1)[1]
@@ -151,10 +156,13 @@ def check_container_contains_item(context, container, item):
 
 
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
-def check_item_order(context, container, position, item, attribute, value):
+def check_item_order(context, container, position, item, attribute, value):  # pylint: disable=too-many-arguments
     """Check that the container item at position has an attribute with the specified value."""
     index = dict(first=0, last=-1)[position]
-    assert_equal(value, list(get_container(context, container)[f"{item}s"].values())[index][attribute])
+    assert_equal(
+        value,
+        list(get_container(context, container)[f"{item}s"].values())[index][attribute],
+    )
 
 
 @then("the {container} contains {number} {children}")
