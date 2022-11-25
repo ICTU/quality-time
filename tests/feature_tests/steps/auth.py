@@ -1,14 +1,14 @@
 """Steps for authentication."""
 
 from asserts import assert_equal, assert_false, assert_in
-from behave import given, then, when
+from behave import given, then, when  # pylint: disable=no-name-in-module
 
 
 @given("a logged-in client")
 @when("{username} logs in")
 def logged_in_client(context, username="jadoe"):
     """Log in the client."""
-    password = "secret"
+    password = "secret"  # nosec
     context.post("login", dict(username=username, password=password))
 
 
@@ -22,7 +22,7 @@ def logged_out_client(context):
 @when("the client tries to log in with incorrect credentials")
 def log_in_with_incorrect_credentials(context):
     """Try to log in with incorrect credentials."""
-    context.post("login", dict(username="jadoe", password="wrong"))
+    context.post("login", dict(username="jadoe", password="wrong"))  # nosec
 
 
 @then("the server tells the client the credentials are incorrect")

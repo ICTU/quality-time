@@ -1,5 +1,7 @@
+"""Step implementations for subjects."""
+
 from asserts import assert_equal
-from behave import then
+from behave import then  # pylint: disable=no-name-in-module
 
 
 @then('the subject {has_or_had} "{expected_number}" measurements')
@@ -11,5 +13,7 @@ def get_measurements(context, has_or_had, expected_number):
     else:
         min_report_date_parameter = ""
 
-    response = context.get(f"subject/{context.uuid['subject']}/measurements{min_report_date_parameter}")
+    response = context.get(
+        f"subject/{context.uuid['subject']}/measurements{min_report_date_parameter}"
+    )
     assert_equal(int(expected_number), len(response["measurements"]))

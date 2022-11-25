@@ -1,7 +1,7 @@
 """Step implementations for sources."""
 
 from asserts import assert_equal, assert_not_equal, assert_in, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 from item import get_item
 
@@ -17,7 +17,9 @@ def sanitize_value(value: str):
 
 
 @when('the client sets the source parameter {parameter} to "{value}"')
-@when('the client sets the source parameter {parameter} to "{value}" with scope "{scope}"')
+@when(
+    'the client sets the source parameter {parameter} to "{value}" with scope "{scope}"'
+)
 def change_source_parameter(context, parameter, value, scope="source"):
     """Change the source parameter to value."""
     context.post(
@@ -47,8 +49,12 @@ def check_source_parameter_availability_status_code(context, status_code):
 
 @then('the availability status reason equals "{message1}"')
 @then('the availability status reason equals either "{message1}" or "{message2}"')
-@then('the availability status reason equals either "{message1}" or "{message2}" or "{message3}"')
-def check_source_parameter_availability_reason(context, message1, message2="", message3=""):
+@then(
+    'the availability status reason equals either "{message1}" or "{message2}" or "{message3}"'
+)
+def check_source_parameter_availability_reason(
+    context, message1, message2="", message3=""
+):
     """Check the availability message."""
     post_response = context.post_response.json()
     reason = str(post_response["availability"][0]["reason"])
@@ -67,7 +73,9 @@ def check_sources_parameter(context, parameter, container, value):
     else:
         report = get_item(context, "report")
         subjects = report["subjects"].values()
-        metrics = [metric for subject in subjects for metric in subject["metrics"].values()]
+        metrics = [
+            metric for subject in subjects for metric in subject["metrics"].values()
+        ]
     for metric in metrics:
         for source in metric["sources"].values():
             assert_equal(value, source["parameters"][parameter])
@@ -88,5 +96,5 @@ def check_source_logo(context, path):
     """Check that the correct source logo is returned."""
     source_type = get_item(context, "source")["type"]
     logo_via_server = context.get(f"logo/{source_type}").content
-    logo_on_disk = open(path, "rb").read()
-    assert_equal(logo_via_server, logo_on_disk)
+    with open(path, "rb").read() as logo_on_disk:
+        assert_equal(logo_via_server, logo_on_disk)

@@ -6,7 +6,7 @@ import urllib
 from datetime import datetime, timezone
 
 from asserts import assert_equal, assert_not_in
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 @when("the client downloads the report as PDF")
@@ -68,8 +68,13 @@ def reset_report_date(context):
 @when("the client enters a report date that's not too old")
 def time_travel(context):
     """Set a time in the past, but after the report was created."""
-    time.sleep(1)  # Make sure the previously created report is older than the report date
-    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()[: -len("+00:00")] + "Z"
+    time.sleep(
+        1
+    )  # Make sure the previously created report is older than the report date
+    context.report_date = (
+        datetime.now(timezone.utc).replace(microsecond=0).isoformat()[: -len("+00:00")]
+        + "Z"
+    )
     time.sleep(1)  # Make sure report date is in the past
 
 

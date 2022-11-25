@@ -1,5 +1,5 @@
-[mypy]
-html_report = build/mypy
+[tool.mypy]
+html_report = "build/mypy"
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
@@ -7,9 +7,8 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
 
-[mypy-behave]
+[[tool.mypy.overrides]]
+module = [
+    "pymsteams"
+]
 ignore_missing_imports = true
-
-[mypy-sseclient]
-ignore_missing_imports = true
-

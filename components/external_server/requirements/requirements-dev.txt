@@ -585,6 +585,10 @@ types-cryptography==3.3.23.2 \
     --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
     --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via -r requirements-dev.in
+types-ldap3==2.9.13.3 \
+    --hash=sha256:0678f01e15a5256c978f23d26c9b87f58fa9c1dd01bdc66dfb9caf9706ddb3f8 \
+    --hash=sha256:d6dc9d8f6a5c125be5ed4df14d84007e019e655f159a8b9b9990b5973ef06d40
+    # via -r requirements-dev.in
 types-requests==2.28.11.5 \
     --hash=sha256:091d4a5a33c1b4f20d8b1b952aa8fa27a6e767c44c3cf65e56580df0b05fd8a9 \
     --hash=sha256:a7df37cc6fb6187a84097da951f8e21d335448aa2501a6b0a39cbd1d7ca9ee2a

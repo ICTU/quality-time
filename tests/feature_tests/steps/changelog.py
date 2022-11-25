@@ -1,7 +1,7 @@
 """Step implementations for changelogs."""
 
 from asserts import assert_equal
-from behave import then
+from behave import then  # pylint: disable=no-name-in-module
 
 
 @then("the {item} changelog reads")

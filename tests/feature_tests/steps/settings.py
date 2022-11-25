@@ -2,7 +2,7 @@
 
 import json
 from asserts import assert_equal, assert_true
-from behave import then, when
+from behave import then, when  # pylint: disable=no-name-in-module
 
 
 @when("the client posts new settings")
