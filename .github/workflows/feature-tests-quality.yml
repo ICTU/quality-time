@@ -1,0 +1,27 @@
+name: Feature tests quality
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        cd tests/feature_tests
+        ci/pip-install.sh
+    - name: Test
+      run: |
+        cd tests/feature_tests
+        ci/unittest.sh
+    - name: Quality
+      run: |
+        cd tests/feature_tests
+        ci/quality.sh

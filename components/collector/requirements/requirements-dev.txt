@@ -581,6 +581,10 @@ tomlkit==0.11.6 \
     --hash=sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b \
     --hash=sha256:71b952e5721688937fb02cf9d354dbcf0785066149d2855e44531ebdd2b65d73
     # via pylint
+types-beautifulsoup4==4.11.6.1 \
+    --hash=sha256:c1f803367a2b07ad4fdac40ddbea557010dc4ddd1ee92d801f317eb02e2e3c72 \
+    --hash=sha256:d46be8f409ddccb6daaa9d118484185e70bcf552085c39c6d05b157cd1462e04
+    # via -r requirements-dev.in
 types-python-dateutil==2.8.19.4 \
     --hash=sha256:351a8ca9afd4aea662f87c1724d2e1ae59f9f5f99691be3b3b11d2393cd3aaa1 \
     --hash=sha256:722a55be8e2eeff749c3e166e7895b0e2f4d29ab4921c0cff27aa6b997d7ee2e

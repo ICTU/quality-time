@@ -15,12 +15,12 @@ jobs:
       - checkout
       - run: |
           case $CIRCLE_NODE_INDEX in
-            0) component=component/collector;;
-            1) component=component/notifier;;
-            2) component=component/internal_server;;
-            3) component=component/external_server;;
-            4) component=component/shared_data_model;;
-            5) component=component/shared_server_code;;
+            0) component=components/collector;;
+            1) component=components/notifier;;
+            2) component=components/internal_server;;
+            3) component=components/external_server;;
+            4) component=components/shared_data_model;;
+            5) component=components/shared_server_code;;
             6) component=tests/feature_tests;;
           esac
           cd $component

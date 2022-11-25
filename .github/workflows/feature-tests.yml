@@ -16,6 +16,7 @@ jobs:
       - name: Quality
         run: |
           cd tests/feature_tests
+          ci/pip-install.sh
           ci/quality.sh
       - name: Run feature tests
         run: ./tests/feature_tests/ci/test.sh
