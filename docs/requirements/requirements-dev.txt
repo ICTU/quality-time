@@ -648,9 +648,9 @@ ruamel-yaml-clib==0.2.7 \
     --hash=sha256:f01da5790e95815eb5a8a138508c01c758e5f5bc0ce4286c4f7028b8dd7ac3d0 \
     --hash=sha256:f34019dced51047d6f70cb9383b2ae2853b7fc4dce65129a5acd49f4f9256646
     # via ruamel-yaml
-safety==2.3.2 \
-    --hash=sha256:7ed8d71f5ba7590d1c9abfa22c72a64de389ae2e07c6732b1c90955a168c55bf \
-    --hash=sha256:d824cccd76fcf451c745d0a280dabc5176903878a68b9b9a2ec7dbfc2f8d03ff
+safety==2.3.3 \
+    --hash=sha256:2e17cf127472ca720cdcc65f834008b555a10fe56627646009ab7565dd2459cf \
+    --hash=sha256:c12b2aaf3495faf42951fdd91d3c5ce6ecffd05efa423a29244408b72c556744
     # via -r ../../requirements/dev.in
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
