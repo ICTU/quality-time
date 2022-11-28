@@ -12,13 +12,15 @@ from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
 
 
-async def notify(log_level: int | None = None) -> NoReturn:
+async def notify(log_level: int | str | None = None) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
-    logging.getLogger().setLevel(logging.ERROR if log_level is None else log_level)
-    sleep_duration = int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60))
+    if log_level is None:
+        log_level = str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING"))
+    logging.getLogger().setLevel(log_level)
+    sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
     reports_url = (
-        f"http://{os.environ.get('INTERNAL_SERVER_HOST', 'localhost')}:"
-        f"{os.environ.get('INTERNAL_SERVER_PORT', '5002')}/api/report"
+        f"http://{os.getenv('INTERNAL_SERVER_HOST', 'localhost')}:"
+        f"{os.getenv('INTERNAL_SERVER_PORT', '5002')}/api/report"
     )
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
     notification_finder = NotificationFinder()
@@ -61,4 +63,4 @@ def most_recent_measurement_timestamp(reports_json) -> datetime:
 
 
 if __name__ == "__main__":
-    asyncio.run(notify(logging.INFO))  # pragma: no cover
+    asyncio.run(notify())  # pragma: no cover

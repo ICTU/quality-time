@@ -136,13 +136,16 @@ The options for configuring logging are limited at the moment. The MongoDB daemo
     command: --quiet
 ```
 
-Other logging settings are currently fixed. These include:
+The collector, external server, and internal server all have log level `WARNING` as default. This can be overridden by setting an ennvironment variable to `DEBUG`, `INFO`, `WARNING`, `CRITICAL` or `ERROR`.
 
-- The proxy access log is turned off.
-- The log level of the collector component is set to `WARNING`.
-- The log level of the notifier, the external server, and the internal server is set to `INFO`.
+| Component       | Log level environment variable |
+| :-------------- | :----------------------------- |
+| Collector       | `COLLECTOR_LOG_LEVEL`          |
+| External server | `EXTERNAL_SERVER_LOG_LEVEL`    |
+| Internal server | `INTERNAL_SERVER_LOG_LEVEL`    |
+| Notifier        | `NOTIFIER_LOG_LEVEL`           |
 
-Please submit an issue if you need these and other logging settings to be configurable.
+The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.
 
 ## Moving *Quality-time*
 

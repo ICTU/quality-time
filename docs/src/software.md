@@ -67,18 +67,19 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ext
 
 The external server uses the following environment variables:
 
-| Name | Default value | Description                                                                                                                                                                                                                                                                 |
-| :--- | :------------ |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `EXTERNAL_SERVER_PORT` | `5001` | Port of the external server.                                                                                                                                                                                                                                         |
-| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                                                                                                                                                                                 |
-| `LDAP_URL` | `ldap://ldap:389` | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                       |
-| `LDAP_ROOT_DN` | `dc=example,dc=org` | LDAP root distinguished name.                                                                                                                                                                                                                                   |
-| `LDAP_LOOKUP_USER_DN` | `cn=admin,dc=example,dc=org` | LDAP lookup user distinguished name.                                                                                                                                                                                                            |
-| `LDAP_LOOKUP_USER_PASSWORD` | `admin` | LDAP lookup user password.                                                                                                                                                                                                                                     |
+| Name | Default value | Description |
+| :--- | :------------ |:------------|
+| `EXTERNAL_SERVER_PORT` | `5001` | Port of the external server. |
+| `EXTERNAL_SERVER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`. |
+| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL. |
+| `LDAP_URL` | `ldap://ldap:389` | Comma-separated list of LDAP connection URL(s). |
+| `LDAP_ROOT_DN` | `dc=example,dc=org` | LDAP root distinguished name. |
+| `LDAP_LOOKUP_USER_DN` | `cn=admin,dc=example,dc=org` | LDAP lookup user distinguished name. |
+| `LDAP_LOOKUP_USER_PASSWORD` | `admin` | LDAP lookup user password. |
 | `LDAP_SEARCH_FILTER` | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
-| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                |
-| `FORWARD_AUTH_ENABLED` | `False` | Whether or not to enable forward authentication.                                                                                                                                                                                                                    |
-| `FORWARD_AUTH_HEADER` | `X-Forwarded-User` | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                            |
+| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up. |
+| `FORWARD_AUTH_ENABLED` | `False` | Whether or not to enable forward authentication. |
+| `FORWARD_AUTH_HEADER` | `X-Forwarded-User` | Header to use for getting the username if forward authentication is turned on. |
 
 ## Internal server
 
@@ -97,6 +98,7 @@ The internal server uses the following environment variables:
 | Name | Default value | Description |
 | :--- | :------------ | :---------- |
 | `INTERNAL_SERVER_PORT` | `5001` | Port of the internal server. |
+| `INTERNAL_SERVER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`. |
 | `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL. |
 | `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up. |
 
@@ -120,6 +122,7 @@ The collector uses the following environment variables:
 | :--- | :------------ | :---------- |
 | `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
 | `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
+| `COLLECTOR_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`. |
 | `COLLECTOR_SLEEP_DURATION` | `20` | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
 | `COLLECTOR_MEASUREMENT_LIMIT` | `30` | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
 | `COLLECTOR_MEASUREMENT_FREQUENCY` | `900` | The amount of time (in seconds) after which a metric should be measured again. |
@@ -145,6 +148,7 @@ The notifier uses the following environment variables:
 | :--- | :------------ | :---------- |
 | `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The notifier uses this to get the metrics. |
 | `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The notifier uses this to get the metrics. |
+| `NOTIFIER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`. |
 | `NOTIFIER_SLEEP_DURATION` | `60` | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
 ## Shared server code
