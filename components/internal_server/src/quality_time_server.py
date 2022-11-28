@@ -8,7 +8,6 @@ monkey.patch_all()
 
 import logging
 import os  # skipcq: FLK-E402
-from typing import NoReturn
 
 import bottle  # skipcq: FLK-E402
 
@@ -17,7 +16,7 @@ from shared.initialization.database import init_database  # skipcq: FLK-E402
 from initialization import init_bottle, merge_unmerged_measurements  # skipcq: FLK-E402
 
 
-def serve() -> NoReturn:  # pragma: no feature-test-cover
+def serve() -> None:  # pragma: no feature-test-cover
     """Connect to the database and start the application server."""
     log_level = str(os.getenv("INTERNAL_SERVER_LOG_LEVEL", "WARNING"))
     logging.getLogger().setLevel(log_level)
