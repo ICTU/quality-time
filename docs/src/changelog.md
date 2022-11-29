@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.7.0-rc.3 - 2022-11-25
+## [Unreleased]
 
 ### Deployment notes
 
@@ -21,6 +21,11 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 ### Added
 
 - Support GitLab CI pipelines as source for the source-up-to-dateness metric. Closes [#3927](https://github.com/ICTU/quality-time/issues/3927).
+- Allow for changing the log level of the backend containers via environment variables. See the [deployment manual](deployment.md#configuring-logging-optional). Closes [#4943](https://github.com/ICTU/quality-time/issues/4943).
+
+### Changed
+
+The default log level of the notifier, internal server, and external server components is now WARNING (was INFO). The default log level of the collector is unchanged and still WARNING.
 
 ## v4.6.1 - 2022-11-07
 

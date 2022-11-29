@@ -18,10 +18,11 @@ from initialization import init_bottle  # skipcq: FLK-E402
 
 def serve() -> None:  # pragma: no feature-test-cover
     """Connect to the database and start the application server."""
-    logging.getLogger().setLevel(logging.INFO)
+    log_level = str(os.getenv("EXTERNAL_SERVER_LOG_LEVEL", "WARNING"))
+    logging.getLogger().setLevel(log_level)
     database = init_database()
     init_bottle(database)
-    server_port = os.environ.get("EXTERNAL_SERVER_PORT", "5001")
+    server_port = os.getenv("EXTERNAL_SERVER_PORT", "5001")
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 

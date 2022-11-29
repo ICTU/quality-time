@@ -7,16 +7,22 @@ services:
   frontend:
     build: ../components/frontend
   collector:
+    environment:
+      - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-INFO}
     build:
       context: ../components
       dockerfile: collector/Dockerfile
     depends_on:
       - testdata
   notifier:
+    environment:
+      - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-INFO}
     build:
       context: ../components
       dockerfile: notifier/Dockerfile
   external_server:
+    environment:
+      - EXTERNAL_SERVER_LOG_LEVEL=${EXTERNAL_SERVER_LOG_LEVEL:-INFO}
     build:
       context: ../components
       dockerfile: external_server/Dockerfile
@@ -24,6 +30,8 @@ services:
       - ldap
       - renderer
   internal_server:
+    environment:
+      - INTERNAL_SERVER_LOG_LEVEL=${INTERNAL_SERVER_LOG_LEVEL:-INFO}
     build:
       context: ../components
       dockerfile: internal_server/Dockerfile

@@ -18,11 +18,12 @@ from initialization import init_bottle, merge_unmerged_measurements  # skipcq: F
 
 def serve() -> None:  # pragma: no feature-test-cover
     """Connect to the database and start the application server."""
-    logging.getLogger().setLevel(logging.INFO)
+    log_level = str(os.getenv("INTERNAL_SERVER_LOG_LEVEL", "WARNING"))
+    logging.getLogger().setLevel(log_level)
     database = init_database()
     merge_unmerged_measurements(database)
     init_bottle(database)
-    server_port = os.environ.get("INTERNAL_SERVER_PORT", "5002")
+    server_port = os.getenv("INTERNAL_SERVER_PORT", "5002")
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
