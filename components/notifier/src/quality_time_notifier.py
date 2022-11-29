@@ -12,10 +12,9 @@ from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
 
 
-async def notify(log_level: int | str | None = None) -> NoReturn:
+async def notify() -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
-    if log_level is None:
-        log_level = str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING"))
+    log_level = str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING"))
     logging.getLogger().setLevel(log_level)
     sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
     reports_url = (

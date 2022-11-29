@@ -136,7 +136,7 @@ The options for configuring logging are limited at the moment. The MongoDB daemo
     command: --quiet
 ```
 
-The collector, external server, and internal server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `CRITICAL` or `ERROR`.
+The collector, notifier, external server, and internal server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
 
 | Component       | Log level environment variable |
 | :-------------- | :----------------------------- |
