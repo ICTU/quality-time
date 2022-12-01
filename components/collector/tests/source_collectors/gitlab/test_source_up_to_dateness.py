@@ -63,7 +63,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
             )
         ]
         build_date = datetime.fromisoformat(pipeline_json[0]["updated_at"].strip("Z"))
-        expected_age = (datetime.now() - build_date).days
+        expected_age = (datetime.utcnow() - build_date).days
         with self.patched_client_session_head():
             response = await self.collect(get_request_json_return_value=pipeline_json)
         self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")
