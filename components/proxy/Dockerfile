@@ -1,4 +1,4 @@
-FROM nginx:1.23.2
+FROM nginx:1.23.3
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
