@@ -18,7 +18,7 @@ run () {
 run mypy steps
 run pylint --rcfile=../../.pylintrc steps
 run python -m flake8 --select=DUO steps  # Dlint
-run pip-audit --strict --progress-spinner=off -r requirements/requirements-base.txt -r requirements/requirements-dev.txt
+run pip-audit --strict --progress-spinner=off --ignore-vuln=GHSA-hcpj-qp55-gfph -r requirements/requirements-base.txt -r requirements/requirements-dev.txt  # Ignore https://github.com/gitpython-developers/GitPython/issues/1515
 run safety check --bare --ignore 41002 -r requirements/requirements-base.txt -r requirements/requirements-dev.txt  # See https://github.com/nedbat/coveragepy/issues/1200
 run bandit --quiet --recursive steps
 NAMES_TO_IGNORE=''
