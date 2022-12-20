@@ -34,6 +34,18 @@ METRICS = Metrics.parse_obj(
             sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number"],
             tags=[Tag.ACCESSIBILITY],
         ),
+        average_issue_lead_time=dict(
+            name="Average issue lead time",
+            description="The average lead time for changes completed in a certain time period.",
+            rationale="The shorter the lead time for changes, the sooner the new features can be used. "
+            "Also, the shorter the lead time for changes, the fewer changes are in progress at the same time. "
+            "Less context switching is needed and the risk of interfering changes is reduced.",
+            unit=Unit.DAYS,
+            target="10",
+            near_target="7",
+            sources=["azure_devops", "jira"],
+            tags=[Tag.PROCESS_EFFICIENCY],
+        ),
         commented_out_code=dict(
             name="Commented out code",
             description="The number of blocks of commented out lines of code.",
@@ -124,18 +136,6 @@ METRICS = Metrics.parse_obj(
             near_target="25",
             sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
             tags=[Tag.CI],
-        ),
-        lead_time_for_changes=dict(
-            name="Lead time for changes",
-            description="The average lead time of changes completed in a certain time period.",
-            rationale="The shorter the lead time of changes, the sooner the new features can be used. Also, the "
-            "shorter the lead time of changes, the fewer changes are in progress at the same time. Less context "
-            "switching is needed and the risk of interfering changes is reduced.",
-            unit=Unit.DAYS,
-            target="10",
-            near_target="7",
-            sources=["azure_devops", "jira"],
-            tags=[Tag.PROCESS_EFFICIENCY],
         ),
         loc=dict(
             name="Size (LOC)",

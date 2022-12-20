@@ -1,4 +1,4 @@
-"""Azure DevOps Server lead time for changes collector."""
+"""Azure DevOps Server average issue lead time collector."""
 
 from statistics import mean
 from typing import cast, Final
@@ -12,8 +12,8 @@ from model import SourceResponses, Entity
 from .issues import AzureDevopsIssues
 
 
-class AzureDevopsLeadTimeForChanges(AzureDevopsIssues):
-    """Collector to calculate lead time for changes from Azure Devops Server."""
+class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
+    """Collector to calculate average issue lead time from Azure Devops Server."""
 
     _CHANGED_DATE_FIELD: Final[str] = "System.ChangedDate"
 

@@ -1,4 +1,4 @@
-"""Unit tests for the Azure DevOps Server lead time for changes collector."""
+"""Unit tests for the Azure DevOps Server average issue lead time collector."""
 
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -6,13 +6,13 @@ from datetime import datetime, timedelta
 from .base import AzureDevopsTestCase
 
 
-class AzureDevopsLeadTimeForChangesTest(AzureDevopsTestCase):
-    """Unit tests for the Azure DevOps Server lead time for changes metric."""
+class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
+    """Unit tests for the Azure DevOps Server average issue lead time metric."""
 
-    METRIC_TYPE = "lead_time_for_changes"
+    METRIC_TYPE = "average_issue_lead_time"
 
     def setUp(self):
-        """Extend to add Azure DevOps lead time for changes fixtures."""
+        """Extend to add Azure DevOps average issue lead time fixtures."""
         super().setUp()
 
         now_dt = datetime.now()
