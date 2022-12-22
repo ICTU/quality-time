@@ -1,4 +1,4 @@
-"""OWASP Dependency Check source."""
+"""OWASP Dependency-Check source."""
 
 from ..meta.entity import Color, EntityAttributeType
 from ..meta.source import Source
@@ -23,9 +23,9 @@ SECURITY_WARNING_ATTRIBUTES = [
 ]
 
 OWASP_DEPENDENCY_CHECK = Source(
-    name="OWASP Dependency Check",
-    description="Dependency-Check is a utility that identifies project dependencies and checks if there are any known, "
-    "publicly disclosed, vulnerabilities.",
+    name="OWASP Dependency-Check",
+    description="OWASP Dependency-Check is a utility that identifies project dependencies and checks if there are any "
+    "known, publicly disclosed, vulnerabilities.",
     url="https://owasp.org/www-project-dependency-check/",
     parameters=dict(
         severities=Severities(values=["low", "moderate", "medium", "high", "critical"]),
@@ -38,7 +38,7 @@ OWASP_DEPENDENCY_CHECK = Source(
             metrics=["dependencies", "security_warnings"],
         ),
         **access_parameters(
-            ALL_OWASP_DEPENDENCY_CHECK_METRICS, source_type="an OWASP Dependency Check report", source_type_format="XML"
+            ALL_OWASP_DEPENDENCY_CHECK_METRICS, source_type="an OWASP Dependency-Check report", source_type_format="XML"
         )
     ),
     entities=dict(
