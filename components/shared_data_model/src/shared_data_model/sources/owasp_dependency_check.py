@@ -24,8 +24,8 @@ SECURITY_WARNING_ATTRIBUTES = [
 
 OWASP_DEPENDENCY_CHECK = Source(
     name="OWASP Dependency-Check",
-    description="OWASP Dependency-Check is a utility that identifies project dependencies and checks if there are any known, "
-    "publicly disclosed, vulnerabilities.",
+    description="OWASP Dependency-Check is a utility that identifies project dependencies and checks if there are any "
+    "known, publicly disclosed, vulnerabilities.",
     url="https://owasp.org/www-project-dependency-check/",
     parameters=dict(
         severities=Severities(values=["low", "moderate", "medium", "high", "critical"]),
