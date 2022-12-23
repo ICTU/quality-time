@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shared_data_model"
-version = "4.7.0-rc.4"
+version = "4.7.0-rc.5"
 authors = [
   { name="Quality-time team", email="quality-time@ictu.nl" },
 ]
