@@ -5,9 +5,10 @@ import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function StringInputWithSuggestions(props) {
-    let { editableLabel, label, error, options, required, set_value, warning, ...otherProps } = props;
+    let { editableLabel, label, error, options, placeholder, required, set_value, warning, ...otherProps } = props;
+    placeholder = placeholder || "none"
     const initialValue = props.value || "";
-    const [string_options, setOptions] = useState(options);
+    const [string_options, setOptions] = useState([...options, { text: <font color="lightgrey">{placeholder}</font>, value: "", key: ""}]);
     const [searchQuery, setSearchQuery] = useState(initialValue);
     return (
         <Form.Dropdown
@@ -21,6 +22,7 @@ function StringInputWithSuggestions(props) {
             onChange={(_event, { value }) => { setSearchQuery(value); set_value(value) }}
             onSearchChange={(_event, data) => { setSearchQuery(data.searchQuery) }}
             options={string_options}
+            placeholder={placeholder}
             search
             searchQuery={searchQuery}
             selection

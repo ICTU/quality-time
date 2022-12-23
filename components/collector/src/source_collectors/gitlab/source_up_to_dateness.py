@@ -104,8 +104,8 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
         """Should this pipeline be considered?"""
         return (
             not match_string_or_regular_expression(pipeline["ref"], self._parameter("refs_to_ignore"))
-            and pipeline["status"] not in self._parameter("pipeline_statuses_to_ignore")
-            and pipeline["source"] not in self._parameter("pipeline_triggers_to_ignore")
+            and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
+            and pipeline["source"] in self._parameter("pipeline_triggers_to_include")
         )
 
     @staticmethod
