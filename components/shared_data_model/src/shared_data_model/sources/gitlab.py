@@ -124,7 +124,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         inactive_days=Days(
             name="Number of days since last commit after which to consider branches inactive",

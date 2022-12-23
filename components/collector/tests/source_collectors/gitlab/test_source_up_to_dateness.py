@@ -56,7 +56,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         pipeline_json = [
             dict(
                 updated_at="2020-11-24T10:00:00Z",
-                ref="ref",
+                ref="branch",
                 status="success",
                 source="push",
                 web_url="https://gitlab/project/-/pipelines/1",

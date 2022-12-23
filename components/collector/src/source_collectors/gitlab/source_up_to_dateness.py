@@ -3,7 +3,7 @@
 import asyncio
 import itertools
 from abc import ABC
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 from typing import cast, Sequence
 from urllib.parse import quote
 
@@ -11,7 +11,7 @@ import aiohttp
 from dateutil.parser import parse
 
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.functions import days_ago
 from collector_utilities.type import Response, URL, Value
 from model import SourceMeasurement, SourceResponses
 
@@ -98,12 +98,12 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
         """Override to get the date and time of the pipeline."""
         pipelines = await response.json()
         datetimes = [self._datetime(pipeline) for pipeline in pipelines if self._include_pipeline(pipeline)]
-        return max(datetimes, default=datetime.min)
+        return max(datetimes, default=datetime.min.replace(tzinfo=timezone.utc))
 
     def _include_pipeline(self, pipeline) -> bool:
         """Should this pipeline be considered?"""
         return (
-            not match_string_or_regular_expression(pipeline["ref"], self._parameter("refs_to_ignore"))
+            pipeline["ref"] == self._parameter("branch")
             and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
             and pipeline["source"] in self._parameter("pipeline_triggers_to_include")
         )
