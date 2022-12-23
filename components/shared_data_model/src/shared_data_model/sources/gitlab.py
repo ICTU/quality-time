@@ -161,8 +161,8 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all approval states",
             metrics=["merge_requests"],
         ),
-        pipeline_statuses_to_ignore=MultipleChoiceParameter(
-            name="Pipeline statuses to ignore",
+        pipeline_statuses_to_include=MultipleChoiceParameter(
+            name="Pipeline statuses to include",
             short_name="pipeline statuses",
             values=[
                 "created",
@@ -178,11 +178,11 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "scheduled",
             ],
             api_values={"waiting for resource": "waiting_for_resource"},
-            placeholder="none",
+            placeholder="all pipeline statuses",
             metrics=["source_up_to_dateness"],
         ),
-        pipeline_triggers_to_ignore=MultipleChoiceParameter(
-            name="Pipeline triggers to ignore",
+        pipeline_triggers_to_include=MultipleChoiceParameter(
+            name="Pipeline triggers to include",
             short_name="pipeline triggers",
             values=[
                 "push",
@@ -208,7 +208,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "ondemand DAST validation": "ondemand_dast_validation",
                 "web-IDE": "webide",
             },
-            placeholder="none",
+            placeholder="all pipeline triggers",
             metrics=["source_up_to_dateness"],
         ),
         upvotes=Upvotes(),
