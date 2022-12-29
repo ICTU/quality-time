@@ -11,6 +11,6 @@ run () {
 
 # Update the compiled requirements files
 cd requirements
-run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking requirements-base.in
+run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade-package=setuptools requirements-base.in
 run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade-package=certifi requirements-dev.in
 
