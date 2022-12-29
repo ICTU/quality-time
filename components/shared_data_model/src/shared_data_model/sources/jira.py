@@ -130,7 +130,7 @@ JIRA = Source(
         velocity_type=SingleChoiceParameter(
             name="Type of velocity",
             short_name="velocity type",
-            help="Whether to report the amount of story points committed to, the amount of story points actually "
+            help="Whether to report the number of story points committed to, the number of story points actually "
             "completed, or the difference between the two.",
             mandatory=True,
             default_value=VelocityType.COMPLETED,

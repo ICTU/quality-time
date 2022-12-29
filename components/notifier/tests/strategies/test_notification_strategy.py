@@ -7,7 +7,7 @@ from strategies.notification_strategy import NotificationFinder
 
 
 class StrategiesTests(unittest.TestCase):
-    """Unit tests for the 'amount of new red metrics per report' notification strategy."""
+    """Unit tests for the 'number of new red metrics per report' notification strategy."""
 
     def setUp(self):
         """Override to create a reports JSON fixture."""
