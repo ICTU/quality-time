@@ -11,7 +11,7 @@ from .base import JenkinsJobs
 
 
 class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
-    """Collector class to measure the amount of Jenkins jobs run within a specified time period."""
+    """Collector class to measure the number of Jenkins jobs run within a specified time period."""
 
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
@@ -19,7 +19,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
         return days_ago(build_datetime) <= int(cast(str, self._parameter("lookback_days")))
 
     def _builds_within_timeperiod(self, job: Job) -> int:
-        """Return the amount of job builds within timeperiod."""
+        """Return the number of job builds within time period."""
         return len([build for build in job.get("builds", []) if self._include_build(build)])
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

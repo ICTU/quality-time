@@ -77,8 +77,8 @@ class Source(dict):  # lgtm [py/missing-equals]
         """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
 
         If the entities have a measured attribute, return the sum of the measured attributes of the ignored
-        entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
-        user story points, the source entities are user stories and the measured attribute is the amount of story
+        entities, otherwise return the number of ignored attributes. For example, if the metric is the number of ready
+        user story points, the source entities are user stories and the measured attribute is the number of story
         points of each user story.
         """
         entities_to_ignore = self._entities_to_ignore()

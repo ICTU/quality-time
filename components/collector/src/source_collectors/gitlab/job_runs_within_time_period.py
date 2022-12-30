@@ -13,7 +13,7 @@ from .base import GitLabJobsBase
 
 
 class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
-    """Collector class to measure the amount of GitLab CI builds run within a specified time period."""
+    """Collector class to measure the number of GitLab CI builds run within a specified time period."""
 
     async def _jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count, not deduplicated to latest branch or tag run."""

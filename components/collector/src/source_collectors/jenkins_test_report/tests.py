@@ -12,7 +12,7 @@ Suite = dict[str, list[TestCase]]
 
 
 class JenkinsTestReportTests(SourceCollector):
-    """Collector to get the amount of tests from a Jenkins test report."""
+    """Collector to get the number of tests from a Jenkins test report."""
 
     JENKINS_TEST_REPORT_COUNTS: Final[dict[str, str]] = dict(
         failed="failCount", passed="passCount", skipped="skipCount"
