@@ -31,7 +31,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 ### Changed
 
 - The default log level of the notifier, internal server, and external server components is now WARNING (was INFO). The default log level of the collector is unchanged and still WARNING.
-- The metric "Lead time for changes" has been renamed to "Average issue lead time". Note that existing configurations are **not** automatically updated and will require manual adjustment.
+- The metric "Lead time for changes" has been renamed to "Average issue lead time". Existing metric configurations are automatically updated.
 
 ## v4.6.1 - 2022-11-07
 

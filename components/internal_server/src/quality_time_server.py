@@ -13,7 +13,7 @@ import bottle  # skipcq: FLK-E402
 
 from shared.initialization.database import init_database  # skipcq: FLK-E402
 
-from initialization import init_bottle, merge_unmerged_measurements  # skipcq: FLK-E402
+from initialization import init_bottle, merge_unmerged_measurements, rename_issue_lead_time  # skipcq: FLK-E402
 
 
 def serve() -> None:  # pragma: no feature-test-cover
@@ -22,6 +22,7 @@ def serve() -> None:  # pragma: no feature-test-cover
     logging.getLogger().setLevel(log_level)
     database = init_database()
     merge_unmerged_measurements(database)
+    rename_issue_lead_time(database)
     init_bottle(database)
     server_port = os.getenv("INTERNAL_SERVER_PORT", "5002")
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
