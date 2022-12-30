@@ -38,6 +38,7 @@ mypy
 namespace
 npm
 parameterizable
+phpldapadmin
 [Pp]erformancetest
 severities
 sparkline

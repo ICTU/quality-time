@@ -2,6 +2,8 @@
 
 This document describes the *Quality-time* software. It is aimed at *Quality-time* developers and maintainers.
 
+## Component overview
+
 ```{eval-rst}
 .. graphviz:: components-dark.dot
    :class: only-dark
@@ -11,6 +13,8 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
 ```
 
 *Quality-time* consists of eight Docker components, as depicted above.
+
+### Bespoke components
 
 There are five bespoke components:
 
@@ -22,7 +26,9 @@ There are five bespoke components:
 
 Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the internal server, the collector, and the notifier. The shared server code is used by the external server and the internal server.
 
-The three standard components are:
+### Standard components
+
+*Quality-time* uses three standard components:
 
 - A [proxy](#proxy), routing traffic from and to the user's browser. The proxy is based on [Nginx](https://nginx.org).
 - A [database](#database), for storing reports and measurements. The database is based on [MongoDB](https://www.mongodb.com).
@@ -30,7 +36,14 @@ The three standard components are:
 
 In addition, unless forward authentication is used, an LDAP server is expected to be available to authenticate users.
 
-For testing purposes there are also [test data](#test-data) and a [test LDAP server](#test-ldap-server).
+### Test components
+
+For testing purposes there a few additional components:
+
+- A web server serving [test data](#test-data).
+- A [test LDAP server](#test-ldap-server).
+- A tool to administer users in the LDAP server (phpldapadmin).
+- A tool to view and edit the database contents (mongo-express).
 
 ## Frontend
 
