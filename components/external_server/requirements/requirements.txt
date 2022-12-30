@@ -248,6 +248,7 @@ lxml==4.9.2 \
     --hash=sha256:2e430cd2824f05f2d4f687701144556646bae8f249fd60aa1e4c768ba7018947 \
     --hash=sha256:36c3c175d34652a35475a73762b545f4527aec044910a651d2bf50de9c3352b1 \
     --hash=sha256:3818b8e2c4b5148567e1b09ce739006acfaa44ce3156f8cbbc11062994b8e8dd \
+    --hash=sha256:3ab9fa9d6dc2a7f29d7affdf3edebf6ece6fb28a6d80b14c3b2fb9d39b9322c3 \
     --hash=sha256:3efea981d956a6f7173b4659849f55081867cf897e719f57383698af6f618a92 \
     --hash=sha256:4c8f293f14abc8fd3e8e01c5bd86e6ed0b6ef71936ded5bf10fe7a5efefbaca3 \
     --hash=sha256:5344a43228767f53a9df6e5b253f8cdca7dfc7b7aeae52551958192f56d98457 \
@@ -273,6 +274,7 @@ lxml==4.9.2 \
     --hash=sha256:8d0b4612b66ff5d62d03bcaa043bb018f74dfea51184e53f067e6fdcba4bd8de \
     --hash=sha256:8e20cb5a47247e383cf4ff523205060991021233ebd6f924bca927fcf25cf86f \
     --hash=sha256:925073b2fe14ab9b87e73f9a5fde6ce6392da430f3004d8b72cc86f746f5163b \
+    --hash=sha256:998c7c41910666d2976928c38ea96a70d1aa43be6fe502f21a651e17483a43c5 \
     --hash=sha256:9b22c5c66f67ae00c0199f6055705bc3eb3fcb08d03d2ec4059a2b1b25ed48d7 \
     --hash=sha256:9f102706d0ca011de571de32c3247c6476b55bb6bc65a20f682f000b07a4852a \
     --hash=sha256:a08cff61517ee26cb56f1e949cca38caabe9ea9fbb4b1e10a805dc39844b7d5c \
@@ -395,20 +397,20 @@ requests==2.28.1 \
     --hash=sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983 \
     --hash=sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349
     # via -r ../../../requirements/requests.in
-setuptools==65.5.1 \
-    --hash=sha256:d0b9a8433464d5800cbe05094acf5c6d52a91bfac9b52bcfc4d41382be5d5d31 \
-    --hash=sha256:e197a19aa8ec9722928f2206f8de752def0e4c9fc6953527360d1c36d94ddb2f
+setuptools==65.6.3 \
+    --hash=sha256:57f6f22bde4e042978bcd50176fdb381d7c21a9efa4041202288d3737a0c6a54 \
+    --hash=sha256:a7620757bf984b58deaf32fc8a4577a9bbc0850cf92c20e1ce41c38c19e5fb75
     # via
     #   gevent
     #   zope-event
     #   zope-interface
-urllib3==1.26.12 \
-    --hash=sha256:3fa96cf423e6987997fc326ae8df396db2a8b7c667747d47ddd8ecba91f4a74e \
-    --hash=sha256:b930dd878d5a8afb066a637fbb35144fe7901e3b209d1cd4f524bd0e9deee997
+urllib3==1.26.13 \
+    --hash=sha256:47cc05d99aaa09c9e72ed5809b60e7ba354e64b59c9c173ac3018642d8bb41fc \
+    --hash=sha256:c083dd0dce68dbfbe1129d5271cb90f9447dea7d52097c6e0126120c521ddea8
     # via requests
-zope-event==4.5.0 \
-    --hash=sha256:2666401939cdaa5f4e0c08cf7f20c9b21423b95e88f4675b1443973bdb080c42 \
-    --hash=sha256:5e76517f5b9b119acf37ca8819781db6c16ea433f7e2062c4afc2b6fbedb1330
+zope-event==4.6 \
+    --hash=sha256:73d9e3ef750cca14816a9c322c7250b0d7c9dbc337df5d1b807ff8d3d0b9e97c \
+    --hash=sha256:81d98813046fc86cc4136e3698fee628a3282f9c320db18658c21749235fce80
     # via gevent
 zope-interface==5.5.2 \
     --hash=sha256:008b0b65c05993bb08912f644d140530e775cf1c62a072bf9340c2249e613c32 \

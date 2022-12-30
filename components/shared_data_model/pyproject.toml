@@ -20,7 +20,7 @@ classifiers = [
     "Natural Language :: English"
 ]
 dependencies = [
-    "pydantic == 1.10.2",
+    "pydantic == 1.10.4",
 ]
 
 [project.urls]
