@@ -6,11 +6,13 @@ This document is aimed at *Quality-time* developers and maintainers and describe
 
 ### Running *Quality-time* locally
 
-When developing *Quality-time*, we recommend running the bespoke components from a shell and the standard components in Docker. The server and frontend components have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
+When developing *Quality-time*, there are two ways to run *Quality-time* locally: in Docker completely (scenario 1 below) or partly in Docker and partly from shells (scenario 2 below).
+
+If you want to get *Quality-time* up and running quickly, for example for a demo, we recommend scenario 1. For software development, we recommend scenario 2.
 
 #### Install prerequisites
 
-Prerequisites are Docker, Git, Python 3.10, a recent version of Node.js (we test with the Long Term Support version of Node).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.10 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 
@@ -26,24 +28,42 @@ git clone https://github.com/ICTU/quality-time.git
 cd quality-time
 ```
 
-#### Start standard components
+#### Scenario 1: run all components in Docker
 
-Open a terminal and start the standard containers with docker compose:
+To run *Quality-time* in Docker completely, open a terminal and start all containers with docker compose:
+
+```console
+docker compose up
+```
+
+The advantage of this scenario is that Python and Node.js don't need to be installed. However, as building the containers can be time-consuming we don't recommend this for working on the Quality-time source code.
+
+#### Scenario 2: run bespoke component from shells and other components in Docker
+
+In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers.
+
+The advantage of this scenario is that you don't need to rebuild the bespoke container images while developing. Also, the two server components and the frontend component have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
+
+##### Start standard and test components in Docker
+
+Open a terminal and start the [standard containers](software.md#standard-components) and [test components](software.md#test-components) with docker compose:
 
 ```console
 docker compose up database ldap phpldapadmin mongo-express testdata
 ```
 
+{index}`PHP-LDAP-admin` is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the {index}`LDAP` database. Click login, check the "Anonymous" box and click "Authenticate" to login.
+
 {index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
-{index}`PHP-LDAP-admin` is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the {index}`LDAP` database. Click login, check the "Anonymous" box and click "Authenticate" to login.
+The test data is served at [http://localhost:8080](http://localhost:8080).
 
 There are two users defined in the LDAP database:
 
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
 
-#### Start the {index}`external server <External server component>`
+##### Start the {index}`external server <External server component>`
 
 Open another terminal and run the external server:
 
@@ -69,7 +89,7 @@ If you're new to Python virtual environments, note that:
 - See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python virtual environments when changing directories.
 ```
 
-#### Start the {index}`internal server <Internal server component>`
+##### Start the {index}`internal server <Internal server component>`
 
 Open another terminal and run the internal server:
 
@@ -83,7 +103,7 @@ python src/quality_time_server.py
 
 The API of the internal server is served at [http://localhost:5002](http://localhost:5002), e.g. access [http://localhost:5001/api/metrics](http://localhost:5001/api/metrics) to get the list of metrics.
 
-#### Start the {index}`collector <Collector component>`
+##### Start the {index}`collector <Collector component>`
 
 Open another terminal and run the collector:
 
@@ -95,7 +115,7 @@ ci/pip-install.sh
 python src/quality_time_collector.py
 ```
 
-#### Start the {index}`frontend <Frontend component>`
+##### Start the {index}`frontend <Frontend component>`
 
 Open another terminal and run the frontend:
 
@@ -107,7 +127,7 @@ npm run start
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
 
-#### Start the {index}`notifier <Notifier component>`
+##### Start the {index}`notifier <Notifier component>`
 
 Optionally, open yet another terminal and run the notifier:
 
@@ -117,6 +137,19 @@ python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_notifier.py
+```
+
+#### Preparing the shared components
+
+*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared server code component is used by the external and internal servers.
+
+To create a virtual environment for the shared components and install the dependencies run the following:
+
+```console
+cd components/shared_data_model  # or components/shared_server_code
+python3 -m venv venv
+. venv/bin/activate  # on Windows: venv\Scripts\activate
+ci/pip-install.sh
 ```
 
 ### Coding style

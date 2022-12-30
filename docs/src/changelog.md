@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Chrome would not show all historic data when displaying multiple dates. Fixes [#4832](https://github.com/ICTU/quality-time/issues/4832).
 - Break long words and URLs in the comments column, if necessary. Fixes [#5118](https://github.com/ICTU/quality-time/issues/5118).
 - Fixed typo's in description of metrics and sources: changed all instances of 'amount' where it should have been 'number'.
+- Add the shared code components to the developer documentation. Fixes [#5130](https://github.com/ICTU/quality-time/issues/5130).
 
 ### Added
 
