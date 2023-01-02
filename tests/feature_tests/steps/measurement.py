@@ -110,7 +110,7 @@ def set_entity_attribute(context, attribute, key, value):
 
 
 @when("the client connects to the number of measurements {stream}")
-def connect_to_nr_of_measurements_stream(context, stream):
+def connect_to_nr_of_measurements_stream(context, stream):  # pylint: disable=unused-argument
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
     event_source = EventSource(f"{context.base_api_url}/nr_measurements")
@@ -124,15 +124,6 @@ def connect_to_nr_of_measurements_stream(context, stream):
 
     event_source.on_message = on_message
     event_source.open()
-
-    """
-    for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no feature-test-cover
-        context.sse_messages.append(message)
-        if stream == "stream":
-            break
-        context.execute_steps('when the collector measures "42"')
-        stream = "stream"
-    """
 
 
 @then("the server skips the next update because nothing changed")

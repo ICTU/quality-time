@@ -10,6 +10,6 @@ warn_unused_ignores = true
 [[tool.mypy.overrides]]
 module = [
     "behave",
-    "sseclient"
+    "ssec"
 ]
 ignore_missing_imports = true
