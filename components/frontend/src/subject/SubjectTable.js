@@ -121,7 +121,7 @@ export function SubjectTable({
                             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
                             {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
                             {nrDates > 1 && !hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
-                            {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
+                            {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div style={{wordBreak: "break-word"}} dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
                             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
                                 <IssueStatus
                                     metric={metric}

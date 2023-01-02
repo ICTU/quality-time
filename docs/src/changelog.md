@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 ### Fixed
 
 - Chrome would not show all historic data when displaying multiple dates. Fixes [#4832](https://github.com/ICTU/quality-time/issues/4832).
+- Break long words and URLs in the comments column, if necessary. Fixes [#5118](https://github.com/ICTU/quality-time/issues/5118).
 - Fixed typo's in description of metrics and sources: changed all instances of 'amount' where it should have been 'number'.
 
 ### Added
@@ -26,7 +27,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Changed
 
-The default log level of the notifier, internal server, and external server components is now WARNING (was INFO). The default log level of the collector is unchanged and still WARNING.
+- The default log level of the notifier, internal server, and external server components is now WARNING (was INFO). The default log level of the collector is unchanged and still WARNING.
 
 ## v4.6.1 - 2022-11-07
 
