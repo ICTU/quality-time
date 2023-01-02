@@ -472,13 +472,13 @@ pip-api==0.0.30 \
     --hash=sha256:2a0314bd31522eb9ffe8a99668b0d07fee34ebc537931e7b6483001dbedcbdc9 \
     --hash=sha256:a05df2c7aa9b7157374bcf4273544201a0c7bae60a9c65bcf84f3959ef3896f3
     # via pip-audit
-pip-audit==2.4.8 \
-    --hash=sha256:40876d6ad6adf5ac64fba1ecef034db9804c35c2c18f7c22cb7b11b382c10df9 \
-    --hash=sha256:a45540ab0c5a9311315ca42c78fa8f72cf3598d5968a67d883d2d6194eda598c
+pip-audit==2.4.12 \
+    --hash=sha256:e65dfbccf29f290606911d3a49cf62497d3c140e4aac0a17775438d7630588da \
+    --hash=sha256:eab6aab5a649e93f17309bf8d57bb369a63fa9ef60e96b585bba22acdbb54b97
     # via -r ../../requirements/dev.in
-pip-requirements-parser==31.2.0 \
-    --hash=sha256:22fa213a987913385b2484d5698ecfa1d9cf4154978cdf929085548af55355b0 \
-    --hash=sha256:8c2a6f8e091ac2693824a5ef4e3b250226e34f74a20a91a87b9ab0714b47788f
+pip-requirements-parser==32.0.1 \
+    --hash=sha256:4659bc2a667783e7a15d190f6fccf8b2486685b6dba4c19c3876314769c57526 \
+    --hash=sha256:b4fa3a7a0be38243123cf9d1f3518da10c51bdb165a2b2985566247f9155a7d3
     # via pip-audit
 platformdirs==2.5.3 \
     --hash=sha256:0cb405749187a194f444c25c82ef7225232f11564721eabffc6ec70df83b11cb \
@@ -546,7 +546,9 @@ pylint==2.14.5 \
 pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
     --hash=sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc
-    # via packaging
+    # via
+    #   packaging
+    #   pip-requirements-parser
 pytz==2022.6 \
     --hash=sha256:222439474e9c98fced559f1709d89e6c9cbf8d79c794ff3eb9f8800064291427 \
     --hash=sha256:e89512406b793ca39f5971bc999cc538ce125c0e51c27941bef4568b460095e2
