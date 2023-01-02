@@ -5,7 +5,7 @@ import time
 
 from asserts import assert_equal, assert_true
 from behave import given, then, when  # pylint: disable=no-name-in-module
-from sseclient import SSEClient
+from ssec import EventSource
 
 
 @when("the collector gets the metrics to measure")
@@ -113,12 +113,26 @@ def set_entity_attribute(context, attribute, key, value):
 def connect_to_nr_of_measurements_stream(context, stream):
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
+    event_source = EventSource(f"{context.base_api_url}/nr_measurements")
+
+    def on_message(message):
+        context.sse_messages.append(message)
+        if stream == "stream":
+            event_source.close()
+        context.execute_steps('when the collector measures "42"')
+        stream = "stream"
+
+    event_source.on_message = on_message
+    event_source.open()
+
+    """
     for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no feature-test-cover
         context.sse_messages.append(message)
         if stream == "stream":
             break
         context.execute_steps('when the collector measures "42"')
         stream = "stream"
+    """
 
 
 @then("the server skips the next update because nothing changed")
