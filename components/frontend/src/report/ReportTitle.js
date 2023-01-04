@@ -14,6 +14,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { IssueTracker } from './IssueTracker';
 import { metricReactionDeadline } from '../defaults';
+import { setDocumentTitle } from './document_title';
 
 function ReportConfiguration({ report, reload }) {
     return (
@@ -140,6 +141,7 @@ export function ReportTitle({ report, go_home, history, reload }) {
             render: () => <Tab.Pane><Share title="Report permanent link" url={reportUrl} /></Tab.Pane>
         }
     ]
+    setDocumentTitle(report.title);
     return (
         <HeaderWithDetails level="h1" header={report.title} subheader={report.subtitle}>
             <>
