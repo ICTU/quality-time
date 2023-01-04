@@ -93,6 +93,7 @@ export function ReportsOverviewTitle({ reports_overview, reload }) {
         { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={reports_overview.permissions ?? {}} reload={reload} /></Tab.Pane> },
         { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog/></Tab.Pane> }
     ]
+    document.title = reports_overview.title + " · Quality-time";
     return (
         <HeaderWithDetails level="h1" header={reports_overview.title} subheader={reports_overview.subtitle}>
             <Tab panes={panes} />
