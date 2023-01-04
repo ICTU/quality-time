@@ -36,6 +36,35 @@
                         "maintainability"
                     ]
                 },
+                "3edbace9-8e2c-4c1d-8e62-7a9fb40ae127": {
+                    "type": "loc",
+                    "sources": {
+                        "714bfec9-9022-4afa-be28-4490443a60c1": {
+                            "type": "cloc",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/cloc/cloc-by-file.json",
+                                "landing_url": "http://localhost:8000/reports/cloc/cloc-by-file.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "languages_to_ignore": [],
+                                "files_to_include": [".*test.*"]
+                            }
+                        }
+                    },
+                    "name": "Percentage test code",
+                    "scale": "percentage",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": ">",
+                    "target": "50",
+                    "near_target": "40",
+                    "tags": [
+                        "test quality"
+                    ]
+                },
                 "823001ba-d45f-4e91-83ba-5843708cb475": {
                     "type": "tests",
                     "sources": {

@@ -142,10 +142,20 @@ METRICS = Metrics.parse_obj(
             description="The size of the software in lines of code.",
             rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
             "one of the most widely used metrics to measure size of software.",
+            documentation="""To track the absolute size of the software set the scale of the metric to 'count' and add
+one or more sources.
+
+To track the relative size of sources, for example the relative amount of test code, follow these steps:
+- set the scale of the metric to 'percentage',
+- add cloc as source
+- generate a cloc JSON report with the `--by-file` option so that cloc includes filename in the report, and
+- add regular expressions to the 'files to include' cloc option so that *Quality-time* counts the size of the test code.
+""",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
             ],
             unit=Unit.LINES,
+            scales=["count", "percentage"],
             target="30000",
             near_target="35000",
             sources=["cloc", "manual_number", "sonarqube"],

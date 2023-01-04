@@ -19,6 +19,12 @@ CLOC = Source(
             help_url="https://github.com/AlDanial/cloc#recognized-languages-",
             metrics=["loc"],
         ),
+        files_to_include=MultipleChoiceWithAdditionParameter(
+            name="Files to include (regular expressions or file names)",
+            short_name="files to include",
+            help="This options requires the cloc report to be generated with the --by-file option.",
+            metrics=["loc"],
+        ),
         **access_parameters(ALL_CLOC_METRICS, source_type="cloc report", source_type_format="JSON")
     ),
     entities=dict(

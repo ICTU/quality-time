@@ -1,0 +1,4983 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "1.96",
+  "elapsed_seconds"    : 1.03945183753967,
+  "n_files"            : 994,
+  "n_lines"            : 174290,
+  "files_per_second"   : 956.273262600358,
+  "lines_per_second"   : 167674.91643724},
+"components/testdata/reports/jacoco/jacoco-report.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 19792,
+  "language": "XML"},
+"components/frontend/package-lock.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 18981,
+  "language": "JSON"},
+"components/testdata/reports/owasp-dependency-check/dependency-check-report.html" :{
+  "blank": 20,
+  "comment": 0,
+  "code": 12830,
+  "language": "HTML"},
+"components/testdata/reports/openvas/openvas-report.xml" :{
+  "blank": 64,
+  "comment": 0,
+  "code": 11984,
+  "language": "XML"},
+"components/testdata/reports/owasp-dependency-check/dependency-check-report.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 11320,
+  "language": "XML"},
+"components/testdata/reports/anchore/anchore-vuln.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 7049,
+  "language": "JSON"},
+"components/testdata/reports/ncover/ncover-report.html" :{
+  "blank": 216,
+  "comment": 0,
+  "code": 4305,
+  "language": "HTML"},
+"components/testdata/reports/robot-framework/output-3.2.2.xml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 3454,
+  "language": "XML"},
+"components/testdata/reports/robot-framework/output-4.0.xml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 3115,
+  "language": "XML"},
+"components/testdata/reports/snyk/snyk.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 3081,
+  "language": "JSON"},
+"components/renderer/package-lock.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 2413,
+  "language": "JSON"},
+"components/testdata/reports/axe/axe-html-reporter.html" :{
+  "blank": 6,
+  "comment": 2,
+  "code": 1698,
+  "language": "HTML"},
+"components/testdata/reports/owasp-zap/zap-report.html" :{
+  "blank": 768,
+  "comment": 0,
+  "code": 1502,
+  "language": "HTML"},
+"components/testdata/reports/axe/axe-core.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1355,
+  "language": "JSON"},
+"components/testdata/reports/performancetest-runner/loadtestreport.html" :{
+  "blank": 84,
+  "comment": 0,
+  "code": 1137,
+  "language": "HTML"},
+"components/testdata/reports/ojaudit/ojaudit-report.xml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 1109,
+  "language": "XML"},
+"components/testdata/reports/openvas/openvas-report.html" :{
+  "blank": 61,
+  "comment": 0,
+  "code": 1040,
+  "language": "HTML"},
+"docs/src/changelog.md" :{
+  "blank": 657,
+  "comment": 2,
+  "code": 1022,
+  "language": "Markdown"},
+"components/shared_server_code/src/shared/example-reports/example-report.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 922,
+  "language": "JSON"},
+"tests/feature_tests/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 871,
+  "language": "Text"},
+"docs/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 843,
+  "language": "Text"},
+"components/testdata/reports/owasp-zap/zap-report.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 782,
+  "language": "XML"},
+"components/external_server/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 700,
+  "language": "Text"},
+"components/collector/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 692,
+  "language": "Text"},
+"release/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 687,
+  "language": "Text"},
+"components/shared_server_code/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 684,
+  "language": "Text"},
+"tests/application_tests/requirements/requirements-dev.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 682,
+  "language": "Text"},
+"components/shared_data_model/src/shared_data_model/metrics.py" :{
+  "blank": 16,
+  "comment": 77,
+  "code": 581,
+  "language": "Python"},
+"components/external_server/tests/routes/test_source.py" :{
+  "blank": 58,
+  "comment": 47,
+  "code": 532,
+  "language": "Python"},
+"docs/package-lock.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 518,
+  "language": "JSON"},
+"components/external_server/tests/routes/test_report.py" :{
+  "blank": 68,
+  "comment": 74,
+  "code": 517,
+  "language": "Python"},
+"components/external_server/tests/routes/test_metric.py" :{
+  "blank": 44,
+  "comment": 35,
+  "code": 467,
+  "language": "Python"},
+"components/external_server/requirements/requirements.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 449,
+  "language": "Text"},
+"components/testdata/reports/composer/composer-outdated.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 438,
+  "language": "JSON"},
+"components/testdata/reports/bandit/bandit.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 423,
+  "language": "JSON"},
+"components/shared_server_code/tests/shared/model/test_measurement.py" :{
+  "blank": 65,
+  "comment": 54,
+  "code": 394,
+  "language": "Python"},
+"docs/src/development.md" :{
+  "blank": 164,
+  "comment": 0,
+  "code": 372,
+  "language": "Markdown"},
+"components/notifier/requirements/requirements.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 366,
+  "language": "Text"},
+"components/collector/requirements/requirements.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 355,
+  "language": "Text"},
+"docs/src/usage.md" :{
+  "blank": 209,
+  "comment": 0,
+  "code": 353,
+  "language": "Markdown"},
+"components/shared_server_code/src/shared/example-reports/example-report-next-action.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 343,
+  "language": "JSON"},
+"components/shared_server_code/src/shared/example-reports/example-report-quality-time.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 342,
+  "language": "JSON"},
+"components/internal_server/tests/routes/test_measurement.py" :{
+  "blank": 28,
+  "comment": 30,
+  "code": 337,
+  "language": "Python"},
+"components/testdata/reports/gatling/js/stats.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 318,
+  "language": "JSON"},
+"components/shared_data_model/src/shared_data_model/sources/sonarqube.py" :{
+  "blank": 13,
+  "comment": 3,
+  "code": 302,
+  "language": "Python"},
+"components/frontend/src/widgets/Button.js" :{
+  "blank": 13,
+  "comment": 9,
+  "code": 298,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/ViewPanel.js" :{
+  "blank": 10,
+  "comment": 1,
+  "code": 281,
+  "language": "JavaScript"},
+"docs/src/software.md" :{
+  "blank": 164,
+  "comment": 0,
+  "code": 281,
+  "language": "Markdown"},
+"components/shared_data_model/src/shared_data_model/sources/quality_time.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 274,
+  "language": "Python"},
+"components/frontend/src/utils.test.js" :{
+  "blank": 46,
+  "comment": 0,
+  "code": 273,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/IssueStatus.test.js" :{
+  "blank": 38,
+  "comment": 0,
+  "code": 263,
+  "language": "JavaScript"},
+"components/internal_server/requirements/requirements.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 247,
+  "language": "Text"},
+"components/frontend/src/subject/SubjectTableHeader.js" :{
+  "blank": 13,
+  "comment": 0,
+  "code": 244,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Button.test.js" :{
+  "blank": 32,
+  "comment": 0,
+  "code": 238,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/ViewPanel.test.js" :{
+  "blank": 25,
+  "comment": 0,
+  "code": 237,
+  "language": "JavaScript"},
+"components/collector/tests/base_collectors/test_collector.py" :{
+  "blank": 28,
+  "comment": 26,
+  "code": 233,
+  "language": "Python"},
+"components/frontend/src/utils.js" :{
+  "blank": 43,
+  "comment": 5,
+  "code": 230,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/azure_devops.py" :{
+  "blank": 6,
+  "comment": 1,
+  "code": 229,
+  "language": "Python"},
+"docs/src/create_reference_md.py" :{
+  "blank": 51,
+  "comment": 27,
+  "code": 224,
+  "language": "Python"},
+"components/collector/src/base_collectors/source_collector.py" :{
+  "blank": 69,
+  "comment": 71,
+  "code": 216,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/jira.py" :{
+  "blank": 11,
+  "comment": 2,
+  "code": 212,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/gitlab.py" :{
+  "blank": 14,
+  "comment": 24,
+  "code": 206,
+  "language": "Python"},
+"components/testdata/reports/jacoco/jacoco-report.html" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 206,
+  "language": "HTML"},
+"components/frontend/src/report/IssueTracker.js" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 198,
+  "language": "JavaScript"},
+"components/testdata/reports/jacoco/jacoco-report/report.css" :{
+  "blank": 45,
+  "comment": 0,
+  "code": 198,
+  "language": "CSS"},
+"components/testdata/reports/junit/junit-report.html" :{
+  "blank": 52,
+  "comment": 0,
+  "code": 196,
+  "language": "HTML"},
+"components/external_server/src/routes/report.py" :{
+  "blank": 38,
+  "comment": 14,
+  "code": 195,
+  "language": "Python"},
+"components/shared_server_code/src/shared/model/measurement.py" :{
+  "blank": 51,
+  "comment": 52,
+  "code": 188,
+  "language": "Python"},
+"components/external_server/src/routes/source.py" :{
+  "blank": 28,
+  "comment": 13,
+  "code": 184,
+  "language": "Python"},
+"components/frontend/src/App.js" :{
+  "blank": 17,
+  "comment": 0,
+  "code": 184,
+  "language": "JavaScript"},
+"components/frontend/src/metric/Target.js" :{
+  "blank": 14,
+  "comment": 0,
+  "code": 184,
+  "language": "JavaScript"},
+"components/external_server/tests/routes/test_auth.py" :{
+  "blank": 34,
+  "comment": 24,
+  "code": 183,
+  "language": "Python"},
+".github/dependabot.yml" :{
+  "blank": 24,
+  "comment": 0,
+  "code": 176,
+  "language": "YAML"},
+"components/notifier/tests/test_quality_time_notifier.py" :{
+  "blank": 24,
+  "comment": 20,
+  "code": 171,
+  "language": "Python"},
+"components/external_server/tests/routes/test_subject.py" :{
+  "blank": 29,
+  "comment": 26,
+  "code": 167,
+  "language": "Python"},
+"components/frontend/src/metric/Target.test.js" :{
+  "blank": 23,
+  "comment": 0,
+  "code": 166,
+  "language": "JavaScript"},
+"components/frontend/src/metric/MetricConfigurationParameters.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 165,
+  "language": "JavaScript"},
+"components/frontend/src/AppUI.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 164,
+  "language": "JavaScript"},
+"components/frontend/src/metric/MetricDebtParameters.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 161,
+  "language": "JavaScript"},
+"components/internal_server/tests/initialization/test_migration.py" :{
+  "blank": 19,
+  "comment": 15,
+  "code": 160,
+  "language": "Python"},
+"components/frontend/src/source/SourceParameter.test.js" :{
+  "blank": 17,
+  "comment": 0,
+  "code": 159,
+  "language": "JavaScript"},
+"components/external_server/src/model/issue_tracker.py" :{
+  "blank": 43,
+  "comment": 31,
+  "code": 158,
+  "language": "Python"},
+"components/frontend/src/subject/Subject.js" :{
+  "blank": 7,
+  "comment": 1,
+  "code": 156,
+  "language": "JavaScript"},
+"components/collector/tests/source_collectors/axe_core/test_accessibility.py" :{
+  "blank": 19,
+  "comment": 15,
+  "code": 155,
+  "language": "Python"},
+"tests/feature_tests/features/report.feature" :{
+  "blank": 20,
+  "comment": 0,
+  "code": 154,
+  "language": "Cucumber"},
+"components/frontend/src/source/SourceEntities.test.js" :{
+  "blank": 14,
+  "comment": 0,
+  "code": 152,
+  "language": "JavaScript"},
+"components/frontend/src/report/ReportTitle.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 149,
+  "language": "JavaScript"},
+"components/external_server/src/routes/metric.py" :{
+  "blank": 21,
+  "comment": 11,
+  "code": 148,
+  "language": "Python"},
+"components/frontend/src/report/IssueTracker.test.js" :{
+  "blank": 19,
+  "comment": 0,
+  "code": 146,
+  "language": "JavaScript"},
+"components/frontend/src/metric/MetricDetails.js" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 145,
+  "language": "JavaScript"},
+"components/frontend/src/source/Source.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 144,
+  "language": "JavaScript"},
+"components/frontend/src/subject/SubjectTable.test.js" :{
+  "blank": 21,
+  "comment": 0,
+  "code": 144,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/jenkins.py" :{
+  "blank": 11,
+  "comment": 8,
+  "code": 143,
+  "language": "Python"},
+"components/frontend/src/subject/SubjectTable.js" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 142,
+  "language": "JavaScript"},
+"components/shared_data_model/tests/shared_data_model/meta/test_data_model.py" :{
+  "blank": 15,
+  "comment": 11,
+  "code": 141,
+  "language": "Python"},
+"tests/feature_tests/features/measurement_entities.feature" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 140,
+  "language": "Cucumber"},
+"components/collector/src/source_collectors/__init__.py" :{
+  "blank": 42,
+  "comment": 1,
+  "code": 139,
+  "language": "Python"},
+"components/frontend/src/header_footer/Menubar.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 138,
+  "language": "JavaScript"},
+"components/frontend/src/source/Sources.test.js" :{
+  "blank": 13,
+  "comment": 0,
+  "code": 133,
+  "language": "JavaScript"},
+"tests/feature_tests/steps/item.py" :{
+  "blank": 27,
+  "comment": 13,
+  "code": 133,
+  "language": "Python"},
+"components/frontend/src/source/SourceParameter.js" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 132,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/parameters.py" :{
+  "blank": 68,
+  "comment": 26,
+  "code": 132,
+  "language": "Python"},
+"tests/feature_tests/features/measurement.feature" :{
+  "blank": 22,
+  "comment": 0,
+  "code": 132,
+  "language": "Cucumber"},
+"components/frontend/src/metric/MetricDetails.test.js" :{
+  "blank": 15,
+  "comment": 0,
+  "code": 131,
+  "language": "JavaScript"},
+"components/frontend/src/report/ReportTitle.test.js" :{
+  "blank": 20,
+  "comment": 0,
+  "code": 128,
+  "language": "JavaScript"},
+".github/workflows/sonarcloud.yml" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 127,
+  "language": "YAML"},
+"components/collector/tests/source_collectors/jira/test_issue_status.py" :{
+  "blank": 15,
+  "comment": 12,
+  "code": 125,
+  "language": "Python"},
+"components/frontend/src/metric/TrendGraph.js" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 125,
+  "language": "JavaScript"},
+"components/frontend/src/report/Report.js" :{
+  "blank": 6,
+  "comment": 1,
+  "code": 123,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/IssueStatus.js" :{
+  "blank": 12,
+  "comment": 2,
+  "code": 122,
+  "language": "JavaScript"},
+"tests/feature_tests/steps/measurement.py" :{
+  "blank": 22,
+  "comment": 11,
+  "code": 122,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_security_warnings.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 121,
+  "language": "Python"},
+"components/frontend/src/metric/MetricDebtParameters.test.js" :{
+  "blank": 19,
+  "comment": 0,
+  "code": 120,
+  "language": "JavaScript"},
+"components/external_server/src/routes/auth.py" :{
+  "blank": 25,
+  "comment": 17,
+  "code": 119,
+  "language": "Python"},
+"components/testdata/reports/ojaudit/ojaudit-report.html" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 117,
+  "language": "HTML"},
+"components/collector/tests/source_collectors/gitlab/test_merge_requests.py" :{
+  "blank": 15,
+  "comment": 11,
+  "code": 116,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/jmeter.py" :{
+  "blank": 15,
+  "comment": 2,
+  "code": 116,
+  "language": "Python"},
+"docs/src/deployment.md" :{
+  "blank": 52,
+  "comment": 0,
+  "code": 116,
+  "language": "Markdown"},
+"components/notifier/tests/strategies/test_notification_strategy.py" :{
+  "blank": 20,
+  "comment": 18,
+  "code": 115,
+  "language": "Python"},
+"components/testdata/reports/junit/junit-report.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 115,
+  "language": "XML"},
+"components/frontend/src/report/Report.test.js" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 114,
+  "language": "JavaScript"},
+"components/testdata/reports/jmeter/jmeter.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 114,
+  "language": "JSON"},
+"components/frontend/src/source/SourceEntities.js" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 113,
+  "language": "JavaScript"},
+".circleci/config.yml" :{
+  "blank": 7,
+  "comment": 1,
+  "code": 112,
+  "language": "YAML"},
+"tests/feature_tests/features/source.feature" :{
+  "blank": 20,
+  "comment": 0,
+  "code": 109,
+  "language": "Cucumber"},
+"components/shared_data_model/src/shared_data_model/sources/axe.py" :{
+  "blank": 15,
+  "comment": 21,
+  "code": 108,
+  "language": "Python"},
+"components/external_server/src/routes/subject.py" :{
+  "blank": 17,
+  "comment": 7,
+  "code": 107,
+  "language": "Python"},
+"components/external_server/src/utils/functions.py" :{
+  "blank": 43,
+  "comment": 37,
+  "code": 107,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/model/test_metric.py" :{
+  "blank": 20,
+  "comment": 9,
+  "code": 106,
+  "language": "Python"},
+"release/release.py" :{
+  "blank": 18,
+  "comment": 15,
+  "code": 105,
+  "language": "Python"},
+"tests/feature_tests/features/changelog.feature" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 105,
+  "language": "Cucumber"},
+"components/collector/tests/source_collectors/axe_html_reporter/test_accessibility.py" :{
+  "blank": 16,
+  "comment": 12,
+  "code": 104,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sarif/test_security_warnings.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 104,
+  "language": "Python"},
+"components/frontend/src/measurement/MeasurementTarget.test.js" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 103,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/model/metric.py" :{
+  "blank": 31,
+  "comment": 24,
+  "code": 103,
+  "language": "Python"},
+"components/collector/tests/metric_collectors/test_test_cases.py" :{
+  "blank": 16,
+  "comment": 49,
+  "code": 102,
+  "language": "Python"},
+"components/external_server/tests/routes/test_reports_overview.py" :{
+  "blank": 18,
+  "comment": 14,
+  "code": 102,
+  "language": "Python"},
+"components/internal_server/src/initialization/migration.py" :{
+  "blank": 26,
+  "comment": 17,
+  "code": 102,
+  "language": "Python"},
+"components/external_server/src/model/transformations.py" :{
+  "blank": 40,
+  "comment": 19,
+  "code": 101,
+  "language": "Python"},
+"components/collector/src/metric_collectors/test_cases.py" :{
+  "blank": 15,
+  "comment": 21,
+  "code": 100,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/base.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 100,
+  "language": "Python"},
+"components/frontend/src/measurement/MeasurementValue.test.js" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 100,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/Footer.js" :{
+  "blank": 9,
+  "comment": 2,
+  "code": 98,
+  "language": "JavaScript"},
+"components/external_server/tests/utils/test_functions.py" :{
+  "blank": 33,
+  "comment": 28,
+  "code": 97,
+  "language": "Python"},
+"components/frontend/src/report/ReportsOverviewTitle.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 97,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/model/report.py" :{
+  "blank": 30,
+  "comment": 18,
+  "code": 97,
+  "language": "Python"},
+"components/testdata/reports/jacoco/jacoco-report/sort.js" :{
+  "blank": 15,
+  "comment": 36,
+  "code": 96,
+  "language": "JavaScript"},
+"components/collector/src/base_collectors/collector.py" :{
+  "blank": 19,
+  "comment": 16,
+  "code": 95,
+  "language": "Python"},
+"components/collector/tests/source_collectors/source_collector_test_case.py" :{
+  "blank": 16,
+  "comment": 16,
+  "code": 95,
+  "language": "Python"},
+"docker/docker-compose.yml" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 95,
+  "language": "YAML"},
+"components/collector/tests/source_collectors/jira/test_velocity.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 94,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins_test_report/test_tests.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 93,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/base.py" :{
+  "blank": 27,
+  "comment": 20,
+  "code": 92,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/gatling.py" :{
+  "blank": 11,
+  "comment": 1,
+  "code": 92,
+  "language": "Python"},
+"components/collector/src/source_collectors/gitlab/source_up_to_dateness.py" :{
+  "blank": 24,
+  "comment": 20,
+  "code": 91,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_tests.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 91,
+  "language": "Python"},
+"components/collector/tests/source_collectors/quality_time/base.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 90,
+  "language": "Python"},
+"components/collector/tests/source_collectors/snyk/test_security_warnings.py" :{
+  "blank": 10,
+  "comment": 7,
+  "code": 90,
+  "language": "Python"},
+"components/frontend/src/metric/MetricConfigurationParameters.test.js" :{
+  "blank": 11,
+  "comment": 0,
+  "code": 89,
+  "language": "JavaScript"},
+"docs/src/intro.md" :{
+  "blank": 38,
+  "comment": 0,
+  "code": 89,
+  "language": "Markdown"},
+"tests/feature_tests/features/metric.feature" :{
+  "blank": 17,
+  "comment": 0,
+  "code": 89,
+  "language": "Cucumber"},
+"components/collector/tests/source_collectors/gitlab/test_job_runs_within_time_period.py" :{
+  "blank": 13,
+  "comment": 4,
+  "code": 88,
+  "language": "Python"},
+"components/frontend/src/source/Sources.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 88,
+  "language": "JavaScript"},
+"components/frontend/src/subject/SubjectTitle.test.js" :{
+  "blank": 11,
+  "comment": 0,
+  "code": 87,
+  "language": "JavaScript"},
+"components/external_server/tests/routes/test_measurement.py" :{
+  "blank": 25,
+  "comment": 16,
+  "code": 86,
+  "language": "Python"},
+"openshift/helm/templates/www-service.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 86,
+  "language": "YAML"},
+"components/frontend/src/header_footer/Menubar.test.js" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 85,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/quality_time/metrics.py" :{
+  "blank": 17,
+  "comment": 10,
+  "code": 84,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/violations.py" :{
+  "blank": 19,
+  "comment": 15,
+  "code": 84,
+  "language": "Python"},
+"components/collector/tests/source_collectors/axe_csv/test_accessibility.py" :{
+  "blank": 14,
+  "comment": 11,
+  "code": 84,
+  "language": "Python"},
+"components/frontend/src/notification/NotificationDestinations.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 84,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/meta/data_model.py" :{
+  "blank": 13,
+  "comment": 10,
+  "code": 84,
+  "language": "Python"},
+".github/workflows/release.yml" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 82,
+  "language": "YAML"},
+"components/frontend/src/subject/SubjectTable.css" :{
+  "blank": 26,
+  "comment": 10,
+  "code": 82,
+  "language": "CSS"},
+"components/shared_server_code/tests/shared/model/test_report.py" :{
+  "blank": 18,
+  "comment": 15,
+  "code": 82,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/issues.py" :{
+  "blank": 18,
+  "comment": 18,
+  "code": 81,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/__init__.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 81,
+  "language": "Python"},
+"components/collector/src/source_collectors/gitlab/merge_requests.py" :{
+  "blank": 19,
+  "comment": 58,
+  "code": 80,
+  "language": "Python"},
+".github/deadpendency.yaml" :{
+  "blank": 14,
+  "comment": 0,
+  "code": 79,
+  "language": "YAML"},
+"components/frontend/src/PageContent.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 79,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/subjects.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 79,
+  "language": "Python"},
+"components/collector/src/collector_utilities/functions.py" :{
+  "blank": 37,
+  "comment": 18,
+  "code": 78,
+  "language": "Python"},
+"components/frontend/src/subject/Subjects.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 78,
+  "language": "JavaScript"},
+"components/notifier/tests/destinations/test_teams.py" :{
+  "blank": 12,
+  "comment": 9,
+  "code": 78,
+  "language": "Python"},
+"components/external_server/tests/routes/plugins/test_route_auth_plugin.py" :{
+  "blank": 20,
+  "comment": 15,
+  "code": 77,
+  "language": "Python"},
+"components/external_server/tests/routes/test_notification.py" :{
+  "blank": 18,
+  "comment": 12,
+  "code": 77,
+  "language": "Python"},
+"components/frontend/src/fields/StringInput.test.js" :{
+  "blank": 13,
+  "comment": 0,
+  "code": 77,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/sonarqube/security_warnings.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 76,
+  "language": "Python"},
+"components/collector/tests/source_collectors/quality_time/test_missing_metrics.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 76,
+  "language": "Python"},
+"components/frontend/src/subject/Subjects.test.js" :{
+  "blank": 11,
+  "comment": 1,
+  "code": 76,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/gitlab/base.py" :{
+  "blank": 22,
+  "comment": 23,
+  "code": 75,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/velocity.py" :{
+  "blank": 14,
+  "comment": 10,
+  "code": 75,
+  "language": "Python"},
+"components/frontend/src/fields/SingleChoiceInput.test.js" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 75,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/menu_options.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 75,
+  "language": "JavaScript"},
+"components/collector/tests/source_collectors/sonarqube/test_violations.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 74,
+  "language": "Python"},
+"components/frontend/src/AppUI.test.js" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 74,
+  "language": "JavaScript"},
+"components/shared_server_code/tests/shared/model/test_subject.py" :{
+  "blank": 15,
+  "comment": 12,
+  "code": 74,
+  "language": "Python"},
+"components/collector/src/base_collectors/file_source_collector.py" :{
+  "blank": 32,
+  "comment": 18,
+  "code": 73,
+  "language": "Python"},
+"components/collector/src/model/issue_status.py" :{
+  "blank": 20,
+  "comment": 9,
+  "code": 73,
+  "language": "Python"},
+"components/collector/tests/collector_utilities/test_functions.py" :{
+  "blank": 31,
+  "comment": 23,
+  "code": 73,
+  "language": "Python"},
+"components/external_server/src/model/actions.py" :{
+  "blank": 18,
+  "comment": 9,
+  "code": 73,
+  "language": "Python"},
+"components/external_server/tests/model/test_actions.py" :{
+  "blank": 28,
+  "comment": 23,
+  "code": 73,
+  "language": "Python"},
+"components/frontend/src/dashboard/CardDashboard.js" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 73,
+  "language": "JavaScript"},
+"tests/feature_tests/features/subject.feature" :{
+  "blank": 15,
+  "comment": 0,
+  "code": 73,
+  "language": "Cucumber"},
+"components/external_server/src/database/reports.py" :{
+  "blank": 22,
+  "comment": 17,
+  "code": 71,
+  "language": "Python"},
+"components/frontend/src/fields/IntegerInput.test.js" :{
+  "blank": 11,
+  "comment": 0,
+  "code": 71,
+  "language": "JavaScript"},
+"docker/docker-compose.override.yml" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 71,
+  "language": "YAML"},
+"components/shared_data_model/src/shared_data_model/meta/parameter.py" :{
+  "blank": 20,
+  "comment": 13,
+  "code": 70,
+  "language": "Python"},
+"components/shared_data_model/tests/shared_data_model/meta/test_source.py" :{
+  "blank": 13,
+  "comment": 9,
+  "code": 70,
+  "language": "Python"},
+"components/collector/tests/source_collectors/quality_time/test_metrics.py" :{
+  "blank": 11,
+  "comment": 13,
+  "code": 69,
+  "language": "Python"},
+"components/frontend/src/report/ReportsOverview.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 69,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/manual_number.py" :{
+  "blank": 4,
+  "comment": 7,
+  "code": 69,
+  "language": "Python"},
+"components/testdata/reports/testng/testng-results.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 69,
+  "language": "XML"},
+"components/collector/src/source_collectors/axe_html_reporter/accessibility.py" :{
+  "blank": 13,
+  "comment": 9,
+  "code": 68,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/base.py" :{
+  "blank": 25,
+  "comment": 20,
+  "code": 68,
+  "language": "Python"},
+"components/frontend/src/fields/TextInput.test.js" :{
+  "blank": 13,
+  "comment": 0,
+  "code": 68,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/axe_core/accessibility.py" :{
+  "blank": 12,
+  "comment": 12,
+  "code": 67,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/test_slow_transactions.py" :{
+  "blank": 13,
+  "comment": 11,
+  "code": 67,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/test_failed_jobs.py" :{
+  "blank": 13,
+  "comment": 11,
+  "code": 67,
+  "language": "Python"},
+"components/external_server/src/routes/measurement.py" :{
+  "blank": 15,
+  "comment": 11,
+  "code": 67,
+  "language": "Python"},
+"components/frontend/src/notification/NotificationDestinations.test.js" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 67,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/azure_devops/issues.py" :{
+  "blank": 18,
+  "comment": 15,
+  "code": 66,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_suppressed_violations.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 66,
+  "language": "Python"},
+"components/frontend/src/measurement/Overrun.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 66,
+  "language": "JavaScript"},
+"components/frontend/src/source/Source.test.js" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 66,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/trello.py" :{
+  "blank": 8,
+  "comment": 1,
+  "code": 66,
+  "language": "Python"},
+"components/collector/src/base_collectors/metric_collector.py" :{
+  "blank": 15,
+  "comment": 8,
+  "code": 65,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_dependency_check/test_security_warnings.py" :{
+  "blank": 9,
+  "comment": 50,
+  "code": 65,
+  "language": "Python"},
+"components/frontend/src/subject/SubjectTitle.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 65,
+  "language": "JavaScript"},
+"components/internal_server/tests/routes/test_metric.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 65,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/anchore.py" :{
+  "blank": 9,
+  "comment": 1,
+  "code": 65,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/source.py" :{
+  "blank": 20,
+  "comment": 11,
+  "code": 64,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/owasp_zap.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 64,
+  "language": "Python"},
+"components/shared_server_code/src/shared/model/source.py" :{
+  "blank": 18,
+  "comment": 24,
+  "code": 64,
+  "language": "Python"},
+"tests/feature_tests/steps/source.py" :{
+  "blank": 18,
+  "comment": 10,
+  "code": 64,
+  "language": "Python"},
+".deepsource.toml" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 63,
+  "language": "TOML"},
+"components/collector/tests/source_collectors/azure_devops/test_merge_requests.py" :{
+  "blank": 10,
+  "comment": 7,
+  "code": 63,
+  "language": "Python"},
+"components/external_server/tests/database/test_reports.py" :{
+  "blank": 17,
+  "comment": 9,
+  "code": 63,
+  "language": "Python"},
+"components/frontend/src/fields/MultipleChoiceInput.test.js" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 63,
+  "language": "JavaScript"},
+"components/testdata/reports/cloc/cloc.json" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 63,
+  "language": "JSON"},
+"components/frontend/src/subject/SubjectTableFooter.test.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 62,
+  "language": "JavaScript"},
+"tests/feature_tests/features/metric_issue.feature" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 62,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/report.py" :{
+  "blank": 30,
+  "comment": 15,
+  "code": 62,
+  "language": "Python"},
+".github/workflows/trivy.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 61,
+  "language": "YAML"},
+"components/collector/src/source_collectors/azure_devops/tests.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 61,
+  "language": "Python"},
+"components/collector/src/source_collectors/ojaudit/violations.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 61,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_job_runs_within_time_period.py" :{
+  "blank": 18,
+  "comment": 6,
+  "code": 61,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_csv/test_slow_transactions.py" :{
+  "blank": 11,
+  "comment": 9,
+  "code": 61,
+  "language": "Python"},
+"components/external_server/src/routes/notification.py" :{
+  "blank": 12,
+  "comment": 4,
+  "code": 61,
+  "language": "Python"},
+"components/external_server/tests/model/test_issue_tracker.py" :{
+  "blank": 17,
+  "comment": 13,
+  "code": 61,
+  "language": "Python"},
+"components/frontend/src/changelog/ChangeLog.js" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 61,
+  "language": "JavaScript"},
+"components/frontend/src/dashboard/StatusPieChart.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 61,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntityDetails.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 61,
+  "language": "JavaScript"},
+"components/testdata/reports/jmeter/jmeter.csv" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 61,
+  "language": "CSV"},
+"components/collector/src/source_collectors/quality_time/missing_metrics.py" :{
+  "blank": 14,
+  "comment": 11,
+  "code": 60,
+  "language": "Python"},
+"components/frontend/src/fields/IntegerInput.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 60,
+  "language": "JavaScript"},
+"components/frontend/src/fields/TextInput.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 60,
+  "language": "JavaScript"},
+"components/frontend/src/subject/Subject.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 60,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/performancetest_runner.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 60,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gitlab/test_source_up_to_dateness.py" :{
+  "blank": 12,
+  "comment": 9,
+  "code": 59,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_json/test_slow_transactions.py" :{
+  "blank": 11,
+  "comment": 9,
+  "code": 59,
+  "language": "Python"},
+"components/frontend/src/App.test.js" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 59,
+  "language": "JavaScript"},
+"components/frontend/src/fields/MultipleChoiceInput.js" :{
+  "blank": 2,
+  "comment": 2,
+  "code": 59,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/cxsast/base.py" :{
+  "blank": 17,
+  "comment": 12,
+  "code": 58,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gitlab/base.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 58,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_zap/test_security_warnings.py" :{
+  "blank": 8,
+  "comment": 39,
+  "code": 58,
+  "language": "Python"},
+"components/frontend/src/source/SourceEntity.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 58,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/azure_devops/merge_requests.py" :{
+  "blank": 15,
+  "comment": 14,
+  "code": 57,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/loc.py" :{
+  "blank": 10,
+  "comment": 11,
+  "code": 57,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_manual_test_execution.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 57,
+  "language": "Python"},
+"components/external_server/src/routes/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 57,
+  "language": "Python"},
+"components/external_server/tests/fixtures.py" :{
+  "blank": 7,
+  "comment": 2,
+  "code": 57,
+  "language": "Python"},
+"components/frontend/src/report/ReportsOverviewTitle.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 57,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceParameters.test.js" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 57,
+  "language": "JavaScript"},
+"components/testdata/reports/cobertura/cobertura.xml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 57,
+  "language": "XML"},
+"components/collector/tests/source_collectors/sonarqube/test_remediation_effort.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 56,
+  "language": "Python"},
+"tests/application_tests/test_report.py" :{
+  "blank": 19,
+  "comment": 14,
+  "code": 56,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_loc.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 55,
+  "language": "Python"},
+".github/ISSUE_TEMPLATE/user-story-template--only-use-if-you-re-a-quality-time-developer-.md" :{
+  "blank": 31,
+  "comment": 0,
+  "code": 54,
+  "language": "Markdown"},
+"components/frontend/src/fields/DateInput.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 54,
+  "language": "JavaScript"},
+"components/collector/src/model/measurement.py" :{
+  "blank": 13,
+  "comment": 6,
+  "code": 53,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_slow_transactions.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 53,
+  "language": "Python"},
+"components/frontend/src/source/SourceType.test.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 53,
+  "language": "JavaScript"},
+"components/frontend/src/subject/SubjectTableHeader.test.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 53,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/composer.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 53,
+  "language": "Python"},
+"components/frontend/src/metric/MetricTypeHeader.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 52,
+  "language": "JavaScript"},
+"components/notifier/requirements/requirements-base.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"components/shared_data_model/.vulture_ignore_list.py" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/entity.py" :{
+  "blank": 27,
+  "comment": 14,
+  "code": 52,
+  "language": "Python"},
+"components/shared_server_code/requirements/requirements-base.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"docs/requirements/requirements-base.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"docs/styles/Vocab/Base/accept.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"release/requirements/requirements-base.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"tests/feature_tests/requirements/requirements-base.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 52,
+  "language": "Text"},
+"components/collector/tests/source_collectors/test_collector.py" :{
+  "blank": 18,
+  "comment": 12,
+  "code": 51,
+  "language": "Python"},
+"components/frontend/src/measurement/SourceStatus.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 51,
+  "language": "JavaScript"},
+"CODE_OF_CONDUCT.md" :{
+  "blank": 38,
+  "comment": 0,
+  "code": 50,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/jenkins/base.py" :{
+  "blank": 11,
+  "comment": 9,
+  "code": 50,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_zap/security_warnings.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 50,
+  "language": "Python"},
+"components/collector/tests/source_collectors/bandit/test_security_warnings.py" :{
+  "blank": 11,
+  "comment": 8,
+  "code": 50,
+  "language": "Python"},
+"components/external_server/src/database/measurements.py" :{
+  "blank": 10,
+  "comment": 5,
+  "code": 50,
+  "language": "Python"},
+"components/frontend/src/measurement/MeasurementTarget.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 50,
+  "language": "JavaScript"},
+"components/frontend/src/subject/SubjectParameters.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 50,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/menu_options.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 50,
+  "language": "JavaScript"},
+"components/notifier/src/quality_time_notifier.py" :{
+  "blank": 11,
+  "comment": 4,
+  "code": 50,
+  "language": "Python"},
+"openshift/helm/templates/externalserver-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 50,
+  "language": "YAML"},
+"components/collector/tests/source_collectors/composer/test_dependencies.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 49,
+  "language": "Python"},
+"components/collector/tests/source_collectors/trello/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 49,
+  "language": "Python"},
+"components/frontend/src/__fixtures__/fixtures.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 49,
+  "language": "JavaScript"},
+"components/frontend/src/report/ReportsOverview.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 49,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/TableHeaderCell.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 49,
+  "language": "JavaScript"},
+"components/renderer/src/index.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 49,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/cloc.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 49,
+  "language": "Python"},
+"components/external_server/tests/routes/test_changelog.py" :{
+  "blank": 13,
+  "comment": 10,
+  "code": 48,
+  "language": "Python"},
+"components/frontend/src/fields/Input.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 48,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntity.test.js" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 48,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntityDetails.test.js" :{
+  "blank": 6,
+  "comment": 1,
+  "code": 48,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/model/subject.py" :{
+  "blank": 17,
+  "comment": 10,
+  "code": 48,
+  "language": "Python"},
+"components/frontend/package.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 47,
+  "language": "JSON"},
+"components/frontend/src/semantic_ui_react_wrappers/Form.css" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 47,
+  "language": "CSS"},
+"components/shared_server_code/.vulture_ignore_list.py" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 47,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/database/test_measurements.py" :{
+  "blank": 13,
+  "comment": 9,
+  "code": 47,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_unmerged_branches.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 46,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gitlab/test_unmerged_branches.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 46,
+  "language": "Python"},
+"components/collector/tests/source_collectors/ojaudit/test_violations.py" :{
+  "blank": 8,
+  "comment": 143,
+  "code": 46,
+  "language": "Python"},
+"components/external_server/tests/routes/test_datamodel.py" :{
+  "blank": 12,
+  "comment": 8,
+  "code": 46,
+  "language": "Python"},
+"components/frontend/src/source/SourceParameters.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 46,
+  "language": "JavaScript"},
+"components/internal_server/tests/fixtures.py" :{
+  "blank": 6,
+  "comment": 2,
+  "code": 46,
+  "language": "Python"},
+"components/shared_server_code/src/shared/database/reports.py" :{
+  "blank": 17,
+  "comment": 9,
+  "code": 46,
+  "language": "Python"},
+"docker/docker-compose.ci.yml" :{
+  "blank": 1,
+  "comment": 2,
+  "code": 46,
+  "language": "YAML"},
+"components/frontend/src/subject/SubjectTableFooter.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 45,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/robot_framework.py" :{
+  "blank": 7,
+  "comment": 1,
+  "code": 45,
+  "language": "Python"},
+"openshift/helm/templates/database-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 45,
+  "language": "YAML"},
+"tests/feature_tests/ci/test.sh" :{
+  "blank": 3,
+  "comment": 5,
+  "code": 45,
+  "language": "Bourne Shell"},
+"components/collector/tests/source_collectors/gitlab/test_failed_jobs.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 44,
+  "language": "Python"},
+"components/frontend/src/fields/StringInput.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 44,
+  "language": "JavaScript"},
+"components/frontend/src/metric/MetricType.test.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 44,
+  "language": "JavaScript"},
+"components/frontend/src/metric/MetricTypeHeader.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 44,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntityAttribute.test.js" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 44,
+  "language": "JavaScript"},
+"components/shared_server_code/pyproject.toml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 44,
+  "language": "TOML"},
+"components/shared_server_code/tests/shared/initialization/test_database.py" :{
+  "blank": 10,
+  "comment": 7,
+  "code": 44,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins_test_report/tests.py" :{
+  "blank": 11,
+  "comment": 9,
+  "code": 43,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_issues.py" :{
+  "blank": 11,
+  "comment": 8,
+  "code": 43,
+  "language": "Python"},
+"components/external_server/tests/database/test_measurements.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 43,
+  "language": "Python"},
+"docs/src/index.md" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 43,
+  "language": "Markdown"},
+"tests/feature_tests/environment.py" :{
+  "blank": 12,
+  "comment": 24,
+  "code": 43,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_dependency_check/dependencies.py" :{
+  "blank": 9,
+  "comment": 8,
+  "code": 42,
+  "language": "Python"},
+"components/collector/src/source_collectors/snyk/security_warnings.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 42,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/base.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 42,
+  "language": "Python"},
+"components/frontend/src/metric/TrendGraph.test.js" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 42,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/LabelWithDropdown.test.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 42,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/owasp_dependency_check.py" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 42,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/metric.py" :{
+  "blank": 18,
+  "comment": 7,
+  "code": 41,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/initialization/test_report.py" :{
+  "blank": 10,
+  "comment": 7,
+  "code": 41,
+  "language": "Python"},
+"components/testdata/reports/anchore/anchore-details.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 41,
+  "language": "JSON"},
+"components/external_server/src/routes/plugins/auth_plugin.py" :{
+  "blank": 20,
+  "comment": 6,
+  "code": 40,
+  "language": "Python"},
+"components/frontend/src/context/Permissions.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 40,
+  "language": "JavaScript"},
+"components/frontend/src/fields/DateInput.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 40,
+  "language": "JavaScript"},
+"components/collector/src/source_collectors/anchore_jenkins_plugin/security_warnings.py" :{
+  "blank": 8,
+  "comment": 8,
+  "code": 39,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/source_up_to_dateness.py" :{
+  "blank": 16,
+  "comment": 10,
+  "code": 39,
+  "language": "Python"},
+"components/frontend/src/api/report.js" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 39,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceType.js" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 39,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/cobertura.py" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 39,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/tests.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 38,
+  "language": "Python"},
+"components/collector/src/source_collectors/trello/issues.py" :{
+  "blank": 12,
+  "comment": 7,
+  "code": 38,
+  "language": "Python"},
+"components/collector/tests/source_collectors/anchore/test_security_warnings.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 38,
+  "language": "Python"},
+"components/frontend/src/measurement/TrendSparkline.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 38,
+  "language": "JavaScript"},
+"components/shared_data_model/pyproject.toml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 38,
+  "language": "TOML"},
+"components/shared_data_model/tests/shared_data_model/meta/test_parameter.py" :{
+  "blank": 16,
+  "comment": 12,
+  "code": 38,
+  "language": "Python"},
+"components/shared_server_code/src/shared/database/measurements.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 38,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_dependency_check/security_warnings.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 37,
+  "language": "Python"},
+"components/frontend/src/widgets/DatePicker.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 37,
+  "language": "JavaScript"},
+"components/testdata/reports/pyupio_safety/pyupio_safety.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 37,
+  "language": "JSON"},
+"components/collector/src/source_collectors/jira/issue_status.py" :{
+  "blank": 12,
+  "comment": 14,
+  "code": 36,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_csv/base.py" :{
+  "blank": 12,
+  "comment": 8,
+  "code": 36,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_source_up_to_dateness.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 36,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/base.py" :{
+  "blank": 4,
+  "comment": 13,
+  "code": 36,
+  "language": "Python"},
+"components/frontend/src/changelog/ChangeLog.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 36,
+  "language": "JavaScript"},
+"components/frontend/src/fields/SingleChoiceInput.js" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 36,
+  "language": "JavaScript"},
+"openshift/helm/templates/internalserver-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 36,
+  "language": "YAML"},
+"openshift/helm/templates/notifier-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 36,
+  "language": "YAML"},
+"openshift/helm/templates/www-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 36,
+  "language": "YAML"},
+"components/collector/src/source_collectors/testng/tests.py" :{
+  "blank": 7,
+  "comment": 9,
+  "code": 35,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_lead_time_for_changes.py" :{
+  "blank": 12,
+  "comment": 6,
+  "code": 35,
+  "language": "Python"},
+"components/frontend/src/measurement/MeasurementSources.test.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 35,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/initialization/database.py" :{
+  "blank": 12,
+  "comment": 7,
+  "code": 35,
+  "language": "Python"},
+"openshift/helm/values.yaml" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 35,
+  "language": "YAML"},
+"components/collector/src/model/parameters.py" :{
+  "blank": 14,
+  "comment": 11,
+  "code": 34,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_json/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 34,
+  "language": "Python"},
+"components/frontend/src/measurement/SourceStatus.js" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 34,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/TrendSparkline.js" :{
+  "blank": 1,
+  "comment": 2,
+  "code": 34,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/TableRowWithDetails.test.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 34,
+  "language": "JavaScript"},
+"components/notifier/src/destinations/ms_teams.py" :{
+  "blank": 11,
+  "comment": 5,
+  "code": 34,
+  "language": "Python"},
+"openshift/helm/templates/collector-deployment.yaml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 34,
+  "language": "YAML"},
+"openshift/helm/templates/renderer-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 34,
+  "language": "YAML"},
+"components/collector/src/source_collectors/sonarqube/tests.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 33,
+  "language": "Python"},
+"components/frontend/src/measurement/Overrun.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 33,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntity.css" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 33,
+  "language": "CSS"},
+"components/internal_server/tests/database/test_reports.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 33,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/unit.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 33,
+  "language": "Python"},
+"components/external_server/src/routes/changelog.py" :{
+  "blank": 16,
+  "comment": 7,
+  "code": 32,
+  "language": "Python"},
+"components/frontend/src/metric/MetricType.js" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 32,
+  "language": "JavaScript"},
+"openshift/helm/templates/frontend-deployment.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 32,
+  "language": "YAML"},
+"components/collector/src/source_collectors/axe_csv/accessibility.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 31,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/lead_time_for_changes.py" :{
+  "blank": 12,
+  "comment": 7,
+  "code": 31,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework/tests.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 31,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/remediation_effort.py" :{
+  "blank": 10,
+  "comment": 11,
+  "code": 31,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_lead_time_for_changes.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 31,
+  "language": "Python"},
+"components/collector/tests/source_collectors/junit/test_tests.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 31,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework/test_tests.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 31,
+  "language": "Python"},
+"components/external_server/tests/database/test_sessions.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 31,
+  "language": "Python"},
+"components/frontend/src/fields/Input.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 31,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/bandit.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 31,
+  "language": "Python"},
+"components/testdata/reports/npm/npm-outdated.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 31,
+  "language": "JSON"},
+"components/collector/src/source_collectors/sarif/security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 30,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/suppressed_violations.py" :{
+  "blank": 11,
+  "comment": 12,
+  "code": 30,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/base.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 30,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_dependency_check/test_dependencies.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 30,
+  "language": "Python"},
+"components/external_server/tests/base.py" :{
+  "blank": 14,
+  "comment": 9,
+  "code": 30,
+  "language": "Python"},
+"components/frontend/src/widgets/toast.test.js" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 30,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/cxsast.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 30,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/jacoco.py" :{
+  "blank": 6,
+  "comment": 1,
+  "code": 30,
+  "language": "Python"},
+"components/shared_data_model/tests/shared_data_model/meta/test_base.py" :{
+  "blank": 16,
+  "comment": 12,
+  "code": 30,
+  "language": "Python"},
+"components/shared_server_code/src/shared/initialization/report.py" :{
+  "blank": 9,
+  "comment": 10,
+  "code": 30,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/model/test_source.py" :{
+  "blank": 13,
+  "comment": 5,
+  "code": 30,
+  "language": "Python"},
+"tests/feature_tests/features/mass_edit.feature" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 30,
+  "language": "Cucumber"},
+"components/collector/src/source_collectors/gatling/slow_transactions.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 29,
+  "language": "Python"},
+"components/collector/src/source_collectors/gitlab/unmerged_branches.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 29,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins/job_runs_within_time_period.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 29,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_csv/slow_transactions.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 29,
+  "language": "Python"},
+"components/external_server/Dockerfile" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 29,
+  "language": "Dockerfile"},
+"components/frontend/src/measurement/MeasurementValue.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 29,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/TableRowWithDetails.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 29,
+  "language": "JavaScript"},
+"components/internal_server/Dockerfile" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 29,
+  "language": "Dockerfile"},
+"components/renderer/Dockerfile" :{
+  "blank": 12,
+  "comment": 0,
+  "code": 29,
+  "language": "Dockerfile"},
+"components/shared_data_model/src/shared_data_model/sources/ojaudit.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 29,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/sarif.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 29,
+  "language": "Python"},
+"components/shared_server_code/src/shared/utils/type.py" :{
+  "blank": 11,
+  "comment": 6,
+  "code": 29,
+  "language": "Python"},
+"tests/feature_tests/features/auth.feature" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 29,
+  "language": "Cucumber"},
+"tests/feature_tests/features/time_travel.feature" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 29,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/auth.py" :{
+  "blank": 17,
+  "comment": 9,
+  "code": 29,
+  "language": "Python"},
+"tests/feature_tests/steps/metric.py" :{
+  "blank": 14,
+  "comment": 7,
+  "code": 29,
+  "language": "Python"},
+"components/collector/src/source_collectors/anchore/security_warnings.py" :{
+  "blank": 5,
+  "comment": 7,
+  "code": 28,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/unmerged_branches.py" :{
+  "blank": 12,
+  "comment": 10,
+  "code": 28,
+  "language": "Python"},
+"components/collector/tests/source_collectors/anchore_jenkins_plugin/test_security_warnings.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 28,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 28,
+  "language": "Python"},
+"components/collector/tests/source_collectors/manual_number/test_all_metrics.py" :{
+  "blank": 13,
+  "comment": 9,
+  "code": 28,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_tests.py" :{
+  "blank": 10,
+  "comment": 15,
+  "code": 28,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_long_units.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 28,
+  "language": "Python"},
+"components/frontend/src/dashboard/StatusPieChart.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 28,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/TimeLeft.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 28,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/npm.py" :{
+  "blank": 3,
+  "comment": 11,
+  "code": 28,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/pip.py" :{
+  "blank": 3,
+  "comment": 6,
+  "code": 28,
+  "language": "Python"},
+"docs/ci/quality.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 28,
+  "language": "Bourne Shell"},
+".github/workflows/codeql-analysis.yml" :{
+  "blank": 10,
+  "comment": 30,
+  "code": 27,
+  "language": "YAML"},
+"components/collector/src/model/entity.py" :{
+  "blank": 14,
+  "comment": 9,
+  "code": 27,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/lead_time_for_changes.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 27,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/slow_transactions.py" :{
+  "blank": 10,
+  "comment": 6,
+  "code": 27,
+  "language": "Python"},
+"components/external_server/src/database/datamodels.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 27,
+  "language": "Python"},
+"components/external_server/src/routes/reports_overview.py" :{
+  "blank": 12,
+  "comment": 3,
+  "code": 27,
+  "language": "Python"},
+"components/external_server/tests/database/test_users.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 27,
+  "language": "Python"},
+"components/frontend/src/subject/SubjectType.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 27,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/ItemBreadcrumb.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 27,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/initialization/secrets.py" :{
+  "blank": 8,
+  "comment": 7,
+  "code": 27,
+  "language": "Python"},
+"docs/src/conf.py" :{
+  "blank": 21,
+  "comment": 35,
+  "code": 27,
+  "language": "Python"},
+"components/collector/src/model/responses.py" :{
+  "blank": 11,
+  "comment": 5,
+  "code": 26,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_json/slow_transactions.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 26,
+  "language": "Python"},
+"components/collector/src/source_collectors/junit/tests.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 26,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_user_story_points.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 26,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_complex_units.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 26,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_many_parameters.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 26,
+  "language": "Python"},
+"components/external_server/tests/routes/test_settings.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 26,
+  "language": "Python"},
+"components/frontend/src/api/metric.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 26,
+  "language": "JavaScript"},
+"components/frontend/src/fields/ReadOnlyInput.test.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 26,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Form.test.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 26,
+  "language": "JavaScript"},
+"components/notifier/src/models/metric_notification_data.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 26,
+  "language": "Python"},
+"components/notifier/tests/models/test_metric_notification_data.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 26,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/openvas.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 26,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/testng.py" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 26,
+  "language": "Python"},
+"docs/make.bat" :{
+  "blank": 8,
+  "comment": 1,
+  "code": 26,
+  "language": "DOS Batch"},
+"openshift/dockerfiles/README.md" :{
+  "blank": 18,
+  "comment": 0,
+  "code": 26,
+  "language": "Markdown"},
+"tests/feature_tests/features/notification_destination.feature" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 26,
+  "language": "Cucumber"},
+"tests/feature_tests/features/settings.feature" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 26,
+  "language": "Cucumber"},
+".github/ISSUE_TEMPLATE/01-bug-report.md" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 25,
+  "language": "Markdown"},
+".github/workflows/application-tests.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 25,
+  "language": "YAML"},
+"components/collector/src/source_collectors/jira/manual_test_execution.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 25,
+  "language": "Python"},
+"components/collector/src/source_collectors/openvas/security_warnings.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 25,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/performancetest_scalability.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 25,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cloc/test_loc.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 25,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/test_tests.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 25,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_csv/test_tests.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 25,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_json/test_tests.py" :{
+  "blank": 10,
+  "comment": 8,
+  "code": 25,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_tests.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 25,
+  "language": "Python"},
+"components/external_server/src/routes/settings.py" :{
+  "blank": 10,
+  "comment": 5,
+  "code": 25,
+  "language": "Python"},
+"components/frontend/README-Create-React-App.md" :{
+  "blank": 19,
+  "comment": 0,
+  "code": 25,
+  "language": "Markdown"},
+"components/frontend/src/semantic_ui_react_wrappers/Feed.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 25,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/HeaderWithDetails.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 25,
+  "language": "JavaScript"},
+"components/internal_server/src/routes/measurement.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 25,
+  "language": "Python"},
+"components/notifier/src/strategies/notification_strategy.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 25,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/generic_json.py" :{
+  "blank": 8,
+  "comment": 25,
+  "code": 25,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/sources/junit.py" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 25,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/routes/plugins/test_route_injection_plugin.py" :{
+  "blank": 13,
+  "comment": 8,
+  "code": 25,
+  "language": "Python"},
+".github/ISSUE_TEMPLATE/epic-template--only-use-if-you-re-a-quality-time-developer-.md" :{
+  "blank": 16,
+  "comment": 0,
+  "code": 24,
+  "language": "Markdown"},
+".github/workflows/documentation.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 24,
+  "language": "YAML"},
+".github/workflows/feature-tests.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 24,
+  "language": "YAML"},
+".github/workflows/hadolint.yml" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 24,
+  "language": "YAML"},
+"components/collector/src/source_collectors/gatling/base.py" :{
+  "blank": 13,
+  "comment": 6,
+  "code": 24,
+  "language": "Python"},
+"components/collector/src/source_collectors/ncover/base.py" :{
+  "blank": 10,
+  "comment": 5,
+  "code": 24,
+  "language": "Python"},
+"components/collector/src/source_collectors/pyupio_safety/security_warnings.py" :{
+  "blank": 8,
+  "comment": 3,
+  "code": 24,
+  "language": "Python"},
+"components/collector/tests/source_collectors/generic_json/test_security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 24,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_issues.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 24,
+  "language": "Python"},
+"components/external_server/tests/model/test_transformations.py" :{
+  "blank": 11,
+  "comment": 15,
+  "code": 24,
+  "language": "Python"},
+"components/frontend/src/api/source.js" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 24,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/TimeLeft.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 24,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/snyk.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 24,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/database/test_sessions.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 24,
+  "language": "Python"},
+".github/workflows/collector.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/external_server.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/feature-tests-quality.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/internal_server.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/notifier.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/shared_data_model.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+".github/workflows/shared_python.yml" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "YAML"},
+"components/collector/Dockerfile" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 23,
+  "language": "Dockerfile"},
+"components/collector/src/source_collectors/bandit/security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 23,
+  "language": "Python"},
+"components/collector/src/source_collectors/cloc/loc.py" :{
+  "blank": 4,
+  "comment": 3,
+  "code": 23,
+  "language": "Python"},
+"components/collector/src/source_collectors/composer/dependencies.py" :{
+  "blank": 4,
+  "comment": 3,
+  "code": 23,
+  "language": "Python"},
+"components/collector/tests/source_collectors/testng/test_tests.py" :{
+  "blank": 7,
+  "comment": 23,
+  "code": 23,
+  "language": "Python"},
+"components/frontend/src/dashboard/CardDashboard.test.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 23,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/Menubar.css" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 23,
+  "language": "CSS"},
+"components/frontend/src/measurement/StatusIcon.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Form.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 23,
+  "language": "JavaScript"},
+"components/notifier/Dockerfile" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 23,
+  "language": "Dockerfile"},
+"components/shared_data_model/src/shared_data_model/meta/base.py" :{
+  "blank": 18,
+  "comment": 9,
+  "code": 23,
+  "language": "Python"},
+".github/workflows/frontend.yml" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 22,
+  "language": "YAML"},
+"CONTRIBUTING.md" :{
+  "blank": 7,
+  "comment": 0,
+  "code": 22,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/gatling/tests.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 22,
+  "language": "Python"},
+"components/collector/src/source_collectors/trello/base.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 22,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_failed_jobs.py" :{
+  "blank": 6,
+  "comment": 5,
+  "code": 22,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cxsast/test_source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 22,
+  "language": "Python"},
+"components/collector/tests/source_collectors/quality_time/test_source_up_to_dateness.py" :{
+  "blank": 11,
+  "comment": 6,
+  "code": 22,
+  "language": "Python"},
+"components/external_server/tests/routes/test_documentation.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 22,
+  "language": "Python"},
+"components/frontend/src/api/subject.js" :{
+  "blank": 6,
+  "comment": 0,
+  "code": 22,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/Footer.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 22,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Hyperlink.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 22,
+  "language": "JavaScript"},
+"components/shared_data_model/tests/shared_data_model/meta/test_entity.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 22,
+  "language": "Python"},
+"components/shared_server_code/src/shared/routes/plugins/injection_plugin.py" :{
+  "blank": 11,
+  "comment": 11,
+  "code": 22,
+  "language": "Python"},
+"openshift/helm/README.md" :{
+  "blank": 10,
+  "comment": 0,
+  "code": 22,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/jenkins_test_report/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 21,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/field_sum_base.py" :{
+  "blank": 11,
+  "comment": 7,
+  "code": 21,
+  "language": "Python"},
+"components/frontend/src/context/Permissions.js" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 21,
+  "language": "JavaScript"},
+"components/frontend/src/fields/ReadOnlyInput.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 21,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/HyperLink.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 21,
+  "language": "JavaScript"},
+"tests/feature_tests/steps/data_model.py" :{
+  "blank": 14,
+  "comment": 7,
+  "code": 21,
+  "language": "Python"},
+"components/collector/src/base_collectors/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 20,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/user_story_points.py" :{
+  "blank": 8,
+  "comment": 6,
+  "code": 20,
+  "language": "Python"},
+"components/collector/src/source_collectors/generic_json/security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 20,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_json/tests.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 20,
+  "language": "Python"},
+"components/collector/src/source_collectors/quality_time/base.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 20,
+  "language": "Python"},
+"components/collector/tests/source_collectors/anchore/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 20,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco/base.py" :{
+  "blank": 12,
+  "comment": 7,
+  "code": 20,
+  "language": "Python"},
+"components/collector/tests/source_collectors/trello/test_issues.py" :{
+  "blank": 9,
+  "comment": 6,
+  "code": 20,
+  "language": "Python"},
+"components/frontend/src/widgets/LabelWithDropdown.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 20,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/TableHeaderCell.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 20,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Tag.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 20,
+  "language": "JavaScript"},
+"components/internal_server/tests/base.py" :{
+  "blank": 10,
+  "comment": 7,
+  "code": 20,
+  "language": "Python"},
+"components/internal_server/tests/quality_time_internal_server_under_coverage.py" :{
+  "blank": 11,
+  "comment": 3,
+  "code": 20,
+  "language": "Python"},
+"ci/pip-compile-all.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 19,
+  "language": "Bourne Shell"},
+"components/collector/ci/quality.sh" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 19,
+  "language": "Bourne Shell"},
+"components/collector/src/source_collectors/quality_time/source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 19,
+  "language": "Python"},
+"components/external_server/src/database/sessions.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 19,
+  "language": "Python"},
+"components/external_server/src/model/session.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 19,
+  "language": "Python"},
+"components/frontend/src/PageContent.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 19,
+  "language": "JavaScript"},
+"components/frontend/src/api/fetch_server_api.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 19,
+  "language": "JavaScript"},
+"components/shared_data_model/src/shared_data_model/sources/pyupio_safety.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 19,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/initialization/test_datamodel.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 19,
+  "language": "Python"},
+"tests/feature_tests/ci/quality.sh" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 19,
+  "language": "Bourne Shell"},
+"components/collector/src/base_collectors/api_source_collector.py" :{
+  "blank": 12,
+  "comment": 7,
+  "code": 18,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_csv/tests.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 18,
+  "language": "Python"},
+"components/external_server/ci/quality.sh" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 18,
+  "language": "Bourne Shell"},
+"components/frontend/src/fields/PasswordInput.js" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 18,
+  "language": "JavaScript"},
+"components/notifier/ci/quality.sh" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 18,
+  "language": "Bourne Shell"},
+"components/shared_data_model/ci/quality.sh" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 18,
+  "language": "Bourne Shell"},
+"components/shared_data_model/src/shared_data_model/scales.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 18,
+  "language": "Python"},
+"components/shared_server_code/ci/quality.sh" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 18,
+  "language": "Bourne Shell"},
+"components/shared_server_code/tests/shared/database/test_datamodels.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 18,
+  "language": "Python"},
+"tests/feature_tests/features/reports.feature" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 18,
+  "language": "Cucumber"},
+"components/collector/src/source_collectors/gitlab/job_runs_within_time_period.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 17,
+  "language": "Python"},
+"components/collector/src/source_collectors/trello/source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/axe_core/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/test_job_runs_within_time_period.py" :{
+  "blank": 9,
+  "comment": 3,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/test_unused_jobs.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins_test_report/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/openvas/test_security_warnings.py" :{
+  "blank": 5,
+  "comment": 15,
+  "code": 17,
+  "language": "Python"},
+"components/collector/tests/source_collectors/pyupio_safety/test_security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 17,
+  "language": "Python"},
+"components/external_server/pyproject.toml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 17,
+  "language": "TOML"},
+"components/external_server/src/model/report.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 17,
+  "language": "Python"},
+"components/frontend/public/index.html" :{
+  "blank": 3,
+  "comment": 20,
+  "code": 17,
+  "language": "HTML"},
+"components/frontend/src/api/fetch_server_api.test.js" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 17,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Card.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 17,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Avatar.test.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 17,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/TimeAgoWithDate.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 17,
+  "language": "JavaScript"},
+"components/internal_server/src/quality_time_server.py" :{
+  "blank": 11,
+  "comment": 3,
+  "code": 17,
+  "language": "Python"},
+".readthedocs.yaml" :{
+  "blank": 5,
+  "comment": 8,
+  "code": 16,
+  "language": "YAML"},
+"components/collector/src/source_collectors/npm/dependencies.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 16,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 16,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 16,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_uncovered_branches.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 16,
+  "language": "Python"},
+"components/external_server/src/quality_time_server.py" :{
+  "blank": 11,
+  "comment": 3,
+  "code": 16,
+  "language": "Python"},
+"components/external_server/src/routes/documentation.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 16,
+  "language": "Python"},
+"components/frontend/src/api/changelog.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 16,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Breadcrumb.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 16,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Tab.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 16,
+  "language": "JavaScript"},
+"components/internal_server/src/routes/metric.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 16,
+  "language": "Python"},
+"tests/feature_tests/steps/settings.py" :{
+  "blank": 9,
+  "comment": 5,
+  "code": 16,
+  "language": "Python"},
+".github/ISSUE_TEMPLATE/02-feature-request.md" :{
+  "blank": 5,
+  "comment": 0,
+  "code": 15,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/anchore/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 15,
+  "language": "Python"},
+"components/collector/src/source_collectors/gatling/source_version.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/performancetest_duration.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 15,
+  "language": "Python"},
+"components/collector/src/source_collectors/pip/dependencies.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/anchore/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cxsast/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/npm/test_dependencies.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/pip/test_dependencies.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework_jenkins_plugin/test_tests.py" :{
+  "blank": 7,
+  "comment": 5,
+  "code": 15,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_commented_out_code.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/frontend/public/manifest.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 15,
+  "language": "JSON"},
+"components/frontend/src/fields/Comment.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 15,
+  "language": "JavaScript"},
+"components/frontend/src/measurement/StatusIcon.css" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 15,
+  "language": "CSS"},
+"components/frontend/src/measurement/StatusIcon.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 15,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Dropdown.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 15,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Table.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 15,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/toast.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 15,
+  "language": "JavaScript"},
+"components/internal_server/pyproject.toml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 15,
+  "language": "TOML"},
+"components/internal_server/src/database/reports.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 15,
+  "language": "Python"},
+"components/notifier/src/models/notification.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 15,
+  "language": "Python"},
+"components/shared_server_code/src/shared/initialization/datamodel.py" :{
+  "blank": 6,
+  "comment": 2,
+  "code": 15,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/utils/test_type.py" :{
+  "blank": 6,
+  "comment": 5,
+  "code": 15,
+  "language": "Python"},
+"tests/feature_tests/features/measurement_updates.feature" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 15,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/notification_destination.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 15,
+  "language": "Python"},
+"components/collector/.vulture_ignore_list.py" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 14,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 14,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cxsast/test_security_warnings.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 14,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 14,
+  "language": "Python"},
+"components/external_server/tests/initialization/test_bottle.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 14,
+  "language": "Python"},
+"components/frontend/src/App.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 14,
+  "language": "CSS"},
+"components/frontend/src/dashboard/MetricSummaryCard.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 14,
+  "language": "JavaScript"},
+"components/frontend/src/fields/PasswordInput.test.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 14,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers.js" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 14,
+  "language": "JavaScript"},
+"components/frontend/src/source/SourceEntityAttribute.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 14,
+  "language": "JavaScript"},
+"components/shared_server_code/tests/shared/database/test_reports.py" :{
+  "blank": 8,
+  "comment": 5,
+  "code": 14,
+  "language": "Python"},
+"openshift/helm/templates/pull-secret.yaml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 14,
+  "language": "YAML"},
+"tests/feature_tests/features/tagreport.feature" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 14,
+  "language": "Cucumber"},
+"tests/feature_tests/pyproject.toml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 14,
+  "language": "TOML"},
+"README.md" :{
+  "blank": 8,
+  "comment": 0,
+  "code": 13,
+  "language": "Markdown"},
+"components/collector/pyproject.toml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 13,
+  "language": "TOML"},
+"components/collector/src/collector_utilities/type.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/quality_time_collector.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura_jenkins_plugin/base.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/source_collectors/cxsast/security_warnings.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/source_collectors/cxsast/source_version.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/source_collectors/gitlab/source_version.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/axe_core/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_manual_test_duration.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_csv/test_source_up_to_dateness.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_scalability.py" :{
+  "blank": 9,
+  "comment": 20,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_uncovered_lines.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/external_server/src/database/users.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/external_server/src/routes/datamodel.py" :{
+  "blank": 5,
+  "comment": 2,
+  "code": 13,
+  "language": "Python"},
+"components/frontend/src/dashboard/MetricSummaryCard.css" :{
+  "blank": 0,
+  "comment": 2,
+  "code": 13,
+  "language": "CSS"},
+"components/frontend/src/errorMessage.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 13,
+  "language": "JavaScript"},
+"components/frontend/src/share/Share.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 13,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/DatePicker.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 13,
+  "language": "JavaScript"},
+"components/internal_server/src/database/measurements.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/internal_server/tests/routes/test_report.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/notifier/pyproject.toml" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 13,
+  "language": "TOML"},
+"components/shared_server_code/src/shared/database/datamodels.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 13,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/initialization/test_secrets.py" :{
+  "blank": 7,
+  "comment": 6,
+  "code": 13,
+  "language": "Python"},
+"openshift/helm/templates/dbdata-persistentvolumeclaim.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 13,
+  "language": "YAML"},
+"tests/feature_tests/steps/tagreport.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 13,
+  "language": "Python"},
+"components/collector/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/collector/src/source_collectors/cobertura/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 12,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/performancetest_stability.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/software_version.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_user_story_points.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura/base.py" :{
+  "blank": 9,
+  "comment": 5,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gitlab/test_unused_jobs.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/junit/test_source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/collector/tests/source_collectors/trello/test_source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/external_server/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/external_server/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/frontend/Dockerfile" :{
+  "blank": 5,
+  "comment": 2,
+  "code": 12,
+  "language": "Dockerfile"},
+"components/frontend/src/semantic_ui_react_wrappers/Modal.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 12,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Modal.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 12,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Table.css" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 12,
+  "language": "CSS"},
+"components/frontend/src/widgets/CommentSegment.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 12,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/FocusableTab.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 12,
+  "language": "CSS"},
+"components/frontend/src/widgets/FocusableTab.test.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 12,
+  "language": "JavaScript"},
+"components/internal_server/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/internal_server/src/routes/report.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 12,
+  "language": "Python"},
+"components/internal_server/tests/initialization/test_bottle.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 12,
+  "language": "Python"},
+"components/notifier/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/notifier/ci/pip-install.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"components/renderer/package.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 12,
+  "language": "JSON"},
+"components/shared_data_model/src/shared_data_model/sources/calendar.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 12,
+  "language": "Python"},
+"components/shared_server_code/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 12,
+  "language": "Bourne Shell"},
+"docs/tests/test_generated_docs.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 12,
+  "language": "Python"},
+"sonar-project.properties" :{
+  "blank": 3,
+  "comment": 5,
+  "code": 12,
+  "language": "Properties"},
+"components/collector/src/source_collectors/azure_devops/unused_jobs.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/calendar/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 7,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/calendar/time_remaining.py" :{
+  "blank": 7,
+  "comment": 7,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins/unused_jobs.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/manual_number/all_metrics.py" :{
+  "blank": 9,
+  "comment": 7,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/ncover/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/model/test_entity.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/calendar/test_source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/calendar/test_time_remaining.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/ncover/test_uncovered_branches.py" :{
+  "blank": 6,
+  "comment": 15,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/ncover/test_uncovered_lines.py" :{
+  "blank": 6,
+  "comment": 14,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_zap/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_performancetest_duration.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_software_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_duplicated_lines.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/frontend/src/semantic_ui_react_wrappers/Header.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Label.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/CommentSegment.test.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/FocusableTab.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/HeaderWithDetails.test.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Tag.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 11,
+  "language": "JavaScript"},
+"components/shared_data_model/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 11,
+  "language": "Bourne Shell"},
+"components/shared_data_model/src/shared_data_model/sources/ncover.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 11,
+  "language": "Python"},
+"components/shared_data_model/tests/shared_data_model/test_parameters.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 11,
+  "language": "Python"},
+"components/shared_server_code/src/shared/utils/functions.py" :{
+  "blank": 8,
+  "comment": 4,
+  "code": 11,
+  "language": "Python"},
+"docs/.markdownlint.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 11,
+  "language": "JSON"},
+"docs/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 11,
+  "language": "Bourne Shell"},
+"docs/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 11,
+  "language": "Bourne Shell"},
+"tests/application_tests/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 11,
+  "language": "Bourne Shell"},
+"tests/feature_tests/ci/pip-compile.sh" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 11,
+  "language": "Bourne Shell"},
+"tests/feature_tests/features/data_model.feature" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 11,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/subject.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 11,
+  "language": "Python"},
+"components/collector/src/source_collectors/axe_core/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/job_runs_within_time_period.py" :{
+  "blank": 8,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco/source_up_to_dateness.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco_jenkins_plugin/base.py" :{
+  "blank": 9,
+  "comment": 4,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/junit/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 9,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_dependency_check/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_zap/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/src/source_collectors/testng/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/azure_devops/test_unused_jobs.py" :{
+  "blank": 6,
+  "comment": 5,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/bandit/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/ncover/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 7,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_software_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/collector/tests/source_collectors/testng/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 6,
+  "code": 10,
+  "language": "Python"},
+"components/external_server/src/model/iterators.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 10,
+  "language": "Python"},
+"components/frontend/src/api/notification.js" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 10,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Button.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 10,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Popup.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 10,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Popup.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 10,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/Avatar.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 10,
+  "language": "JavaScript"},
+"components/shared_server_code/src/shared/database/sessions.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"components/shared_server_code/tests/fixtures.py" :{
+  "blank": 5,
+  "comment": 1,
+  "code": 10,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/utils/test_functions.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 10,
+  "language": "Python"},
+"tests/feature_tests/ci/pip-install.sh" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 10,
+  "language": "Bourne Shell"},
+"tests/feature_tests/steps/healthcheck.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 10,
+  "language": "Python"},
+"SECURITY.md" :{
+  "blank": 9,
+  "comment": 0,
+  "code": 9,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/axe_core/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/cxsast/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/gatling/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/gitlab/unused_jobs.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/base.py" :{
+  "blank": 6,
+  "comment": 7,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/source_version.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_csv/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/openvas/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_dependency_check/source_version.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework/source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework_jenkins_plugin/tests.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura_jenkins_plugin/test_uncovered_branches.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/test_performancetest_duration.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gatling/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/gitlab/test_source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins_plugin_test_case.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_csv/test_performancetest_duration.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/openvas/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 8,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_dependency_check/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_zap/test_source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/external_server/.vulture_ignore_list.py" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 9,
+  "language": "Python"},
+"components/external_server/src/initialization/bottle.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"components/frontend/src/index.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 9,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Card.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 9,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Label.css" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 9,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Segment.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 9,
+  "language": "JavaScript"},
+"components/shared_data_model/tests/shared_data_model/meta/test_metric.py" :{
+  "blank": 7,
+  "comment": 4,
+  "code": 9,
+  "language": "Python"},
+"components/shared_server_code/tests/shared/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 9,
+  "language": "Python"},
+"docs/Makefile" :{
+  "blank": 4,
+  "comment": 7,
+  "code": 9,
+  "language": "make"},
+"openshift/dockerfiles/Dockerfile.collector" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 9,
+  "language": "Dockerfile"},
+"openshift/dockerfiles/Dockerfile.proxy" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 9,
+  "language": "Dockerfile"},
+"tests/feature_tests/features/healthcheck.feature" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 9,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/changelog.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 9,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura/source_up_to_dateness.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_zap/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/quality_time/source_version.py" :{
+  "blank": 6,
+  "comment": 4,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/source_up_to_dateness.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cxsast/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_dependency_check/base.py" :{
+  "blank": 5,
+  "comment": 28,
+  "code": 8,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/test_performancetest_stability.py" :{
+  "blank": 5,
+  "comment": 5,
+  "code": 8,
+  "language": "Python"},
+"components/collector/tests/source_collectors/quality_time/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/external_server/tests/database/test_datamodels.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/external_server/tests/routes/test_logo.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/frontend/src/measurement/MeasurementSources.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 8,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/Icon.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 8,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/dark_mode.js" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 8,
+  "language": "JavaScript"},
+"components/frontend/src/source/Logo.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 8,
+  "language": "JavaScript"},
+"components/frontend/src/widgets/HeaderWithDetails.css" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 8,
+  "language": "CSS"},
+"components/frontend/src/widgets/Tag.css" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 8,
+  "language": "CSS"},
+"components/notifier/ci/unittest.sh" :{
+  "blank": 2,
+  "comment": 4,
+  "code": 8,
+  "language": "Bourne Shell"},
+"components/proxy/Dockerfile" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 8,
+  "language": "Dockerfile"},
+"components/shared_data_model/tests/shared_data_model/meta/base.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/shared_server_code/ci/unittest.sh" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 8,
+  "language": "Bourne Shell"},
+"docs/ci/unittest.sh" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 8,
+  "language": "Bourne Shell"},
+"tests/feature_tests/steps/server.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 8,
+  "language": "Python"},
+"components/collector/src/source_collectors/azure_devops/failed_jobs.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/bandit/source_up_to_dateness.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/cloc/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/gatling/performancetest_duration.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/jmeter_csv/performancetest_duration.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/openvas/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/owasp_dependency_check/base.py" :{
+  "blank": 5,
+  "comment": 2,
+  "code": 7,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/software_version.py" :{
+  "blank": 6,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cloc/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura_jenkins_plugin/test_uncovered_lines.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco/test_uncovered_branches.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco_jenkins_plugin/test_uncovered_branches.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco_jenkins_plugin/test_uncovered_lines.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jira/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/openvas/test_source_version.py" :{
+  "blank": 5,
+  "comment": 6,
+  "code": 7,
+  "language": "Python"},
+"components/collector/tests/source_collectors/sonarqube/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/frontend/src/api/auth.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 7,
+  "language": "JavaScript"},
+"components/frontend/src/fields/Comment.test.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 7,
+  "language": "JavaScript"},
+"components/frontend/src/semantic_ui_react_wrappers/dark_mode.test.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 7,
+  "language": "JavaScript"},
+"components/frontend/src/source/source_entity_status.js" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 7,
+  "language": "JavaScript"},
+"components/internal_server/src/initialization/bottle.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 7,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/__init__.py" :{
+  "blank": 4,
+  "comment": 1,
+  "code": 7,
+  "language": "Python"},
+"openshift/dockerfiles/Dockerfile.externalserver" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 7,
+  "language": "Dockerfile"},
+"openshift/dockerfiles/Dockerfile.frontend" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 7,
+  "language": "Dockerfile"},
+"openshift/dockerfiles/Dockerfile.internalserver" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 7,
+  "language": "Dockerfile"},
+"components/collector/src/source_collectors/gitlab/failed_jobs.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins/source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/collector/src/source_collectors/performancetest_runner/base.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/collector/tests/source_collectors/anchore_jenkins_plugin/test_source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 6,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco/test_uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 6,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_dependency_check/test_source_version.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework/base.py" :{
+  "blank": 4,
+  "comment": 51,
+  "code": 6,
+  "language": "Python"},
+"components/frontend/src/changelog/ChangeLog.css" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 6,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Breadcrumb.css" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 6,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Feed.css" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 6,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Segment.css" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 6,
+  "language": "CSS"},
+"components/frontend/src/widgets/HyperLink.css" :{
+  "blank": 1,
+  "comment": 2,
+  "code": 6,
+  "language": "CSS"},
+"components/shared_server_code/tests/shared/database/test_filters.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/testdata/Dockerfile" :{
+  "blank": 3,
+  "comment": 0,
+  "code": 6,
+  "language": "Dockerfile"},
+"docs/.vale.ini" :{
+  "blank": 4,
+  "comment": 0,
+  "code": 6,
+  "language": "INI"},
+"git-hooks/pre-commit" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 6,
+  "language": "Bourne Shell"},
+"openshift/helm/Chart.yaml" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 6,
+  "language": "YAML"},
+"tests/application_tests/ci/test.sh" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 6,
+  "language": "Bourne Shell"},
+"tests/application_tests/test_api.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 6,
+  "language": "Python"},
+"components/collector/src/model/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 5,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura_jenkins_plugin/source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins/failed_jobs.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 5,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework_jenkins_plugin/source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura_jenkins_plugin/test_source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco_jenkins_plugin/test_source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/collector/tests/source_collectors/junit/base.py" :{
+  "blank": 4,
+  "comment": 9,
+  "code": 5,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework_jenkins_plugin/test_source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/external_server/src/model/queries.py" :{
+  "blank": 2,
+  "comment": 4,
+  "code": 5,
+  "language": "Python"},
+"components/external_server/src/routes/logo.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/external_server/src/routes/server.py" :{
+  "blank": 5,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/external_server/src/utils/type.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 5,
+  "language": "Python"},
+"components/external_server/tests/routes/test_server.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 5,
+  "language": "Python"},
+"components/frontend/src/api/measurement.js" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 5,
+  "language": "JavaScript"},
+"components/frontend/src/subject/Subject.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 5,
+  "language": "CSS"},
+"components/internal_server/tests/routes/test_health.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 5,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 5,
+  "language": "Python"},
+"components/shared_data_model/src/shared_data_model/meta/subject.py" :{
+  "blank": 7,
+  "comment": 3,
+  "code": 5,
+  "language": "Python"},
+"components/shared_data_model/tests/shared_data_model/logos/test_logos.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 5,
+  "language": "Python"},
+"docs/package.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 5,
+  "language": "JSON"},
+"tests/feature_tests/features/server.feature" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 5,
+  "language": "Cucumber"},
+"tests/feature_tests/steps/wait.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 5,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/manual_test_duration.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/user_story_points.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework_jenkins_plugin/base.py" :{
+  "blank": 5,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/complex_units.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/duplicated_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/long_units.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/many_parameters.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura/test_uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura/test_uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jmeter_csv/base.py" :{
+  "blank": 4,
+  "comment": 16,
+  "code": 4,
+  "language": "Python"},
+"components/frontend/src/api/datamodel.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 4,
+  "language": "JavaScript"},
+"components/frontend/src/header_footer/ViewPanel.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 4,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Button.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 4,
+  "language": "CSS"},
+"components/internal_server/src/routes/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 4,
+  "language": "Python"},
+"components/internal_server/src/routes/health.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 4,
+  "language": "Python"},
+"components/ldap/Dockerfile" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 4,
+  "language": "Dockerfile"},
+"tests/application_tests/requirements/requirements.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 4,
+  "language": "Text"},
+"components/collector/src/source_collectors/cobertura/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura/uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura_jenkins_plugin/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/cobertura_jenkins_plugin/uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco/uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco_jenkins_plugin/source_up_to_dateness.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco_jenkins_plugin/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/jacoco_jenkins_plugin/uncovered_lines.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/ncover/uncovered_branches.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/ncover/uncovered_lines.py" :{
+  "blank": 5,
+  "comment": 5,
+  "code": 3,
+  "language": "Python"},
+"components/collector/src/source_collectors/sonarqube/commented_out_code.py" :{
+  "blank": 5,
+  "comment": 5,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/axe_core/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/bandit/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/calendar/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/cobertura_jenkins_plugin/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jacoco_jenkins_plugin/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/jenkins_test_report/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/ncover/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/openvas/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/owasp_zap/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/performancetest_runner/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/robot_framework_jenkins_plugin/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/collector/tests/source_collectors/testng/base.py" :{
+  "blank": 4,
+  "comment": 2,
+  "code": 3,
+  "language": "Python"},
+"components/database/Dockerfile" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 3,
+  "language": "Dockerfile"},
+"components/frontend/src/fields/DateInput.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 3,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Dropdown.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 3,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Header.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 3,
+  "language": "CSS"},
+"components/frontend/src/semantic_ui_react_wrappers/Tab.css" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 3,
+  "language": "CSS"},
+"components/shared_data_model/src/shared_data_model/meta/scale.py" :{
+  "blank": 5,
+  "comment": 3,
+  "code": 3,
+  "language": "Python"},
+"docs/src/reference.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 3,
+  "language": "Markdown"},
+"components/collector/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/collector/src/source_collectors/anchore_jenkins_plugin/source_up_to_dateness.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/collector/src/source_collectors/jenkins_test_report/test_cases.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/collector/src/source_collectors/jira/test_cases.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/collector/src/source_collectors/junit/test_cases.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/collector/src/source_collectors/robot_framework/test_cases.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/collector/src/source_collectors/testng/test_cases.py" :{
+  "blank": 3,
+  "comment": 2,
+  "code": 2,
+  "language": "Python"},
+"components/database/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/external_server/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/frontend/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/frontend/src/context/DarkMode.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "JavaScript"},
+"components/frontend/src/context/DataModel.js" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "JavaScript"},
+"components/internal_server/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/internal_server/requirements/requirements-internal.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 2,
+  "language": "Text"},
+"components/internal_server/src/initialization/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 2,
+  "language": "Python"},
+"components/internal_server/src/utils/type.py" :{
+  "blank": 3,
+  "comment": 1,
+  "code": 2,
+  "language": "Python"},
+"components/ldap/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/notifier/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/notifier/src/notifier_utilities/type.py" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 2,
+  "language": "Python"},
+"components/proxy/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/renderer/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/shared_data_model/src/shared_data_model/logos/__init__.py" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 2,
+  "language": "Python"},
+"components/shared_server_code/src/shared/database/filters.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 2,
+  "language": "Python"},
+"components/testdata/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/testdata/reports/robot-framework/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"docs/RELEASE.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"release/README.md" :{
+  "blank": 1,
+  "comment": 0,
+  "code": 2,
+  "language": "Markdown"},
+"components/collector/src/collector_utilities/exceptions.py" :{
+  "blank": 2,
+  "comment": 2,
+  "code": 1,
+  "language": "Python"},
+"components/collector/src/metric_collectors/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 1,
+  "language": "Python"},
+"components/external_server/src/initialization/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 1,
+  "language": "Python"},
+"components/external_server/src/routes/plugins/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 1,
+  "language": "Python"},
+"components/frontend/src/defaults.js" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "JavaScript"},
+"components/frontend/src/setupTests.js" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "JavaScript"},
+"components/internal_server/.vulture_ignore_list.py" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Python"},
+"components/shared_data_model/README.md" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Markdown"},
+"components/shared_server_code/README.md" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Markdown"},
+"components/shared_server_code/requirements/requirements-internal.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Text"},
+"components/shared_server_code/src/shared/routes/plugins/__init__.py" :{
+  "blank": 1,
+  "comment": 1,
+  "code": 1,
+  "language": "Python"},
+"components/testdata/reports/axe/public-axe-results.csv" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "CSV"},
+"components/testdata/reports/pip/pip-outdated.json" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "JSON"},
+"docs/requirements/requirements-internal-rtd.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Text"},
+"docs/requirements/requirements-internal.txt" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Text"},
+"docs/src/genindex.md" :{
+  "blank": 0,
+  "comment": 0,
+  "code": 1,
+  "language": "Markdown"},
+"tests/feature_tests/ci/unittest.sh" :{
+  "blank": 2,
+  "comment": 1,
+  "code": 1,
+  "language": "Bourne Shell"},
+"components/collector/src/source_collectors/azure_devops/__init__.py" :{
+  "blank": 1,
+  "comment": 4,
+  "code": 0,
+  "language": "Python"},
+"SUM": {
+  "blank": 9982,
+  "comment": 4427,
+  "code": 159881,
+  "nFiles": 994} }
