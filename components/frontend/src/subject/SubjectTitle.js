@@ -1,23 +1,26 @@
 import React, { useContext } from 'react';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Header, Tab } from '../semantic_ui_react_wrappers';
-import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
+import { FocusableTab } from '../widgets/FocusableTab';
+import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { HyperLink } from '../widgets/HyperLink';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { FocusableTab } from '../widgets/FocusableTab';
+import { slugify } from '../utils';
 import { SubjectParameters } from './SubjectParameters';
 
 function SubjectHeader({ subject_type }) {
+    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subject_type.name)}`
     return (
         <Header>
             <Header.Content>
                 {subject_type.name}
                 <Header.Subheader>
-                    {subject_type.description}
+                    {subject_type.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>
                 </Header.Subheader>
             </Header.Content>
         </Header>

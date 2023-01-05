@@ -276,3 +276,7 @@ export function userPrefersDarkMode(uiMode) {
 export function dropdownOptions(options) {
     return options.map(option => ({ key: option, text: option, value: option }))
 }
+
+export function slugify(name) {
+    return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "")}`
+}

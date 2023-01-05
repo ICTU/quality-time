@@ -13,7 +13,7 @@ import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';
 import { ErrorMessage } from '../errorMessage';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { get_metric_name, get_source_name } from '../utils';
+import { get_metric_name, get_source_name, slugify } from '../utils';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -22,14 +22,14 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
 function SourceHeader({ source }) {
     const dataModel = useContext(DataModel)
     const source_type = dataModel.sources[source.type];
+    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(source_type.name)}`
     return (
         <Header>
             <Header.Content>
                 <Logo logo={source.type} alt={source_type.name} />
                 {source_type.name}
                 <Header.Subheader>
-                    {source_type.description}
-                    {source_type.url && <HyperLink url={source_type.url}><Icon name="external" link /></HyperLink>}
+                    {source_type.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>
                 </Header.Subheader>
             </Header.Content>
         </Header>
