@@ -142,15 +142,19 @@ METRICS = Metrics.parse_obj(
             description="The size of the software in lines of code.",
             rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
             "one of the most widely used metrics to measure size of software.",
-            documentation="""To track the absolute size of the software set the scale of the metric to 'count' and add
-one or more sources.
+            documentation="""To track the **absolute** size of the software, set the scale of the metric to 'count' and
+add one or more sources.
 
-To track the relative size of sources, for example the relative amount of test code, follow these steps:
-- set the scale of the metric to 'percentage',
-- add cloc as source
-- generate a cloc JSON report with the `--by-file` option so that cloc includes filename in the report, and
-- add regular expressions to the 'files to include' cloc option so that *Quality-time* counts the size of the test code.
-""",
+To track the **relative** size of sources, set the scale of the metric to 'percentage' and add cloc as source. Make sure
+to generate cloc JSON reports with the `--by-file` option so that filenames are included in the JSON reports. Use the
+'files to include' field to select the sources that should be compared to the total amount of code. For example, to
+measure the relative amount of test code, use the regular expression `.*test.*`.
+
+```{note}
+Unfortunately, SonarQube can only used to measure the absolute size of the software. SonarQube does not report the
+sizes of files with test code for all programming languages. Hence it cannot be used to measure the relative size of
+test code.
+```""",
             rationale_urls=[
                 SIG_TUVIT_EVALUATION_CRITERIA,
             ],

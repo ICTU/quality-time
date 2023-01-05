@@ -22,7 +22,8 @@ CLOC = Source(
         files_to_include=MultipleChoiceWithAdditionParameter(
             name="Files to include (regular expressions or file names)",
             short_name="files to include",
-            help="This options requires the cloc report to be generated with the --by-file option.",
+            help="Note that filtering files only works when the cloc report is generated with the --by-file option.",
+            placeholder="all",
             metrics=["loc"],
         ),
         **access_parameters(ALL_CLOC_METRICS, source_type="cloc report", source_type_format="JSON")

@@ -12,7 +12,7 @@ class ClocLOC(JSONFileSourceCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the LOC from the JSON responses."""
-        # The JSON is produced by cloc --json or by cloc --by-file --json, so by prepared for both formats
+        # The JSON is produced by cloc --json or by cloc --by-file --json, so be prepared for both formats
         languages_to_ignore = self._parameter("languages_to_ignore")
         files_to_include = self._parameter("files_to_include")
         cloc_by_language: dict[str, dict[str, int]] = defaultdict(lambda: dict(nFiles=0, blank=0, comment=0, code=0))
@@ -22,8 +22,7 @@ class ClocLOC(JSONFileSourceCollector):
                 language = self.determine_language(key, value)
                 if key in ("header", "SUM") or match_string_or_regular_expression(language, languages_to_ignore):
                     continue
-                # Count the total LOC only for the languages to include, but for all files. This allows the user to
-                # measure the percentage test code, for example.
+                # Count the total LOC for all files so the user can measure the percentage of test code, for example.
                 total += value["code"]
                 filename = self.determine_filename(key, value)
                 if filename and files_to_include and not match_string_or_regular_expression(filename, files_to_include):
