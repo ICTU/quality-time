@@ -34,13 +34,14 @@ class JenkinsTestReportTests(SourceCollector):
         suites: list[Suite] = []
         for result in results:
             suites.extend(result["suites"])
-        entities = Entities(
-            self.__entity(case)
-            for suite in suites
-            for case in suite.get("cases", [])
-            if self.__status(case) in statuses
-        )
-        return SourceMeasurement(value=str(value), total=str(total), entities=entities)
+        entities = [self.__entity(case) for suite in suites for case in suite.get("cases", [])]
+        return SourceMeasurement(value=str(value), total=str(total),
+                                 entities=Entities([entity for entity in entities if self._include_entity(entity)]))
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        statuses = cast(list[str], self._parameter("test_result"))
+        return entity["test_result"] in statuses
 
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
