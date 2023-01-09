@@ -13,13 +13,10 @@ class SARIFJSONSecurityWarnings(JSONFileSourceCollector):
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings from the JSON."""
         entities = Entities()
-        levels = self._parameter("levels")
         runs = cast(JSONDict, json).get("runs", [])
         for run in runs:
             rules = run["tool"]["driver"]["rules"]
             for result in run["results"]:
-                if result["level"] not in levels:
-                    continue
                 rule = rules[result["ruleIndex"]]
                 locations = [
                     location["physicalLocation"]["artifactLocation"]["uri"] for location in result["locations"]
@@ -36,3 +33,8 @@ class SARIFJSONSecurityWarnings(JSONFileSourceCollector):
                     )
                 )
         return entities
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        levels = self._parameter("levels")
+        return entity["level"] in levels
