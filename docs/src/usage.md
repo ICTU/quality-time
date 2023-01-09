@@ -561,10 +561,10 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 
 *Quality-time* can monitor these metrics in the following manner:
 
-- Deployment Frequency: measure "Job runs within time period" filtered on deployment jobs
-- Lead Time for Changes: measure "Average issue lead time" filtered on issues marked as change
-- Time to Restore Services: measure "Average issue lead time" filtered on issues marked as failure
-- Change Failure Rate: measure "Issues" filtered on issues marked as failure in production
+- Deployment Frequency: measure "Job runs within time period" filtered on deployment jobs.
+- Lead Time for Changes: measure "Average issue lead time" filtered on issues marked as change.
+- Time to Restore Services: measure "Average issue lead time" filtered on issues marked as failure.
+- Change Failure Rate: measure "Issues" filtered on issues marked as failure in production.
 
 ```{index} Notification
 ```
