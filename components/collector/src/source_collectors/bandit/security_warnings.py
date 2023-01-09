@@ -12,8 +12,6 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings."""
-        severities = self._parameter("severities")
-        confidence_levels = self._parameter("confidence_levels")
         return Entities(
             [
                 Entity(
@@ -25,7 +23,10 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                     more_info=warning["more_info"],
                 )
                 for warning in cast(JSONDict, json).get("results", [])
-                if warning["issue_severity"].lower() in severities
-                and warning["issue_confidence"].lower() in confidence_levels
             ]
         )
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the warning in the measurement."""
+        return entity["issue_severity"].lower() in self._parameter("severities") \
+            and entity["issue_confidence"].lower() in self._parameter("confidence_levels")
