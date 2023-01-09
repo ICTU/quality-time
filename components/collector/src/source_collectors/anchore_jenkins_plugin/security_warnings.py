@@ -29,18 +29,15 @@ class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Anchore Jenkins plugin security warnings."""
-        severities = self._parameter("severities")
         entities = Entities()
         for response in responses:
             json = await response.json(content_type=None)
-            entities.extend(
-                [
-                    self._create_entity(vulnerability)
-                    for vulnerability in json.get("data", [])
-                    if vulnerability[self.SEVERITY] in severities
-                ]
-            )
+            entities.extend([self._create_entity(vulnerability) for vulnerability in json.get("data", [])])
         return entities
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Include the entity in the measurement, if the severity was selected."""
+        return entity["severity"] in self._parameter("severities")
 
     def _create_entity(self, vulnerability: list[str]) -> Entity:
         """Create an entity from the vulnerability."""
