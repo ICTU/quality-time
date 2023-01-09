@@ -20,10 +20,10 @@ from ..parameters import (
 
 
 ALL_AZURE_DEVOPS_METRICS = [
+    "average_issue_lead_time",
     "failed_jobs",
     "issues",
     "job_runs_within_time_period",
-    "lead_time_for_changes",
     "merge_requests",
     "source_up_to_dateness",
     "tests",
@@ -77,7 +77,7 @@ AZURE_DEVOPS = Source(
             help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
             "For example, use the following clause to hide issues marked as done: \"[System.State] <> 'Done'\". "
             "See https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
-            metrics=["issues", "lead_time_for_changes", "user_story_points"],
+            metrics=["average_issue_lead_time", "issues", "user_story_points"],
         ),
         file_path=StringParameter(
             name="File or folder path",
@@ -158,7 +158,7 @@ AZURE_DEVOPS = Source(
             name="Number of days to look back in selecting pipeline runs or work items to consider",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["job_runs_within_time_period", "lead_time_for_changes"],
+            metrics=["average_issue_lead_time", "job_runs_within_time_period"],
         ),
         failure_type=FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],
@@ -174,13 +174,11 @@ AZURE_DEVOPS = Source(
         ),
     ),
     entities=dict(
+        average_issue_lead_time=dict(name="work item", attributes=ISSUE_ATTRIBUTES + [dict(
+            name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
+        )]),
         failed_jobs=dict(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
-        lead_time_for_changes=dict(
-            name="lead time",
-            attributes=ISSUE_ATTRIBUTES
-            + [dict(name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER)],
-        ),
         merge_requests=dict(
             name="merge request",
             attributes=[

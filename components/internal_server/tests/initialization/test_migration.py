@@ -6,9 +6,11 @@ from unittest.mock import call, Mock
 from bson.objectid import ObjectId
 from pymongo.operations import UpdateOne, DeleteMany
 
-from initialization.migration import merge_unmerged_measurements, Stats
+from shared.model.report import Report
+from initialization.migration import merge_unmerged_measurements, rename_issue_lead_time, Stats
 
-from ..fixtures import METRIC_ID, METRIC_ID2
+from ..base import DataModelTestCase
+from ..fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID, create_report
 
 
 class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
@@ -192,3 +194,37 @@ class MergeUnmergedMeasurementsMigrationTest(unittest.TestCase):
         self.assertEqual(Stats(1, 1, 2, 1), self.merge(dry_run=True))
         self.database.bulk_write.assert_not_called()
         self.check_backups()
+
+
+class RenameIssueLeadTimeMigrationTest(DataModelTestCase):
+    """Unit tests for the 'rename issue lead time' migration."""
+
+    def setUp(self) -> None:
+        """Override to set up database fixture."""
+        self.database = Mock()
+
+    def rename(self) -> None:
+        """Rename the metrics."""
+        return rename_issue_lead_time(self.database)
+
+    def test_rename(self):
+        """Test that the renaming of metrics works."""
+        test_report = create_report()
+        report_id = ObjectId()
+
+        test_report['_id'] = report_id
+        test_report['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['type'] = "lead_time_for_changes"
+        self.database.reports.find.return_value = [Report(self.DATA_MODEL, test_report)]
+        self.rename()
+
+        self.database.reports.replace_one.assert_called_once()
+        mock_call_args = self.database.reports.replace_one.call_args.args
+        self.assertIn({"_id": report_id}, mock_call_args)
+        self.assertEqual("average_issue_lead_time",
+                         mock_call_args[1]['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['type'])
+
+    def test_no_change(self):
+        """Test that the migration does not touch other metrics."""
+        self.database.reports.find.return_value = [Report(self.DATA_MODEL, create_report())]
+        self.rename()
+        self.database.reports.replace_one.assert_not_called()

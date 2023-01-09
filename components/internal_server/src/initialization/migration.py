@@ -5,16 +5,17 @@ Bug issue: https://github.com/ICTU/quality-time/issues/4554
 Cleanup issue: https://github.com/ICTU/quality-time/issues/4556.
 """
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, TypedDict
-import logging
 
+import pymongo
 from bson.objectid import ObjectId
 from pymongo.database import Database
 from pymongo.operations import DeleteMany, UpdateOne
-import pymongo
 
+from database.reports import latest_reports
 
 SCALES = ("count", "percentage", "version_number")  # All scales Quality-time has ever supported
 OLD_TO_NEW = [("start", pymongo.ASCENDING)]
@@ -54,6 +55,22 @@ class Stats:  # pragma: no feature-test-cover
     def percentage_measurements_deleted(self) -> int:
         """Return the percentage of the measurements deleted."""
         return percentage(self.nr_measurements_deleted, self.nr_measurements)
+
+
+def rename_issue_lead_time(database: Database) -> None:  # pragma: no cover-behave
+    """Rename the lead_time_for_changes metrics to average_issue_lead_time metrics."""
+    reports = latest_reports(database)
+    for report in reports:
+        changed = False
+        report_metrics = report.metrics
+        for metric in report_metrics:
+            if metric.type() == "lead_time_for_changes":
+                metric["type"] = "average_issue_lead_time"
+                changed = True
+        if changed:
+            report_id = ObjectId(report["_id"])
+            del report["_id"]
+            database.reports.replace_one({"_id": report_id}, report)
 
 
 def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> Stats:

@@ -35,8 +35,8 @@ ISSUE_ATTRIBUTES = [
 ]
 
 ALL_JIRA_METRICS = [
+    "average_issue_lead_time",
     "issues",
-    "lead_time_for_changes",
     "manual_test_duration",
     "manual_test_execution",
     "source_version",
@@ -70,8 +70,8 @@ JIRA = Source(
             help_url="https://support.atlassian.com/jira-software-cloud/docs/"
             "use-advanced-search-with-jira-query-language-jql/",
             metrics=[
+                "average_issue_lead_time",
                 "issues",
-                "lead_time_for_changes",
                 "manual_test_duration",
                 "manual_test_execution",
                 "test_cases",
@@ -82,7 +82,7 @@ JIRA = Source(
             name="Number of days to look back in selecting issues to consider",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["lead_time_for_changes"],
+            metrics=["average_issue_lead_time"],
         ),
         manual_test_duration_field=StringParameter(
             name="Manual test duration field (name or id)",
@@ -157,10 +157,10 @@ JIRA = Source(
         )
     ),
     entities=dict(
-        issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
-        lead_time_for_changes=dict(name="issue", attributes=ISSUE_ATTRIBUTES + [dict(
+        average_issue_lead_time=dict(name="issue", attributes=ISSUE_ATTRIBUTES + [dict(
             name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
         )]),
+        issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
         manual_test_duration=dict(
             name=TEST_CASE,
             measured_attribute="duration",

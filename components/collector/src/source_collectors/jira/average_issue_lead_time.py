@@ -1,4 +1,4 @@
-"""Jira lead time for changes collector."""
+"""Jira average issue lead time collector."""
 
 from statistics import mean
 from typing import cast
@@ -12,8 +12,8 @@ from model import Entities, Entity
 from .issues import JiraIssues
 
 
-class JiraLeadTimeForChanges(JiraIssues):
-    """Jira collector for lead time for changes."""
+class JiraAverageIssueLeadTime(JiraIssues):
+    """Jira collector for average issue lead time."""
 
     def _include_issue(self, issue: dict) -> bool:
         """Return whether this issue should be counted."""

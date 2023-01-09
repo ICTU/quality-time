@@ -1,12 +1,12 @@
-"""Unit tests for the Jira lead time for changes collector."""
+"""Unit tests for the Jira average issue lead time collector."""
 
 from .base import JiraTestCase
 
 
-class JiraLeadTimeForChangesTest(JiraTestCase):
-    """Unit tests for the Jira lead time for changes collector."""
+class JiraAverageIssueLeadTimeTest(JiraTestCase):
+    """Unit tests for the Jira average issue lead time collector."""
 
-    METRIC_TYPE = "lead_time_for_changes"
+    METRIC_TYPE = "average_issue_lead_time"
 
     async def test_value(self):
         """Test that the lead time of issues are returned."""

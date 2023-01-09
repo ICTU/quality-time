@@ -62,6 +62,7 @@ QUALITY_TIME = Source(
             placeholder="all metric types",
             values=[
                 "Accessibility violations",
+                "Average issue lead time",
                 "Commented out code",
                 "Complex units",
                 "Dependencies",
@@ -69,7 +70,6 @@ QUALITY_TIME = Source(
                 "Failed CI-jobs",
                 "Issues",
                 "Job runs within time period",
-                "Lead time for changes",
                 "Violation remediation effort",
                 "Long units",
                 "Manual test duration",
@@ -102,6 +102,7 @@ QUALITY_TIME = Source(
             ],
             api_values={
                 "Accessibility violations": "accessibility",
+                "Average issue lead time": "average_issue_lead_time",
                 "Commented out code": "commented_out_code",
                 "Complex units": "complex_units",
                 "Dependencies": "dependencies",
@@ -109,7 +110,6 @@ QUALITY_TIME = Source(
                 "Failed CI-jobs": "failed_jobs",
                 "Issues": "issues",
                 "Job runs within time period": "job_runs_within_time_period",
-                "Lead time for changes": "lead_time_for_changes",
                 "Long units": "long_units",
                 "Manual test duration": "manual_test_duration",
                 "Manual test execution": "manual_test_execution",
