@@ -26,7 +26,7 @@ create_reference_md.main()
 # -- Project information -----------------------------------------------------
 
 project = "Quality-time"
-copyright = "2021-2022, ICTU"  # pylint: disable=redefined-builtin
+copyright = "2021-2023, ICTU"  # pylint: disable=redefined-builtin
 author = "ICTU"
 
 

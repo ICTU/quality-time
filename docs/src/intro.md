@@ -1,6 +1,6 @@
 # About *Quality-time*
 
-*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products, processes, and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
 Technically, *Quality-time* consists of a React frontend, a Mongo database server, and a number of backend components written in Python: a worker component to collect measurement data from the sources, a worker component to send notifications, an API-server for the frontend, and an API-server for the worker components.
 
@@ -96,6 +96,7 @@ Implemented features include:
 - Export of reports to PDF, both via the UI as well as via the API.
 - Notifications of events, such as metrics turning red, to Microsoft Teams.
 - Side-by-side comparison of measurements at different points in time.
+- Integration with issue tracker (Jira only at the moment) to manage actions and technical debt.
 - Dark and light UI mode.
 
 ```{seealso}
@@ -125,3 +126,21 @@ docker-compose up
 ```
 
 *Quality-time* is served at [http://localhost](http://localhost). Use username `jadoe` and password `secret` to log in.
+
+# Why *Quality-time*?
+
+ICTU developed *Quality-time* to help projects and teams within ICTU gain actionable insight into the quality of the software they are developing and maintaining. The current vision on the scope of *Quality-time* is:
+
+- *Quality-time* collects data from sources that projects and teams are using anyway to develop and maintain software. Think version control systems, build tools, backlog management tools, test reports, security tools, and other quality tools. *Quality-time* does not analyse the software itself, but relies on information from these tools to create an integrated and actionable overview.
+- The sources that *Quality-time* uses to collect its measurement data are automated. Manual sources for measurements are possible, but automated sources are preferred.
+- *Quality-time* evaluates measurement data against target values. It shows users which metrics do not meet their target value, so users can take corrective action. *Informational* metrics, meaning metrics without target, are possible, but most metrics are assumed to have targets.
+- *Quality-time* provides a single overview of the software measurements, but refers users to the underlying tools for detailed information.
+- Technical debt management is an integral part of software quality management. Any metric that does not meet its target value for a longer period of time can be considered to represent a form of debt that needs to be managed.
+- Tools come and go. Hence, an important non-functional requirement for *Quality-time* is the ability to quickly add interfacing to new sources.
+- *Quality-time* provides actionable information on current quality issues and risks. Historical information is retained, but is a second-class citizen.
+- *Quality-time* is not an issue tracker or task manager. It does integrate with issue trackers, however, making it easy to create issues for metrics that need action and to manage technical debt.
+- Software quality is usually broken down into quality characteristics such as maintainability, testability, and accessibility, as for example in ISO 25010. Many metrics in *Quality-time* measure parts of these quality characteristics. For example, the number of 'code smells' and the 'complexity' of source code are both related to maintainability. However, *Quality-time* does not attempt to aggregate these metrics into a measurement of quality characteristics. Such aggregations typically lack a sound mathematical and scientific basis and are often not actionable.
+
+```{note}
+The name *Quality-time* is of course a call to action: spend more quality time with the software you develop 😁
+```
