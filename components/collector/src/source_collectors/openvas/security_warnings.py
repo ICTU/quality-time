@@ -17,10 +17,9 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the OpenVAS XML."""
         entities = Entities()
-        severities = cast(list[str], self._parameter("severities"))
         for response in responses:
             tree = await parse_source_response_xml(response)
-            entities.extend([self.__entity(result) for result in self.__results(tree, severities)])
+            entities.extend([self.__entity(result) for result in tree.findall(".//results/result")])
         return entities
 
     @classmethod
@@ -32,8 +31,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
         key = f"{kwargs['host']}:{kwargs['port']}:{oid}"
         return Entity(key=key, **kwargs)
 
-    @staticmethod
-    def __results(element: Element, severities: list[str]) -> list[Element]:
-        """Return the results that have one of the severities specified in the parameters."""
-        results = element.findall(".//results/result")
-        return [result for result in results if result.findtext("threat", default="").lower() in severities]
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        severities = cast(list[str], self._parameter("severities"))
+        return entity[self.ATTRIBUTES["threat"]].lower() in severities
