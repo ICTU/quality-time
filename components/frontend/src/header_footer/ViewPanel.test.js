@@ -6,6 +6,7 @@ function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),
         clearVisibleDetailsTabs: jest.fn(),
+        handleDateChange: jest.fn(),
         handleSort: jest.fn(),
         setDateInterval: jest.fn(),
         setDateOrder: jest.fn(),
@@ -40,6 +41,7 @@ it('resets the settings', () => {
                 }
             }
             nrDates={7}
+            reportDate={"2023-01-01"}
             sortColumn="status"
             sortDirection="descending"
             uiMode="dark"
@@ -50,6 +52,7 @@ it('resets the settings', () => {
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.clearVisibleDetailsTabs).toHaveBeenCalled()
     expect(props.clearHiddenColumns).toHaveBeenCalled()
+    expect(props.handleDateChange).toHaveBeenCalled()
     expect(props.handleSort).toHaveBeenCalled()
     expect(props.setDateInterval).toHaveBeenCalled()
     expect(props.setDateOrder).toHaveBeenCalled()
@@ -83,6 +86,7 @@ it('does not reset the settings when all have the default value', () => {
                 }
             }
             nrDates={1}
+            reportDate={null}
             sortColumn={null}
             sortDirection="ascending"
             uiMode={null}
@@ -93,6 +97,7 @@ it('does not reset the settings when all have the default value', () => {
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
+    expect(props.handleDateChange).not.toHaveBeenCalled()
     expect(props.handleSort).not.toHaveBeenCalled()
     expect(props.setDateInterval).not.toHaveBeenCalled()
     expect(props.setDateOrder).not.toHaveBeenCalled()

@@ -11,11 +11,13 @@ export function ViewPanel({
     clearVisibleDetailsTabs,
     dateInterval,
     dateOrder,
+    handleDateChange,
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
     issueSettings,
     nrDates,
+    reportDate,
     setDateInterval,
     setDateOrder,
     setHideMetricsNotRequiringAction,
@@ -36,6 +38,7 @@ export function ViewPanel({
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
     hiddenColumns = hiddenColumns ?? [];
+    visibleDetailsTabs = visibleDetailsTabs ?? [];
     return (
         <Segment.Group
             horizontal
@@ -60,6 +63,7 @@ export function ViewPanel({
                                     !issueSettings.showIssueDueDate &&
                                     !issueSettings.showIssueRelease &&
                                     !issueSettings.showIssueSprint &&
+                                    reportDate === null &&
                                     sortColumn === null &&
                                     sortDirection === "ascending" &&
                                     uiMode === null
@@ -68,6 +72,7 @@ export function ViewPanel({
                                     clearVisibleDetailsTabs();
                                     setHideMetricsNotRequiringAction(false);
                                     clearHiddenColumns();
+                                    handleDateChange({}, {name: "", value: null});
                                     handleSort(null);
                                     setNrDates(1);
                                     setDateInterval(7);

@@ -111,11 +111,13 @@ export function AppUI({
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
+                        handleDateChange={handleDateChange}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         issueSettings={issueSettings}
                         nrDates={nrDates}
+                        reportDate={report_date}
                         setDateInterval={setDateInterval}
                         setDateOrder={setDateOrder}
                         setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
@@ -131,6 +133,7 @@ export function AppUI({
                         sortDirection={sortDirection}
                         toggleHiddenColumn={toggleHiddenColumn}
                         uiMode={uiMode}
+                        visibleDetailsTabs={visibleDetailsTabs}
                     />}
                 />
                 <ToastContainer theme="colored" />
