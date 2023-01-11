@@ -1,7 +1,9 @@
-import { Table } from "semantic-ui-react";
+import React, { useContext } from 'react';
+import { List, Table } from "semantic-ui-react";
 import { Icon, Label } from "../semantic_ui_react_wrappers";
-import { SortableTableHeaderCell, UnsortableTableHeaderCell } from '../widgets/TableHeaderCell';
+import { DarkMode } from "../context/DarkMode";
 import { StatusIcon } from '../measurement/StatusIcon';
+import { SortableTableHeaderCell, UnsortableTableHeaderCell } from '../widgets/TableHeaderCell';
 import { HyperLink } from "../widgets/HyperLink";
 
 const metricHelp = <>
@@ -31,41 +33,75 @@ const trendHelp = <>
     </p>
 </>
 
-const statusHelp = <>
-    <p>
-        The current status of the metric.
-    </p>
-    <p>
-        If the status is <StatusIcon status="informative" size="tiny" /> the measurement value is not evaluated against
-        a target value.
-    </p>
-    <p>
-        If the status is <StatusIcon status="target_met" size="tiny" /> the measurement value meets the target value.
-    </p>
-    <p>
-        If the status is <StatusIcon status="near_target_met" size="tiny" /> the measurement value is close to the
-        target value.
-    </p>
-    <p>
-        If the status is <StatusIcon status="target_not_met" size="tiny" /> the measurement value does not meet the
-        target value.
-    </p>
-    <p>
-        If the status is <StatusIcon status="debt_target_met" size="tiny" /> the measurement value does not meet the
-        target value, but this is accepted as <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical
-        debt</HyperLink>. The measurement value does meet the technical debt target.
-    </p>
-    <p>
-        If the status is <StatusIcon status="unknown" size="tiny" /> the status could not be determined because
-        no sources have been configured for the metric yet or the measurement data could not be collected.
-    </p>
-    <p>
-        Hover over the status to see how long the metric has had the current status.
-    </p>
-    <p>
-        Click the column header to sort the metrics by status.
-    </p>
-</>
+function statusHelp(darkMode) {
+    const color = darkMode ? "white" : "black"
+    return (
+        <>
+            <p>
+                The current status of the metric.
+            </p>
+            <List>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="informative" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Informative: the measurement value is not evaluated against a target value.
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="target_met" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Target met: the measurement value meets the target value.
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="near_target_met" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Near target met: the measurement value is close to the target value.
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="target_not_met" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Target not met: the measurement value does not meet the target value.
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="debt_target_met" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Debt target met: the measurement value does not meet the target value, but this is accepted
+                        as <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical debt</HyperLink>.
+                        The measurement value does meet the technical debt target.
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Icon>
+                        <StatusIcon status="unknown" size="small" />
+                    </List.Icon>
+                    <List.Content verticalAlign="middle" style={{ color: color }}>
+                        Unknown: the status could not be determined because no sources have been configured for the metric yet
+                        or the measurement data could not be collected.
+                    </List.Content>
+                </List.Item>
+            </List>
+            <p>
+                Hover over the status to see how long the metric has had the current status.
+            </p>
+            <p>
+                Click the column header to sort the metrics by status.
+            </p>
+        </>
+    )
+}
 
 const measurementHelp = <>
     <p>
@@ -131,7 +167,7 @@ const timeLeftHelp = <>
     <p>
         If the metric has accepted technical debt, the time left is based on the technical debt end date. Expand the
         metric (click <Icon fitted name="triangle right" />) to edit technical debt end date in the technical debt tab.
-     </p>
+    </p>
     <p>
         Hover over the number of days to see the exact deadline.
     </p>
@@ -233,6 +269,7 @@ export function SubjectTableHeader(
         sortColumn,
         sortDirection,
     }) {
+    const darkMode = useContext(DarkMode)
     const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     const nrDates = columnDates.length
     return (
@@ -241,7 +278,7 @@ export function SubjectTableHeader(
                 <SortableTableHeaderCell colSpan="2" column='name' label='Metric' help={metricHelp} {...sortProps} />
                 {nrDates > 1 && columnDates.map(date => <UnsortableTableHeaderCell key={date} textAlign="right" label={date.toLocaleDateString()} />)}
                 {nrDates === 1 && !hiddenColumns.includes("trend") && <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />}
-                {nrDates === 1 && !hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' help={statusHelp} {...sortProps} />}
+                {nrDates === 1 && !hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' help={statusHelp(darkMode)} {...sortProps} />}
                 {nrDates === 1 && !hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' textAlign="right" help={measurementHelp} {...sortProps} />}
                 {nrDates === 1 && !hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' textAlign="right" help={targetHelp} {...sortProps} />}
                 {!hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />}

@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
+import { DarkMode } from "../context/DarkMode";
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { CardDashboard } from '../dashboard/CardDashboard';
+import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 
 function ReportsDashboard({ reports, open_report, layout, reload }) {
+    const darkMode = useContext(DarkMode)
     const tag_counts = {};
     reports.forEach((report) => {
         Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
@@ -30,7 +33,7 @@ function ReportsDashboard({ reports, open_report, layout, reload }) {
     );
     return (
         <CardDashboard
-            cards={report_cards.concat(tag_cards)}
+            cards={report_cards.concat(tag_cards).concat([<LegendCard darkMode={darkMode} key="legend" />])}
             initial_layout={layout || []}
             save_layout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
         />

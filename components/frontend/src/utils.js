@@ -119,6 +119,10 @@ export function get_metric_status(metric) {
     return metric.status ?? '';
 }
 
+export function getStatuses() {
+    return ["informative", "target_met", "near_target_met", "target_not_met", "debt_target_met", "unknown"]
+}
+
 export function getStatusName(status) {
     return {
         target_met: 'Target met', near_target_met: 'Near target met', debt_target_met: 'Debt target met',
