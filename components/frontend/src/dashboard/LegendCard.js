@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { List } from 'semantic-ui-react';
 import { Card } from '../semantic_ui_react_wrappers';
+import { DarkMode } from "../context/DarkMode";
 import { StatusIcon } from '../measurement/StatusIcon';
 import { getStatuses, getStatusName } from '../utils';
 
-export function LegendCard({ darkMode }) {
-    const size = "small"
+export function LegendCard() {
+    const darkMode = useContext(DarkMode)
     const color = darkMode ? "white" : "black"
     const listItems = getStatuses().map(status => {
         return (
             <List.Item key={status}>
                 <List.Icon>
-                    <StatusIcon status={status} size={size} />
+                    <StatusIcon status={status} size="small" />
                 </List.Icon>
                 <List.Content verticalAlign="middle" style={{ color: color }}>
                     {getStatusName(status)}

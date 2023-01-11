@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Message } from 'semantic-ui-react';
-import { DarkMode } from "../context/DarkMode";
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
@@ -16,7 +15,6 @@ import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     const dataModel = useContext(DataModel)
-    const darkMode = useContext(DarkMode)
     function subject_cards() {
         return Object.entries(report.summary_by_subject).map(([subject_uuid, summary]) =>
             <MetricSummaryCard
@@ -40,7 +38,7 @@ function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     return (
         <Permissions.Consumer>{(permissions) => (
             <CardDashboard
-                cards={subject_cards().concat(tag_cards().concat([<LegendCard darkMode={darkMode} key="legend" />]))}
+                cards={subject_cards().concat(tag_cards().concat([<LegendCard key="legend" />]))}
                 initial_layout={report.layout || []}
                 save_layout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
             />)}
