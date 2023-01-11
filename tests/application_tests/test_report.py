@@ -65,7 +65,7 @@ class OpenReportTest(unittest.TestCase):
 
     def test_open_report(self):
         """Test that the first report can be opened."""
-        report = self.driver.find_elements(By.CLASS_NAME, "card")[0]
+        report = self.driver.find_elements(By.CLASS_NAME, "card")[1]
         report_title = report.find_element(By.CLASS_NAME, "header")
         report.click()
         self.assertTrue(
