@@ -3,12 +3,13 @@ import { List } from 'semantic-ui-react';
 import { Card } from '../semantic_ui_react_wrappers';
 import { DarkMode } from "../context/DarkMode";
 import { StatusIcon } from '../measurement/StatusIcon';
-import { getStatuses, getStatusName } from '../utils';
+import { getStatusName, STATUSES } from '../utils';
+import './LegendCard.css';
 
 export function LegendCard() {
     const darkMode = useContext(DarkMode)
     const color = darkMode ? "white" : "black"
-    const listItems = getStatuses().map(status => {
+    const listItems = STATUSES.map(status => {
         return (
             <List.Item key={status}>
                 <List.Icon>
@@ -21,7 +22,7 @@ export function LegendCard() {
         )
     });
     return (
-        <Card style={{ height: '200px' }} tabIndex="0">
+        <Card style={{ height: '200px' }} tabIndex="0" className="legend">
             <Card.Content>
                 <Card.Header title={"Legend"} textAlign='center'>{"Legend"}</Card.Header>
                 <List size="small">
