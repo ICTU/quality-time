@@ -598,10 +598,14 @@ types-cryptography==3.3.23.2 \
     --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
     --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via -r requirements-dev.in
-types-ldap3==2.9.13.3 \
-    --hash=sha256:0678f01e15a5256c978f23d26c9b87f58fa9c1dd01bdc66dfb9caf9706ddb3f8 \
-    --hash=sha256:d6dc9d8f6a5c125be5ed4df14d84007e019e655f159a8b9b9990b5973ef06d40
+types-ldap3==2.9.13.4 \
+    --hash=sha256:3f6b657e21be1835e1ecea9cf13ee60e3cb7a8b426aebdbac9b9a79b66c4e315 \
+    --hash=sha256:4f16e8da99267311816232e5abf9836e86ed857c14115ecb5ec9d3b9efb2c62d
     # via -r requirements-dev.in
+types-pyasn1==0.4.0.0 \
+    --hash=sha256:17b79399b4275a8e00dfec1cf7d906094c45d20616c465d35a460179e6fbb577 \
+    --hash=sha256:ab17c075fe5f9543c42d4390373668fe90f00d194c2dd1af981dc5de2975dfc1
+    # via types-ldap3
 types-requests==2.28.11.7 \
     --hash=sha256:0ae38633734990d019b80f5463dfa164ebd3581998ac8435f526da6fe4d598c3 \
     --hash=sha256:b6a2fca8109f4fdba33052f11ed86102bddb2338519e1827387137fefc66a98b
