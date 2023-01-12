@@ -79,3 +79,22 @@ class CollectorTest(SourceCollectorTestCase):
         self.metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
         response = await self.collect()
         self.assert_measurement(response, value=str((datetime.today() - datetime(2021, 1, 1)).days))
+
+    async def test_including_entities(self):
+        """Test that only entities marked for inclusion, are included."""
+
+        class ThreeParsedEntities(SourceCollector):
+            """Fake collector returning parsed entities."""
+
+            async def _parse_entities(self, responses):  # skipcq: PYL-R0201
+                """Return three parsed entities."""
+                return [dict(key=x) for x in range(3)]
+
+        with patch("base_collectors.SourceCollector._include_entity", side_effect=[True, False, True]):
+            async with aiohttp.ClientSession() as session:
+                collector = ThreeParsedEntities(session, {})
+                res = await collector._parse_source_responses(SourceResponses())  # pylint: disable=protected-access
+
+        self.assertEqual(len(res.entities), 2)
+        self.assertNotIn(dict(key=1), res.entities)
+        self.assertIn(dict(key=2), res.entities)

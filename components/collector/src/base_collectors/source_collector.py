@@ -153,8 +153,9 @@ class SourceCollector(ABC):
         Either this method or self._parse_entities() need to be overridden in the subclass to implement the actual
         parsing of the source responses.
         """
+        included_entities = [entity for entity in await self._parse_entities(responses) if self._include_entity(entity)]
         return SourceMeasurement(
-            entities=await self._parse_entities(responses),
+            entities=Entities(included_entities),
             total=await self._parse_total(responses),
             value=await self._parse_value(responses),
         )
@@ -162,6 +163,10 @@ class SourceCollector(ABC):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:  # pylint: disable=unused-argument
         """Parse the entities from the responses."""
         return Entities()  # pragma: no cover
+
+    def _include_entity(self, entity: Entity) -> bool:  # pylint: disable=unused-argument
+        """Return whether to include the entity in the measurement."""
+        return True
 
     async def _parse_value(self, responses: SourceResponses) -> Value:  # pylint: disable=unused-argument
         """Parse the value from the responses."""

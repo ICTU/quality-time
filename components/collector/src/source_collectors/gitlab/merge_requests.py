@@ -115,7 +115,7 @@ class GitLabMergeRequests(GitLabBase):
         for response in responses:
             json = await response.json()
             merge_requests.extend(json["data"]["project"]["mergeRequests"]["nodes"])
-        return Entities(self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr))
+        return Entities(self._create_entity(mr) for mr in merge_requests)
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of merge requests."""
@@ -137,18 +137,18 @@ class GitLabMergeRequests(GitLabBase):
             upvotes=str(merge_request["upvotes"]),
         )
 
-    def _include_merge_request(self, merge_request) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether the merge request should be counted."""
-        mr_matches_state = merge_request["state"] in self._parameter("merge_request_state")
-        mr_matches_approval = self.__approval_state(merge_request) in self._parameter("approval_state")
+        mr_matches_state = entity["state"] in self._parameter("merge_request_state")
+        mr_matches_approval = entity["approved"] in self._parameter("approval_state")
+        target_branch = entity["target_branch"]
         branches = self._parameter("target_branches_to_include")
-        target_branch = merge_request["targetBranch"]
         mr_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
         # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
         # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
         # than the minimum number of upvotes are included in the count:
         required_upvotes = int(cast(str, self._parameter("upvotes")))
-        mr_has_fewer_than_min_upvotes = required_upvotes == 0 or int(merge_request["upvotes"]) < required_upvotes
+        mr_has_fewer_than_min_upvotes = required_upvotes == 0 or int(entity["upvotes"]) < required_upvotes
         return mr_matches_state and mr_matches_approval and mr_matches_branches and mr_has_fewer_than_min_upvotes
 
     @classmethod

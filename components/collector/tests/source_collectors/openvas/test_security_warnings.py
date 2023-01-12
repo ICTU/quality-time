@@ -35,3 +35,9 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
+
+    async def test_filter_severities(self):
+        """Test that warnings are filtered by severity."""
+        self.set_source_parameter("severities", ["high", "medium"])
+        response = await self.collect(get_request_text=self.OPENVAS_XML)
+        self.assert_measurement(response, value="0", entities=[])
