@@ -42,7 +42,7 @@ def check_url_availability(
     else:
         credentials = _basic_auth_credentials(source_parameters)
     try:
-        response = requests.get(url, auth=credentials, headers=headers)
+        response = requests.get(url, auth=credentials, headers=headers, timeout=10)
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception as exception_instance:  # pylint: disable=broad-except
         exception_reason = str(exception_instance) or exception_instance.__class__.__name__

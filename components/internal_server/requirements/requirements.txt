@@ -8,9 +8,9 @@ bottle==0.12.23 \
     --hash=sha256:683de3aa399fb26e87b274dbcf70b1a651385d459131716387abdc3792e04167 \
     --hash=sha256:9f1c363257c590bd34db5fad4693a7f06ff4217e9ad18337451de69c25137127
     # via -r ../../../requirements/bottle.in
-dnspython==2.2.1 \
-    --hash=sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e \
-    --hash=sha256:a851e51367fb93e9e1361732c1d60dab63eff98712e503ea7d92e6eccb109b4f
+dnspython==2.3.0 \
+    --hash=sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9 \
+    --hash=sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46
     # via pymongo
 gevent==22.10.1 \
     --hash=sha256:03c10ca0beeab0c6be516030471ea630447ddd1f649d3335e5b162097cd4130a \
@@ -196,9 +196,9 @@ pymongo==4.3.3 \
     --hash=sha256:fd7bb378d82b88387dc10227cfd964f6273eb083e05299e9b97cbe075da12d11 \
     --hash=sha256:ffcc8394123ea8d43fff8e5d000095fe7741ce3f8988366c5c919c4f5eb179d3
     # via -r ../../../requirements/pymongo.in
-setuptools==65.6.3 \
-    --hash=sha256:57f6f22bde4e042978bcd50176fdb381d7c21a9efa4041202288d3737a0c6a54 \
-    --hash=sha256:a7620757bf984b58deaf32fc8a4577a9bbc0850cf92c20e1ce41c38c19e5fb75
+setuptools==66.0.0 \
+    --hash=sha256:a78d01d1e2c175c474884671dde039962c9d74c7223db7369771fcf6e29ceeab \
+    --hash=sha256:bd6eb2d6722568de6d14b87c44a96fac54b2a45ff5e940e639979a3d1792adb6
     # via
     #   gevent
     #   zope-event

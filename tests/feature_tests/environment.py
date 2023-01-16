@@ -21,7 +21,7 @@ def before_all(context):
         if context.report_date:
             sep = "&" if "?" in url else "?"
             url += f"{sep}report_date={context.report_date}"
-        context.response = response = requests.get(url, headers=headers, cookies=cookies())
+        context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=10)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def post(api, json=None, internal=False):
