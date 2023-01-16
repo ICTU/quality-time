@@ -13,5 +13,4 @@ run () {
 cd requirements
 run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking requirements-base.in
 run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade-package=certifi requirements.in
-run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade-package=certifi requirements-dev.in
-
+run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade-package=certifi --upgrade-package=requests requirements-dev.in
