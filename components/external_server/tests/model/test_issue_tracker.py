@@ -79,7 +79,7 @@ class IssueTrackerTest(unittest.TestCase):
             (
                 "",
                 "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
-                "http://invalid/rest/api/2/issue?",
+                "https://invalid/rest/api/2/issue?",
             ),
             issue_tracker.create_issue("New issue"),
         )
