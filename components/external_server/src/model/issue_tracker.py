@@ -25,7 +25,7 @@ class IssueSuggestion(AsDictMixin):
     text: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class IssueTrackerCredentials:
     """Issue tracker credentials needed to create issues."""
 
