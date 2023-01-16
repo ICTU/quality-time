@@ -27,7 +27,9 @@ def before_all(context):
     def post(api, json=None, internal=False):
         """Post the resource."""
         url = api_url(api, internal)
-        context.post_response = context.response = response = requests.post(url, json=json, cookies=cookies())
+        context.post_response = context.response = response = requests.post(
+            url, json=json, cookies=cookies(), timeout=10
+        )
         if not response.ok:
             return response
         if "session_id" in response.cookies:
