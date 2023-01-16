@@ -220,13 +220,13 @@ class IssueTracker:
     def __get_json(self, api_url: str):  # pragma: no feature-test-cover
         """Get a response from the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
-        response = requests.get(api_url, auth=auth, headers=headers)
+        response = requests.get(api_url, auth=auth, headers=headers, timeout=10)
         response.raise_for_status()
         return response.json()
 
     def __post_json(self, api_url: str, json):  # pragma: no feature-test-cover
         """Post the JSON to the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
-        response = requests.post(api_url, auth=auth, headers=headers, json=json)
+        response = requests.post(api_url, auth=auth, headers=headers, json=json, timeout=10)
         response.raise_for_status()
         return response.json()

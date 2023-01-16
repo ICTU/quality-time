@@ -188,9 +188,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             json=dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report_uuid"),
         )
 
+    @patch.object(Collector, "MEASUREMENT_LIMIT", 1)
     async def test_fetch_in_batches(self):
         """Test that metrics are fetched in batches."""
-        self.collector.MEASUREMENT_LIMIT = 1
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",
@@ -211,9 +211,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         )
         post.assert_has_calls(calls=[expected_call1, call().close(), expected_call2, call().close()])
 
+    @patch.object(Collector, "MEASUREMENT_LIMIT", 1)
     async def test_prioritize_edited_metrics(self):
         """Test that edited metrics get priority."""
-        self.collector.MEASUREMENT_LIMIT = 1
         self.metrics["metric_uuid2"] = dict(
             report_uuid="report_uuid",
             addition="sum",

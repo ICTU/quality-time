@@ -488,7 +488,9 @@ class MetricIssueTest(DataModelTestCase):
             dict(ok=True, issue_url=self.issue_url),
             add_metric_issue(METRIC_ID, self.database, User("user")),
         )
-        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
+        requests_post.assert_called_once_with(
+            self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
+        )
 
     @patch("model.issue_tracker.requests.get")
     def test_add_metric_issue_with_labels(self, requests_get, requests_post):
@@ -509,7 +511,9 @@ class MetricIssueTest(DataModelTestCase):
             add_metric_issue(METRIC_ID, self.database, User("user")),
         )
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
-        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
+        requests_post.assert_called_once_with(
+            self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
+        )
 
     @disable_logging
     @patch("model.issue_tracker.requests.get")
@@ -535,7 +539,9 @@ class MetricIssueTest(DataModelTestCase):
             add_metric_issue(METRIC_ID, self.database, User("user")),
         )
         self.expected_json["fields"]["epic_link_field_id"] = "FOO-420"
-        requests_post.assert_called_once_with(self.issue_api, auth=None, headers={}, json=self.expected_json)
+        requests_post.assert_called_once_with(
+            self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
+        )
 
     @disable_logging
     def test_add_metric_issue_failure(self, requests_post):
