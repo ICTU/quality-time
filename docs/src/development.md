@@ -12,7 +12,7 @@ If you want to get *Quality-time* up and running quickly, for example for a demo
 
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.10 and a recent version of Node.js (we test with the Long Term Support version of Node).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.11 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 
@@ -451,7 +451,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker-compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.10.9-bullseye tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.11.1-bullseye tests/application_tests/ci/test.sh
 ```
 
 ## Documentation and changelog
