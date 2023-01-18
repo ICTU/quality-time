@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.7.0-rc.7 - 2023-01-17
+## [Unreleased]
 
 ### Deployment notes
 
@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Break long words and URLs in the comments column, if necessary. Fixes [#5118](https://github.com/ICTU/quality-time/issues/5118).
 - Fixed typo's in description of metrics and sources: changed all instances of 'amount' where it should have been 'number'.
 - Add the shared code components to the developer documentation. Fixes [#5130](https://github.com/ICTU/quality-time/issues/5130).
+- Fix link in the deployment documentation to the Openshift README. Fixes [#5235](https://github.com/ICTU/quality-time/issues/5235).
 
 ### Added
 
