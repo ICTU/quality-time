@@ -9,7 +9,7 @@ All templates refer to standard values from [values.yaml](values.yaml) unless th
 
 You need the following CLI tools:
 
-+ OC CLI the openshift cli
++ OC CLI the OpenShift cli
 + Helm the Helm CLI
 
 Login with the OC CLI and select a project/namespace. Then the helm commands can be used.
@@ -19,14 +19,14 @@ Login with the OC CLI and select a project/namespace. Then the helm commands can
 ```console
 $ helm install quality-time .
 $ helm install --set pullsecret=mybase64encodeddockerjson quality-time .
-$ helm install --values myoverride-values.yaml quality-time . 
+$ helm install --values myoverride-values.yaml quality-time .
 ```
 
 ## Uninstall
 
 ```console
 $ helm uninstall quality-time
-```    
+```
 
 In a corporate environment with custom certificate authorities, you can create custom images as described in the [Custom docker files Readme](../dockerfiles/README.md).
 The adjusted image names can then be set in the myoverride-values.yaml which would be a kind of copy of the values.yaml.
