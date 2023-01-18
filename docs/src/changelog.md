@@ -21,7 +21,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Break long words and URLs in the comments column, if necessary. Fixes [#5118](https://github.com/ICTU/quality-time/issues/5118).
 - Fixed typo's in description of metrics and sources: changed all instances of 'amount' where it should have been 'number'.
 - Add the shared code components to the developer documentation. Fixes [#5130](https://github.com/ICTU/quality-time/issues/5130).
-- Fix link in the deployment documentation to the Openshift README. Fixes [#5235](https://github.com/ICTU/quality-time/issues/5235).
+- Fix link in the deployment documentation to the OpenShift README. Fixes [#5235](https://github.com/ICTU/quality-time/issues/5235).
 
 ### Added
 
