@@ -10,5 +10,5 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):
 
     allowed_root_tags = [
         f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
-        for version in ("2.0", "2.1", "2.2", "2.3", "2.4", "2.5")
+        for version in ("2.0", "2.1", "2.2", "2.3", "2.4", "2.5", "3.1")
     ]
