@@ -30,6 +30,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - When using cloc as source for the LOC (Size) metric with the `--by-file` option, *Quality-time* can filter the cloc data by filename. When also setting the scale of the LOC metric to percentage, this enables tracking the percentage of test code. Closes [#4958](https://github.com/ICTU/quality-time/issues/4958).
 - Make the description of subjects, metrics, and sources in the UI of *Quality-time* link to the relevant documentation on Read-The-Docs. Closes [#5121](https://github.com/ICTU/quality-time/issues/5121).
 - Make the web page title reflect the report title. Closes [#5129](https://github.com/ICTU/quality-time/issues/5129).
+- Support version 3.1 of the OWASP Dependency Check XSD. Closes [#5251](https://github.com/ICTU/quality-time/issues/5251).
 
 ### Changed
 
