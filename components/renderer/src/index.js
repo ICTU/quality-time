@@ -14,7 +14,7 @@ app.get("/api/render", async (req, res) => {
     try {
         const url = sanitizeUrl(`http://${PROXY}/${req.query.path}`);
         const browser = await puppeteer.launch({
-            defaultViewport: { width: 1200, height: 800 },
+            defaultViewport: { width: 1500, height: 1000 },
             args: ['--disable-dev-shm-usage', '--no-sandbox'],
             headless: true,
         });

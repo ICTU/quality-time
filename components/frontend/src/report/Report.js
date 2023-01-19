@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Message } from 'semantic-ui-react';
+import { DataModel } from '../context/DataModel';
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
-import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
-import { DataModel } from '../context/DataModel';
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
+import { LegendCard } from '../dashboard/LegendCard';
+import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
 import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
+
 
 function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     const dataModel = useContext(DataModel)
@@ -36,7 +38,7 @@ function ReportDashboard({ report, onClick, setTags, tags, reload }) {
     return (
         <Permissions.Consumer>{(permissions) => (
             <CardDashboard
-                cards={subject_cards().concat(tag_cards())}
+                cards={subject_cards().concat(tag_cards().concat([<LegendCard key="legend" />]))}
                 initial_layout={report.layout || []}
                 save_layout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
             />)}

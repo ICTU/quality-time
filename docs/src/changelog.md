@@ -26,6 +26,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 ### Added
 
 - Support GitLab CI pipelines as source for the source-up-to-dateness metric. Closes [#3927](https://github.com/ICTU/quality-time/issues/3927).
+- Add a legend to the dashboard. Closes [#4927](https://github.com/ICTU/quality-time/issues/4927).
 - Allow for changing the log level of the backend containers via environment variables. See the [deployment manual](deployment.md#configuring-logging-optional). Closes [#4943](https://github.com/ICTU/quality-time/issues/4943).
 - When using cloc as source for the LOC (Size) metric with the `--by-file` option, *Quality-time* can filter the cloc data by filename. When also setting the scale of the LOC metric to percentage, this enables tracking the percentage of test code. Closes [#4958](https://github.com/ICTU/quality-time/issues/4958).
 - Make the description of subjects, metrics, and sources in the UI of *Quality-time* link to the relevant documentation on Read-The-Docs. Closes [#5121](https://github.com/ICTU/quality-time/issues/5121).

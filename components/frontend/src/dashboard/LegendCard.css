@@ -1,0 +1,9 @@
+.ui.list .item {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ui.card.legend .header {
+    overflow: hidden;
+    white-space: nowrap;
+}

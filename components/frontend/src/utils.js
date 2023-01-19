@@ -4,7 +4,7 @@ import { metricReactionDeadline } from './defaults';
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
-
+export const STATUSES = ["informative", "target_met", "near_target_met", "target_not_met", "debt_target_met", "unknown"];
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:

@@ -17,3 +17,10 @@ i.inverted.circular.icon.debt_target_met {
 i.inverted.circular.icon.informative {
     background-color: rgb(0,165,255) !important;
 }
+
+i.inverted.circular.icon.unknown {
+    background-color: rgb(245,245,245) !important;
+    color: rgb(0,0,0);
+    border: solid 1px;
+    border-color: rgb(140,140,140);
+}
