@@ -130,10 +130,6 @@ click==8.1.3 \
     # via
     #   black
     #   safety
-commonmark==0.9.1 \
-    --hash=sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60 \
-    --hash=sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9
-    # via rich
 coverage==7.0.5 \
     --hash=sha256:051afcbd6d2ac39298d62d340f94dbb6a1f31de06dfaf6fcef7b759dd3860c45 \
     --hash=sha256:0a1890fca2962c4f1ad16551d660b46ea77291fba2cc21c024cd527b9d9c8809 \
@@ -351,12 +347,20 @@ lxml==4.9.2 \
     # via
     #   -r ../../../requirements/./lxml.in
     #   unittest-xml-reporting
+markdown-it-py==2.1.0 \
+    --hash=sha256:93de681e5c021a432c63147656fe21790bc01231e0cd2da73626f1aa3ac0fe27 \
+    --hash=sha256:cf7e59fed14b5ae17c0006eff14a2d9a00ed5f3a846148153899a0224e2c07da
+    # via rich
 mccabe==0.7.0 \
     --hash=sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325 \
     --hash=sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e
     # via
     #   flake8
     #   pylint
+mdurl==0.1.2 \
+    --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
+    --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
+    # via markdown-it-py
 msgpack==1.0.4 \
     --hash=sha256:002b5c72b6cd9b4bafd790f364b8480e859b4712e91f43014fe01e4f957b8467 \
     --hash=sha256:0a68d3ac0104e2d3510de90a1091720157c319ceeb90d74f7b5295a6bee51bae \
@@ -607,9 +611,9 @@ resolvelib==0.9.0 \
     --hash=sha256:40ab05117c3281b1b160105e10075094c5ab118315003c922b77673a365290e1 \
     --hash=sha256:597adcbdf81d62d0cde55d90faa8e79187ec0f18e5012df30bd7a751b26343ae
     # via pip-audit
-rich==13.1.0 \
-    --hash=sha256:81c73a30b144bbcdedc13f4ea0b6ffd7fdc3b0d3cc259a9402309c8e4aee1964 \
-    --hash=sha256:f846bff22a43e8508aebf3f0f2410ce1c6f4cde429098bd58d91fde038c57299
+rich==13.2.0 \
+    --hash=sha256:7c963f0d03819221e9ac561e1bc866e3f95a02248c1234daa48954e6d381c003 \
+    --hash=sha256:f1a00cdd3eebf999a15d85ec498bfe0b1a77efe9b34f645768a54132ef444ac5
     # via pip-audit
 ruamel-yaml==0.17.21 \
     --hash=sha256:742b35d3d665023981bd6d16b3d24248ce5df75fdb4e2924e93a05c1f8b61ca7 \
@@ -700,17 +704,17 @@ types-cryptography==3.3.23.2 \
     --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
     --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via -r requirements-dev.in
-types-ldap3==2.9.13.5 \
-    --hash=sha256:0f74bd2f2612a464568f7853e722c4e7ba6c21692c837f00b277e0a930f8a565 \
-    --hash=sha256:f782308743f29247a4e943f03af278c09b222cc28b22566b093bee3a0f452514
+types-ldap3==2.9.13.6 \
+    --hash=sha256:7443072170b44d2f4ef252fae8c1bf84d3ca547613b5dfcb15a858e56d52bec2 \
+    --hash=sha256:8dc3d6b18a1fde7673bc8fa648900d3722f78ec1ca738f6d073cded94cad788b
     # via -r requirements-dev.in
 types-pyasn1==0.4.0.0 \
     --hash=sha256:17b79399b4275a8e00dfec1cf7d906094c45d20616c465d35a460179e6fbb577 \
     --hash=sha256:ab17c075fe5f9543c42d4390373668fe90f00d194c2dd1af981dc5de2975dfc1
     # via types-ldap3
-types-requests==2.28.11.7 \
-    --hash=sha256:0ae38633734990d019b80f5463dfa164ebd3581998ac8435f526da6fe4d598c3 \
-    --hash=sha256:b6a2fca8109f4fdba33052f11ed86102bddb2338519e1827387137fefc66a98b
+types-requests==2.28.11.8 \
+    --hash=sha256:61960554baca0008ae7e2db2bd3b322ca9a144d3e80ce270f5fb640817e40994 \
+    --hash=sha256:e67424525f84adfbeab7268a159d3c633862dafae15c5b19547ce1b55954f0a3
     # via -r ../../../requirements/types-requests.in
 types-urllib3==1.26.25.4 \
     --hash=sha256:ed6b9e8a8be488796f72306889a06a3fc3cb1aa99af02ab8afb50144d7317e49 \
