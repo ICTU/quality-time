@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     ttf-droid=20200215-r2 \
     ttf-freefont=20120503-r3 \
     ttf-liberation=2.1.5-r2 \
-    chromium=108.0.5359.125-r0 && \
+    chromium=109.0.5414.74-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
