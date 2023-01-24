@@ -35,8 +35,6 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
         for violated_rule in soup.select("div.violationCard > div.card-body"):
             impact = violated_rule("h6")[2].get_text(strip=True)
             tags = self.__parse_tags(violated_rule)
-            if not self._include_violation(impact, tags):
-                continue
             violation_type = violated_rule("h6")[0].get_text(strip=True)
             description = cast(Tag, violated_rule.select_one("p.card-text")).get_text(strip=True)
             help_url = cast(str, cast(Tag, violated_rule.select_one("a.learnMore"))["href"])
