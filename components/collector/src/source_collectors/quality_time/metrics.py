@@ -28,18 +28,23 @@ class QualityTimeMetrics(QualityTimeCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
-        status_to_count = self._parameter("status")
-        min_status_duration = int(cast(int, self._parameter("min_status_duration") or 0))
         landing_url = await self._landing_url(responses)
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        entities = Entities()
-        for metric, entity in metrics_and_entities:
-            recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
-            status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
-            if status in status_to_count and self.__metric_has_min_status_duration(metric, min_status_duration):
-                self.__update_entity(entity, metric, status, value, landing_url)
-                entities.append(entity)
+        parsed_entities = [self.__parse_entity(entity, metric, landing_url) for metric, entity in metrics_and_entities]
+        entities = Entities([entity for entity in parsed_entities if self._include_entity(entity)])
         return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        if entity["status"] not in self._parameter("status"):
+            return False
+        min_status_duration = int(cast(int, self._parameter("min_status_duration") or 0))
+        status_start = self.__metric_status_start(entity["status_start_date"])
+        if not status_start and min_status_duration > 0:
+            return False
+        if status_start and (datetime.now(timezone.utc) - status_start).days < min_status_duration:
+            return False
+        return True
 
     @staticmethod
     def __get_status_and_value(metric, measurement) -> tuple[str, Value]:
@@ -65,16 +70,16 @@ class QualityTimeMetrics(QualityTimeCollector):
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
 
-    def __update_entity(  # pylint: disable=too-many-arguments
-        self, entity: Entity, metric, status: str, value: Value, landing_url: URL
-    ) -> None:
+    def __parse_entity(self, entity: Entity, metric, landing_url: URL) -> Entity:
         """Update the entity attributes."""
+        recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
+        status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
         entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
         entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
         entity["metric_url"] = f"{report_url}#{entity['key']}"
         entity["metric"] = str(metric.get("name") or DATA_MODEL.metrics[metric["type"]].name)
         entity["status"] = status
-        status_start = self.__metric_status_start(metric)
+        status_start = self.__metric_status_start(metric.get("status_start", ""))
         entity["status_start_date"] = status_start.isoformat() if status_start else ""
         entity["unit"] = metric.get("unit") or DATA_MODEL.metrics[metric["type"]].unit.value
         entity["measurement"] = value
@@ -82,6 +87,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         direction = {"<": "≦", ">": "≧"}.get(direction, direction)
         target = metric.get("target") or DATA_MODEL.metrics[metric["type"]].target
         entity["target"] = f"{direction} {target}"
+        return entity
 
     @staticmethod
     def __metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:
@@ -93,19 +99,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         metric_source_types = {source["type"] for source in metric.get("sources", {}).values()}
         return not (source_types and (source_types & metric_source_types) == set())
 
-    @classmethod
-    def __metric_has_min_status_duration(cls, metric, min_status_duration: int) -> bool:
-        """Return whether the metric has had the same status for the minimum number of days."""
-        status_start = cls.__metric_status_start(metric)
-        if not status_start and min_status_duration > 0:
-            return False
-        if status_start and (datetime.now(timezone.utc) - status_start).days < min_status_duration:
-            return False
-        return True
-
     @staticmethod
-    def __metric_status_start(metric) -> None | datetime:
+    def __metric_status_start(status_start: str) -> None | datetime:
         """Return the status start date/time of the metric."""
-        if status_start := metric.get("status_start"):
-            return parse_date(status_start)
-        return None
+        return parse_date(status_start) if status_start else None
