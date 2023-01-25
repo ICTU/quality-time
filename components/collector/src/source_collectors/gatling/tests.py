@@ -22,10 +22,11 @@ class GatlingTests(GatlingJSONCollector):
             transactions = [transaction["stats"] for transaction in cast(JSONDict, json).get("contents", {}).values()]
             for transaction in transactions:
                 entity = TransactionEntity(name=transaction["name"], key=transaction["name"])
-                if entity.is_to_be_included(transactions_to_include, transactions_to_ignore):
-                    sample_count = transaction["numberOfRequests"]["total"]
-                    error_count = transaction["numberOfRequests"]["ko"]
-                    counts["success"] += sample_count - error_count
-                    counts["failed"] += error_count
+                if not entity.is_to_be_included(transactions_to_include, transactions_to_ignore):
+                    continue
+                sample_count = transaction["numberOfRequests"]["total"]
+                error_count = transaction["numberOfRequests"]["ko"]
+                counts["success"] += sample_count - error_count
+                counts["failed"] += error_count
         value = sum(counts[status] for status in self._parameter("test_result"))
         return SourceMeasurement(value=str(value), total=str(sum(counts.values())))

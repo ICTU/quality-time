@@ -19,10 +19,11 @@ class JMeterJSONTests(JSONFileSourceCollector):
             transactions = [transaction for key, transaction in json.items() if key != "Total"]
             for transaction in transactions:
                 entity = TransactionEntity(name=transaction["transaction"], key=transaction["transaction"])
-                if entity.is_to_be_included(transactions_to_include, transactions_to_ignore):
-                    sample_count = transaction["sampleCount"]
-                    error_count = transaction["errorCount"]
-                    counts["success"] += sample_count - error_count
-                    counts["failed"] += error_count
+                if not entity.is_to_be_included(transactions_to_include, transactions_to_ignore):
+                    continue
+                sample_count = transaction["sampleCount"]
+                error_count = transaction["errorCount"]
+                counts["success"] += sample_count - error_count
+                counts["failed"] += error_count
         value = sum(counts[status] for status in self._parameter("test_result"))
         return SourceMeasurement(value=str(value), total=str(sum(counts.values())))
