@@ -5,7 +5,7 @@ import { get_report_issue_tracker_suggestions } from '../api/report';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
-import { set_metric_attribute, add_metric_issue } from '../api/metric';
+import { set_metric_attribute, set_metric_debt, add_metric_issue } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
@@ -21,11 +21,21 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
             aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label={<label id={labelId}>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon tabIndex="0" name="help circle" link /></HyperLink></label>}
-            value={metric.accept_debt || false}
+            value={metric.accept_debt ? "yes" : "no"}
             options={[
-                { key: true, text: "Yes", value: true },
-                { key: false, text: "No", value: false }]}
-            set_value={(value) => set_metric_attribute(metric_uuid, "accept_debt", value, reload)}
+                { key: "yes", text: "Yes", value: "yes" },
+                { key: "yes+", text: "Yes, and also set technical debt target and end date", value: "yes+" },
+                { key: "no", text: "No", value: "no" },
+                { key: "no+", text: "No, and also clear technical debt target and end date", value: "no+" }
+            ]}
+            set_value={(value) => {
+                const acceptDebt = value.startsWith("yes")
+                if (value.endsWith("+")) {
+                    set_metric_debt(metric_uuid, acceptDebt, reload)
+                } else {
+                    set_metric_attribute(metric_uuid, "accept_debt", acceptDebt, reload)
+                }
+            }}
         />
     )
 }
@@ -97,7 +107,7 @@ export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
                     <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target label="Accepted technical debt" labelPosition='top center' target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target key={metric.debt_target} label="Technical debt target" labelPosition='top center' target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
                     <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />

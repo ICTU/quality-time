@@ -56,7 +56,7 @@ function ReactionTimes({ report, reload}) {
     const desiredResponseTimes = report.desired_response_times ?? {}
     return (
         <Grid stackable>
-            <Grid.Row columns={3}>
+            <Grid.Row columns={4}>
                 <Grid.Column>
                     <IntegerInput
                         id="desired-response-time-white"
@@ -91,6 +91,18 @@ function ReactionTimes({ report, reload}) {
                         }}
                         unit="days"
                         value={report?.desired_response_times?.["near_target_met"] ?? metricReactionDeadline["near_target_met"]}
+                    />
+                </Grid.Column>
+                <Grid.Column>
+                    <IntegerInput
+                        id="desired-response-time-grey"
+                        label="Time to resolve metrics with accepted technical debt (grey)"
+                        set_value={(value) => {
+                            desiredResponseTimes["debt_target_met"] = parseInt(value)
+                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                        }}
+                        unit="days"
+                        value={report?.desired_response_times?.["debt_target_met"] ?? metricReactionDeadline["debt_target_met"]}
                     />
                 </Grid.Column>
             </Grid.Row>

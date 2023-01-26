@@ -1,5 +1,6 @@
 """Metric routes."""
 
+from datetime import date, timedelta
 from typing import Any, cast
 
 import bottle
@@ -141,6 +142,37 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
     metric = Metric(data_model, metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
+        return insert_new_measurement(database, latest.copy())
+    return dict(ok=True)
+
+
+@bottle.post("/api/v3/metric/<metric_uuid>/debt", permissions_required=[EDIT_REPORT_PERMISSION])
+def post_metric_debt(metric_uuid: MetricId, database: Database):
+    """Turn the technical debt on or off, including technical debt target and end date."""
+    new_accept_debt = dict(bottle.request.json)["accept_debt"]
+    data_model = latest_datamodel(database)
+    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
+    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    if new_accept_debt:
+        latest = latest_measurement(database, Metric(data_model, metric, metric_uuid))
+        new_debt_target = latest.value() if latest else None
+        new_end_date = (date.today() + timedelta(days=report.desired_response_time("debt_target_met"))).isoformat()
+    else:
+        new_debt_target = None
+        new_end_date = None
+    old_accept_debt = metric.get("accept_debt") or False
+    old_debt_target = metric.get("debt_target")
+    old_end_date = metric.get("debt_end_date")
+    if old_accept_debt == new_accept_debt and old_debt_target == new_debt_target and old_end_date == new_end_date:
+        return dict(ok=True)  # Nothing to do
+    metric.update(accept_debt=new_accept_debt, debt_target=new_debt_target, debt_end_date=new_end_date)
+    description = (
+        f"{{user}} changed the technical debt for metric '{metric.name}' of subject "
+        f"""'{subject.name}' in report '{report.name}' from '{"accepted" if old_accept_debt else "not accepted"}' """
+        f"""to '{"accepted" if new_accept_debt else "not accepted"}'."""
+    )
+    insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
+    if latest := latest_measurement(database, Metric(data_model, metric, metric_uuid)):
         return insert_new_measurement(database, latest.copy())
     return dict(ok=True)
 

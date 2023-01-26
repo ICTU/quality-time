@@ -48,3 +48,15 @@ def new_issue_response(context, error):
     json = context.response.json()
     assert_false(json["ok"])
     assert_true(error in json["error"])
+
+
+@when("the client accepts the technical debt")
+def accept_technical_debt(context):
+    """Change the technical debt of the metric, including debt target and end date."""
+    context.post(f"metric/{context.uuid['metric']}/debt", json={"accept_debt": True})
+
+
+@when("the client does not accept the technical debt")
+def do_not_accept_technical_debt(context):
+    """Change the technical debt of the metric, including debt target and end date."""
+    context.post(f"metric/{context.uuid['metric']}/debt", json={"accept_debt": False})

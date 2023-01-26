@@ -73,6 +73,28 @@ Feature: metric
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 
+  Scenario: accept technical debt, including changing debt attributes
+    Given an existing metric
+    And an existing source
+    When the client accepts the technical debt
+    Then the metric status is "debt_target_met"
+    When the client does not accept the technical debt
+    Then the metric status is "None"
+    When the collector measures "100"
+    Then the metric status is "target_not_met"
+    When the client waits a second
+    And the client accepts the technical debt
+    Then the metric status is "debt_target_met"
+    And the metric debt_target is "100"
+    When the client waits a second
+    And the client does not accept the technical debt
+    Then the metric status is "target_not_met"
+    And the metric debt_target is "None"
+    When the client waits a second
+    And the client does not accept the technical debt
+    Then the metric status is "target_not_met"
+    And the metric debt_target is "None"
+
   Scenario: change metric name
     Given an existing metric
     When the client changes the metric name to "New name"

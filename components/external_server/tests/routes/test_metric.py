@@ -14,6 +14,7 @@ from routes import (
     delete_metric,
     post_metric_attribute,
     post_metric_copy,
+    post_metric_debt,
     post_metric_new,
     post_move_metric,
 )
@@ -34,9 +35,8 @@ from ..fixtures import (
 from ..base import DataModelTestCase, disable_logging
 
 
-@patch("bottle.request")
-class PostMetricAttributeTest(DataModelTestCase):
-    """Unit tests for the post metric attribute route."""
+class PostMetricAttributeTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+    """Base class for unit tests for the post metric attribute routes."""
 
     def setUp(self):
         """Extend to set up the database."""
@@ -89,6 +89,11 @@ class PostMetricAttributeTest(DataModelTestCase):
         uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         description = f"John Doe changed the {description}."
         self.assertDictEqual(dict(uuids=uuids, email=email, description=description), report["delta"])
+
+
+@patch("bottle.request")
+class PostMetricAttributeTest(PostMetricAttributeTestCase):
+    """Unit tests for the post metric attribute route."""
 
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
@@ -354,6 +359,109 @@ class PostMetricAttributeTest(DataModelTestCase):
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
         self.database.reports.insert_one.assert_not_called()
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
+
+
+@patch("bottle.request")
+class PostMetricDebtTest(PostMetricAttributeTestCase):
+    """Unit tests for the post metric debt route."""
+
+    def setUp(self) -> None:
+        """Set up test fixtures."""
+        super().setUp()
+        self.database.measurements.find_one.return_value = None
+
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_turn_metric_technical_debt_on_with_existing_measurement(self, request):
+        """Test that accepting technical debt also sets the technical debt value."""
+        self.database.measurements.find_one.return_value = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(value="100", status_start="2018-01-01"),
+            sources=[],
+        )
+        request.json = dict(accept_debt=True)
+        self.assertDictEqual(
+            dict(
+                end="2019-01-01",
+                sources=[],
+                start="2019-01-01",
+                metric_uuid=METRIC_ID,
+                count=dict(
+                    value=None,
+                    status=None,
+                    status_start="2018-01-01",
+                    target="0",
+                    near_target="10",
+                    debt_target="100",
+                    direction="<",
+                ),
+            ),
+            post_metric_debt(METRIC_ID, self.database),
+        )
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
+            "from 'not accepted' to 'accepted'",
+            report=updated_report,
+        )
+        self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+
+    def test_turn_metric_technical_debt_on_without_existing_measurement(self, request):
+        """Test that accepting technical debt also sets the technical debt value."""
+        request.json = dict(accept_debt=True)
+        self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
+            "from 'not accepted' to 'accepted'",
+            report=updated_report,
+        )
+        self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+
+    def test_turn_metric_technical_debt_off_that_is_already_off(self, request):
+        """Test that turning debt off when it's already off does nothing."""
+        request.json = dict(accept_debt=False)
+        self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
+        self.database.reports.insert_one.assert_not_called()
+
+    def test_turn_metric_technical_debt_off_that_is_already_off_but_has_debt_target(self, request):
+        """Test that turning debt off when it's already off does reset debt target."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
+        request.json = dict(accept_debt=False)
+        self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "technical debt for metric 'name' of subject 'Subject' in report 'Report' from "
+            "'not accepted' to 'not accepted'",
+            report=updated_report,
+        )
+        self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+
+    def test_turn_metric_technical_debt_off_that_is_already_off_but_has_debt_end_date(self, request):
+        """Test that turning debt off when it's already off does reset debt end date."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"] = "2000-01-01"
+        request.json = dict(accept_debt=False)
+        self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "technical debt for metric 'name' of subject 'Subject' in report 'Report' from "
+            "'not accepted' to 'not accepted'",
+            report=updated_report,
+        )
+        self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"])
+
+    def test_turn_metric_technical_debt_off_without_existing_measurement(self, request):
+        """Test turning technical debt off."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = True
+        request.json = dict(accept_debt=False)
+        self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assert_delta(
+            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
+            "from 'accepted' to 'not accepted'",
+            report=updated_report,
+        )
+        self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
 
 
 class MetricTest(DataModelTestCase):
