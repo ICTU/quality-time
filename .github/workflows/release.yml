@@ -81,4 +81,4 @@ jobs:
           tags: ictu/quality-time_testldap:${{ steps.get_version.outputs.version }}
           push: true
       - name: Anchore SBOM Action
-        uses: anchore/sbom-action@v0.13.1
+        uses: anchore/sbom-action@v0.13.2
