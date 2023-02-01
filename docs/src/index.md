@@ -15,7 +15,7 @@
 `````{grid} 2
 :gutter: 3
 ````{grid-item-card}
-:class-card: sd-bg-light
+:class-card: sd-bg-transparent
 ```{toctree}
 :maxdepth: 1
 :caption: Getting started 👋
@@ -23,7 +23,7 @@ intro.md
 ```
 ````
 ````{grid-item-card}
-:class-card: sd-bg-light
+:class-card: sd-bg-transparent
 ```{toctree}
 :maxdepth: 2
 :caption: User documentation 📗
@@ -32,7 +32,7 @@ reference.md
 ```
 ````
 ````{grid-item-card}
-:class-card: sd-bg-light
+:class-card: sd-bg-transparent
 ```{toctree}
 :maxdepth: 2
 :caption: Technical documentation 🛠
@@ -42,7 +42,7 @@ software.md
 ```
 ````
 ````{grid-item-card}
-:class-card: sd-bg-light
+:class-card: sd-bg-transparent
 ```{toctree}
 :maxdepth: 1
 :caption: Other resources 📚
