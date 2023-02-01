@@ -91,7 +91,7 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
             markdown += see_also_links(explanation_urls)
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
-    markdown += definition_list("Default tags", *metric.tags)
+    markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
     markdown += "```{admonition} Supported subjects\n"
     subjects = [subject for subject in DATA_MODEL.subjects.values() if metric_key in subject.metrics]
     for subject in subjects:
