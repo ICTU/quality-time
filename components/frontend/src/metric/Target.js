@@ -186,7 +186,6 @@ export function Target({ metric, metric_uuid, target_type, label, labelPosition,
             <IntegerInput
                 label={targetLabel}
                 max={max}
-                min="0"
                 prefix={metricDirectionPrefix}
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 set_value={(value) => set_metric_attribute(metric_uuid, target_type, value, reload)}

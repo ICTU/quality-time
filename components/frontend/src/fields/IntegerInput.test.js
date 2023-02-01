@@ -40,7 +40,15 @@ it('does not submit an unchanged value', async () => {
 
 it('does not submit a value that is too small', async () => {
     let set_value = jest.fn();
-    render(<IntegerInput value="-1" min={0} set_value={set_value} />)
+    render(<IntegerInput value="5" min={10} set_value={set_value} />)
+    await userEvent.type(screen.getByDisplayValue(/5/), "{Enter}")
+    expect(screen.queryAllByDisplayValue(/5/).length).toBe(1);
+    expect(set_value).not.toHaveBeenCalled();
+});
+
+it('has a default mininum of zero', async () => {
+    let set_value = jest.fn();
+    render(<IntegerInput value="-1" set_value={set_value} />)
     await userEvent.type(screen.getByDisplayValue(/-1/), "{Enter}")
     expect(screen.queryAllByDisplayValue(/-1/).length).toBe(1);
     expect(set_value).not.toHaveBeenCalled();
@@ -62,8 +70,8 @@ it('undoes the change on escape', async () => {
 });
 
 it('renders values less than the minimum as invalid', () => {
-    render(<IntegerInput value="-42" min="0" />)
-    expect(screen.getByDisplayValue(/-42/)).toBeInvalid()
+    render(<IntegerInput value="12" min="42" />)
+    expect(screen.getByDisplayValue(/12/)).toBeInvalid()
 });
 
 it('renders values more than the minimum as valid', () => {
