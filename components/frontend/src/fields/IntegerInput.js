@@ -4,15 +4,16 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function EditableIntegerInput(props) {
-    let { editableLabel, label, prefix, set_value, unit, ...otherProps } = props;
+    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
+    const minValue = min || 0;
 
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
             return false
         }
-        if (props.min !== null && Number(a_value) < Number(props.min)) {
+        if (Number(a_value) < Number(minValue)) {
             return false
         }
         if (props.max !== null && Number(a_value) > Number(props.max)) {
@@ -34,10 +35,11 @@ function EditableIntegerInput(props) {
                 focus
                 label={editableLabel || label}
                 labelPosition={unit ? "right" : "left"}
+                min={minValue}
                 onBlur={() => { submit_if_changed_and_valid() }}
                 onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") {submit_if_changed_and_valid()}
+                    if (event.key === "Enter") { submit_if_changed_and_valid() }
                     if (event.key === "Escape") { setValue(initialValue) }
                 }}
                 type="number"
