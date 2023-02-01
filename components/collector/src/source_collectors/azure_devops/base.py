@@ -54,25 +54,27 @@ class AzureDevopsJobs(SourceCollector):
         """Override to parse the jobs."""
         entities = Entities()
         for job in (await responses[0].json())["value"]:
-            if not self._include_job(job):
-                continue
+            if not job.get("latestCompletedBuild", {}).get("result"):
+                continue  # The job has no completed builds
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
             build_status = self._latest_build_result(job)
-            build_date_time = self._latest_build_date_time(job)
-            entities.append(
-                Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status)
-            )
+            build_dt_str = str(self._latest_build_date_time(job).date()) if self._latest_build_date_time(job) else ""
+            entities.append(Entity(
+                key=name,
+                name=name,
+                url=url,
+                build_date=build_dt_str,
+                build_status=build_status,
+            ))
         return entities
 
-    def _include_job(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether this job should be included."""
-        if not job.get("latestCompletedBuild", {}).get("result"):
-            return False  # The job has no completed builds
         jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(job["name"], jobs_to_include):
+        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["name"], jobs_to_include):
             return False
-        return not match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
+        return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
 
     @staticmethod
     def _latest_build_result(job: Job) -> str:
@@ -80,9 +82,9 @@ class AzureDevopsJobs(SourceCollector):
         return str(job["latestCompletedBuild"]["result"])
 
     @staticmethod
-    def _latest_build_date_time(job: Job) -> datetime:
+    def _latest_build_date_time(job: Job) -> datetime | None:
         """Return the finish time of the latest build of the job."""
-        return parse(job["latestCompletedBuild"]["finishTime"])
+        return parse(job["latestCompletedBuild"]["finishTime"]) if "finishTime" in job["latestCompletedBuild"] else None
 
     @staticmethod
     def __job_name(job: Job) -> str:

@@ -44,10 +44,29 @@ class AzureDevopsJobsTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
                 _links=dict(web=dict(href=f"{self.url}/build")),
                 latestCompletedBuild=dict(result="failed", finishTime="2019-10-15T12:24:10.1905868Z"),
             ),
-            dict(path=self.path, name="no_completed_builds"),
-            dict(path=self.path, name="include_but_ignore_by_re", latestCompletedBuild=dict(result="failed")),
-            dict(path=self.path, name="dont_include_by_re", latestCompletedBuild=dict(result="failed")),
-            dict(path=r"\\", name="include_but_ignore_by_name", latestCompletedBuild=dict(result="failed")),
+            dict(
+                path=self.path,
+                name="no_completed_builds",
+                _links=dict(web=dict(href=f"{self.url}/build")),
+            ),
+            dict(
+                path=self.path,
+                name="include_but_ignore_by_re",
+                _links=dict(web=dict(href=f"{self.url}/build")),
+                latestCompletedBuild=dict(result="failed"),
+            ),
+            dict(
+                path=self.path,
+                name="dont_include_by_re",
+                _links=dict(web=dict(href=f"{self.url}/build")),
+                latestCompletedBuild=dict(result="failed"),
+            ),
+            dict(
+                path=r"\\",
+                name="include_but_ignore_by_name",
+                _links=dict(web=dict(href=f"{self.url}/build")),
+                latestCompletedBuild=dict(result="failed"),
+            ),
         ]
         self.expected_entities = [
             dict(

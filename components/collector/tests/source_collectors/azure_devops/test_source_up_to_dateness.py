@@ -42,7 +42,7 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
 
     async def test_age_of_pipeline(self):
         """Test that the age of the pipeline is returned."""
-        self.set_source_parameter("jobs_to_include", ["pipeline"])
+        self.set_source_parameter("jobs_to_include", ["folder/pipeline"])
         response = await self.collect(get_request_json_return_value=self.build_json)
         self.assert_measurement(response, value=self.expected_age, landing_url=f"{self.url}/_build")
 

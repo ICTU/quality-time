@@ -14,8 +14,8 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
         Also test that pipelines can be included and ignored by status, by name, and by regular expression.
         """
         self.set_source_parameter("failure_type", ["failed"])
-        self.set_source_parameter("jobs_to_include", ["include.*"])
-        self.set_source_parameter("jobs_to_ignore", ["include_but_ignore_by_name", "folder/.*ignore.*"])
+        self.set_source_parameter("jobs_to_include", ["folder/include.*"])
+        self.set_source_parameter("jobs_to_ignore", ["folder/include_but_ignore_by_name", "folder/.*ignore.*"])
         response = await self.collect(
             get_request_json_return_value=dict(
                 value=self.jobs
@@ -24,6 +24,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
                         path=rf"{self.path}\\subfolder",
                         name="include_pipeline",
                         latestCompletedBuild=dict(result="canceled"),
+                        _links=dict(web=dict(href=f"{self.url}/build")),
                     ),
                 ]
             )
