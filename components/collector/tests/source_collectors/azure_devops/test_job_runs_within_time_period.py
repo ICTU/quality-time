@@ -76,6 +76,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
         expected_entities = [
             dict(
                 name=f"{now_date_str.replace('-', '')}.1",
+                pipeline=self.pipelines['value'][0]['name'],
                 key=f"{self.pipelines['value'][0]['id']}-{now_date_str.replace('-', '')}_1",  # safe_entity_key
                 url=f"{self.url}/_build/results?buildId=6",
                 build_date=now_date_str,
