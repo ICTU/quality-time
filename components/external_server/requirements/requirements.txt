@@ -488,9 +488,9 @@ requests==2.28.2 \
     --hash=sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa \
     --hash=sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf
     # via -r ../../../requirements/requests.in
-setuptools==67.0.0 \
-    --hash=sha256:883131c5b6efa70b9101c7ef30b2b7b780a4283d5fc1616383cdf22c83cbefe6 \
-    --hash=sha256:9d790961ba6219e9ff7d9557622d2fe136816a264dd01d5997cfc057d804853d
+setuptools==67.1.0 \
+    --hash=sha256:a7687c12b444eaac951ea87a9627c4f904ac757e7abdc5aac32833234af90378 \
+    --hash=sha256:e261cdf010c11a41cb5cb5f1bf3338a7433832029f559a6a7614bd42a967c300
     # via
     #   gevent
     #   zope-event

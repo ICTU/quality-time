@@ -8,9 +8,9 @@ alabaster==0.7.13 \
     --hash=sha256:1ee19aca801bbabb5ba3f5f258e4422dfa86f82f3e9cefb0859b283cdd7f62a3 \
     --hash=sha256:a27a4a084d5e690e16e01e03ad2b2e552c61a65469419b907243193de1a84ae2
     # via sphinx
-astroid==2.13.4 \
-    --hash=sha256:805d47d685a490f4024e3744064e919998b0eef6619e6ea6d2052deec5333fd5 \
-    --hash=sha256:fe430a1dcc6af3abbccd29ba9f2544dcafc0610d37018b5102c232ff917e4bbf
+astroid==2.13.5 \
+    --hash=sha256:6891f444625b6edb2ac798829b689e95297e100ddf89dbed5a8c610e34901501 \
+    --hash=sha256:df164d5ac811b9f44105a72b8f9d5edfb7b5b2d7e979b04ea377a77b3229114a
     # via pylint
 babel==2.11.0 \
     --hash=sha256:1ad3eca1c885218f6dce2ab67291178944f810a10a9b5f3cb8382a5a232b64fe \
@@ -20,9 +20,9 @@ bandit==1.7.4 \
     --hash=sha256:2d63a8c573417bae338962d4b9b06fbc6080f74ecd955a092849e1e65c717bd2 \
     --hash=sha256:412d3f259dab4077d0e7f0c11f50f650cc7d10db905d98f6520a95a18049658a
     # via -r ../../requirements/dev.in
-beautifulsoup4==4.11.1 \
-    --hash=sha256:58d5c3d29f5a36ffeb94f02f0d786cd53014cf9b3b3951d42e0080d8a9498d30 \
-    --hash=sha256:ad9aa55b65ef2808eb405f46cf74df7fcb7044d5cbc26487f96eb2ef2e436693
+beautifulsoup4==4.11.2 \
+    --hash=sha256:0e79446b10b3ecb499c1556f7e228a53e64a2bfcebd455f370d8927cb5b59e39 \
+    --hash=sha256:bc4bdda6717de5a2987436fb8d72f45dc90dd856bdfd512a1314ce90349a0106
     # via furo
 black==22.12.0 \
     --hash=sha256:101c69b23df9b44247bd88e1d7e90154336ac4992502d4197bdac35dd7ee3320 \
@@ -767,9 +767,9 @@ safety==2.3.5 \
     --hash=sha256:2227fcac1b22b53c1615af78872b48348661691450aa25d6704a5504dbd1f7e2 \
     --hash=sha256:a60c11f8952f412cbb165d70cb1f673a3b43a2ba9a93ce11f97e6a4de834aa3a
     # via -r ../../requirements/dev.in
-setuptools==67.0.0 \
-    --hash=sha256:883131c5b6efa70b9101c7ef30b2b7b780a4283d5fc1616383cdf22c83cbefe6 \
-    --hash=sha256:9d790961ba6219e9ff7d9557622d2fe136816a264dd01d5997cfc057d804853d
+setuptools==67.1.0 \
+    --hash=sha256:a7687c12b444eaac951ea87a9627c4f904ac757e7abdc5aac32833234af90378 \
+    --hash=sha256:e261cdf010c11a41cb5cb5f1bf3338a7433832029f559a6a7614bd42a967c300
     # via
     #   cyclonedx-python-lib
     #   safety
@@ -823,9 +823,9 @@ sphinxcontrib-devhelp==1.0.2 \
     --hash=sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e \
     --hash=sha256:ff7f1afa7b9642e7060379360a67e9c41e8f3121f2ce9164266f61b9f4b338e4
     # via sphinx
-sphinxcontrib-htmlhelp==2.0.0 \
-    --hash=sha256:d412243dfb797ae3ec2b59eca0e52dac12e75a241bf0e4eb861e450d06c6ed07 \
-    --hash=sha256:f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2
+sphinxcontrib-htmlhelp==2.0.1 \
+    --hash=sha256:0cbdd302815330058422b98a113195c9249825d681e18f11e8b1f78a2f11efff \
+    --hash=sha256:c38cb46dccf316c79de6e5515e1770414b797162b23cd3d06e67020e1d2a6903
     # via sphinx
 sphinxcontrib-jsmath==1.0.1 \
     --hash=sha256:2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178 \
