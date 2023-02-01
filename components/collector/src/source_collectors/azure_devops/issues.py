@@ -85,11 +85,8 @@ class AzureDevopsIssues(SourceCollector):
         """
         return str(len(self._issue_ids_to_fetch))
 
-    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-R0201,PYL-W0613
-        """Return whether this issue should be counted."""
-        return True
-
-    async def _work_items(self, responses: SourceResponses) -> list[dict]:
+    @staticmethod
+    async def _work_items(responses: SourceResponses) -> list[dict]:
         """Return the work items, if any."""
         if len(responses) <= 1:  # the first call is to workItems, which only returns ids
             return []
@@ -97,4 +94,4 @@ class AzureDevopsIssues(SourceCollector):
         for response in responses[1:]:
             if response_json := await response.json():
                 all_work_items.extend(response_json.get("value"))
-        return [work_item for work_item in all_work_items if self._include_issue(work_item)]
+        return all_work_items
