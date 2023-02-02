@@ -90,8 +90,12 @@ Feature: metric
     And the client does not accept the technical debt
     Then the metric status is "target_not_met"
     And the metric debt_target is "None"
-    When the client waits a second
-    And the client does not accept the technical debt
+    When the client changes the metric debt_target to "100"
+    Then the metric debt_target is "100"
+    When the client does not accept the technical debt
+    Then the metric status is "target_not_met"
+    And the metric debt_target is "None"
+    When the client does not accept the technical debt
     Then the metric status is "target_not_met"
     And the metric debt_target is "None"
 

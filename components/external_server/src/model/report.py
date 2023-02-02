@@ -27,5 +27,11 @@ class Report(SharedReport):
     def desired_response_time(self, status: str) -> int:
         """Return the desired response time for the metric status."""
         # Note that the frontend also has these constant, in src/defaults.js.
-        default = dict(debt_target_met=60, target_not_met=7, unknown=3, near_target_met=21).get(status, 3)
+        defaults = dict(
+            debt_target_met=60,
+            near_target_met=21,
+            target_not_met=7,
+            unknown=3,
+        )
+        default = defaults.get(status, defaults["unknown"])
         return int(self.get("desired_response_times", {}).get(status, default))

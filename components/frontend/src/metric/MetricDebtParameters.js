@@ -24,13 +24,13 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
             value={metric.accept_debt ? "yes" : "no"}
             options={[
                 { key: "yes", text: "Yes", value: "yes" },
-                { key: "yes+", text: "Yes, and also set technical debt target and end date", value: "yes+" },
+                { key: "yes_completely", text: "Yes, and also set technical debt target and end date", value: "yes_completely" },
                 { key: "no", text: "No", value: "no" },
-                { key: "no+", text: "No, and also clear technical debt target and end date", value: "no+" }
+                { key: "no_completely", text: "No, and also clear technical debt target and end date", value: "no_completely" }
             ]}
             set_value={(value) => {
                 const acceptDebt = value.startsWith("yes")
-                if (value.endsWith("+")) {
+                if (value.endsWith("completely")) {
                     set_metric_debt(metric_uuid, acceptDebt, reload)
                 } else {
                     set_metric_attribute(metric_uuid, "accept_debt", acceptDebt, reload)

@@ -1,12 +1,14 @@
 """Unit tests for the metric routes."""
 
+from datetime import date, timedelta
 from unittest.mock import Mock, patch
 
 import requests
 
 from shared_data_model import DATA_MODEL
-from shared.model.report import Report
 from shared.utils.type import User
+
+from model.report import Report
 
 
 from routes import (
@@ -399,9 +401,11 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
             post_metric_debt(METRIC_ID, self.database),
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        desired_response_time = Report(self.DATA_MODEL, updated_report).desired_response_time("debt_target_met")
+        expected_date = date.today() + timedelta(days=desired_response_time)
         self.assert_delta(
-            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
-            "from 'not accepted' to 'accepted'",
+            "accepted debt from 'False' to 'True' and the debt target from 'None' to '100' and the debt end date from "
+            f"'None' to '{expected_date.isoformat()}' of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
         self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
@@ -411,12 +415,15 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
         request.json = dict(accept_debt=True)
         self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        desired_response_time = Report(self.DATA_MODEL, updated_report).desired_response_time("debt_target_met")
+        expected_date = (date.today() + timedelta(days=desired_response_time)).isoformat()
         self.assert_delta(
-            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
-            "from 'not accepted' to 'accepted'",
+            f"accepted debt from 'False' to 'True' and the debt end date from 'None' to '{expected_date}' "
+            "of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
         self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+        self.assertEqual(expected_date, updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"])
 
     def test_turn_metric_technical_debt_off_that_is_already_off(self, request):
         """Test that turning debt off when it's already off does nothing."""
@@ -431,11 +438,11 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
         self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "technical debt for metric 'name' of subject 'Subject' in report 'Report' from "
-            "'not accepted' to 'not accepted'",
+            "debt target from '100' to 'None' of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
         self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+        self.assertEqual(None, updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"])
 
     def test_turn_metric_technical_debt_off_that_is_already_off_but_has_debt_end_date(self, request):
         """Test that turning debt off when it's already off does reset debt end date."""
@@ -444,10 +451,10 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
         self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "technical debt for metric 'name' of subject 'Subject' in report 'Report' from "
-            "'not accepted' to 'not accepted'",
+            "debt end date from '2000-01-01' to 'None' of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
+        self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
         self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"])
 
     def test_turn_metric_technical_debt_off_without_existing_measurement(self, request):
@@ -457,8 +464,7 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
         self.assertDictEqual(dict(ok=True), post_metric_debt(METRIC_ID, self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
-            "technical debt for metric 'name' of subject 'Subject' in report 'Report' "
-            "from 'accepted' to 'not accepted'",
+            "accepted debt from 'True' to 'False' of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
         self.assertFalse(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])

@@ -154,7 +154,9 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     if new_accept_debt:
+        # Get the latest measurement to get the current metric value:
         latest = latest_measurement(database, Metric(data_model, metric, metric_uuid))
+        # Only if the metric has at least one measurement can a technical debt target be set:
         new_debt_target = latest.value() if latest else None
         new_end_date = (date.today() + timedelta(days=report.desired_response_time("debt_target_met"))).isoformat()
     else:
@@ -166,11 +168,16 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     if old_accept_debt == new_accept_debt and old_debt_target == new_debt_target and old_end_date == new_end_date:
         return dict(ok=True)  # Nothing to do
     metric.update(accept_debt=new_accept_debt, debt_target=new_debt_target, debt_end_date=new_end_date)
-    description = (
-        f"{{user}} changed the technical debt for metric '{metric.name}' of subject "
-        f"""'{subject.name}' in report '{report.name}' from '{"accepted" if old_accept_debt else "not accepted"}' """
-        f"""to '{"accepted" if new_accept_debt else "not accepted"}'."""
-    )
+    description = "{user} changed"
+    attribute_descriptions = []
+    if new_accept_debt != old_accept_debt:
+        attribute_descriptions.append(f" the accepted debt from '{old_accept_debt}' to '{new_accept_debt}'")
+    if new_debt_target != old_debt_target:
+        attribute_descriptions.append(f" the debt target from '{old_debt_target}' to '{new_debt_target}'")
+    if new_end_date != old_end_date:
+        attribute_descriptions.append(f" the debt end date from '{old_end_date}' to '{new_end_date}'")
+    description += " and".join(attribute_descriptions)
+    description += f" of metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
     if latest := latest_measurement(database, Metric(data_model, metric, metric_uuid)):
         return insert_new_measurement(database, latest.copy())
