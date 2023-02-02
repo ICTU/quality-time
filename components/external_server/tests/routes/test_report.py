@@ -15,6 +15,7 @@ from routes import (
     get_report,
     get_report_issue_tracker_suggestions,
     get_report_issue_tracker_options,
+    get_report_measurements,
     post_report_attribute,
     post_report_copy,
     post_report_import,
@@ -657,3 +658,17 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)
+
+
+class ReportMeasurementsTest(ReportTestCase):
+    """Unit tests for getting the measurements for a report."""
+
+    def test_no_report(self):
+        """Test no report."""
+        self.database.reports.find.return_value = []
+        self.assertEqual(dict(measurements=[]), get_report_measurements(REPORT_ID, self.database))
+
+    def test_with_report(self):
+        """Test a report with measurements."""
+        self.database.measurements.find.return_value = [{"sources": []}]
+        self.assertEqual(dict(measurements=[{"sources": []}]), get_report_measurements(REPORT_ID, self.database))

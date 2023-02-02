@@ -44,7 +44,7 @@ def check_url_availability(
     try:
         response = requests.get(url, auth=credentials, headers=headers, timeout=10)
         return dict(status_code=response.status_code, reason=response.reason)
-    except Exception as exception_instance:  # pylint: disable=broad-except
+    except Exception as exception_instance:
         exception_reason = str(exception_instance) or exception_instance.__class__.__name__
         # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
         # that led to the error:

@@ -33,6 +33,7 @@ from .report import (
     get_report,
     get_report_issue_tracker_suggestions,
     get_report_issue_tracker_options,
+    get_report_measurements,
     post_report_import,
     post_report_copy,
     post_report_attribute,
