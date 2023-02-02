@@ -105,3 +105,16 @@ def import_failed(context):
     """Check the JSON."""
     assert_equal(400, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
+
+
+@then('the report {has_or_had} "{expected_number}" measurements')
+def get_measurements(context, has_or_had, expected_number):
+    """Get the recent measurements of a report."""
+    if has_or_had == "had":
+        context.report_date = "2020-11-17T10:00:00Z"
+        min_report_date_parameter = "?min_report_date=2020-11-16T00:00:00Z"
+    else:
+        min_report_date_parameter = ""
+
+    response = context.get(f"report/{context.uuid['report']}/measurements{min_report_date_parameter}")
+    assert_equal(int(expected_number), len(response["measurements"]))

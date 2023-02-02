@@ -8,13 +8,12 @@ from pymongo.database import Database
 from shared.database.datamodels import latest_datamodel
 from shared.database.reports import insert_new_report
 from shared.model.subject import Subject
-from shared.utils.type import MetricId, ReportId, SubjectId
+from shared.utils.type import ReportId, SubjectId
 
 from database.datamodels import default_subject_attributes
-from database.measurements import measurements_by_metric
-from database.reports import latest_report_for_uuids, metrics_of_subject, latest_reports
+from database.reports import latest_report_for_uuids, latest_reports
 from model.actions import copy_subject, move_item
-from utils.functions import report_date_time, sanitize_html, uuid
+from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -114,18 +113,3 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
     )
     uuids = [report.uuid, subject.uuid]
     return insert_new_report(database, delta_description, uuids, report)
-
-
-@bottle.get("/api/v3/subject/<subject_uuid>/measurements", authentication_required=False)
-def get_subject_measurements(subject_uuid: SubjectId, database: Database):
-    """Return all measurements for the subject between the date of the report and the minimum date."""
-    date_time = report_date_time()
-    min_date_time = report_date_time("min_report_date")
-    metric_uuids: list[MetricId] = metrics_of_subject(database, subject_uuid, date_time)
-    return dict(
-        measurements=list(
-            measurements_by_metric(
-                database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time
-            )
-        )
-    )

@@ -57,5 +57,4 @@ from .subject import (
     post_new_subject,
     post_subject_attribute,
     post_subject_copy,
-    get_subject_measurements,
 )

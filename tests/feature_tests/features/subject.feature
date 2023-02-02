@@ -72,17 +72,3 @@ Feature: subject
     When the client changes the subject position to "last"
     Then the report's first subject has name "A"
     And the report's last subject has name "C"
-
-  Scenario: get recent measurements of subject
-    Given an existing subject
-    And an existing metric
-    And an existing source
-    When the collector measures "0"
-    Then the subject has "1" measurements
-
-  Scenario: recent subject has no old measurements
-    Given an existing subject
-    And an existing metric
-    And an existing source
-    When the collector measures "0"
-    Then the subject had "0" measurements

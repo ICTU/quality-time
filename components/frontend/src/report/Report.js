@@ -8,7 +8,7 @@ import { Tag } from '../widgets/Tag';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
-import { set_report_attribute } from '../api/report';
+import { get_report_measurements, set_report_attribute } from '../api/report';
 import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
@@ -82,6 +82,17 @@ export function Report({
         window.scrollBy(0, 163);  // Correct for menubar and subject title margin
     }
 
+    const [measurements, setMeasurements] = useState([]);
+    useEffect(() => {
+        if (dates.length > 1) {
+            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime()}).at(0);
+            get_report_measurements(report.report_uuid, report_date, minReportDate).then(json => {
+                setMeasurements(json.measurements ?? [])
+            })
+        }
+        // eslint-disable-next-line
+    }, [dates]);
+
     const [tags, setTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report
@@ -117,6 +128,7 @@ export function Report({
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 issueSettings={issueSettings}
+                measurements={measurements}
                 reload={reload}
                 report={report}
                 reports={reports}

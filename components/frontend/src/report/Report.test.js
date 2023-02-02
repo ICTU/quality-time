@@ -1,13 +1,30 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import * as fetch_server_api from '../api/fetch_server_api';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
+jest.mock('../api/fetch_server_api', () => {
+    const originalModule = jest.requireActual('../api/fetch_server_api');
+
+    return {
+        __esModule: true,
+        ...originalModule,
+        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [] }),
+    };
+});
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
 const datamodel = {
     subjects: {
-        subject_type: { name: "Subject type", metrics: ['metric_type'] } },
-        metrics: { metric_type: { name: "Metric type", tags: [] }
+        subject_type: { name: "Subject type", metrics: ['metric_type'] }
+    },
+    metrics: {
+        metric_type: { name: "Metric type", tags: [] }
     }
 }
 const report = {
@@ -42,12 +59,12 @@ const report = {
     }
 };
 
-function renderReport(reportToRender, { report_date = null, hiddenColumns = [], handleSort = null, sortColumn = null, sortDirection = "ascending" } = {}) {
+function renderReport(reportToRender, { dates = [], report_date = null, hiddenColumns = [], handleSort = null, sortColumn = null, sortDirection = "ascending" } = {}) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Report
-                    dates={[]}
+                    dates={dates}
                     reports={[reportToRender]}
                     report={reportToRender}
                     report_date={report_date}
@@ -124,3 +141,18 @@ it('filters by tag', async () => {
     fireEvent.click(screen.getAllByText(/tag/)[0])
     expect(screen.getAllByText(/Metric name/).length).toBe(1)
 });
+
+it('fetches measurements if nr dates > 1', async () => {
+    await act(async () => { renderReport(report, { dates: [new Date(Date.UTC(2022, 3, 25)), new Date(Date.UTC(2022, 3, 28))] }) });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?min_report_date=2022-04-25T00:00:00.000Z");
+})
+
+it('fetches measurements if nr dates > 1 and time traveling', async () => {
+    await act(async () => { renderReport(report, { dates: [new Date(Date.UTC(2022, 3, 25)), new Date(Date.UTC(2022, 3, 26))], report_date: new Date(Date.UTC(2022, 3, 26)) }) });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?report_date=2022-04-26T00:00:00.000Z&min_report_date=2022-04-25T00:00:00.000Z");
+})
+
+it('does not fetch measurements if nr dates == 1', async () => {
+    await act(async () => { renderReport(report, { dates: [new Date(2022, 3, 26)] }) });
+    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled();
+})

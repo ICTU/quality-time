@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { DataModel } from '../context/DataModel';
-import { get_subject_measurements } from '../api/subject';
 import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
@@ -93,6 +92,7 @@ export function Subject({
     hideMetricsNotRequiringAction,
     issueSettings,
     last_subject,
+    measurements,
     report,
     report_date,
     reports,
@@ -106,22 +106,7 @@ export function Subject({
 }) {
     const subject = report.subjects[subject_uuid];
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
-
-    const [measurements, setMeasurements] = useState([]);
     const dataModel = useContext(DataModel)
-
-    useEffect(() => {
-        if (dates.length > 1) {
-            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime()}).at(0);
-            get_subject_measurements(subject_uuid, report_date, minReportDate).then(json => {
-                if (json.ok !== false) {
-                    setMeasurements(json.measurements)
-                }
-            })
-        }
-        // eslint-disable-next-line
-    }, [dates]);
-
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn, report, measurements);

@@ -117,7 +117,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
         else:  # pragma: no feature-test-cover
             with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
                 logging.info("LDAP bind for %s succeeded", username)
-    except Exception as reason:
+    except Exception as reason:  # pylint: disable=broad-exception-caught
         user = User(username)
         logging.warning("LDAP error: %s", reason)
     else:

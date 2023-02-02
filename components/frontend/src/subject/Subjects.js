@@ -16,6 +16,7 @@ export function Subjects({
     hiddenColumns,
     hideMetricsNotRequiringAction,
     issueSettings,
+    measurements,
     reload,
     report,
     reports,
@@ -43,6 +44,7 @@ export function Subjects({
                         issueSettings={issueSettings}
                         key={subject_uuid}
                         last_subject={index === last_index}
+                        measurements={measurements}
                         report={report}
                         report_date={report_date}
                         reports={reports}

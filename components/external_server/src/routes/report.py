@@ -235,9 +235,7 @@ def get_report_measurements(report_uuid: ReportId, database: Database):
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports(database, data_model, date_time)
     reports = [report for report in reports if report.uuid == report_uuid]
-    if not reports:
-        return dict(measurements=[])
-    metric_uuids = reports[0].metric_uuids
+    metric_uuids = reports[0].metric_uuids if reports else []
     return dict(
         measurements=list(
             measurements_by_metric(

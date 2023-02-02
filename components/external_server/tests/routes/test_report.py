@@ -672,3 +672,11 @@ class ReportMeasurementsTest(ReportTestCase):
         """Test a report with measurements."""
         self.database.measurements.find.return_value = [{"sources": []}]
         self.assertEqual(dict(measurements=[{"sources": []}]), get_report_measurements(REPORT_ID, self.database))
+
+    @patch("bottle.request")
+    def test_with_report_and_time_travel(self, request):
+        """Test a report with measurements."""
+        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.measurements.find.return_value = [{"sources": []}]
+        self.assertEqual(dict(measurements=[{"sources": []}]), get_report_measurements(REPORT_ID, self.database))
