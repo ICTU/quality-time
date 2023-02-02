@@ -31,7 +31,7 @@ class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Calculate the average lead time of the completed work items."""
-        if work_items := (await self._work_items(responses)):
+        if work_items := await self._work_items(responses):
             lead_times = [self.__lead_time(item) for item in work_items]
             return str(round(mean(lead_times)))
         return None

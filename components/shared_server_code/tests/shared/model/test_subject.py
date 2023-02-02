@@ -54,7 +54,7 @@ class SubjectTest(DataModelTestCase):
         metric = Metric(self.DATA_MODEL, dict(tags=["tag"]), METRIC_ID)
         subject = Subject(
             self.DATA_MODEL,
-            dict(name="Subject", metrics=({METRIC_ID: metric})),
+            dict(name="Subject", metrics={METRIC_ID: metric}),
             SUBJECT_ID,
             self.report,
         )
@@ -67,7 +67,7 @@ class SubjectTest(DataModelTestCase):
         metric = Metric(self.DATA_MODEL, dict(tags=["tag"]), METRIC_ID)
         subject = Subject(
             self.DATA_MODEL,
-            dict(name="Subject", metrics=({METRIC_ID: metric})),
+            dict(name="Subject", metrics={METRIC_ID: metric}),
             SUBJECT_ID,
             self.report,
         )
@@ -78,7 +78,7 @@ class SubjectTest(DataModelTestCase):
         metric = Metric(self.DATA_MODEL, dict(type="violations"), METRIC_ID)
         subject = Subject(
             self.DATA_MODEL,
-            dict(name="Subject", metrics=({METRIC_ID: metric})),
+            dict(name="Subject", metrics={METRIC_ID: metric}),
             SUBJECT_ID,
             self.report,
         )

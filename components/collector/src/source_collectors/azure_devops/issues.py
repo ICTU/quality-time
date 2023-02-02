@@ -27,7 +27,7 @@ class AzureDevopsIssues(SourceCollector):
         wiql_query_segments = ["Select [System.Id] From WorkItems"]
         wiql_parameter = self._parameter("wiql")
         if wiql_parameter := cast(  # type: ignore[redundant-cast]
-                str, wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter
+            str, wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter
         ):
             if not wiql_parameter.startswith("WHERE"):
                 wiql_query_segments.append("WHERE")
@@ -40,12 +40,13 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> SourceResponses:
         """Separately get each work item from the API."""
-        api_url = URL((await self._api_url()).replace('wit/wiql', 'wit/workitemsbatch'))
+        api_url = URL((await self._api_url()).replace("wit/wiql", "wit/workitemsbatch"))
         batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
-            await self._session.post(api_url, auth=auth,
-                                     json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"})
+            await self._session.post(
+                api_url, auth=auth, json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"}
+            )
             for id_batch in id_iter
         ]
         return SourceResponses(responses=responses, api_url=api_url)
@@ -94,6 +95,6 @@ class AzureDevopsIssues(SourceCollector):
             return []
         all_work_items = []
         for response in responses[1:]:
-            if response_json := (await response.json()):
+            if response_json := await response.json():
                 all_work_items.extend(response_json.get("value"))
         return [work_item for work_item in all_work_items if self._include_issue(work_item)]
