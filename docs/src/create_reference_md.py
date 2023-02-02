@@ -6,16 +6,16 @@ import re
 from shared_data_model import DATA_MODEL
 from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
 
-TYPE_DESCRIPTION = dict(
-    url="URL",
-    string="String",
-    multiple_choice="Multiple choice",
-    password="Password",
-    integer="Integer",
-    date="Date",
-    single_choice="Single choice",
-    multiple_choice_with_addition="Multiple choice with addition",
-)
+TYPE_DESCRIPTION = {
+    "url": "URL",
+    "string": "String",
+    "multiple_choice": "Multiple choice",
+    "password": "Password",
+    "integer": "Integer",
+    "date": "Date",
+    "single_choice": "Single choice",
+    "multiple_choice_with_addition": "Multiple choice with addition",
+}
 
 
 def get_model_name(model: NamedModel) -> str:

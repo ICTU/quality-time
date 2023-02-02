@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --resolver=backtracking requirements-dev.in
 #
-astroid==2.13.5 \
-    --hash=sha256:6891f444625b6edb2ac798829b689e95297e100ddf89dbed5a8c610e34901501 \
-    --hash=sha256:df164d5ac811b9f44105a72b8f9d5edfb7b5b2d7e979b04ea377a77b3229114a
+astroid==2.14.1 \
+    --hash=sha256:23c718921acab5f08cbbbe9293967f1f8fec40c336d19cd75dc12a9ea31d2eb2 \
+    --hash=sha256:bd1aa4f9915c98e8aaebcd4e71930154d4e8c9aaf05d35ac0a63d1956091ae3f
     # via pylint
 bandit==1.7.4 \
     --hash=sha256:2d63a8c573417bae338962d4b9b06fbc6080f74ecd955a092849e1e65c717bd2 \
@@ -555,9 +555,9 @@ pygments==2.14.0 \
     --hash=sha256:b3ed06a9e8ac9a9aae5a6f5dbe78a8a58655d17b43b93c078f094ddc476ae297 \
     --hash=sha256:fa7bd7bd2771287c0de303af8bfdfc731f51bd2c6a47ab69d117138893b82717
     # via rich
-pylint==2.15.10 \
-    --hash=sha256:9df0d07e8948a1c3ffa3b6e2d7e6e63d9fb457c5da5b961ed63106594780cc7e \
-    --hash=sha256:b3dc5ef7d33858f297ac0d06cc73862f01e4f2e74025ec3eff347ce0bc60baf5
+pylint==2.16.0 \
+    --hash=sha256:43ee36c9b690507ef9429ce1802bdc4dcde49454c3d665e39c23791567019c0a \
+    --hash=sha256:55e5cf00601c4cfe2e9404355c743a14e63be85df7409da7e482ebde5f9f14a1
     # via -r ../../requirements/dev.in
 pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
