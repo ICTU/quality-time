@@ -23,3 +23,15 @@ class Report(SharedReport):
             parameters.get("username", ""), parameters.get("password", ""), parameters.get("private_token", "")
         )
         return IssueTracker(url, issue_parameters, credentials)
+
+    def desired_response_time(self, status: str) -> int:
+        """Return the desired response time for the metric status."""
+        # Note that the frontend also has these constant, in src/defaults.js.
+        defaults = dict(
+            debt_target_met=60,
+            near_target_met=21,
+            target_not_met=7,
+            unknown=3,
+        )
+        default = defaults.get(status, defaults["unknown"])
+        return int(self.get("desired_response_times", {}).get(status, default))

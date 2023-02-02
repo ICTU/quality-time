@@ -90,7 +90,7 @@ it('switches tabs to technical debt', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
     await act(async () => fireEvent.click(screen.getByText(/Technical debt/)))
-    expect(screen.getAllByText(/Accepted technical debt/).length).toBe(1);
+    expect(screen.getAllByText(/Technical debt target/).length).toBe(1);
 })
 
 it('switches tabs to measurement entities', async () => {

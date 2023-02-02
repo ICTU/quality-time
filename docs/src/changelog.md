@@ -19,6 +19,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Tags were not printed correctly in the reference manual. Fixes [#5282](https://github.com/ICTU/quality-time/issues/5282).
 - Prevent users from entering negative desired response times. Fixes [#5328](https://github.com/ICTU/quality-time/issues/5328).
 
+### Added
+
+- Add options to the technical debt dropdown menu to set and clear accepted technical debt including the technical debt target and technical debt end date. Closes [#5125](https://github.com/ICTU/quality-time/issues/5125) and [#5127](https://github.com/ICTU/quality-time/issues/5127).
+
 ## v4.7.0 - 2023-01-23
 
 ### Deployment notes

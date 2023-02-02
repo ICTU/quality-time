@@ -16,6 +16,7 @@ from .metric import (
     add_metric_issue,
     delete_metric,
     post_metric_attribute,
+    post_metric_debt,
     post_metric_copy,
     post_metric_new,
     post_move_metric,

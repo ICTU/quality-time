@@ -85,6 +85,14 @@ it('sets the near target met status reaction time', async () => {
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "near_target_met": 6 }, reload);
 })
 
+it('sets the tech debt target status reaction time', async () => {
+    render_report_title();
+    fireEvent.click(screen.getByTitle(/expand/));
+    await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
+    await userEvent.type(screen.getByLabelText(/accepted technical debt/), '6{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 2 });
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "debt_target_met": 6 }, reload);
+})
+
 it('sets the issue tracker type', async () => {
     render_report_title();
     fireEvent.click(screen.getByTitle(/expand/));

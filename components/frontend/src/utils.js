@@ -38,8 +38,10 @@ export function getMetricUnit(metric, dataModel) {
 
 export function getMetricResponseDeadline(metric, report) {
     let deadline = null;
-    if (metric.status === "debt_target_met" && metric.debt_end_date) {
-        deadline = new Date(metric.debt_end_date)
+    if (metric.status === "debt_target_met") {
+        if (metric.debt_end_date) {
+            deadline = new Date(metric.debt_end_date)
+        }
     } else if ((metric.status || "unknown") in metricReactionDeadline && metric.status_start) {
         deadline = new Date(metric.status_start)
         deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))

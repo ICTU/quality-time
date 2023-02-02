@@ -21,6 +21,10 @@ export function set_metric_attribute(metric_uuid, attribute, value, reload) {
     fetch_server_api('post', `metric/${metric_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
+export function set_metric_debt(metric_uuid, value, reload) {
+    fetch_server_api('post', `metric/${metric_uuid}/debt`, { "accept_debt": value }).then(reload)
+}
+
 export function add_metric_issue(metric_uuid, reload) {
     return fetch_server_api('post', `metric/${metric_uuid}/issue/new`, {metric_url: `${window.location}#${metric_uuid}`}).then((json) => {
         if (json.ok) {
