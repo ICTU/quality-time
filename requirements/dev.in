@@ -2,7 +2,7 @@
 bandit==1.7.4
 black==22.12.0
 coverage==7.1.0
-dlint==0.13.0
+dlint==0.14.0
 mypy==0.991
 pep8-naming==0.13.3
 pip-audit==2.4.12
