@@ -40,17 +40,17 @@ class JenkinsJobs(SourceCollector):
         for job in jobs:
             if parent_job_name:
                 job["name"] = f"{parent_job_name}/{job['name']}"
-            if job.get("buildable") and self._include_job(job):
+            if job.get("buildable"):
                 yield job
             for child_job in self._jobs(job.get("jobs", []), parent_job_name=job["name"]):
                 yield child_job
 
-    def _include_job(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job should be counted."""
         jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(job["name"], jobs_to_include):
+        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["name"], jobs_to_include):
             return False
-        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
+        return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
 
     def _build_datetime(self, job: Job) -> datetime:
         """Return the date and time of the most recent build of the job."""
