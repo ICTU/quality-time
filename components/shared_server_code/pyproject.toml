@@ -21,7 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "bottle == 0.12.23",
-    "cryptography == 39.0.0",
+    "cryptography == 39.0.1",
     "packaging == 21.3",
     "pydantic == 1.10.4",
     "pymongo == 4.3.3"
