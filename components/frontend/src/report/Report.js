@@ -9,29 +9,60 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { get_report_measurements, set_report_attribute } from '../api/report';
-import { get_subject_name } from '../utils';
+import { getReportTags, getMetricTags, get_subject_name, STATUS_COLORS } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
 
-function ReportDashboard({ report, onClick, setTags, tags, reload }) {
+function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags, selectedTags, reload }) {
     const dataModel = useContext(DataModel)
     function subject_cards() {
-        return Object.entries(report.summary_by_subject).map(([subject_uuid, summary]) =>
+        const summary = {}
+        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+            summary[subject_uuid] = {}
+            dates.forEach((date) => {
+                const iso_date_string = date.toISOString().split("T")[0];
+                summary[subject_uuid][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+                Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                    const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
+                    const status = measurement?.[metric.scale]?.status ?? "unknown";
+                    summary[subject_uuid][date][STATUS_COLORS[status]] += 1
+                })
+            })
+        })
+        return Object.keys(report.subjects).map((subject_uuid) =>
             <MetricSummaryCard
                 header={get_subject_name(report.subjects[subject_uuid], dataModel)}
                 key={subject_uuid}
                 onClick={(event) => onClick(event, subject_uuid)}
-                {...summary}
+                summary={summary[subject_uuid]}
             />
         );
     }
     function tag_cards() {
-        return Object.entries(report.summary_by_tag).map(([tag, summary]) =>
+        const summary = {}
+        const tags = getReportTags(report)
+        tags.forEach((tag) => {
+            summary[tag] = {}
+            dates.forEach((date) => {
+                const iso_date_string = date.toISOString().split("T")[0];
+                summary[tag][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+                Object.values(report.subjects).forEach(subject => {
+                    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                        if (getMetricTags(metric).indexOf(tag) >= 0) {
+                            const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
+                            const status = measurement?.[metric.scale]?.status ?? "unknown";
+                            summary[tag][date][STATUS_COLORS[status]] += 1
+                        }
+                    })
+                })
+            })
+        })
+        return tags.map((tag) =>
             <MetricSummaryCard
-                header={<Tag tag={tag} selected={tags.includes(tag)} />}
+                header={<Tag tag={tag} selected={selectedTags.includes(tag)} />}
                 key={tag}
-                onClick={() => setTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
-                {...summary}
+                onClick={() => setSelectedTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
+                summary={summary[tag]}
             />
         );
     }
@@ -84,24 +115,26 @@ export function Report({
 
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
-        if (dates.length > 1) {
-            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime()}).at(0);
+        if (report) {
+            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
             get_report_measurements(report.report_uuid, report_date, minReportDate).then(json => {
                 setMeasurements(json.measurements ?? [])
             })
         }
         // eslint-disable-next-line
-    }, [dates]);
+    }, [dates, report_date]);
 
-    const [tags, setTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report
-        setTags(prev_tags => prev_tags.filter(tag => Object.keys(report.summary_by_tag || {}).includes(tag)))
+        setSelectedTags(prev_tags => prev_tags.filter(tag => getReportTags(report).includes(tag)))
     }, [report]);
 
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
     }
+    // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
+    const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
         <div id="dashboard">
             <ReportTitle
@@ -115,9 +148,11 @@ export function Report({
                 history={history} />
             <CommentSegment comment={report.comment} />
             <ReportDashboard
+                dates={dates}
+                measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                setTags={setTags}
-                tags={tags}
+                setSelectedTags={setSelectedTags}
+                selectedTags={selectedTags}
                 report={report}
                 reload={reload}
             />
@@ -135,7 +170,7 @@ export function Report({
                 report_date={report_date}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
-                tags={tags}
+                tags={selectedTags}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />

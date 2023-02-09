@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react'
 import { createMemoryHistory } from 'history';
 import {
-    capitalize, getUserPermissions, get_metric_tags, get_metric_target, get_source_name, get_subject_name,
+    capitalize, getUserPermissions, getMetricTags, get_metric_target, get_source_name, get_subject_name,
     nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery, getMetricResponseOverrun
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
@@ -70,11 +70,11 @@ it('gives users no permissions if the report is a tag report', () => {
 });
 
 it('gets the metric tags sorted', () => {
-    expect(get_metric_tags({ tags: ["foo", "bar"] })).toStrictEqual(["bar", "foo"]);
+    expect(getMetricTags({ tags: ["foo", "bar"] })).toStrictEqual(["bar", "foo"]);
 });
 
 it('gets the metric tags even if there are none', () => {
-    expect(get_metric_tags({})).toStrictEqual([]);
+    expect(getMetricTags({})).toStrictEqual([]);
 });
 
 it('gets the metric target', () => {

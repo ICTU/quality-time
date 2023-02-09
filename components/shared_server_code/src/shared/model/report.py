@@ -103,9 +103,6 @@ class Report(dict):
         """Create a summary dict of this report."""
         summary = dict(self)
         summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
-        summary["summary_by_subject"] = {}
-        summary["summary_by_tag"] = {}
-
         summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
 
         for metric in self.metrics:
@@ -113,14 +110,6 @@ class Report(dict):
             metric_status = metric.status(latest_measurement)
             color = STATUS_COLOR_MAPPING[metric_status] if metric_status is not None else "white"
             summary["summary"][color] += 1
-            summary["summary_by_subject"].setdefault(
-                metric.subject_uuid, dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
-            )[color] += 1
-            for tag in metric.get("tags", []):
-                summary["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0))[
-                    color
-                ] += 1
-
         return summary
 
     def instance_and_parents_for_uuid(

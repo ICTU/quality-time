@@ -86,8 +86,6 @@ class ReportTest(DataModelTestCase):
             report_uuid=REPORT_ID,
             subjects={SUBJECT_ID: dict(metrics=metrics)},
             summary=summary,
-            summary_by_subject={SUBJECT_ID: summary},
-            summary_by_tag=dict(tag=summary),
         )
         self.assertEqual(report_summary, self.report.summarize({}))
 

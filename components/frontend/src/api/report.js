@@ -20,6 +20,13 @@ function get_reports(report_uuid, date) {
   return fetch_server_api('get', api_with_report_date(`report/${report_uuid}`, date))
 }
 
+function get_reports_overview_measurements(date, minDate) {
+    const minReportDate = minDate.toISOString().split("T")[0] + "T00:00:00.000Z"; // Ignore the time so we get all measurements for the min date
+    const api = api_with_report_date("reports_overview/measurements", date);
+    const sep = api.indexOf("?") < 0 ? "?" : "&";
+    return fetch_server_api('get', api + `${sep}min_report_date=${minReportDate}`);
+}
+
 function get_report_measurements(report_uuid, date, minDate) {
     const minReportDate = minDate.toISOString().split("T")[0] + "T00:00:00.000Z"; // Ignore the time so we get all measurements for the min date
     const api = api_with_report_date(`report/${report_uuid}/measurements`, date);
@@ -52,7 +59,7 @@ function get_report_issue_tracker_suggestions(report_uuid, query) {
 }
 
 export {
-  add_report, copy_report, delete_report, get_reports, get_reports_overview, get_report_pdf, set_report_attribute,
-  set_report_issue_tracker_attribute, set_reports_attribute, get_report_issue_tracker_options,
-  get_report_issue_tracker_suggestions, get_report_measurements
+  add_report, copy_report, delete_report, get_reports, get_reports_overview, get_reports_overview_measurements,
+  get_report_pdf, set_report_attribute, set_report_issue_tracker_attribute, set_reports_attribute,
+  get_report_issue_tracker_options, get_report_issue_tracker_suggestions, get_report_measurements
 }

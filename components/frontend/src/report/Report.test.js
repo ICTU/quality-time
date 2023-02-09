@@ -29,26 +29,6 @@ const datamodel = {
 }
 const report = {
     report_uuid: "report_uuid",
-    summary_by_subject: {
-        subject_uuid: {
-            blue: 0,
-            red: 0,
-            green: 0,
-            yellow: 0,
-            grey: 0,
-            white: 0
-        }
-    },
-    summary_by_tag: {
-        tag: {
-            blue: 0,
-            red: 0,
-            green: 0,
-            yellow: 0,
-            grey: 0,
-            white: 0
-        }
-    },
     subjects: {
         subject_uuid: {
             type: "subject_type", name: "Subject title", metrics: {
@@ -59,7 +39,7 @@ const report = {
     }
 };
 
-function renderReport(reportToRender, { dates = [], report_date = null, hiddenColumns = [], handleSort = null, sortColumn = null, sortDirection = "ascending" } = {}) {
+function renderReport(reportToRender, { dates = [new Date()], report_date = null, hiddenColumns = [], handleSort = null, sortColumn = null, sortDirection = "ascending" } = {}) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
@@ -79,8 +59,8 @@ function renderReport(reportToRender, { dates = [], report_date = null, hiddenCo
     );
 }
 
-it('shows the report', () => {
-    renderReport(report)
+it('shows the report', async () => {
+    await act(async () => renderReport(report))
     expect(screen.getAllByText(/Subject title/).length).toBe(2)  // Once as dashboard card and once as subject header
 });
 
@@ -95,34 +75,34 @@ it('shows an error message if there was no report', () => {
 });
 
 it('hides columns on load', async () => {
-    renderReport(report, { hiddenColumns: ["status"] })
+    await act(async () => renderReport(report, { hiddenColumns: ["status"] }))
     expect(screen.queryByText(/Status/)).toBe(null)
 });
 
 it('sorts the column', async () => {
     let handleSort = jest.fn();
-    renderReport(report, { handleSort: handleSort })
+    await act(async () => renderReport(report, { handleSort: handleSort }))
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('sorts the column descending', async () => {
     let handleSort = jest.fn();
-    renderReport(report, { sortColumn: "comment", handleSort: handleSort })
+    await act(async () => renderReport(report, { sortColumn: "comment", handleSort: handleSort }))
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('stops sorting', async () => {
     let handleSort = jest.fn();
-    renderReport(report, { sortColumn: "issues", sortDirection: "descending", handleSort: handleSort })
+    await act(async () => renderReport(report, { sortColumn: "issues", sortDirection: "descending", handleSort: handleSort }))
     fireEvent.click(screen.getByText(/Issues/))
     expect(handleSort).toHaveBeenCalledWith("issues")
 });
 
 it('stop sorting on add metric', async () => {
     let handleSort = jest.fn();
-    renderReport(report, { sortColumn: "status", handleSort: handleSort })
+    await act(async () => renderReport(report, { sortColumn: "status", handleSort: handleSort }))
     await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
     await act(async () => fireEvent.click(screen.getByText(/Metric type/)))
     expect(handleSort).toHaveBeenCalledWith(null)
@@ -130,13 +110,13 @@ it('stop sorting on add metric', async () => {
 
 it('sorts another column', async () => {
     let handleSort = jest.fn();
-    renderReport(report, { sortColumn: "issues", handleSort: handleSort })
+    await act(async () => renderReport(report, { sortColumn: "issues", handleSort: handleSort }))
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('filters by tag', async () => {
-    renderReport(report)
+    await act(async () => renderReport(report))
     expect(screen.getAllByText(/Metric name/).length).toBe(2)
     fireEvent.click(screen.getAllByText(/tag/)[0])
     expect(screen.getAllByText(/Metric name/).length).toBe(1)
@@ -152,7 +132,7 @@ it('fetches measurements if nr dates > 1 and time traveling', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?report_date=2022-04-26T00:00:00.000Z&min_report_date=2022-04-25T00:00:00.000Z");
 })
 
-it('does not fetch measurements if nr dates == 1', async () => {
+it('fetches measurements if nr dates == 1', async () => {
     await act(async () => { renderReport(report, { dates: [new Date(2022, 3, 26)] }) });
-    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled();
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?min_report_date=2022-04-25T00:00:00.000Z");
 })

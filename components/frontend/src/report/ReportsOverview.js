@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
@@ -7,27 +7,55 @@ import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
-import { add_report, set_reports_attribute, copy_report } from '../api/report';
+import { add_report, get_reports_overview_measurements, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
+import { getMetricTags, getReportsTags, STATUS_COLORS } from '../utils';
 
-function ReportsDashboard({ reports, open_report, layout, reload }) {
-    const tag_counts = {};
+function ReportsDashboard({ dates, reports, open_report, measurements, layout, reload }) {
+    const reportSummary = {}
     reports.forEach((report) => {
-        Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
-            if (!Object.keys(tag_counts).includes(tag)) {
-                tag_counts[tag] = { "blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 0 }
-            }
-            Object.entries(counts).forEach(([color, color_count]) => { tag_counts[tag][color] += color_count })
+        reportSummary[report.report_uuid] = {}
+        dates.forEach((date) => {
+            const iso_date_string = date.toISOString().split("T")[0];
+            reportSummary[report.report_uuid][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+            Object.values(report.subjects).forEach((subject) => {
+                Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                    const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
+                    const status = measurement?.[metric.scale]?.status ?? "unknown";
+                    reportSummary[report.report_uuid][date][STATUS_COLORS[status]] += 1
+                })
+            })
         })
-    });
+    })
     const report_cards = reports.map((report) =>
         <MetricSummaryCard key={report.report_uuid} header={report.title}
-            onClick={(e) => open_report(e, report.report_uuid)} {...report.summary}
-        />);
-    const tag_cards = Object.entries(tag_counts).map(([tag, counts]) =>
-        <MetricSummaryCard key={tag} header={<Tag tag={tag} />} onClick={(e) => open_report(e, `tag-${tag}`)} {...counts} />
+            onClick={(e) => open_report(e, report.report_uuid)} summary={reportSummary[report.report_uuid]}
+        />
+    );
+    const tagSummary = {}
+    const tags = getReportsTags(reports)
+    tags.forEach((tag) => {
+        tagSummary[tag] = {}
+        dates.forEach((date) => {
+            const iso_date_string = date.toISOString().split("T")[0];
+            tagSummary[tag][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+            reports.forEach((report) => {
+                Object.values(report.subjects).forEach(subject => {
+                    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                        if (getMetricTags(metric).indexOf(tag) >= 0) {
+                            const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
+                            const status = measurement?.[metric.scale]?.status ?? "unknown";
+                            tagSummary[tag][date][STATUS_COLORS[status]] += 1
+                        }
+                    })
+                })
+            })
+        })
+    })
+    const tag_cards = tags.map((tag) =>
+        <MetricSummaryCard key={tag} header={<Tag tag={tag} />} onClick={(e) => open_report(e, `tag-${tag}`)} summary={tagSummary[tag]} />
     );
     return (
         <CardDashboard
@@ -38,7 +66,18 @@ function ReportsDashboard({ reports, open_report, layout, reload }) {
     )
 }
 
-export function ReportsOverview({ reports, open_report, report_date, reports_overview, reload }) {
+export function ReportsOverview({ dates, reports, open_report, report_date, reports_overview, reload }) {
+    const [measurements, setMeasurements] = useState([]);
+    useEffect(() => {
+        if (reports.length > 0 && dates.length > 0) {
+            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
+            get_reports_overview_measurements(report_date, minReportDate).then(json => {
+                setMeasurements(json.measurements ?? [])
+            })
+        }
+        // eslint-disable-next-line
+    }, [dates, report_date]);
+
     if (reports.length === 0 && report_date !== null) {
         return (
             <Message warning size='huge'>
@@ -52,7 +91,7 @@ export function ReportsOverview({ reports, open_report, report_date, reports_ove
         <div id="dashboard">
             <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
             <CommentSegment comment={reports_overview.comment} />
-            <ReportsDashboard reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
+            <ReportsDashboard dates={dates} measurements={measurements} reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
                     <AddButton

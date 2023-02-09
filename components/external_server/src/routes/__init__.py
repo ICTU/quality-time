@@ -40,7 +40,7 @@ from .report import (
     post_report_issue_tracker_attribute,
     post_report_new,
 )
-from .reports_overview import get_reports_overview, post_reports_overview_attribute
+from .reports_overview import get_reports_overview, get_reports_overview_measurements, post_reports_overview_attribute
 from .server import get_server, QUALITY_TIME_VERSION
 from .settings import get_settings, update_settings
 from .source import (

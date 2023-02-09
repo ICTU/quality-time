@@ -28,6 +28,8 @@ def measurements_by_metric(
     max_iso_timestamp: str = "",
 ):
     """Return recent measurements for the specified metrics, without entities and issue status."""
+    if not metric_uuids:
+        return []
     measurement_filter: dict = {"metric_uuid": {"$in": metric_uuids}}
     if min_iso_timestamp:
         measurement_filter["end"] = {"$gt": min_iso_timestamp}

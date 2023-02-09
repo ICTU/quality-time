@@ -69,6 +69,7 @@ export function PageContent({
             />
         } else {
             content = <ReportsOverview
+                dates={dates}
                 open_report={open_report}
                 reload={reload}
                 reports={reports}

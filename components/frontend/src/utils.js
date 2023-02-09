@@ -5,6 +5,14 @@ import { metricReactionDeadline } from './defaults';
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
 export const STATUSES = ["informative", "target_met", "near_target_met", "target_not_met", "debt_target_met", "unknown"];
+export const STATUS_COLORS = {
+    "informative": "blue",
+    "target_met": "green",
+    "near_target_met": "yellow",
+    "target_not_met": "red",
+    "debt_target_met": "grey",
+    "unknown": "white"
+}
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
@@ -128,10 +136,32 @@ export function getStatusName(status) {
     }[status || "unknown"];
 }
 
-export function get_metric_tags(metric) {
-    let tags = metric.tags ?? [];
+export function getMetricTags(metric) {
+    const tags = metric.tags ?? [];
     tags.sort();
     return tags
+}
+
+export function getReportTags(report) {
+    const tags = new Set();
+    Object.values(report.subjects).forEach((subject) => {
+        Object.values(subject.metrics).forEach((metric) => {
+            getMetricTags(metric).forEach((tag) => tags.add(tag))
+        })
+    })
+    const sortedTags = Array.from(tags);
+    sortedTags.sort();
+    return sortedTags
+}
+
+export function getReportsTags(reports) {
+    const tags = new Set();
+    reports.forEach((report) => {
+        getReportTags(report).forEach((tag) => tags.add(tag))
+    });
+    const sortedTags = Array.from(tags);
+    sortedTags.sort();
+    return sortedTags
 }
 
 export function get_metric_issue_ids(metric) {

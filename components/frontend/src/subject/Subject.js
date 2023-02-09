@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { DataModel } from '../context/DataModel';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, getMetricTags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
@@ -57,8 +57,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_issues.localeCompare(m2_issues)
         },
         tags: (m1, m2) => {
-            const m1_tags = get_metric_tags(m1[1]).join();
-            const m2_tags = get_metric_tags(m2[1]).join();
+            const m1_tags = getMetricTags(m1[1]).join();
+            const m2_tags = getMetricTags(m2[1]).join();
             return m1_tags.localeCompare(m2_tags)
         },
         unit: (m1, m2) => {
