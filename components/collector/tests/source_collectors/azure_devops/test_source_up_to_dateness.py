@@ -16,7 +16,7 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
     def setUp(self):
         """Extend to set up test data."""
         super().setUp()
-        self.timestamp = "2019-09-03T20:43:00Z"
+        self.timestamp = "2019-09-03T00:00:00Z"  # age of file parses actual dt, age of job parses date without hh/mm
         self.expected_age = str(days_ago(parse(self.timestamp)))
         self.build_json = dict(
             value=[

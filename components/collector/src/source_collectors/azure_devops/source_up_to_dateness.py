@@ -44,7 +44,7 @@ class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm 
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the commit or the pipeline."""
-        entities = await self._parse_entities([response])  # need to parse entities in order to run _include_entity
+        entities = await self._parse_entities(SourceResponses(responses=[response]))  # parse, to call _include_entity
         build_date_times = [parse(entity["build_date"]) for entity in entities if self._include_entity(entity)]
         return max(build_date_times, default=datetime.min)
 
