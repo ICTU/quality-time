@@ -1,7 +1,8 @@
 """Azure DevOps unused jobs collector."""
 
-from dateutil.parser import parse
 from typing import cast
+
+from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
 from model import Entity

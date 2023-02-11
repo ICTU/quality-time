@@ -33,8 +33,12 @@ class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Calculate the average lead time of the completed work items."""
         if work_items := await self._work_items(responses):
-            lead_times = [self.__lead_time(item) for item in work_items if self.__lead_time(item)]
-            return str(round(mean(lead_times))) if lead_times else None
+            lead_times = []
+            for item in work_items:
+                if lead_time := self.__lead_time(item):  # sadly, mypy does not understand short-circuiting this
+                    lead_times.append(lead_time)
+            if lead_times:
+                return str(round(mean(lead_times)))
         return None
 
     def _parse_entity(self, work_item: dict) -> Entity:

@@ -1,7 +1,6 @@
 """GitLab collector base classes."""
 
 from abc import ABC
-from collections.abc import Sequence
 from datetime import date, timedelta
 from typing import cast
 

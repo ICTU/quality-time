@@ -59,7 +59,9 @@ class AzureDevopsJobs(SourceCollector):
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
             build_status = self._latest_build_result(job)
-            build_dt_str = str(self._latest_build_date_time(job).date()) if self._latest_build_date_time(job) else ""
+            build_dt_str = ""  # sadly, mypy does not understand short-circuiting this
+            if build_dt := self._latest_build_date_time(job):
+                build_dt_str = str(build_dt.date())
             entities.append(Entity(
                 key=name,
                 name=name,
@@ -101,7 +103,7 @@ class AzureDevopsPipelines(SourceCollector):
         # currently the pipelines api is not available in any version which is not a -preview version
         return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
 
-    async def _active_pipelines(self) -> list[(int, str)]:
+    async def _active_pipelines(self) -> list[tuple[int, str]]:
         """Find all active pipeline ids to traverse."""
         api_pipelines_url = await self._api_url()
         pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
