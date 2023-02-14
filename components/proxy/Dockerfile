@@ -1,4 +1,4 @@
-FROM nginx:1.23.3
+FROM nginx:1.23.3-alpine-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"

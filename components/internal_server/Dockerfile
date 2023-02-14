@@ -1,4 +1,4 @@
-FROM python:3.11.2-bullseye AS compile-image
+FROM python:3.11.2-alpine3.17 AS compile-image
 
 WORKDIR /home/server
 
@@ -13,17 +13,14 @@ COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.11.2-bullseye
+FROM python:3.11.2-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time internal server"
 
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends curl=7.74\* && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN useradd --create-home server
+RUN apk add --no-cache curl=7.87.0-r1
+# hadolint ignore=DL3059
+RUN adduser -S server
 WORKDIR /home/server
 USER server
 
