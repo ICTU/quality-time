@@ -1,6 +1,6 @@
 name: Shared data model
 
-on: [push, pull_request, merge_group]
+on: [push, pull_request]
 
 jobs:
   build:
