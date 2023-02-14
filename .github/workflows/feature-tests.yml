@@ -1,6 +1,6 @@
 name: Feature tests
 
-on: [push]
+on: [push, pull_request, merge_group]
 
 jobs:
 
