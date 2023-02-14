@@ -5,6 +5,7 @@ import { DarkMode } from "../context/DarkMode";
 import { StatusIcon } from '../measurement/StatusIcon';
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from '../widgets/TableHeaderCell';
 import { HyperLink } from "../widgets/HyperLink";
+import { STATUSES, STATUS_DESCRIPTION } from '../utils';
 
 const metricHelp = <>
     <p>
@@ -41,57 +42,18 @@ function statusHelp(darkMode) {
                 The current status of the metric.
             </p>
             <List>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="informative" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Informative: the measurement value is not evaluated against a target value.
-                    </List.Content>
-                </List.Item>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="target_met" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Target met: the measurement value meets the target value.
-                    </List.Content>
-                </List.Item>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="near_target_met" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Near target met: the measurement value is close to the target value.
-                    </List.Content>
-                </List.Item>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="target_not_met" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Target not met: the measurement value does not meet the target value.
-                    </List.Content>
-                </List.Item>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="debt_target_met" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Debt target met: the measurement value does not meet the target value, but this is accepted
-                        as <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical debt</HyperLink>.
-                        The measurement value does meet the technical debt target.
-                    </List.Content>
-                </List.Item>
-                <List.Item>
-                    <List.Icon>
-                        <StatusIcon status="unknown" size="small" />
-                    </List.Icon>
-                    <List.Content verticalAlign="middle" style={{ color: color }}>
-                        Unknown: the status could not be determined because no sources have been configured for the metric yet
-                        or the measurement data could not be collected.
-                    </List.Content>
-                </List.Item>
+                {
+                    STATUSES.map((status) =>
+                        <List.Item key={status}>
+                            <List.Icon>
+                                <StatusIcon status={status} size="small" />
+                            </List.Icon>
+                            <List.Content verticalAlign="middle" style={{ color: color, whiteSpace: "pre" }}>
+                                {STATUS_DESCRIPTION[status]}
+                            </List.Content>
+                        </List.Item>
+                    )
+                }
             </List>
             <p>
                 Hover over the status to see how long the metric has had the current status.

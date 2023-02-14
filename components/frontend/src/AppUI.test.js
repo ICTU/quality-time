@@ -4,6 +4,16 @@ import { createMemoryHistory } from 'history';
 import { datamodel, report } from "./__fixtures__/fixtures";
 import { AppUI } from './AppUI';
 
+jest.mock('./api/fetch_server_api', () => {
+    const originalModule = jest.requireActual('./api/fetch_server_api');
+
+    return {
+        __esModule: true,
+        ...originalModule,
+        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [] }),
+    };
+});
+
 it('shows an error message when there are no reports', () => {
     render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />)
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)

@@ -11,51 +11,75 @@ import { add_report, get_reports_overview_measurements, set_reports_attribute, c
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
-import { getMetricTags, getReportsTags, STATUS_COLORS } from '../utils';
+import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS } from '../utils';
+import { metricStatusOnDate } from './report_utils';
 
-function ReportsDashboard({ dates, reports, open_report, measurements, layout, reload }) {
-    const reportSummary = {}
+function summarizeReportOnDate(report, measurements, date) {
+    const isoDateString = date.toISOString().split("T")[0];
+    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+    Object.values(report.subjects).forEach((subject) => {
+        Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+            const status = metricStatusOnDate(metric_uuid, metric, measurements, isoDateString)
+            summary[STATUS_COLORS[status]] += 1
+        })
+    })
+    return summary
+}
+
+function summarizeReportsOnDate(reports, measurements, date, tag) {
+    const isoDateString = date.toISOString().split("T")[0];
+    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     reports.forEach((report) => {
-        reportSummary[report.report_uuid] = {}
-        dates.forEach((date) => {
-            const iso_date_string = date.toISOString().split("T")[0];
-            reportSummary[report.report_uuid][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-            Object.values(report.subjects).forEach((subject) => {
-                Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                    const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-                    const status = measurement?.[metric.scale]?.status ?? "unknown";
-                    reportSummary[report.report_uuid][date][STATUS_COLORS[status]] += 1
-                })
+        Object.values(report.subjects).forEach(subject => {
+            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                if (getMetricTags(metric).indexOf(tag) >= 0) {
+                    const status = metricStatusOnDate(metric_uuid, metric, measurements, isoDateString)
+                    summary[STATUS_COLORS[status]] += 1
+                }
             })
         })
     })
-    const report_cards = reports.map((report) =>
-        <MetricSummaryCard key={report.report_uuid} header={report.title}
-            onClick={(e) => open_report(e, report.report_uuid)} summary={reportSummary[report.report_uuid]}
-        />
-    );
+    return summary
+}
+
+
+function ReportsDashboard({ dates, reports, open_report, measurements, layout, reload }) {
+    let nrMetrics = 0
+    const reportSummary = {}
+    reports.forEach((report) => {
+        nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
+        reportSummary[report.report_uuid] = {}
+        dates.forEach((date) => {
+            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date)
+        })
+    })
     const tagSummary = {}
     const tags = getReportsTags(reports)
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            const iso_date_string = date.toISOString().split("T")[0];
-            tagSummary[tag][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-            reports.forEach((report) => {
-                Object.values(report.subjects).forEach(subject => {
-                    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                        if (getMetricTags(metric).indexOf(tag) >= 0) {
-                            const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-                            const status = measurement?.[metric.scale]?.status ?? "unknown";
-                            tagSummary[tag][date][STATUS_COLORS[status]] += 1
-                        }
-                    })
-                })
-            })
+            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag)
+            const sum = Object.values(tagSummary[tag][date]).reduce((a, b) => a + b, 0)
+            nrMetrics = Math.max(nrMetrics, sum)
         })
     })
+    const report_cards = reports.map((report) =>
+        <MetricSummaryCard
+            key={report.report_uuid}
+            header={report.title}
+            maxY={nrMetrics}
+            onClick={(e) => open_report(e, report.report_uuid)}
+            summary={reportSummary[report.report_uuid]}
+        />
+    );
     const tag_cards = tags.map((tag) =>
-        <MetricSummaryCard key={tag} header={<Tag tag={tag} />} onClick={(e) => open_report(e, `tag-${tag}`)} summary={tagSummary[tag]} />
+        <MetricSummaryCard
+            key={tag}
+            header={<Tag tag={tag} />}
+            maxY={nrMetrics}
+            onClick={(e) => open_report(e, `tag-${tag}`)}
+            summary={tagSummary[tag]}
+        />
     );
     return (
         <CardDashboard

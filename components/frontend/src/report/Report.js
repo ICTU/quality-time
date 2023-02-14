@@ -9,22 +9,22 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { get_report_measurements, set_report_attribute } from '../api/report';
-import { getReportTags, getMetricTags, get_subject_name, STATUS_COLORS } from '../utils';
+import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS } from '../utils';
 import { ReportTitle } from './ReportTitle';
-
+import { metricStatusOnDate } from './report_utils';
 
 function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags, selectedTags, reload }) {
     const dataModel = useContext(DataModel)
+    const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     function subject_cards() {
         const summary = {}
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
             summary[subject_uuid] = {}
             dates.forEach((date) => {
-                const iso_date_string = date.toISOString().split("T")[0];
+                const isoDateString = date.toISOString().split("T")[0];
                 summary[subject_uuid][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
                 Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                    const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-                    const status = measurement?.[metric.scale]?.status ?? "unknown";
+                    const status = metricStatusOnDate(metric_uuid, metric, measurements, isoDateString);
                     summary[subject_uuid][date][STATUS_COLORS[status]] += 1
                 })
             })
@@ -33,6 +33,7 @@ function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags
             <MetricSummaryCard
                 header={get_subject_name(report.subjects[subject_uuid], dataModel)}
                 key={subject_uuid}
+                maxY={nrMetrics}
                 onClick={(event) => onClick(event, subject_uuid)}
                 summary={summary[subject_uuid]}
             />
@@ -44,13 +45,12 @@ function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags
         tags.forEach((tag) => {
             summary[tag] = {}
             dates.forEach((date) => {
-                const iso_date_string = date.toISOString().split("T")[0];
+                const isoDateString = date.toISOString().split("T")[0];
                 summary[tag][date] = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
                 Object.values(report.subjects).forEach(subject => {
                     Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
                         if (getMetricTags(metric).indexOf(tag) >= 0) {
-                            const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= iso_date_string && iso_date_string <= m.end.split("T")[0] })
-                            const status = measurement?.[metric.scale]?.status ?? "unknown";
+                            const status = metricStatusOnDate(metric_uuid, metric, measurements, isoDateString);
                             summary[tag][date][STATUS_COLORS[status]] += 1
                         }
                     })
@@ -61,6 +61,7 @@ function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags
             <MetricSummaryCard
                 header={<Tag tag={tag} selected={selectedTags.includes(tag)} />}
                 key={tag}
+                maxY={nrMetrics}
                 onClick={() => setSelectedTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
                 summary={summary[tag]}
             />
