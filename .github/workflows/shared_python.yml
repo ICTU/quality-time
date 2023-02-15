@@ -1,6 +1,6 @@
 name: Shared Server Code
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
