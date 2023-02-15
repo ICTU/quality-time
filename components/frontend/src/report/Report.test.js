@@ -133,6 +133,6 @@ it('fetches measurements if nr dates > 1 and time traveling', async () => {
 })
 
 it('fetches measurements if nr dates == 1', async () => {
-    await act(async () => { renderReport(report, { dates: [new Date(2022, 3, 26)] }) });
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?min_report_date=2022-04-25T00:00:00.000Z");
+    await act(async () => { renderReport(report, { dates: [new Date(Date.UTC(2022, 3, 26))] }) });
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "report/report_uuid/measurements?min_report_date=2022-04-26T00:00:00.000Z");
 })

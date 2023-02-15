@@ -9,7 +9,7 @@ from ..base import DataModelTestCase
 from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
-class ReportsOverviewTestCase(DataModelTestCase):
+class ReportsOverviewTestCase(DataModelTestCase):  # skipcq: PTC-W0046
     """Base class for reports overview route unit tests."""
 
     def setUp(self):

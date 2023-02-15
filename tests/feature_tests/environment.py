@@ -18,9 +18,10 @@ def before_all(context):
     def get(api, headers=None, internal=False):
         """Get the resource."""
         url = api_url(api, internal)
-        if context.report_date:
-            sep = "&" if "?" in url else "?"
-            url += f"{sep}report_date={context.report_date}"
+        for attribute in ("report_date", "min_report_date"):
+            if value := getattr(context, attribute):
+                sep = "&" if "?" in url else "?"
+                url += f"{sep}{attribute}={value}"
         context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=10)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
@@ -52,6 +53,7 @@ def before_all(context):
     context.internal_base_api_url = "http://localhost:5002/api"
     context.session_id = None
     context.report_date = None
+    context.min_report_date = None
     context.response = None  # Most recent respone
     context.post_response = None  # Most recent post response
     context.uuid: dict[str, str] = {}  # Keep track of the most recent uuid per item type
