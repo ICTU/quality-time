@@ -44,6 +44,6 @@ pip==23.0 \
     # via
     #   -r ../../requirements/base.in
     #   pip-tools
-setuptools==67.3.1 \
-    --hash=sha256:23c86b4e44432bfd8899384afc08872ec166a24f48a3f99f293b0a557e6a6b5d
+setuptools==67.3.2 \
+    --hash=sha256:bb6d8e508de562768f2027902929f8523932fcd1fb784e6d573d2cafac995a48
     # via pip-tools

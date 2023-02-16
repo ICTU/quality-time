@@ -1,4 +1,4 @@
 -r ../../../requirements/dev.in
 -r ../../../requirements/types-requests.in
 types-cryptography==3.3.23.2
-types-ldap3==2.9.13.7
+types-ldap3==2.9.13.8
