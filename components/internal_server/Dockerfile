@@ -2,6 +2,8 @@ FROM python:3.11.2-alpine3.17 AS compile-image
 
 WORKDIR /home/server
 
+RUN apk add --no-cache gcc=12.2.1_git20220924-r4 make=4.3-r1 libc-dev=0.7.2-r3 libffi-dev=3.4.4-r0
+# hadolint ignore=DL3059
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
 COPY internal_server/requirements/requirements-base.txt /requirements-base.txt
