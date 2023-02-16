@@ -22,13 +22,13 @@ class TrelloIssuesTest(TrelloTestCase):
         self.assert_measurement(response, value="1", entities=[self.entities[1]])
 
     async def test_overdue_issues(self):
-        """Test overdue issues."""
+        """Test overdue issues; when the parameter is set, only count this type."""
         self.set_source_parameter("cards_to_count", ["overdue"])
         response = await self.collect(get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="1", entities=[self.entities[1]])
 
     async def test_inactive_issues(self):
-        """Test inactive issues."""
+        """Test inactive issues; when the parameter is set, only count this type."""
         self.set_source_parameter("cards_to_count", ["inactive"])
         self.cards["cards"][0]["dateLastActivity"] = datetime.now().isoformat()
         response = await self.collect(get_request_json_side_effect=self.json)

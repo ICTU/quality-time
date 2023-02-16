@@ -1,7 +1,6 @@
 """GitLab collector base classes."""
 
 from abc import ABC
-from collections.abc import Sequence
 from datetime import date, timedelta
 from typing import cast
 
@@ -94,7 +93,8 @@ class GitLabJobsBase(GitLabProjectBase):
             ]
         )
 
-    async def _jobs(self, responses: SourceResponses) -> Sequence[Job]:
+    @staticmethod
+    async def _jobs(responses: SourceResponses) -> list[Job]:
         """Return the jobs to count."""
 
         def newer(job1: Job, job2: Job) -> Job:
@@ -106,13 +106,13 @@ class GitLabJobsBase(GitLabProjectBase):
             for job in await response.json():
                 key = job["name"], job["stage"], job["ref"]
                 jobs[key] = newer(job, jobs.get(key, job))
-        return [job for job in jobs.values() if self._count_job(job)]
+        return list(jobs.values())
 
-    def _count_job(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
         return not match_string_or_regular_expression(
-            job["name"], self._parameter("jobs_to_ignore")
-        ) and not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
+            entity["name"], self._parameter("jobs_to_ignore")
+        ) and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
 
     @staticmethod
     def _build_date(job: Job) -> date:

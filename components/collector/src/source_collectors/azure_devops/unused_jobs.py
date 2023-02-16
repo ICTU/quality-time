@@ -2,8 +2,10 @@
 
 from typing import cast
 
+from dateutil.parser import parse
+
 from collector_utilities.functions import days_ago
-from collector_utilities.type import Job
+from model import Entity
 
 from .base import AzureDevopsJobs
 
@@ -11,10 +13,12 @@ from .base import AzureDevopsJobs
 class AzureDevopsUnusedJobs(AzureDevopsJobs):
     """Collector for the unused jobs metric."""
 
-    def _include_job(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Extend to filter unused jobs."""
-        if not super()._include_job(job):
+        if not super()._include_entity(entity):
             return False
         max_days = int(cast(str, self._parameter("inactive_job_days")))
-        actual_days = days_ago(self._latest_build_date_time(job))
+        if not (build_date := entity["build_date"]):
+            return False
+        actual_days = days_ago(parse(build_date))
         return actual_days > max_days

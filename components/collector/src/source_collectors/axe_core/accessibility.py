@@ -1,6 +1,5 @@
 """Axe-core accessibility analysis collectors."""
 
-from collections.abc import Collection
 from typing import Any
 
 from base_collectors import JSONFileSourceCollector, SourceCollector
@@ -12,10 +11,12 @@ from model import Entities, Entity
 class AxeAccessibilityCollector(SourceCollector):
     """Collector base class for getting accessibility violations from Axe."""
 
-    def _include_violation(self, impact: str, tags: Collection[str]) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the violation."""
+        impact = entity["impact"]
         if impact and impact not in self._parameter("impact"):
             return False
+        tags = entity["tags"].split(", ")
         if tags_to_include := self._parameter("tags_to_include"):
             for tag in tags:
                 if match_string_or_regular_expression(tag, tags_to_include):
@@ -60,26 +61,22 @@ class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
                 entity_attributes.extend(self.__parse_violation(violation, result_type, url))
         return entity_attributes
 
-    def __parse_violation(self, violation: dict[str, list], result_type: str, url: str) -> list[dict[str, Any]]:
+    @staticmethod
+    def __parse_violation(violation: dict[str, list], result_type: str, url: str) -> list[dict[str, Any]]:
         """Parse a violation."""
         entity_attributes = []
-        tags = violation.get("tags", [])
         for node in violation.get("nodes", []) or [violation]:  # Use the violation as node if it has no nodes
-            impact = node.get("impact")
-            if self._include_violation(impact, tags):
-                entity_attributes.append(
-                    dict(
-                        description=violation.get("description"),
-                        element=node.get("html"),
-                        help=violation.get("helpUrl"),
-                        impact=impact,
-                        page=url,
-                        url=url,
-                        result_type=result_type,
-                        tags=", ".join(sorted(tags)),
-                        violation_type=violation.get("id"),
-                    )
-                )
+            entity_attributes.append(dict(
+                description=violation.get("description"),
+                element=node.get("html"),
+                help=violation.get("helpUrl"),
+                impact=node.get("impact"),
+                page=url,
+                url=url,
+                result_type=result_type,
+                tags=", ".join(sorted(violation.get("tags", []))),
+                violation_type=violation.get("id"),
+            ))
         return entity_attributes
 
     @staticmethod

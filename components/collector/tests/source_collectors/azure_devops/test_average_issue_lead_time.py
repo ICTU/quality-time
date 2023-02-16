@@ -21,14 +21,39 @@ class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
         last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()
 
         self.work_item1 = deepcopy(self.work_item)
+        self.work_item1["id"] = "id1"
         self.work_item1["fields"]["System.State"] = "Done"
         self.work_item1["fields"]["System.CreatedDate"] = yesterday_timestamp
         self.work_item1["fields"]["System.ChangedDate"] = now_timestamp  # NOSONAR
 
         self.work_item2 = deepcopy(self.work_item)
+        self.work_item2["id"] = "id2"
         self.work_item2["fields"]["System.State"] = "Done"
         self.work_item2["fields"]["System.CreatedDate"] = last_week_timestamp
         self.work_item2["fields"]["System.ChangedDate"] = now_timestamp  # NOSONAR
+
+        self.expected_entities = [
+            dict(
+                key="id1",
+                project="Project",
+                title="Title",
+                work_item_type="Task",
+                state="Done",
+                url=self.work_item_url,
+                lead_time=1,
+                changed_field=now_timestamp,
+            ),
+            dict(
+                key="id2",
+                project="Project",
+                title="Title",
+                work_item_type="Task",
+                state="Done",
+                url=self.work_item_url,
+                lead_time=7,
+                changed_field=now_timestamp,
+            )
+        ]
 
     async def test_lead_time(self):
         """Test that the lead time is returned."""
@@ -36,7 +61,7 @@ class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
             dict(workItems=[dict(id="id"), dict(id="id1"), dict(id="id2")]),
             dict(value=[self.work_item, self.work_item1, self.work_item2])
         ])
-        self.assert_measurement(response, value="4")  # 7 + 1 / 2
+        self.assert_measurement(response, value="4", entities=self.expected_entities)  # 7 + 1 / 2
 
     async def test_lead_time_without_stories(self):
         """Test that the lead time is zero when there are no work items."""

@@ -86,6 +86,6 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
 
     async def test_no_builds(self):
         """Test no builds."""
-        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="notbuilt", builds=[])])
+        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=False, color="notbuilt", builds=[])])
         response = await self.collect(get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, entities=[])

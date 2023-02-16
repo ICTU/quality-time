@@ -54,25 +54,29 @@ class AzureDevopsJobs(SourceCollector):
         """Override to parse the jobs."""
         entities = Entities()
         for job in (await responses[0].json())["value"]:
-            if not self._include_job(job):
-                continue
+            if not job.get("latestCompletedBuild", {}).get("result"):
+                continue  # The job has no completed builds
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
             build_status = self._latest_build_result(job)
-            build_date_time = self._latest_build_date_time(job)
-            entities.append(
-                Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status)
-            )
+            build_dt_str = ""  # sadly, mypy does not understand short-circuiting this
+            if build_dt := self._latest_build_date_time(job):
+                build_dt_str = str(build_dt.date())
+            entities.append(Entity(
+                key=name,
+                name=name,
+                url=url,
+                build_date=build_dt_str,
+                build_status=build_status,
+            ))
         return entities
 
-    def _include_job(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether this job should be included."""
-        if not job.get("latestCompletedBuild", {}).get("result"):
-            return False  # The job has no completed builds
         jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(job["name"], jobs_to_include):
+        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["name"], jobs_to_include):
             return False
-        return not match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
+        return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
 
     @staticmethod
     def _latest_build_result(job: Job) -> str:
@@ -80,9 +84,9 @@ class AzureDevopsJobs(SourceCollector):
         return str(job["latestCompletedBuild"]["result"])
 
     @staticmethod
-    def _latest_build_date_time(job: Job) -> datetime:
+    def _latest_build_date_time(job: Job) -> datetime | None:
         """Return the finish time of the latest build of the job."""
-        return parse(job["latestCompletedBuild"]["finishTime"])
+        return parse(job["latestCompletedBuild"]["finishTime"]) if "finishTime" in job["latestCompletedBuild"] else None
 
     @staticmethod
     def __job_name(job: Job) -> str:
@@ -99,27 +103,28 @@ class AzureDevopsPipelines(SourceCollector):
         # currently the pipelines api is not available in any version which is not a -preview version
         return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
 
-    async def _active_pipeline_ids(self) -> list[int]:
+    async def _active_pipelines(self) -> list[tuple[int, str]]:
         """Find all active pipeline ids to traverse."""
         api_pipelines_url = await self._api_url()
         pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
-        return [pipeline["id"] for pipeline in pipelines if "id" in pipeline and self._include_pipeline(pipeline)]
+        return [(pipeline["id"], pipeline["name"]) for pipeline in pipelines if "id" in pipeline]
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:  # skipcq: PYL-W0613
         """Override to parse the pipelines."""
         entities = Entities()
 
-        for pipeline_id in await self._active_pipeline_ids():
+        for pipeline_id, pipeline_name in await self._active_pipelines():
             api_pipelines_url = await self._api_url(pipeline_id)
 
             for pipeline_run in (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]:
-                if not self._include_pipeline_run(pipeline_run):
-                    continue
+                if not bool(pipeline_run.get("finishedDate")):
+                    continue  # The pipeline has not completed
 
                 entities.append(
                     Entity(
                         key="-".join([str(pipeline_id), pipeline_run["name"]]),
                         name=pipeline_run["name"],
+                        pipeline=pipeline_name,
                         url=pipeline_run["_links"]["web"]["href"],
                         build_date=str(parse(pipeline_run["finishedDate"]).date()),
                         build_status=pipeline_run["state"],
@@ -127,13 +132,9 @@ class AzureDevopsPipelines(SourceCollector):
                 )
         return entities
 
-    def _include_pipeline(self, job: Job) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether this pipeline should be included."""
         jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(job["name"], jobs_to_include):
+        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["pipeline"], jobs_to_include):
             return False
-        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
-
-    def _include_pipeline_run(self, job: Job) -> bool:  # skipcq: PYL-R0201
-        """Return whether this pipeline run should be included."""
-        return bool(job.get("finishedDate"))
+        return not match_string_or_regular_expression(entity["pipeline"], self._parameter("jobs_to_ignore"))

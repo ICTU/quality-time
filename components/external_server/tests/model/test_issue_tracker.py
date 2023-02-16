@@ -75,13 +75,18 @@ class IssueTrackerTest(unittest.TestCase):
     def test_create_issue_with_invalid_url(self):
         """Test that without a valid URL an error message is returned."""
         issue_tracker = IssueTracker("invalid", self.issue_parameters)
-        self.assertEqual(
-            (
-                "",
-                "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
-                "https://invalid/rest/api/2/issue?",
-            ),
-            issue_tracker.create_issue("New issue"),
+        self.assertIn(
+            issue_tracker.create_issue("New issue"), [
+                (
+                    "",
+                    "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
+                    "https://invalid/rest/api/2/issue?",
+                ),
+                (
+                    "",
+                    "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
+                    "http://invalid/rest/api/2/issue?",  # Python <3.11 and Windows
+                )]
         )
 
     @disable_logging
