@@ -14,7 +14,7 @@ from shared.database.measurements import insert_new_measurement, latest_measurem
 from shared.model.measurement import Measurement
 from shared.utils.type import MetricId, SourceId
 
-from database.measurements import count_measurements, all_metric_measurements
+from database.measurements import count_measurements, all_metric_measurements, measurements_by_metric
 from database.reports import latest_report_for_uuids, latest_reports
 from utils.functions import report_date_time
 
@@ -86,8 +86,24 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
             skipped += 1
 
 
+@bottle.get("/api/v3/measurements", authentication_required=False)
+def get_measurements(database: Database):
+    """Return all measurements (without details) for all reports between the date and the minimum date."""
+    date_time = report_date_time()
+    min_date_time = report_date_time("min_report_date")
+    data_model = latest_datamodel(database, date_time)
+    reports = latest_reports(database, data_model, date_time)
+    metric_uuids: set[MetricId] = set()
+    for report in reports:
+        metric_uuids |= report.metric_uuids
+    measurements = list(
+        measurements_by_metric(database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time)
+    )
+    return dict(measurements=measurements)
+
+
 @bottle.get("/api/v3/measurements/<metric_uuid>", authentication_required=False)
-def get_measurements(metric_uuid: MetricId, database: Database) -> dict:
+def get_metric_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
     return dict(measurements=list(all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time())))

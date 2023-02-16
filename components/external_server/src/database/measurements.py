@@ -31,9 +31,9 @@ def measurements_by_metric(
     if not metric_uuids:
         return []
     measurement_filter: dict = {"metric_uuid": {"$in": metric_uuids}}
-    if min_iso_timestamp:
+    if min_iso_timestamp:  # pragma: no feature-test-cover
         measurement_filter["end"] = {"$gt": min_iso_timestamp}
-    if max_iso_timestamp:
+    if max_iso_timestamp:  # pragma: no feature-test-cover
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     return list(
         database.measurements.find(

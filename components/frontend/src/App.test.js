@@ -4,7 +4,15 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 import * as fetch_server_api from './api/fetch_server_api';
 
-jest.mock("./api/fetch_server_api.js")
+jest.mock('./api/fetch_server_api', () => {
+    const originalModule = jest.requireActual('./api/fetch_server_api');
+
+    return {
+        __esModule: true,
+        ...originalModule,
+        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [] }),
+    };
+});
 
 function set_user_in_local_storage(session_expiration_datetime) {
     localStorage.setItem("user", "admin");

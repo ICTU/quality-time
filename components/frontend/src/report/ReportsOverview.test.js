@@ -10,7 +10,7 @@ jest.mock('../api/fetch_server_api', () => {
     return {
         __esModule: true,
         ...originalModule,
-        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [{ status: "target_met" }] }),
+        fetch_server_api: jest.fn().mockResolvedValue({ ok: true }),
     };
 });
 
@@ -21,20 +21,20 @@ beforeEach(() => {
 function render_reports_overview(reports, reportsOverview, reportDate) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsOverview dates={[reportDate || new Date()]} reports={reports} reports_overview={reportsOverview} report_date={reportDate || null} />
+            <ReportsOverview dates={[reportDate || new Date()]} measurements={[{ status: "target_met" }]} reports={reports} reports_overview={reportsOverview} report_date={reportDate || null} />
         </Permissions.Provider>
     )
 }
 
-it('shows an error message if there are no reports at the specified date', () => {
-    render_reports_overview([], {}, "today")
-    expect(screen.getAllByText(/Sorry, no reports existed at today/).length).toBe(1);
+it('shows an error message if there are no reports at the specified date', async () => {
+    await act(async () => render_reports_overview([], {}, new Date()))
+    expect(screen.getAllByText(/Sorry, no reports existed at/).length).toBe(1);
 });
 
 it('shows the reports overview', async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
-    await act(async () => render_reports_overview(reports, reportsOverview))
+    await act(async () => render_reports_overview(reports, reportsOverview, new Date()))
     expect(screen.getAllByText(/Overview/).length).toBe(1);
 });
 
@@ -54,7 +54,7 @@ it('shows the report tag cards', async () => {
 
 it('adds a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    render_reports_overview([], {});
+    await act(async () => render_reports_overview([], {}));
     fireEvent.click(screen.getByText(/Add report/));
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/new", {});
 });
@@ -62,7 +62,7 @@ it('adds a report', async () => {
 it('copies a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const reports = [{ report_uuid: "uuid", subjects: {}, title: "Existing report" }]
-    render_reports_overview(reports, {})
+    await act(async () => render_reports_overview(reports, {}))
     fireEvent.click(screen.getByText(/Copy report/));
     await act(async () => { fireEvent.click(screen.getByRole("option")); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {});

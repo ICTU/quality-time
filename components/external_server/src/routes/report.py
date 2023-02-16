@@ -14,7 +14,6 @@ from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 
-from database.measurements import measurements_by_metric
 from database.reports import latest_report, latest_reports
 from model.actions import copy_report
 from model.report import Report
@@ -225,24 +224,6 @@ def get_report_issue_tracker_options(report_uuid: ReportId, database: Database):
     report = latest_report(database, data_model, report_uuid)
     issue_tracker = report.issue_tracker()
     return issue_tracker.get_options().as_dict()
-
-
-@bottle.get("/api/v3/report/<report_uuid>/measurements", authentication_required=False)
-def get_report_measurements(report_uuid: ReportId, database: Database):
-    """Return all measurements for the report between the date of the report and the minimum date."""
-    date_time = report_date_time()
-    min_date_time = report_date_time("min_report_date")
-    data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, data_model, date_time)
-    reports = [report for report in reports if report.uuid == report_uuid]
-    metric_uuids = reports[0].metric_uuids if reports else []
-    return dict(
-        measurements=list(
-            measurements_by_metric(
-                database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time
-            )
-        )
-    )
 
 
 def tag_report(data_model, tag: str, reports: list[Report]) -> Report:

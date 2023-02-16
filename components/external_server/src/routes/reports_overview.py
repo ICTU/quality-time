@@ -4,12 +4,8 @@ import bottle
 from pymongo.database import Database
 
 from shared.database import sessions
-from shared.database.datamodels import latest_datamodel
 from shared.database.reports import latest_reports_overview, insert_new_reports_overview
-from shared.utils.type import MetricId
 
-from database.measurements import measurements_by_metric
-from database.reports import latest_reports
 from utils.functions import report_date_time, sanitize_html
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -44,19 +40,3 @@ def post_reports_overview_attribute(reports_attribute: str, database: Database):
     delta_description = f"{{user}} changed the {reports_attribute} of the reports overview{value_change_description}."
 
     return insert_new_reports_overview(database, delta_description, overview)
-
-
-@bottle.get("/api/v3/reports_overview/measurements", authentication_required=False)
-def get_reports_overview_measurements(database: Database):
-    """Return all measurements for all reports between the date and the minimum date."""
-    date_time = report_date_time()
-    min_date_time = report_date_time("min_report_date")
-    data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, data_model, date_time)
-    metric_uuids: set[MetricId] = set()
-    for report in reports:
-        metric_uuids |= report.metric_uuids
-    measurements = list(
-        measurements_by_metric(database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time)
-    )
-    return dict(measurements=measurements)

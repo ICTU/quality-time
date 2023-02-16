@@ -1,16 +1,14 @@
 import React from 'react';
-import { VictoryBar, VictoryStack, VictoryTooltip } from 'victory';
-import { pluralize, STATUSES, STATUS_COLORS, STATUS_COLORS_RGB, STATUS_NAME } from '../utils';
+import { VictoryBar, VictoryContainer, VictoryStack } from 'victory';
+import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
 
 function nr_metrics_label(nr_metrics) {
     return nr_metrics === 0 ? "no metrics" : nr_metrics + pluralize(" metric", nr_metrics)
 }
 
-export function StatusBarChart({ summary, maxY }) {
-    const style = {
-        data: { stroke: 'grey', strokeWidth: 1, strokeOpacity: 0.5 },
-        labels: { fontFamily: "Arial", fontSize: 36 }
-    }
+export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY, style }) {
+    const nrMetrics = sum(summary[Object.keys(summary)[0]])
+    const barRatio = Math.max(5, nrMetrics) / maxY
     // Create a VictoryBar for each status
     const bars = STATUSES.map((status) => {
         const data = [];
@@ -21,27 +19,32 @@ export function StatusBarChart({ summary, maxY }) {
         })
         return (
             <VictoryBar
-                barRatio={1}
+                barRatio={barRatio}
                 key={status}
                 style={style}
                 labels={() => null}
-                labelComponent={<VictoryTooltip constrainToVisibleArea cornerRadius={6} pointerWidth={20} renderInPortal={true} />}
+                labelComponent={tooltip}
                 data={data}
             />
         )
     });
     // Reverse the order of the bars and the colors because apparently VictoryStack reverses the order (again)
     bars.reverse();
-    const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status]);
     colors.reverse();
     return (
-        <VictoryStack
-            animate={{ duration: 0, onLoad: 0 }}
-            colorScale={colors}
-            domain={{ y: [0, maxY] }}
-            padding={{ left: 70, right: 70, top: 0, bottom: 0 }}
-        >
-            {bars}
-        </VictoryStack>
+        <svg viewBox="0 0 400 400">
+            {nrMetrics === 0 && label}
+            <VictoryStack
+                animate={animate}
+                colorScale={colors}
+                containerComponent={<VictoryContainer responsive={false} />}
+                domainPadding={10}
+                padding={{ left: 0, right: 0, top: 10, bottom: 10 }}
+                standalone={false}
+                width={400} height={400}
+            >
+                {bars}
+            </VictoryStack>
+        </svg>
     )
 }

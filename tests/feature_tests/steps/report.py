@@ -114,5 +114,6 @@ def get_measurements(context, has_or_had, expected_number):
         context.report_date = "2020-11-17T10:00:00Z"
         context.min_report_date = "2020-11-16T00:00:00Z"
 
-    response = context.get(f"report/{context.uuid['report']}/measurements")
-    assert_equal(int(expected_number), len(response["measurements"]))
+    response = context.get("measurements")
+    report_measurements = [m for m in response["measurements"] if m["report_uuid"] == context.uuid["report"]]
+    assert_equal(int(expected_number), len(report_measurements))

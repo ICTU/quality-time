@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createBrowserHistory, Action } from 'history';
 import { get_datamodel } from './api/datamodel';
-import { get_reports, get_reports_overview } from './api/report';
+import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { show_message, show_connection_messages } from './widgets/toast';
@@ -68,7 +68,7 @@ class App extends Component {
     loadAndSetState(show_error) {
         const report_uuid = this.state.report_uuid;
         const reportDate = this.state.report_date
-        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_reports(report_uuid, reportDate)]).then(
+        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)]).then(
             ([data_model, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
                     return  // User navigated to a different report or to the overview page, cancel update

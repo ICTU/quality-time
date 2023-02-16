@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
-import { HyperLink} from './widgets/HyperLink';
+import { HyperLink } from './widgets/HyperLink';
 import { metricReactionDeadline } from './defaults';
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
@@ -353,4 +353,9 @@ export function dropdownOptions(options) {
 
 export function slugify(name) {
     return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "")}`
+}
+
+export function sum(object) {
+    const list = typeof object == Array ? object : Object.values(object)
+    return list.reduce((a, b) => a + b, 0)
 }

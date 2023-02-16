@@ -11,7 +11,7 @@ from .changelog import (
 from .datamodel import get_data_model
 from .documentation import get_api
 from .logo import get_logo
-from .measurement import get_measurements, set_entity_attribute, stream_nr_measurements
+from .measurement import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 from .metric import (
     add_metric_issue,
     delete_metric,
@@ -33,14 +33,13 @@ from .report import (
     get_report,
     get_report_issue_tracker_suggestions,
     get_report_issue_tracker_options,
-    get_report_measurements,
     post_report_import,
     post_report_copy,
     post_report_attribute,
     post_report_issue_tracker_attribute,
     post_report_new,
 )
-from .reports_overview import get_reports_overview, get_reports_overview_measurements, post_reports_overview_attribute
+from .reports_overview import get_reports_overview, post_reports_overview_attribute
 from .server import get_server, QUALITY_TIME_VERSION
 from .settings import get_settings, update_settings
 from .source import (

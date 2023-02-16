@@ -2,15 +2,14 @@
 
 from unittest.mock import patch
 
-from routes import get_reports_overview, get_reports_overview_measurements, post_reports_overview_attribute
+from routes import get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from ..base import DataModelTestCase
-from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
-class ReportsOverviewTestCase(DataModelTestCase):  # skipcq: PTC-W0046
-    """Base class for reports overview route unit tests."""
+class ReportsOverviewTest(DataModelTestCase):
+    """Unit tests for the reports overview routes."""
 
     def setUp(self):
         """Extend to set up the database contents."""
@@ -19,17 +18,6 @@ class ReportsOverviewTestCase(DataModelTestCase):  # skipcq: PTC-W0046
         self.other_mail = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        self.measurement = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            count=dict(status="target_not_met"),
-            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-        )
-        self.database.measurements.find.return_value = [self.measurement]
-
-
-class ReportsOverviewTest(ReportsOverviewTestCase):
-    """Unit tests for the reports overview routes."""
 
     def assert_change_description(self, attribute: str, old_value=None, new_value=None) -> None:
         """Assert that a change description is added to the new reports overview."""
@@ -136,31 +124,3 @@ class ReportsOverviewTest(ReportsOverviewTestCase):
     def test_get_reports_overview(self):
         """Test that a report can be retrieved and credentials are hidden."""
         self.assertEqual(dict(_id="id", title="Reports", subtitle=""), get_reports_overview(self.database))
-
-
-class ReportsOverviewMeasurementsTest(ReportsOverviewTestCase):
-    """Unit tests for getting the measurements for the reports overview."""
-
-    def test_no_reports(self):
-        """Test no reports."""
-        self.database.reports.find.return_value = []
-        self.assertEqual(dict(measurements=[]), get_reports_overview_measurements(self.database))
-
-    def test_with_report(self):
-        """Test a report with measurements."""
-        self.database.reports.find.return_value = [
-            dict(report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})})
-        ]
-        self.database.measurements.find.return_value = [self.measurement]
-        self.assertEqual(dict(measurements=[self.measurement]), get_reports_overview_measurements(self.database))
-
-    @patch("bottle.request")
-    def test_with_report_and_time_travel(self, request):
-        """Test a report with measurements."""
-        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = dict(
-            report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})}
-        )
-        self.database.measurements.find.return_value = [self.measurement]
-        self.assertEqual(dict(measurements=[self.measurement]), get_reports_overview_measurements(self.database))

@@ -42,7 +42,7 @@ const data_model = {
 }
 
 async function renderMetricDetails(stopSorting, connection_error) {
-    measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
+    measurement_api.get_metric_measurements.mockImplementation(() => Promise.resolve({
         ok: true,
         measurements: [
             {
@@ -130,7 +130,7 @@ it('calls the callback on click', async () => {
     await renderMetricDetails(mockCallback);
     await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)));
     expect(mockCallback).toHaveBeenCalled();
-    expect(measurement_api.get_measurements).toHaveBeenCalled();
+    expect(measurement_api.get_metric_measurements).toHaveBeenCalled();
 })
 
 it('loads the changelog', async () => {
