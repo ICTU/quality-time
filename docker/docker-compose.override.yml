@@ -58,10 +58,15 @@ services:
     depends_on:
       - database
   ldap:
-    build: ../components/ldap
+    image: bitnami/openldap:2.6.3
+    environment:
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_SKIP_DEFAULT_TREE=yes
+    volumes:
+      - '../components/ldap/ldifs:/ldifs'
     ports:
-      - "389:389"
-      - "636:636"
+      - "389:1389"
+      - "636:1636"
   phpldapadmin:
     image: osixia/phpldapadmin:0.9.0
     environment:
