@@ -19,4 +19,4 @@ class CalendarTimeRemainingTest(CalendarTestCase):
     async def test_time_remaining_with_default(self):
         """Test the number of days without user-specified date."""
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime(2021, 1, 1) - datetime.now()).days))
+        self.assert_measurement(response, value="0")

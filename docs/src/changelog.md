@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Fixed
 
+- Prevent negative time remaining in the calendar source. Fixes [#5267](https://github.com/ICTU/quality-time/issues/5267).
 - Tags were not printed correctly in the reference manual. Fixes [#5282](https://github.com/ICTU/quality-time/issues/5282).
 - Prevent users from entering negative desired response times. Fixes [#5328](https://github.com/ICTU/quality-time/issues/5328).
 
