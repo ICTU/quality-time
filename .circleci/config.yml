@@ -113,7 +113,6 @@ workflows:
             components/external_server/Dockerfile:\
             components/frontend/Dockerfile:\
             components/internal_server/Dockerfile:\
-            components/ldap/Dockerfile:\
             components/notifier/Dockerfile:\
             components/proxy/Dockerfile:\
             components/renderer/Dockerfile:\

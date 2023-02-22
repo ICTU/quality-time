@@ -15,7 +15,6 @@ jobs:
           - component: external_server
           - component: frontend
           - component: internal_server
-          - component: ldap
           - component: notifier
           - component: proxy
           - component: renderer
