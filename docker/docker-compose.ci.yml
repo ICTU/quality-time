@@ -42,7 +42,6 @@ services:
       - '../components/ldap/ldifs:/ldifs'
     ports:
       - "389:1389"
-      - "636:1636"
   renderer:
     build: ../components/renderer
     ports:

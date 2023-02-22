@@ -61,17 +61,18 @@ services:
     image: bitnami/openldap:2.6.3
     environment:
       - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_PORT_NUMBER=389
       - LDAP_SKIP_DEFAULT_TREE=yes
     volumes:
       - '../components/ldap/ldifs:/ldifs'
     ports:
-      - "389:1389"
-      - "636:1636"
+      - "389:389"
   phpldapadmin:
     image: osixia/phpldapadmin:0.9.0
     environment:
+      - PHPLDAPADMIN_HTTPS=false
       - PHPLDAPADMIN_LDAP_HOSTS=ldap
-      - PHPLDAPADMIN_HTTPS=${PHPLDAPADMIN_HTTPS:-false}
+      - PHPLDAPADMIN_LDAP_CLIENT_TLS=false
     ports:
       - "3890:80"
     depends_on:
