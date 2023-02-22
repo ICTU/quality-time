@@ -37,11 +37,12 @@ services:
     image: bitnami/openldap:2.6.3
     environment:
       - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_PORT_NUMBER=389
       - LDAP_SKIP_DEFAULT_TREE=yes
     volumes:
       - '../components/ldap/ldifs:/ldifs'
     ports:
-      - "389:1389"
+      - "389:389"
   renderer:
     build: ../components/renderer
     ports:
