@@ -147,6 +147,19 @@ The collector, notifier, external server, and internal server all have log level
 
 The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.
 
+## Using a custom base image for the `www` container (optional)
+
+The base image of the `www` container can be configured as follows in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+
+```yaml
+  www:
+    build:
+      context: ../components/proxy
+      args:
+        IMAGE_NAME: nginx
+        IMAGE_VERSION: stable-perl
+```
+
 ## Moving *Quality-time*
 
 The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied.

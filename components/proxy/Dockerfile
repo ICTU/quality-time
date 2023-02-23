@@ -1,4 +1,6 @@
-FROM nginx:1.23.3-alpine-slim
+ARG IMAGE_NAME=nginx
+ARG IMAGE_VERSION=1.23.3-alpine-slim
+FROM $IMAGE_NAME:$IMAGE_VERSION
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
