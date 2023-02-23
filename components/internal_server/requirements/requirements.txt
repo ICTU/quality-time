@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --resolver=backtracking requirements.in
 #
-bottle==0.12.23 \
-    --hash=sha256:683de3aa399fb26e87b274dbcf70b1a651385d459131716387abdc3792e04167 \
-    --hash=sha256:9f1c363257c590bd34db5fad4693a7f06ff4217e9ad18337451de69c25137127
+bottle==0.12.24 \
+    --hash=sha256:2480121a73e87380989b77e32bd2092d190e7ea7d71e6f1b8f7af7eab9d54ea3 \
+    --hash=sha256:fa88c66413ab07b5046545ac6e47a967d582143aef87f2c0fb0ef571d9977b5e
     # via -r ../../../requirements/bottle.in
 dnspython==2.3.0 \
     --hash=sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9 \
@@ -248,9 +248,9 @@ zope-interface==5.5.2 \
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==67.3.3 \
-    --hash=sha256:9d3de8591bd6f6522594406fa46a6418eabd0562dacb267f8556675762801514 \
-    --hash=sha256:ed4e75fafe103c79b692f217158ba87edf38d31004b9dbc1913debb48793c828
+setuptools==67.4.0 \
+    --hash=sha256:e5fd0a713141a4a105412233c63dc4e17ba0090c8e8334594ac790ec97792330 \
+    --hash=sha256:f106dee1b506dee5102cc3f3e9e68137bbad6d47b616be7991714b0c62204251
     # via
     #   gevent
     #   zope-event
