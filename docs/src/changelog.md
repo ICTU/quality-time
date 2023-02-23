@@ -29,6 +29,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Changed
 
+- Make health check files group writeable for a configurable user to ease use in OpenShift. Closes [#5310](https://github.com/ICTU/quality-time/issues/5310).
 - The test LDAP server is now directly using `bitnami/openldap`, instead of the custom built `quality-time_testldap`. Closes [#5311](https://github.com/ICTU/quality-time/issues/5311).
 
 ## v4.7.0 - 2023-01-23
