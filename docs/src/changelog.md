@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 ### Added
 
 - Add options to the technical debt dropdown menu to set and clear accepted technical debt including the technical debt target and technical debt end date. Closes [#5125](https://github.com/ICTU/quality-time/issues/5125) and [#5127](https://github.com/ICTU/quality-time/issues/5127).
+- Add the option to configure a custom base image for the `www` container via the compose file. Closes [#5312](https://github.com/ICTU/quality-time/issues/5312).
 
 ## v4.7.0 - 2023-01-23
 
