@@ -83,7 +83,7 @@ def days_ago(date_time: datetime) -> int:
 def days_to_go(date_time: datetime) -> int:
     """Return the days remaining until the date/time."""
     difference = (date_time - datetime.now(tz=date_time.tzinfo)).days
-    return difference if difference > 0 else 0
+    return max(difference, 0)
 
 
 def is_regexp(string: str) -> bool:
