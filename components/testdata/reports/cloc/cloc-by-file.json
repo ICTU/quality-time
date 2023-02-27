@@ -4586,6 +4586,11 @@
   "comment": 2,
   "code": 4,
   "language": "Python"},
+"components/ldap/Dockerfile" :{
+  "blank": 2,
+  "comment": 0,
+  "code": 4,
+  "language": "Dockerfile"},
 "tests/application_tests/requirements/requirements.txt" :{
   "blank": 0,
   "comment": 0,
