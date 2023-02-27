@@ -65,6 +65,8 @@ from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unmerged_branches import GitLabUnmergedBranches
 from .gitlab.unused_jobs import GitLabUnusedJobs
 
+from .harbor.security_warnings import HarborSecurityWarnings
+
 from .jacoco.source_up_to_dateness import JacocoSourceUpToDateness
 from .jacoco.uncovered_branches import JacocoUncoveredBranches
 from .jacoco.uncovered_lines import JacocoUncoveredLines
