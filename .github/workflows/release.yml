@@ -74,11 +74,5 @@ jobs:
           context: components/frontend
           tags: ictu/quality-time_frontend:${{ steps.get_version.outputs.version }}
           push: true
-      - name: Push test LDAP to Docker Hub
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: components/ldap
-          tags: ictu/quality-time_testldap:${{ steps.get_version.outputs.version }}
-          push: true
       - name: Anchore SBOM Action
         uses: anchore/sbom-action@v0.13.3

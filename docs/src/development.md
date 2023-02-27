@@ -565,5 +565,5 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the MongoDB base image.
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
-- [LDAP](https://github.com/ICTU/quality-time/blob/master/components/ldap/Dockerfile): the OpenLDAP base image.
 - [Test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
+- Container images directly specified in compose files used for [development](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) and [continuous integration](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.ci.yml): `mongo-express`, `ldap`, `phpldapadmin`, and `selenium`.

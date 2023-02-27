@@ -58,13 +58,6 @@ updates:
     time: "04:30"
   open-pull-requests-limit: 100
 
-- package-ecosystem: docker
-  directory: "/components/ldap"
-  schedule:
-    interval: daily
-    time: "04:35"
-  open-pull-requests-limit: 100
-
 - package-ecosystem: pip
   directory: "/components/notifier/requirements"
   schedule:

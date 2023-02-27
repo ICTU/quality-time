@@ -446,7 +446,7 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 ## Test LDAP server
 
-The [test LDAP server](https://github.com/ICTU/quality-time/tree/master/components/ldap) is included for test purposes. It is based on the `osixia/openldap` Docker image, and adds two users. The Docker image is published as `ictu/quality-time_testldap` on Docker Hub.
+A test LDAP server with test users is included for development and testing purposes. An admin interface (phpldapadmin) is included to administer users in this LDAP server.
 
 ### LDAP users
 
