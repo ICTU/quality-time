@@ -1,7 +1,7 @@
 -r ./lxml.in  # Needed to be able to run mypy with `--html-report`.
 bandit==1.7.4
 black==22.12.0
-coverage==7.2.0
+coverage==7.2.1
 dlint==0.14.0
 mypy==1.0.1
 pep8-naming==0.13.3
