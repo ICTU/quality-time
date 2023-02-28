@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Prevent negative time remaining in the calendar source. Fixes [#5267](https://github.com/ICTU/quality-time/issues/5267).
 - Tags were not printed correctly in the reference manual. Fixes [#5282](https://github.com/ICTU/quality-time/issues/5282).
 - Prevent users from entering negative desired response times. Fixes [#5328](https://github.com/ICTU/quality-time/issues/5328).
+- Update default value in calendar date source upon restart of external server. Partially fixes [#5448](https://github.com/ICTU/quality-time/issues/5448).
 - In addition to version 3.1, also support version 3.0 of the OWASP Dependency Check XSD. Closes [#5586](https://github.com/ICTU/quality-time/issues/5586).
 
 ### Added
