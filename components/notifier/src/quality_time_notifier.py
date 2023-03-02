@@ -17,10 +17,9 @@ async def notify() -> NoReturn:
     log_level = str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING"))
     logging.getLogger().setLevel(log_level)
     sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
-    reports_url = (
-        f"http://{os.getenv('INTERNAL_SERVER_HOST', 'localhost')}:"
-        f"{os.getenv('INTERNAL_SERVER_PORT', '5002')}/api/report"
-    )
+    internal_server_host = os.getenv("INTERNAL_SERVER_HOST", "localhost")
+    internal_server_port = os.getenv("INTERNAL_SERVER_PORT", "5002")
+    reports_url = f"http://{internal_server_host}:{internal_server_port}/api/report"
     most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
     notification_finder = NotificationFinder()
     while True:
