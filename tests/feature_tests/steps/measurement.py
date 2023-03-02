@@ -1,9 +1,9 @@
 """Step implementations for measurement."""
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 import time
 
-from asserts import assert_equal, assert_true
+from asserts import assert_equal, assert_in, assert_true
 from behave import given, then, when  # pylint: disable=no-name-in-module
 from sseclient import SSEClient
 
@@ -153,3 +153,21 @@ def check_nr_of_measurements_stream(context, message_type):
         assert_equal("0", context.sse_messages[0].id)
     else:
         assert_equal(int(context.sse_messages[-2].data) + 1, int(context.sse_messages[-1].data))
+
+
+@when("the client gets {the_current_or_past} reports overview measurements")
+def get_reports_overview_measurements(context, the_current_or_past):
+    """Get the reports overview measurements."""
+    if the_current_or_past == "past":
+        now = date.today()
+        just_now = now - timedelta(seconds=1)
+        last_week = now - timedelta(days=7)
+        context.report_date = just_now.isoformat()
+        context.min_report_date = last_week.isoformat()
+    context.get("measurements")
+
+
+@then("the server returns the reports overview measurements")
+def check_reports_overview_measurements(context):
+    """Check that the response contains the measurements."""
+    assert_in("measurements", context.response.json())

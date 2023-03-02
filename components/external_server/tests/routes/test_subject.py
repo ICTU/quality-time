@@ -7,43 +7,14 @@ from shared.utils.type import SubjectId
 
 from routes import (
     delete_subject,
-    get_subject_measurements,
     post_move_subject,
     post_new_subject,
     post_subject_attribute,
     post_subject_copy,
 )
 
-from ..base import DatabaseTestCase, DataModelTestCase
-from ..fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
-
-
-class GetSubjectTest(DatabaseTestCase):
-    """Unit tests for the get subject measurements endpoint."""
-
-    def test_get_subject_measurements(self):
-        """Tests that the measurements for the requested metric are returned."""
-        # Mock reports collection
-        self.database.reports.find_one.return_value = {"subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}}
-        # Mock measurements collection
-        self.database.measurements.find_one.return_value = dict(start="1")
-        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
-        self.assertEqual(
-            dict(measurements=[dict(start="0"), dict(start="1")]), get_subject_measurements(SUBJECT_ID, self.database)
-        )
-
-    @patch("bottle.request")
-    def test_get_subject_measurements_with_time_travel(self, request):
-        """Tests that the measurements for the requested metric are returned for past reports."""
-        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
-        # Mock reports collection
-        self.database.reports.find_one.return_value = {"subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}}
-        # Mock measurements collection
-        self.database.measurements.find_one.return_value = dict(start="1")
-        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
-        self.assertEqual(
-            dict(measurements=[dict(start="0"), dict(start="1")]), get_subject_measurements(SUBJECT_ID, self.database)
-        )
+from ..base import DataModelTestCase
+from ..fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 @patch("bottle.request")

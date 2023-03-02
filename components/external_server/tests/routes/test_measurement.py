@@ -2,14 +2,14 @@
 
 from unittest.mock import Mock, patch
 
-from routes import get_measurements, set_entity_attribute, stream_nr_measurements
+from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
 from ..base import DatabaseTestCase, DataModelTestCase
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
 
-class GetMeasurementsTest(DatabaseTestCase):
-    """Unit tests for the get measurements route."""
+class GetMetricMeasurementsTest(DatabaseTestCase):
+    """Unit tests for the get metric measurements route."""
 
     def setUp(self):
         """Extend to set up the measurements."""
@@ -20,7 +20,7 @@ class GetMeasurementsTest(DatabaseTestCase):
 
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
-        self.assertEqual(dict(measurements=self.measurements), get_measurements(METRIC_ID, self.database))
+        self.assertEqual(dict(measurements=self.measurements), get_metric_measurements(METRIC_ID, self.database))
 
     @patch("bottle.request")
     def test_get_old_but_not_new_measurements(self, request):
@@ -48,13 +48,56 @@ class GetMeasurementsTest(DatabaseTestCase):
         request.query = dict(report_date="2")
 
         self.assertEqual(
-            dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database)
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_metric_measurements(METRIC_ID, self.database)
         )
 
     def test_get_measurements_when_there_are_none(self):
         """Tests that the measurements for the requested metric are returned."""
         self.database.measurements.find_one.return_value = None
-        self.assertEqual(dict(measurements=[]), get_measurements(METRIC_ID, self.database))
+        self.assertEqual(dict(measurements=[]), get_metric_measurements(METRIC_ID, self.database))
+
+
+class GetMeasurementsTest(DataModelTestCase):
+    """Unit tests for the get measurements route."""
+
+    def setUp(self):
+        """Extend to set up the database contents."""
+        super().setUp()
+        self.email = "jenny@example.org"
+        self.other_mail = "john@example.org"
+        self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
+        self.measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(status="target_not_met"),
+            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+        )
+        self.database.measurements.find.return_value = [self.measurement]
+
+    def test_no_reports(self):
+        """Test no reports."""
+        self.database.reports.find.return_value = []
+        self.assertEqual(dict(measurements=[]), get_measurements(self.database))
+
+    def test_with_report(self):
+        """Test a report with measurements."""
+        self.database.reports.find.return_value = [
+            dict(report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})})
+        ]
+        self.database.measurements.find.return_value = [self.measurement]
+        self.assertEqual(dict(measurements=[self.measurement]), get_measurements(self.database))
+
+    @patch("bottle.request")
+    def test_with_report_and_time_travel(self, request):
+        """Test a report with measurements."""
+        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = dict(
+            report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})}
+        )
+        self.database.measurements.find.return_value = [self.measurement]
+        self.assertEqual(dict(measurements=[self.measurement]), get_measurements(self.database))
 
 
 class SetEntityAttributeTest(DataModelTestCase):

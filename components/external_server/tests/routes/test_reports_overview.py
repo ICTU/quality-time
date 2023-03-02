@@ -6,11 +6,10 @@ from routes import get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from ..base import DataModelTestCase
-from ..fixtures import METRIC_ID, SOURCE_ID
 
 
 class ReportsOverviewTest(DataModelTestCase):
-    """Unit tests for the reports routes."""
+    """Unit tests for the reports overview routes."""
 
     def setUp(self):
         """Extend to set up the database contents."""
@@ -19,13 +18,6 @@ class ReportsOverviewTest(DataModelTestCase):
         self.other_mail = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        self.measurement = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            count=dict(status="target_not_met"),
-            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-        )
-        self.database.measurements.find.return_value = [self.measurement]
 
     def assert_change_description(self, attribute: str, old_value=None, new_value=None) -> None:
         """Assert that a change description is added to the new reports overview."""

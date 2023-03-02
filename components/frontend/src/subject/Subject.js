@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { DataModel } from '../context/DataModel';
-import { get_subject_measurements } from '../api/subject';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, get_metric_tags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
+import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, getMetricTags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
@@ -58,8 +57,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_issues.localeCompare(m2_issues)
         },
         tags: (m1, m2) => {
-            const m1_tags = get_metric_tags(m1[1]).join();
-            const m2_tags = get_metric_tags(m2[1]).join();
+            const m1_tags = getMetricTags(m1[1]).join();
+            const m2_tags = getMetricTags(m2[1]).join();
             return m1_tags.localeCompare(m2_tags)
         },
         unit: (m1, m2) => {
@@ -93,6 +92,7 @@ export function Subject({
     hideMetricsNotRequiringAction,
     issueSettings,
     last_subject,
+    measurements,
     report,
     report_date,
     reports,
@@ -106,22 +106,7 @@ export function Subject({
 }) {
     const subject = report.subjects[subject_uuid];
     const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
-
-    const [measurements, setMeasurements] = useState([]);
     const dataModel = useContext(DataModel)
-
-    useEffect(() => {
-        if (dates.length > 1) {
-            const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime()}).at(0);
-            get_subject_measurements(subject_uuid, report_date, minReportDate).then(json => {
-                if (json.ok !== false) {
-                    setMeasurements(json.measurements)
-                }
-            })
-        }
-        // eslint-disable-next-line
-    }, [dates]);
-
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn, report, measurements);

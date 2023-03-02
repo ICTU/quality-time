@@ -13,7 +13,7 @@ import { TimeLeft } from '../measurement/TimeLeft';
 import { TrendSparkline } from '../measurement/TrendSparkline';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
-import { formatMetricScale, get_metric_name, get_metric_tags, getMetricUnit } from '../utils';
+import { formatMetricScale, get_metric_name, getMetricTags, getMetricUnit } from '../utils';
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
@@ -129,7 +129,7 @@ export function SubjectTable({
                                     issueSettings={issueSettings}
                                 />
                             </Table.Cell>}
-                            {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{get_metric_tags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
+                            {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{getMetricTags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
                         </TableRowWithDetails>
                     )
                 })

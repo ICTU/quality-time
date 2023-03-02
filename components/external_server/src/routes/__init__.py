@@ -11,7 +11,7 @@ from .changelog import (
 from .datamodel import get_data_model
 from .documentation import get_api
 from .logo import get_logo
-from .measurement import get_measurements, set_entity_attribute, stream_nr_measurements
+from .measurement import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 from .metric import (
     add_metric_issue,
     delete_metric,
@@ -56,5 +56,4 @@ from .subject import (
     post_new_subject,
     post_subject_attribute,
     post_subject_copy,
-    get_subject_measurements,
 )

@@ -172,3 +172,19 @@ Feature: report
   Scenario: get non-existent report
     When the client gets a non-existing report
     Then the report does not exist
+
+  Scenario: get recent measurements of report
+    Given an existing report
+    And an existing subject
+    And an existing metric
+    And an existing source
+    When the collector measures "0"
+    Then the report has "1" measurements
+
+  Scenario: recent report has no old measurements
+    Given an existing report
+    And an existing subject
+    And an existing metric
+    And an existing source
+    When the collector measures "0"
+    Then the report had "0" measurements

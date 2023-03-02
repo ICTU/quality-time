@@ -25,7 +25,7 @@ const data_model = {
     }
 };
 
-function render_metric_parameters(scale = "count", issue_ids = [], report = { summary_by_tag: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
+function render_metric_parameters(scale = "count", issue_ids = [], report = { subjects: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
     render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={data_model}>
@@ -84,7 +84,7 @@ it('sets the metric unit field for metrics with the percentage scale', async () 
 
 it('skips the metric unit field for metrics with the version number scale', () => {
     render(<DataModel.Provider value={data_model}><MetricConfigurationParameters
-        report={{}}
+        report={{subjects: {}}}
         subject={{ type: "subject_type" }}
         metric={{ type: "source_version", tags: [], accept_debt: false }}
         metric_uuid="metric_uuid"

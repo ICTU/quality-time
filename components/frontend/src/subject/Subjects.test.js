@@ -12,7 +12,6 @@ jest.mock("../api/fetch_server_api.js")
 jest.mock('../widgets/menu_options', () => {
     const originalModule = jest.requireActual('../api/subject');
 
-    //Mock the default export and named export 'foo'
     return {
         __esModule: true,
         ...originalModule,
@@ -38,6 +37,7 @@ function renderSubjects(permissions = [], initialEntries = []) {
                     dates={[]}
                     hiddenColumns={[]}
                     history={history}
+                    measurements={[]}
                     report={report}
                     reports={[report]}
                     tags={[]}

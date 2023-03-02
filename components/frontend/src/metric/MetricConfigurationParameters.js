@@ -7,7 +7,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { dropdownOptions, getMetricDirection, getMetricScale, get_metric_tags } from '../utils';
+import { dropdownOptions, getMetricDirection, getMetricScale, getReportTags, getMetricTags } from '../utils';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
 
@@ -42,7 +42,7 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
 }
 
 function Tags({ metric, metric_uuid, reload, report }) {
-    const tags = Object.keys(report.summary_by_tag || []);
+    const tags = getReportTags(report)
     const labelId = `tags-${metric_uuid}`
     return (
         <MultipleChoiceInput
@@ -52,7 +52,7 @@ function Tags({ metric, metric_uuid, reload, report }) {
             options={dropdownOptions(tags)}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
-            value={get_metric_tags(metric)}
+            value={getMetricTags(metric)}
         />
     )
 }

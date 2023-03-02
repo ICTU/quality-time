@@ -14,7 +14,7 @@ it('does not save the layout after click', async () => {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <CardDashboard
-                cards={[<MetricSummaryCard header="Card" blue={0} red={1} green={2} yellow={1} white={0} grey={0} />]}
+                cards={[<MetricSummaryCard header="Card" summary={{ "date": { "blue": 0, "red": 1, "green": 2, "yellow": 1, "white": 0, "grey": 0 } }} />]}
                 initial_layout={[{ h: 6, w: 4, x: 0, y: 0 }]}
                 save_layout={mockCallback}
             />

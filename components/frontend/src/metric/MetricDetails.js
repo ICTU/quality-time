@@ -8,7 +8,7 @@ import { SourceEntities } from '../source/SourceEntities';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
-import { get_measurements } from '../api/measurement';
+import { get_metric_measurements } from '../api/measurement';
 import { get_source_name } from '../utils';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
@@ -31,7 +31,7 @@ function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }
 }
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
-    get_measurements(metric_uuid, report_date)
+    get_metric_measurements(metric_uuid, report_date)
         .then(function (json) {
             if (json.ok !== false) {
                 setMeasurements(json.measurements);

@@ -9,18 +9,16 @@ import './LegendCard.css';
 export function LegendCard() {
     const darkMode = useContext(DarkMode)
     const color = darkMode ? "white" : "black"
-    const listItems = STATUSES.map(status => {
-        return (
-            <List.Item key={status}>
-                <List.Icon>
-                    <StatusIcon status={status} size="small" />
-                </List.Icon>
-                <List.Content verticalAlign="middle" style={{ color: color }}>
-                    {getStatusName(status)}
-                </List.Content>
-            </List.Item>
-        )
-    });
+    const listItems = STATUSES.map(status =>
+        <List.Item key={status}>
+            <List.Icon>
+                <StatusIcon status={status} size="small" />
+            </List.Icon>
+            <List.Content verticalAlign="middle" style={{ color: color }}>
+                {getStatusName(status)}
+            </List.Content>
+        </List.Item>
+    );
     return (
         <Card style={{ height: '200px' }} tabIndex="0" className="legend">
             <Card.Content>

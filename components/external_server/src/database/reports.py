@@ -7,7 +7,7 @@ from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import ItemId, MetricId, SubjectId
+from shared.utils.type import ItemId
 
 from model.report import Report
 from utils.functions import unique
@@ -52,20 +52,6 @@ def _get_change_key(change: Change) -> str:
     changed_uuids = cast(dict[str, list[str]], change["delta"]).get("uuids", [])
     key = f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
     return key
-
-
-def metrics_of_subject(database: Database, subject_uuid: SubjectId, max_iso_timestamp: str = "") -> list[MetricId]:
-    """Return all metric uuid's for one subject."""
-    # As we filter reports by subject uuid and either timestamp or the 'last' flag, its type is a bit complicated:
-    report_filter: dict[str, bool | dict[str, bool] | dict[str, str]] = {}
-    report_filter[f"subjects.{subject_uuid}"] = DOES_EXIST  # Select reports that have the subject uuid
-    if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter["timestamp"] = {"$lt": max_iso_timestamp}  # Filter by timestamp if we're time traveling
-    else:
-        report_filter["last"] = True  # Otherwise select only reports that are the most recent ones
-    projection: dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
-    report = database.reports.find_one(report_filter, projection=projection, sort=TIMESTAMP_DESCENDING)
-    return list(report["subjects"][subject_uuid]["metrics"].keys()) if report else []
 
 
 def latest_report(database: Database, data_model, report_uuid: str):

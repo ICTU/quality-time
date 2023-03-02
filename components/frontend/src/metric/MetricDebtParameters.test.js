@@ -29,7 +29,7 @@ function renderMetricDebtParameters(
         accept_debt = false,
         scale = "count",
         issue_ids = [],
-        report = { summary_by_tag: {} },
+        report = { subjects: {} },
         permissions = [EDIT_REPORT_PERMISSION],
         issue_status = []
     } = {}) {
