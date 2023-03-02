@@ -3,7 +3,7 @@ FROM node:18.14.2-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
 
-RUN apk --no-cache add curl=~7.87
+RUN apk --no-cache add curl=7.88.1-r0
 
 WORKDIR /work
 COPY . /work
