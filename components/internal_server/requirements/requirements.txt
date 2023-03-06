@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --resolver=backtracking requirements.in
 #
-bottle==0.12.24 \
-    --hash=sha256:2480121a73e87380989b77e32bd2092d190e7ea7d71e6f1b8f7af7eab9d54ea3 \
-    --hash=sha256:fa88c66413ab07b5046545ac6e47a967d582143aef87f2c0fb0ef571d9977b5e
+bottle==0.12.25 \
+    --hash=sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea \
+    --hash=sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021
     # via -r ../../../requirements/bottle.in
 dnspython==2.3.0 \
     --hash=sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9 \
@@ -251,7 +251,4 @@ zope-interface==5.5.2 \
 setuptools==67.4.0 \
     --hash=sha256:e5fd0a713141a4a105412233c63dc4e17ba0090c8e8334594ac790ec97792330 \
     --hash=sha256:f106dee1b506dee5102cc3f3e9e68137bbad6d47b616be7991714b0c62204251
-    # via
-    #   gevent
-    #   zope-event
-    #   zope-interface
+    # via gevent
