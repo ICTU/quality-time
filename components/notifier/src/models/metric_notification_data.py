@@ -6,12 +6,11 @@ from shared_data_model import DATA_MODEL
 class MetricNotificationData:  # pylint: disable=too-few-public-methods
     """Handle metric data needed for notifications."""
 
-    def __init__(self, metric, subject) -> None:
+    def __init__(self, metric, measurements, subject) -> None:
         """Initialise the Notification with metric data."""
         self.metric_name = metric["name"] or f'{DATA_MODEL.metrics[metric["type"]].name}'
         self.metric_unit = metric["unit"] or f'{DATA_MODEL.metrics[metric["type"]].unit}'
         self.subject_name = subject.get("name") or DATA_MODEL.subjects[subject["type"]].name
-        recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
 
         self.new_metric_value = None
@@ -19,13 +18,13 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
         self.new_metric_status = self.__user_friendly_status(None)
         self.old_metric_status = self.__user_friendly_status(None)
 
-        if len(recent_measurements) >= 1:
-            self.new_metric_value = recent_measurements[-1][scale]["value"]
-            self.new_metric_status = self.__user_friendly_status(recent_measurements[-1][scale]["status"])
+        if len(measurements) >= 1:
+            self.new_metric_value = measurements[-1][scale]["value"]
+            self.new_metric_status = self.__user_friendly_status(measurements[-1][scale]["status"])
 
-        if len(recent_measurements) >= 2:
-            self.old_metric_value = recent_measurements[-2][scale]["value"]
-            self.old_metric_status = self.__user_friendly_status(recent_measurements[-2][scale]["status"])
+        if len(measurements) >= 2:
+            self.old_metric_value = measurements[-2][scale]["value"]
+            self.old_metric_status = self.__user_friendly_status(measurements[-2][scale]["status"])
 
     @staticmethod
     def __user_friendly_status(metric_status) -> str:
