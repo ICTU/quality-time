@@ -6,8 +6,13 @@ dlint==0.14.0
 mypy==1.0.1
 pep8-naming==0.13.3
 pip-audit==2.4.12
+<<<<<<< HEAD
 pydantic==1.10.6  # Needed for importing the data model from the shared data model component
 pylint==2.17.0
+=======
+pydantic==1.10.5  # Needed for importing the data model from the shared data model component
+pylint==2.16.3
+>>>>>>> 2c78270c (Update pylint, cryptography, and bottle. (#5560))
 safety==2.3.5
 unittest-xml-reporting==3.2.0  # Needed to generate JUnit XML output for Sonarcloud.io
 vulture==2.7
