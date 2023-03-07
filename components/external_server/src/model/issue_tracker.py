@@ -9,12 +9,13 @@ import requests
 from utils.type import URL
 
 
-class AsDictMixin:  # pylint: disable=too-few-public-methods
+@dataclass
+class AsDictMixin:
     """Mixin class to give data classes an as_dict method."""
 
     def as_dict(self) -> dict[str, str]:
         """Convert data class to dict."""
-        return asdict(self)  # pragma: no feature-test-cover
+        return cast(dict[str, str], asdict(self))  # pragma: no feature-test-cover
 
 
 @dataclass
