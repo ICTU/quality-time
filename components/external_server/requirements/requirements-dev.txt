@@ -540,6 +540,7 @@ pygments==2.14.0 \
     --hash=sha256:fa7bd7bd2771287c0de303af8bfdfc731f51bd2c6a47ab69d117138893b82717
     # via rich
 <<<<<<< HEAD
+<<<<<<< HEAD
 pylint==2.17.0 \
     --hash=sha256:1460829b6397cb5eb0cdb0b4fc4b556348e515cdca32115f74a1eb7c20b896b4 \
     --hash=sha256:e097d8325f8c88e14ad12844e3fe2d963d3de871ea9a8f8ad25ab1c109889ddc
@@ -548,6 +549,11 @@ pylint==2.16.3 \
     --hash=sha256:0decdf8dfe30298cd9f8d82e9a1542da464db47da60e03641631086671a03621 \
     --hash=sha256:3e803be66e3a34c76b0aa1a3cf4714b538335e79bd69718d34fcf36d8fff2a2b
 >>>>>>> 2c78270c (Update pylint, cryptography, and bottle. (#5560))
+=======
+pylint==2.16.4 \
+    --hash=sha256:4a770bb74fde0550fa0ab4248a2ad04e7887462f9f425baa0cd8d3c1d098eaee \
+    --hash=sha256:8841f26a0dbc3503631b6a20ee368b3f5e0e5461a1d95cf15d103dab748a0db3
+>>>>>>> e572650b (Update pylint and puppeteer. (#5588))
     # via -r ../../../requirements/dev.in
 pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
@@ -819,6 +825,7 @@ pip==23.0.1 \
     --hash=sha256:cd015ea1bfb0fcef59d8a286c1f8bebcb983f6317719d415dc5351efb7cd7024
     # via pip-api
 <<<<<<< HEAD
+<<<<<<< HEAD
 setuptools==67.6.0 \
     --hash=sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077 \
     --hash=sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2
@@ -827,6 +834,11 @@ setuptools==67.5.0 \
     --hash=sha256:113ff8d482b826d2f3b99f26adb1fe505e526a94a08e68cdf392d1dff9ce0595 \
     --hash=sha256:9f0004c0daa3d41ef4465934a89498da3eef994039f48845d6eb8202aa13b2e9
 >>>>>>> 2c78270c (Update pylint, cryptography, and bottle. (#5560))
+=======
+setuptools==67.5.1 \
+    --hash=sha256:15136a251127da2d2e77ac7a1bc231eb504654f7e3346d93613a13f2e2787535 \
+    --hash=sha256:1c39d42bda4cb89f7fdcad52b6762e3c309ec8f8715b27c684176b7d71283242
+>>>>>>> e572650b (Update pylint and puppeteer. (#5588))
     # via
     #   cyclonedx-python-lib
     #   safety
