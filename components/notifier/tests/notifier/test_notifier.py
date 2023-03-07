@@ -5,7 +5,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from unittest.mock import mock_open, patch
 
-from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health
+from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -30,7 +30,7 @@ class HealthCheckTest(unittest.TestCase):
         self.filename = "/home/notifier/health_check.txt"
 
     @patch("builtins.open", new_callable=mock_open)
-    @patch("quality_time_notifier.datetime")
+    @patch("notifier.notifier.datetime")
     def test_writing_health_check(self, mocked_datetime, mocked_open):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
@@ -129,7 +129,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch("quality_time_notifier.send_notification")
+    @patch("notifier.notifier.send_notification")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
