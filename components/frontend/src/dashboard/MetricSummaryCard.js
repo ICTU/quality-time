@@ -12,7 +12,7 @@ function nr_metrics_text(nr_metrics) {
 }
 
 export function MetricSummaryCard({ header, onClick, summary, maxY }) {
-    const animate = { duration: 0 }
+    const animate = { duration: 0, onLoad: { duration: 0 } }
     const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status]);
     const labelColor = useContext(DarkMode) ? "darkgrey" : "rgba(120, 120, 120)";
     const flyoutBgColor = useContext(DarkMode) ? "rgba(60, 65, 70)" : "white";

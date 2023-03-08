@@ -25,6 +25,7 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
                 labels={() => null}
                 labelComponent={tooltip}
                 data={data}
+                animate={animate}
             />
         )
     });
@@ -35,7 +36,6 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
         <svg viewBox="0 0 400 400">
             {nrMetrics === 0 && label}
             <VictoryStack
-                animate={animate}
                 colorScale={colors}
                 containerComponent={<VictoryContainer responsive={false} />}
                 domainPadding={10}
