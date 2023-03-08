@@ -529,9 +529,9 @@ mypy-extensions==1.0.0 \
     # via
     #   black
     #   mypy
-myst-parser==0.19.1 \
-    --hash=sha256:356b38aef29ed09144285ad222e5c3cb7a8e7fae8015d53dba40dbb8b9f73e2c \
-    --hash=sha256:f2dc168ed380e01d77973ad22a64fff1377cc72a3d1ac4bced423f28258d0a42
+myst-parser==1.0.0 \
+    --hash=sha256:502845659313099542bd38a2ae62f01360e7dd4b1310f025dd014dfc0439cdae \
+    --hash=sha256:69fb40a586c6fa68995e6521ac0a525793935db7e724ca9bac1d33be51be9a4c
     # via -r requirements-dev.in
 packageurl-python==0.10.4 \
     --hash=sha256:5c91334f942cd55d45eb0c67dd339a535ef90e25f05b9ec016ad188ed0ef9048 \
@@ -690,9 +690,9 @@ requests==2.28.2 \
     #   cachecontrol
     #   safety
     #   sphinx
-resolvelib==0.9.0 \
-    --hash=sha256:40ab05117c3281b1b160105e10075094c5ab118315003c922b77673a365290e1 \
-    --hash=sha256:597adcbdf81d62d0cde55d90faa8e79187ec0f18e5012df30bd7a751b26343ae
+resolvelib==1.0.0 \
+    --hash=sha256:15f8572c5c33ff3ffc5987aa4b9d4594d9e27c88aec3b802ed2316e85e03f0b3 \
+    --hash=sha256:fab4a73dfbf8613637c385397045f9e0bbed1728fff40ae31e38f07a3a8f4092
     # via pip-audit
 rich==13.3.2 \
     --hash=sha256:91954fe80cfb7985727a467ca98a7618e5dd15178cc2da10f553b36a93859001 \
