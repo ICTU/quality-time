@@ -590,9 +590,9 @@ requests==2.28.2 \
     # via
     #   cachecontrol
     #   safety
-resolvelib==0.9.0 \
-    --hash=sha256:40ab05117c3281b1b160105e10075094c5ab118315003c922b77673a365290e1 \
-    --hash=sha256:597adcbdf81d62d0cde55d90faa8e79187ec0f18e5012df30bd7a751b26343ae
+resolvelib==1.0.0 \
+    --hash=sha256:15f8572c5c33ff3ffc5987aa4b9d4594d9e27c88aec3b802ed2316e85e03f0b3 \
+    --hash=sha256:fab4a73dfbf8613637c385397045f9e0bbed1728fff40ae31e38f07a3a8f4092
     # via pip-audit
 rich==13.3.2 \
     --hash=sha256:91954fe80cfb7985727a467ca98a7618e5dd15178cc2da10f553b36a93859001 \
