@@ -5,9 +5,10 @@ from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 
-from database.measurements import latest_successful_measurement, update_measurement_end
-from database.reports import latest_metric
+from database.measurements import latest_successful_measurement, recent_measurements, update_measurement_end
+from database.reports import latest_metric, latest_reports
 
 
 @bottle.post("/api/measurements")
@@ -31,3 +32,12 @@ def post_measurement(database: Database) -> None:
             update_measurement_end(database, latest["_id"])
             return
     insert_new_measurement(database, measurement)
+
+
+@bottle.get("/api/measurements")
+def get_measurements(database: Database):
+    """Return the two most recent measurements (without details) for all metrics in all reports."""
+    metrics: list[Metric] = []
+    for report in latest_reports(database):
+        metrics.extend(report.metrics)
+    return dict(measurements=recent_measurements(database, *metrics))

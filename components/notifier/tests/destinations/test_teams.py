@@ -46,23 +46,23 @@ class BuildNotificationTextTests(TestCase):
             name="Metric",
             unit="units",
             scale=scale,
-            recent_measurements=[
-                dict(count=dict(value=0, status="near_target_met")),
-                dict(count=dict(value=42, status="target_not_met")),
-            ],
         )
+        measurements1 = [
+            dict(count=dict(value=0, status="near_target_met")),
+            dict(count=dict(value=42, status="target_not_met")),
+        ]
         metric2 = dict(
             type="metric_type",
             name="Metric",
             unit="units",
             scale=scale,
-            recent_measurements=[
-                dict(count=dict(value=5, status="target_met")),
-                dict(count=dict(value=10, status="target_not_met")),
-            ],
         )
-        metric_notification_data1 = MetricNotificationData(metric1, self.subject)
-        metric_notification_data2 = MetricNotificationData(metric2, self.subject)
+        measurements2 = [
+            dict(count=dict(value=5, status="target_met")),
+            dict(count=dict(value=10, status="target_not_met")),
+        ]
+        metric_notification_data1 = MetricNotificationData(metric1, measurements1, self.subject)
+        metric_notification_data2 = MetricNotificationData(metric2, measurements2, self.subject)
         notification = Notification(
             self.report, [metric_notification_data1, metric_notification_data2], "destination_uuid", {}
         )
@@ -83,12 +83,12 @@ class BuildNotificationTextTests(TestCase):
             name="Metric",
             unit="units",
             scale="count",
-            recent_measurements=[
-                dict(count=dict(value=0, status="near_target_met")),
-                dict(count=dict(value=None, status="unknown")),
-            ],
         )
-        metric_notification_data1 = MetricNotificationData(metric1, self.subject)
+        measurements = [
+            dict(count=dict(value=0, status="near_target_met")),
+            dict(count=dict(value=None, status="unknown")),
+        ]
+        metric_notification_data1 = MetricNotificationData(metric1, measurements, self.subject)
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"

@@ -2,7 +2,7 @@
 
 from shared.model.report import Report
 
-from routes import get_report
+from routes import get_reports
 
 from ..base import DataModelTestCase
 from ..fixtures import REPORT_ID, create_report
@@ -19,6 +19,6 @@ class ReportTest(DataModelTestCase):  # skipcq: PTC-W0046
 
     def test_get_report(self):
         """Test that the reports can be retrieved."""
-        reports = get_report(self.database)["reports"]
+        reports = get_reports(self.database)["reports"]
         self.assertEqual(1, len(reports))
         self.assertEqual(REPORT_ID, reports[0][REPORT_ID])

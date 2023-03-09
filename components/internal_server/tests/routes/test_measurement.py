@@ -3,9 +3,9 @@
 from datetime import date, datetime, timedelta
 from unittest.mock import Mock, patch
 
-from routes import post_measurement
+from routes import get_measurements, post_measurement
 
-from ..base import DataModelTestCase
+from ..base import DatabaseTestCase, DataModelTestCase
 from ..fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
 
 
@@ -393,3 +393,23 @@ class PostMeasurementTests(DataModelTestCase):
                 ),
             )
         )
+
+
+class GetMeasurements(DatabaseTestCase):
+    """Unit tests for the get measurements endpoint."""
+
+    def test_no_reports(self):
+        """Test that there are no measurements if there are no reports."""
+        self.database.reports.find.return_value = []
+        self.assertEqual(dict(measurements=[]), get_measurements(self.database))
+
+    def test_no_metrics(self):
+        """Test that there are no measurements if none of the reports has metrics."""
+        self.database.reports.find.return_value = [{}]
+        self.assertEqual(dict(measurements=[]), get_measurements(self.database))
+
+    def test_one_metric(self):
+        """Test that the measurement is returned."""
+        self.database.reports.find.return_value = [{"subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}}]
+        self.database.measurements.find.return_value = [{}]
+        self.assertEqual(dict(measurements=[{}]), get_measurements(self.database))
