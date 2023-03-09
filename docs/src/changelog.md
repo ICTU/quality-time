@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.8.0-rc.1 - 2023-03-02
+## [Unreleased]
 
 ### Deployment notes
 
@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Prevent negative time remaining in the calendar source. Fixes [#5267](https://github.com/ICTU/quality-time/issues/5267).
 - Tags were not printed correctly in the reference manual. Fixes [#5282](https://github.com/ICTU/quality-time/issues/5282).
 - Prevent users from entering negative desired response times. Fixes [#5328](https://github.com/ICTU/quality-time/issues/5328).
+- In addition to version 3.1, also support version 3.0 of the OWASP Dependency Check XSD. Closes [#5586](https://github.com/ICTU/quality-time/issues/5586).
 
 ### Added
 
