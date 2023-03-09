@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import os
 from datetime import datetime, timezone
 from typing import NoReturn
 
@@ -12,13 +11,10 @@ from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
 
 
-async def notify() -> NoReturn:
+async def notify(
+    internal_server_host: str = "localhost", internal_server_port: str = "5002", sleep_duration: int = 60
+) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
-    log_level = str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING"))
-    logging.getLogger().setLevel(log_level)
-    sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
-    internal_server_host = os.getenv("INTERNAL_SERVER_HOST", "localhost")
-    internal_server_port = os.getenv("INTERNAL_SERVER_PORT", "5002")
     internal_server_api = f"http://{internal_server_host}:{internal_server_port}/api"
     reports_url = f"{internal_server_api}/report"
     measurements_url = f"{internal_server_api}/measurements"
