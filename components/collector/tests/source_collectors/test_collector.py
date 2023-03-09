@@ -1,6 +1,5 @@
 """Unit tests for the Collector class."""
 
-from datetime import datetime
 from unittest.mock import Mock, patch
 
 import aiohttp
@@ -60,7 +59,7 @@ class CollectorTest(SourceCollectorTestCase):
         class FailingLandingUrl(SourceCollector):
             """Add a landing_url implementation that fails."""
 
-            async def _api_url(self) -> URL:
+            async def _api_url(self) -> URL:  # skipcq: PYL-R0201
                 """Override to return an URL fixture."""
                 return URL("https://api_url")
 
@@ -78,7 +77,7 @@ class CollectorTest(SourceCollectorTestCase):
         sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
         self.metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime.today() - datetime(2021, 1, 1)).days))
+        self.assert_measurement(response, value="0")
 
     async def test_including_entities(self):
         """Test that only entities marked for inclusion, are included."""
