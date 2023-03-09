@@ -12,6 +12,8 @@ updates:
   schedule:
     interval: daily
     time: "04:05"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -19,6 +21,8 @@ updates:
   schedule:
     interval: daily
     time: "04:10"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
@@ -63,6 +67,8 @@ updates:
   schedule:
     interval: daily
     time: "04:40"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
@@ -114,6 +120,8 @@ updates:
   schedule:
     interval: daily
     time: "05:10"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
@@ -131,6 +139,8 @@ updates:
   schedule:
     interval: daily
     time: "05:20"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -138,6 +148,8 @@ updates:
   schedule:
     interval: daily
     time: "05:25"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -145,6 +157,8 @@ updates:
   schedule:
     interval: daily
     time: "05:30"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
@@ -169,6 +183,8 @@ updates:
   schedule:
     interval: daily
     time: "05:45"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -176,6 +192,8 @@ updates:
   schedule:
     interval: daily
     time: "05:50"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -183,6 +201,8 @@ updates:
   schedule:
     interval: daily
     time: "05:55"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
@@ -190,4 +210,6 @@ updates:
   schedule:
     interval: daily
     time: "06:00"
+  allow:
+    - dependency-type: "all"
   open-pull-requests-limit: 100
