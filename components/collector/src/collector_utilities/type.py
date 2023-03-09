@@ -10,7 +10,7 @@ Job = dict[str, Any]
 Jobs = list[Job]
 JSONList = list[dict[str, Any]]
 JSONDict = dict[str, Any]
-JSON = Union[JSONDict, JSONList]
+JSON = Union[JSONDict, JSONList]  # pylint:disable=invalid-name
 Namespaces = dict[str, str]  # Namespace prefix to Namespace URI mapping
 Response = aiohttp.ClientResponse
 Responses = list[Response]

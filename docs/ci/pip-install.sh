@@ -10,6 +10,6 @@ run () {
 }
 
 # Install the requirements
-run pip install --quiet -r requirements/requirements-base.txt
-run pip install --quiet -r requirements/requirements-dev.txt
-run pip install --quiet -r requirements/requirements-internal.txt
+run pip install --ignore-installed --quiet -r requirements/requirements-base.txt
+run pip install --ignore-installed --quiet -r requirements/requirements-dev.txt
+run pip install --ignore-installed --quiet -r requirements/requirements-internal.txt
