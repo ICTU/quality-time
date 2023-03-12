@@ -3,6 +3,7 @@
 import asyncio
 import logging
 from datetime import datetime, timezone
+from os import getenv
 from typing import NoReturn
 
 import aiohttp
@@ -50,7 +51,7 @@ async def get_reports_and_measurements(reports_url: str, measurements_url: str):
 
 def record_health() -> None:
     """Record the current date and time in a file to allow for health checks."""
-    filename = "/home/notifier/health_check.txt"
+    filename = getenv("HEALTH_CHECK_FILE", "/home/notifier/health_check.txt")
     try:
         with open(filename, "w", encoding="utf-8") as health_check:
             health_check.write(datetime.now().isoformat())
