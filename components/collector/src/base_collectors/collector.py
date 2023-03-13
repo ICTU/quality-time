@@ -59,8 +59,9 @@ class Collector:
         self.next_fetch: dict[str, datetime] = {}
 
     @staticmethod
-    def record_health(filename: str = "/home/collector/health_check.txt") -> None:
+    def record_health() -> None:
         """Record the current date and time in a file to allow for health checks."""
+        filename = os.getenv("HEALTH_CHECK_FILE", "/home/collector/health_check.txt")
         try:
             with open(filename, "w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now().isoformat())

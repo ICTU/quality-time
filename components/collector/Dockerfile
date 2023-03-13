@@ -17,11 +17,12 @@ FROM python:3.11.2-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time collector"
 
-RUN adduser -S collector
+ENV HEALTH_CHECK_FILE=/home/collector/health_check.txt
+RUN adduser -S collector && touch ${HEALTH_CHECK_FILE} && chmod g+w ${HEALTH_CHECK_FILE}
 WORKDIR /home/collector
 USER collector
 
-HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('/home/collector/health_check.txt', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
+HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
 
 COPY --from=compile-image /home/collector/venv /home/collector/venv
 COPY collector/src /home/collector

@@ -17,11 +17,12 @@ FROM python:3.11.2-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time notifier"
 
-RUN adduser -S notifier
+ENV HEALTH_CHECK_FILE=/home/notifier/health_check.txt
+RUN adduser -S notifier && touch ${HEALTH_CHECK_FILE} && chmod g+w ${HEALTH_CHECK_FILE}
 WORKDIR /home/notifier
 USER notifier
 
-HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('/home/notifier/health_check.txt', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
+HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
 
 COPY --from=compile-image /home/notifier/venv /home/notifier/venv
 COPY notifier/src /home/notifier

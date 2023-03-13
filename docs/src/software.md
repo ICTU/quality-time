@@ -125,21 +125,22 @@ By default, the collector measures metrics whose configuration hasn't been chang
 
 ### Health check
 
-Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
+Every time the collector wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
 
 ### Environment variables
 
 The collector uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The collector uses this to get the metrics and post the measurements. |
-| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The collector uses this to get the metrics and post the measurements. |
-| `COLLECTOR_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`. |
-| `COLLECTOR_SLEEP_DURATION` | `20` | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements. |
-| `COLLECTOR_MEASUREMENT_LIMIT` | `30` | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
-| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900` | The amount of time (in seconds) after which a metric should be measured again. |
-| `HTTP(S)_PROXY` | | Proxy to use by the collector. |
+| Name | Default value | Description                                                                                                                                                                                        |
+| :--- | :------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `COLLECTOR_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                    |
+| `COLLECTOR_SLEEP_DURATION` | `20` | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                    |
+| `COLLECTOR_MEASUREMENT_LIMIT` | `30` | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up.  |
+| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900` | The amount of time (in seconds) after which a metric should be measured again.                                                                                                |
+| `HEALTH_CHECK_FILE` | `/home/collector/health_check.txt` | Path to the file used for health check.                                                                                                                        |
+| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The collector uses this to get the metrics and post the measurements.                                                                       |
+| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The collector uses this to get the metrics and post the measurements.                                                                                      |
+| `HTTP(S)_PROXY` | | Proxy to use by the collector.                                                                                                                                                                        |
 
 ```{seealso}
 See the [`aiohttp` documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
@@ -151,18 +152,19 @@ The notifier is responsible for notifying users about significant events, such a
 
 ### Health check
 
-Every time the notifier wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
+Every time the notifier wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
 
 ### Environment variables
 
 The notifier uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The notifier uses this to get the metrics. |
-| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The notifier uses this to get the metrics. |
-| `NOTIFIER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. |
-| `NOTIFIER_SLEEP_DURATION` | `60` | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+| Name | Default value | Description                                                                                           |
+| :--- | :------------ |:------------------------------------------------------------------------------------------------------|
+| `HEALTH_CHECK_FILE` | `/home/notifier/health_check.txt` | Path to the file used for health check.                            |
+| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The notifier uses this to get the metrics.     |
+| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The notifier uses this to get the metrics.                    |
+| `NOTIFIER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.        |
+| `NOTIFIER_SLEEP_DURATION` | `60` | The amount of time (in seconds) that the notifier sleeps between sending notifications.   |
 
 ## Shared server code
 
