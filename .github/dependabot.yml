@@ -3,14 +3,14 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:05"
   allow:
     - dependency-type: "all"
@@ -19,7 +19,7 @@ updates:
 - package-ecosystem: pip
   directory: "/components/collector/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:10"
   allow:
     - dependency-type: "all"
@@ -28,7 +28,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/collector"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:15"
   ignore:
     - dependency-name: "python"
@@ -38,7 +38,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/database"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:20"
   ignore:
     - dependency-name: "mongo"
@@ -48,7 +48,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/frontend"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:25"
   ignore:
     - dependency-name: "node"
@@ -58,14 +58,14 @@ updates:
 - package-ecosystem: npm
   directory: "/components/frontend"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:30"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/notifier/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:40"
   allow:
     - dependency-type: "all"
@@ -74,7 +74,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/notifier"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:45"
   ignore:
     - dependency-name: "python"
@@ -84,14 +84,14 @@ updates:
 - package-ecosystem: docker
   directory: "/components/proxy"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:50"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/renderer"
   schedule:
-    interval: daily
+    interval: weekly
     time: "04:55"
   ignore:
     - dependency-name: "node"
@@ -101,14 +101,14 @@ updates:
 - package-ecosystem: npm
   directory: "/components/renderer"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:00"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/external_server"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:05"
   ignore:
     - dependency-name: "python"
@@ -118,7 +118,7 @@ updates:
 - package-ecosystem: pip
   directory: "/components/external_server/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:10"
   allow:
     - dependency-type: "all"
@@ -127,7 +127,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/internal_server"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:15"
   ignore:
     - dependency-name: "python"
@@ -137,7 +137,7 @@ updates:
 - package-ecosystem: pip
   directory: "/components/internal_server/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:20"
   allow:
     - dependency-type: "all"
@@ -146,7 +146,7 @@ updates:
 - package-ecosystem: pip
   directory: "/components/shared_data_model/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:25"
   allow:
     - dependency-type: "all"
@@ -155,7 +155,7 @@ updates:
 - package-ecosystem: pip
   directory: "/components/shared_server_code/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:30"
   allow:
     - dependency-type: "all"
@@ -164,7 +164,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/testdata"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:35"
   ignore:
     - dependency-name: "python"
@@ -174,14 +174,14 @@ updates:
 - package-ecosystem: npm
   directory: "/docs"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:40"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/docs/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:45"
   allow:
     - dependency-type: "all"
@@ -190,7 +190,7 @@ updates:
 - package-ecosystem: pip
   directory: "/release/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:50"
   allow:
     - dependency-type: "all"
@@ -199,7 +199,7 @@ updates:
 - package-ecosystem: pip
   directory: "/tests/application_tests/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "05:55"
   allow:
     - dependency-type: "all"
@@ -208,7 +208,7 @@ updates:
 - package-ecosystem: pip
   directory: "/tests/feature_tests/requirements"
   schedule:
-    interval: daily
+    interval: weekly
     time: "06:00"
   allow:
     - dependency-type: "all"
