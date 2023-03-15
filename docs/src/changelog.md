@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - The unit name of metrics in MS Teams notifications would not be rendered correctly. Fixes [#5347](https://github.com/ICTU/quality-time/issues/5347).
 
+### Changed
+
+- Turn off request logging by the frontend container. Closes [#5654](https://github.com/ICTU/quality-time/issues/5654).
+
 ## v4.8.0 - 2023-03-13
 
 ### Deployment notes
