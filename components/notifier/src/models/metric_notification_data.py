@@ -8,8 +8,8 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
 
     def __init__(self, metric, measurements, subject) -> None:
         """Initialise the Notification with metric data."""
-        self.metric_name = metric["name"] or f'{DATA_MODEL.metrics[metric["type"]].name}'
-        self.metric_unit = metric["unit"] or f'{DATA_MODEL.metrics[metric["type"]].unit}'
+        self.metric_name = metric["name"] or DATA_MODEL.metrics[metric["type"]].name
+        self.metric_unit = metric["unit"] or DATA_MODEL.metrics[metric["type"]].unit.value
         self.subject_name = subject.get("name") or DATA_MODEL.subjects[subject["type"]].name
         scale = metric["scale"]
 

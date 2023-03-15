@@ -42,9 +42,9 @@ class BuildNotificationTextTests(TestCase):
         """Test that the text is correct."""
         scale = "count"
         metric1 = dict(
-            type="metric_type",
+            type="security_warnings",
             name="Metric",
-            unit="units",
+            unit="my security warnings",
             scale=scale,
         )
         measurements1 = [
@@ -52,9 +52,9 @@ class BuildNotificationTextTests(TestCase):
             dict(count=dict(value=42, status="target_not_met")),
         ]
         metric2 = dict(
-            type="metric_type",
-            name="Metric",
-            unit="units",
+            type="security_warnings",
+            name=None,
+            unit=None,
             scale=scale,
         )
         measurements2 = [
@@ -70,9 +70,9 @@ class BuildNotificationTextTests(TestCase):
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
             "* Subject:\n"
             "  * *Metric* status is red (target not met), was yellow (near target met). "
-            "Value is 42 units, was 0 units.\n"
-            "  * *Metric* status is red (target not met), was green (target met). "
-            "Value is 10 units, was 5 units.\n",
+            "Value is 42 my security warnings, was 0 my security warnings.\n"
+            "  * *Security warnings* status is red (target not met), was green (target met). "
+            "Value is 10 security warnings, was 5 security warnings.\n",
             notification_text(notification),
         )
 
