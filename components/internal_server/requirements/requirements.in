@@ -1,0 +1,4 @@
+-r ../../../requirements/fastapi.in
+-r ../../../requirements/gevent.in
+-r ../../../requirements/pymongo.in
+mongomock==4.1.2

@@ -1,0 +1,213 @@
+import logging
+from datetime import datetime
+from typing import Iterable, NewType, TypedDict
+
+import pymongo
+
+from dataclasses import dataclass
+from bson.objectid import ObjectId
+
+from bson.objectid import ObjectId
+from pymongo.database import Database
+from pymongo.operations import DeleteMany, UpdateOne
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
+from shared.utils.functions import iso_timestamp
+
+from reports import latest_reports
+
+MeasurementId = NewType("MeasurementId", str)
+
+
+def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
+    """Return the latest successful measurement."""
+    latest_successful = database.measurements.find_one(
+        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+    )
+    return None if latest_successful is None else Measurement(metric, latest_successful)
+
+
+def update_measurement_end(database: Database, measurement_id: MeasurementId):
+    """Set the end date and time of the measurement to the current date and time."""
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
+
+
+def recent_measurements(database: Database, *metrics: Metric, limit_per_metric: int = 2):
+    """Return recent measurements for the specified metrics, without entities and issue status."""
+    projection = {
+        "_id": False,
+        "sources.entities": False,
+        "sources.entity_user_data": False,
+        "issue_status": False,
+    }
+    measurements: list = []
+    for metric in metrics:
+        measurements.extend(
+            list(
+                database.measurements.find(
+                    {"metric_uuid": metric.uuid},
+                    limit=limit_per_metric,
+                    sort=[("start", pymongo.DESCENDING)],
+                    projection=projection,
+                )
+            )
+        )
+    return measurements
+
+
+# All scales Quality-time has ever supported
+SCALES = ("count", "percentage", "version_number")
+OLD_TO_NEW = [("start", pymongo.ASCENDING)]
+
+
+class MeasurementJSON(TypedDict):
+    """The relevant attributes of the measurement JSON as returned by MongoDB."""
+
+    _id: ObjectId
+    end: str
+
+
+@dataclass
+class Stats:  # pragma: no feature-test-cover
+    """Keep track of the number of measurements merged."""
+
+    nr_measurements_updated: int = 0
+    nr_measurements_deleted: int = 0
+    nr_measurements: int = 0
+    nr_metrics: int = 0
+
+    def __iadd__(self, other) -> "Stats":
+        """Add the other stats."""
+        return self.__class__(
+            self.nr_measurements_updated + other.nr_measurements_updated,
+            self.nr_measurements_deleted + other.nr_measurements_deleted,
+            self.nr_measurements + other.nr_measurements,
+            self.nr_metrics + other.nr_metrics,
+        )
+
+    @property
+    def percentage_measurements_updated(self) -> int:
+        """Return the percentage of the measurements updated."""
+        return percentage(self.nr_measurements_updated, self.nr_measurements)
+
+    @property
+    def percentage_measurements_deleted(self) -> int:
+        """Return the percentage of the measurements deleted."""
+        return percentage(self.nr_measurements_deleted, self.nr_measurements)
+
+
+def rename_issue_lead_time(database: Database) -> None:  # pragma: no cover-behave
+    """Rename the lead_time_for_changes metrics to average_issue_lead_time metrics."""
+    reports = latest_reports(database)
+    for report in reports:
+        changed = False
+        report_metrics = report.metrics
+        for metric in report_metrics:
+            if metric.type() == "lead_time_for_changes":
+                metric["type"] = "average_issue_lead_time"
+                changed = True
+        if changed:
+            report_id = ObjectId(report["_id"])
+            del report["_id"]
+            database.reports.replace_one({"_id": report_id}, report)
+
+
+def merge_unmerged_measurements(database: Database, dry_run: bool = False) -> Stats:
+    """Due to a bug, measurements were not properly merged. Clean up by merging measurements where possible."""
+    start = datetime.now()
+    logger = logging.getLogger(__name__)
+    logger.info("Starting %smigration 'merge unmerged measurements' at %s",
+                "DRY RUN " if dry_run else "", start)
+    estimated_nr_measurements = int(
+        database.measurements.estimated_document_count())
+    metric_uuids = database.measurements.distinct("metric_uuid")
+    nr_metrics = len(metric_uuids)
+    logger.info("Measurements collection has %d measurements for %d metrics",
+                estimated_nr_measurements, nr_metrics)
+    total_stats = Stats()
+    for index, metric_uuid in enumerate(metric_uuids):  # pragma: no feature-test-cover
+        logger.info("Merging measurements for metric %s (%d/%d)",
+                    metric_uuid, index + 1, nr_metrics)
+        stats = _merge_unmerged_measurements_for_metric(
+            database, metric_uuid, dry_run)
+        log_stats(logger, stats, dry_run)
+        total_stats += stats
+    stop = datetime.now()
+    logger.info(
+        "Finished migration 'merge unmerged measurements' at %s, took %s", stop, stop - start)
+    log_stats(logger, total_stats, dry_run)
+    return total_stats
+
+
+def _merge_unmerged_measurements_for_metric(
+    database: Database, metric_uuid: str, dry_run: bool
+) -> Stats:  # pragma: no feature-test-cover
+    """Merge the unmerged measurements of the specified metric."""
+    updates: dict[ObjectId, str] = {
+    }  # Mongo object ids of measurements that will be updated with a new end-timestamp
+    # The Mongo object ids of measurements that have been merged and will be deleted
+    deletes: list[ObjectId] = []
+    # The current measurement that will be updated if it is equal to a later measurement:
+    current: MeasurementJSON = {"_id": ObjectId(), "end": ""}
+    nr_measurements = 0
+    for measurement in database.measurements.find(dict(metric_uuid=metric_uuid), sort=OLD_TO_NEW):
+        nr_measurements += 1
+        if _equal(current, measurement):
+            updates[current["_id"]] = max(measurement["end"], current["end"])
+            deletes.append(measurement["_id"])
+        else:
+            current = measurement
+    mongo_operations: list[UpdateOne | DeleteMany] = [
+        UpdateOne({"_id": object_id}, {"$set": dict(end=end)}) for object_id, end in updates.items()
+    ]
+    if deletes:
+        mongo_operations.append(DeleteMany({"_id": {"$in": deletes}}))
+    if mongo_operations and not dry_run:
+        _backup_measurements(database, updates.keys(),
+                             "backup_updated_measurements")
+        _backup_measurements(database, deletes, "backup_deleted_measurements")
+        database.measurements.bulk_write(mongo_operations)
+    return Stats(len(updates), len(deletes), nr_measurements, nr_metrics=1)
+
+
+def _backup_measurements(
+    database: Database, object_ids: Iterable[ObjectId], destination_collection: str
+) -> None:  # pragma: no feature-test-cover
+    """Backup the specified measurements to the specified collection."""
+    database.measurements.aggregate(
+        [
+            {"$match": {"_id": {"$in": list(object_ids)}}},
+            {"$merge": {"into": destination_collection,
+                        "on": "_id", "whenMatched": "replace"}},
+        ]
+    )
+
+
+def _equal(measurement1: MeasurementJSON, measurement2: MeasurementJSON) -> bool:  # pragma: no feature-test-cover
+    """Return whether the measurements are equal."""
+    scales_equal = all(measurement1.get(scale) ==
+                       measurement2.get(scale) for scale in SCALES)
+    issues_statuses_equal = measurement1.get(
+        "issue_status") == measurement2.get("issue_status")
+    sources_equal = measurement1.get("sources") == measurement2.get("sources")
+    return scales_equal and issues_statuses_equal and sources_equal
+
+
+def log_stats(logger: logging.Logger, stats: Stats, dry_run: bool) -> None:  # pragma: no feature-test-cover
+    """Log the update and deletion statistics, if any."""
+    if stats.nr_measurements_updated > 0 or stats.nr_measurements_deleted > 0 or stats.nr_metrics > 1:
+        dry_run_label = "...DRY RUN, so not " if dry_run else "..."
+        logger.info(
+            "%supdated %d (%d%%) measurements and deleted %d (%d%%) measurements of %d measurements",
+            dry_run_label,
+            stats.nr_measurements_updated,
+            stats.percentage_measurements_updated,
+            stats.nr_measurements_deleted,
+            stats.percentage_measurements_deleted,
+            stats.nr_measurements,
+        )
+
+
+def percentage(value: int, total: int) -> int:  # pragma: no feature-test-cover
+    """Calculate the percentage."""
+    return round(100 * value / total) if total > 0 else 0
