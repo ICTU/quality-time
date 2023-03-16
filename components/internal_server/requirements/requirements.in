@@ -1,3 +1,0 @@
--r ../../../requirements/bottle.in
--r ../../../requirements/gevent.in
--r ../../../requirements/pymongo.in

@@ -34,4 +34,4 @@ COPY shared_data_model /home/shared_data_model
 COPY shared_server_code /home/shared_server_code
 
 ENV PATH="/home/server/venv/bin:$PATH"
-CMD ["python", "/home/server/quality_time_server.py"]
+CMD ["make", "run"]
