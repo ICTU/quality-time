@@ -3,7 +3,7 @@
 import pathlib
 from unittest.mock import Mock, mock_open, patch
 
-from shared.initialization.database import init_database
+from shared.initialization.database import get_database, init_database
 
 from ..base import DataModelTestCase
 
@@ -36,6 +36,10 @@ class DatabaseInitTest(DataModelTestCase):
             glob_mock.assert_called()
         else:
             glob_mock.assert_not_called()
+    def test_get_database(self):
+        """Test the initialization of an empty database."""
+        get_database()
+        self.mongo_client.assert_called_once()
 
     def test_init_empty_database(self):
         """Test the initialization of an empty database."""
