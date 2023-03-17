@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Fixed
 
+- In addition to making health check files group writeable for a configurable user to ease use in OpenShift, also make the user writing the files part of the group root. Further fixes [#5310](https://github.com/ICTU/quality-time/issues/5310).
 - The unit name of metrics in MS Teams notifications would not be rendered correctly. Fixes [#5347](https://github.com/ICTU/quality-time/issues/5347).
 - GitLab pipeline source up-to-dateness should take filters into account. Fixes [#5181](https://github.com/ICTU/quality-time/issues/5181).
 
