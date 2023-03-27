@@ -1,5 +1,5 @@
 -r ../../requirements/dev.in
-furo==2022.12.7
+furo==2023.3.23
 gitpython==3.1.31
 myst-parser==1.0.0
 Sphinx==5.3.0  # Can't upgrade to Sphinx 6 because sphinx-copybutton 0.5.1 requires Sphinx < 6.
