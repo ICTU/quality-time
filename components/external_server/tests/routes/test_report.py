@@ -513,6 +513,7 @@ class ReportImportAndExportTest(ReportTestCase):
     def setUp(self):
         """Extend to set up a database with a report and a user session."""
         super().setUp()
+        # skipcq: SCT-1000
         self.private_key = """-----BEGIN PRIVATE KEY-----
 MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANdJVRdylaadsaau
 hRxNToIUIk/nSKMzfjjjP/20FEShkax1g4CYTwTdSMcuV+4blzzFSE+eDmMs1LNk

@@ -1,13 +1,13 @@
 -r ./lxml.in  # Needed to be able to run mypy with `--html-report`.
 bandit==1.7.5
 black==22.12.0
-coverage==7.2.1
+coverage==7.2.2
 dlint==0.14.0
 mypy==1.0.1
 pep8-naming==0.13.3
 pip-audit==2.4.12
-pydantic==1.10.6  # Needed for importing the data model from the shared data model component
-pylint==2.17.0
+pydantic==1.10.7  # Needed for importing the data model from the shared data model component
+pylint==2.17.1
 safety==2.3.5
 unittest-xml-reporting==3.2.0  # Needed to generate JUnit XML output for Sonarcloud.io
 vulture==2.7

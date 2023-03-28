@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.5.0
       - name: Get release version from the pushed tag
         id: get_version
         uses: battila7/get-version-action@v2
@@ -75,4 +75,4 @@ jobs:
           tags: ictu/quality-time_frontend:${{ steps.get_version.outputs.version }}
           push: true
       - name: Anchore SBOM Action
-        uses: anchore/sbom-action@v0.13.3
+        uses: anchore/sbom-action@v0.13.4
