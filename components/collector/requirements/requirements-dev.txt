@@ -695,9 +695,9 @@ tomlkit==0.11.7 \
     --hash=sha256:5325463a7da2ef0c6bbfefb62a3dc883aebe679984709aee32a317907d0a8d3c \
     --hash=sha256:f392ef70ad87a672f02519f99967d28a4d3047133e2d1df936511465fbb3791d
     # via pylint
-types-beautifulsoup4==4.12.0.0 \
-    --hash=sha256:3859e70d3118d65d12ebfca109304de4bf52383e6f99f941c114fd1153bb6cc1 \
-    --hash=sha256:43c23852a6ef0053632b9a308fc3488831c0f3e02c0f4b4478a28703217cf683
+types-beautifulsoup4==4.12.0.1 \
+    --hash=sha256:57bcd40e84c8d292c0a1de5267751a3a399ae49a3d826d9a999bc72fe94dcae3 \
+    --hash=sha256:8eaae29a605e5bb46a34160587f61a2a0af9ecfcefbaac983dd67b96ace1ed85
     # via -r requirements-dev.in
 types-html5lib==1.1.11.13 \
     --hash=sha256:2a5ced934bcc7b47800b88ddb2541bbdf5bded7fb6d421693c978228e1fe631d \
