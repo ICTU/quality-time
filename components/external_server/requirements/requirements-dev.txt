@@ -699,9 +699,9 @@ types-cryptography==3.3.23.2 \
     --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
     --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via -r requirements-dev.in
-types-ldap3==2.9.13.11 \
-    --hash=sha256:6ba2ca03a7111bb648111e6e9dc9dd774f50a75b948578ae3ee086ac5dab3854 \
-    --hash=sha256:d0684ab80f8e475138963e653552446b8e4fe4e60df45be69db73fa3fd8d3194
+types-ldap3==2.9.13.12 \
+    --hash=sha256:17cc381841ce2a004a9d7fb5b677f84f886934399764f7e7b1f982843850a97a \
+    --hash=sha256:5cc3ed6d16b50027db568087a491f2b9e1a5194f1abcab01d4654528dc1e267b
     # via -r requirements-dev.in
 types-pyasn1==0.4.0.5 \
     --hash=sha256:c5d661b820922b9a99b984b6c2c051734b5ceaa8732206f7196055b5f799ddb6 \
