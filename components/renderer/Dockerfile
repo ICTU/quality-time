@@ -3,7 +3,7 @@ FROM node:18.15.0-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk --no-cache add curl=7.88.1-r0
+RUN apk --no-cache add curl=7.88.1-r1
 
 RUN apk add --no-cache \
     msttcorefonts-installer=3.8-r1 \
@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     ttf-droid=20200215-r2 \
     ttf-freefont=20120503-r3 \
     ttf-liberation=2.1.5-r2 \
-    chromium=110.0.5481.177-r0 && \
+    chromium=111.0.5563.146-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
