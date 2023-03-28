@@ -401,6 +401,18 @@ report(s).
             description="The version number of the source.",
             rationale="Monitor that the version of a source is at least a specific version or get notified when the "
             "version becomes higher than a specific version.",
+            documentation="""If you decide with your development team that you are only interested in the major and
+minor updates of tools and want to ignore any patch updates, then the following settings can be helpful.
+
+```{tip} Leave the metric direction default, i.e. a higher version number is better. Set the metric target to the first
+two digits of the latest available software version. So if the latest is 3.9.4, set it to 3.9. Set the metric near
+target to only the first digit, so in this example that will be 3.
+
+The result will be that when there is a minor update, this metric will turn yellow. So, suppose the version of your
+tool is at version 2.12.15 and the latest version available is 2.13.2, then this metric will turn yellow. If there is
+only a patch update, the metric will stay green. If there is a major update, the metric will turn red. So when we
+have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
+```""",
             explanation=VERSION_NUMBER_EXPLANATION,
             explanation_urls=VERSION_NUMBER_EXPLANATION_URLS,
             scales=["version_number"],
