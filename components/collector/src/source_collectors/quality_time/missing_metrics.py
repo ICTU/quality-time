@@ -34,7 +34,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
         subjects_to_ignore = self._parameter("subjects_to_ignore")
-        if len(subjects_to_ignore) == 0:
+        if not subjects_to_ignore:
             return True
         return not match_string_or_regular_expression(entity["subject"], subjects_to_ignore)
 
