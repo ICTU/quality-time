@@ -13,6 +13,8 @@ import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { get_metric_issue_ids } from '../utils';
 import { Target } from './Target';
+import TimeAgo from 'react-timeago'
+
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const labelId = `accept-debt-label-${metric_uuid}`
@@ -52,12 +54,30 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Technical debt end date <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            label=<InformativeDateLabel current_value_date={metric.debt_end_date} labelId={labelId} help={help}/>
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
         />
     )
+}
+
+function InformativeDateLabel({current_value_date, labelId, help }){
+    if (current_value_date) {
+        var numberOfDays = (<TimeAgo date={current_value_date} />)
+    } else {
+        var numberOfDays =""
+    }
+    return (
+        <label id={labelId}>
+            Technical debt end date{numberOfDays && <span> ({numberOfDays})</span>}{" "}
+            <Popup
+                on={["hover", "focus"]}
+                content={help}
+                trigger={<Icon tabIndex="0" name="help circle" />}
+            />
+        </label>
+    );
 }
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
