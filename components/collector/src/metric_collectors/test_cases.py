@@ -1,6 +1,5 @@
 """Test cases collector."""
 
-import logging
 import re
 from typing import cast, Sequence
 
@@ -49,50 +48,25 @@ class TestCases(MetricCollector):
 
     async def collect(self) -> MetricMeasurement | None:
         """Override to add the test results from the test report(s) to the test cases."""
-        logging.info("Debug TestCases #4663: collect()ing...")
         if (measurement := await super().collect()) is None:
-            logging.info("Debug TestCases #4663: super().collect() returned no measurement")
             return None
-        logging.info("Debug TestCases #4663: super().collect() returned a measurement: %s", measurement.as_dict())
         test_cases = self.test_cases(measurement.sources)
         test_case_keys = set(test_cases.keys())
-        logging.info("Debug TestCases #4663: measurement has %d test cases: %s", len(test_case_keys), test_case_keys)
         # Derive the test result of the test cases from the test results of the tests
-        logging.info("Debug TestCases #4663: processing test report entities...")
         for entity in self.test_report_entities(measurement.sources):
-            logging.info("Debug TestCases #4663: processing test report entity %s...", entity["key"])
-            logging.info(
-                "Debug TestCases #4663: test cases referenced by the entity are %s", self.referenced_test_cases(entity)
-            )
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
                 test_result_so_far = test_cases[test_case_key]["test_result"]
                 test_result = self.test_result(entity)
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
-                logging.info(
-                    "Debug TestCases #4663: test case %s test result is now %s",
-                    test_case_key,
-                    test_cases[test_case_key]["test_result"],
-                )
-            logging.info("Debug TestCases #4663: ...done processing test report entity %s", entity["key"])
-        logging.info("Debug TestCases #4663: ...done processing test report entities")
         # Set the value of the test report sources to zero as this metric only counts test cases
-        logging.info("Debug TestCases #4663: processing measurement sources...")
         for source in self.test_report_sources(measurement.sources):
-            logging.info("Debug TestCases #4663: setting source.value to zero for source %s", source.source_uuid)
             source.value = "0"
-        logging.info("Debug TestCases #4663: ...done processing measurement sources")
         # Filter the test cases by test result
-        logging.info("Debug TestCases #4663: filtering the test cases by test result...")
         for source in self.test_case_sources(measurement.sources):
             source.entities = Entities(
                 entity for entity in source.entities if entity["test_result"] in self.test_results_to_count(source)
             )
             source.value = str(len(source.entities))
-            logging.info(
-                "Debug TestCases #4663: setting source.value to %d for source %s", source.value, source.source_uuid
-            )
-        logging.info("Debug TestCases #4663: ...done filtering the test cases by test result")
-        logging.info("Debug TestCases #4663: ...done collect()ing")
         return measurement
 
     def test_cases(self, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
