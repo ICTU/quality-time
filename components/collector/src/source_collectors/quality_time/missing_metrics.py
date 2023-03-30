@@ -2,6 +2,7 @@
 
 from typing import cast
 
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
 from model.entity import Entities, Entity
@@ -27,7 +28,16 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         landing_url = await self._landing_url(responses)
         total = self.__nr_of_possible_metric_types(data_model, reports)
         entities = self.__missing_metric_type_entities(data_model, reports, landing_url)
-        return SourceMeasurement(total=str(total), entities=entities)
+        included_entities = Entities(entity for entity in entities if self._include_entity(entity))
+        return SourceMeasurement(total=str(total), entities=included_entities)
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        subjects_to_ignore = self._parameter("subjects_to_ignore")
+        if not subjects_to_ignore:
+            return True
+        return not match_string_or_regular_expression(entity["subject"], subjects_to_ignore) and not \
+            match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
 
     def __nr_of_possible_metric_types(self, data_model: dict, reports: list[dict]) -> int:
         """Return the number of possible metric types in the reports."""
@@ -67,6 +77,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                 report_url=report_url,
                 subject=subject.get("name", subject_type_name),
                 subject_url=f"{report_url}#{subject_uuid}",
+                subject_uuid=f"{subject_uuid}",
                 subject_type=subject_type_name,
                 metric_type=data_model["metrics"][metric_type]["name"],
             )
