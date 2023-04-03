@@ -8,9 +8,9 @@ alabaster==0.7.13 \
     --hash=sha256:1ee19aca801bbabb5ba3f5f258e4422dfa86f82f3e9cefb0859b283cdd7f62a3 \
     --hash=sha256:a27a4a084d5e690e16e01e03ad2b2e552c61a65469419b907243193de1a84ae2
     # via sphinx
-astroid==2.15.1 \
-    --hash=sha256:89860bda98fe2bbd1f5d262229be7629d778ce280de68d95d4a73d1f592ad268 \
-    --hash=sha256:af4e0aff46e2868218502789898269ed95b663fba49e65d91c1e09c966266c34
+astroid==2.15.2 \
+    --hash=sha256:6e61b85c891ec53b07471aec5878f4ac6446a41e590ede0f2ce095f39f7d49dd \
+    --hash=sha256:dea89d9f99f491c66ac9c04ebddf91e4acf8bd711722175fe6245c0725cc19bb
     # via pylint
 babel==2.12.1 \
     --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
@@ -648,9 +648,9 @@ pygments==2.14.0 \
     #   furo
     #   rich
     #   sphinx
-pylint==2.17.1 \
-    --hash=sha256:8660a54e3f696243d644fca98f79013a959c03f979992c1ab59c24d3f4ec2700 \
-    --hash=sha256:d4d009b0116e16845533bc2163493d6681846ac725eab8ca8014afb520178ddd
+pylint==2.17.2 \
+    --hash=sha256:001cc91366a7df2970941d7e6bbefcbf98694e00102c1f121c531a814ddc2ea8 \
+    --hash=sha256:1b647da5249e7c279118f657ca28b6aaebb299f86bf92affc632acf199f7adbb
     # via -r ../../requirements/dev.in
 pyparsing==3.0.9 \
     --hash=sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb \
