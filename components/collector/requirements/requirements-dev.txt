@@ -703,9 +703,9 @@ types-html5lib==1.1.11.13 \
     --hash=sha256:2a5ced934bcc7b47800b88ddb2541bbdf5bded7fb6d421693c978228e1fe631d \
     --hash=sha256:d01603307f3bb39af9712e72eda5aa498420fe12179411533a54b2b03f6531eb
     # via types-beautifulsoup4
-types-python-dateutil==2.8.19.10 \
-    --hash=sha256:c640f2eb71b4b94a9d3bfda4c04250d29a24e51b8bad6e12fddec0cf6e96f7a3 \
-    --hash=sha256:fbecd02c19cac383bf4a16248d45ffcff17c93a04c0794be5f95d42c6aa5de39
+types-python-dateutil==2.8.19.11 \
+    --hash=sha256:357553f8056cfbb8ce8ea0ca4a6a3480268596748360df73a94c2b8c113a5b06 \
+    --hash=sha256:de66222c54318c2e05ceb4956976d16696240a45fc2c98e54bfe9a56ce5e1eff
     # via -r requirements-dev.in
 typing-extensions==4.5.0 \
     --hash=sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb \
@@ -813,7 +813,7 @@ pip==23.0.1 \
     --hash=sha256:236bcb61156d76c4b8a05821b988c7b8c35bf0da28a4b614e8d6ab5212c25c6f \
     --hash=sha256:cd015ea1bfb0fcef59d8a286c1f8bebcb983f6317719d415dc5351efb7cd7024
     # via pip-api
-setuptools==67.6.0 \
-    --hash=sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077 \
-    --hash=sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2
+setuptools==67.6.1 \
+    --hash=sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a \
+    --hash=sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078
     # via safety
