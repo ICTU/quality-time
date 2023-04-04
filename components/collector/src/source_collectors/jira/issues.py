@@ -13,7 +13,8 @@ class JiraIssues(JiraBase):
     """Jira collector for issues."""
 
     SPRINT_NAME_RE = re.compile(r",name=(.*),startDate=")
-    MAX_RESULTS = 500  # Maximum number of issues to retrieve per page. Jira allows at most 500.
+    DEFAULT_MAX_RESULTS: int = 500  # Fallback for maximum number of issues to retrieve per page from Jira
+    max_results: int | None = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,7 +32,8 @@ class JiraIssues(JiraBase):
             self._field_ids[field_id] = field_id  # Include ids too so we get a key error if a field doesn't exist
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
-        return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults={self.MAX_RESULTS}")
+        max_results = await self._determine_max_results()
+        return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults={max_results}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the JQL query to the landing URL."""
@@ -49,11 +51,12 @@ class JiraIssues(JiraBase):
     async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
         """Extend to implement pagination."""
         all_responses = SourceResponses(api_url=urls[0])
-        for start_at in itertools.count(0, self.MAX_RESULTS):  # pragma: no cover
+        max_results = await self._determine_max_results()
+        for start_at in itertools.count(0, max_results):  # pragma: no cover
             responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"), **kwargs)
             if issues := await self._issues(responses):
                 all_responses.extend(responses)
-            if len(issues) < self.MAX_RESULTS:
+            if len(issues) < max_results:
                 break  # We got fewer than the maximum number of issues per page, so we know we're done
         return all_responses
 
@@ -115,3 +118,12 @@ class JiraIssues(JiraBase):
         matches = [cls.SPRINT_NAME_RE.search(sprint_text) for sprint_text in sprint_texts]
         sprint_names = [match.group(1) for match in matches if match]
         return ", ".join(sorted(sprint_names))
+
+    async def _determine_max_results(self) -> int:
+        """Maximum number of issues to retrieve per page."""
+        if isinstance(self.max_results, int):  # NB: using cached_property is not doable on asyncio coroutine
+            return self.max_results
+        preference_url = URL(f"{self._parameter('url')}/rest/api/2/mypreferences?key=jira.search.views.default.max")
+        result_value = await (await super()._get_source_responses(preference_url))[0].json()
+        self.max_results = result_value if isinstance(result_value, int) else self.DEFAULT_MAX_RESULTS
+        return self.max_results

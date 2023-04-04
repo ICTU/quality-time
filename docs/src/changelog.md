@@ -20,9 +20,14 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - The unit name of metrics in MS Teams notifications would not be rendered correctly. Fixes [#5347](https://github.com/ICTU/quality-time/issues/5347).
 - GitLab pipeline source up-to-dateness should take filters into account. Fixes [#5181](https://github.com/ICTU/quality-time/issues/5181).
 
+### Added
+
+- Add the possibility in metrics of type missing metrics to exclude certain subjects from a report. Closes [#5119](https://github.com/ICTU/quality-time/issues/5119).
+
 ### Changed
 
 - Turn off request logging by the frontend container. Closes [#5654](https://github.com/ICTU/quality-time/issues/5654).
+- Get the max results Jira parameter from Jira itself instead of hard coding it. Closes [#4789](https://github.com/ICTU/quality-time/issues/4789).
 
 ## v4.8.0 - 2023-03-13
 

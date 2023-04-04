@@ -1,10 +1,11 @@
 """Unit tests for the test cases metric collector."""
 
 import unittest
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
+from source_collectors.jira.issues import JiraIssues
 
 
 class TestCasesTest(unittest.IsolatedAsyncioTestCase):
@@ -84,7 +85,8 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         # Instead of instantiating the TestCases collector directly, we look up the collector by the metric type
         # to get full coverage:
         test_cases_collector_class = MetricCollector.get_subclass(metric["type"])
-        return await test_cases_collector_class(self.session, metric).collect()
+        with patch.object(JiraIssues, "max_results", 500):
+            return await test_cases_collector_class(self.session, metric).collect()
 
     async def test_missing_sources(self):
         """Test missing sources."""

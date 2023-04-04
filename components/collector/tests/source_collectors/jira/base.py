@@ -1,5 +1,8 @@
 """Unit tests for the Jira metric source."""
 
+from unittest.mock import patch
+
+from source_collectors.jira.issues import JiraIssues
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
@@ -39,6 +42,7 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
 
     async def get_response(self, issues_json, fields_json=None):
         """Get the collector's response."""
-        return await self.collect(
-            get_request_json_side_effect=[fields_json or [dict(id="field", name="Field")], issues_json, issues_json]
-        )
+        with patch.object(JiraIssues, "max_results", 50):
+            return await self.collect(
+                get_request_json_side_effect=[fields_json or [dict(id="field", name="Field")], issues_json, issues_json]
+            )
