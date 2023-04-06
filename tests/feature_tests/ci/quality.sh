@@ -11,14 +11,13 @@ run () {
     eval "$*"
 }
 
-run mypy steps
-run pylint --rcfile=../../.pylintrc steps
-run python -m flake8 --select=DUO steps  # Dlint
+run mypy src
+run pylint --rcfile=../../.pylintrc src
+run python -m flake8 --select=DUO src  # Dlint
 unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
-run pip-audit --strict --progress-spinner=off -r requirements/requirements-base.txt -r requirements/requirements-dev.txt
+run pip-audit --strict --progress-spinner=off -r requirements/requirements-dev.txt
 export PYTHONDEVMODE=1
-run safety check --bare -r requirements/requirements-base.txt -r requirements/requirements-dev.txt
-run bandit --quiet --recursive steps
+run safety check --bare -r requirements/requirements-dev.txt
+run bandit --quiet --recursive src
 NAMES_TO_IGNORE=''
-run vulture --min-confidence 0 --ignore-names $NAMES_TO_IGNORE steps/ .vulture_ignore_list.py
-
+run vulture --min-confidence 0 --ignore-names $NAMES_TO_IGNORE src/ .vulture_ignore_list.py

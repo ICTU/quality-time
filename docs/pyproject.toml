@@ -1,14 +1,13 @@
 [project]
-name = "collector"
+name = "docs"
 version = "4.8.0"
 dependencies = [
-    "aiogqlc==3.1.0",
-    "aiohttp==3.8.4",
-    "beautifulsoup4==4.12.2",
-    "defusedxml==0.7.1",
-    "packaging==23.0",
-    "python-dateutil==2.8.2",
-    "typing_extensions==4.5.0"
+    "furo==2023.3.27",
+    "gitpython==3.1.31",
+    "myst-parser==1.0.0",
+    "Sphinx==5.3.0",  # Can't upgrade to Sphinx 6 because sphinx-copybutton 0.5.1 requires Sphinx < 6.
+    "sphinx-copybutton==0.5.1",
+    "sphinx_design==0.3.0",
 ]
 
 [project.optional-dependencies]
@@ -26,11 +25,15 @@ dev = [
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
     "pylint==2.17.2",
     "safety==2.4.0b1",  # The beta of safety 2.4.0 fixes a dependency conflict with packaging 23.0.
-    "types-beautifulsoup4==4.12.0.3",
-    "types-python-dateutil==2.8.19.12",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.7"
 ]
+
+[tool.isort]
+line_length = 120
+multi_line_output = 4
+src_paths = "src"
+ensure_newline_before_comments = true
 
 [tool.mypy]
 html_report = "build/mypy"
@@ -40,9 +43,3 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-    "defusedxml"
-]
-ignore_missing_imports = true

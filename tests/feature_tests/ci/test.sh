@@ -35,7 +35,7 @@ ci/pip-install.sh
 cd ../..
 sleep 10  # Give server time to start up
 coverage erase
-coverage run -m behave --format pretty "${1:-tests/feature_tests/features}"
+coverage run -m behave --format pretty "${1:-tests/feature_tests/src/features}"
 result=$?
 kill -s TERM "$(pgrep -n -f tests/quality_time_external_server_under_coverage.py)"
 kill -s TERM "$(pgrep -n -f tests/quality_time_internal_server_under_coverage.py)"
