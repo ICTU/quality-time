@@ -10,6 +10,4 @@ run () {
 }
 
 # Update the compiled requirements files
-cd requirements
-run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade requirements-base.in
-run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade requirements-dev.in
+run pip-compile --allow-unsafe --generate-hashes --quiet --resolver=backtracking --upgrade pyproject.toml

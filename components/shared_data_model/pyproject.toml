@@ -1,5 +1,7 @@
 [build-system]
 requires = [
+    "pip==23.0.1",
+    "pip-tools==6.12.3",
     "setuptools==67.6.1",
     "wheel==0.40.0"
 ]
@@ -20,7 +22,23 @@ classifiers = [
     "Natural Language :: English"
 ]
 dependencies = [
-    "pydantic == 1.10.7",
+    "pydantic==1.10.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "lxml==4.9.2",  # Needed to be able to run mypy with `--html-report`.
+    "bandit==1.7.5",
+    "black==23.3.0",
+    "coverage==7.2.2",
+    "dlint==0.14.0",
+    "mypy==1.0.1",
+    "pep8-naming==0.13.3",
+    "pip-audit==2.4.12",
+    "pylint==2.17.2",
+    "safety==2.3.5",
+    "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
+    "vulture==2.7"
 ]
 
 [project.urls]
