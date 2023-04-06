@@ -3,8 +3,9 @@
 import requests
 
 
-def before_all(context):
+def before_all(context) -> None:
     """Create shortcuts to send requests to the server API."""
+    timeout = 10
 
     def cookies():
         """Return the cookies."""
@@ -22,15 +23,14 @@ def before_all(context):
             if value := getattr(context, attribute):
                 sep = "&" if "?" in url else "?"
                 url += f"{sep}{attribute}={value}"
-        context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=10)
+        context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def post(api, json=None, internal=False):
         """Post the resource."""
         url = api_url(api, internal)
-        context.post_response = context.response = response = requests.post(
-            url, json=json, cookies=cookies(), timeout=10
-        )
+        response = requests.post(url, json=json, cookies=cookies(), timeout=timeout)
+        context.post_response = context.response = response
         if not response.ok:
             return response
         if "session_id" in response.cookies:
@@ -40,13 +40,14 @@ def before_all(context):
     def put(api, json=None, internal=False):
         """Post the resource."""
         url = api_url(api, internal)
-        context.put_response = context.response = response = requests.put(url, json=json, cookies=cookies())
+        response = requests.put(url, json=json, cookies=cookies(), timeout=timeout)
+        context.put_response = context.response = response
         # Ignore non-ok responses for now since we don't have testcases where they apply
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def delete(api):
         """Delete the resource."""
-        context.response = response = requests.delete(api_url(api), cookies=cookies())
+        context.response = response = requests.delete(api_url(api), cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     context.base_api_url = "http://localhost:5001/api/v3"
@@ -56,7 +57,9 @@ def before_all(context):
     context.min_report_date = None
     context.response = None  # Most recent respone
     context.post_response = None  # Most recent post response
-    context.uuid: dict[str, str] = {}  # Keep track of the most recent uuid per item type
+    # Create a typed local variable to prevent mypy error: Type cannot be declared in assignment to non-self attribute
+    uuid: dict[str, str] = {}
+    context.uuid = uuid  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
     context.put = put

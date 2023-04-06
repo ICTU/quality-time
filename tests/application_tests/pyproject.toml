@@ -1,0 +1,13 @@
+[project]
+name = "application_tests"
+version = "4.8.0"
+dependencies = [
+    "requests==2.28.2",
+    "selenium==4.8.3"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pip==23.0.1",
+    "pip-tools==6.13.0"  # To add hashes to requirements
+]

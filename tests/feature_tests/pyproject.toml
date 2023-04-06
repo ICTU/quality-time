@@ -1,3 +1,33 @@
+[project]
+name = "feature_tests"
+version = "4.8.0"
+dependencies = [
+    "asserts==0.12.0",
+    "behave==1.2.6",
+    "gevent==22.10.2",
+    "requests==2.28.2",
+    "sseclient==0.0.27"
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit==1.7.5",
+    "black==23.3.0",
+    "coverage==7.2.3",
+    "dlint==0.14.0",
+    "lxml==4.9.2",  # Needed to be able to run mypy with `--html-report`.
+    "mypy==1.2.0",
+    "pep8-naming==0.13.3",
+    "pip==23.0.1",
+    "pip-audit==2.5.4",
+    "pip-tools==6.13.0",  # To add hashes to requirements
+    "pylint==2.17.2",
+    "safety==2.4.0b1",  # The beta of safety 2.4.0 fixes a dependency conflict with packaging 23.0.
+    "types-requests==2.28.11.17",
+    "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
+    "vulture==2.7"
+]
+
 [tool.mypy]
 html_report = "build/mypy"
 ignore_missing_imports = false
@@ -9,6 +39,7 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 module = [
+    "item",
     "behave",
     "sseclient"
 ]

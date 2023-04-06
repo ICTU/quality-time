@@ -1,7 +1,0 @@
--r ../../../requirements/dev.in
--r ../../../requirements/requests.in
--r ../../../requirements/types-requests.in
-asserts==0.12.0
-behave==1.2.6
-gevent==22.10.2
-sseclient==0.0.27

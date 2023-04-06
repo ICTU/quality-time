@@ -1,18 +1,16 @@
-FROM python:3.11.2-alpine3.17 AS compile-image
+FROM python:3.11.3-alpine3.17 AS compile-image
 
 WORKDIR /home/collector
 
 RUN python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
-COPY collector/requirements/requirements-base.txt /requirements-base.txt
-RUN pip install --no-cache-dir --require-hashes -r /requirements-base.txt
 COPY collector/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY shared_data_model /home/shared_data_model/
 COPY collector/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.11.2-alpine3.17
+FROM python:3.11.3-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time collector"
