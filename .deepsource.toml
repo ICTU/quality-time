@@ -56,11 +56,12 @@ enabled = true
   dockerfile_paths = [
     "components/collector/Dockerfile",
     "components/database/Dockerfile",
+    "components/external_server/Dockerfile",
     "components/frontend/Dockerfile",
+    "components/internal_server/Dockerfile",
     "components/notifier/Dockerfile",
     "components/proxy/Dockerfile",
     "components/renderer/Dockerfile",
-    "components/external_server/Dockerfile",
     "components/testdata/Dockerfile",
   ]
 
