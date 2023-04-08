@@ -18,13 +18,13 @@ it('capitalizes strings', () => {
 it('rounds numbers nicely', () => {
     expect(nice_number(15)).toBe(20);
     expect(nice_number(16)).toBe(20);
-    expect(nice_number(17)).toBe(50);
+    expect(nice_number(17)).toBe(20);
     expect(nice_number(39)).toBe(50);
     expect(nice_number(40)).toBe(50);
-    expect(nice_number(41)).toBe(100);
-    expect(nice_number(79)).toBe(100);
-    expect(nice_number(80)).toBe(100);
-    expect(nice_number(81)).toBe(200);
+    expect(nice_number(41)).toBe(50);
+    expect(nice_number(79)).toBe(90);
+    expect(nice_number(80)).toBe(90);
+    expect(nice_number(81)).toBe(90);
 });
 
 it('adds a scale', () => {

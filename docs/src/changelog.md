@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - In addition to making health check files group writeable for a configurable user to ease use in OpenShift, also make the user writing the files part of the group root. Further fixes [#5310](https://github.com/ICTU/quality-time/issues/5310).
 - The unit name of metrics in MS Teams notifications would not be rendered correctly. Fixes [#5347](https://github.com/ICTU/quality-time/issues/5347).
 - GitLab pipeline source up-to-dateness should take filters into account. Fixes [#5181](https://github.com/ICTU/quality-time/issues/5181).
+- In trend graphs, prevent overlapping x-axis labels and make the y-axis length closer to the maximum measurement value. Closes [#5786](https://github.com/ICTU/quality-time/issues/5786).
 
 ### Added
 
@@ -28,6 +29,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - Turn off request logging by the frontend container. Closes [#5654](https://github.com/ICTU/quality-time/issues/5654).
 - Get the max results Jira parameter from Jira itself instead of hard coding it. Closes [#4789](https://github.com/ICTU/quality-time/issues/4789).
+
+### Removed
+
+- Remove the colored background from trend graphs that was meant to indicate the status of the metric on certain points in time. Closes [#5786](https://github.com/ICTU/quality-time/issues/5786).
 
 ## v4.8.0 - 2023-03-13
 
