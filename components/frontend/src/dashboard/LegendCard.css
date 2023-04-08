@@ -1,6 +1,7 @@
 .ui.list .item {
     overflow: hidden;
     white-space: nowrap;
+    padding: 2px;
 }
 
 .ui.card.legend .header {
