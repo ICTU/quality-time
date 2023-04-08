@@ -20,7 +20,7 @@ export function LegendCard() {
         </List.Item>
     );
     return (
-        <Card style={{ height: '200px' }} tabIndex="0" className="legend">
+        <Card tabIndex="0" className="legend">
             <Card.Content>
                 <Card.Header title={"Legend"} textAlign='center'>{"Legend"}</Card.Header>
                 <List size="small">

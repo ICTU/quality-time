@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v4.9.0-rc.2 - 2023-04-14
+## [Unreleased]
 
 ### Deployment notes
 
@@ -16,10 +16,11 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Fixed
 
+- GitLab pipeline source up-to-dateness should take filters into account. Fixes [#5181](https://github.com/ICTU/quality-time/issues/5181).
 - In addition to making health check files group writeable for a configurable user to ease use in OpenShift, also make the user writing the files part of the group root. Further fixes [#5310](https://github.com/ICTU/quality-time/issues/5310).
 - The unit name of metrics in MS Teams notifications would not be rendered correctly. Fixes [#5347](https://github.com/ICTU/quality-time/issues/5347).
-- GitLab pipeline source up-to-dateness should take filters into account. Fixes [#5181](https://github.com/ICTU/quality-time/issues/5181).
 - In trend graphs, prevent overlapping x-axis labels and make the y-axis length closer to the maximum measurement value. Closes [#5786](https://github.com/ICTU/quality-time/issues/5786).
+- Bars for subjects or tags with little metrics in the dashboard would get too narrow to be legible. Fixes [#5792](https://github.com/ICTU/quality-time/issues/5792).
 
 ### Added
 
