@@ -1,4 +1,4 @@
-FROM python:3.11.2-alpine3.17 AS compile-image
+FROM python:3.11.3-alpine3.17 AS compile-image
 
 WORKDIR /home/server
 
@@ -15,7 +15,7 @@ COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
-FROM python:3.11.2-alpine3.17
+FROM python:3.11.3-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time external server"
