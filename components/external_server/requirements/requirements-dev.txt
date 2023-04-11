@@ -287,8 +287,8 @@ dill==0.3.6 \
     --hash=sha256:a07ffd2351b8c678dfc4a856a3005f8067aea51d6ba6c700796a4d9e280f39f0 \
     --hash=sha256:e5db55f3687856d8fbdab002ed78544e1c4559a130302693d839dfe8f93f2373
     # via pylint
-dlint==0.14.0 \
-    --hash=sha256:3b40e353a2fdb531253973bb53be51d2218ccd97647e14754ddd20fc1ce62a38
+dlint==0.14.1 \
+    --hash=sha256:8caa4271ab6f69bba2785bb565b636eeb40baffd446c85380f848fb4abd6aa2d
     # via external-server (pyproject.toml)
 dnspython==2.3.0 \
     --hash=sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9 \
