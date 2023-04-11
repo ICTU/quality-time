@@ -301,9 +301,9 @@ coverage==7.2.3 \
     --hash=sha256:fd214917cabdd6f673a29d708574e9fbdb892cb77eb426d0eae3490d95ca7859 \
     --hash=sha256:fff5aaa6becf2c6a1699ae6a39e2e6fb0672c2d42eca8eb0cafa91cf2e9bd312
     # via collector (pyproject.toml)
-cyclonedx-python-lib==2.7.1 \
-    --hash=sha256:493bf2f30e26c48f305f745ed8580ce10d05a8d68d62a598fe95f05a0d9007dc \
-    --hash=sha256:fabc4c8baf722faeea01c3bbca83730e3489dfb37d85c6036baa67a9a7519d40
+cyclonedx-python-lib==4.0.0 \
+    --hash=sha256:4124dc111580fc026442525729febc956072788d1fc2b3300a54d27b5ff8b1b5 \
+    --hash=sha256:d7b727b5a547080ec1bca27abdaf144f4583f4cf663da281a239d5bbec7f1d72
     # via pip-audit
 defusedxml==0.7.1 \
     --hash=sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69 \
