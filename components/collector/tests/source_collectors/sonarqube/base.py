@@ -25,6 +25,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         message: str,
         severity: str = None,
         resolution: str = None,
+        rationale: str = None,
         review_priority: str = None,
         creation_date: str = None,
         update_date: str = None,
@@ -48,6 +49,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             entity["severity"] = severity
         if resolution is not None:
             entity["resolution"] = resolution
+        if rationale is not None:
+            entity["rationale"] = rationale
         if review_priority is not None:
             entity["review_priority"] = review_priority
         return entity
