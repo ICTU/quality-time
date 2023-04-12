@@ -38,6 +38,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Add SonarQube issue status rationale to entity data of suppressed violations. Closes [#4926](https://github.com/ICTU/quality-time/issues/4926).
 - Allow for filtering out specific Axe measurement entities through regular expressions. Closes [#3328](https://github.com/ICTU/quality-time/issues/3328).
 
+### Added
+
+- Add label text to indicate time ago or time to go for date input fields. Closes [#5123](https://github.com/ICTU/quality-time/issues/5123).
+
 ### Changed
 
 - Turn off request logging by the frontend container. Closes [#5654](https://github.com/ICTU/quality-time/issues/5654).

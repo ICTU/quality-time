@@ -9,6 +9,7 @@ import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { LabelWithDropdown } from '../widgets/LabelWithDropdown';
 import { HyperLink } from '../widgets/HyperLink';
+import { LabelDate } from '../widgets/LabelWithDate';
 import { dropdownOptions } from '../utils';
 
 function SourceParameterLabel({
@@ -87,6 +88,10 @@ export function SourceParameter({
     }
     if (help) {
         label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />} /></label>
+    }
+    if (parameter_type === "date") {
+        const date = new Date(Date.parse(parameter_value))
+        label=<span>{label}<LabelDate date={date} /></span>
     }
     let parameter_props = {
         requiredPermissions: requiredPermissions,

@@ -8,6 +8,7 @@ import { set_source_entity_attribute } from '../api/source';
 import { capitalize } from '../utils';
 import { source_entity_status_name as status_name } from './source_entity_status';
 import { EDIT_ENTITY_PERMISSION } from '../context/Permissions';
+import { LabelDate } from '../widgets/LabelWithDate';
 
 function entity_status_option(status, text, content, subheader) {
     return {
@@ -29,7 +30,7 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
     return (
         <Grid stackable>
             <Grid.Row>
-                <Grid.Column width={3}>
+                <Grid.Column width={4}>
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
                         label={`${capitalize(name)} status`}
@@ -39,16 +40,16 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                         sort={false}
                     />
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={4}>
                     <DateInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={<label>{`${capitalize(name)} status end date`} <Popup on={['hover', 'focus']} content={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        label={<label>{`${capitalize(name)} status end date`} <LabelDate date={status_end_date} /> <Popup on={['hover', 'focus']} content={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
                         placeholder="YYYY-MM-DD"
                         set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status_end_date", value, reload)}
                         value={status_end_date}
                     />
                 </Grid.Column>
-                <Grid.Column width={10}>
+                <Grid.Column width={8}>
                     <TextInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
                         label={`${capitalize(name)} status rationale`}

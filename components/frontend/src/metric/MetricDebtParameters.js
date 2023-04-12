@@ -9,11 +9,12 @@ import { set_metric_attribute, set_metric_debt, add_metric_issue } from '../api/
 import { DateInput } from '../fields/DateInput';
 import { ActionButton } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
+import { LabelWithDate } from '../widgets/LabelWithDate';
 import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { get_metric_issue_ids } from '../utils';
 import { Target } from './Target';
-import TimeAgo from 'react-timeago'
+
 
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
@@ -54,7 +55,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label=<InformativeDateLabel current_value_date={metric.debt_end_date} labelId={labelId} help={help}/>
+            label=<LabelWithDate currentValueDate={metric.debt_end_date} labelId={labelId} help={help} labelText="Technical debt end date"/>
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
@@ -62,23 +63,6 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     )
 }
 
-function InformativeDateLabel({current_value_date, labelId, help }){
-    if (current_value_date) {
-        var numberOfDays = (<TimeAgo date={current_value_date} />)
-    } else {
-        var numberOfDays =""
-    }
-    return (
-        <label id={labelId}>
-            Technical debt end date{numberOfDays && <span> ({numberOfDays})</span>}{" "}
-            <Popup
-                on={["hover", "focus"]}
-                content={help}
-                trigger={<Icon tabIndex="0" name="help circle" />}
-            />
-        </label>
-    );
-}
 
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
     const issueStatusHelp = (
