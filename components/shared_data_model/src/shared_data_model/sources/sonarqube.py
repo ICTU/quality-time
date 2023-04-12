@@ -23,7 +23,7 @@ class Lines(str, Enum):
     CODE = "lines with code"
 
 
-def violation_entity_attributes(include_review_priority=False, include_resolution=False):
+def violation_entity_attributes(include_review_priority=False, include_resolution=False, include_rationale=False):
     """Return the violation entity attributes."""
     attributes = [
         dict(name="Message"),
@@ -34,6 +34,8 @@ def violation_entity_attributes(include_review_priority=False, include_resolutio
     attributes.append(dict(name="Type"))
     if include_resolution:
         attributes.append(dict(name="Resolution"))
+    if include_rationale:
+        attributes.append(dict(name="Rationale"))
     attributes.extend(
         [
             dict(name="Component", url="url"),
@@ -310,7 +312,8 @@ SONARQUBE = Source.parse_obj(
                 name="security warning", attributes=violation_entity_attributes(include_review_priority=True)
             ),
             suppressed_violations=dict(
-                name="violation", attributes=violation_entity_attributes(include_resolution=True)
+                name="violation",
+                attributes=violation_entity_attributes(include_resolution=True, include_rationale=True)
             ),
             violations=dict(name="violation", attributes=violation_entity_attributes()),
         ),
