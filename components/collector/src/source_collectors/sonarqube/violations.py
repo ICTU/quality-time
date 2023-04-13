@@ -19,7 +19,7 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        landing_url = f"{url}/project/issues?id={component}&resolved=false&branch={branch}"
+        landing_url = f"{url}/project/issues?id={component}&branch={branch}&resolved=false"
         return URL(
             landing_url
             + self._query_parameter("severities")
@@ -34,7 +34,7 @@ class SonarQubeViolations(SonarQubeCollector):
         branch = self._parameter("branch")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
-        api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&branch={branch}"
+        api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps=500"
         return URL(
             api
             + self._query_parameter("severities")
@@ -71,7 +71,7 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._landing_url(SourceResponses())
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}&branch={branch}")
+        return URL(f"{url}/project/issues?id={component}&branch={branch}&issues={issue_key}&open={issue_key}")
 
     async def _entity(self, issue) -> Entity:
         """Create an entity from an issue."""
@@ -103,8 +103,8 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         branch = self._parameter("branch")
         base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
-            f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
-            f"branch={branch}"
+            f"{base_api_url}/api/measures/component?component={component}&branch={branch}"
+            f"&metricKeys={self.total_metric}"
         )
         return await super()._get_source_responses(*(urls + (total_metric_api_url,)), **kwargs)
 

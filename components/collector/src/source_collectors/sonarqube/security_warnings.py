@@ -41,12 +41,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             api_urls.append(
                 URL(
                     f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
-                    f"{self._query_parameter('severities')}&types=VULNERABILITY&branch={branch}"
+                    f"{self._query_parameter('severities')}&branch={branch}&types=VULNERABILITY"
                 )
             )
         if "security_hotspot" in security_types:
             api_urls.append(
-                URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}")
+                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&statuses=TO_REVIEW&ps=500")
             )
         return await super()._get_source_responses(*api_urls, **kwargs)
 
@@ -91,4 +91,4 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         url = await SonarQubeCollector._landing_url(self, SourceResponses())  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/security_hotspots?id={component}&hotspots={hotspot_key}&branch={branch}")
+        return URL(f"{url}/security_hotspots?id={component}&branch={branch}&hotspots={hotspot_key}")

@@ -14,8 +14,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to set up the SonarQube source fixture and some URLs."""
         super().setUp()
         self.set_source_parameter("component", "id")
-        self.issues_landing_url = "https://sonarqube/project/issues?id=id&resolved=false&branch=master"
-        self.metric_landing_url = "https://sonarqube/component_measures?id=id&metric={0}&branch=master"
+        self.issues_landing_url = "https://sonarqube/project/issues?id=id&branch=master&resolved=false"
+        self.metric_landing_url = "https://sonarqube/component_measures?id=id&branch=master&metric={0}"
 
     @staticmethod
     def entity(  # pylint: disable=too-many-arguments
@@ -25,15 +25,16 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         message: str,
         severity: str = None,
         resolution: str = None,
+        rationale: str = None,
         review_priority: str = None,
         creation_date: str = None,
         update_date: str = None,
     ) -> Entity:
         """Create an entity."""
         url = (
-            f"https://sonarqube/security_hotspots?id=id&hotspots={key}&branch=master"
+            f"https://sonarqube/security_hotspots?id=id&branch=master&hotspots={key}"
             if entity_type == "security_hotspot"
-            else f"https://sonarqube/project/issues?id=id&issues={key}&open={key}&branch=master"
+            else f"https://sonarqube/project/issues?id=id&branch=master&issues={key}&open={key}"
         )
         entity = Entity(
             key=key,
@@ -48,6 +49,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             entity["severity"] = severity
         if resolution is not None:
             entity["resolution"] = resolution
+        if rationale is not None:
+            entity["rationale"] = rationale
         if review_priority is not None:
             entity["review_priority"] = review_priority
         return entity

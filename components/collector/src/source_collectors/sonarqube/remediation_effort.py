@@ -45,7 +45,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
         url = await super(SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())  # skipcq: PYL-E1003
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
+        return URL(f"{url}/component_measures?id={component}&branch={branch}&metric={effort_type}")
 
     def __effort_types(self) -> list[str]:
         """Return the user-selected effort types."""

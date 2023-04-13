@@ -41,7 +41,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         branch = self._parameter("branch")
         metric = self._landing_url_metric_key()
         metric_parameter = f"&metric={metric}" if metric else ""
-        return URL(f"{url}/component_measures?id={component}{metric_parameter}&branch={branch}")
+        return URL(f"{url}/component_measures?id={component}&branch={branch}{metric_parameter}")
 
     def _landing_url_metric_key(self) -> str:
         """Return the metric key to use for the landing url. This can be one key or an empty string."""
@@ -53,7 +53,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(
-            f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}"
+            f"{url}/api/measures/component?component={component}&branch={branch}&metricKeys={self._metric_keys()}"
         )
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
