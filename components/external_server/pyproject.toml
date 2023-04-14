@@ -1,6 +1,6 @@
 [project]
 name = "external_server"
-version = "4.9.0-rc.2"
+version = "4.9.0"
 dependencies = [
     "bottle==0.12.25",
     "cryptography==40.0.1",
