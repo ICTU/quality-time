@@ -1,6 +1,6 @@
 [project]
 name = "internal_server"
-version = "4.8.0"
+version = "4.9.0-rc.1"
 dependencies = [
     "bottle==0.12.25",
     "gevent==22.10.2",
