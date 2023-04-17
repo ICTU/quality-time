@@ -40,7 +40,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Added
 
-- Add label text to indicate time ago or time to go for date input fields. Closes [#5123](https://github.com/ICTU/quality-time/issues/5123).
+- Add the time ago or time to go to labels of date input fields. Closes [#5123](https://github.com/ICTU/quality-time/issues/5123).
 
 ### Changed
 
