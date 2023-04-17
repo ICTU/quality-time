@@ -55,7 +55,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label=<LabelWithDate currentValueDate={metric.debt_end_date} labelId={labelId} help={help} labelText="Technical debt end date"/>
+            label=<LabelWithDate date={metric.debt_end_date} labelId={labelId} help={help} labelText="Technical debt end date"/>
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
