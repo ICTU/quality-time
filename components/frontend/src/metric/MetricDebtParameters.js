@@ -15,8 +15,6 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { get_metric_issue_ids } from '../utils';
 import { Target } from './Target';
 
-
-
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const labelId = `accept-debt-label-${metric_uuid}`
     return (
