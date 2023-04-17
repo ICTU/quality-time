@@ -1,7 +1,7 @@
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import TimeAgo from 'react-timeago'
 
-export function LabelWithDate({currentValueDate, labelId, help, labelText }){
+export function LabelWithDate({date, labelId, labelText, help}){
     return (
         <label id={labelId}>
             {labelText}
