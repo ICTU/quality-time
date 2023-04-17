@@ -5,7 +5,7 @@ export function LabelWithDate({currentValueDate, labelId, help, labelText }){
     return (
         <label id={labelId}>
             {labelText}
-            <LabelDate date={currentValueDate} />{" "}
+            <LabelDate date={date} />{" "}
             <Popup
                 on={["hover", "focus"]}
                 content={help}
