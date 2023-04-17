@@ -19,7 +19,7 @@ dev = [
     "lxml==4.9.2",  # Needed to be able to run mypy with `--html-report`.
     "mypy==1.2.0",
     "pep8-naming==0.13.3",
-    "pip==23.0.1",
+    "pip==23.1",
     "pip-audit==2.5.4",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
