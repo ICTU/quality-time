@@ -12,27 +12,27 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "bandit==1.7.5",
-    "black==23.3.0",
     "coverage==7.2.3",
-    "dlint==0.14.1",
-    "mypy==1.2.0",
     "pep8-naming==0.13.3",
     "pip==23.1",
-    "pip-audit==2.5.4",
+    "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
     "pylint==2.17.2",
-    "safety==2.4.0b1",  # The beta of safety 2.4.0 fixes a dependency conflict with packaging 23.0.
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
+]
+tools = [
+    "black==23.3.0",
+    "bandit==1.7.5",
+    "dlint==0.14.1",
+    "mypy==1.2.0",
+    "pip-audit==2.5.4",
+    "safety==2.3.5",
     "vulture==2.7"
 ]
 
-[tool.isort]
-line_length = 120
-multi_line_output = 4
-src_paths = "src"
-ensure_newline_before_comments = true
+[tool.black]
+line-length = 120
 
 [tool.mypy]
 ignore_missing_imports = false

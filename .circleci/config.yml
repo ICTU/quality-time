@@ -6,7 +6,7 @@ orbs:
 jobs:
   unittest_backend:
     docker:
-      - image: cimg/python:3.11.1
+      - image: cimg/python:3.11.3
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -45,7 +45,7 @@ jobs:
 
   unittest_docs:
     machine:
-      image: ubuntu-2204:2022.10.1
+      image: ubuntu-2204:2023.04.2
     steps:
       - checkout
       - run: |

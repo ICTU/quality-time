@@ -1,19 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
-set -e
+source ../ci/base.sh
 
-export PYTHONDEVMODE=1
-
-run () {
-    header='\033[95m'
-    endstyle='\033[0m'
-    echo "${header}$*${endstyle}"
-    eval "$*"
-}
-
+# Markdownlint
 run ./node_modules/markdownlint-cli/markdownlint.js src/*.md
-run mypy src
-# The vale Docker image doesn't support the linux/arm64/v8 architecture, so a locally installed vale if possible
+
+# Mypy
+run pipx run `spec mypy` --python-executable=$(which python) src
+
+# The vale Docker image doesn't support the linux/arm64/v8 architecture, so use a locally installed vale if possible
 if ! vale -v &> /dev/null
 then
     run docker run --rm -v $(pwd)/styles:/styles -v $(pwd):/docs -w /docs jdkato/vale sync
@@ -22,12 +17,25 @@ else
     run vale sync
     run vale --no-wrap src/*.md
 fi
+
+# Pylint
 run pylint --rcfile=../.pylintrc src tests
-run python -m flake8 --select=DUO src  # Dlint
-run isort **/*.py --check-only
-unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
-run pip-audit --strict --progress-spinner=off -r requirements/requirements-dev.txt
+
+# Dlint
+unset PYTHONDEVMODE  # Suppress DeprecationWarnings given by flake8/dlint in dev mode
+run pipx run --spec `spec dlint` flake8 --select=DUO src
 export PYTHONDEVMODE=1
-run safety check --bare -r requirements/requirements.txt -r requirements/requirements-dev.txt
-NAMES_TO_IGNORE=''
-run vulture --min-confidence 0 --ignore-names $NAMES_TO_IGNORE src/ tests/ .vulture_ignore_list.py
+
+# pip-audit
+unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
+run pipx run `spec pip-audit` --strict --progress-spinner=off -r requirements/requirements.txt -r requirements/requirements-dev.txt
+export PYTHONDEVMODE=1
+
+# Safety
+run pipx run `spec bandit` --quiet --recursive src/
+
+# Vulture
+run pipx run `spec vulture` --min-confidence 0 src/ tests/ .vulture_ignore_list.py
+
+# Black
+run pipx run `spec black` --check src tests
