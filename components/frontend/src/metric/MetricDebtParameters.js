@@ -61,7 +61,6 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     )
 }
 
-
 function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, report_uuid, reload }) {
     const issueStatusHelp = (
         <>
