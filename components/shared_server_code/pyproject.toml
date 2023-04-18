@@ -4,7 +4,7 @@ version = "4.9.0"
 dependencies = [
     "bottle==0.12.25",
     "cryptography==40.0.2",
-    "packaging==23.0",
+    "packaging==23.1",
     "pydantic==1.10.7",
     "pymongo==4.3.3"
 ]
