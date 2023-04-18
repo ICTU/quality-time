@@ -823,9 +823,9 @@ sphinx-copybutton==0.5.1 \
     --hash=sha256:0842851b5955087a7ec7fc870b622cb168618ad408dee42692e9a5c97d071da8 \
     --hash=sha256:366251e28a6f6041514bfb5439425210418d6c750e98d3a695b73e56866a677a
     # via docs (pyproject.toml)
-sphinx-design==0.3.0 \
-    --hash=sha256:7183fa1fae55b37ef01bda5125a21ee841f5bbcbf59a35382be598180c4cefba \
-    --hash=sha256:823c1dd74f31efb3285ec2f1254caefed29d762a40cd676f58413a1e4ed5cc96
+sphinx-design==0.4.1 \
+    --hash=sha256:23bf5705eb31296d4451f68b0222a698a8a84396ffe8378dfd9319ba7ab8efd9 \
+    --hash=sha256:5b6418ba4a2dc3d83592ea0ff61a52a891fe72195a4c3a18b2fa1c7668ce4708
     # via docs (pyproject.toml)
 sphinxcontrib-applehelp==1.0.4 \
     --hash=sha256:29d341f67fb0f6f586b23ad80e072c8e6ad0b48417db2bde114a4c9746feb228 \
