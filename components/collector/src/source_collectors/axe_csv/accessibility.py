@@ -5,12 +5,25 @@ import re
 from io import StringIO
 
 from base_collectors import CSVFileSourceCollector
-from collector_utilities.functions import md5_hash
+from collector_utilities.functions import md5_hash, match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 
 class AxeCSVAccessibility(CSVFileSourceCollector):
     """Collector class to get accessibility violations."""
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the violation."""
+        impact = entity["impact"]
+        if impact and impact not in self._parameter("impact"):
+            return False
+        if element_include_filter := self._parameter("element_include_filter"):
+            if not match_string_or_regular_expression(entity["element"], element_include_filter):
+                return False
+        if element_exclude_filter := self._parameter("element_exclude_filter"):
+            if match_string_or_regular_expression(entity["element"], element_exclude_filter):
+                return False
+        return True
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the CSV and create the entities."""
@@ -31,11 +44,11 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
             for attributes in entity_attributes
         )
 
-    async def __parse_csv(self, responses: SourceResponses) -> list[dict[str, str]]:
+    @staticmethod
+    async def __parse_csv(responses: SourceResponses) -> list[dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""
-        impact_levels = self._parameter("impact")
         rows = []
         for response in responses:
             csv_text = (await response.text()).strip()
             rows.extend(list(csv.DictReader(StringIO(csv_text, newline=""))))
-        return [row for row in rows if row["Impact"] in impact_levels]
+        return rows

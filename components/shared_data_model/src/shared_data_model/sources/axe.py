@@ -31,6 +31,22 @@ TAGS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     metrics=["accessibility"],
 )
 
+ELEMENT_INCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
+    name="Elements to include (regular expressions)",
+    short_name="element include filter",
+    help="Elements to include can be specified by regular expression.",
+    placeholder="all",
+    metrics=["accessibility"],
+)
+
+ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
+    name="Elements to exclude (regular expressions)",
+    short_name="element exclude filter",
+    help="Elements to exclude can be specified by regular expression.",
+    placeholder="none",
+    metrics=["accessibility"],
+)
+
 RESULT_TYPES = MultipleChoiceParameter(
     name="Result types",
     help="Limit which result types to count.",
@@ -101,6 +117,8 @@ When combining results objects, make sure the `testEngine` field is retained in 
     parameters=dict(
         tags_to_include=TAGS_TO_INCLUDE,
         tags_to_ignore=TAGS_TO_IGNORE,
+        element_include_filter=ELEMENT_INCLUDE_FILTER,
+        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
         impact=IMPACT,
         result_types=RESULT_TYPES,
         **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON")
@@ -115,6 +133,8 @@ AXE_HTML_REPORTER = Source(
     parameters=dict(
         tags_to_include=TAGS_TO_INCLUDE,
         tags_to_ignore=TAGS_TO_IGNORE,
+        element_include_filter=ELEMENT_INCLUDE_FILTER,
+        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
         impact=IMPACT,
         result_types=RESULT_TYPES,
         **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML")
@@ -127,7 +147,10 @@ AXE_CSV = Source(
     description="An Axe accessibility report in CSV format.",
     url="https://github.com/ICTU/axe-reports",
     parameters=dict(
-        impact=IMPACT, **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV")
+        element_include_filter=ELEMENT_INCLUDE_FILTER,
+        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
+        impact=IMPACT,
+        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV")
     ),
     entities=dict(
         accessibility=dict(

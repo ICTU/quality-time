@@ -70,6 +70,18 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         response = await self.collect(get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
+    async def test_element_include_filter(self):
+        """Test that violations can be filtered by element."""
+        self.set_source_parameter("element_include_filter", ["dom2"])
+        response = await self.collect(get_request_text=self.csv)
+        self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
+
+    async def test_element_exclude_filter(self):
+        """Test that violations can be filtered by element."""
+        self.set_source_parameter("element_exclude_filter", ["dom2"])
+        response = await self.collect(get_request_text=self.csv)
+        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.set_source_parameter("url", "https://example.org/axecsv.zip")

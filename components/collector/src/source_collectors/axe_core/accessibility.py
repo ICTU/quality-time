@@ -27,6 +27,12 @@ class AxeAccessibilityCollector(SourceCollector):
             for tag in tags:
                 if match_string_or_regular_expression(tag, tags_to_ignore):
                     return False
+        if element_include_filter := self._parameter("element_include_filter"):
+            if not match_string_or_regular_expression(entity["element"], element_include_filter):
+                return False
+        if element_exclude_filter := self._parameter("element_exclude_filter"):
+            if match_string_or_regular_expression(entity["element"], element_exclude_filter):
+                return False
         return True
 
 

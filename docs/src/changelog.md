@@ -26,6 +26,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - Add the possibility in metrics of type missing metrics to exclude certain subjects from a report. Closes [#5119](https://github.com/ICTU/quality-time/issues/5119).
 - Add SonarQube issue status rationale to entity data of suppressed violations. Closes [#4926](https://github.com/ICTU/quality-time/issues/4926).
+- Allow for filtering out specific Axe measurement entities through regular expressions. Closes [#3328](https://github.com/ICTU/quality-time/issues/3328).
 
 ### Changed
 
