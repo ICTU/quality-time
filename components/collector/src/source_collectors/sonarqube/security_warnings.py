@@ -45,8 +45,10 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
                 )
             )
         if "security_hotspot" in security_types:
+            # Note: SonarQube is a bit inconsistent. For issue search, the SonarQube status parameter is called
+            # "statuses", but for hotspots it's called "status".
             api_urls.append(
-                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&statuses=TO_REVIEW&ps=500")
+                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&status=TO_REVIEW&ps=500")
             )
         return await super()._get_source_responses(*api_urls, **kwargs)
 
