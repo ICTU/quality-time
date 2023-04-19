@@ -43,6 +43,7 @@ ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     name="Elements to exclude (regular expressions)",
     short_name="element exclude filter",
     help="Elements to exclude can be specified by regular expression.",
+    placeholder="none",
     metrics=["accessibility"],
 )
 
