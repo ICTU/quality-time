@@ -27,7 +27,6 @@ HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; impor
 COPY --from=compile-image /home/notifier/venv /home/notifier/venv
 COPY notifier/src /home/notifier
 COPY shared_data_model /home/shared_data_model
-# TODO: Move database code from shared_server_code to shared_data_model.
 COPY shared_server_code /home/shared_server_code
 
 ENV PATH="/home/notifier/venv/bin:$PATH"
