@@ -34,7 +34,6 @@ dev = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-html_report = "build/mypy"
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
