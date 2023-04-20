@@ -72,7 +72,7 @@ def get_metrics_from_reports(reports: list[Report]) -> list[Metric]:
 
 
 def get_reports_and_measurements() -> tuple[list[Report], list[dict]]:
-    """Get the reports and measurements from the internal server."""
+    """Get the reports and measurements from the database."""
     reports: list[Report] = get_reports()
     metrics: list[Metric] = get_metrics_from_reports(reports)
     return reports, recent_measurements(*metrics)
