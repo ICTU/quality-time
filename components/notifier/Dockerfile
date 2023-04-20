@@ -7,6 +7,7 @@ ENV PATH="/home/notifier/venv/bin:$PATH"
 COPY notifier/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY shared_data_model /home/shared_data_model/
+COPY shared_server_code /home/shared_server_code/
 COPY notifier/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir -r /requirements-internal.txt
 
@@ -26,6 +27,8 @@ HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; impor
 COPY --from=compile-image /home/notifier/venv /home/notifier/venv
 COPY notifier/src /home/notifier
 COPY shared_data_model /home/shared_data_model
+# TODO: Move database code from shared_server_code to shared_data_model.
+COPY shared_server_code /home/shared_server_code
 
 ENV PATH="/home/notifier/venv/bin:$PATH"
 CMD ["python", "/home/notifier/quality_time_notifier.py"]

@@ -1,7 +1,7 @@
 """"Unit tests for the notification strategies."""
 
-from datetime import datetime, timezone
 import unittest
+from datetime import datetime, timezone
 
 from strategies.notification_strategy import NotificationFinder
 

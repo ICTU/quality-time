@@ -4,7 +4,7 @@ import logging
 
 import pymsteams
 
-from models.notification import Notification, MetricNotificationData
+from models.notification import MetricNotificationData, Notification
 
 
 def notification_text(notification: Notification) -> str:
