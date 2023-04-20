@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - Fix a regression introduced in *Quality-time* v4.9.0 that causes all SonarQube security hotspots to be shown as part of the security warnings metric, instead of only the hotspots with status "to review". Fixes [#5953](https://github.com/ICTU/quality-time/issues/5953).
 
+### Added
+
+- Add the time-ago or time-to-go to labels of date input fields. Closes [#5123](https://github.com/ICTU/quality-time/issues/5123).
+
 ## v4.9.0 - 2023-04-14
 
 ### Deployment notes
