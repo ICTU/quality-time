@@ -17,7 +17,6 @@ dev = [
     "black==23.3.0",
     "coverage==7.2.3",
     "dlint==0.14.1",
-    "lxml==4.9.2",  # Needed to be able to run mypy with `--html-report`.
     "mypy==1.2.0",
     "pep8-naming==0.13.3",
     "pip==23.1",
@@ -33,7 +32,6 @@ dev = [
 ]
 
 [tool.mypy]
-html_report = "build/mypy"
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
