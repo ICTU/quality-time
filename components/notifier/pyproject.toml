@@ -12,6 +12,7 @@ dev = [
     "black==23.3.0",
     "coverage==7.2.3",
     "dlint==0.14.1",
+    "mongomock==4.1.2",
     "mypy==1.2.0",
     "pep8-naming==0.13.3",
     "pip==23.1",
