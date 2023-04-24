@@ -212,16 +212,17 @@ class RenameIssueLeadTimeMigrationTest(DataModelTestCase):
         test_report = create_report()
         report_id = ObjectId()
 
-        test_report['_id'] = report_id
-        test_report['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['type'] = "lead_time_for_changes"
+        test_report["_id"] = report_id
+        test_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["type"] = "lead_time_for_changes"
         self.database.reports.find.return_value = [Report(self.DATA_MODEL, test_report)]
         self.rename()
 
         self.database.reports.replace_one.assert_called_once()
         mock_call_args = self.database.reports.replace_one.call_args.args
         self.assertIn({"_id": report_id}, mock_call_args)
-        self.assertEqual("average_issue_lead_time",
-                         mock_call_args[1]['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['type'])
+        self.assertEqual(
+            "average_issue_lead_time", mock_call_args[1]["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["type"]
+        )
 
     def test_no_change(self):
         """Test that the migration does not touch other metrics."""

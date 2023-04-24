@@ -313,7 +313,7 @@ SONARQUBE = Source.parse_obj(
             ),
             suppressed_violations=dict(
                 name="violation",
-                attributes=violation_entity_attributes(include_resolution=True, include_rationale=True)
+                attributes=violation_entity_attributes(include_resolution=True, include_rationale=True),
             ),
             violations=dict(name="violation", attributes=violation_entity_attributes()),
         ),
