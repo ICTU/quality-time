@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 
-from notifier_utilities.type import JSON
 from models.metric_notification_data import MetricNotificationData
+from notifier_utilities.type import JSON
 
 
 @dataclass

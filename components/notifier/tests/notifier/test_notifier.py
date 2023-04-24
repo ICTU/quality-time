@@ -4,6 +4,7 @@ import unittest
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from unittest.mock import mock_open, patch
+from tests.fixtures import create_report
 
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
 
@@ -47,27 +48,16 @@ class HealthCheckTest(unittest.TestCase):
         mocked_log.assert_called_once_with("Could not write health check time stamp to %s: %s", self.filename, io_error)
 
 
-class FakeResponse:  # pylint: disable=too-few-public-methods
-    """Fake response."""
-
-    def __init__(self, json_data):
-        self._json = json_data
-
-    async def json(self):
-        """Return the json from the response."""
-        return self._json
-
-
 @patch("builtins.open", mock_open())
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
     def setUp(self):
         """Define info that is used in multiple tests."""
-        self.url = "https://report1"
-        self.report_api = "http://localhost:5002/api/report"
         self.title = "Report 1"
         self.history = "2020-01-01T23:59:00+00:00"
+        self.url = "www.url.com"
+
         self.subjects = dict(
             subject1=dict(
                 type="software",
@@ -84,19 +74,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             )
         )
 
-    @staticmethod
-    async def return_report(report=None):
-        """Return the reports response asynchronously."""
-        return FakeResponse(dict(reports=[report] if report else []))
-
-    @staticmethod
-    async def return_measurements(measurements=None):
-        """Return the measurements response asynchronously."""
-        return FakeResponse(dict(measurements=measurements if measurements else []))
-
     @patch("logging.error")
     @patch("asyncio.sleep")
-    @patch("aiohttp.ClientSession.get")
+    @patch("notifier.notifier.get_reports_and_measurements")
     async def test_exception(self, mocked_get, mocked_sleep, mocked_log_error):
         """Test that an exception while retrieving the reports is handled."""
         mocked_get.side_effect = OSError
@@ -105,23 +85,24 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             await notify()
         except RuntimeError:
             pass
-        # We can't assert_called_once_with("Could not get reports from %s: %s", self.report_api, OSError()) because
-        # two different instances of OSError, even without arguments, don't compare equal.
         mocked_log_error.assert_called_once()
-        first_two_log_args = mocked_log_error.mock_calls[0][1][0:2]
-        self.assertEqual(("Could not get data from %s: %s", self.report_api), first_two_log_args)
+        self.assertEqual(mocked_log_error.mock_calls[0].args[0], "Getting reports and measurements failed: %s")
+        self.assertIsInstance(mocked_log_error.mock_calls[0].args[1], OSError)
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
-    @patch("aiohttp.ClientSession.get")
+    @patch("notifier.notifier.get_reports_and_measurements")
     async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that no notifications are sent if there are no new red metrics."""
-        mocked_get.side_effect = [
-            self.return_report(),
-            self.return_measurements(),
-            self.return_report(),
-            self.return_measurements(),
+        report1 = create_report()
+        now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
+        just_now = (datetime.now().replace(microsecond=0, tzinfo=timezone.utc) - timedelta(seconds=10)).isoformat()
+        report2 = deepcopy(report1)
+        measurements = [
+            dict(metric_uuid="metric1", end=now, start=now, count=dict(status="target_not_met", value="10")),
+            dict(metric_uuid="metric1", end=just_now, start=just_now, count=dict(status="target_met", value="0")),
         ]
+        mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
@@ -131,7 +112,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
     @patch("notifier.notifier.send_notification")
     @patch("asyncio.sleep")
-    @patch("aiohttp.ClientSession.get")
+    @patch("notifier.notifier.get_reports_and_measurements")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is sent if there is one new red metric."""
         report1 = dict(
@@ -142,31 +123,27 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             subjects=self.subjects,
         )
         now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
-        just_now = (datetime.now().replace(microsecond=0, tzinfo=timezone.utc) - timedelta(seconds=10)).isoformat()
+        just_now = (datetime.now().replace(microsecond=0, tzinfo=timezone.utc) - timedelta(days=1)).isoformat()
         report2 = deepcopy(report1)
-        mocked_get.side_effect = [
-            self.return_report(report1),
-            self.return_measurements(),
-            self.return_report(report2),
-            self.return_measurements(
-                [
-                    dict(metric_uuid="metric1", end=now, start=now, count=dict(status="target_not_met", value="10")),
-                    dict(
-                        metric_uuid="metric1", end=just_now, start=just_now, count=dict(status="target_met", value="0")
-                    ),
-                ]
-            ),
+        measurements = [
+            dict(metric_uuid="metric1", end=now, start=now, count=dict(status="target_not_met", value="0")),
+            dict(metric_uuid="metric1", end=just_now, start=just_now, count=dict(status="target_met", value="10")),
         ]
+        mocked_get.side_effect = [([report1], []), ([report2], measurements)]
+
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
         except RuntimeError:
             pass
+
+        # gets twice, once for the first report, once for the second
+        self.assertEqual(mocked_get.call_count, 2)
         self.assertEqual(mocked_send.call_count, 1)
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
-    @patch("aiohttp.ClientSession.get")
+    @patch("notifier.notifier.get_reports_and_measurements")
     async def test_one_old_red_metric_with_one_measurement(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is not sent if there is one old red metric."""
         history = self.history
@@ -192,12 +169,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                 )
             ),
         )
-        mocked_get.side_effect = [
-            self.return_report(report),
-            self.return_measurements([measurement]),
-            self.return_report(report),
-            self.return_measurements([measurement]),
-        ]
+
+        mocked_get.return_value = ([report, report], [measurement, measurement])
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
@@ -207,23 +180,14 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
-    @patch("aiohttp.ClientSession.get")
+    @patch("notifier.notifier.get_reports_and_measurements")
     async def test_no_webhook_in_notification_destination(self, mocked_get, mocked_sleep, mocked_send):
         """Test that the notifier continues if a destination does not have a webhook configured."""
-        report = dict(
-            report_uuid="report1",
-            title=self.title,
-            url=self.url,
-            notification_destinations=dict(destination1=dict(name="destination name", webhook="")),
-            subjects=self.subjects,
-        )
-        report2 = deepcopy(report)
-        mocked_get.side_effect = [
-            self.return_report(report),
-            self.return_measurements(),
-            self.return_report(report2),
-            self.return_measurements(),
-        ]
+        report1 = create_report()
+        report2 = deepcopy(report1)
+        measurements = []
+        mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
+
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()

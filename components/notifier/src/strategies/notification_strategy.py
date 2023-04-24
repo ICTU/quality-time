@@ -2,8 +2,8 @@
 
 from datetime import datetime
 
-from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
+from models.notification import Notification
 
 
 class NotificationFinder:
@@ -12,6 +12,7 @@ class NotificationFinder:
     def get_notifications(self, reports, measurements, most_recent_measurement_seen: datetime) -> list[Notification]:
         """Return the reports that have a webhook and metrics that require notifying."""
         measurements.sort(key=lambda measurement: measurement["end"])
+
         notifications = []
         for report in reports:
             notable_metrics = []

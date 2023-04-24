@@ -1,11 +1,11 @@
 """Unit tests for the Teams notification destination."""
 
 import logging
-from unittest import mock, TestCase
+from unittest import TestCase, mock
 
 from destinations.ms_teams import notification_text, send_notification
-from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
+from models.notification import Notification
 
 
 @mock.patch("pymsteams.connectorcard.send")
