@@ -174,9 +174,11 @@ AZURE_DEVOPS = Source(
         ),
     ),
     entities=dict(
-        average_issue_lead_time=dict(name="work item", attributes=ISSUE_ATTRIBUTES + [dict(
-            name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
-        )]),
+        average_issue_lead_time=dict(
+            name="work item",
+            attributes=ISSUE_ATTRIBUTES
+            + [dict(name="Work item lead time in days", key="lead_time", type=EntityAttributeType.INTEGER)],
+        ),
         failed_jobs=dict(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         job_runs_within_time_period=dict(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
         merge_requests=dict(

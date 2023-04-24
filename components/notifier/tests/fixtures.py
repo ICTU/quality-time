@@ -46,9 +46,7 @@ def create_report(
             )
         },
         notification_destinations={
-            NOTIFICATION_DESTINATION_ID: dict(
-                webhook="", name="notification_destination", url="https://reporturl"
-            )
+            NOTIFICATION_DESTINATION_ID: dict(webhook="", name="notification_destination", url="https://reporturl")
         },
         issue_tracker=dict(type="jira", parameters=dict(username="jadoe", password="secret")),
         last=last,

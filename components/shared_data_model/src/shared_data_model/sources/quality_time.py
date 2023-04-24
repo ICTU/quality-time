@@ -240,7 +240,7 @@ QUALITY_TIME = Source(
             name="Subjects to ignore (subject names or identifiers)",
             short_name="subjects to ignore",
             help="The Quality-time missing metrics collector will ignore metrics that are missing in the "
-                 "list of subjects to ignore.",
+            "list of subjects to ignore.",
             metrics=["missing_metrics"],
         ),
         tags=MultipleChoiceWithAdditionParameter(

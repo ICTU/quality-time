@@ -12,8 +12,10 @@ CALENDAR = Source(
     "for the next security test.",
     parameters=dict(
         date=DateParameter(
-            name="Date", mandatory=True, default_value=date.today().strftime("%Y-%m-%d"),
-            metrics=["source_up_to_dateness", "time_remaining"]
+            name="Date",
+            mandatory=True,
+            default_value=date.today().strftime("%Y-%m-%d"),
+            metrics=["source_up_to_dateness", "time_remaining"],
         ),
     ),
 )

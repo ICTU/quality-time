@@ -114,10 +114,7 @@ JIRA = Source(
             default_value="Story Points",
             metrics=["user_story_points"],
         ),
-        test_result=TestResult(
-            metrics=["test_cases"],
-            values=["errored", "failed", "passed", "skipped", "untested"]
-        ),
+        test_result=TestResult(metrics=["test_cases"], values=["errored", "failed", "passed", "skipped", "untested"]),
         velocity_sprints=IntegerParameter(
             name="Number of sprints to base velocity on",
             short_name="number of sprints",
@@ -157,9 +154,11 @@ JIRA = Source(
         )
     ),
     entities=dict(
-        average_issue_lead_time=dict(name="issue", attributes=ISSUE_ATTRIBUTES + [dict(
-            name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER
-        )]),
+        average_issue_lead_time=dict(
+            name="issue",
+            attributes=ISSUE_ATTRIBUTES
+            + [dict(name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER)],
+        ),
         issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
         manual_test_duration=dict(
             name=TEST_CASE,
