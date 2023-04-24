@@ -41,7 +41,7 @@ class JiraIssuesTest(JiraTestCase):
         issues_json = dict(total=1, issues=[self.issue()])
         response, get_mock, _ = await self.collect(
             get_request_json_side_effect=[[dict(id="field", name="Field")], 50, issues_json, issues_json],
-            return_mocks=True
+            return_mocks=True,
         )
         self.assert_measurement(response, value="1", entities=[self.entity()])
         self.assertIn("&maxResults=50&", get_mock.mock_calls[2].args[0])
@@ -51,7 +51,7 @@ class JiraIssuesTest(JiraTestCase):
         issues_json = dict(total=1, issues=[self.issue()])
         result, get_mock, _ = await self.collect(
             get_request_json_side_effect=[[dict(id="field", name="Field")], "error", issues_json, issues_json],
-            return_mocks=True
+            return_mocks=True,
         )
         self.assert_measurement(result, value="1", entities=[self.entity()])
         self.assertIn(f"&maxResults={JiraIssues.DEFAULT_MAX_RESULTS}&", get_mock.mock_calls[2].args[0])

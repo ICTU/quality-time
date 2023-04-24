@@ -52,7 +52,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     async def test_wrong_repository(self):
         """Test that if the repository cannot be found, an error message is returned."""
         self.set_source_parameter("repository", "wrong_repo")
-        response = await (self.collect(get_request_json_return_value=self.repositories))
+        response = await self.collect(get_request_json_return_value=self.repositories)
         self.assert_measurement(
             response,
             landing_url=f"{self.url}/_git/wrong_repo/branches",

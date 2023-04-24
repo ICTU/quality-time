@@ -36,8 +36,9 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         subjects_to_ignore = self._parameter("subjects_to_ignore")
         if not subjects_to_ignore:
             return True
-        return not match_string_or_regular_expression(entity["subject"], subjects_to_ignore) and not \
-            match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
+        return not match_string_or_regular_expression(
+            entity["subject"], subjects_to_ignore
+        ) and not match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
 
     def __nr_of_possible_metric_types(self, data_model: dict, reports: list[dict]) -> int:
         """Return the number of possible metric types in the reports."""

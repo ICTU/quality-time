@@ -10,10 +10,12 @@ class AzureDevopsUserStoryPointsTest(AzureDevopsTestCase):
 
     async def test_story_points(self):
         """Test that the number of story points are returned."""
-        response = await self.collect(post_request_json_side_effect=[
-            dict(workItems=[dict(id="id1"), dict(id="id2")]),
-            dict(value=[self.work_item, self.work_item])
-        ])
+        response = await self.collect(
+            post_request_json_side_effect=[
+                dict(workItems=[dict(id="id1"), dict(id="id2")]),
+                dict(value=[self.work_item, self.work_item]),
+            ]
+        )
         self.assert_measurement(response, value="4")
 
     async def test_story_points_without_stories(self):

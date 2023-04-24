@@ -90,14 +90,14 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                             "login": "test-user",
                             "htmlText": "<strong>TEST</strong>",
                             "markdown": "*TEST*",
-                            "createdAt": "2023-04-12T08:04:02+0000"
+                            "createdAt": "2023-04-12T08:04:02+0000",
                         },
                         {
                             "login": "test-user",
                             "htmlText": "comment2",
                             "markdown": "comment2",
-                            "createdAt": "2023-04-12T09:04:38+0000"
-                        }
+                            "createdAt": "2023-04-12T09:04:38+0000",
+                        },
                     ],
                     creationDate="2019-08-15:52:52+0200",
                     updateDate="2019-09-30T20:52:52+0200",
