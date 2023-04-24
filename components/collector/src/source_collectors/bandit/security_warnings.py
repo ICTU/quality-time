@@ -28,5 +28,6 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the warning in the measurement."""
-        return entity["issue_severity"].lower() in self._parameter("severities") \
-            and entity["issue_confidence"].lower() in self._parameter("confidence_levels")
+        return entity["issue_severity"].lower() in self._parameter("severities") and entity[
+            "issue_confidence"
+        ].lower() in self._parameter("confidence_levels")

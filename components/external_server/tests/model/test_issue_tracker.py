@@ -76,7 +76,8 @@ class IssueTrackerTest(unittest.TestCase):
         """Test that without a valid URL an error message is returned."""
         issue_tracker = IssueTracker("invalid", self.issue_parameters)
         self.assertIn(
-            issue_tracker.create_issue("New issue"), [
+            issue_tracker.create_issue("New issue"),
+            [
                 (
                     "",
                     "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
@@ -86,7 +87,8 @@ class IssueTrackerTest(unittest.TestCase):
                     "",
                     "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
                     "http://invalid/rest/api/2/issue?",  # Python <3.11 and Windows
-                )]
+                ),
+            ],
         )
 
     @disable_logging

@@ -4,8 +4,15 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
-from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback, tokenless, \
-    iterable_to_batches, decimal_round_half_up
+from collector_utilities.functions import (
+    days_ago,
+    hashless,
+    is_regexp,
+    stable_traceback,
+    tokenless,
+    iterable_to_batches,
+    decimal_round_half_up,
+)
 from collector_utilities.type import URL
 
 

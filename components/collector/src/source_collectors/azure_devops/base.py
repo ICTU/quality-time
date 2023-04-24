@@ -62,13 +62,15 @@ class AzureDevopsJobs(SourceCollector):
             build_dt_str = ""  # sadly, mypy does not understand short-circuiting this
             if build_dt := self._latest_build_date_time(job):
                 build_dt_str = str(build_dt.date())
-            entities.append(Entity(
-                key=name,
-                name=name,
-                url=url,
-                build_date=build_dt_str,
-                build_status=build_status,
-            ))
+            entities.append(
+                Entity(
+                    key=name,
+                    name=name,
+                    url=url,
+                    build_date=build_dt_str,
+                    build_status=build_status,
+                )
+            )
         return entities
 
     def _include_entity(self, entity: Entity) -> bool:

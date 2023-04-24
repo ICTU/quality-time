@@ -12,9 +12,7 @@ class JenkinsUnusedJobsTest(JenkinsTestCase):
         """Test that the number of unused jobs is returned."""
         jenkins_json = dict(
             jobs=[
-                dict(
-                    name="job", url=self.job_url, buildable=True, color="red", builds=[dict(timestamp=1548311610349)]
-                )
+                dict(name="job", url=self.job_url, buildable=True, color="red", builds=[dict(timestamp=1548311610349)])
             ]
         )
         response = await self.collect(get_request_json_return_value=jenkins_json)

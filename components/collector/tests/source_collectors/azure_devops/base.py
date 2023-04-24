@@ -116,13 +116,13 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
                     name="20191015.4",
                     url=f"{self.url}/_build/results?buildId=4",
                     _links=dict(web=dict(href=f"{self.url}/_build/results?buildId=4")),
-                )
-            ]
+                ),
+            ],
         )
         self.expected_entities = [
             dict(
                 name="20191015.1",
-                pipeline=self.pipelines['value'][0]['name'],
+                pipeline=self.pipelines["value"][0]["name"],
                 key=f"{self.pipelines['value'][0]['id']}-20191015_1",  # safe_entity_key
                 url=f"{self.url}/_build/results?buildId=1",
                 build_date="2019-10-15",
@@ -130,10 +130,10 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
             ),
             dict(
                 name="20191015.2",
-                pipeline=self.pipelines['value'][0]['name'],
+                pipeline=self.pipelines["value"][0]["name"],
                 key=f"{self.pipelines['value'][0]['id']}-20191015_2",  # safe_entity_key
                 url=f"{self.url}/_build/results?buildId=2",
                 build_date="2019-10-15",
                 build_status="completed",
-            )
+            ),
         ]

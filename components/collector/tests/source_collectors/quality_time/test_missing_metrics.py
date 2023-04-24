@@ -96,15 +96,11 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Test that the number of non-ignored missing metrics is returned when filtered by name."""
         self.set_source_parameter("subjects_to_ignore", ["S2"])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(
-            response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics
-        )
+        self.assert_measurement(response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics)
 
     async def test_subjects_to_ignore_by_uuid(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by uuid."""
         first_subject_uuid = list(self.reports["reports"][0]["subjects"].keys())[0]
         self.set_source_parameter("subjects_to_ignore", [first_subject_uuid])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(
-            response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics
-        )
+        self.assert_measurement(response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics)

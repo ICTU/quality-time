@@ -72,17 +72,19 @@ class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
         """Parse a violation."""
         entity_attributes = []
         for node in violation.get("nodes", []) or [violation]:  # Use the violation as node if it has no nodes
-            entity_attributes.append(dict(
-                description=violation.get("description"),
-                element=node.get("html"),
-                help=violation.get("helpUrl"),
-                impact=node.get("impact"),
-                page=url,
-                url=url,
-                result_type=result_type,
-                tags=", ".join(sorted(violation.get("tags", []))),
-                violation_type=violation.get("id"),
-            ))
+            entity_attributes.append(
+                dict(
+                    description=violation.get("description"),
+                    element=node.get("html"),
+                    help=violation.get("helpUrl"),
+                    impact=node.get("impact"),
+                    page=url,
+                    url=url,
+                    result_type=result_type,
+                    tags=", ".join(sorted(violation.get("tags", []))),
+                    violation_type=violation.get("id"),
+                )
+            )
         return entity_attributes
 
     @staticmethod

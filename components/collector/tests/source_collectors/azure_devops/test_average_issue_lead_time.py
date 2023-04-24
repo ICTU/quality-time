@@ -52,15 +52,17 @@ class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
                 url=self.work_item_url,
                 lead_time=7,
                 changed_field=now_timestamp,
-            )
+            ),
         ]
 
     async def test_lead_time(self):
         """Test that the lead time is returned."""
-        response = await self.collect(post_request_json_side_effect=[
-            dict(workItems=[dict(id="id"), dict(id="id1"), dict(id="id2")]),
-            dict(value=[self.work_item, self.work_item1, self.work_item2])
-        ])
+        response = await self.collect(
+            post_request_json_side_effect=[
+                dict(workItems=[dict(id="id"), dict(id="id1"), dict(id="id2")]),
+                dict(value=[self.work_item, self.work_item1, self.work_item2]),
+            ]
+        )
         self.assert_measurement(response, value="4", entities=self.expected_entities)  # 7 + 1 / 2
 
     async def test_lead_time_without_stories(self):
@@ -71,8 +73,7 @@ class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
     async def test_lead_time_without_changed_date(self):
         """Test that the lead time is zero when there are no work items with changed date."""
         self.work_item2["fields"]["System.ChangedDate"] = None
-        response = await self.collect(post_request_json_side_effect=[
-            dict(workItems=[dict(id="id")]),
-            dict(value=[self.work_item2])
-        ])
+        response = await self.collect(
+            post_request_json_side_effect=[dict(workItems=[dict(id="id")]), dict(value=[self.work_item2])]
+        )
         self.assert_measurement(response, value="0", entities=[])

@@ -35,8 +35,11 @@ class JenkinsTestReportTests(SourceCollector):
         for result in results:
             suites.extend(result["suites"])
         entities = [self.__entity(case) for suite in suites for case in suite.get("cases", [])]
-        return SourceMeasurement(value=str(value), total=str(total),
-                                 entities=Entities([entity for entity in entities if self._include_entity(entity)]))
+        return SourceMeasurement(
+            value=str(value),
+            total=str(total),
+            entities=Entities([entity for entity in entities if self._include_entity(entity)]),
+        )
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""

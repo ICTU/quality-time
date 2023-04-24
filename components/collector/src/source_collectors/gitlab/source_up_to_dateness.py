@@ -89,10 +89,13 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
         try:
             for response in responses:
                 pipelines = await response.json()
-                urls.extend([
-                    (self._datetime(pipeline), pipeline["web_url"])
-                    for pipeline in pipelines if self._include_pipeline(pipeline)
-                ])
+                urls.extend(
+                    [
+                        (self._datetime(pipeline), pipeline["web_url"])
+                        for pipeline in pipelines
+                        if self._include_pipeline(pipeline)
+                    ]
+                )
         except StopAsyncIteration:
             pass
         return max(urls, default=(None, await super()._landing_url(responses)))[1]

@@ -12,18 +12,23 @@ class ComposerDependencies(JSONFileSourceCollector):
         installed_dependencies: list[dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend((await response.json(content_type=None)).get("installed", []))
-        entities = [Entity(
-            key=f'{dependency["name"]}@{dependency.get("version", "?")}',
-            name=dependency["name"],
-            version=dependency.get("version", "unknown"),
-            homepage=dependency.get("homepage", ""),
-            latest=dependency.get("latest", "unknown"),
-            latest_status=dependency.get("latest-status", "unknown"),
-            description=dependency.get("description", ""),
-            warning=dependency.get("warning", ""),
-        ) for dependency in installed_dependencies]
-        return SourceMeasurement(entities=Entities([entity for entity in entities if self._include_entity(entity)]),
-                                 total=str(len(installed_dependencies)))
+        entities = [
+            Entity(
+                key=f'{dependency["name"]}@{dependency.get("version", "?")}',
+                name=dependency["name"],
+                version=dependency.get("version", "unknown"),
+                homepage=dependency.get("homepage", ""),
+                latest=dependency.get("latest", "unknown"),
+                latest_status=dependency.get("latest-status", "unknown"),
+                description=dependency.get("description", ""),
+                warning=dependency.get("warning", ""),
+            )
+            for dependency in installed_dependencies
+        ]
+        return SourceMeasurement(
+            entities=Entities([entity for entity in entities if self._include_entity(entity)]),
+            total=str(len(installed_dependencies)),
+        )
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
