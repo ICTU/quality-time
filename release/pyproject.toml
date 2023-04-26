@@ -2,6 +2,7 @@
 name = "release"
 version = "4.10.0"
 dependencies = [
+    "black==23.3.0",  # The pre-commit hook (../githooks/pre-commit) calls black
     "bump2version==1.0.1",
     "gitpython==3.1.31",
 ]
