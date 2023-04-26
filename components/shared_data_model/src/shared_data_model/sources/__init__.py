@@ -14,6 +14,7 @@ from .cxsast import CXSAST
 from .gatling import GATLING
 from .generic_json import GENERIC_JSON
 from .gitlab import GITLAB
+from .harbor import HARBOR
 from .jacoco import JACOCO, JACOCO_JENKINS_PLUGIN
 from .jenkins import JENKINS, JENKINS_TEST_REPORT
 from .jira import JIRA
@@ -56,6 +57,7 @@ SOURCES = Sources.parse_obj(
         gatling=GATLING,
         generic_json=GENERIC_JSON,
         gitlab=GITLAB,
+        harbor=HARBOR,
         jacoco=JACOCO,
         jacoco_jenkins_plugin=JACOCO_JENKINS_PLUGIN,
         jenkins=JENKINS,

@@ -19,6 +19,7 @@ Pydantic
 Pylint
 Snyk
 Trello
+Trivy
 UUIDs
 Wekan
 [Hh]ostname
