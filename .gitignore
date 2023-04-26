@@ -49,6 +49,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.pipx
 
 # mypy
 .mypy_cache/
