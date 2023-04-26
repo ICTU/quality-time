@@ -1,6 +1,6 @@
 [project]
 name = "feature_tests"
-version = "4.9.0"
+version = "4.10.0"
 dependencies = [
     "asserts==0.12.0",
     "behave==1.2.6",

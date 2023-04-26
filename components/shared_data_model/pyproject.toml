@@ -1,6 +1,6 @@
 [project]
 name = "shared_data_model"
-version = "4.9.0"
+version = "4.10.0"
 dependencies = [
     "pydantic==1.10.7"
 ]

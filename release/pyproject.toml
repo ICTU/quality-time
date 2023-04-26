@@ -1,6 +1,6 @@
 [project]
 name = "release"
-version = "4.9.0"
+version = "4.10.0"
 dependencies = [
     "bump2version==1.0.1",
     "gitpython==3.1.31",
