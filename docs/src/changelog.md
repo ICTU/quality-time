@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Added
 
+- Allow for using Harbor (tested with the Trivy security scanner) as source for the security warnings metric. Closes [#3729](https://github.com/ICTU/quality-time/issues/3729).
 - Add the time-ago or time-to-go to labels of date input fields. Closes [#5123](https://github.com/ICTU/quality-time/issues/5123).
 
 ## v4.9.0 - 2023-04-14
@@ -38,7 +39,6 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Added
 
-- Allow for using Harbor (tested with the Trivy security scanner) as source for the security warnings metric. Closes [#3729](https://github.com/ICTU/quality-time/issues/3729).
 - Add the possibility in metrics of type missing metrics to exclude certain subjects from a report. Closes [#5119](https://github.com/ICTU/quality-time/issues/5119).
 - Add SonarQube issue status rationale to entity data of suppressed violations. Closes [#4926](https://github.com/ICTU/quality-time/issues/4926).
 - Allow for filtering out specific Axe measurement entities through regular expressions. Closes [#3328](https://github.com/ICTU/quality-time/issues/3328).
