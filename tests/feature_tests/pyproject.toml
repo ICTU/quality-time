@@ -16,7 +16,7 @@ dev = [
     "pip==23.1.1",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
-    "pylint==2.17.2",
+    "pylint==2.17.3",
     "types-requests==2.28.11.17",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
