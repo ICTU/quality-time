@@ -747,9 +747,9 @@ unittest-xml-reporting==3.2.0 \
     --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
     --hash=sha256:f3d7402e5b3ac72a5ee3149278339db1a8f932ee405f48bcb9c681372f2717d5
     # via external-server (pyproject.toml)
-urllib3==1.26.15 \
-    --hash=sha256:8a388717b9476f934a21484e8c8e61875ab60644d29b9b39e11e4b9dc1c6b305 \
-    --hash=sha256:aa751d169e23c7479ce47a0cb0da579e3ede798f994f5816a74e4f4500dcea42
+urllib3==2.0.1 \
+    --hash=sha256:2ce66a68134be469f5df5d46d724237489b3cd85b2bba2223dbbee1746548826 \
+    --hash=sha256:d75e5ece05ff170e323303fd924edf29e705f5ae057c489f453a686b639bb68a
     # via requests
 userpath==1.8.0 \
     --hash=sha256:04233d2fcfe5cff911c1e4fb7189755640e1524ff87a4b82ab9d6b875fee5787 \
