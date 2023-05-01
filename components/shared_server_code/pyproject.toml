@@ -11,7 +11,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.3",
+    "coverage==7.2.5",
     "pep8-naming==0.13.3",
     "pip==23.1.1",
     "pipx==1.2.0",
