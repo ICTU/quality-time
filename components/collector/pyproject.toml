@@ -15,7 +15,7 @@ dependencies = [
 dev = [
     "coverage==7.2.3",
     "pep8-naming==0.13.3",
-    "pip==23.1.1",
+    "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
