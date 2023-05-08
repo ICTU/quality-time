@@ -482,9 +482,9 @@ six==1.16.0 \
 sseclient==0.0.27 \
     --hash=sha256:b2fe534dcb33b1d3faad13d60c5a7c718e28f85987f2a034ecf5ec279918c11c
     # via feature-tests (pyproject.toml)
-tomlkit==0.11.7 \
-    --hash=sha256:5325463a7da2ef0c6bbfefb62a3dc883aebe679984709aee32a317907d0a8d3c \
-    --hash=sha256:f392ef70ad87a672f02519f99967d28a4d3047133e2d1df936511465fbb3791d
+tomlkit==0.11.8 \
+    --hash=sha256:8c726c4c202bdb148667835f68d68780b9a003a9ec34167b6c673b38eff2a171 \
+    --hash=sha256:9330fc7faa1db67b541b28e62018c17d20be733177d290a13b24c62d1614e0c3
     # via pylint
 types-requests==2.30.0.0 \
     --hash=sha256:c6cf08e120ca9f0dc4fa4e32c3f953c3fba222bcc1db6b97695bce8da1ba9864 \
