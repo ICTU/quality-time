@@ -8,21 +8,21 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==4.9.2",
     "pymongo==4.3.3",
-    "requests==2.28.2"
+    "requests==2.30.0"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.3",
+    "coverage==7.2.5",
     "pep8-naming==0.13.3",
-    "pip==23.1.1",
+    "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
-    "pylint==2.17.2",
+    "pylint==2.17.4",
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.12",
-    "types-requests==2.28.11.17",
+    "types-requests==2.30.0.0",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
@@ -30,7 +30,7 @@ tools = [
     "black==23.3.0",
     "dlint==0.14.1",
     "mypy==1.2.0",
-    "pip-audit==2.5.4",
+    "pip-audit==2.5.5",
     "safety==2.3.5",
     "vulture==2.7"
 ]
