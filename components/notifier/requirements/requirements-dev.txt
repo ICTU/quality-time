@@ -579,9 +579,9 @@ pipx==1.2.0 \
     --hash=sha256:a94c4bca865cd6e85b37cd6717a22481744890fe36b70db081a78d1feb923ce0 \
     --hash=sha256:d1908041d24d525cafebeb177efb686133d719499cb55c54f596c95add579286
     # via notifier (pyproject.toml)
-platformdirs==3.3.0 \
-    --hash=sha256:64370d47dc3fca65b4879f89bdead8197e93e05d696d6d1816243ebae8595da5 \
-    --hash=sha256:ea61fd7b85554beecbbd3e9b37fb26689b227ffae38f73353cbcc1cf8bd01878
+platformdirs==3.5.0 \
+    --hash=sha256:47692bc24c1958e8b0f13dd727307cff1db103fca36399f457da8e05f222fdc4 \
+    --hash=sha256:7954a68d0ba23558d753f73437c55f89027cf8f5108c19844d4b82e5af396335
     # via pylint
 pycodestyle==2.10.0 \
     --hash=sha256:347187bdb476329d98f695c213d7295a846d1152ff4fe9bacb8a9590b8ee7053 \
