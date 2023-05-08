@@ -5,20 +5,20 @@ dependencies = [
     "furo==2023.3.27",
     "gitpython==3.1.31",
     "myst-parser==1.0.0",
-    "Sphinx==6.2.0",
+    "Sphinx==6.2.1",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.4.1"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.3",
+    "coverage==7.2.5",
     "pep8-naming==0.13.3",
-    "pip==23.1.1",
+    "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.7",  # Needed for importing the data model in the tests from the shared data model component
-    "pylint==2.17.2",
+    "pylint==2.17.4",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
@@ -26,7 +26,7 @@ tools = [
     "bandit==1.7.5",
     "dlint==0.14.1",
     "mypy==1.2.0",
-    "pip-audit==2.5.4",
+    "pip-audit==2.5.5",
     "safety==2.3.5",
     "vulture==2.7"
 ]

@@ -267,9 +267,9 @@ soupsieve==2.4.1 \
     --hash=sha256:1c1bfee6819544a3447586c889157365a27e10d88cde3ad3da0cf0ddf646feb8 \
     --hash=sha256:89d12b2d5dfcd2c9e8c22326da9d9aa9cb3dfab0a83a024f05704076ee8d35ea
     # via beautifulsoup4
-sphinx==6.2.0 \
-    --hash=sha256:9ef22c2941bc3d0ff080d25a797f7521fc317e857395c712ddde97a19d5bb440 \
-    --hash=sha256:ff1c2a1167bef9cdcd8ec71339e85fe10f26d4e9ef9382ef10b2687c876c936b
+sphinx==6.2.1 \
+    --hash=sha256:6d56a34697bb749ffa0152feafc4b19836c755d90a7c59b72bc7dfd371b9cc6b \
+    --hash=sha256:97787ff1fa3256a3eef9eda523a63dbf299f7b47e053cfcf684a1c2a8380c912
     # via
     #   docs (pyproject.toml)
     #   furo
