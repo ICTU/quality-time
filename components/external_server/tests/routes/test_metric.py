@@ -598,10 +598,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
         )
@@ -620,10 +617,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
@@ -648,10 +642,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["epic_link_field_id"] = "FOO-420"
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
@@ -663,4 +654,4 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
-        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database, User("user")))
+        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))
