@@ -53,7 +53,7 @@ Feature: metric issues
     And the client changes the report tracker_project_key to "KEY"
     And the client changes the report tracker_issue_type to "Task"
     And the client opens a new issue
-    Then the new issue response error is 'Failed to establish a new connection'
+    Then the new issue response error is 'Failed to resolve'
 
   Scenario: completing all issues ignores the accepted technical debt, adding a new issue unignores it
     When the client changes the metric accept_debt to "True"
