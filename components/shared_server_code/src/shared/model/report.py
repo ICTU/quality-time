@@ -114,7 +114,7 @@ class Report(dict):
 
     def instance_and_parents_for_uuid(
         self, metric_uuid: MetricId | None = None, source_uuid: SourceId | None = None
-    ) -> tuple:
+    ) -> tuple[Metric, Subject] | tuple[Source, Metric, Subject]:
         """Find an instance and its parents.
 
         For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in
@@ -125,10 +125,10 @@ class Report(dict):
         if metric_uuid is not None:
             metric = self.metrics_dict[metric_uuid]
             subject = self.subjects_dict[metric.subject_uuid]
-            return (metric, subject)
+            return metric, subject
         if source_uuid is not None:
             source = self.sources_dict[source_uuid]
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
-            return (source, metric, subject)
+            return source, metric, subject
         raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no feature-test-cover

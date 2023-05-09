@@ -28,7 +28,7 @@ class Source(dict):  # lgtm [py/missing-equals]
 
     @property
     def type(self) -> str | None:
-        """Return the type of the metric."""
+        """Return the type of the source."""
         return str(self["type"]) if "type" in self else None
 
     @property
