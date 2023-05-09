@@ -7,6 +7,7 @@ Feature: metric issues
     And an existing subject
     And an existing metric with issue_ids "123"
     And an existing source
+    And the collector has measured "42"
 
   Scenario: valid issue tracker and metric with issue (also set the same attribute twice to test idempotency)
     When the client changes the report tracker_type to "jira"
