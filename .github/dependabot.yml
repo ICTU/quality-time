@@ -3,24 +3,19 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: weekly
-    time: "04:00"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/collector"
   schedule:
-    interval: weekly
-    time: "04:10"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/collector"
   schedule:
-    interval: weekly
-    time: "04:15"
+    interval: "daily"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -29,8 +24,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/database"
   schedule:
-    interval: weekly
-    time: "04:20"
+    interval: "daily"
   ignore:
     - dependency-name: "mongo"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Patches only, please
@@ -39,8 +33,7 @@ updates:
 - package-ecosystem: docker
   directory: "/components/frontend"
   schedule:
-    interval: weekly
-    time: "04:25"
+    interval: "daily"
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
@@ -49,24 +42,19 @@ updates:
 - package-ecosystem: npm
   directory: "/components/frontend"
   schedule:
-    interval: weekly
-    time: "04:30"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/notifier"
   schedule:
-    interval: weekly
-    time: "04:40"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/notifier"
   schedule:
-    interval: weekly
-    time: "04:45"
+    interval: "daily"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -75,15 +63,13 @@ updates:
 - package-ecosystem: docker
   directory: "/components/proxy"
   schedule:
-    interval: weekly
-    time: "04:50"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/renderer"
   schedule:
-    interval: weekly
-    time: "04:55"
+    interval: "daily"
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
@@ -92,15 +78,13 @@ updates:
 - package-ecosystem: npm
   directory: "/components/renderer"
   schedule:
-    interval: weekly
-    time: "05:00"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/external_server"
   schedule:
-    interval: weekly
-    time: "05:05"
+    interval: "daily"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -109,17 +93,13 @@ updates:
 - package-ecosystem: pip
   directory: "/components/external_server"
   schedule:
-    interval: weekly
-    time: "05:10"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/internal_server"
   schedule:
-    interval: weekly
-    time: "05:15"
+    interval: "daily"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -128,35 +108,25 @@ updates:
 - package-ecosystem: pip
   directory: "/components/internal_server"
   schedule:
-    interval: weekly
-    time: "05:20"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/shared_data_model"
   schedule:
-    interval: weekly
-    time: "05:25"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/shared_server_code"
   schedule:
-    interval: weekly
-    time: "05:30"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: docker
   directory: "/components/testdata"
   schedule:
-    interval: weekly
-    time: "05:35"
+    interval: "daily"
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
@@ -165,42 +135,29 @@ updates:
 - package-ecosystem: npm
   directory: "/docs"
   schedule:
-    interval: weekly
-    time: "05:40"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/docs"
   schedule:
-    interval: weekly
-    time: "05:45"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/release"
   schedule:
-    interval: weekly
-    time: "05:50"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/application_tests"
   schedule:
-    interval: weekly
-    time: "05:55"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests"
   schedule:
-    interval: weekly
-    time: "06:00"
-  allow:
-    - dependency-type: "direct"
+    interval: "daily"
   open-pull-requests-limit: 100
