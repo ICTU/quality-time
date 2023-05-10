@@ -82,7 +82,7 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
                 </VictoryContainer>
             </div>
             <Card.Content>
-                <Card.Header title={header} textAlign='center'>{header}</Card.Header>
+                <Card.Header textAlign='center'>{header}</Card.Header>
             </Card.Content>
         </Card>
     );
