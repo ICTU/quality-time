@@ -1,11 +1,7 @@
 """Jenkins test report metric source up-to-dateness collector."""
 
-from datetime import datetime
-
-from dateutil.parser import parse
-
 from base_collectors import SourceCollector
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import datetime_fromtimestamp, days_ago, parse_datetime
 from collector_utilities.type import URL, Value
 from model import SourceResponses
 
@@ -25,8 +21,8 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
             suite.get("timestamp") for suite in (await responses[0].json()).get("suites", []) if suite.get("timestamp")
         ]
         report_datetime = (
-            parse(max(timestamps))
+            parse_datetime(max(timestamps))
             if timestamps
-            else datetime.fromtimestamp(float((await responses[1].json())["timestamp"]) / 1000.0)
+            else datetime_fromtimestamp(float((await responses[1].json())["timestamp"]) / 1000.0)
         )
         return str(days_ago(report_datetime))

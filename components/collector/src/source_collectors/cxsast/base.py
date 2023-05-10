@@ -34,14 +34,14 @@ class CxSASTBase(SourceCollector, ABC):
     async def _get_token(self) -> None:
         """Retrieve the token."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
-        credentials = dict(  # nosec # The client secret is not really secret, see previous url
-            username=cast(str, self._parameter("username")),
-            password=cast(str, self._parameter("password")),
-            grant_type="password",
-            scope="sast_rest_api",
-            client_id="resource_owner_client",
-            client_secret="014DF517-39D1-4453-B7B3-9930C563627C",
-        )
+        credentials = {  # nosec # The client secret is not really secret, see previous url
+            "username": cast(str, self._parameter("username")),
+            "password": cast(str, self._parameter("password")),
+            "grant_type": "password",
+            "scope": "sast_rest_api",
+            "client_id": "resource_owner_client",
+            "client_secret": "014DF517-39D1-4453-B7B3-9930C563627C",
+        }
         token_response = await self.__api_post("auth/identity/connect/token", credentials)
         self.__token = (await token_response.json())["access_token"]
 
@@ -74,7 +74,7 @@ class CxSASTScanBase(CxSASTBase):
         project_response = (await super()._get_source_responses(project_api))[0]
         self.__project_id = await self.__get_project_id(project_response)
         scan_api = URL(
-            f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1"
+            f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1",
         )
         scan_responses = await super()._get_source_responses(scan_api)
         self._scan_id = (await scan_responses[0].json())[0]["id"]

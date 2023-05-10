@@ -5,7 +5,7 @@ from typing import cast
 import aiohttp
 from aiogqlc import GraphQLClient
 
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
@@ -56,6 +56,17 @@ query MRs($projectId: ID!) {{
 """
 
 
+class GitLabMergeRequestInfoError(NotFoundError):
+    """GitLab merge request info is missing."""
+
+    def __init__(self, project: str) -> None:
+        tip = (
+            "Please check if the project (name with namespace or id) and private token (with read_api scope) are "
+            "configured correctly."
+        )
+        super().__init__("Merge request info for project", project, extra=tip)
+
+
 class GitLabMergeRequests(GitLabBase):
     """Collector class to measure the number of merge requests."""
 
@@ -93,21 +104,20 @@ class GitLabMergeRequests(GitLabBase):
         return cls.APPROVED_FIELD if cls.APPROVED_FIELD in fields else ""
 
     async def _get_merge_request_response(
-        self, client: GraphQLClient, approved_field: str, cursor: str = ""
+        self,
+        client: GraphQLClient,
+        approved_field: str,
+        cursor: str = "",
     ) -> tuple[aiohttp.ClientResponse, bool, str]:
         """Return the merge request response, whether there are more pages, and a cursor to the next page, if any."""
         pagination = f'(after: "{cursor}")' if cursor else ""
         merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
-        response = await client.execute(merge_request_query, variables=dict(projectId=self._parameter("project")))
+        response = await client.execute(merge_request_query, variables={"projectId": self._parameter("project")})
         json = await response.json()
         if project := json["data"]["project"]:
             page_info = project["mergeRequests"]["pageInfo"]
             return response, page_info["hasNextPage"], page_info.get("endCursor", "")
-        raise CollectorException(
-            f'Could not retrieve merge request info for project \'{self._parameter("project")}\'. '
-            "Please check if the project (name with namespace or id) and private token (with read_api scope) are "
-            "configured correctly."
-        )
+        raise GitLabMergeRequestInfoError(str(self._parameter("project")))
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests."""

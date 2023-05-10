@@ -2,7 +2,8 @@
 
 import csv
 from io import StringIO
-from typing import AsyncIterator, Literal
+from typing import Literal
+from collections.abc import AsyncIterator
 
 from base_collectors import CSVFileSourceCollector
 from model import SourceResponses

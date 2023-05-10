@@ -14,13 +14,13 @@ class OWASPDependencyCheckDependenciesTest(OWASPDependencyCheckTestCase):
         """Test that the dependencies are returned."""
         response = await self.collect(get_request_text=self.xml)
         expected_entities = [
-            dict(
-                key="12345",
-                url="https://owasp_dependency_check#l1_12345",
-                file_name=self.file_name,
-                file_path=self.file_path,
-                file_path_after_regexp=self.file_path,
-            )
+            {
+                "key": "12345",
+                "url": "https://owasp_dependency_check#l1_12345",
+                "file_name": self.file_name,
+                "file_path": self.file_path,
+                "file_path_after_regexp": self.file_path,
+            },
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
@@ -30,12 +30,12 @@ class OWASPDependencyCheckDependenciesTest(OWASPDependencyCheckTestCase):
         response = await self.collect(get_request_text=self.xml.replace("<sha1>12345</sha1>", ""))
         file_path_after_regexp = self.file_path[len("/home/jenkins/") :]
         expected_entities = [
-            dict(
-                key=sha1_hash(file_path_after_regexp + self.file_name),
-                url="",
-                file_name=self.file_name,
-                file_path=self.file_path,
-                file_path_after_regexp=file_path_after_regexp,
-            )
+            {
+                "key": sha1_hash(file_path_after_regexp + self.file_name),
+                "url": "",
+                "file_name": self.file_name,
+                "file_path": self.file_path,
+                "file_path_after_regexp": file_path_after_regexp,
+            },
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)

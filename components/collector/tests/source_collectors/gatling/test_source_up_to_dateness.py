@@ -1,8 +1,6 @@
 """Unit tests for the Gatling source-up-to-dateness collector."""
 
-from datetime import datetime
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import datetime_fromtimestamp, days_ago
 
 from .base import GatlingTestCase
 
@@ -21,5 +19,5 @@ class GatlingSourceUpToDatenessTest(GatlingTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the test age is returned."""
         response = await self.collect(get_request_text=self.GATLING_LOG)
-        expected_age = days_ago(datetime.utcfromtimestamp(1638907424543 / 1000.0))
+        expected_age = days_ago(datetime_fromtimestamp(1638907424543 / 1000.0))
         self.assert_measurement(response, value=str(expected_age))

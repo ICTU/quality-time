@@ -3,9 +3,8 @@
 from datetime import datetime
 from urllib import parse
 
-from dateutil.parser import parse as parse_datetime
-
 from base_collectors import TimePassedCollector
+from collector_utilities.date_time import parse_datetime, MIN_DATETIME
 from collector_utilities.type import Response, URL
 
 from .base import QualityTimeCollector
@@ -28,4 +27,4 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
                 for metric in subject.get("metrics", {}).values():
                     if recent_measurements := metric.get("recent_measurements", []):
                         measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))
-        return min(measurement_dates, default=datetime.min)
+        return min(measurement_dates, default=MIN_DATETIME)

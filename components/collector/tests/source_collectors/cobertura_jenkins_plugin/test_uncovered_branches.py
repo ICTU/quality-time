@@ -7,9 +7,9 @@ class CoberturaJenkinsPluginUncoveredBranchesTest(CoberturaJenkinsPluginTestCase
     """Unit tests for the Cobertura Jenkins plugin uncovered branches collector."""
 
     METRIC_TYPE = "uncovered_branches"
-    COBERTURA_JENKINS_PLUGIN_JSON = dict(
-        results=dict(elements=[dict(denominator=15, numerator=15, name="Conditionals")])
-    )
+    COBERTURA_JENKINS_PLUGIN_JSON = {
+        "results": {"elements": [{"denominator": 15, "numerator": 15, "name": "Conditionals"}]},
+    }
 
     async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the total number of branches are returned."""

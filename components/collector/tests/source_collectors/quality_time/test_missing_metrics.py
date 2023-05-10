@@ -19,39 +19,39 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("reports", ["r1", "r3"])
         self.expected_software_metrics = str(2 * len(self.data_model["subjects"]["software"]["metrics"]))
         self.reports["reports"].append(
-            dict(
-                title="R3",
-                report_uuid="r3",
-                subjects=dict(
-                    s2=dict(
-                        type="software",
-                        name="S2",
-                        metrics=dict(
-                            m21=dict(
-                                tags=["security"],
-                                scale="count",
-                                type="violations",
-                                target="1",
-                                sources=dict(s1=dict(type="sonarqube")),
-                            ),
-                            m22=dict(
-                                tags=["security"],
-                                scale="count",
-                                type="loc",
-                                target="1",
-                                sources=dict(s1=dict(type="sonarqube")),
-                            ),
-                            m23=dict(
-                                tags=["security"],
-                                scale="count",
-                                type="accessibility",
-                                target="1",
-                                sources=dict(s1=dict(type="sonarqube")),
-                            ),
-                        ),
-                    )
-                ),
-            ),
+            {
+                "title": "R3",
+                "report_uuid": "r3",
+                "subjects": {
+                    "s2": {
+                        "type": "software",
+                        "name": "S2",
+                        "metrics": {
+                            "m21": {
+                                "tags": ["security"],
+                                "scale": "count",
+                                "type": "violations",
+                                "target": "1",
+                                "sources": {"s1": {"type": "sonarqube"}},
+                            },
+                            "m22": {
+                                "tags": ["security"],
+                                "scale": "count",
+                                "type": "loc",
+                                "target": "1",
+                                "sources": {"s1": {"type": "sonarqube"}},
+                            },
+                            "m23": {
+                                "tags": ["security"],
+                                "scale": "count",
+                                "type": "accessibility",
+                                "target": "1",
+                                "sources": {"s1": {"type": "sonarqube"}},
+                            },
+                        },
+                    },
+                },
+            },
         )
         self.entities = []
         for report in self.reports["reports"]:
@@ -59,23 +59,26 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
                 for metric_type in self.data_model["subjects"]["software"]["metrics"]:
                     if metric_type not in ["violations", "accessibility", "loc"]:
                         self.entities.append(
-                            dict(
-                                key=f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
-                                report=report["title"],
-                                report_url=f"https://quality_time/{report['report_uuid']}",
-                                subject=subject["name"],
-                                subject_url=f"https://quality_time/{report['report_uuid']}#{subject_uuid}",
-                                subject_uuid=f"{subject_uuid}",
-                                subject_type=self.data_model["subjects"][subject["type"]]["name"],
-                                metric_type=self.data_model["metrics"][metric_type]["name"],
-                            )
+                            {
+                                "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
+                                "report": report["title"],
+                                "report_url": f"https://quality_time/{report['report_uuid']}",
+                                "subject": subject["name"],
+                                "subject_url": f"https://quality_time/{report['report_uuid']}#{subject_uuid}",
+                                "subject_uuid": f"{subject_uuid}",
+                                "subject_type": self.data_model["subjects"][subject["type"]]["name"],
+                                "metric_type": self.data_model["metrics"][metric_type]["name"],
+                            },
                         )
 
     async def test_nr_of_metrics(self):
         """Test that the number of missing metrics is returned."""
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         self.assert_measurement(
-            response, value=str(len(self.entities)), total=self.expected_software_metrics, entities=self.entities
+            response,
+            value=str(len(self.entities)),
+            total=self.expected_software_metrics,
+            entities=self.entities,
         )
 
     async def test_nr_of_missing_metrics_without_reports(self):
@@ -83,7 +86,10 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("reports", [])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         self.assert_measurement(
-            response, value=str(len(self.entities)), total=self.expected_software_metrics, entities=self.entities
+            response,
+            value=str(len(self.entities)),
+            total=self.expected_software_metrics,
+            entities=self.entities,
         )
 
     async def test_nr_of_missing_metrics_without_correct_report(self):

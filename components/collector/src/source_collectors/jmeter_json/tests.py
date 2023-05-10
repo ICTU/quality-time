@@ -13,7 +13,7 @@ class JMeterJSONTests(JSONFileSourceCollector):
         """Override to parse the transactions from the responses and return the transactions with the desired status."""
         transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
-        counts = dict(failed=0, success=0)
+        counts = {"failed": 0, "success": 0}
         for response in responses:
             json = await response.json(content_type=None)
             transactions = [transaction for key, transaction in json.items() if key != "Total"]

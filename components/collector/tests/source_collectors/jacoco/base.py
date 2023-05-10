@@ -1,6 +1,6 @@
 """Base classes for the JaCoCo coverage report collectors."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class JaCoCoTestCase(SourceCollectorTestCase):
@@ -9,14 +9,14 @@ class JaCoCoTestCase(SourceCollectorTestCase):
     SOURCE_TYPE = "jacoco"
 
 
-class JaCoCoCommonTestsMixin:  # pylint: disable=too-few-public-methods
+class JaCoCoCommonTestsMixin:
     """Tests common to all JaCoCo collectors."""
 
     async def test_zipped_report_without_xml(self):
         """Test that a zip file without xml files throws an exception."""
         self.set_source_parameter("url", "https://example.org/jacoco.zip")
         report = self.zipped_report(
-            ("jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>")
+            ("jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>"),
         )
         response = await self.collect(get_request_content=report)
         self.assert_measurement(response, connection_error="Zipfile contains no files with extension xml")

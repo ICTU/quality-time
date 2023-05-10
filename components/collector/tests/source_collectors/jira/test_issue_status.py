@@ -21,10 +21,10 @@ class JiraIssuesTest(JiraTestCase):
     def setUp(self):
         """Extend to add an issue tracker to the metric."""
         super().setUp()
-        self.metric["issue_tracker"] = dict(type="jira", parameters=dict(url="https://jira"))
+        self.metric["issue_tracker"] = {"type": "jira", "parameters": {"url": "https://jira"}}
         self.metric["issue_ids"] = ["FOO-42"]
 
-    def assert_issue_status(  # pylint: disable=too-many-arguments
+    def assert_issue_status(  # noqa: PLR0913
         self,
         response,
         summary: str = None,
@@ -78,65 +78,66 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_issue_status(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(
-            fields=dict(status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="new")), created=self.CREATED)
-        )
+        issue_status_json = {
+            "fields": {"status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "new"}}, "created": self.CREATED},
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response)
 
     async def test_issue_status_doing(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(
-            fields=dict(
-                status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="indeterminate")), created=self.CREATED
-            )
-        )
+        issue_status_json = {
+            "fields": {
+                "status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "indeterminate"}},
+                "created": self.CREATED,
+            },
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, status_category="doing")
 
     async def test_issue_status_done(self):
         """Test that the issue status is returned."""
-        issue_status_json = dict(
-            fields=dict(status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="done")), created=self.CREATED)
-        )
+        issue_status_json = {
+            "fields": {"status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "done"}}, "created": self.CREATED},
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, status_category="done")
 
     async def test_issue_summary(self):
         """Test that the issue summary is returned."""
-        issue_status_json = dict(
-            fields=dict(
-                status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="new")),
-                summary="Issue summary",
-                created=self.CREATED,
-            )
-        )
+        issue_status_json = {
+            "fields": {
+                "status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "new"}},
+                "summary": "Issue summary",
+                "created": self.CREATED,
+            },
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, summary="Issue summary")
 
     async def test_issue_release(self):
         """Test that the issue release is returned."""
-        issue_status_json = dict(
-            fields=dict(
-                created=self.CREATED,
-                status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="done")),
-                fixVersions=[
-                    dict(name=self.RELEASE_NAME, released=self.RELEASE_RELEASED, releaseDate=self.RELEASE_DATE)
+        issue_status_json = {
+            "fields": {
+                "created": self.CREATED,
+                "status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "done"}},
+                "fixVersions": [
+                    {"name": self.RELEASE_NAME, "released": self.RELEASE_RELEASED, "releaseDate": self.RELEASE_DATE},
                 ],
-            )
-        )
+            },
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, status_category="done", release=True)
 
     async def test_issue_sprint(self):
         """Test that the issue sprint is returned."""
-        issue_status_json = dict(
-            fields=dict(
-                created=self.CREATED,
-                status=dict(name=self.ISSUE_NAME, statusCategory=dict(key="done")),
-                sprint=dict(name=self.SPRINT_NAME, state=self.SPRINT_STATE, endDate=self.SPRINT_ENDDATE),
-            )
-        )
+        issue_status_json = {
+            "fields": {
+                "created": self.CREATED,
+                "status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "done"}},
+                "sprint": {"name": self.SPRINT_NAME, "state": self.SPRINT_STATE, "endDate": self.SPRINT_ENDDATE},
+            },
+        }
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, status_category="done", sprint=True)
 
@@ -147,6 +148,6 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_parse_error(self):
         """Test that the issue status is returned, even when there is a parse error."""
-        issue_status_json = dict(fields=dict(status=None))
+        issue_status_json = {"fields": {"status": None}}
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response, parse_error="TypeError")

@@ -6,7 +6,7 @@ import aiohttp
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -33,15 +33,15 @@ class CollectorTest(SourceCollectorTestCase):
     async def test_multiple_sources(self):
         """Test that the measurement for the source is returned."""
         junit_url2 = "https://junit2"
-        self.sources["junit2"] = dict(type="junit", parameters=dict(url=junit_url2))
+        self.sources["junit2"] = {"type": "junit", "parameters": {"url": junit_url2}}
         response = await self.collect(get_request_text=self.JUNIT_XML)
         self.assert_measurement(response, value="2", api_url=junit_url2, landing_url=junit_url2, source_index=1)
 
     async def test_multiple_source_types(self):
         """Test that the measurement for the source is returned."""
         sonarqube_url = "https://sonarqube"
-        self.sources["sonarqube"] = dict(type="sonarqube", parameters=dict(url=sonarqube_url, component="id"))
-        json = dict(component=dict(measures=[dict(metric="tests", value="88")]))
+        self.sources["sonarqube"] = {"type": "sonarqube", "parameters": {"url": sonarqube_url, "component": "id"}}
+        json = {"component": {"measures": [{"metric": "tests", "value": "88"}]}}
         response = await self.collect(get_request_json_return_value=json, get_request_text=self.JUNIT_XML)
         self.assert_measurement(response, value="2", url=self.JUNIT_XML, source_index=0)
         self.assert_measurement(response, value="88", url=sonarqube_url, source_index=1)
@@ -74,8 +74,8 @@ class CollectorTest(SourceCollectorTestCase):
 
     async def test_default_parameter_value_supersedes_empty_string(self):
         """Test that a parameter default value takes precedence over an empty string."""
-        sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
-        self.metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
+        sources = {"source_uuid": {"type": "calendar", "parameters": {"date": ""}}}
+        self.metric = {"type": "source_up_to_dateness", "addition": "max", "sources": sources}
         response = await self.collect()
         self.assert_measurement(response, value="0")
 
@@ -85,15 +85,15 @@ class CollectorTest(SourceCollectorTestCase):
         class ThreeParsedEntities(SourceCollector):
             """Fake collector returning parsed entities."""
 
-            async def _parse_entities(self, responses):
+            async def _parse_entities(self, responses: SourceResponses) -> Entities:
                 """Return three parsed entities."""
-                return [dict(key=x) for x in range(3)]
+                return [{"key": x} for x in range(3)]
 
         with patch("base_collectors.SourceCollector._include_entity", side_effect=[True, False, True]):
             async with aiohttp.ClientSession() as session:
                 collector = ThreeParsedEntities(session, {})
-                res = await collector._parse_source_responses(SourceResponses())  # pylint: disable=protected-access
+                res = await collector._parse_source_responses(SourceResponses())  # noqa: SLF001
 
         self.assertEqual(len(res.entities), 2)
-        self.assertNotIn(dict(key=1), res.entities)
-        self.assertIn(dict(key=2), res.entities)
+        self.assertNotIn({"key": 1}, res.entities)
+        self.assertIn({"key": 2}, res.entities)

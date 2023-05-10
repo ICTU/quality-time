@@ -24,7 +24,7 @@ class SonarQubeViolations(SonarQubeCollector):
             landing_url
             + self._query_parameter("severities")
             + self._query_parameter(self.types_parameter)
-            + self.__rules_url_parameter()
+            + self.__rules_url_parameter(),
         )
 
     async def _api_url(self) -> URL:
@@ -39,12 +39,12 @@ class SonarQubeViolations(SonarQubeCollector):
             api
             + self._query_parameter("severities")
             + self._query_parameter(self.types_parameter)
-            + self.__rules_url_parameter()
+            + self.__rules_url_parameter(),
         )
 
     def _query_parameter(self, parameter_key: str) -> str:
         """Return the multiple choice parameter as query parameter that can be passed to SonarQube."""
-        values = ",".join(value.upper() for value in sorted(list(self._parameter(parameter_key))))
+        values = ",".join(value.upper() for value in sorted(self._parameter(parameter_key)))
         return "" if values == self.__default_value(parameter_key) else f"&{parameter_key}={values}"
 
     def __rules_url_parameter(self) -> str:
@@ -101,12 +101,12 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         """Extend to, next to the violations, get the total number of violations as basis for the percentage scale."""
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
+        base_api_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&branch={branch}"
-            f"&metricKeys={self.total_metric}"
+            f"&metricKeys={self.total_metric}",
         )
-        return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
+        return await super()._get_source_responses(*([*urls, total_metric_api_url]))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Extend to parse the total number of violations."""

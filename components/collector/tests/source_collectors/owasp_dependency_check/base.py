@@ -1,6 +1,6 @@
 """Base classes for OWASP dependency check collector unit tests."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class OWASPDependencyCheckTestCase(SourceCollectorTestCase):

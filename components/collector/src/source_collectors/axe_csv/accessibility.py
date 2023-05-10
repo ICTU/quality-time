@@ -5,7 +5,7 @@ import re
 from io import StringIO
 
 from base_collectors import CSVFileSourceCollector
-from collector_utilities.functions import md5_hash, match_string_or_regular_expression
+from collector_utilities.functions import match_string_or_regular_expression, md5_hash
 from model import Entities, Entity, SourceResponses
 
 
@@ -17,26 +17,26 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
         impact = entity["impact"]
         if impact and impact not in self._parameter("impact"):
             return False
-        if element_include_filter := self._parameter("element_include_filter"):
-            if not match_string_or_regular_expression(entity["element"], element_include_filter):
-                return False
-        if element_exclude_filter := self._parameter("element_exclude_filter"):
-            if match_string_or_regular_expression(entity["element"], element_exclude_filter):
-                return False
+        element_include_filter = self._parameter("element_include_filter")
+        if element_include_filter and not match_string_or_regular_expression(entity["element"], element_include_filter):
+            return False
+        element_exclude_filter = self._parameter("element_exclude_filter")
+        if element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter):
+            return False
         return True
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the CSV and create the entities."""
         entity_attributes = [
-            dict(
-                url=str(row["URL"]),
-                violation_type=row["Violation Type"],
-                impact=row["Impact"],
-                element=row["DOM Element"],
-                page=re.sub(r"https?://[^/]+", "", row["URL"]),
-                description=row["Messages"],
-                help=row["Help"],
-            )
+            {
+                "url": str(row["URL"]),
+                "violation_type": row["Violation Type"],
+                "impact": row["Impact"],
+                "element": row["DOM Element"],
+                "page": re.sub(r"https?://[^/]+", "", row["URL"]),
+                "description": row["Messages"],
+                "help": row["Help"],
+            }
             for row in await self.__parse_csv(responses)
         ]
         return Entities(

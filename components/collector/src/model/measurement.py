@@ -1,14 +1,14 @@
 """Measurement model classes."""
 
-from typing import Sequence
+from collections.abc import Sequence
 
-from collector_utilities.type import ErrorMessage, Value, URL
+from collector_utilities.type import URL, ErrorMessage, Value
 
 from .entity import Entities
 from .issue_status import IssueStatus
 
 
-class SourceMeasurement:  # pylint: disable=too-many-instance-attributes
+class SourceMeasurement:
     """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
 
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
@@ -35,21 +35,21 @@ class SourceMeasurement:  # pylint: disable=too-many-instance-attributes
         """Return whether the measurement had a connection or parse error."""
         return bool(self.connection_error or self.parse_error)
 
-    def as_dict(self):
+    def as_dict(self) -> dict[str, Value | Entities | ErrorMessage | URL | None]:
         """Return the source measurement as dict."""
-        return dict(
-            value=self.value,
-            total=self.total,
-            entities=self.entities[: self.MAX_ENTITIES],
-            connection_error=self.connection_error,
-            parse_error=self.parse_error,
-            api_url=self.api_url,
-            landing_url=self.landing_url,
-            source_uuid=self.source_uuid,
-        )
+        return {
+            "value": self.value,
+            "total": self.total,
+            "entities": self.entities[: self.MAX_ENTITIES],
+            "connection_error": self.connection_error,
+            "parse_error": self.parse_error,
+            "api_url": self.api_url,
+            "landing_url": self.landing_url,
+            "source_uuid": self.source_uuid,
+        }
 
 
-class MetricMeasurement:  # pylint: disable=too-few-public-methods
+class MetricMeasurement:
     """Class to hold measurements from one or more sources for one metric."""
 
     def __init__(self, sources: Sequence[SourceMeasurement], issue_statuses: Sequence[IssueStatus]) -> None:
@@ -61,12 +61,12 @@ class MetricMeasurement:  # pylint: disable=too-few-public-methods
 
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""
-        measurement = dict(
-            sources=[source.as_dict() for source in self.sources],
-            has_error=self.has_error,
-            metric_uuid=self.metric_uuid,
-            report_uuid=self.report_uuid,
-        )
+        measurement = {
+            "sources": [source.as_dict() for source in self.sources],
+            "has_error": self.has_error,
+            "metric_uuid": self.metric_uuid,
+            "report_uuid": self.report_uuid,
+        }
         if self.issue_statuses:
             measurement["issue_status"] = [issue_status.as_dict() for issue_status in self.issue_statuses]
         return measurement

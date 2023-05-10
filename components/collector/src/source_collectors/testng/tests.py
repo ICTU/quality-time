@@ -11,7 +11,7 @@ from model import Entities, Entity, SourceMeasurement, SourceResponses
 class TestNGTests(XMLFileSourceCollector):
     """Collector for TestNG tests."""
 
-    TEST_RESULT = dict(FAIL="failed", PASS="passed", SKIP="skipped")  # nosec # Test status to test result mapping
+    TEST_RESULT = {"FAIL": "failed", "PASS": "passed", "SKIP": "skipped"}  # nosec # Test status to test result mapping
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the tests for the TestNG XML."""
@@ -46,6 +46,6 @@ class TestNGTests(XMLFileSourceCollector):
                 description = test_method.get("description", "")  # Description is optional
                 key = f"{class_name}_{name}"
                 entities.append(
-                    Entity(key=key, name=name, description=description, class_name=class_name, test_result=test_result)
+                    Entity(key=key, name=name, description=description, class_name=class_name, test_result=test_result),
                 )
         return entities

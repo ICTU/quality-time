@@ -16,7 +16,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to return the correct landing url depending on the selected security types."""
         security_types = self._parameter(self.types_parameter)
-        base_landing_url = await SourceCollector._landing_url(self, responses)  # pylint: disable=protected-access
+        base_landing_url = await SourceCollector._landing_url(self, responses)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
         common_url_parameters, extra_url_parameters = f"?id={component}&branch={branch}", ""
@@ -36,13 +36,13 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         security_types = self._parameter(self.types_parameter)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
+        base_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
         if "vulnerability" in security_types:
             api_urls.append(
                 URL(
                     f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
-                    f"{self._query_parameter('severities')}&branch={branch}&types=VULNERABILITY"
-                )
+                    f"{self._query_parameter('severities')}&branch={branch}&types=VULNERABILITY",
+                ),
             )
         if "security_hotspot" in security_types:
             api_urls.append(URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps=500"))
@@ -70,7 +70,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             entities=vulnerabilities.entities + hotspots,
         )
 
-    def __include_hotspot(self, hotspot) -> bool:
+    def __include_hotspot(self, hotspot: dict[str, str]) -> bool:
         """Return whether to include the hotspot."""
         review_priorities = self._parameter("review_priorities")
         review_priority = hotspot["vulnerabilityProbability"].lower()
@@ -78,7 +78,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         status = self.__hotspot_status(hotspot)
         return review_priority in review_priorities and status in statuses
 
-    async def __hotspot_entity(self, hotspot) -> Entity:
+    async def __hotspot_entity(self, hotspot: dict[str, str]) -> Entity:
         """Create the security warning entity for the hotspot."""
         return Entity(
             key=hotspot["key"],
@@ -104,7 +104,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""
-        url = await SonarQubeCollector._landing_url(self, SourceResponses())  # pylint: disable=protected-access
+        url = await SonarQubeCollector._landing_url(self, SourceResponses())  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/security_hotspots?id={component}&branch={branch}&hotspots={hotspot_key}")

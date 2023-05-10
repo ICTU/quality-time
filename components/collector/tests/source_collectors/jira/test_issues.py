@@ -12,7 +12,7 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_issues(self):
         """Test that the issues are returned."""
-        issues_json = dict(total=1, issues=[self.issue()])
+        issues_json = {"total": 1, "issues": [self.issue()]}
         response = await self.get_response(issues_json)
         self.assert_measurement(response, value="1", entities=[self.entity()])
 
@@ -20,11 +20,11 @@ class JiraIssuesTest(JiraTestCase):
         """Test that multiple pages of issues are returned."""
         previous_max_results = JiraIssues.max_results
         JiraIssues.max_results = 1
-        issues_json1 = dict(total=2, issues=[self.issue()])
-        issues_json2 = dict(total=2, issues=[self.issue(key="2")])
-        issues_json3 = dict(total=2, issues=[])
+        issues_json1 = {"total": 2, "issues": [self.issue()]}
+        issues_json2 = {"total": 2, "issues": [self.issue(key="2")]}
+        issues_json3 = {"total": 2, "issues": []}
         response = await self.collect(
-            get_request_json_side_effect=[[], issues_json1, issues_json2, issues_json3, issues_json1, issues_json2]
+            get_request_json_side_effect=[[], issues_json1, issues_json2, issues_json3, issues_json1, issues_json2],
         )
         JiraIssues.max_results = previous_max_results
         self.assert_measurement(response, value="2", entities=[self.entity(), self.entity(key="2")])
@@ -32,15 +32,15 @@ class JiraIssuesTest(JiraTestCase):
     async def test_token_header(self):
         """Test that the private token is added to the headers."""
         self.set_source_parameter("private_token", "xxx")
-        issues_json = dict(total=1, issues=[self.issue()])
+        issues_json = {"total": 1, "issues": [self.issue()]}
         response = await self.get_response(issues_json)
         self.assert_measurement(response, value="1", entities=[self.entity()])
 
     async def test_determine_max_results_from_api(self):
         """Test that the maxResults param is determined via API call value."""
-        issues_json = dict(total=1, issues=[self.issue()])
+        issues_json = {"total": 1, "issues": [self.issue()]}
         response, get_mock, _ = await self.collect(
-            get_request_json_side_effect=[[dict(id="field", name="Field")], 50, issues_json, issues_json],
+            get_request_json_side_effect=[[{"id": "field", "name": "Field"}], 50, issues_json, issues_json],
             return_mocks=True,
         )
         self.assert_measurement(response, value="1", entities=[self.entity()])
@@ -48,9 +48,9 @@ class JiraIssuesTest(JiraTestCase):
 
     async def test_determine_max_results_from_default(self):
         """Test that the maxResults param is determined through fallback."""
-        issues_json = dict(total=1, issues=[self.issue()])
+        issues_json = {"total": 1, "issues": [self.issue()]}
         result, get_mock, _ = await self.collect(
-            get_request_json_side_effect=[[dict(id="field", name="Field")], "error", issues_json, issues_json],
+            get_request_json_side_effect=[[{"id": "field", "name": "Field"}], "error", issues_json, issues_json],
             return_mocks=True,
         )
         self.assert_measurement(result, value="1", entities=[self.entity()])

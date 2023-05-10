@@ -1,11 +1,8 @@
 """Trello issues collector."""
 
-from datetime import datetime
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, now, parse_datetime, MAX_DATETIME
 from model import Entities, Entity, SourceResponses
 
 from .base import TrelloBase
@@ -26,13 +23,13 @@ class TrelloIssues(TrelloBase):
 
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""
-            date_last_activity = parse(entity["date_last_activity"])
+            date_last_activity = parse_datetime(entity["date_last_activity"])
             return days_ago(date_last_activity) > int(cast(int, self._parameter("inactive_days")))
 
         def card_is_overdue() -> bool:
             """Return whether the card is overdue."""
-            due_date = parse(entity["due_date"]) if entity["due_date"] else datetime.max
-            return due_date < datetime.now(tz=due_date.tzinfo)
+            due_date = parse_datetime(entity["due_date"]) if entity["due_date"] else MAX_DATETIME
+            return due_date < now()
 
         lists_to_ignore = self._parameter("lists_to_ignore")
         if entity["id_list"] in lists_to_ignore or entity["list"] in lists_to_ignore:

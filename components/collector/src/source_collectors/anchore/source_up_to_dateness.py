@@ -1,11 +1,10 @@
 """Anchore source up-to-dateness collector."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import cast
 
-from dateutil.parser import parse
-
 from base_collectors import JSONFileSourceCollector, TimePassedCollector
+from collector_utilities.date_time import now, parse_datetime
 from collector_utilities.type import Response, URL
 
 
@@ -20,7 +19,7 @@ class AnchoreSourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):
         """Override to parse the analysis date and time from the report."""
         details = await response.json(content_type=None)
         return (
-            parse(details[0]["analyzed_at"])
+            parse_datetime(details[0]["analyzed_at"])
             if isinstance(details, list) and details and "analyzed_at" in details[0]
-            else datetime.now(timezone.utc)
+            else now()
         )

@@ -4,13 +4,20 @@ from typing import cast
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
 ModelFilePaths = dict[str, str]  # Model id to model file path mapping
+
+
+class OJAuditViolationLocationError(CollectorError):
+    """Violation with location error."""
+
+    def __init__(self, violation: Element) -> None:
+        super().__init__(f"OJAudit violation {violation} has no location element")
 
 
 class OJAuditViolations(XMLFileSourceCollector):
@@ -47,12 +54,16 @@ class OJAuditViolations(XMLFileSourceCollector):
         return violations
 
     def __violation(
-        self, violation: Element, namespaces: Namespaces, models: ModelFilePaths, severities: list[str]
+        self,
+        violation: Element,
+        namespaces: Namespaces,
+        models: ModelFilePaths,
+        severities: list[str],
     ) -> Entity | None:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
         if not location:
-            raise CollectorException(f"OJAudit violation {violation} has no location element")
+            raise OJAuditViolationLocationError(violation)
         severity = violation.findtext("./ns:values/ns:value", default="", namespaces=namespaces)
         if severities and severity not in severities:
             return None

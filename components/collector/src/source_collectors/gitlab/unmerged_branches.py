@@ -3,10 +3,9 @@
 from datetime import datetime
 from typing import Any, cast
 
-from dateutil.parser import parse
-
 from base_collectors import UnmergedBranchesSourceCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.date_time import days_ago, parse_datetime
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceResponses
 
@@ -40,7 +39,7 @@ class GitLabUnmergedBranches(GitLabProjectBase, UnmergedBranchesSourceCollector)
 
     def _commit_datetime(self, branch) -> datetime:
         """Override to parse the commit date from the branch."""
-        return parse(branch["commit"]["committed_date"])
+        return parse_datetime(branch["commit"]["committed_date"])
 
     def _branch_landing_url(self, branch) -> URL:
         """Override to get the landing URL from the branch."""

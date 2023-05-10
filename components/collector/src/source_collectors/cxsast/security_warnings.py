@@ -14,7 +14,7 @@ class CxSASTSecurityWarnings(CxSASTScanBase):
         """Extend to get the scan results."""
         await super()._get_source_responses(*urls)  # Get scan id
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
-        return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
+        return await SourceCollector._get_source_responses(self, stats_api)  # noqa: SLF001
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the number of security warnings from the scan results."""

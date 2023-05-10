@@ -1,8 +1,7 @@
 """Measurement entity model class."""
 
-from collections.abc import Iterable
 import re
-
+from collections.abc import Iterable
 
 QUOTED_SLASH = re.compile("%2f", re.IGNORECASE)
 
@@ -11,7 +10,7 @@ class Entity(dict):
     """Class to hold information about an individual measurement entity, e.g. one violation, or one security warning."""
 
     def __init__(self, key: str, **attributes) -> None:
-        kwargs = dict(key=self.safe_entity_key(key))
+        kwargs = {"key": self.safe_entity_key(key)}
         kwargs.update(**attributes)
         super().__init__(**kwargs)
 
@@ -24,7 +23,7 @@ class Entity(dict):
 class Entities(list[Entity]):
     """Class to hold a list of unique entities."""
 
-    def __init__(self, entities: Iterable[Entity] = ()):
+    def __init__(self, entities: Iterable[Entity] = ()) -> None:
         """Extend to filter duplicate entities."""
         super().__init__()
         self.__keys: set[str] = set()  # Keep track of the keys in a set to make adding entities faster

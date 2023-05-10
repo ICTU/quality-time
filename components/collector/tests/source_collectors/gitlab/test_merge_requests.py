@@ -1,6 +1,6 @@
 """Unit tests for the GitLab merge requests collector."""
 
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock, patch
 
 from base_collectors import MetricCollector
 
@@ -15,62 +15,77 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     @staticmethod
     def merge_request_json(
-        number: int, branch: str = "default", state: str = "merged", upvotes: int = 1, approved: bool = None
-    ):
+        number: int,
+        branch: str = "default",
+        state: str = "merged",
+        upvotes: int = 1,
+        approved: bool = None,
+    ) -> dict[str, int | str | bool | None]:
         """Create a merge request."""
-        return dict(
-            id=number,
-            title=f"Merge request {number}",
-            targetBranch=branch,
-            state=state,
-            webUrl=f"https://gitlab/mr{number}",
-            createdAt="2017-04-29T08:46:00Z",
-            updatedAt="2017-04-29T09:40:00Z",
-            mergedAt=None,
-            upvotes=upvotes,
-            downvotes=0,
-            approved=approved,
-        )
+        return {
+            "id": number,
+            "title": f"Merge request {number}",
+            "targetBranch": branch,
+            "state": state,
+            "webUrl": f"https://gitlab/mr{number}",
+            "createdAt": "2017-04-29T08:46:00Z",
+            "updatedAt": "2017-04-29T09:40:00Z",
+            "mergedAt": None,
+            "upvotes": upvotes,
+            "downvotes": 0,
+            "approved": approved,
+        }
 
     @staticmethod
-    def merge_requests_json(nodes, count: int = None, has_next_page: bool = False):
+    def merge_requests_json(
+        nodes,
+        count: int = None,
+        has_next_page: bool = False,
+    ) -> dict[str, dict[str, dict[str, dict[str, dict[str, str] | int]]]]:
         """Create the GraphQL merge request response JSON."""
-        return dict(
-            data=dict(
-                project=dict(
-                    mergeRequests=dict(
-                        pageInfo=dict(hasNextPage=has_next_page, endCursor="xxx"),
-                        count=len(nodes) if count is None else count,
-                        nodes=nodes,
-                    )
-                )
-            )
-        )
+        return {
+            "data": {
+                "project": {
+                    "mergeRequests": {
+                        "pageInfo": {"hasNextPage": has_next_page, "endCursor": "xxx"},
+                        "count": len(nodes) if count is None else count,
+                        "nodes": nodes,
+                    },
+                },
+            },
+        }
 
     @staticmethod
-    def merge_request_fields_json(has_approved_field: bool = False):
+    def merge_request_fields_json(
+        has_approved_field: bool = False,
+    ) -> dict[str, dict[str, dict[str, list[dict[str, str]]]]]:
         """Return the GraphQL merge request fields response JSON."""
-        fields = [dict(name="approved")] if has_approved_field else []
-        return dict(data=dict(__type=dict(fields=fields)))
+        fields = [{"name": "approved"}] if has_approved_field else []
+        return {"data": {"__type": {"fields": fields}}}
 
     @staticmethod
-    def create_entity(number: int, state: str = "merged", upvotes: int = 1, approved: str = "?"):
+    def create_entity(
+        number: int,
+        state: str = "merged",
+        upvotes: int = 1,
+        approved: str = "?",
+    ) -> dict[str, str | None]:
         """Create an entity."""
-        return dict(
-            key=str(number),
-            title=f"Merge request {number}",
-            target_branch="default",
-            state=state,
-            approved=approved,
-            url=f"https://gitlab/mr{number}",
-            created="2017-04-29T08:46:00Z",
-            updated="2017-04-29T09:40:00Z",
-            merged=None,
-            upvotes=str(upvotes),
-            downvotes="0",
-        )
+        return {
+            "key": str(number),
+            "title": f"Merge request {number}",
+            "target_branch": "default",
+            "state": state,
+            "approved": approved,
+            "url": f"https://gitlab/mr{number}",
+            "created": "2017-04-29T08:46:00Z",
+            "updated": "2017-04-29T09:40:00Z",
+            "merged": None,
+            "upvotes": str(upvotes),
+            "downvotes": "0",
+        }
 
-    async def collect_merge_requests(self, execute_mock):
+    async def collect_merge_requests(self, execute_mock: AsyncMock):
         """Return the source responses."""
         with patch("aiogqlc.GraphQLClient.execute", execute_mock):
             collector = MetricCollector(None, self.metric)
@@ -87,7 +102,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
                 self.merge_request_json(2, state="locked", upvotes=2),  # Excluded because of state
                 self.merge_request_json(3, upvotes=2),  # Excluded because of upvotes
                 self.merge_request_json(4, branch="dev"),  # Excluded because of target branch
-            ]
+            ],
         )
         merge_request_fields_response = AsyncMock()
         merge_requests_response = AsyncMock()
@@ -117,7 +132,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         """Test that merge requests can be filtered by approval state."""
         self.set_source_parameter("approval_state", ["approved"])
         merge_requests_json = self.merge_requests_json(
-            [self.merge_request_json(1, approved=True), self.merge_request_json(2)]
+            [self.merge_request_json(1, approved=True), self.merge_request_json(2)],
         )
         merge_request_fields_response = AsyncMock()
         merge_requests_response = AsyncMock()
@@ -130,7 +145,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     async def test_insufficient_permissions(self):
         """Test that the collector returns a helpful error message if no merge request info is returned."""
-        merge_requests_json = dict(data=dict(project=None))
+        merge_requests_json = {"data": {"project": None}}
         merge_request_fields_response = AsyncMock()
         merge_requests_response = AsyncMock()
         execute = AsyncMock(side_effect=[merge_request_fields_response, merge_requests_response])
@@ -138,5 +153,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
         response = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response, landing_url=self.LANDING_URL, connection_error="Could not retrieve merge request info"
+            response,
+            landing_url=self.LANDING_URL,
+            connection_error="Merge request info for project",
         )

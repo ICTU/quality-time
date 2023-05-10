@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from base_collectors import TimePassedCollector, XMLFileSourceCollector
+from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 
@@ -15,4 +16,4 @@ class JacocoSourceUpToDateness(XMLFileSourceCollector, TimePassedCollector):
         tree = await parse_source_response_xml(response)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump", 0) if session_info is not None else 0
-        return datetime.utcfromtimestamp(int(timestamp) / 1000.0)
+        return datetime_fromtimestamp(int(timestamp) / 1000.0)
