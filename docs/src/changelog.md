@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
 
+### Fixed
+
+- Remove useless popup that appears when hovering tags in the dashboard. Fixes [#5525](https://github.com/ICTU/quality-time/issues/5525).
+
 ### Added
 
 - When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
