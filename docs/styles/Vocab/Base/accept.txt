@@ -34,7 +34,7 @@ donut
 errored
 favicon
 hostnames?
-hotspots
+hotspots?
 misconfigured
 mypy
 namespace
