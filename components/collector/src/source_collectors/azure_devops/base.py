@@ -1,13 +1,12 @@
 """Azure DevOps Server base classes for collectors."""
 
 import urllib.parse
-from datetime import datetime
 from abc import ABC
-
-from dateutil.parser import parse
+from datetime import datetime
 
 from base_collectors import SourceCollector
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.date_time import parse_datetime
+from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
@@ -35,7 +34,7 @@ class AzureDevopsRepositoryBase(SourceCollector, ABC):
         repositories = (await (await super()._get_source_responses(repositories_url))[0].json())["value"]
         matching_repositories = [r for r in repositories if repository in (r["name"], r["id"])]
         if not matching_repositories:
-            raise CollectorException(f"Repository '{repository}' not found")
+            raise NotFoundError(type_of_thing="Repository", name_of_thing=str(repository))
         return str(matching_repositories[0]["id"])
 
 
@@ -69,7 +68,7 @@ class AzureDevopsJobs(SourceCollector):
                     url=url,
                     build_date=build_dt_str,
                     build_status=build_status,
-                )
+                ),
             )
         return entities
 
@@ -88,12 +87,16 @@ class AzureDevopsJobs(SourceCollector):
     @staticmethod
     def _latest_build_date_time(job: Job) -> datetime | None:
         """Return the finish time of the latest build of the job."""
-        return parse(job["latestCompletedBuild"]["finishTime"]) if "finishTime" in job["latestCompletedBuild"] else None
+        return (
+            parse_datetime(job["latestCompletedBuild"]["finishTime"])
+            if "finishTime" in job["latestCompletedBuild"]
+            else None
+        )
 
     @staticmethod
     def __job_name(job: Job) -> str:
         """Return the job name."""
-        return "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
+        return "/".join([*job["path"].strip("\\").split("\\"), job["name"]]).strip("/")
 
 
 class AzureDevopsPipelines(SourceCollector):
@@ -128,9 +131,9 @@ class AzureDevopsPipelines(SourceCollector):
                         name=pipeline_run["name"],
                         pipeline=pipeline_name,
                         url=pipeline_run["_links"]["web"]["href"],
-                        build_date=str(parse(pipeline_run["finishedDate"]).date()),
+                        build_date=str(parse_datetime(pipeline_run["finishedDate"]).date()),
                         build_status=pipeline_run["state"],
-                    )
+                    ),
                 )
         return entities
 

@@ -2,9 +2,8 @@
 
 from datetime import datetime
 
-from dateutil.parser import parse
-
 from base_collectors import TimePassedCollector, XMLFileSourceCollector
+from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 
@@ -16,4 +15,4 @@ class TestNGSourceUpToDateness(XMLFileSourceCollector, TimePassedCollector):
         """Override to parse the date and time from the TesTNG XML."""
         tree = await parse_source_response_xml(response)
         test_suite = tree.findall("suite")[0]
-        return parse(test_suite.get("finished-at") or "")
+        return parse_datetime(test_suite.get("finished-at") or "")

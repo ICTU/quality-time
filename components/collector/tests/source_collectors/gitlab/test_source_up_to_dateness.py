@@ -1,7 +1,11 @@
 """Unit tests for the GitLab source up-to-dateness collector."""
 
-from datetime import datetime, timezone
-from unittest.mock import AsyncMock, Mock, patch
+from __future__ import annotations
+
+from datetime import datetime, UTC
+from unittest.mock import AsyncMock, Mock, patch, _patch
+
+from collector_utilities.date_time import days_ago, parse_datetime
 
 from .base import GitLabTestCase
 
@@ -15,11 +19,11 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.commit_json = dict(committed_date="2019-01-01T09:06:12+00:00")
-        self.expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
+        self.commit_json = {"committed_date": "2019-01-01T09:06:12+00:00"}
+        self.expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=UTC))
 
     @staticmethod
-    def patched_client_session_head():
+    def patched_client_session_head() -> _patch[AsyncMock]:
         """Return a patched version of the client session head method."""
         head_response = Mock(headers={"X-Gitlab-Last-Commit-Id": "commit-sha"})
         return patch("aiohttp.ClientSession.head", AsyncMock(side_effect=[head_response, head_response]))
@@ -28,10 +32,12 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         """Test that the age of a file in a repo can be measured."""
         with self.patched_client_session_head():
             response = await self.collect(
-                get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")]
+                get_request_json_side_effect=[[], self.commit_json, {"web_url": "https://gitlab.com/project"}],
             )
         self.assert_measurement(
-            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file"
+            response,
+            value=str(self.expected_age),
+            landing_url="https://gitlab.com/project/blob/branch/file",
         )
 
     async def test_source_up_to_dateness_folder(self):
@@ -39,31 +45,32 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         with self.patched_client_session_head():
             response = await self.collect(
                 get_request_json_side_effect=[
-                    [dict(type="blob", path="file.txt"), dict(type="tree", path="folder")],
-                    [dict(type="blob", path="file.txt")],
+                    [{"type": "blob", "path": "file.txt"}, {"type": "tree", "path": "folder"}],
+                    [{"type": "blob", "path": "file.txt"}],
                     self.commit_json,
                     self.commit_json,
-                    dict(web_url="https://gitlab.com/project"),
-                ]
+                    {"web_url": "https://gitlab.com/project"},
+                ],
             )
         self.assert_measurement(
-            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file"
+            response,
+            value=str(self.expected_age),
+            landing_url="https://gitlab.com/project/blob/branch/file",
         )
 
     async def test_source_up_to_dateness_pipeline(self):
         """Test that the age of a pipeline can be measured."""
         self.set_source_parameter("file_path", "")
         pipeline_json = [
-            dict(
-                updated_at="2020-11-24T10:00:00Z",
-                ref="branch",
-                status="success",
-                source="push",
-                web_url="https://gitlab/project/-/pipelines/1",
-            )
+            {
+                "updated_at": "2020-11-24T10:00:00Z",
+                "ref": "branch",
+                "status": "success",
+                "source": "push",
+                "web_url": "https://gitlab/project/-/pipelines/1",
+            },
         ]
-        build_date = datetime.fromisoformat(pipeline_json[0]["updated_at"].strip("Z"))
-        expected_age = (datetime.utcnow() - build_date).days
+        expected_age = days_ago(parse_datetime(pipeline_json[0]["updated_at"]))
         with self.patched_client_session_head():
             response = await self.collect(get_request_json_return_value=pipeline_json)
         self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")

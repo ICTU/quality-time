@@ -16,46 +16,46 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         """Extend to set up test data."""
         super().setUp()
         self.tested_url = "https://tested_url"
-        self.json = dict(
-            url=self.tested_url,
-            violations=[
-                dict(
-                    id="aria-input-field-name",
-                    description="description1",
-                    helpUrl="https://help1",
-                    tags=["cat.color", "wcag2aa", "wcag143"],
-                    nodes=[dict(impact="serious", html="html1")],
-                ),
-                dict(
-                    id="aria-hidden-focus",
-                    description="description2",
-                    helpUrl="https://help2",
-                    nodes=[dict(impact="moderate", html="html2")],
-                ),
+        self.json = {
+            "url": self.tested_url,
+            "violations": [
+                {
+                    "id": "aria-input-field-name",
+                    "description": "description1",
+                    "helpUrl": "https://help1",
+                    "tags": ["cat.color", "wcag2aa", "wcag143"],
+                    "nodes": [{"impact": "serious", "html": "html1"}],
+                },
+                {
+                    "id": "aria-hidden-focus",
+                    "description": "description2",
+                    "helpUrl": "https://help2",
+                    "nodes": [{"impact": "moderate", "html": "html2"}],
+                },
             ],
-            passes=[
-                dict(
-                    id="aria-hidden-body",
-                    impact=None,
-                    tags=["cat.aria", "wcag2a", "wcag412"],
-                    description="Ensures aria-hidden='true' is not present on the document body.",
-                    help="aria-hidden='true' must not be present on the document body",
-                    helpUrl="https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
-                    nodes=[dict(impact=None, html="<body>")],
-                ),
+            "passes": [
+                {
+                    "id": "aria-hidden-body",
+                    "impact": None,
+                    "tags": ["cat.aria", "wcag2a", "wcag412"],
+                    "description": "Ensures aria-hidden='true' is not present on the document body.",
+                    "help": "aria-hidden='true' must not be present on the document body",
+                    "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
+                    "nodes": [{"impact": None, "html": "<body>"}],
+                },
             ],
-            inapplicable=[
-                dict(
-                    id="aria-allowed-attr",
-                    impact=None,
-                    tags=["cat.aria", "wcag2a", "wcag412"],
-                    description="Ensures ARIA attributes are allowed for an element's role",
-                    help="Elements must only use allowed ARIA attributes",
-                    helpUrl="https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
-                    nodes=[],
-                ),
+            "inapplicable": [
+                {
+                    "id": "aria-allowed-attr",
+                    "impact": None,
+                    "tags": ["cat.aria", "wcag2a", "wcag412"],
+                    "description": "Ensures ARIA attributes are allowed for an element's role",
+                    "help": "Elements must only use allowed ARIA attributes",
+                    "helpUrl": "https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
+                    "nodes": [],
+                },
             ],
-        )
+        }
         self.expected_entities = [
             {
                 "description": "description1",
@@ -164,17 +164,17 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         """Test that other result types besides violations can be counted as well."""
         self.set_source_parameter("result_types", ["violations", "passes"])
         self.expected_entities.append(
-            dict(
-                description="Ensures aria-hidden='true' is not present on the document body.",
-                element="<body>",
-                help="https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
-                impact=None,
-                page=self.tested_url,
-                url=self.tested_url,
-                result_type="passes",
-                tags="cat.aria, wcag2a, wcag412",
-                violation_type="aria-hidden-body",
-            )
+            {
+                "description": "Ensures aria-hidden='true' is not present on the document body.",
+                "element": "<body>",
+                "help": "https://dequeuniversity.com/rules/axe/4.1/aria-hidden-body?application=axeAPI",
+                "impact": None,
+                "page": self.tested_url,
+                "url": self.tested_url,
+                "result_type": "passes",
+                "tags": "cat.aria, wcag2a, wcag412",
+                "violation_type": "aria-hidden-body",
+            },
         )
         self.set_expected_entity_keys()
         response = await self.collect(get_request_json_return_value=self.json)
@@ -184,17 +184,17 @@ class AxeCoreAccessibilityTest(AxeCoreTestCase):
         """Test that result types without nodes can be counted as well."""
         self.set_source_parameter("result_types", ["violations", "inapplicable"])
         self.expected_entities.append(
-            dict(
-                description="Ensures ARIA attributes are allowed for an element's role",
-                element=None,
-                help="https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
-                impact=None,
-                page=self.tested_url,
-                url=self.tested_url,
-                result_type="inapplicable",
-                tags="cat.aria, wcag2a, wcag412",
-                violation_type="aria-allowed-attr",
-            )
+            {
+                "description": "Ensures ARIA attributes are allowed for an element's role",
+                "element": None,
+                "help": "https://dequeuniversity.com/rules/axe/4.1/aria-allowed-attr?application=axeAPI",
+                "impact": None,
+                "page": self.tested_url,
+                "url": self.tested_url,
+                "result_type": "inapplicable",
+                "tags": "cat.aria, wcag2a, wcag412",
+                "violation_type": "aria-allowed-attr",
+            },
         )
         self.set_expected_entity_keys()
         response = await self.collect(get_request_json_return_value=self.json)

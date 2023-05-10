@@ -1,9 +1,9 @@
 """Jenkins metric collector base classes."""
 
 from collections.abc import Iterator
-from datetime import datetime
 
 from base_collectors import SourceCollector
+from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
 from model import Entities, Entity, SourceResponses
@@ -27,12 +27,10 @@ class JenkinsJobs(SourceCollector):
                     name=job["name"],
                     url=job["url"],
                     build_status=self._build_status(job),
-                    build_date=str(self._build_datetime(job).date())
-                    if self._build_datetime(job) > datetime.min
-                    else "",
+                    build_date=self._build_date(job),
                 )
                 for job in self._jobs((await responses[0].json())["jobs"])
-            ]
+            ],
         )
 
     def _jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
@@ -52,19 +50,25 @@ class JenkinsJobs(SourceCollector):
             return False
         return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
 
-    def _build_datetime(self, job: Job) -> datetime:
-        """Return the date and time of the most recent build of the job."""
-        builds = [build for build in job.get("builds", []) if self._include_build(build)]
-        return datetime.utcfromtimestamp(int(builds[0]["timestamp"]) / 1000.0) if builds else datetime.min
+    def _build_date(self, job: Job) -> str:
+        """Return the date of the most recent build of the job."""
+        builds = self._builds(job)
+        if builds:
+            build_datetime = datetime_fromtimestamp(int(builds[0]["timestamp"]) / 1000.0)
+            return str(build_datetime.date())
+        return ""
 
     def _build_status(self, job: Job) -> str:
         """Return the status of the most recent build of the job."""
-        builds = [build for build in job.get("builds", []) if self._include_build(build)]
-        for build in builds:
+        for build in self._builds(job):
             if status := build.get("result"):
                 return str(status).capitalize().replace("_", " ")
         return "Not built"
 
-    def _include_build(self, build) -> bool:  # pylint: disable=unused-argument
+    def _builds(self, job: Job) -> list[dict[str, str]]:
+        """Return the builds of the job."""
+        return [build for build in job.get("builds", []) if self._include_build(build)]
+
+    def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
         return True

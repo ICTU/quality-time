@@ -3,7 +3,7 @@
 from abc import ABC
 
 from base_collectors import SourceCollector
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
 from model import Entities, SourceMeasurement, SourceResponses
 
@@ -15,13 +15,13 @@ class SonarQubeCollector(SourceCollector, ABC):
         """Extend to check the component exists before getting data about it."""
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
-        url = await SourceCollector._api_url(self)
+        url = await super()._api_url()
         component = self._parameter("component")
         show_component_url = URL(f"{url}/api/components/show?component={component}")
         response = (await super()._get_source_responses(show_component_url))[0]
         json = await response.json()
         if "errors" in json:
-            raise CollectorException(json["errors"][0]["msg"])
+            raise CollectorError(json["errors"][0]["msg"])
         return await super()._get_source_responses(*urls)
 
 
@@ -31,8 +31,8 @@ Metrics = dict[str, str]
 class SonarQubeMetricsBaseClass(SonarQubeCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
-    valueKey = ""  # Subclass responsibility
-    totalKey = ""  # Subclass responsibility
+    value_key = ""  # Subclass responsibility
+    total_key = ""  # Subclass responsibility
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the component measures path and parameters."""
@@ -53,14 +53,16 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(
-            f"{url}/api/measures/component?component={component}&branch={branch}&metricKeys={self._metric_keys()}"
+            f"{url}/api/measures/component?component={component}&branch={branch}&metricKeys={self._metric_keys()}",
         )
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the metrics."""
         metrics = await self.__get_metrics(responses)
         return SourceMeasurement(
-            value=self._value(metrics), total=self._total(metrics), entities=await self._entities(metrics)
+            value=self._value(metrics),
+            total=self._total(metrics),
+            entities=await self._entities(metrics),
         )
 
     def _metric_keys(self) -> str:
@@ -76,17 +78,17 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: Metrics) -> Entities:  # pylint: disable=unused-argument
+    async def _entities(self, metrics: Metrics) -> Entities:
         """Return the entities."""
         return Entities()
 
     def _value_key(self) -> str:
         """Return the SonarQube metric key(s) to use for the value. The string can be a comma-separated list of keys."""
-        return self.valueKey
+        return self.value_key
 
     def _total_key(self) -> str:
         """Return the SonarQube metric key to use for the total value."""
-        return self.totalKey
+        return self.total_key
 
     @staticmethod
     async def __get_metrics(responses: SourceResponses) -> Metrics:

@@ -10,9 +10,9 @@ class JiraManualTestDurationTest(JiraTestCase):
 
     async def test_duration(self):
         """Test that the duration is returned."""
-        test_cases_json = dict(
-            issues=[self.issue(key="1", field=10), self.issue(key="2", field=15), self.issue(key="3", field=None)]
-        )
+        test_cases_json = {
+            "issues": [self.issue(key="1", field=10), self.issue(key="2", field=15), self.issue(key="3", field=None)],
+        }
         response = await self.get_response(test_cases_json)
         self.assert_measurement(
             response,

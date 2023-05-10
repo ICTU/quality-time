@@ -2,7 +2,7 @@
 
 from model import Entity
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class SonarQubeTestCase(SourceCollectorTestCase):
@@ -18,18 +18,18 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         self.metric_landing_url = "https://sonarqube/component_measures?id=id&branch=master&metric={0}"
 
     @staticmethod
-    def entity(  # pylint: disable=too-many-arguments
+    def entity(  # noqa: PLR0913
         key: str,
         component: str,
         entity_type: str,
         message: str,
-        severity: str = None,
-        resolution: str = None,
-        rationale: str = None,
-        review_priority: str = None,
-        creation_date: str = None,
-        update_date: str = None,
-        hotspot_status: str = None,
+        severity: str | None = None,
+        resolution: str | None = None,
+        rationale: str | None = None,
+        review_priority: str | None = None,
+        creation_date: str | None = None,
+        update_date: str | None = None,
+        hotspot_status: str | None = None,
     ) -> Entity:
         """Create an entity."""
         url = (

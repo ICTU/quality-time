@@ -4,7 +4,7 @@ from datetime import datetime
 
 from dateutil.parser import parse
 
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago
 
 from .base import QualityTimeTestCase
 
@@ -33,7 +33,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
         expected_age = days_ago(datetime.min)
         self.assert_measurement(response, value=str(expected_age), total="100", entities=[])
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: str) -> None:
         """Override to pass the api URLs."""
         attributes["api_url"] = self.api_url
         super().assert_measurement(measurement, source_index=source_index, **attributes)

@@ -46,4 +46,4 @@ class SonarQubeTests(SonarQubeCollector):
         failed = measures.get("test_failures", 0)
         skipped = measures.get("skipped_tests", 0)
         passed = measures["tests"] - errored - failed - skipped  # Throw an exception (KeyError) if there are no tests
-        return dict(errored=errored, failed=failed, skipped=skipped, passed=passed)
+        return {"errored": errored, "failed": failed, "skipped": skipped, "passed": passed}

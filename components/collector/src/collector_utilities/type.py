@@ -1,18 +1,17 @@
 """Quality-time specific types."""
 
-from typing import Any, NewType, Optional, Union
+from typing import Any, NewType
 
 import aiohttp
 
-
-ErrorMessage = Optional[str]
+ErrorMessage = None | str
 Job = dict[str, Any]
 Jobs = list[Job]
 JSONList = list[dict[str, Any]]
 JSONDict = dict[str, Any]
-JSON = Union[JSONDict, JSONList]  # pylint:disable=invalid-name
+JSON = JSONDict | JSONList
 Namespaces = dict[str, str]  # Namespace prefix to Namespace URI mapping
 Response = aiohttp.ClientResponse
 Responses = list[Response]
 URL = NewType("URL", str)
-Value = Optional[str]
+Value = None | str

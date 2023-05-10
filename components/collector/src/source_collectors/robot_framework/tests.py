@@ -28,7 +28,9 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
 
     @staticmethod
     async def _parse_source_response(
-        response: Response, test_results: list[str], all_test_results: list[str]
+        response: Response,
+        test_results: list[str],
+        all_test_results: list[str],
     ) -> tuple[int, int, Entities]:
         """Parse a Robot Framework XML."""
         nr_of_tests, total_nr_of_tests, entities = 0, 0, Entities()

@@ -18,10 +18,10 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
     def _item_select_fields(self) -> list[str]:
         """Also request all work item fields which may hold story point values."""
         base_fields = super()._item_select_fields()
-        return base_fields + [self._STORY_POINTS_FIELD, self._EFFORT_FIELD]
+        return [*base_fields, self._STORY_POINTS_FIELD, self._EFFORT_FIELD]
 
     def _parse_entity(self, work_item: dict) -> Entity:
-        """Add the story points to the work item entity"""
+        """Add the story points to the work item entity."""
         parsed_entity = super()._parse_entity(work_item)
         parsed_entity["story_points"] = self.__story_points(work_item)
         return parsed_entity

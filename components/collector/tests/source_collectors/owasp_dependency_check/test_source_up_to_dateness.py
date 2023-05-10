@@ -2,6 +2,8 @@
 
 from datetime import datetime, timedelta, timezone
 
+from collector_utilities.date_time import days_ago
+
 from .base import OWASPDependencyCheckTestCase
 
 
@@ -14,5 +16,5 @@ class OWASPDependencyCheckTest(OWASPDependencyCheckTestCase):
         """Test that the source age in days is returned."""
         response = await self.collect(get_request_text=self.xml)
         timezone_info = timezone(timedelta(hours=2))
-        expected_age = (datetime.now(timezone_info) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info)).days
+        expected_age = days_ago(datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info))
         self.assert_measurement(response, value=str(expected_age))

@@ -3,10 +3,12 @@
 import asyncio
 import logging
 import os
+import pathlib
 from datetime import UTC, datetime, timedelta
-from typing import Any, Coroutine, NoReturn, cast
+from typing import Any, Coroutine, NoReturn, TYPE_CHECKING, cast
 
 import aiohttp
+
 from shared.database.metrics import get_metrics_from_reports
 from shared.database.shared_data import create_measurement, get_reports
 
@@ -14,6 +16,9 @@ from collector_utilities.functions import timer
 from collector_utilities.type import JSONDict
 
 from .metric_collector import MetricCollector
+
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
 
 
 class Collector:
@@ -30,12 +35,12 @@ class Collector:
     @staticmethod
     def record_health() -> None:
         """Record the current date and time in a file to allow for health checks."""
-        filename = os.getenv("HEALTH_CHECK_FILE", "/home/collector/health_check.txt")
+        filename = pathlib.Path(os.getenv("HEALTH_CHECK_FILE", "/home/collector/health_check.txt"))
         try:
-            with open(filename, "w", encoding="utf-8") as health_check:
+            with filename.open("w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now(tz=UTC).isoformat())
-        except OSError as reason:
-            logging.error("Could not write health check time stamp to %s: %s", filename, reason)
+        except OSError:
+            logging.exception("Could not write health check time stamp to %s", filename)
 
     async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
@@ -56,7 +61,9 @@ class Collector:
                     await self.collect_metrics(session)
             sleep_duration = max(0, self.MAX_SLEEP_DURATION - collection_timer.duration)
             logging.info(
-                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration
+                "Collecting took %.1f seconds. Sleeping %.1f seconds...",
+                collection_timer.duration,
+                sleep_duration,
             )
             await asyncio.sleep(sleep_duration)
 
@@ -64,7 +71,7 @@ class Collector:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports()
         metrics = get_metrics_from_reports(reports)
-        next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
+        next_fetch = datetime.now(tz=UTC) + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
             if len(tasks) >= self.MEASUREMENT_LIMIT:
@@ -74,7 +81,11 @@ class Collector:
         await asyncio.gather(*tasks)
 
     async def collect_metric(
-        self, session: aiohttp.ClientSession, metric_uuid: str, metric: dict, next_fetch: datetime
+        self,
+        session: aiohttp.ClientSession,
+        metric_uuid: str,
+        metric: dict,
+        next_fetch: datetime,
     ) -> None:
         """Collect measurements for the metric and post it to the server."""
         self.__previous_metrics[metric_uuid] = metric
@@ -96,6 +107,5 @@ class Collector:
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
         """
         metric_edited = self.__previous_metrics.get(metric_uuid) != metric
-        metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
-
+        metric_due = self.next_fetch.get(metric_uuid, datetime.min.replace(tzinfo=UTC)) <= datetime.now(tz=UTC)
         return metric_edited or metric_due

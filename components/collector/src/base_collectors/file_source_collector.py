@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup, Tag
 
+from collector_utilities.exceptions import ZipfileError
 from collector_utilities.type import JSON, URL, Response, Responses
 from model import Entities, SourceResponses
 
@@ -21,12 +22,12 @@ class FakeResponse:
 
     status = HTTPStatus.OK
 
-    def __init__(self, contents: bytes = bytes(), filename: str = "") -> None:
+    def __init__(self, contents: bytes = b"", filename: str = "") -> None:
         super().__init__()
         self.contents = contents
         self.filename = filename
 
-    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
+    async def json(self, content_type=None) -> JSON:
         """Return the JSON version of the contents."""
         return cast(JSON, loads(self.contents))
 
@@ -44,7 +45,7 @@ class FileSourceCollector(SourceCollector, ABC):
         """Extend to unzip any zipped responses."""
         responses = await super()._get_source_responses(*urls)
         unzipped_responses = []
-        for url, response in zip(urls, responses):
+        for url, response in zip(urls, responses, strict=True):
             if self.__is_zipped(url, response):
                 unzipped_responses.extend(await self.__unzip(response))
             else:
@@ -67,7 +68,7 @@ class FileSourceCollector(SourceCollector, ABC):
         with zipfile.ZipFile(io.BytesIO(await response.read())) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
             if not names:
-                raise LookupError(f"Zipfile contains no files with extension {' or '.join(cls.file_extensions)}")
+                raise ZipfileError(cls.file_extensions)
             responses = [FakeResponse(response_zipfile.read(name), name) for name in names]
         return cast(Responses, responses)
 

@@ -11,4 +11,4 @@ class OWASPDependencyCheckVersionTest(OWASPDependencyCheckTestCase):
     async def test_version(self):
         """Test that the source version is returned."""
         response = await self.collect(get_request_text=self.xml)
-        self.assert_measurement(response, value=str("5.2.1"))
+        self.assert_measurement(response, value="5.2.1")

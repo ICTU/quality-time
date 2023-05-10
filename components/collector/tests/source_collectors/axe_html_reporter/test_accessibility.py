@@ -4,7 +4,7 @@ import pathlib
 
 from collector_utilities.functions import md5_hash
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
@@ -13,8 +13,10 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
     METRIC_TYPE = "accessibility"
     SOURCE_TYPE = "axe_html_reporter"
 
+    expected_entities: list[dict[str, str]]
+
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Extend to read the Axe HTML report and set the expected entities."""
         super().setUpClass()
         axe_html_report = (
@@ -22,47 +24,47 @@ class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
         )
         cls.html = axe_html_report.read_text()
         cls.expected_entities = [
-            dict(
-                element="<html>",
-                violation_type="html-has-lang",
-                description="Ensures every HTML document has a lang attribute",
-                tags="cat.language, wcag2a, wcag311",
-                impact="serious",
-            ),
-            dict(
-                element="<html>",
-                violation_type="landmark-one-main",
-                description="Ensures the document has a main landmark",
-                tags="best-practice, cat.semantics",
-                impact="moderate",
-            ),
-            dict(
-                element="<div>\n    <h1>Example Domain</h1>\n    <p>This domain is for use in illustrative examples "
+            {
+                "element": "<html>",
+                "violation_type": "html-has-lang",
+                "description": "Ensures every HTML document has a lang attribute",
+                "tags": "cat.language, wcag2a, wcag311",
+                "impact": "serious",
+            },
+            {
+                "element": "<html>",
+                "violation_type": "landmark-one-main",
+                "description": "Ensures the document has a main landmark",
+                "tags": "best-practice, cat.semantics",
+                "impact": "moderate",
+            },
+            {
+                "element": "<div>\n    <h1>Example Domain</h1>\n    <p>This domain is for use in illustrative examples "
                 "in documents. You may use this\n    domain in literature without prior coordination or asking "
                 'for permission.</p>\n    <p><a href="https://www.iana.org/domains/example">More '
                 "information...</a></p>\n</div>",
-                violation_type="region",
-                description="Ensures all page content is contained by landmarks",
-                tags="best-practice, cat.keyboard",
-                impact="moderate",
-            ),
-            dict(
-                element='<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
+                "violation_type": "region",
+                "description": "Ensures all page content is contained by landmarks",
+                "tags": "best-practice, cat.keyboard",
+                "impact": "moderate",
+            },
+            {
+                "element": '<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
                 'autocomplete="off" id="from0" name="from0" tabindex="1" role="textbox" '
                 'aria-autocomplete="list" aria-haspopup="true">',
-                violation_type="tabindex",
-            ),
-            dict(
-                element='<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
+                "violation_type": "tabindex",
+            },
+            {
+                "element": '<input type="text" value="" class="city-input ac_input ui-autocomplete-input" '
                 'autocomplete="off" id="to0" name="to0" tabindex="1" role="textbox" aria-autocomplete="list" '
                 'aria-haspopup="true">',
-                violation_type="tabindex",
-            ),
-            dict(
-                element='<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" '
+                "violation_type": "tabindex",
+            },
+            {
+                "element": '<input size="10" id="deptDate0" name="deptDate0" placeholder="mm/dd/yyyy" value="" '
                 'tabindex="3" class="hasDatepicker input-dept">',
-                violation_type="tabindex",
-            ),
+                "violation_type": "tabindex",
+            },
         ]
         for entity in cls.expected_entities:
             entity["page"] = entity["url"] = "https://example.com/"

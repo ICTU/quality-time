@@ -13,29 +13,29 @@ class BanditSecurityWarningsTest(BanditTestCase):
     def setUp(self):
         """Extend with test data."""
         super().setUp()
-        self.bandit_json = dict(
-            results=[
-                dict(
-                    filename="src/collectors/cxsast.py",
-                    issue_confidence="MEDIUM",
-                    issue_severity="LOW",
-                    issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
-                    line_number=37,
-                    more_info="https://bandit/b106_hardcoded_password_funcarg.html",
-                    test_id="B106",
-                    test_name="hardcoded_password_funcarg",
-                )
-            ]
-        )
+        self.bandit_json = {
+            "results": [
+                {
+                    "filename": "src/collectors/cxsast.py",
+                    "issue_confidence": "MEDIUM",
+                    "issue_severity": "LOW",
+                    "issue_text": "Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
+                    "line_number": 37,
+                    "more_info": "https://bandit/b106_hardcoded_password_funcarg.html",
+                    "test_id": "B106",
+                    "test_name": "hardcoded_password_funcarg",
+                },
+            ],
+        }
         self.expected_entities = [
-            dict(
-                key="B106:src-collectors-cxsast_py:37",
-                location="src/collectors/cxsast.py:37",
-                issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
-                issue_severity="Low",
-                issue_confidence="Medium",
-                more_info="https://bandit/b106_hardcoded_password_funcarg.html",
-            )
+            {
+                "key": "B106:src-collectors-cxsast_py:37",
+                "location": "src/collectors/cxsast.py:37",
+                "issue_text": "Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
+                "issue_severity": "Low",
+                "issue_confidence": "Medium",
+                "more_info": "https://bandit/b106_hardcoded_password_funcarg.html",
+            },
         ]
 
     async def test_warnings(self):

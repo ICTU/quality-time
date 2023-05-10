@@ -12,7 +12,7 @@ class JiraIssueStatus(JiraBase):
     """Jira issue status collector."""
 
     # Map the Jira status categories, the keys, to the Quality-time status categories, the values:
-    STATUS_CATEGORY_MAPPING = dict(done="done", indeterminate="doing", new="todo")
+    STATUS_CATEGORY_MAPPING = {"done": "done", "indeterminate": "doing", "new": "todo"}
 
     # Note, Jira distinguishes statuses and status categories. Statuses can be added, but the list of status
     # categories is fixed, per https://jira.atlassian.com/browse/JRASERVER-36241. As Quality-time only needs to know

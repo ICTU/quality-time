@@ -11,8 +11,8 @@ class SonarQubeLongUnitsTest(SonarQubeTestCase):
     async def test_long_units(self):
         """Test that the number of long units is returned."""
         self.set_source_parameter("rules", ["rule1"])
-        long_units_json = dict(total="2", issues=[])
-        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
+        long_units_json = {"total": "2", "issues": []}
+        functions_json = {"component": {"measures": [{"metric": "functions", "value": "4"}]}}
         response = await self.collect(
             get_request_json_side_effect=[
                 {},
@@ -21,7 +21,7 @@ class SonarQubeLongUnitsTest(SonarQubeTestCase):
                 long_units_json,
                 functions_json,
                 long_units_json,
-            ]
+            ],
         )
         self.assert_measurement(
             response,

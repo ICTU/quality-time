@@ -6,5 +6,5 @@ from .base import SonarQubeMetricsBaseClass
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
-    valueKey = "uncovered_conditions"
-    totalKey = "conditions_to_cover"
+    value_key = "uncovered_conditions"
+    total_key = "conditions_to_cover"

@@ -41,7 +41,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                     url=f"https://snyk.io/vuln/{example_vulnerability[dependency][0]}",
                     example_path=example_vulnerability[dependency][1],
                     highest_severity=self.__highest_severity(severity_set),
-                )
+                ),
             )
         return entities
 

@@ -12,7 +12,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
     # Mapping of OpenVAS attribute names to the measurement entity attribute names:
-    ATTRIBUTES = dict(name="name", description="description", host="host", port="port", threat="severity")
+    ATTRIBUTES = {"name": "name", "description": "description", "host": "host", "port": "port", "threat": "severity"}
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the security warnings from the OpenVAS XML."""

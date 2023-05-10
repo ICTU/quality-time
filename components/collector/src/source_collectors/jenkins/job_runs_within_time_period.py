@@ -1,9 +1,8 @@
 """Jenkins job runs within time period collector."""
 
-from datetime import datetime
 from typing import cast
 
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import datetime_fromtimestamp, days_ago
 from collector_utilities.type import Job
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -15,7 +14,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
-        build_datetime = datetime.utcfromtimestamp(int(build["timestamp"] / 1000.0))
+        build_datetime = datetime_fromtimestamp(int(build["timestamp"] / 1000.0))
         return days_ago(build_datetime) <= int(cast(str, self._parameter("lookback_days")))
 
     def _builds_within_timeperiod(self, job: Job) -> int:
@@ -24,7 +23,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
-        entities = Entities(
+        return Entities(
             [
                 Entity(
                     key=job["name"],
@@ -33,9 +32,8 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
                     build_count=self._builds_within_timeperiod(job),
                 )
                 for job in self._jobs((await responses[0].json())["jobs"])
-            ]
+            ],
         )
-        return entities
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Count the sum of jobs ran."""

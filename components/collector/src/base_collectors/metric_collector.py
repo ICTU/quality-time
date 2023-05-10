@@ -1,7 +1,7 @@
 """Metric collector base classes."""
 
 import asyncio
-from typing import Coroutine
+from collections.abc import Coroutine
 
 import aiohttp
 
@@ -25,6 +25,7 @@ class MetricCollector:
         }
 
     def __init_subclass__(cls) -> None:
+        """Register the subclass as metric collector."""
         MetricCollector.subclasses.add(cls)
         super().__init_subclass__()
 
@@ -43,7 +44,7 @@ class MetricCollector:
         if not source_collectors and not issue_status_collectors:
             return None
         measurements = await asyncio.gather(*source_collectors)
-        for source_measurement, source_uuid in zip(measurements, self._metric["sources"]):
+        for source_measurement, source_uuid in zip(measurements, self._metric["sources"], strict=True):
             source_measurement.source_uuid = source_uuid
         issue_statuses = await asyncio.gather(*issue_status_collectors)
         return MetricMeasurement(measurements, issue_statuses)

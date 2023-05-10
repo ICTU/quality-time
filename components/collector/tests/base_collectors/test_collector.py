@@ -1,6 +1,9 @@
 """Unit tests for the collector main script."""
 
+from __future__ import annotations
+
 import logging
+import pathlib
 import unittest
 from datetime import datetime
 from unittest.mock import AsyncMock, Mock, call, mock_open, patch
@@ -33,20 +36,20 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Override to set up common test data."""
         self.collector = Collector()
         self.url = "https://url"
-        self.metrics = dict(
-            metric_uuid=dict(
-                report_uuid="report_uuid",
-                addition="sum",
-                type="dependencies",
-                sources=dict(source_uuid=dict(type="pip", parameters=dict(url=self.url))),
-            )
-        )
-        self.pip_json = [dict(name="a dependency")]
+        self.metrics = {
+            "metric_uuid": {
+                "report_uuid": "report_uuid",
+                "addition": "sum",
+                "type": "dependencies",
+                "sources": {"source_uuid": {"type": "pip", "parameters": {"url": self.url}}},
+            },
+        }
+        self.pip_json = [{"name": "a dependency"}]
         self.client = mongomock.MongoClient()
         self.client["quality_time_db"]["reports"].insert_one(create_report())
 
     @staticmethod
-    def _patched_get(mock_async_get_request, side_effect=None):
+    def _patched_get(mock_async_get_request: AsyncMock, side_effect=None) -> _patch[AsyncMock]:
         """Return a patched version of aiohttp.ClientSession.get()."""
         mock = AsyncMock(side_effect=side_effect) if side_effect else AsyncMock(return_value=mock_async_get_request)
         return patch("aiohttp.ClientSession.get", mock)
@@ -58,22 +61,22 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
                 for _ in range(number):
                     await self.collector.collect_metrics(session)
 
-    def _source(self, **kwargs):
+    def _source(self, **kwargs: str | int | float) -> dict[str, str | None | list[dict[str, str]]]:
         """Create a source."""
         connection_error = kwargs.get("connection_error")
         entities = kwargs.get(
             "entities", [dict(name="a dependency", key="a dependency@?", version="unknown", latest="unknown")]
         )
-        return dict(
-            api_url=kwargs.get("api_url", self.url),
-            landing_url=kwargs.get("landing_url", self.url),
-            value=None if connection_error else kwargs.get("value", "1"),
-            total=None if connection_error else kwargs.get("total", "100"),
-            entities=[] if connection_error else entities,
-            connection_error=connection_error,
-            parse_error=None,
-            source_uuid="source_uuid",
-        )
+        return {
+            "api_url": str(kwargs.get("api_url", self.url)),
+            "landing_url": str(kwargs.get("landing_url", self.url)),
+            "value": None if connection_error else str(kwargs.get("value", "1")),
+            "total": None if connection_error else str(kwargs.get("total", "100")),
+            "entities": [] if connection_error else entities,
+            "connection_error": connection_error,
+            "parse_error": None,
+            "source_uuid": "source_id",
+        }
 
     async def test_fetch_successful(self):
         """Test fetching a test metric."""
@@ -256,21 +259,23 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             ),
         )
 
-    @patch("builtins.open", new_callable=mock_open)
+    @patch("pathlib.Path.open", new_callable=mock_open)
     @patch("base_collectors.collector.datetime")
-    def test_writing_health_check(self, mocked_datetime, mocked_open):
+    def test_writing_health_check(self, mocked_datetime: Mock, mocked_open: Mock):
         """Test that the current time is written to the health check file."""
-        mocked_datetime.now.return_value = now = datetime.now()
+        mocked_datetime.now.return_value = now = datetime.now(tz=UTC)
         self.collector.record_health()
-        mocked_open.assert_called_once_with("/home/collector/health_check.txt", "w", encoding="utf-8")
+        mocked_open.assert_called_once_with("w", encoding="utf-8")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
-    @patch("builtins.open")
+    @patch("pathlib.Path.open")
     @patch("logging.error")
-    def test_fail_writing_health_check(self, mocked_log, mocked_open):
+    def test_fail_writing_health_check(self, mocked_log: Mock, mocked_open: Mock):
         """Test that a failure to open the health check file is logged, but otherwise ignored."""
-        mocked_open.side_effect = io_error = OSError("Some error")
+        mocked_open.side_effect = OSError("Some error")
         self.collector.record_health()
         mocked_log.assert_called_once_with(
-            "Could not write health check time stamp to %s: %s", "/home/collector/health_check.txt", io_error
+            "Could not write health check time stamp to %s",
+            pathlib.Path("/home/collector/health_check.txt"),
+            exc_info=True,
         )

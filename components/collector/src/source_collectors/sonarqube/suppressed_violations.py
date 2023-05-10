@@ -18,7 +18,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         This collector uses two SonarQube endpoints to get the suppressed violations. As we can't include both URLs in
         the landing URL, we use the overview of all issues as landing page.
         """
-        url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
+        url = await SourceCollector._api_url(self)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/project/issues?id={component}&branch={branch}")
@@ -29,15 +29,15 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
         as well as the total number of violations.
         """
-        url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
+        url = await SourceCollector._api_url(self)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(
             f"{all_issues_api_url}&statuses=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&additionalFields=comments"
-            f"{self._query_parameter('severities')}{self._query_parameter(self.types_parameter)}&ps=500"
+            f"{self._query_parameter('severities')}{self._query_parameter(self.types_parameter)}&ps=500",
         )
-        return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
+        return await super()._get_source_responses(*[*urls, resolved_issues_api_url, all_issues_api_url])
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Extend to get the total number of violations from the responses."""
@@ -49,7 +49,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         """Extend to add the resolution to the entity."""
         entity = await super()._entity(issue)
         resolution = issue.get("resolution", "").lower()
-        entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
+        entity["resolution"] = {"wontfix": "won't fix"}.get(resolution, resolution)
         comments = issue.get("comments", [])
         comments_text = [f"{comment['login']}: {comment['markdown']}" for comment in comments]
         if comments_text:

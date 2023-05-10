@@ -1,8 +1,6 @@
 """Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, parse_datetime
 
 from .base import AzureDevopsTestCase
 
@@ -17,27 +15,29 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
         """Extend to set up test data."""
         super().setUp()
         self.timestamp = "2019-09-03T00:00:00Z"  # age of file parses actual dt, age of job parses date without hh/mm
-        self.expected_age = str(days_ago(parse(self.timestamp)))
-        self.build_json = dict(
-            value=[
-                dict(
-                    path=r"\\folder",
-                    name="pipeline",
-                    _links=dict(web=dict(href=f"{self.url}/build")),
-                    latestCompletedBuild=dict(result="failed", finishTime=self.timestamp),
-                )
-            ]
-        )
+        self.expected_age = str(days_ago(parse_datetime(self.timestamp)))
+        self.build_json = {
+            "value": [
+                {
+                    "path": r"\\folder",
+                    "name": "pipeline",
+                    "_links": {"web": {"href": f"{self.url}/build"}},
+                    "latestCompletedBuild": {"result": "failed", "finishTime": self.timestamp},
+                },
+            ],
+        }
 
     async def test_age_of_file(self):
         """Test that the age of the file is returned."""
         self.set_source_parameter("repository", "repo")
         self.set_source_parameter("file_path", "README.md")
-        repositories = dict(value=[dict(id="id", name="repo")])
-        commits = dict(value=[dict(committer=dict(date=self.timestamp))])
+        repositories = {"value": [{"id": "id", "name": "repo"}]}
+        commits = {"value": [{"committer": {"date": self.timestamp}}]}
         response = await self.collect(get_request_json_side_effect=[repositories, commits])
         self.assert_measurement(
-            response, value=self.expected_age, landing_url=f"{self.url}/_git/repo?path=README.md&version=GBmaster"
+            response,
+            value=self.expected_age,
+            landing_url=f"{self.url}/_git/repo?path=README.md&version=GBmaster",
         )
 
     async def test_age_of_pipeline(self):

@@ -20,7 +20,11 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
         ]
 
     def _parse_entity(
-        self, dependency: Element, dependency_index: int, namespaces: Namespaces, landing_url: str
+        self,
+        dependency: Element,
+        dependency_index: int,
+        namespaces: Namespaces,
+        landing_url: str,
     ) -> Entity:
         """Parse the entity from the dependency."""
         entity = super()._parse_entity(dependency, dependency_index, namespaces, landing_url)
@@ -35,7 +39,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
                 highest_severity = severity
                 break
         entity.update(
-            dict(highest_severity=highest_severity.capitalize(), nr_vulnerabilities=str(len(vulnerabilities)))
+            {"highest_severity": highest_severity.capitalize(), "nr_vulnerabilities": str(len(vulnerabilities))},
         )
         return entity
 

@@ -2,9 +2,7 @@
 
 from datetime import datetime
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, now, parse_datetime
 from collector_utilities.type import URL
 from model import Entity
 
@@ -33,11 +31,11 @@ class JiraManualTestExecution(JiraIssues):
     def __last_test_datetime(issue: dict) -> datetime:
         """Return the datetime of the last test."""
         comment_dates = [comment["updated"] for comment in issue["fields"]["comment"]["comments"]]
-        return parse(max(comment_dates)) if comment_dates else datetime.now()
+        return parse_datetime(max(comment_dates)) if comment_dates else now()
 
     def __desired_test_execution_frequency(self, issue: dict) -> int:
         """Return the desired test frequency for this issue."""
         frequency = issue["fields"].get(self._parameter("manual_test_execution_frequency_field"))
         return int(
-            round(float(frequency)) if frequency else str(self._parameter("manual_test_execution_frequency_default"))
+            round(float(frequency)) if frequency else str(self._parameter("manual_test_execution_frequency_default")),
         )

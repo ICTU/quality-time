@@ -25,14 +25,14 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
         """Test that the number of warnings is returned."""
         response = await self.collect(get_request_text=self.OPENVAS_XML)
         expected_entities = [
-            dict(
-                key="1_2_3_4:80-tcp:4_2",
-                severity="Low",
-                name="Name",
-                description="Description",
-                host="1.2.3.4",
-                port="80/tcp",
-            )
+            {
+                "key": "1_2_3_4:80-tcp:4_2",
+                "severity": "Low",
+                "name": "Name",
+                "description": "Description",
+                "host": "1.2.3.4",
+                "port": "80/tcp",
+            },
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
 

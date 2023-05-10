@@ -31,5 +31,5 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                     vulnerability=warning[self.VULNERABILITY],
                 )
                 for warning in cast(JSONSafety, json)
-            ]
+            ],
         )

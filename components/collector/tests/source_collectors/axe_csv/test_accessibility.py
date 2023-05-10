@@ -2,7 +2,7 @@
 
 from collector_utilities.functions import md5_hash
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class AxeCSVAccessibilityTest(SourceCollectorTestCase):
@@ -44,7 +44,7 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             entity["key"] = self.entity_key(entity)
 
     @staticmethod
-    def entity_key(entity):
+    def entity_key(entity: dict[str, str | None]) -> str:
         """Create the entity hash."""
         return md5_hash(",".join(str(value) for value in entity.values()))
 
@@ -97,7 +97,7 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             "help": "help1",
         }
         expected_entity["key"] = self.entity_key(expected_entity)
-        self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])
+        self.assert_measurement(response, value="3", entities=[*self.expected_entities, expected_entity])
 
     async def test_empty_line(self):
         """Test that empty lines are ignored."""
@@ -118,4 +118,4 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         }
         expected_entity["key"] = self.entity_key(expected_entity)
         response = await self.collect(get_request_text=self.csv + violation_with_newline)
-        self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])
+        self.assert_measurement(response, value="3", entities=[*self.expected_entities, expected_entity])

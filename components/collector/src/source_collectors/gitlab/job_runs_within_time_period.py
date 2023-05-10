@@ -2,9 +2,7 @@
 
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, parse_datetime
 from collector_utilities.type import Job
 from model import SourceResponses, Entity
 
@@ -24,5 +22,6 @@ class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job was run within the specified time period."""
-        within_time_period = days_ago(parse(entity["build_date"])) <= int(cast(str, self._parameter("lookback_days")))
+        build_age = days_ago(parse_datetime(entity["build_date"]))
+        within_time_period = build_age <= int(cast(str, self._parameter("lookback_days")))
         return within_time_period and super()._include_entity(entity)

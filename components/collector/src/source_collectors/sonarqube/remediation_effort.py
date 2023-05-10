@@ -34,7 +34,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
                     effort_type=effort_type_description,
                     effort=metrics[effort_type],
                     url=await self.__effort_type_landing_url(effort_type),
-                )
+                ),
             )
         return entities
 

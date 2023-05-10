@@ -1,12 +1,11 @@
 """Harbor security warnings collector."""
 
 from abc import ABC
-from typing import cast
+from typing import cast, TypedDict
 from urllib.parse import quote, unquote
 
-from typing_extensions import TypedDict
-
 from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
@@ -31,7 +30,18 @@ class HarborBase(SourceCollector, ABC):
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
-ScanOverview = TypedDict("ScanOverview", {"scan_status": str, "summary": dict[str, int]})
+class HarborScannerVulnerabilityReportError(CollectorError):
+    """Harbor scanner vulnerability report error."""
+
+    def __init__(self) -> None:
+        super().__init__("Harbor scanner vulnerability report contains no known format")
+
+
+class ScanOverview(TypedDict):
+    """Type for the scan overview dict in the Harbor response."""
+
+    scan_status: str
+    summary: dict[str, int]
 
 
 class HarborSecurityWarnings(HarborBase):
@@ -135,4 +145,4 @@ class HarborSecurityWarnings(HarborBase):
         for key in vulnerability_report_keys:
             if key in artifact["scan_overview"]:
                 return cast(ScanOverview, artifact["scan_overview"][key])
-        raise ValueError("Harbor scanner vulnerability report contains no known format")
+        raise HarborScannerVulnerabilityReportError

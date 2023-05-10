@@ -12,9 +12,9 @@ class CxSASTSourceVersionTest(CxSASTTestCase):
     async def test_version(self):
         """Test that the version of the source is returned."""
         get_json = [
-            [dict(cxVersion="8.6.0.1947")],
+            [{"cxVersion": "8.6.0.1947"}],
         ]
-        post_json = dict(access_token="token")
+        post_json = {"access_token": "token"}
         response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         self.assert_measurement(
             response,

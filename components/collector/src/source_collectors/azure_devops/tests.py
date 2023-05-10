@@ -11,7 +11,7 @@ from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
-class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
+class TestRun(SimpleNamespace):
     """Represent an Azure DevOps test run."""
 
     def __init__(self, build_nr: int = 0) -> None:
@@ -32,14 +32,15 @@ class AzureDevopsTests(SourceCollector):
         test_results = cast(list[str], self._parameter("test_result"))
         test_run_names_to_include = cast(list[str], self._parameter("test_run_names_to_include")) or ["all"]
         test_run_states_to_include = [value.lower() for value in self._parameter("test_run_states_to_include")] or [
-            "all"
+            "all",
         ]
         runs = (await responses[0].json()).get("value", [])
         highest_build: dict[str, TestRun] = defaultdict(TestRun)
         for run in runs:
             name = run.get("name", "Unknown test run name")
             if test_run_names_to_include != ["all"] and not match_string_or_regular_expression(
-                name, test_run_names_to_include
+                name,
+                test_run_names_to_include,
             ):
                 continue
             state = run.get("state", "Unknown test run state")
@@ -68,7 +69,7 @@ class AzureDevopsTests(SourceCollector):
                     passed_tests=str(run.get("passedTests", 0)),
                     unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
                     total_tests=str(run.get("totalTests", 0)),
-                )
+                ),
             )
         test_count = sum(build.test_count for build in highest_build.values())
         total_test_count = sum(build.total_test_count for build in highest_build.values())

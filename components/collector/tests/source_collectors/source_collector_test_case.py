@@ -4,11 +4,14 @@ import io
 import logging
 import unittest
 import zipfile
-from unittest.mock import AsyncMock, PropertyMock, patch, DEFAULT as STOP_SENTINEL
+from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import DEFAULT as STOP_SENTINEL
+from typing import Any
 
 import aiohttp
 
 from base_collectors import MetricCollector
+from model import MetricMeasurement
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
@@ -29,24 +32,24 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
-        self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url=f"https://{self.SOURCE_TYPE}")))
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+        self.sources = {"source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}}
+        self.metric = {"type": self.METRIC_TYPE, "sources": self.sources, "addition": self.METRIC_ADDITION}
 
     async def collect(
         self,
         *,
-        get_request_json_return_value=None,
+        get_request_json_return_value: dict | None = None,
         get_request_json_side_effect=None,
         get_request_side_effect=None,
         get_request_content="",
-        get_request_text="",
+        get_request_text: str = "",
         get_request_headers=None,
-        get_request_links=None,
+        get_request_links: dict[str, dict[str, str]] | None = None,
         post_request_side_effect=None,
-        post_request_json_return_value=None,
+        post_request_json_return_value: dict | None = None,
         post_request_json_side_effect=None,
-        return_mocks=False,
-    ):  # pylint: disable=too-many-locals
+        return_mocks: bool = False,
+    ):
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
@@ -65,9 +68,15 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 return (result, get, post) if return_mocks else result
 
     @staticmethod
-    def __get_response(json_return_value, json_side_effect, content, text, headers, links) -> AsyncMock:
+    def __get_response(  # noqa: PLR0913
+        json_return_value: dict | None,
+        json_side_effect,
+        content,
+        text: str,
+        headers,
+        links: dict[str, dict[str, str]] | None,
+    ) -> AsyncMock:
         """Create the mock get response."""
-        # pylint: disable=too-many-arguments
         get_response = AsyncMock()
         get_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         get_response.read.return_value = content
@@ -78,7 +87,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         return get_response
 
     @staticmethod
-    def __post_response(json_return_value, json_side_effect: list = None) -> AsyncMock:
+    def __post_response(json_return_value, json_side_effect: list | None = None) -> AsyncMock:
         """Create the mock post response."""
         post_response = AsyncMock()
         if json_side_effect:
@@ -91,7 +100,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
+    def assert_measurement(self, measurement: MetricMeasurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:
@@ -103,11 +112,17 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
 
-    def __assert_measurement_source_attribute(self, attribute_key, expected_attribute_value, measurement, source_index):
+    def __assert_measurement_source_attribute(
+        self,
+        attribute_key: str,
+        expected_attribute_value: list | Any,
+        measurement: MetricMeasurement,
+        source_index: int,
+    ) -> None:
         """Assert that the measurement source attribute has the expected value."""
         attribute_value = getattr(measurement.sources[source_index], attribute_key)
         if isinstance(expected_attribute_value, list):
-            for pair in zip(expected_attribute_value, attribute_value):
+            for pair in zip(expected_attribute_value, attribute_value, strict=True):
                 self.assertDictEqual(pair[0], pair[1])
             self.assertEqual(len(expected_attribute_value), len(attribute_value), attribute_key)
         else:
@@ -124,4 +139,4 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     def set_source_parameter(self, key: str, value: str | list[str]) -> None:
         """Set a source parameter."""
-        self.sources["source_id"]["parameters"][key] = value
+        self.sources["source_id"]["parameters"][key] = value  # type: ignore[index]

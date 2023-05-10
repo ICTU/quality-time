@@ -1,6 +1,6 @@
 """GitLab unit test base classes."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class GitLabTestCase(SourceCollectorTestCase):
@@ -15,45 +15,45 @@ class GitLabTestCase(SourceCollectorTestCase):
         self.set_source_parameter("file_path", "file")
         self.set_source_parameter("branch", "branch")
         self.gitlab_jobs_json = [
-            dict(
-                id="1",
-                status="failed",
-                name="job1",
-                stage="stage",
-                created_at="2019-03-31T19:40:39.927Z",
-                pipeline=dict(web_url="https://gitlab/project/-/pipelines/1"),
-                web_url="https://gitlab/job1",
-                ref="master",
-            ),
-            dict(
-                id="2",
-                status="failed",
-                name="job2",
-                stage="stage",
-                created_at="2019-03-31T19:40:39.927Z",
-                web_url="https://gitlab/job2",
-                ref="develop",
-            ),
+            {
+                "id": "1",
+                "status": "failed",
+                "name": "job1",
+                "stage": "stage",
+                "created_at": "2019-03-31T19:40:39.927Z",
+                "pipeline": {"web_url": "https://gitlab/project/-/pipelines/1"},
+                "web_url": "https://gitlab/job1",
+                "ref": "master",
+            },
+            {
+                "id": "2",
+                "status": "failed",
+                "name": "job2",
+                "stage": "stage",
+                "created_at": "2019-03-31T19:40:39.927Z",
+                "web_url": "https://gitlab/job2",
+                "ref": "develop",
+            },
         ]
         self.expected_entities = [
-            dict(
-                key="1",
-                name="job1",
-                stage="stage",
-                branch="master",
-                url="https://gitlab/job1",
-                build_date="2019-03-31",
-                build_status="failed",
-            ),
-            dict(
-                key="2",
-                name="job2",
-                stage="stage",
-                branch="develop",
-                url="https://gitlab/job2",
-                build_date="2019-03-31",
-                build_status="failed",
-            ),
+            {
+                "key": "1",
+                "name": "job1",
+                "stage": "stage",
+                "branch": "master",
+                "url": "https://gitlab/job1",
+                "build_date": "2019-03-31",
+                "build_status": "failed",
+            },
+            {
+                "key": "2",
+                "name": "job2",
+                "stage": "stage",
+                "branch": "develop",
+                "url": "https://gitlab/job2",
+                "build_date": "2019-03-31",
+                "build_status": "failed",
+            },
         ]
 
 

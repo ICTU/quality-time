@@ -11,8 +11,8 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
     async def test_many_parameters(self):
         """Test that the number of functions with too many parameters is returned."""
         self.set_source_parameter("rules", ["rule1"])
-        many_parameters_json = dict(total="2", issues=[])
-        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
+        many_parameters_json = {"total": "2", "issues": []}
+        functions_json = {"component": {"measures": [{"metric": "functions", "value": "4"}]}}
         response = await self.collect(
             get_request_json_side_effect=[
                 {},
@@ -21,7 +21,7 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
                 many_parameters_json,
                 functions_json,
                 many_parameters_json,
-            ]
+            ],
         )
         self.assert_measurement(
             response,

@@ -7,7 +7,7 @@ class RobotFrameworkJenkinsPluginTest(RobotFrameworkJenkinsPluginTestCase):
     """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
     METRIC_TYPE = "tests"
-    JENKINS_JSON = dict(overallTotal=2, overallFailed=1, overallPassed=1)
+    JENKINS_JSON = {"overallTotal": 2, "overallFailed": 1, "overallPassed": 1}
 
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""

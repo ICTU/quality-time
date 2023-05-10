@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import cast
 
 from base_collectors import TimePassedCollector
+from collector_utilities.date_time import parse_datetime, MIN_DATETIME
 from collector_utilities.type import Response
 from model import SourceResponses
 
@@ -14,7 +15,7 @@ class CalendarSourceUpToDateness(TimePassedCollector):
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Override to return the date from the user-supplied date parameter."""
-        return [datetime.fromisoformat(cast(str, self._parameter("date")))]
+        return [parse_datetime(cast(str, self._parameter("date")))]
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to document that this method is never called.
@@ -22,4 +23,4 @@ class CalendarSourceUpToDateness(TimePassedCollector):
         Since the Calendar has no real source responses, we return the answer in _parse_source_response_date_times()
         and this method is never called.
         """
-        raise RuntimeError("This method should never be called")  # pragma: no cover
+        return MIN_DATETIME  # pragma: no cover

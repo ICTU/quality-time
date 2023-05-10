@@ -18,5 +18,7 @@ class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         self.set_source_parameter("private_token", "token")
         response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(
-            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
+            response,
+            value="2",
+            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100",
         )

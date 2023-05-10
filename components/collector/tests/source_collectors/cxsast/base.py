@@ -1,6 +1,6 @@
 """Base class for Checkmarx CxSAST collector unit tests."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class CxSASTTestCase(SourceCollectorTestCase):

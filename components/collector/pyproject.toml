@@ -9,19 +9,16 @@ dependencies = [
     "packaging==23.1",
     "pymongo==4.3.3",
     "python-dateutil==2.8.2",
-    "typing_extensions==4.6.3"
 ]
 
 [project.optional-dependencies]
 dev = [
     "coverage==7.2.7",
     "mongomock==4.1.2",
-    "pep8-naming==0.13.3",
     "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
     "pydantic==1.10.8",  # Needed for importing the data model in the tests from the shared data model component
-    "pylint==2.17.4",
     "types-beautifulsoup4==4.12.0.5",
     "types-python-dateutil==2.8.19.13",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
@@ -29,9 +26,9 @@ dev = [
 tools = [
     "bandit==1.7.5",
     "black==23.3.0",
-    "dlint==0.14.1",
     "mypy==1.3.0",
     "pip-audit==2.5.6",
+    "ruff==0.0.265",
     "safety==2.3.5",
     "vulture==2.7"
 ]
@@ -52,3 +49,40 @@ module = [
     "defusedxml"
 ]
 ignore_missing_imports = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+select = ["ALL"]
+ignore = [
+    "ANN001",  # https://beta.ruff.rs/docs/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
+    "ANN002",  # https://beta.ruff.rs/docs/rules/missing-type-args/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN003",  # https://beta.ruff.rs/docs/rules/missing-type-kwargs/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN101",  # https://beta.ruff.rs/docs/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
+    "ANN102",  # https://beta.ruff.rs/docs/rules/missing-type-cls/ - type checkers can infer the type of `cls`, so annotating it is superfluous
+    "ANN204",  # https://beta.ruff.rs/docs/rules/missing-return-type-special-method/ - typing classes that inherit from set and list correctly is surprisingly hard
+    "ARG002",  # https://beta.ruff.rs/docs/rules/unused-method-argument/ - this rule doesn't take inheritance into account
+    "D107",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - requiring __init__() methods to have docstrings seems a bit much
+    "D203",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",     # https://beta.ruff.rs/docs/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+    "I001",    # https://beta.ruff.rs/docs/rules/unsorted-imports/ - (probably) because ruff is run with pipx it cann't differentiate between dependencies and modules
+    "PD",      # https://beta.ruff.rs/docs/rules/#pandas-vet-pd - pandas isn't used
+    "PT",      # https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt - pytest isn't used
+]
+
+[tool.ruff.per-file-ignores]
+".vulture_ignore_list.py" = ["ALL"]
+"__init__.py" = [
+    "D104",  # https://beta.ruff.rs/docs/rules/#pydocstyle-d - don't require doc strings in __init__.py files
+    "F401",  # https://beta.ruff.rs/docs/rules/#pyflakes-f - collectors are imported in __init__.py files to flatten the module hierarchy
+]
+"src/base_collectors/source_collector.py" = [
+    "BLE001"  # https://beta.ruff.rs/docs/rules/#flake8-blind-except-ble - allow for catching blind exception `Exception`
+]
+"src/quality_time_collector.py" = [
+    "INP001",  # https://beta.ruff.rs/docs/rules/implicit-namespace-package/ - false positive because this is the main script
+]
+"tests/**/*.py" = [
+    "ANN201",  # https://beta.ruff.rs/docs/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
+]

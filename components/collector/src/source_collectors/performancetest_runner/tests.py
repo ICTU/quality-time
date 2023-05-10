@@ -14,13 +14,14 @@ from .base import PerformanceTestRunnerBaseClass
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of (successful and/or failing) performance test transactions."""
 
-    COLUMN_INDICES = dict(failed=7, success=1)
+    # For each tests status, the column in the HMTL table that contains the number of tests with that status:
+    COLUMN_INDICES = {"failed": 7, "success": 1}
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the transactions from the responses and return the transactions with the desired status."""
         transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
-        counts = dict(failed=0, success=0)
+        counts = {"failed": 0, "success": 0}
         for response in responses:
             count = await self.__parse_response(response, transactions_to_include, transactions_to_ignore)
             for status in count:
@@ -37,7 +38,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     ) -> dict[str, int]:
         """Parse the transactions from the response."""
         soup = await cls._soup(response)
-        count = dict(failed=0, success=0)
+        count = {"failed": 0, "success": 0}
         for transaction in cast(Tag, soup.find(id="responsetimestable_begin")).select("tr.transaction"):
             name = cls._name(transaction)
             if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):

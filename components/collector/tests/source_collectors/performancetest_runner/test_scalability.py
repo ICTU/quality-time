@@ -2,7 +2,6 @@
 
 from .base import PerformanceTestRunnerTestCase
 
-
 PERFORMANCETEST_RUNNER_HTML = """
 <html>
     <table class="config">

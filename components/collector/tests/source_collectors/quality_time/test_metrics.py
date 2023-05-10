@@ -1,6 +1,6 @@
 """Unit tests for the Quality-time metrics collector."""
 
-from datetime import datetime, timezone
+from collector_utilities.date_time import now
 
 from .base import QualityTimeTestCase
 
@@ -15,7 +15,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         super().setUp()
         self.api_url = f"{self.url}/api/v3/report"
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: str) -> None:
         """Override to pass the api and landing URLs."""
         attributes["api_url"] = self.api_url
         super().assert_measurement(measurement, source_index=source_index, **attributes)
@@ -31,27 +31,27 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
             value="1",
             total="3",
             entities=[
-                dict(
-                    key="m2",
-                    report="R1",
-                    subject="S1",
-                    metric="Violations",
-                    report_url=f"{self.url}/r1",
-                    subject_url=f"{self.url}/r1#s1",
-                    metric_url=f"{self.url}/r1#m2",
-                    measurement="20",
-                    target="≦ 2",
-                    unit="violations",
-                    status="target_not_met",
-                    status_start_date="2020-05-23T07:53:17+00:00",
-                )
+                {
+                    "key": "m2",
+                    "report": "R1",
+                    "subject": "S1",
+                    "metric": "Violations",
+                    "report_url": f"{self.url}/r1",
+                    "subject_url": f"{self.url}/r1#s1",
+                    "metric_url": f"{self.url}/r1#m2",
+                    "measurement": "20",
+                    "target": "≦ 2",
+                    "unit": "violations",
+                    "status": "target_not_met",
+                    "status_start_date": "2020-05-23T07:53:17+00:00",
+                },
             ],
         )
 
     async def test_nr_of_metrics_without_reports(self):
         """Test that the number of metrics is returned."""
         self.set_source_parameter("reports", [])
-        response = await self.collect(get_request_json_return_value=dict(reports=[]))
+        response = await self.collect(get_request_json_return_value={"reports": []})
         self.assert_measurement(response, parse_error="No reports found")
 
     async def test_nr_of_metrics_without_correct_report(self):
@@ -66,28 +66,28 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("status", ["target not met (red)", "target met (green)"])
         metrics = self.reports["reports"][0]["subjects"]["s1"]["metrics"]
         # Give m1 a recently changed status to test that it will be ignored
-        metrics["m1"]["status_start"] = datetime.now(tz=timezone.utc).isoformat()
+        metrics["m1"]["status_start"] = now().isoformat()
         # Give m3 a status but no change date to test that it will be ignored
-        metrics["m3"]["recent_measurements"].append(dict(count=dict(status="target_met")))
+        metrics["m3"]["recent_measurements"].append({"count": {"status": "target_met"}})
         response = await self.collect(get_request_json_return_value=self.reports)
         self.assert_measurement(
             response,
             value="1",
             total="3",
             entities=[
-                dict(
-                    key="m2",
-                    report="R1",
-                    subject="S1",
-                    metric="Violations",
-                    report_url=f"{self.url}/r1",
-                    subject_url=f"{self.url}/r1#s1",
-                    metric_url=f"{self.url}/r1#m2",
-                    measurement="20",
-                    target="≦ 2",
-                    unit="violations",
-                    status="target_not_met",
-                    status_start_date="2020-05-23T07:53:17+00:00",
-                )
+                {
+                    "key": "m2",
+                    "report": "R1",
+                    "subject": "S1",
+                    "metric": "Violations",
+                    "report_url": f"{self.url}/r1",
+                    "subject_url": f"{self.url}/r1#s1",
+                    "metric_url": f"{self.url}/r1#m2",
+                    "measurement": "20",
+                    "target": "≦ 2",
+                    "unit": "violations",
+                    "status": "target_not_met",
+                    "status_start_date": "2020-05-23T07:53:17+00:00",
+                },
             ],
         )
