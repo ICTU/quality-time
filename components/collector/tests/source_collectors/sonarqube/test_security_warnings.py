@@ -44,6 +44,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     vulnerabilityProbability="MEDIUM",
                     creationDate="2010-12-13T10:37:07+0000",
                     updateDate="2019-08-26T09:02:49+0000",
+                    status="TO_REVIEW",
                 ),
                 dict(
                     key="hotspot2",
@@ -52,6 +53,8 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     vulnerabilityProbability="LOW",
                     creationDate="2011-10-26T13:34:12+0000",
                     updateDate="2020-08-31T08:19:00+0000",
+                    status="REVIEWED",
+                    resolution="FIXED",
                 ),
             ],
         )
@@ -64,6 +67,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 review_priority="medium",
                 creation_date="2010-12-13T10:37:07+0000",
                 update_date="2019-08-26T09:02:49+0000",
+                hotspot_status="to review",
             ),
             self.entity(
                 key="hotspot2",
@@ -73,6 +77,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 review_priority="low",
                 creation_date="2011-10-26T13:34:12+0000",
                 update_date="2020-08-31T08:19:00+0000",
+                hotspot_status="fixed",
             ),
         ]
         self.vulnerability_entities = [
@@ -132,4 +137,17 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             total="100",
             entities=self.vulnerability_entities,
             landing_url="https://sonarqube/project/issues?id=id&branch=master&resolved=false&types=VULNERABILITY",
+        )
+
+    async def test_filter_security_warnings_hotspots_by_status(self):
+        """Test that the security hotspots can be filtered by status."""
+        self.set_source_parameter("security_types", ["security_hotspot"])
+        self.set_source_parameter("hotspot_statuses", ["fixed"])
+        response = await self.collect(get_request_json_return_value=self.hotspots_json)
+        self.assert_measurement(
+            response,
+            value="1",
+            total="100",
+            entities=self.hotspot_entities[1:],
+            landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
         )

@@ -23,7 +23,9 @@ class Lines(str, Enum):
     CODE = "lines with code"
 
 
-def violation_entity_attributes(include_review_priority=False, include_resolution=False, include_rationale=False):
+def violation_entity_attributes(
+    include_review_priority=False, include_resolution=False, include_rationale=False, include_status=False
+):
     """Return the violation entity attributes."""
     attributes = [
         dict(name="Message"),
@@ -31,7 +33,9 @@ def violation_entity_attributes(include_review_priority=False, include_resolutio
     ]
     if include_review_priority:
         attributes.append(dict(name="Review priority", color=dict(high=Color.NEGATIVE, medium=Color.WARNING)))
-    attributes.append(dict(name="Type"))
+    attributes.append(dict(name="Warning type", key="type"))
+    if include_status:
+        attributes.append(dict(name="Hotspot status"))
     if include_resolution:
         attributes.append(dict(name="Resolution"))
     if include_rationale:
@@ -245,6 +249,14 @@ SONARQUBE = Source.parse_obj(
                 values=["info", "minor", "major", "critical", "blocker"],
                 metrics=["security_warnings", "suppressed_violations", "violations"],
             ),
+            hotspot_statuses=MultipleChoiceParameter(
+                name="Security hotspot statuses",
+                short_name="hotspot statuses",
+                help_url="https://docs.sonarqube.org/latest/user-guide/security-hotspots/",
+                placeholder="all hotspot statuses",
+                values=["to review", "acknowledged", "safe", "fixed"],
+                metrics=["security_warnings"],
+            ),
             review_priorities=MultipleChoiceParameter(
                 name="Security hotspot review priorities",
                 short_name="review priorities",
@@ -280,10 +292,10 @@ SONARQUBE = Source.parse_obj(
             security_types=MultipleChoiceParameter(
                 name="Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)",
                 short_name="types",
-                placeholder="all security issue types",
+                placeholder="vulnerability",
                 help_url="https://docs.sonarqube.org/latest/user-guide/rules/",
                 default_value=["vulnerability"],
-                values=["vulnerability", "security_hotspot"],
+                values=["security_hotspot", "vulnerability"],
                 metrics=["security_warnings"],
             ),
         ),
@@ -309,7 +321,8 @@ SONARQUBE = Source.parse_obj(
                 ],
             ),
             security_warnings=dict(
-                name="security warning", attributes=violation_entity_attributes(include_review_priority=True)
+                name="security warning",
+                attributes=violation_entity_attributes(include_review_priority=True, include_status=True),
             ),
             suppressed_violations=dict(
                 name="violation",

@@ -29,6 +29,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         review_priority: str = None,
         creation_date: str = None,
         update_date: str = None,
+        hotspot_status: str = None,
     ) -> Entity:
         """Create an entity."""
         url = (
@@ -53,4 +54,6 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
             entity["rationale"] = rationale
         if review_priority is not None:
             entity["review_priority"] = review_priority
+        if hotspot_status is not None:
+            entity["hotspot_status"] = hotspot_status
         return entity

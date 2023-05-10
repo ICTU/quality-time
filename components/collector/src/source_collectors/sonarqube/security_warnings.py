@@ -45,17 +45,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
                 )
             )
         if "security_hotspot" in security_types:
-            # Note: SonarQube is a bit inconsistent. For issue search, the SonarQube status parameter is called
-            # "statuses", but for hotspots it's called "status".
-            api_urls.append(
-                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&status=TO_REVIEW&ps=500")
-            )
+            api_urls.append(URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps=500"))
         return await super()._get_source_responses(*api_urls, **kwargs)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the selected security types."""
         security_types = self._parameter(self.types_parameter)
-        review_priorities = [priority.upper() for priority in self._parameter("review_priorities")]
         vulnerabilities = (
             await super()._parse_source_responses(SourceResponses(responses=[responses[0]]))
             if "vulnerability" in security_types
@@ -64,9 +59,9 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         if "security_hotspot" in security_types:
             json = await responses[-1].json()
             hotspots = [
-                await self.__entity(hotspot)
+                await self.__hotspot_entity(hotspot)
                 for hotspot in json.get("hotspots", [])
-                if hotspot["vulnerabilityProbability"] in review_priorities
+                if self.__include_hotspot(hotspot)
             ]
         else:
             hotspots = []
@@ -75,8 +70,16 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             entities=vulnerabilities.entities + hotspots,
         )
 
-    async def __entity(self, hotspot) -> Entity:
-        """Create the security warning entity."""
+    def __include_hotspot(self, hotspot) -> bool:
+        """Return whether to include the hotspot."""
+        review_priorities = self._parameter("review_priorities")
+        review_priority = hotspot["vulnerabilityProbability"].lower()
+        statuses = self._parameter("hotspot_statuses")
+        status = self.__hotspot_status(hotspot)
+        return review_priority in review_priorities and status in statuses
+
+    async def __hotspot_entity(self, hotspot) -> Entity:
+        """Create the security warning entity for the hotspot."""
         return Entity(
             key=hotspot["key"],
             component=hotspot["component"],
@@ -86,7 +89,18 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             review_priority=hotspot["vulnerabilityProbability"].lower(),
             creation_date=hotspot["creationDate"],
             update_date=hotspot["updateDate"],
+            hotspot_status=self.__hotspot_status(hotspot),
         )
+
+    @staticmethod
+    def __hotspot_status(hotspot: dict[str, str]) -> str:
+        """Return the hotspot status."""
+        # The SonarQube documentation describes the hotspot lifecycle as having four statuses (see
+        # https://docs.sonarqube.org/latest/user-guide/security-hotspots/#lifecycle): 'to review', 'acknowledged',
+        # 'fixed', and 'safe'. However, in the API the status is either 'to review' or 'reviewed' and the other
+        # statuses ('acknowledged', 'fixed', and 'safe') are called resolutions. So to determine the status as defined
+        # by the docs, check both the hotspot status and the hotspot resolution:
+        return "to review" if hotspot["status"] == "TO_REVIEW" else hotspot["resolution"].lower()
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""
