@@ -48,12 +48,12 @@ class JiraIssues(JiraBase):
             parameter_value = self._field_ids[str(parameter_value).lower()]
         return parameter_value
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to implement pagination."""
         all_responses = SourceResponses(api_url=urls[0])
         max_results = await self._determine_max_results()
         for start_at in itertools.count(0, max_results):  # pragma: no cover
-            responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"), **kwargs)
+            responses = await super()._get_source_responses(URL(f"{urls[0]}&startAt={start_at}"))
             if issues := await self._issues(responses):
                 all_responses.extend(responses)
             if len(issues) < max_results:

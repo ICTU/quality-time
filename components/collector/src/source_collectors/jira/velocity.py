@@ -20,11 +20,11 @@ SprintPoints = dict[str, Points]
 class JiraVelocity(JiraBase):
     """Collector to get sprint velocity from Jira."""
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to pass the Greenhopper velocity chart API."""
         board_id = await self.__board_id(urls[0])
         api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
-        return await super()._get_source_responses(api_url, **kwargs)
+        return await super()._get_source_responses(api_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the sprint values from the responses."""

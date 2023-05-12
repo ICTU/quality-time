@@ -15,15 +15,15 @@ from model import Entities, Entity, SourceResponses
 class GitLabBase(SourceCollector, ABC):
     """Base class for GitLab collectors."""
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
-        all_responses = responses = await super()._get_source_responses(*urls, **kwargs)
+        all_responses = responses = await super()._get_source_responses(*urls)
         while next_urls := await self._next_urls(responses):
             # Retrieving consecutive big responses without reading the response hangs the client, see
             # https://github.com/aio-libs/aiohttp/issues/2217
             for response in responses:
                 await response.read()
-            all_responses.extend(responses := await super()._get_source_responses(*next_urls, **kwargs))
+            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
         return all_responses
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
