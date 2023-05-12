@@ -109,14 +109,15 @@ class SourceCollector(ABC):
         """Return a log-safe version of the exception."""
         return tokenless(str(exception)) if str(exception) else exception.__class__.__name__
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
+        kwargs: dict[str, aiohttp.BasicAuth | dict[str, str]] = {}
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
         if headers := self._headers():
             kwargs["headers"] = headers
-        tasks = [self._session.get(url, **kwargs) for url in urls if url]
+        tasks = [self._session.get(url, allow_redirects=True, **kwargs) for url in urls if url]
         responses = await asyncio.gather(*tasks, return_exceptions=True)
         for response in responses:
             if isinstance(response, Exception):

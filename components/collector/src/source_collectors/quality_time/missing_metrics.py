@@ -13,12 +13,12 @@ from .base import QualityTimeCollector
 class QualityTimeMissingMetrics(QualityTimeCollector):
     """Collector to get the number of missing metrics from Quality-time."""
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
         datamodel_url = URL(f"{api_url}/datamodel")
         reports_url = URL(f"{api_url}/report")
-        return await super()._get_source_responses(datamodel_url, reports_url, **kwargs)
+        return await super()._get_source_responses(datamodel_url, reports_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""

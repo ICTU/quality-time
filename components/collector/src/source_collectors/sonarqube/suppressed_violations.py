@@ -23,7 +23,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         branch = self._parameter("branch")
         return URL(f"{url}/project/issues?id={component}&branch={branch}")
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get the suppressed violations from SonarQube.
 
         In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
@@ -37,7 +37,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
             f"{all_issues_api_url}&statuses=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&additionalFields=comments"
             f"{self._query_parameter('severities')}{self._query_parameter(self.types_parameter)}&ps=500"
         )
-        return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)), **kwargs)
+        return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Extend to get the total number of violations from the responses."""

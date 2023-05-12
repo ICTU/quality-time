@@ -51,7 +51,7 @@ class AzureDevopsIssues(SourceCollector):
         ]
         return SourceResponses(responses=responses, api_url=api_url)
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
         api_url = urls[0]
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))

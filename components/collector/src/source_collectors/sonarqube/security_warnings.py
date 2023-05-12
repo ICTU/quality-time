@@ -30,7 +30,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_path = "project/security_hotspots"
         return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:  # skipcq: PYL-W0613
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:  # skipcq: PYL-W0613
         """Extend to add urls for the selected security types."""
         api_urls = []
         security_types = self._parameter(self.types_parameter)
@@ -46,7 +46,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             )
         if "security_hotspot" in security_types:
             api_urls.append(URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps=500"))
-        return await super()._get_source_responses(*api_urls, **kwargs)
+        return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the selected security types."""

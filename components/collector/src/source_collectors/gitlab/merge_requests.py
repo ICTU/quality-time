@@ -65,7 +65,7 @@ class GitLabMergeRequests(GitLabBase):
         """Extend to add the project branches."""
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/merge_requests")
 
-    async def _get_source_responses(self, *urls: URL, **kwargs) -> SourceResponses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to use the GitLab GraphQL API to retrieve the merge requests.
 
         We can't use the GitLab REST API because that API doesn't support the approved field of merge requests.
