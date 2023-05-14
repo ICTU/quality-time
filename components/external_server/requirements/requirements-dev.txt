@@ -8,9 +8,9 @@ argcomplete==3.0.8 \
     --hash=sha256:b9ca96448e14fa459d7450a4ab5a22bbf9cee4ba7adddf03e65c398b5daeea28 \
     --hash=sha256:e36fd646839933cbec7941c662ecb65338248667358dd3d968405a4506a60d9b
     # via pipx
-astroid==2.15.4 \
-    --hash=sha256:a1b8543ef9d36ea777194bc9b17f5f8678d2c56ee6a45b2c2f17eec96f242347 \
-    --hash=sha256:c81e1c7fbac615037744d067a9bb5f9aeb655edf59b63ee8b59585475d6f80d8
+astroid==2.15.5 \
+    --hash=sha256:078e5212f9885fa85fbb0cf0101978a336190aadea6e13305409d099f71b2324 \
+    --hash=sha256:1039262575027b441137ab4a62a793a9b43defb42c32d5670f38686207cd780f
     # via pylint
 bottle==0.12.25 \
     --hash=sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea \
@@ -530,9 +530,9 @@ pipx==1.2.0 \
     --hash=sha256:a94c4bca865cd6e85b37cd6717a22481744890fe36b70db081a78d1feb923ce0 \
     --hash=sha256:d1908041d24d525cafebeb177efb686133d719499cb55c54f596c95add579286
     # via external-server (pyproject.toml)
-platformdirs==3.5.0 \
-    --hash=sha256:47692bc24c1958e8b0f13dd727307cff1db103fca36399f457da8e05f222fdc4 \
-    --hash=sha256:7954a68d0ba23558d753f73437c55f89027cf8f5108c19844d4b82e5af396335
+platformdirs==3.5.1 \
+    --hash=sha256:412dae91f52a6f84830f39a8078cecd0e866cb72294a5c66808e74d5e88d251f \
+    --hash=sha256:e2378146f1964972c03c085bb5662ae80b2b8c06226c54b2ff4aa9483e8a13a5
     # via pylint
 pyasn1==0.5.0 \
     --hash=sha256:87a2121042a1ac9358cabcaf1d07680ff97ee6404333bacca15f76aa8ad01a57 \
@@ -684,9 +684,9 @@ types-cryptography==3.3.23.2 \
     --hash=sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75 \
     --hash=sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f
     # via external-server (pyproject.toml)
-types-ldap3==2.9.13.12 \
-    --hash=sha256:17cc381841ce2a004a9d7fb5b677f84f886934399764f7e7b1f982843850a97a \
-    --hash=sha256:5cc3ed6d16b50027db568087a491f2b9e1a5194f1abcab01d4654528dc1e267b
+types-ldap3==2.9.13.13 \
+    --hash=sha256:16ea07fb8ba245d9997f80ca3a088f383ac9116e11faa58e8aac5d4da5ffef52 \
+    --hash=sha256:35c479965d8af96a231f3320df98f2a311a90ec40abf4479cf4e8bbeda253ae2
     # via external-server (pyproject.toml)
 types-pyasn1==0.4.0.5 \
     --hash=sha256:c5d661b820922b9a99b984b6c2c051734b5ceaa8732206f7196055b5f799ddb6 \
@@ -696,9 +696,9 @@ types-requests==2.30.0.0 \
     --hash=sha256:c6cf08e120ca9f0dc4fa4e32c3f953c3fba222bcc1db6b97695bce8da1ba9864 \
     --hash=sha256:dec781054324a70ba64430ae9e62e7e9c8e4618c185a5cb3f87a6738251b5a31
     # via external-server (pyproject.toml)
-types-urllib3==1.26.25.12 \
-    --hash=sha256:3ba3d3a8ee46e0d5512c6bd0594da4f10b2584b47a470f8422044a2ab462f1df \
-    --hash=sha256:a1557355ce8d350a555d142589f3001903757d2d36c18a66f588d9659bbc917d
+types-urllib3==1.26.25.13 \
+    --hash=sha256:3300538c9dc11dad32eae4827ac313f5d986b8b21494801f1bf97a1ac6c03ae5 \
+    --hash=sha256:5dbd1d2bef14efee43f5318b5d36d805a489f6600252bb53626d4bfafd95e27c
     # via types-requests
 typing-extensions==4.5.0 \
     --hash=sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb \
