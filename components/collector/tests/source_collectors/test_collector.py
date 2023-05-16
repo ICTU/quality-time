@@ -59,7 +59,7 @@ class CollectorTest(SourceCollectorTestCase):
         class FailingLandingUrl(SourceCollector):
             """Add a landing_url implementation that fails."""
 
-            async def _api_url(self) -> URL:  # skipcq: PYL-R0201
+            async def _api_url(self) -> URL:
                 """Override to return an URL fixture."""
                 return URL("https://api_url")
 
@@ -67,7 +67,7 @@ class CollectorTest(SourceCollectorTestCase):
                 """Override to raise an error."""
                 raise NotImplementedError
 
-        with patch("aiohttp.ClientSession.get", side_effect=Exception):  # skipcq: PTC-W0062
+        with patch("aiohttp.ClientSession.get", side_effect=Exception):
             async with aiohttp.ClientSession() as session:
                 response = await FailingLandingUrl(session, self.sources["source_id"]).collect()
         self.assertEqual("https://api_url", response.landing_url)
@@ -85,7 +85,7 @@ class CollectorTest(SourceCollectorTestCase):
         class ThreeParsedEntities(SourceCollector):
             """Fake collector returning parsed entities."""
 
-            async def _parse_entities(self, responses):  # skipcq: PYL-R0201
+            async def _parse_entities(self, responses):
                 """Return three parsed entities."""
                 return [dict(key=x) for x in range(3)]
 

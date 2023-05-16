@@ -7,13 +7,13 @@ monkey.patch_all()
 # pylint: disable=wrong-import-order,wrong-import-position
 
 import logging
-import os  # skipcq: FLK-E402
+import os
 
-import bottle  # skipcq: FLK-E402
+import bottle
 
-from shared.initialization.database import init_database  # skipcq: FLK-E402
+from shared.initialization.database import init_database
 
-from initialization import init_bottle  # skipcq: FLK-E402
+from initialization import init_bottle
 
 
 def serve() -> None:  # pragma: no feature-test-cover
@@ -26,5 +26,5 @@ def serve() -> None:  # pragma: no feature-test-cover
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
-if __name__ == "__main__":  # pragma: no feature-test-cover
+if __name__ == "__main__":  # pragma: no feature-test-cover, pragma: no cover
     serve()

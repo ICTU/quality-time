@@ -9,7 +9,7 @@ USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class SettingsTest(DatabaseTestCase):  # skipcq: PTC-W0046
+class SettingsTest(DatabaseTestCase):
     """Test class for settings endpoints."""
 
     def setUp(self):

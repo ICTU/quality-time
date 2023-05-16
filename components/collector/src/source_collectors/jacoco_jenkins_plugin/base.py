@@ -6,7 +6,7 @@ from base_collectors import JenkinsPluginCollector
 from model import SourceMeasurement, SourceResponses
 
 
-class JacocoJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
+class JacocoJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):
     """Base class for Jacoco Jenkins plugin collectors."""
 
     plugin = "jacoco"

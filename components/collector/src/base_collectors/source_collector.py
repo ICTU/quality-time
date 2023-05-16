@@ -131,7 +131,7 @@ class SourceCollector(ABC):
         credentials = username, password = self.__parameters.username(), self.__parameters.password()
         return credentials if username and password else None
 
-    def _headers(self) -> dict[str, str]:  # skipcq: PYL-R0201
+    def _headers(self) -> dict[str, str]:
         """Return the headers for the get request."""
         return {}
 

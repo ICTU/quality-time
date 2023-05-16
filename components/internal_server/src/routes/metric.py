@@ -13,7 +13,7 @@ def get_metrics(database: Database):
     """Get all metrics."""
     metrics: dict[str, Any] = {}
     # DeepSource somehow confuses latest_reports() with another latest_reports() that needs two arguments, suppress.
-    for report in latest_reports(database):  # skipcq: PYL-E1120
+    for report in latest_reports(database):
         issue_tracker = report.get("issue_tracker", {})
         has_issue_tracker = bool(issue_tracker.get("type") and issue_tracker.get("parameters", {}).get("url"))
         for metric in report.metrics:

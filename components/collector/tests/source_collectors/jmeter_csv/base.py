@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JMeterCSVTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class JMeterCSVTestCase(SourceCollectorTestCase):
     """Base class for JMeter CSV collector unit tests."""
 
     SOURCE_TYPE = "jmeter_csv"

@@ -6,7 +6,7 @@ from source_collectors.jira.issues import JiraIssues
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class JiraTestCase(SourceCollectorTestCase):
     """Base class for Jira unit tests."""
 
     SOURCE_TYPE = "jira"

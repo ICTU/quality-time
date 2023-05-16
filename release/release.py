@@ -5,7 +5,7 @@
 import datetime
 import os
 import pathlib
-import subprocess  # skipcq: BAN-B404
+import subprocess
 import sys
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
@@ -18,7 +18,7 @@ def get_version() -> str:
     """Return the current version."""
     command = f"bump2version --list --dry-run --allow-dirty --no-configured-files {PART} .bumpversion.cfg"
     try:
-        output = subprocess.check_output(command.split(" "), stderr=subprocess.STDOUT, text=True)  # skipcq: BAN-B603
+        output = subprocess.check_output(command.split(" "), stderr=subprocess.STDOUT, text=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         return "<unknown>"
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
@@ -130,8 +130,8 @@ def main() -> None:
     else:
         commands.append(["bump2version", bump])
     for command in commands:
-        subprocess.run(tuple(command), check=True)  # skipcq: BAN-B603
-    subprocess.run(("git", "push", "--follow-tags"), check=True)  # skipcq: BAN-B603
+        subprocess.run(tuple(command), check=True)
+    subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from model import Entity
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class SonarQubeTestCase(SourceCollectorTestCase):
     """Base class for the SonarQube metrics unit tests."""
 
     SOURCE_TYPE = "sonarqube"

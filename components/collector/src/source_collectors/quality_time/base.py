@@ -8,7 +8,7 @@ from collector_utilities.exceptions import CollectorException
 from collector_utilities.type import Response, URL
 
 
-class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
+class QualityTimeCollector(SourceCollector, ABC):
     """Base collector for Quality-time metrics."""
 
     API_VERSION = "v3"

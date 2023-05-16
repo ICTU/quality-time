@@ -17,7 +17,7 @@ USERNAME = "john-doe"
 PASSWORD = "secret"
 
 
-class AuthTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
+class AuthTestCase(DatabaseTestCase):
     """Base class for authorization tests."""
 
     def setUp(self):
@@ -25,7 +25,7 @@ class AuthTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
         super().setUp()
         self.database.secrets.find_one.return_value = {"public_key": "this_is_a_public_key"}
 
-    def tearDown(self):  # skipcq: PYL-R0201
+    def tearDown(self):
         """Override to remove the cookies and reset the logging."""
         bottle.response._cookies = None  # pylint: disable=protected-access
 

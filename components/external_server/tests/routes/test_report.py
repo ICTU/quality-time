@@ -27,7 +27,7 @@ from ..base import DataModelTestCase, disable_logging
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
-class ReportTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+class ReportTestCase(DataModelTestCase):
     """Base class for report route unit tests."""
 
     ISSUE_TRACKER_URL = "https://jira"
@@ -513,7 +513,6 @@ class ReportImportAndExportTest(ReportTestCase):
     def setUp(self):
         """Extend to set up a database with a report and a user session."""
         super().setUp()
-        # skipcq: SCT-1000
         self.private_key = """-----BEGIN PRIVATE KEY-----
 MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANdJVRdylaadsaau
 hRxNToIUIk/nSKMzfjjjP/20FEShkax1g4CYTwTdSMcuV+4blzzFSE+eDmMs1LNk

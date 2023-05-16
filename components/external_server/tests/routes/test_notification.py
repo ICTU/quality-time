@@ -14,7 +14,7 @@ from ..base import DataModelTestCase
 from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 
-class NotificationTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+class NotificationTestCase(DataModelTestCase):
     """Base class for notification unit tests."""
 
     def setUp(self):

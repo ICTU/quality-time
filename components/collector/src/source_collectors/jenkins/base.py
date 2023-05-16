@@ -65,6 +65,6 @@ class JenkinsJobs(SourceCollector):
                 return str(status).capitalize().replace("_", " ")
         return "Not built"
 
-    def _include_build(self, build) -> bool:  # pylint: disable=unused-argument # skipcq: PYL-W0613,PYL-R0201
+    def _include_build(self, build) -> bool:  # pylint: disable=unused-argument
         """Return whether to include this build or not."""
         return True

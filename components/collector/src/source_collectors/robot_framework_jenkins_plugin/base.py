@@ -5,7 +5,7 @@ from abc import ABC
 from base_collectors import JenkinsPluginCollector
 
 
-class RobotFrameworkJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
+class RobotFrameworkJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):
     """Base class for Robot Framework Jenkins plugin collectors."""
 
     plugin = "robot"

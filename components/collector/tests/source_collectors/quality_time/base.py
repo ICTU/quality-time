@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class QualityTimeTestCase(SourceCollectorTestCase):
     """Base class for Quality-time collector unit tests."""
 
     SOURCE_TYPE = "quality_time"

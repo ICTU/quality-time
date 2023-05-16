@@ -8,7 +8,7 @@ from ..base import DataModelTestCase
 from ..fixtures import REPORT_ID, create_report
 
 
-class ReportTest(DataModelTestCase):  # skipcq: PTC-W0046
+class ReportTest(DataModelTestCase):
     """Unit tests for getting reports."""
 
     def setUp(self):

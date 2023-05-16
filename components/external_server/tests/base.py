@@ -9,7 +9,7 @@ from unittest.mock import Mock
 from shared_data_model import DATA_MODEL_JSON
 
 
-class DatabaseTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+class DatabaseTestCase(unittest.TestCase):
     """Base class for unit tests that need a mock database."""
 
     def setUp(self):
@@ -17,7 +17,7 @@ class DatabaseTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         self.database = Mock()
 
 
-class DataModelTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
+class DataModelTestCase(DatabaseTestCase):
     """Base class for unit tests that use the data model."""
 
     @classmethod
@@ -45,9 +45,9 @@ def disable_logging(func):
     @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
         """Disable logging before calling func and reenable it afterwards."""
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
+        logging.disable(logging.CRITICAL)
         result = func(*args, **kwargs)
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
+        logging.disable(logging.NOTSET)
         return result
 
     return wrapper_decorator

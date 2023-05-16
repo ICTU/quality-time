@@ -34,7 +34,7 @@ class AzureDevopsIssues(SourceCollector):
             wiql_query_segments.append(wiql_parameter)
         return dict(query=" ".join(wiql_query_segments))
 
-    def _item_select_fields(self) -> list[str]:  # skipcq: PYL-R0201
+    def _item_select_fields(self) -> list[str]:
         """Return the API fields to select for individual issues."""
         return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
 
@@ -63,7 +63,7 @@ class AzureDevopsIssues(SourceCollector):
         work_items.insert(0, response)
         return work_items
 
-    def _parse_entity(self, work_item: dict) -> Entity:  # skipcq: PYL-R0201
+    def _parse_entity(self, work_item: dict) -> Entity:
         """Parse the default work item entity from fields."""
         return Entity(
             key=work_item["id"],
@@ -78,7 +78,7 @@ class AzureDevopsIssues(SourceCollector):
         """Override to parse the work items from the WIQL query response."""
         return Entities(self._parse_entity(work_item) for work_item in await self._work_items(responses))
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:  # skipcq: PYL-W0613
+    async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the value from the responses.
 
         We can't just count the entities because due to pagination the response may not contain all work items.
