@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Fixed
 
+- Reports for tags with spaces in them could not be exported to PDF. Fixes [#4765](https://github.com/ICTU/quality-time/issues/4765).
 - Remove useless popup that appears when hovering tags in the dashboard. Fixes [#5525](https://github.com/ICTU/quality-time/issues/5525).
 
 ### Added
