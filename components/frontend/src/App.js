@@ -31,7 +31,7 @@ class App extends Component {
 
     componentDidMount() {
         const pathname = this.history.location.pathname;
-        const report_uuid = pathname.slice(1, pathname.length);
+        const report_uuid = decodeURI(pathname.slice(1, pathname.length));
         const report_date_iso_string = registeredURLSearchParams(this.history).get("report_date") || "";
         let reportDate = null;
         if (isValidDate_YYYYMMDD(report_date_iso_string)) {
@@ -118,7 +118,7 @@ class App extends Component {
 
     open_report(event, report_uuid) {
         event.preventDefault();
-        this.history_push(report_uuid)
+        this.history_push(encodeURI(report_uuid))
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     }
 
