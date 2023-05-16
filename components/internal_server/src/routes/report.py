@@ -10,5 +10,5 @@ from database.reports import latest_reports
 def get_reports(database: Database) -> dict[str, list]:
     """Return the quality reports."""
     # DeepSource somehow confuses latest_reports() with another latest_reports() that needs two arguments, suppress.
-    reports = latest_reports(database)  # skipcq: PYL-E1120
+    reports = latest_reports(database)
     return dict(reports=reports)

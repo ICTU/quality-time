@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JUnitCollectorTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class JUnitCollectorTestCase(SourceCollectorTestCase):
     """Base class for Junit collector unit tests."""
 
     SOURCE_TYPE = "junit"

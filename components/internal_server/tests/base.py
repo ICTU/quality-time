@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from shared_data_model import DATA_MODEL_JSON
 
 
-class DatabaseTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+class DatabaseTestCase(unittest.TestCase):
     """Base class for unit tests that need a mock database."""
 
     def setUp(self):
@@ -15,7 +15,7 @@ class DatabaseTestCase(unittest.TestCase):  # skipcq: PTC-W0046
         self.database = Mock()
 
 
-class DataModelTestCase(DatabaseTestCase):  # skipcq: PTC-W0046
+class DataModelTestCase(DatabaseTestCase):
     """Base class for unit tests that use the data model."""
 
     @classmethod

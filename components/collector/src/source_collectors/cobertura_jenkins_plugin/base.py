@@ -6,7 +6,7 @@ from base_collectors import JenkinsPluginCollector
 from model import SourceMeasurement, SourceResponses
 
 
-class CoberturaJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
+class CoberturaJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):
     """Base class for Cobertura Jenkins plugin collectors."""
 
     plugin = "cobertura"

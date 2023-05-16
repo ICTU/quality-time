@@ -5,7 +5,7 @@ import unittest
 from pydantic import BaseModel, ValidationError  # pylint: disable=no-name-in-module
 
 
-class MetaModelTestCase(unittest.TestCase):  # skipcq: PTC-W0046
+class MetaModelTestCase(unittest.TestCase):
     """Meta model test case."""
 
     MODEL = BaseModel  # Should be overridden by subclasses

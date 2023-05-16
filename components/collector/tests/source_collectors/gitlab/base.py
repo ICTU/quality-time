@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class GitLabTestCase(SourceCollectorTestCase):
     """Base class for testing GitLab collectors."""
 
     SOURCE_TYPE = "gitlab"

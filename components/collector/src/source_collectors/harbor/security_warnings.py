@@ -26,7 +26,7 @@ class HarborBase(SourceCollector, ABC):
             all_responses.extend(responses := await super()._get_source_responses(*next_urls))
         return all_responses
 
-    def _next_urls(self, responses: SourceResponses) -> list[URL]:  # skipcq: PYL-R0201
+    def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses."""
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 

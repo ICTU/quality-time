@@ -8,7 +8,7 @@ from collector_utilities.type import URL
 from model import Entities, SourceMeasurement, SourceResponses
 
 
-class SonarQubeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
+class SonarQubeCollector(SourceCollector, ABC):
     """Base class for SonarQube collectors."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -76,7 +76,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: Metrics) -> Entities:  # pylint: disable=unused-argument # skipcq: PYL-R0201
+    async def _entities(self, metrics: Metrics) -> Entities:  # pylint: disable=unused-argument
         """Return the entities."""
         return Entities()
 

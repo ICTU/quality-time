@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class AzureDevopsTestCase(SourceCollectorTestCase):
     """Base class for testing Azure DevOps collectors."""
 
     SOURCE_TYPE = "azure_devops"
@@ -27,7 +27,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         )
 
 
-class AzureDevopsJobsTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
+class AzureDevopsJobsTestCase(AzureDevopsTestCase):
     """Base class for Azure DevOps jobs collectors."""
 
     def setUp(self):
@@ -79,7 +79,7 @@ class AzureDevopsJobsTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
         ]
 
 
-class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
+class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
     """Base class for Azure DevOps pipeline collectors."""
 
     def setUp(self):

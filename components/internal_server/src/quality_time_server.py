@@ -7,13 +7,13 @@ monkey.patch_all()
 # pylint: disable=wrong-import-order,wrong-import-position
 
 import logging
-import os  # skipcq: FLK-E402
+import os
 
-import bottle  # skipcq: FLK-E402
+import bottle
 
-from shared.initialization.database import init_database  # skipcq: FLK-E402
+from shared.initialization.database import init_database
 
-from initialization import init_bottle, merge_unmerged_measurements, rename_issue_lead_time  # skipcq: FLK-E402
+from initialization import init_bottle, merge_unmerged_measurements, rename_issue_lead_time
 
 
 def serve() -> None:  # pragma: no feature-test-cover

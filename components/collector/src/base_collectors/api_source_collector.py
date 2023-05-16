@@ -9,7 +9,7 @@ from model import SourceResponses
 from .source_collector import SourceCollector, TimePassedCollector
 
 
-class JenkinsPluginCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
+class JenkinsPluginCollector(SourceCollector, ABC):
     """Base class for Jenkins plugin collectors."""
 
     plugin = "Subclass responsibility"

@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class GatlingTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class GatlingTestCase(SourceCollectorTestCase):
     """Base class for Gatling collector unit tests."""
 
     SOURCE_TYPE = "gatling"

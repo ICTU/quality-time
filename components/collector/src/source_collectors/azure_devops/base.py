@@ -111,7 +111,7 @@ class AzureDevopsPipelines(SourceCollector):
         pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
         return [(pipeline["id"], pipeline["name"]) for pipeline in pipelines if "id" in pipeline]
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:  # skipcq: PYL-W0613
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the pipelines."""
         entities = Entities()
 

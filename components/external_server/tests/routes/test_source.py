@@ -42,7 +42,7 @@ from ..fixtures import (
 from ..base import DataModelTestCase
 
 
-class SourceTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+class SourceTestCase(DataModelTestCase):
     """Common fixtures for the source route unit tests."""
 
     def setUp(self):

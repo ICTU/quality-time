@@ -16,7 +16,7 @@ class CalendarSourceUpToDateness(TimePassedCollector):
         """Override to return the date from the user-supplied date parameter."""
         return [datetime.fromisoformat(cast(str, self._parameter("date")))]
 
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:  # skipcq: PYL-R0201
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to document that this method is never called.
 
         Since the Calendar has no real source responses, we return the answer in _parse_source_response_date_times()

@@ -18,7 +18,7 @@ from ...fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
 from ..base import DataModelTestCase
 
 
-class MeasurementTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+class MeasurementTestCase(DataModelTestCase):
     """Base class for measurement unit tests."""
 
     def metric(self, metric_type="tests", addition="sum", sources=None, **kwargs) -> Metric:

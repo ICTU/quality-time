@@ -19,7 +19,7 @@ class AuthPluginTest(DatabaseTestCase):
     def setUp(self):
         """Override to set up a mock database and install the plugins."""
         super().setUp()
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
+        logging.disable(logging.CRITICAL)
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.sessions.find_one.return_value = None
         self.session = dict(
@@ -34,7 +34,7 @@ class AuthPluginTest(DatabaseTestCase):
         """Override to remove the plugins and reset the logging."""
         bottle.uninstall(self.auth_plugin)
         bottle.uninstall(self.injection_plugin)
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
+        logging.disable(logging.NOTSET)
 
     @staticmethod
     def route(database, user: User = None):

@@ -6,7 +6,9 @@ include =
     tests/*
 omit =
     */conf.py
-    src/quality_time_*.py
+    collector/src/quality_time_*.py
+    internal_server/src/quality_time_*.py
+    notifier/src/quality_time_*.py
     tests/*under_coverage.py
     */venv/*
     */.venv/*

@@ -3,7 +3,7 @@
 from ..source_collector_test_case import SourceCollectorTestCase
 
 
-class JenkinsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
+class JenkinsTestCase(SourceCollectorTestCase):
     """Fixture for Jenkins unit tests."""
 
     SOURCE_TYPE = "jenkins"

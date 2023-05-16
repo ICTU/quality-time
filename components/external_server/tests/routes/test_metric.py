@@ -37,7 +37,7 @@ from ..fixtures import (
 from ..base import DataModelTestCase, disable_logging
 
 
-class PostMetricAttributeTestCase(DataModelTestCase):  # skipcq: PTC-W0046
+class PostMetricAttributeTestCase(DataModelTestCase):
     """Base class for unit tests for the post metric attribute routes."""
 
     def setUp(self):
@@ -522,7 +522,7 @@ class MetricTest(DataModelTestCase):
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual({}, updated_report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
         self.assert_delta(
             "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
             "report 'Report'.",
@@ -541,7 +541,7 @@ class MetricTest(DataModelTestCase):
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         updated_reports = self.database.reports.insert_many.call_args[0][0]
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))  # skipcq: PTC-W0063
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
         expected_description = (
             "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
             "report 'Target'."

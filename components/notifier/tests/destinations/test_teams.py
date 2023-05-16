@@ -18,11 +18,11 @@ class SendNotificationToTeamsTests(TestCase):
 
     def test_invalid_webhook(self, mock_send):
         """Test that exceptions are caught."""
-        logging.disable(logging.CRITICAL)  # skipcq: PY-A6006
+        logging.disable(logging.CRITICAL)
         mock_send.side_effect = OSError("Some error")
         send_notification("invalid_webhook", self.message)
         mock_send.assert_called()
-        logging.disable(logging.NOTSET)  # skipcq: PY-A6006
+        logging.disable(logging.NOTSET)
 
     def test_valid_webhook(self, mock_send):
         """Test that a valid message is sent to a valid webhook."""
