@@ -5,7 +5,7 @@ import logging
 import os
 import time
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Any, Coroutine, Final, NoReturn, cast
 
 import aiohttp
@@ -64,7 +64,7 @@ class Collector:
         filename = os.getenv("HEALTH_CHECK_FILE", "/home/collector/health_check.txt")
         try:
             with open(filename, "w", encoding="utf-8") as health_check:
-                health_check.write(datetime.now().isoformat())
+                health_check.write(datetime.now(tz=UTC).isoformat())
         except OSError as reason:
             logging.error("Could not write health check time stamp to %s: %s", filename, reason)
 
