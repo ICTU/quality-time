@@ -2,7 +2,7 @@
 
 import asyncio
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from os import getenv
 from typing import NoReturn
 
@@ -37,7 +37,7 @@ def record_health() -> None:
     filename = getenv("HEALTH_CHECK_FILE", "/home/notifier/health_check.txt")
     try:
         with open(filename, "w", encoding="utf-8") as health_check:
-            health_check.write(datetime.now().isoformat())
+            health_check.write(datetime.now(tz=UTC).isoformat())
     except OSError as reason:
         logging.error("Could not write health check time stamp to %s: %s", filename, reason)
 
