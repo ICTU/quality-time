@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
 
+### Changed
+
+- Change the default sort order of dates in a quality report from descending to ascending. Closes [#5998](https://github.com/ICTU/quality-time/issues/5998).
+
 ## v4.10.0 - 2023-04-26
 
 ### Deployment notes
