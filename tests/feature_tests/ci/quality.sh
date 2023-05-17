@@ -25,8 +25,7 @@ run pipx run `spec safety` check --bare -r requirements/requirements-dev.txt
 run pipx run `spec bandit` --quiet --recursive src/
 
 # Vulture
-# Set the min confidence to 70% because otherwise Vulture reports step implementations as unused:
-run pipx run `spec vulture` --min-confidence 70 src/ .vulture_ignore_list.py
+run pipx run `spec vulture` --min-confidence 0 src/ .vulture_ignore_list.py
 
 # Black
 run pipx run `spec black` --check src
