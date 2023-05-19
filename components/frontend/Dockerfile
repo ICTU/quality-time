@@ -3,11 +3,11 @@ FROM node:18.16.0-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
 
-RUN apk --no-cache add curl=8.1.0-r0
+RUN apk --no-cache add curl=8.1.0-r1
 
 WORKDIR /work
 COPY . /work
-RUN npm install -g npm@9.6.4 && \
+RUN npm install -g npm@9.6.7 && \
     npm install && \
     npm install -g serve@14.2.0 && \
     npm run build
