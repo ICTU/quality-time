@@ -1,26 +1,27 @@
 """Database interaction functions for the notifier."""
 
 import os
-from typing import Optional
 
 import pymongo
+
 from shared.initialization.database import create_indexes
 from shared.initialization.datamodel import import_datamodel
 from shared.initialization.report import initialize_reports_overview
 from shared.initialization.secrets import initialize_secrets
+from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared_data_model import DATA_MODEL
 
 
-def client(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.MongoClient:
-    """Returns a pymongo client."""
+def client(url: str | None = "mongodb://root:root@localhost:27017") -> pymongo.MongoClient:
+    """Return a pymongo client."""
     database_url = os.environ.get("DATABASE_URL", url)
     return pymongo.MongoClient(database_url)
 
 
-def database(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.database.Database:
-    """Returns a pymongo database."""
+def database(url: str | None = "mongodb://root:root@localhost:27017") -> pymongo.database.Database:
+    """Return a pymongo database."""
     db_client = client(url)
     create_indexes(db_client["quality_time_db"])
     import_datamodel(db_client["quality_time_db"])
@@ -30,13 +31,13 @@ def database(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymo
 
 
 def get_reports() -> list[Report]:
-    """Returns a list of reports."""
+    """Return a list of reports."""
     qt_database = database()
     query = {"last": True, "deleted": {"$exists": False}}
     return [Report(DATA_MODEL.dict(), report_dict) for report_dict in qt_database["reports"].find(filter=query)]
 
 
-def recent_measurements(*metrics: Metric, limit_per_metric: int = 2) -> list[dict]:
+def recent_measurements(*metrics: Metric, limit_per_metric: int = 2) -> list[Measurement]:
     """Return recent measurements for the specified metrics, without entities and issue status."""
     qt_database = database()
     projection = {
@@ -55,8 +56,8 @@ def recent_measurements(*metrics: Metric, limit_per_metric: int = 2) -> list[dic
                     limit=limit_per_metric,
                     sort=[("start", pymongo.DESCENDING)],
                     projection=projection,
-                )
-            )
+                ),
+            ),
         )
 
     return measurements
@@ -71,7 +72,7 @@ def get_metrics_from_reports(reports: list[Report]) -> list[Metric]:
     return metrics
 
 
-def get_reports_and_measurements() -> tuple[list[Report], list[dict]]:
+def get_reports_and_measurements() -> tuple[list[Report], list[Measurement]]:
     """Get the reports and measurements from the database."""
     reports: list[Report] = get_reports()
     metrics: list[Metric] = get_metrics_from_reports(reports)

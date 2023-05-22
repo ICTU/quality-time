@@ -54,6 +54,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# ruff
+.ruff_cache
+
 # IDE
 *.code-workspace
 .vs*
