@@ -3,7 +3,7 @@ FROM node:18.16.0-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk --no-cache add curl=8.1.0-r1
+RUN apk --no-cache add curl=8.1.0-r2
 
 RUN apk add --no-cache \
     msttcorefonts-installer=3.8-r1 \
