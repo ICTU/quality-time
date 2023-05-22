@@ -2,7 +2,7 @@
 name = "docs"
 version = "4.10.0"
 dependencies = [
-    "furo==2023.3.27",
+    "furo==2023.5.20",
     "gitpython==3.1.31",
     "myst-parser==1.0.0",
     "Sphinx==6.2.1",
