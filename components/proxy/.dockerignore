@@ -1,5 +1,5 @@
-.DS_Store
-.vscode
-README.md
-Dockerfile
+**/.DS_Store
+**/.vscode
 .dockerignore
+Dockerfile
+README.md

@@ -1,11 +1,12 @@
 **/*.egg-info
-**/.DS_Store
+**/.*_cache
 **/.coverage*
 **/.dockerignore
+**/.DS_Store
 **/.idea
-**/.mypy_cache
+**/.pipx
 **/.pylintrc
-**/.venv/
+**/.venv
 **/.vscode
 **/.vulture_ignore_list.py
 **/Dockerfile*
@@ -14,8 +15,7 @@
 **/build/
 **/ci/
 **/node_modules/
-**/requirements-dev.*
-**/requirements*.in
+**/requirements-dev.txt
 **/tests/
 **/venv/
 database/

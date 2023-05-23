@@ -1,8 +1,5 @@
-.DS_Store
+**/.DS_Store
+**/.vscode
 .dockerignore
-.git/
-.gitignore
-.venv/
-.vscode/
 Dockerfile
-venv
+README.md
