@@ -21,7 +21,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 ### Added
 
-- When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
+- When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). The default value of this parameter is to show hotspots 'to review' and 'acknowledged'. Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
 
 ### Changed
 
