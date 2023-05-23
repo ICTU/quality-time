@@ -14,7 +14,7 @@ def get_data_model(database: Database):
     data_model = latest_datamodel(database, report_date_time())
     if data_model:
         md5 = md5_hash(data_model["timestamp"])
-        if "W/" + md5 == bottle.request.headers.get("If-None-Match"):  # pylint: disable=no-member
+        if "W/" + md5 == bottle.request.headers.get("If-None-Match"):
             bottle.abort(304)  # Data model unchanged
         bottle.response.set_header("ETag", md5)
     return data_model

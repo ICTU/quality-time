@@ -45,7 +45,7 @@ def measurements_by_metric(
                 "sources.entity_user_data": False,
                 "issue_status": False,
             },
-        )
+        ),
     )
 
 
@@ -59,7 +59,9 @@ def all_metric_measurements(
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_measurement_complete = database.measurements.find_one(
-        measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False}
+        measurement_filter,
+        sort=[("start", pymongo.DESCENDING)],
+        projection={"_id": False},
     )
     if not latest_measurement_complete:
         return []

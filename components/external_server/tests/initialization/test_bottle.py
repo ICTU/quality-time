@@ -6,8 +6,8 @@ import bottle
 
 from shared.routes.plugins import InjectionPlugin
 
-from routes.plugins import AuthPlugin
-from initialization import init_bottle
+from routes.plugins.auth_plugin import AuthPlugin
+from initialization.bottle import init_bottle
 
 
 class BottleInitTest(unittest.TestCase):

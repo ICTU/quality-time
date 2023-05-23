@@ -7,7 +7,6 @@
 .idea
 .*_cache
 .pipx
-.pylintrc
 .venv
 .vulture_ignore_list.py
 build/

@@ -5,9 +5,8 @@ from pymongo.database import Database
 
 from shared.routes.plugins import InjectionPlugin
 
-# pylint: disable=wildcard-import,unused-wildcard-import
-from routes import *  # lgtm [py/unused-import]
-from routes.plugins import AuthPlugin
+from routes import *  # lgtm [py/unused-import], # noqa: F403
+from routes.plugins.auth_plugin import AuthPlugin
 
 
 def init_bottle(database: Database) -> None:

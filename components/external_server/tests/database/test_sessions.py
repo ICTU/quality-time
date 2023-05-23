@@ -1,13 +1,13 @@
 """Test the sessions."""
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from shared.utils.type import SessionId, User
 
 from database import sessions
 
-from ..base import DatabaseTestCase
-from ..fixtures import JENNY
+from tests.base import DatabaseTestCase
+from tests.fixtures import JENNY
 
 
 class SessionsTest(DatabaseTestCase):
@@ -16,8 +16,8 @@ class SessionsTest(DatabaseTestCase):
     def setUp(self):
         """Override to set up the database."""
         super().setUp()
-        self.database.reports_overviews.find_one.return_value = dict(_id="id")
-        self.database.sessions.find_one.return_value = dict(_id="session_id")
+        self.database.reports_overviews.find_one.return_value = {"_id": "id"}
+        self.database.sessions.find_one.return_value = {"_id": "session_id"}
 
     def test_upsert(self):
         """Test upsert function."""
@@ -26,12 +26,16 @@ class SessionsTest(DatabaseTestCase):
                 database=self.database,
                 user=User(JENNY["user"], JENNY["email"], JENNY["common_name"]),
                 session_id=SessionId("6"),
-                session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99),
-            )
+                session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99, tzinfo=UTC),
+            ),
         )
         self.database.sessions.replace_one.assert_called_with(
             {"user": JENNY["user"]},
-            JENNY | dict(session_id="6", session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99)),
+            JENNY
+            | {
+                "session_id": "6",
+                "session_expiration_datetime": datetime(2019, 10, 18, 19, 22, 5, 99, tzinfo=UTC),
+            },
             upsert=True,
         )
 
@@ -43,5 +47,5 @@ class SessionsTest(DatabaseTestCase):
     def test_get(self):
         """Test get session."""
         session = sessions.get(self.database, "session_id")
-        self.assertDictEqual(session, dict(_id="session_id"))
+        self.assertDictEqual(session, {"_id": "session_id"})
         self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})

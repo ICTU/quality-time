@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch
 
-from routes import get_logo
+from routes.logo import get_logo
 
 
 class LogoTest(unittest.TestCase):

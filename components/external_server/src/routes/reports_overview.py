@@ -26,7 +26,7 @@ def post_reports_overview_attribute(reports_attribute: str, database: Database):
     overview = latest_reports_overview(database)
     old_value = overview.get(reports_attribute)
     if new_value == old_value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
 
     user = sessions.find_user(database)
 

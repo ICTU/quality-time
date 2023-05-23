@@ -1,6 +1,6 @@
 """Session model class."""
 
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from typing import cast
 
 from shared.utils.type import User
@@ -15,7 +15,7 @@ class Session:
     def is_valid(self) -> bool:
         """Return whether the session is valid."""
         expiration_datetime = cast(datetime, self.__session_data.get("session_expiration_datetime", datetime.min))
-        return bool(expiration_datetime.replace(tzinfo=timezone.utc) > datetime.now(timezone.utc))
+        return bool(expiration_datetime.replace(tzinfo=UTC) > datetime.now(tz=UTC))
 
     def is_authorized(self, authorized_users: list[str]) -> bool:
         """Return whether the session's user is an authorized user."""

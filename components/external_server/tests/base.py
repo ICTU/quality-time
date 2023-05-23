@@ -4,7 +4,9 @@ import functools
 import json
 import logging
 import unittest
+from collections.abc import Callable
 from unittest.mock import Mock
+from typing import TypeVar
 
 from shared_data_model import DATA_MODEL_JSON
 
@@ -31,7 +33,7 @@ class DataModelTestCase(DatabaseTestCase):
         self.database.datamodels.find_one.return_value = self.DATA_MODEL
 
     @staticmethod
-    def load_data_model():
+    def load_data_model() -> dict:
         """Load the data model from the JSON dump."""
         data_model = json.loads(DATA_MODEL_JSON)
         data_model["_id"] = "id"
@@ -39,11 +41,15 @@ class DataModelTestCase(DatabaseTestCase):
         return data_model
 
 
-def disable_logging(func):
-    """Decorator to temporarily disable logging."""
+ReturnType = TypeVar("ReturnType")
+FuncType = Callable[..., ReturnType]
+
+
+def disable_logging(func: FuncType):
+    """Return a decorator to temporarily disable logging."""
 
     @functools.wraps(func)
-    def wrapper_decorator(*args, **kwargs):
+    def wrapper_decorator(*args, **kwargs) -> ReturnType:
         """Disable logging before calling func and reenable it afterwards."""
         logging.disable(logging.CRITICAL)
         result = func(*args, **kwargs)

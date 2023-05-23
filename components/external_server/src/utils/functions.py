@@ -18,8 +18,8 @@ from cryptography.fernet import Fernet
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
-from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec # pylint: disable=no-name-in-module
-from lxml.html import fromstring, tostring  # noqa: DUO107, # nosec
+from lxml.html.clean import autolink_html, clean_html  # nosec
+from lxml.html import fromstring, tostring  # nosec
 
 from shared.utils.type import ItemId
 from shared.utils.functions import iso_timestamp
@@ -32,7 +32,9 @@ class DecryptionError(Exception):
 
 
 def check_url_availability(
-    url: URL, source_parameters: dict[str, str], token_validation_path: str
+    url: URL,
+    source_parameters: dict[str, str],
+    token_validation_path: str,
 ) -> dict[str, int | str]:
     """Check the availability of the URL."""
     headers = _headers(source_parameters)
@@ -43,13 +45,14 @@ def check_url_availability(
         credentials = _basic_auth_credentials(source_parameters)
     try:
         response = requests.get(url, auth=credentials, headers=headers, timeout=10)
-        return dict(status_code=response.status_code, reason=response.reason)
-    except Exception as exception_instance:  # pylint: disable=broad-except
+        status_code, reason = response.status_code, response.reason
+    except Exception as exception_instance:  # noqa: BLE001
         exception_reason = str(exception_instance) or exception_instance.__class__.__name__
         # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
         # that led to the error:
         exception_reason = re.sub(r".*(\[errno \-?\d+\] [^\)^']+).*", r"\1", exception_reason, flags=re.IGNORECASE)
-        return dict(status_code=-1, reason=exception_reason)
+        status_code, reason = -1, exception_reason
+    return {"status_code": status_code, "reason": reason}
 
 
 def _basic_auth_credentials(source_parameters) -> tuple[str, str] | None:
@@ -81,14 +84,13 @@ def sanitize_html(html_text: str) -> str:
     sanitized_html = tostring(html_tree, encoding=str)
     # The clean_html function creates HTML elements. That means if the user enters a simple text string it gets
     # enclosed in a <p> tag. Remove it to not confuse users that haven't entered any HTML:
-    if sanitized_html.count("<") == 2:
+    if sanitized_html.count("<") == 2:  # noqa: PLR2004
         sanitized_html = re.sub("</?p>", "", sanitized_html)
     return sanitized_html
 
 
 def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
-    """
-    Encrypt the given value using Fernet 32 byte key.
+    """Encrypt the given value using Fernet 32 byte key.
 
     @return: a tuple with the generated key and the encrypted message. Both as bytes.
     """
@@ -99,19 +101,17 @@ def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
 
 
 def symmetric_decrypt(key: bytes, message: bytes) -> bytes:
-    """
-    Decrypt the given value using Fernet with a given key.
+    """Decrypt the given value using Fernet with a given key.
 
     @return: decrypted message as b64 encoded bytes.
     """
     fernet = Fernet(key)
-    decrypted_message = fernet.decrypt(message)
-    return decrypted_message
+    return fernet.decrypt(message)
 
 
 def asymmetric_encrypt(public_key: str, message: str) -> tuple[str, str]:
-    """
-    Encrypts the message using symmetric Fernet encryption.
+    """Encrypts the message using symmetric Fernet encryption.
+
     The key of the Fernet encryption is encrypted using RSA for public/private key authentication
     and base64 encoded to be able to convert the result into a string.
 
@@ -126,16 +126,15 @@ def asymmetric_encrypt(public_key: str, message: str) -> tuple[str, str]:
     public_key_obj = cast(openssl.rsa.RSAPublicKey, public_key_obj)
 
     encrypted_key = public_key_obj.encrypt(
-        fernet_key, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+        fernet_key,
+        padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None),
     )
     b64_key = b64encode(encrypted_key)
     return b64_key.decode(), fernet_token.decode()
 
 
 def asymmetric_decrypt(private_key: str, fernet_key_message: tuple[str, str]) -> str:
-    """
-    Decrypts the Fernet key with the provided private rsa key.
-    Then decrypts the message with the decrypted Fernet key.
+    """Decrypts the Fernet key with the provided private rsa key and decrypts the message with the decrypted Fernet key.
 
     @return: The decrypted message as string
     """
@@ -174,7 +173,7 @@ def uuid() -> ItemId:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    md5 = hashlib.md5(string.encode("utf-8"), usedforsecurity=False)  # noqa: DUO130
+    md5 = hashlib.md5(string.encode("utf-8"), usedforsecurity=False)
     return md5.hexdigest()
 
 

@@ -2,8 +2,8 @@
 
 from database.measurements import all_metric_measurements, measurements_by_metric
 
-from ..base import DatabaseTestCase
-from ..fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
+from tests.base import DatabaseTestCase
+from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 
 
 class MeasurementsByMetricTest(DatabaseTestCase):

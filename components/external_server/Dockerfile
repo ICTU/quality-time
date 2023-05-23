@@ -7,11 +7,11 @@ RUN apk add --no-cache gcc=12.2.1_git20220924-r4 make=4.3-r1 libc-dev=0.7.2-r3 l
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
 COPY external_server/requirements/requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
+RUN pip install --no-cache-dir --require-hashes --use-pep517 -r /requirements.txt
 COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
 COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
-RUN pip install --no-cache-dir -r /requirements-internal.txt
+RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
 FROM python:3.11.3-alpine3.17
 

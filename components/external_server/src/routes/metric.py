@@ -1,6 +1,6 @@
 """Metric routes."""
 
-from datetime import date, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Any, cast
 
 import bottle
@@ -130,7 +130,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     else:
         old_value = metric.get(metric_attribute) or ""
     if old_value == new_value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     metric[metric_attribute] = new_value
     if metric_attribute == "type":
         # Update the metric attributes, but keep the sources
@@ -143,7 +143,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     metric = Metric(data_model, metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
-    return dict(ok=True)
+    return {"ok": True}
 
 
 @bottle.post("/api/v3/metric/<metric_uuid>/debt", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -158,7 +158,8 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
         latest = latest_measurement(database, Metric(data_model, metric, metric_uuid))
         # Only if the metric has at least one measurement can a technical debt target be set:
         new_debt_target = latest.value() if latest else None
-        new_end_date = (date.today() + timedelta(days=report.desired_response_time("debt_target_met"))).isoformat()
+        now = datetime.now(tz=UTC).date()
+        new_end_date = (now + timedelta(days=report.desired_response_time("debt_target_met"))).isoformat()
     else:
         new_debt_target = None
         new_end_date = None
@@ -166,7 +167,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     old_debt_target = metric.get("debt_target")
     old_end_date = metric.get("debt_end_date")
     if old_accept_debt == new_accept_debt and old_debt_target == new_debt_target and old_end_date == new_end_date:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     metric.update(accept_debt=new_accept_debt, debt_target=new_debt_target, debt_end_date=new_end_date)
     description = "{user} changed"
     attribute_descriptions = []
@@ -181,7 +182,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
     if latest := latest_measurement(database, Metric(data_model, metric, metric_uuid)):
         return insert_new_measurement(database, latest.copy())
-    return dict(ok=True)
+    return {"ok": True}
 
 
 @bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION], pass_user=True)
@@ -194,18 +195,17 @@ def add_metric_issue(metric_uuid: MetricId, database: Database, user: User):
     issue_summary = f"Quality-time metric '{metric.name}'"
     issue_description = create_issue_description(metric, subject, report, user)
     issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
-    if error:  # pylint: disable=no-else-return
-        return dict(ok=False, error=error)
-    else:  # pragma: no cover
-        old_issue_ids = metric.get("issue_ids") or []
-        new_issue_ids = sorted([issue_key, *old_issue_ids])
-        description = (
-            f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
-            f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
-        )
-        report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
-        insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
-        return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
+    if error:
+        return {"ok": False, "error": error}
+    old_issue_ids = metric.get("issue_ids") or []
+    new_issue_ids = sorted([issue_key, *old_issue_ids])
+    description = (
+        f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
+        f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
+    )
+    report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
+    insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
+    return {"ok": True, "issue_url": issue_tracker.browse_url(issue_key)}
 
 
 def create_issue_description(metric, subject, report, user: User) -> str:

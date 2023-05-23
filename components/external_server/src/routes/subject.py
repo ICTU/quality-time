@@ -88,7 +88,8 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 
 
 @bottle.post(
-    "/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+    "/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>",
+    permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
@@ -106,7 +107,7 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
     else:
         subject[subject_attribute] = new_value
     if old_value == new_value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     delta_description = (
         f"{{user}} changed the {subject_attribute} of subject "
         f"'{old_subject_name}' in report '{report.name}' from '{old_value}' to '{new_value}'."

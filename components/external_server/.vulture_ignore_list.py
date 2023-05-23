@@ -1,5 +1,6 @@
 text  # unused variable (src/model/issue_tracker.py:26)
 api  # unused variable (src/routes/plugins/auth_plugin.py:20)
 _.apply  # unused method (src/routes/plugins/auth_plugin.py:25)
-_.content_type  # unused attribute (src/routes/report.py:122)
-_.content_type  # unused attribute (src/routes/report.py:141)
+_.content_type  # unused attribute (src/routes/report.py:121)
+_.content_type  # unused attribute (src/routes/report.py:139)
+mocks  # unused variable (tests/routes/test_auth.py:38)

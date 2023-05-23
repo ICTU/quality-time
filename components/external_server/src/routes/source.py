@@ -30,7 +30,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     source_type = dict(bottle.request.json)["type"]
     parameters = default_source_parameters(database, metric.type(), source_type)
-    metric.sources_dict[(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
+    metric.sources_dict[(source_uuid := uuid())] = {"type": source_type, "parameters": parameters}
     delta_description = (
         f"{{user}} added a new source to metric '{metric.name}' of subject "
         f"'{subject.name}' in report '{report.name}'."
@@ -132,7 +132,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
         old_value = source.get(source_attribute) or ""
         source[source_attribute] = value
     if old_value == value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     delta_description = (
         f"{{user}} changed the {source_attribute} of source '{old_source_name}' of metric '{metric.name}' of "
         f"subject '{subject.name}' in report '{report.name}' from '{old_value}' to '{value}'."
@@ -152,10 +152,15 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     new_value = new_parameter_value(data_model, items[0], parameter_key)
     old_value = items[0]["parameters"].get(parameter_key) or ""
     if old_value == new_value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
     changed_ids, changed_source_ids = change_source_parameter(
-        reports, items, parameter_key, old_value, new_value, edit_scope
+        reports,
+        items,
+        parameter_key,
+        old_value,
+        new_value,
+        edit_scope,
     )
     if is_password_parameter(data_model, items[0].type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
@@ -185,7 +190,7 @@ def new_parameter_value(data_model, source, parameter_key: str):
     return new_value
 
 
-def _source_description(data_model, items, edit_scope, parameter_key, old_value):
+def _source_description(data_model, items, edit_scope, parameter_key, old_value) -> str:
     """Return the description of the source."""
     source, metric, subject, report = items
     source_type_name = data_model["sources"][source.type]["name"]
