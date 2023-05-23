@@ -255,6 +255,7 @@ SONARQUBE = Source.parse_obj(
                 help_url="https://docs.sonarqube.org/latest/user-guide/security-hotspots/",
                 placeholder="all hotspot statuses",
                 values=["to review", "acknowledged", "safe", "fixed"],
+                default_value=["to review", "acknowledged"],
                 metrics=["security_warnings"],
             ),
             review_priorities=MultipleChoiceParameter(

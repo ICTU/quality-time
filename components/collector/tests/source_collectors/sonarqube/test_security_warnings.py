@@ -110,9 +110,9 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         )
         self.assert_measurement(
             response,
-            value="4",
+            value="3",
             total="100",
-            entities=self.vulnerability_entities + self.hotspot_entities,
+            entities=self.vulnerability_entities + self.hotspot_entities[:1],
             landing_url="https://sonarqube/dashboard?id=id&branch=master",
         )
 
@@ -122,9 +122,9 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         response = await self.collect(get_request_json_return_value=self.hotspots_json)
         self.assert_measurement(
             response,
-            value="2",
+            value="1",
             total="100",
-            entities=self.hotspot_entities,
+            entities=self.hotspot_entities[:1],
             landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
         )
 
@@ -142,12 +142,12 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_filter_security_warnings_hotspots_by_status(self):
         """Test that the security hotspots can be filtered by status."""
         self.set_source_parameter("security_types", ["security_hotspot"])
-        self.set_source_parameter("hotspot_statuses", ["fixed"])
+        self.set_source_parameter("hotspot_statuses", ["to review", "fixed"])
         response = await self.collect(get_request_json_return_value=self.hotspots_json)
         self.assert_measurement(
             response,
-            value="1",
+            value="2",
             total="100",
-            entities=self.hotspot_entities[1:],
+            entities=self.hotspot_entities,
             landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
         )
