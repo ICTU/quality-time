@@ -1,22 +1,26 @@
 """Code to run before and after certain events during testing."""
 
+from typing import Any
+
 import requests
+from behave.model import Step
+from behave.runner import Context
 
 
-def before_all(context) -> None:
+def before_all(context: Context) -> None:  # noqa: C901
     """Create shortcuts to send requests to the server API."""
     timeout = 10
 
-    def cookies():
+    def cookies() -> dict[str, str]:
         """Return the cookies."""
-        return dict(session_id=context.session_id) if context.session_id else {}
+        return {"session_id": context.session_id} if context.session_id else {}
 
-    def api_url(api, internal=False):
+    def api_url(api: str, internal: bool = False) -> str:
         """Return the API URL."""
         base_api_url = context.internal_base_api_url if internal else context.base_api_url
         return f"{base_api_url}/{api}"
 
-    def get(api, headers=None, internal=False):
+    def get(api: str, headers: dict[str, str] | None = None, internal: bool = False) -> requests.Response | Any:
         """Get the resource."""
         url = api_url(api, internal)
         for attribute in ("report_date", "min_report_date"):
@@ -26,7 +30,7 @@ def before_all(context) -> None:
         context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def post(api, json=None, internal=False):
+    def post(api: str, json: dict | list | None = None, internal: bool = False) -> requests.Response | Any:
         """Post the resource."""
         url = api_url(api, internal)
         response = requests.post(url, json=json, cookies=cookies(), timeout=timeout)
@@ -37,7 +41,7 @@ def before_all(context) -> None:
             context.session_id = response.cookies["session_id"]
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def put(api, json=None, internal=False):
+    def put(api: str, json: dict | list | None = None, internal: bool = False) -> requests.Response | Any:
         """Post the resource."""
         url = api_url(api, internal)
         response = requests.put(url, json=json, cookies=cookies(), timeout=timeout)
@@ -45,7 +49,7 @@ def before_all(context) -> None:
         # Ignore non-ok responses for now since we don't have testcases where they apply
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def delete(api):
+    def delete(api: str) -> requests.Response | Any:
         """Delete the resource."""
         context.response = response = requests.delete(api_url(api), cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
@@ -81,6 +85,6 @@ hv23LX3At2kFGKAPC0jM1YUCAwEAAQ==
 """
 
 
-def before_step(context, step):
+def before_step(context: Context, step: Step) -> None:
     """Make the step available in the context."""
     context.step = step

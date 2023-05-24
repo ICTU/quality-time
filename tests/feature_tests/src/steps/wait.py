@@ -2,10 +2,11 @@
 
 import time
 
-from behave import when  # pylint: disable=no-name-in-module
+from behave import when
+from behave.runner import Context
 
 
 @when("the client waits a second")
-def wait(context):  # pylint: disable=unused-argument
+def wait(_context: Context) -> None:
     """Wait a second."""
     time.sleep(1)

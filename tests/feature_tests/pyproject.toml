@@ -12,20 +12,18 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.2.7",
-    "pep8-naming==0.13.3",
     "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
-    "pylint==2.17.4",
     "types-requests==2.31.0.1",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.5",
     "black==23.3.0",
-    "dlint==0.14.1",
     "mypy==1.3.0",
     "pip-audit==2.5.6",
+    "ruff==0.0.270",
     "safety==2.3.5",
     "vulture==2.7"
 ]
@@ -45,6 +43,25 @@ warn_unused_ignores = true
 module = [
     "item",
     "behave",
+    "behave.model",
+    "behave.runner",
     "sseclient"
 ]
 ignore_missing_imports = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+select = ["ALL"]
+src = ["src", "src/steps"]
+ignore = [
+    "D203",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",     # https://beta.ruff.rs/docs/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+]
+
+[tool.ruff.per-file-ignores]
+".vulture_ignore_list.py" = ["ALL"]
+"__init__.py" = [
+    "D104",  # https://beta.ruff.rs/docs/rules/#pydocstyle-d - don't require doc strings in __init__.py files
+]
