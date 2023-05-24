@@ -22,7 +22,7 @@ dev = [
     "pylint==2.17.4",
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.13",
-    "types-requests==2.30.0.0",
+    "types-requests==2.31.0.0",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
