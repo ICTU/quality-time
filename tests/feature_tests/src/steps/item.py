@@ -1,8 +1,11 @@
 """Generic step implementations for reports, subjects, metrics, and sources."""
 
 import json
+from typing import cast
+
 from asserts import assert_equal, assert_false, assert_true
-from behave import given, when, then  # pylint: disable=no-name-in-module
+from behave import given, then, when
+from behave.runner import Context
 
 
 @given("an existing {item}")
@@ -11,19 +14,24 @@ from behave import given, when, then  # pylint: disable=no-name-in-module
 @when("the client creates a {item}")
 @when('the client creates a {item} with {attribute} "{value}"')
 @when("the client tries to create a {item}")
-def add_item(
-    context, item, attribute=None, value=None, parameter=None, parameter_value=None
-):  # pylint: disable=too-many-arguments
+def add_item(  # noqa: PLR0913
+    context: Context,
+    item: str,
+    attribute: str | None = None,
+    value: str | None = None,
+    parameter: str | None = None,
+    parameter_value: str | None = None,
+) -> None:
     """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
-    container = dict(source="metric", metric="subject", subject="report").get(item)
+    container = {"source": "metric", "metric": "subject", "subject": "report"}.get(item)
     if container:
         api += f"/{context.uuid[container]}"
     if attribute == "type":
         item_type = value
         attribute = value = None
     else:
-        item_type = dict(source="axe_core", metric="accessibility", subject="software").get(item)
+        item_type = {"source": "axe_core", "metric": "accessibility", "subject": "software"}.get(item)
     if "tries to" in context.step.name:
         context.post(api, {"type": item_type})
         return
@@ -35,23 +43,23 @@ def add_item(
 
 
 @when("the client copies the {item}")
-def copy_item(context, item):
+def copy_item(context: Context, item: str) -> None:
     """Copy the item."""
     api = f"{item}/{context.uuid[item]}/copy"
-    container = dict(source="metric", metric="subject", subject="report").get(item)
+    container = {"source": "metric", "metric": "subject", "subject": "report"}.get(item)
     if container:
         api += f"/{context.uuid[container]}"
     context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
 
 
 @when("the client moves the {item} to the {container}")
-def move_item(context, item, container):
+def move_item(context: Context, item: str, container: str) -> None:
     """Move the item."""
     context.post(f"{item}/{context.uuid[item]}/move/{context.uuid[container]}")
 
 
 @when("the client deletes the {item}")
-def delete_item(context, item):
+def delete_item(context: Context, item: str) -> None:
     """Delete the item."""
     if item == "notification_destination":
         context.delete(f"report/{context.uuid['report']}/{item}/{context.uuid[item]}")
@@ -59,18 +67,19 @@ def delete_item(context, item):
         context.delete(f"{item}/{context.uuid[item]}")
 
 
-@when('the client changes the {item} {attribute} to "{value}"')
-def change_item_attribute(context, item, attribute, value):
+@when('the client changes the {item} {attribute} to "{value_str}"')
+def change_item_attribute(context: Context, item: str, attribute: str, value_str: str) -> None:
     """Change the item attribute to value."""
+    value: str | list[str] | bool | None
     item_fragment = "reports_overview" if item == "reports_overview" else f"{item}/{context.uuid[item]}"
     if attribute in ("tags", "issue_ids"):  # convert comma separated values to lists
-        value = value.split(", ")
+        value = value_str.split(", ")
     elif attribute == "permissions":
-        if value == "None":
-            value = "{}"
-        value = json.loads(value)
+        if value_str == "None":
+            value_str = "{}"
+        value = json.loads(value_str)
     else:
-        value = dict(true=True, false=False, none=None).get(value.lower(), value)
+        value = {"true": True, "false": False, "none": None}.get(value_str.lower(), value_str)
     if item == "notification_destination":
         context.post(
             f"report/{context.uuid['report']}/{item_fragment}/attributes",
@@ -85,7 +94,7 @@ def change_item_attribute(context, item, attribute, value):
         context.post(f"{item_fragment}/{attribute_fragment}/{attribute}", json={attribute: value})
 
 
-def get_item(context, item):
+def get_item(context: Context, item: str) -> dict:
     """Return the item instance of type item."""
     item_instance = (
         context.get("reports_overview")
@@ -97,18 +106,18 @@ def get_item(context, item):
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
         ][0]
         if item == "notification_destination":
-            return item_instance["notification_destinations"][context.uuid["notification_destination"]]
+            return cast(dict, item_instance["notification_destinations"][context.uuid["notification_destination"]])
         if item != "report":
             item_instance = item_instance["subjects"][context.uuid["subject"]]
             if item != "subject":
                 item_instance = item_instance["metrics"][context.uuid["metric"]]
                 if item != "metric":
                     item_instance = item_instance["sources"][context.uuid["source"]]
-    return item_instance
+    return cast(dict, item_instance)
 
 
 @then('the {item} {attribute} is "{value}"')
-def check_item_attribute(context, item, attribute, value):
+def check_item_attribute(context: Context, item: str, attribute: str, value: str) -> None:
     """Check that the item attribute equals the expected value."""
     if item == "reports_overview" and attribute == "permissions":  # parse JSON data
         expected_value = {} if value == "None" else json.loads(value)
@@ -124,7 +133,7 @@ def check_item_attribute(context, item, attribute, value):
 
 
 @then("the {item} does not exist")
-def check_item_does_not_exist(context, item):
+def check_item_does_not_exist(context: Context, item: str) -> None:
     """Check that the item does not exist."""
     uuids = []
     reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("report/")
@@ -138,7 +147,7 @@ def check_item_does_not_exist(context, item):
     assert_false(context.uuid[item] in uuids)
 
 
-def get_container(context, container):
+def get_container(context: Context, container: str) -> dict:
     """Return the container."""
     reports = context.get("report/")
     container_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
@@ -146,19 +155,26 @@ def get_container(context, container):
         container_instance = container_instance["subjects"][context.uuid["subject"]]
         if container != "subject":
             container_instance = container_instance["metrics"][context.uuid["metric"]]
-    return container_instance
+    return cast(dict, container_instance)
 
 
 @then("the {container} contains the {item}")
-def check_container_contains_item(context, container, item):
+def check_container_contains_item(context: Context, container: str, item: str) -> None:
     """Check that the container contains the item."""
     assert_true(context.uuid[item] in get_container(context, container)[f"{item}s"])
 
 
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
-def check_item_order(context, container, position, item, attribute, value):  # pylint: disable=too-many-arguments
+def check_item_order(  # noqa: PLR0913
+    context: Context,
+    container: str,
+    position: str,
+    item: str,
+    attribute: str,
+    value: str,
+) -> None:
     """Check that the container item at position has an attribute with the specified value."""
-    index = dict(first=0, last=-1)[position]
+    index = {"first": 0, "last": -1}[position]
     assert_equal(
         value,
         list(get_container(context, container)[f"{item}s"].values())[index][attribute],
@@ -166,7 +182,7 @@ def check_item_order(context, container, position, item, attribute, value):  # p
 
 
 @then("the {container} contains {number} {children}")
-def check_nr_children(context, container, number, children):
+def check_nr_children(context: Context, container: str, number: str, children: str) -> None:
     """Check that the container has the expected number of child items."""
     container_instance = get_container(context, container)
     children = children if children.endswith("s") else children + "s"
