@@ -130,9 +130,3 @@ Feature: metric
     Given an existing metric
     When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"
-
-  Scenario: creating a new issue for metric without measurements
-    Given an existing metric
-    And an existing source
-    When the client opens a new issue
-    Then the new issue response error is 'Can not create an issue for metric without measurements.'

@@ -9,9 +9,8 @@ from pymongo.database import Database
 from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database.reports import insert_new_report
-from shared.model.measurement import Measurement
 from shared.model.metric import Metric
-from shared.utils.type import MetricId, SubjectId
+from shared.utils.type import MetricId, SubjectId, Value
 
 from database.datamodels import default_metric_attributes
 from database.measurements import latest_successful_measurement
@@ -192,11 +191,9 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     last_measurement = latest_successful_measurement(database, metric)
-    if not last_measurement:
-        return dict(ok=False, error="Can not create an issue for metric without measurements.")
-    issue_summary, issue_description = create_issue_text(metric, last_measurement, data_model)
+    measured_value = last_measurement.value() if last_measurement else "missing"
     issue_tracker = report.issue_tracker()
-    issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
+    issue_key, error = issue_tracker.create_issue(*create_issue_text(metric, measured_value, data_model))
     if error:  # pylint: disable=no-else-return
         return dict(ok=False, error=error)
     else:  # pragma: no cover
@@ -211,10 +208,9 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
         return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
 
 
-def create_issue_text(metric: Metric, last_measurement: Measurement, data_model) -> tuple[str, str]:
+def create_issue_text(metric: Metric, measured_value: Value, data_model) -> tuple[str, str]:
     """Create an issue description for the metric."""
     metric_url = dict(bottle.request.json)["metric_url"]
-    measured_value = last_measurement.value()
     source_names = ", ".join([source.name or data_model["sources"][source.type]["name"] for source in metric.sources])
     source_urls = [url for url in [source.get("parameters", {}).get("url") for source in metric.sources] if url]
     issue_summary = f"Fix {measured_value} {metric.unit} from {source_names}"

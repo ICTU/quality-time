@@ -661,11 +661,3 @@ class MetricIssueTest(DataModelTestCase):
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
         self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))
-
-    def test_add_metric_issue_no_measurement(self, _):
-        """Test that an error message is returned if an issue is added for a metric without measurements."""
-        self.database.measurements.find_one.return_value = None
-        self.assertEqual(
-            dict(ok=False, error="Can not create an issue for metric without measurements."),
-            add_metric_issue(METRIC_ID, self.database),
-        )
