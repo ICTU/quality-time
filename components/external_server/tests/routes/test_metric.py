@@ -666,6 +666,6 @@ class MetricIssueTest(DataModelTestCase):
         """Test that an error message is returned if an issue is added for a metric without measurements."""
         self.database.measurements.find_one.return_value = None
         self.assertEqual(
-            dict(ok=False, error="Can not create an issue for metric without measurements"),
+            dict(ok=False, error="Can not create an issue for metric without measurements."),
             add_metric_issue(METRIC_ID, self.database),
         )

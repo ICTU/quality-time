@@ -193,7 +193,7 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     last_measurement = latest_successful_measurement(database, metric)
     if not last_measurement:
-        return dict(ok=False, error="Can not create an issue for metric without measurements")
+        return dict(ok=False, error="Can not create an issue for metric without measurements.")
     issue_summary, issue_description = create_issue_text(metric, last_measurement, data_model)
     issue_tracker = report.issue_tracker()
     issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
