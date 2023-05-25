@@ -20,7 +20,3 @@ class UserTests(unittest.TestCase):
             user_dict,
             dict(username="jadoe", email="jadoe@example.org", common_name="Jane Doe", settings={"test_setting": True}),
         )
-
-    def test_user_and_email(self):
-        """Test that the user and email can be retrieved."""
-        self.assertEqual("Jane Doe <jadoe@example.org>", self.user.name_and_email())

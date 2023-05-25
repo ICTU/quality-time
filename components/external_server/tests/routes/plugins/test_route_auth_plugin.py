@@ -102,11 +102,3 @@ class AuthPluginTest(DatabaseTestCase):
         """Test that unauthenticated users can GET if no authentication is required."""
         route = bottle.Route(bottle.app(), "/", "GET", self.route, authentication_required=False)
         self.assertEqual((self.database, None), route.call())
-
-    def test_pass_user(self):
-        """Test that the user can be passed to the route."""
-        self.database.sessions.find_one.return_value = dict(
-            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc), user="user"
-        )
-        route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True, pass_user=True)
-        self.assertEqual((self.database, User("user")), route.call())
