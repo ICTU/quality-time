@@ -2,7 +2,7 @@
 
 import unittest
 from base64 import b64decode
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from unittest.mock import patch
 
 from cryptography.fernet import Fernet
@@ -65,12 +65,12 @@ class ReportDateTimeTest(unittest.TestCase):
 
     def setUp(self):
         """Override to setup the 'current' time."""
-        self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
+        self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=UTC)
         self.expected_time_stamp = "2019-03-03T10:04:05+00:00"
 
     def test_report_date_time(self, request):
         """Test that the report datetime can be parsed from the HTTP request."""
-        request.query = dict(report_date="2019-03-03T10:04:05Z")
+        request.query = {"report_date": "2019-03-03T10:04:05Z"}
         self.assertEqual(self.expected_time_stamp, report_date_time())
 
     def test_missing_report_date_time(self, request):
@@ -80,7 +80,7 @@ class ReportDateTimeTest(unittest.TestCase):
 
     def test_future_report_date_time(self, request):
         """Test that the report datetime is empty if it's a future date."""
-        request.query = dict(report_date="3000-01-01T00:00:00Z")
+        request.query = {"report_date": "3000-01-01T00:00:00Z"}
         self.assertEqual("", report_date_time())
 
 
@@ -115,7 +115,8 @@ class TestEncryption(unittest.TestCase):
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         public_key = private_key.public_key()
         pubkey = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
         # encryption
@@ -145,7 +146,8 @@ class TestEncryption(unittest.TestCase):
 
         public_key = private_key.public_key()
         pubkey = public_key.public_bytes(
-            encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
         # encryption

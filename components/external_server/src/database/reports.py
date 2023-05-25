@@ -30,16 +30,22 @@ def changelog(database: Database, nr_changes: int, **uuids):
     if not uuids:
         changes.extend(
             database.reports_overviews.find(
-                filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes * 2, projection=projection
-            )
+                filter=delta_filter,
+                sort=TIMESTAMP_DESCENDING,
+                limit=nr_changes * 2,
+                projection=projection,
+            ),
         )
     old_report_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     new_report_delta_filter = {"delta.uuids": {"$in": list(uuids.values())}}
     delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
     changes.extend(
         database.reports.find(
-            filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes * 2, projection=projection
-        )
+            filter=delta_filter,
+            sort=TIMESTAMP_DESCENDING,
+            limit=nr_changes * 2,
+            projection=projection,
+        ),
     )
     changes = sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
@@ -50,8 +56,7 @@ def _get_change_key(change: Change) -> str:
     """Return a key for detecting equal changes."""
     description = cast(dict[str, str], change["delta"])["description"]
     changed_uuids = cast(dict[str, list[str]], change["delta"]).get("uuids", [])
-    key = f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
-    return key
+    return f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
 
 
 def latest_report(database: Database, data_model, report_uuid: str):
@@ -67,7 +72,7 @@ TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = "") -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection."""
     if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter = dict(timestamp={"$lt": max_iso_timestamp})
+        report_filter = {"timestamp": {"$lt": max_iso_timestamp}}
         report_uuids = database.reports.distinct("report_uuid", report_filter)
         report_dicts = []
         for report_uuid in report_uuids:

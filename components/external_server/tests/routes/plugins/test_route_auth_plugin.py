@@ -1,7 +1,8 @@
 """Unit tests for the route authentication plugin."""
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, UTC
+from unittest.mock import Mock
 
 import bottle
 
@@ -10,7 +11,7 @@ from shared.utils.type import User
 
 from routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
 
-from ...base import DatabaseTestCase
+from tests.base import DatabaseTestCase
 
 
 class AuthPluginTest(DatabaseTestCase):
@@ -20,13 +21,13 @@ class AuthPluginTest(DatabaseTestCase):
         """Override to set up a mock database and install the plugins."""
         super().setUp()
         logging.disable(logging.CRITICAL)
-        self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.reports_overviews.find_one.return_value = {"_id": "id"}
         self.database.sessions.find_one.return_value = None
-        self.session = dict(
-            user="jadoe",
-            email="jadoe@example.org",
-            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc),
-        )
+        self.session = {
+            "user": "jadoe",
+            "email": "jadoe@example.org",
+            "session_expiration_datetime": datetime.max.replace(tzinfo=UTC),
+        }
         self.injection_plugin = bottle.install(InjectionPlugin(self.database, "database"))
         self.auth_plugin = bottle.install(AuthPlugin())
 
@@ -37,7 +38,7 @@ class AuthPluginTest(DatabaseTestCase):
         logging.disable(logging.NOTSET)
 
     @staticmethod
-    def route(database, user: User = None):
+    def route(database: Mock, user: User = None) -> tuple[Mock, User]:
         """Route handler with injected parameters. Returns the parameters for test purposes."""
         return database, user
 
@@ -49,17 +50,17 @@ class AuthPluginTest(DatabaseTestCase):
 
     def test_valid_session(self):
         """Test that session ids are authenticated."""
-        self.database.sessions.find_one.return_value = dict(
-            session_expiration_datetime=datetime.max.replace(tzinfo=timezone.utc)
-        )
+        self.database.sessions.find_one.return_value = {
+            "session_expiration_datetime": datetime.max.replace(tzinfo=UTC),
+        }
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
         self.assertEqual((self.database, None), route.call())
 
     def test_expired_session(self):
         """Test that the session is invalid when it's expired."""
-        self.database.sessions.find_one.return_value = dict(
-            session_expiration_datetime=datetime.min.replace(tzinfo=timezone.utc)
-        )
+        self.database.sessions.find_one.return_value = {
+            "session_expiration_datetime": datetime.min.replace(tzinfo=UTC),
+        }
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
         self.assertEqual(401, route.call().status_code)
 
@@ -70,25 +71,27 @@ class AuthPluginTest(DatabaseTestCase):
 
     def test_unauthorized_session(self):
         """Test that an unauthorized user cannot post."""
-        self.database.reports_overviews.find_one.return_value = dict(
-            _id="id", permissions={EDIT_REPORT_PERMISSION: ["jodoe"]}
-        )
+        self.database.reports_overviews.find_one.return_value = {
+            "_id": "id",
+            "permissions": {EDIT_REPORT_PERMISSION: ["jodoe"]},
+        }
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertEqual(403, route.call().status_code)
 
     def test_post_route_with_permissions_required_when_everyone_has_permission(self):
         """Test that an authenticated user can post if permissions have not been restricted."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", permissions={})
+        self.database.reports_overviews.find_one.return_value = {"_id": "id", "permissions": {}}
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertEqual((self.database, None), route.call())
 
     def test_post_route_with_permissions_required(self):
         """Test that an authenticated user can post if they have the required permissions."""
-        self.database.reports_overviews.find_one.return_value = dict(
-            _id="id", permissions={EDIT_REPORT_PERMISSION: ["jadoe"]}
-        )
+        self.database.reports_overviews.find_one.return_value = {
+            "_id": "id",
+            "permissions": {EDIT_REPORT_PERMISSION: ["jadoe"]},
+        }
         self.database.sessions.find_one.return_value = self.session
         route = bottle.Route(bottle.app(), "/", "POST", self.route, permissions_required=[EDIT_REPORT_PERMISSION])
         self.assertEqual((self.database, None), route.call())

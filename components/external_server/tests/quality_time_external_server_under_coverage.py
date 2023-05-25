@@ -17,7 +17,7 @@ def stop_coverage():
         cov.save()
 
 
-def signal_handler(*args):  # pylint: disable=unused-argument
+def signal_handler(*_args):
     """Save the coverage data on receiving a SIGTERM."""
     stop_coverage()
     sys.exit()

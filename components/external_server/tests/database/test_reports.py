@@ -6,7 +6,7 @@ from shared.model.report import Report
 
 from database.reports import latest_report_for_uuids
 
-from ..fixtures import (
+from tests.fixtures import (
     METRIC_ID,
     METRIC_ID2,
     METRIC_ID3,

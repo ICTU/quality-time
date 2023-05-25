@@ -13,10 +13,10 @@ def get_api(version="", fragment=""):
     port = os.environ.get("EXTERNAL_SERVER_PORT", "5001")
     routes = [route for route in bottle.default_app().routes if version in route.rule and fragment in route.rule]
     return {
-        route.rule: dict(
-            url=f"https://www.quality-time.example.org:{port}{route.rule}",
-            method=route.method,
-            description=route.callback.__doc__,
-        )
+        route.rule: {
+            "url": f"https://www.quality-time.example.org:{port}{route.rule}",
+            "method": route.method,
+            "description": route.callback.__doc__,
+        }
         for route in routes
     }

@@ -10,4 +10,4 @@ class ServerTest(unittest.TestCase):
 
     def test_server(self):
         """Test that the server info can be retrieved."""
-        self.assertEqual(dict(version=QUALITY_TIME_VERSION), get_server())
+        self.assertEqual({"version": QUALITY_TIME_VERSION}, get_server())

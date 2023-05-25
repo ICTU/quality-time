@@ -1,7 +1,7 @@
 """Issue tracker."""
 
-from dataclasses import asdict, dataclass
-from typing import cast, Optional
+from dataclasses import asdict, dataclass, field
+from typing import cast
 import logging
 
 import requests
@@ -40,7 +40,7 @@ class IssueTrackerCredentials:
 
     def auth_headers(self) -> dict[str, str]:
         """Return the authorization headers, if any."""
-        return dict(Authorization=f"Bearer {self.private_token}") if self.private_token else {}
+        return {"Authorization": f"Bearer {self.private_token}"} if self.private_token else {}
 
 
 @dataclass
@@ -49,11 +49,16 @@ class IssueParameters:
 
     project_key: str
     issue_type: str
-    issue_labels: Optional[list[str]] = None
+    issue_labels: list[str] | None = None
     epic_link: str = ""
 
 
 JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
+JiraIssueTypesJSON = dict[str, list[dict[str, str]]]
+JiraFieldsJSON = dict[str, list[dict[str, str]]]
+JiraEpicsJSON = dict[str, list[dict[str, str | dict[str, str]]]]
+JiraProjectsJSON = list[dict[str, str]]
+JiraJSON = JiraEpicsJSON | JiraIssueSuggestionJSON | JiraIssueTypesJSON | JiraFieldsJSON | JiraProjectsJSON
 
 
 @dataclass
@@ -80,7 +85,7 @@ class IssueTracker:
 
     url: URL
     issue_parameters: IssueParameters
-    credentials: IssueTrackerCredentials = IssueTrackerCredentials()
+    credentials: IssueTrackerCredentials = field(default_factory=IssueTrackerCredentials)
     project_api = "%s/rest/api/2/project"
     issue_creation_api = "%s/rest/api/2/issue"
     issue_types_api = issue_creation_api + "/createmeta/%s/issuetypes"
@@ -104,11 +109,14 @@ class IssueTracker:
             if not attribute:
                 return "", f"Issue tracker has no {name} configured."
         api_url = self.issue_creation_api % self.url
-        json = dict(
-            fields=dict(
-                project=dict(key=project_key), issuetype=dict(name=issue_type), summary=summary, description=description
-            )
-        )
+        json = {
+            "fields": {
+                "project": {"key": project_key},
+                "issuetype": {"name": issue_type},
+                "summary": summary,
+                "description": description,
+            },
+        }
         if labels and self.__labels_supported():  # pragma: no feature-test-cover
             json["fields"]["labels"] = self.__prepare_labels(labels)
         epic_link = self.issue_parameters.epic_link
@@ -116,7 +124,7 @@ class IssueTracker:
             json["fields"][epic_link_field_id] = epic_link
         try:
             response_json = self.__post_json(api_url, json)
-        except Exception as reason:  # pylint: disable=broad-except
+        except Exception as reason:
             logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
             return "", str(reason)
         return response_json["key"], ""  # pragma: no feature-test-cover
@@ -135,8 +143,8 @@ class IssueTracker:
         """Get a list of issue id suggestions based on the query string."""
         api_url = self.suggestions_api % (self.url, query)
         try:
-            json = self.__get_json(api_url)
-        except Exception as reason:  # pylint: disable=broad-except
+            json = cast(JiraIssueSuggestionJSON, self.__get_json(api_url))
+        except Exception as reason:
             logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
             return []
         return self._parse_suggestions(json)  # pragma: no feature-test-cover
@@ -162,11 +170,11 @@ class IssueTracker:
 
     def __get_project_options(self) -> list[Option]:
         """Return the issue tracker projects options, given the current credentials."""
-        projects = []
+        projects: list[dict] = []
         api_url = self.project_api % self.url
         try:
-            projects = self.__get_json(api_url)
-        except Exception as reason:  # pylint: disable=broad-except
+            projects = cast(JiraProjectsJSON, self.__get_json(api_url))
+        except Exception as reason:
             logging.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
@@ -178,8 +186,8 @@ class IssueTracker:
         issue_types = []
         api_url = self.issue_types_api % (self.url, self.issue_parameters.project_key)
         try:
-            issue_types = self.__get_json(api_url)["values"]
-        except Exception as reason:  # pylint: disable=broad-except
+            issue_types = cast(JiraIssueTypesJSON, self.__get_json(api_url))["values"]
+        except Exception as reason:
             logging.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
@@ -194,8 +202,8 @@ class IssueTracker:
         issue_type_id = [issue_type for issue_type in issue_types if issue_type.name == current_issue_type][0].key
         api_url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
         try:
-            fields = self.__get_json(api_url)["values"]
-        except Exception as reason:  # pylint: disable=broad-except
+            fields = cast(JiraFieldsJSON, self.__get_json(api_url))["values"]
+        except Exception as reason:
             logging.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
 
@@ -207,10 +215,13 @@ class IssueTracker:
         api_url = self.epics_api % (self.url, self.issue_parameters.project_key)
         epics = []
         try:
-            epics = self.__get_json(api_url)["issues"]
-        except Exception as reason:  # pylint: disable=broad-except
+            epics = cast(JiraEpicsJSON, self.__get_json(api_url))["issues"]
+        except Exception as reason:
             logging.warning("Getting epics at %s failed: %s", api_url, reason)
-        return [Option(str(epic["key"]), str(f'{epic["fields"]["summary"]} ({epic["key"]})')) for epic in epics]
+        return [
+            Option(str(epic["key"]), f'{cast(dict[str, dict[str, str]], epic)["fields"]["summary"]} ({epic["key"]})')
+            for epic in epics
+        ]
 
     @staticmethod
     def _parse_suggestions(json: JiraIssueSuggestionJSON) -> list[IssueSuggestion]:  # pragma: no feature-test-cover
@@ -218,16 +229,16 @@ class IssueTracker:
         issues = json.get("issues", [])
         return [IssueSuggestion(str(issue["key"]), cast(dict, issue["fields"])["summary"]) for issue in issues]
 
-    def __get_json(self, api_url: str):  # pragma: no feature-test-cover
+    def __get_json(self, api_url: str) -> JiraJSON:  # pragma: no feature-test-cover
         """Get a response from the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.get(api_url, auth=auth, headers=headers, timeout=10)
         response.raise_for_status()
-        return response.json()
+        return cast(JiraJSON, response.json())
 
-    def __post_json(self, api_url: str, json):  # pragma: no feature-test-cover
+    def __post_json(self, api_url: str, json) -> dict[str, str]:  # pragma: no feature-test-cover
         """Post the JSON to the API endpoint and return the response JSON."""
         auth, headers = self.credentials.basic_auth_credentials(), self.credentials.auth_headers()
         response = requests.post(api_url, auth=auth, headers=headers, json=json, timeout=10)
         response.raise_for_status()
-        return response.json()
+        return cast(dict[str, str], response.json())

@@ -3,7 +3,7 @@
 from unittest.mock import patch
 from routes.settings import find_user, get_settings, update_settings
 
-from ..base import DatabaseTestCase
+from tests.base import DatabaseTestCase
 
 USERNAME = "john-doe"
 PASSWORD = "secret"
@@ -33,7 +33,7 @@ class SettingsTest(DatabaseTestCase):
         """Update the settings object."""
         request.json = {"some_new_settings": False}
         response_dict = update_settings(self.database)
-        self.assertDictEqual(response_dict, dict(ok=True))
+        self.assertDictEqual(response_dict, {"ok": True})
         self.database.users.replace_one.assert_called_once_with(
             {"username": "test"},
             {"username": "test", "email": "", "common_name": "", "settings": {"some_new_settings": False}},

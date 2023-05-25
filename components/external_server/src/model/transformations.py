@@ -12,6 +12,7 @@ from utils.type import EditScope
 
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
+import contextlib
 
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
@@ -40,7 +41,7 @@ def encrypt_source_credentials(data_model, public_key: str, *reports: dict):
     for source in iter_sources(*reports):
         for parameter_key in __password_parameter_keys(data_model, source):
             password = source["parameters"][parameter_key]
-            if isinstance(password, (dict, list)):
+            if isinstance(password, dict | list):
                 password = json.dumps(password)
             source["parameters"][parameter_key] = asymmetric_encrypt(public_key, password)
 
@@ -85,10 +86,9 @@ def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> s
         decrypted_credential = asymmetric_decrypt(private_key, credential)
     except ValueError as error:
         raise DecryptionError from error
-    try:
+    with contextlib.suppress(JSONDecodeError):
         decrypted_credential = json.loads(decrypted_credential)
-    except JSONDecodeError:
-        pass
+
     return decrypted_credential
 
 
@@ -104,8 +104,13 @@ def replace_report_uuids(*reports) -> None:
                     metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 
-def change_source_parameter(  # pylint: disable=too-many-arguments
-    reports, items, parameter_key: str, old_value, new_value, scope: EditScope
+def change_source_parameter(  # noqa: PLR0913
+    reports,
+    items,
+    parameter_key: str,
+    old_value,
+    new_value,
+    scope: EditScope,
 ) -> tuple[list[ItemId], set[ItemId]]:
     """Change the parameter of all sources of the specified type and the same old value to the new value.
 

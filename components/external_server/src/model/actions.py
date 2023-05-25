@@ -31,9 +31,11 @@ def copy_source(source, data_model, change_name: bool = True):
 
 def copy_metric(metric, data_model, change_name: bool = True):
     """Return a copy of the metric and its sources."""
-    kwargs: dict[str, Any] = dict(
-        sources={uuid(): copy_source(source, data_model, change_name=False) for source in metric["sources"].values()}
-    )
+    kwargs: dict[str, Any] = {
+        "sources": {
+            uuid(): copy_source(source, data_model, change_name=False) for source in metric["sources"].values()
+        },
+    }
     if change_name:
         kwargs["name"] = f"{metric.get('name') or data_model['metrics'][metric['type']]['name']} (copy)"
     return copy_item(metric, **kwargs)
@@ -41,9 +43,11 @@ def copy_metric(metric, data_model, change_name: bool = True):
 
 def copy_subject(subject, data_model, change_name: bool = True):
     """Return a copy of the subject, its metrics, and their sources."""
-    kwargs: dict[str, Any] = dict(
-        metrics={uuid(): copy_metric(metric, data_model, change_name=False) for metric in subject["metrics"].values()}
-    )
+    kwargs: dict[str, Any] = {
+        "metrics": {
+            uuid(): copy_metric(metric, data_model, change_name=False) for metric in subject["metrics"].values()
+        },
+    }
     if change_name:
         kwargs["name"] = f"{subject.get('name') or data_model['subjects'][subject['type']]['name']} (copy)"
     return copy_item(subject, **kwargs)
@@ -62,7 +66,9 @@ def copy_report(report, data_model):
 
 
 def move_item(
-    container: Report | Subject | Metric, item_to_move: Subject | Metric | Source, new_position: Position
+    container: Report | Subject | Metric,
+    item_to_move: Subject | Metric | Source,
+    new_position: Position,
 ) -> tuple[int, int]:
     """Change the item position."""
     items_dict_type = MutableMapping[ItemId, Metric | Source | Subject]
@@ -76,9 +82,12 @@ def move_item(
 
     nr_items = len(items_dict)
     old_index = list(items_dict.keys()).index(item_to_move.uuid)
-    new_index = dict(first=0, last=nr_items - 1, previous=max(0, old_index - 1), next=min(nr_items - 1, old_index + 1))[
-        new_position
-    ]
+    new_index = {
+        "first": 0,
+        "last": nr_items - 1,
+        "previous": max(0, old_index - 1),
+        "next": min(nr_items - 1, old_index + 1),
+    }[new_position]
     # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
     # we construct a new dict in the right order and insert that in the report.
     reordered_items: dict[str, dict] = {}

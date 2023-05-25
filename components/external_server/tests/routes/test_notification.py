@@ -10,8 +10,8 @@ from routes import (
     post_notification_destination_attributes,
 )
 
-from ..base import DataModelTestCase
-from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
+from tests.base import DataModelTestCase
+from tests.fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 
 class NotificationTestCase(DataModelTestCase):
@@ -23,13 +23,13 @@ class NotificationTestCase(DataModelTestCase):
         self.report = Report(self.DATA_MODEL, create_report())
         self.database.reports.find_one.return_value = self.report
         self.email = "jenny@example.org"
-        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
+        self.database.sessions.find_one.return_value = {"user": "Jenny", "email": self.email}
 
     def assert_delta(self, description, uuids=None, report=None):
         """Check that the delta description is correct."""
         report = report if report is not None else self.report
         uuids = sorted(uuids or [REPORT_ID, NOTIFICATION_DESTINATION_ID])
-        self.assertEqual(dict(uuids=uuids, email=self.email, description=description), report["delta"])
+        self.assertEqual({"uuids": uuids, "email": self.email, "description": description}, report["delta"])
 
 
 @patch("bottle.request")
@@ -38,7 +38,7 @@ class PostNotificationAttributesTest(NotificationTestCase):
 
     def test_post_notification_destination_attribute(self, request):
         """Test changing the name of a notification destination."""
-        request.json = dict(name="new name")
+        request.json = {"name": "new name"}
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
@@ -50,13 +50,13 @@ class PostNotificationAttributesTest(NotificationTestCase):
 
     def test_post_notification_destination_unchanged_attribute(self, request):
         """Test changing the name of a notification destination."""
-        request.json = dict(name="notification_destination")
+        request.json = {"name": "notification_destination"}
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         self.database.reports.insert_one.assert_not_called()
 
     def test_post_multiple_notification_destination_attributes(self, request):
         """Test changing the name and url of a notification destination."""
-        request.json = dict(name="new name", url="https://newurl")
+        request.json = {"name": "new name", "url": "https://newurl"}
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
         self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
@@ -97,7 +97,8 @@ class NotificationDestinationTest(NotificationTestCase):
     def test_delete_notification_destination(self):
         """Test that a notification destination can be deleted."""
         self.assertEqual(
-            dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
+            {"ok": True},
+            delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database),
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
