@@ -37,10 +37,6 @@ class User:
         """Return the name of the user."""
         return self.common_name or self.username
 
-    def name_and_email(self) -> str:
-        """Return the name of the user and their email, if any."""
-        return f"{self.name()}" + (f" <{self.email}>" if self.email else "")
-
     def to_dict(self):
         """Return a dict representing this user."""
         return dict(username=self.username, email=self.email, common_name=self.common_name, settings=self.settings)

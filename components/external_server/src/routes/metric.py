@@ -6,14 +6,14 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from shared_data_model import DATA_MODEL
 from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.database.reports import insert_new_report
 from shared.model.metric import Metric
-from shared.utils.type import MetricId, SubjectId, User
+from shared.utils.type import MetricId, SubjectId, Value
 
 from database.datamodels import default_metric_attributes
+from database.measurements import latest_successful_measurement
 from database.reports import latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item
 from utils.functions import sanitize_html, uuid
@@ -184,16 +184,16 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     return dict(ok=True)
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION], pass_user=True)
-def add_metric_issue(metric_uuid: MetricId, database: Database, user: User):
+@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
+def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
-    reports = latest_reports(database, latest_datamodel(database))
-    report = latest_report_for_uuids(reports, metric_uuid)[0]
+    data_model = latest_datamodel(database)
+    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    last_measurement = latest_successful_measurement(database, metric)
+    measured_value = last_measurement.value() if last_measurement else "missing"
     issue_tracker = report.issue_tracker()
-    issue_summary = f"Quality-time metric '{metric.name}'"
-    issue_description = create_issue_description(metric, subject, report, user)
-    issue_key, error = issue_tracker.create_issue(issue_summary, issue_description)
+    issue_key, error = issue_tracker.create_issue(*create_issue_text(metric, measured_value, data_model))
     if error:  # pylint: disable=no-else-return
         return dict(ok=False, error=error)
     else:  # pragma: no cover
@@ -208,12 +208,15 @@ def add_metric_issue(metric_uuid: MetricId, database: Database, user: User):
         return dict(ok=True, issue_url=issue_tracker.browse_url(issue_key))
 
 
-def create_issue_description(metric, subject, report, user: User) -> str:
+def create_issue_text(metric: Metric, measured_value: Value, data_model) -> tuple[str, str]:
     """Create an issue description for the metric."""
     metric_url = dict(bottle.request.json)["metric_url"]
-    return (
-        f"Metric '[{metric.name}|{metric_url}]' of subject '{subject.name}' "
-        f"in Quality-time report '{report.name}' needs attention.\n\n"
-        f"Why address '{metric.name}'? {DATA_MODEL.metrics[metric.type()].rationale}\n\n"
-        f"This issue was created by {user.name_and_email()}.\n"
+    source_names = ", ".join([source.name or data_model["sources"][source.type]["name"] for source in metric.sources])
+    source_urls = [url for url in [source.get("parameters", {}).get("url") for source in metric.sources] if url]
+    issue_summary = f"Fix {measured_value} {metric.unit} from {source_names}"
+    source_url_str = f"\nPlease go to {', '.join(source_urls)} for more details." if source_urls else ""
+    issue_description = (
+        f"The metric [{metric.name}|{metric_url}] in Quality-time reports "
+        f"{measured_value} {metric.unit} from {source_names}.{source_url_str}\n"
     )
+    return issue_summary, issue_description

@@ -27,6 +27,10 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 - Change the default sort order of dates in a quality report from descending to ascending. Closes [#5998](https://github.com/ICTU/quality-time/issues/5998).
 
+### Changed
+
+- Write a more descriptive issue summary and description for issues created from Quality-time. Closes [#4747](https://github.com/ICTU/quality-time/issues/4747).
+
 ## v4.10.0 - 2023-04-26
 
 ### Deployment notes

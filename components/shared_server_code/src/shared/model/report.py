@@ -125,10 +125,10 @@ class Report(dict):
         if metric_uuid is not None:
             metric = self.metrics_dict[metric_uuid]
             subject = self.subjects_dict[metric.subject_uuid]
-            return (metric, subject)
+            return metric, subject
         if source_uuid is not None:
             source = self.sources_dict[source_uuid]
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
-            return (source, metric, subject)
+            return source, metric, subject
         raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no feature-test-cover

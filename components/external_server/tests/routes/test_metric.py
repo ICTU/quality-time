@@ -4,12 +4,7 @@ from datetime import date, timedelta
 from unittest.mock import Mock, patch
 
 import requests
-
-from shared_data_model import DATA_MODEL
-from shared.utils.type import User
-
 from model.report import Report
-
 
 from routes import (
     add_metric_issue,
@@ -20,7 +15,7 @@ from routes import (
     post_metric_new,
     post_move_metric,
 )
-
+from ..base import DataModelTestCase, disable_logging
 from ..fixtures import (
     JOHN,
     METRIC_ID,
@@ -33,8 +28,6 @@ from ..fixtures import (
     SUBJECT_ID2,
     create_report,
 )
-
-from ..base import DataModelTestCase, disable_logging
 
 
 class PostMetricAttributeTestCase(DataModelTestCase):
@@ -569,25 +562,38 @@ class MetricIssueTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the report fixture."""
         super().setUp()
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="owasp_zap", parameters=dict(url="https://zap")),
+        }
         self.report = Report(
             self.DATA_MODEL,
             dict(
                 report_uuid=REPORT_ID,
                 issue_tracker=dict(parameters=dict(url="https://tracker", project_key="KEY", issue_type="BUG")),
-                subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(type="violations", name="name")})},
+                subjects={
+                    SUBJECT_ID: dict(
+                        name="Subject",
+                        metrics={METRIC_ID: dict(type="violations", name="name", unit="oopsies", sources=self.sources)},
+                    )
+                },
             ),
         )
         self.database.reports.find.return_value = [self.report]
         self.database.sessions.find_one.return_value = JOHN
+        self.measurement = dict(
+            _id="id",
+            metric_uuid=METRIC_ID,
+            count=dict(status="target_not_met", value="42"),
+            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+        )
+        self.database.measurements.find_one.return_value = self.measurement
         self.expected_json = dict(
             fields=dict(
                 project=dict(key="KEY"),
                 issuetype=dict(name="BUG"),
-                summary="Quality-time metric 'name'",
-                description="Metric '[name|https://quality_time/metric42]' of subject "
-                "'Subject' in Quality-time report '' needs attention.\n\n"
-                f"Why address 'name'? {DATA_MODEL.metrics['violations'].rationale}\n\n"
-                "This issue was created by user.\n",
+                summary="Fix 42 oopsies from Source",
+                description="The metric [name|https://quality_time/metric42] in Quality-time reports 42 oopsies "
+                "from Source.\nPlease go to https://zap for more details.\n",
             )
         )
         self.issue_api = "https://tracker/rest/api/2/issue"
@@ -598,10 +604,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
         )
@@ -620,10 +623,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
@@ -648,10 +648,7 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = dict(key="FOO-42")
         requests_post.return_value = response
-        self.assertEqual(
-            dict(ok=True, issue_url=self.issue_url),
-            add_metric_issue(METRIC_ID, self.database, User("user")),
-        )
+        self.assertEqual(dict(ok=True, issue_url=self.issue_url), add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["epic_link_field_id"] = "FOO-420"
         requests_post.assert_called_once_with(
             self.issue_api, auth=None, headers={}, json=self.expected_json, timeout=10
@@ -663,4 +660,4 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.raise_for_status.side_effect = requests.HTTPError("Oops")
         requests_post.return_value = response
-        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database, User("user")))
+        self.assertEqual(dict(ok=False, error="Oops"), add_metric_issue(METRIC_ID, self.database))

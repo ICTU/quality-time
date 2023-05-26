@@ -13,7 +13,7 @@ from tests.fixtures import METRIC_ID
 class MetricTest(unittest.TestCase):
     """Test the metric model."""
 
-    DATA_MODEL = {"metrics": {"fixture_metric_type": {"name": "fixture_metric_type"}}}
+    DATA_MODEL = {"metrics": {"fixture_metric_type": {"name": "fixture_metric_type", "unit": "issues"}}}
 
     def test_summarize_empty_metric(self):
         """Test that a minimal metric returns a summary."""
@@ -133,3 +133,13 @@ class MetricTest(unittest.TestCase):
         """Test that we get the metric name from the data model if the metric has no name."""
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
         self.assertEqual("fixture_metric_type", metric.name)
+
+    def test_unit(self):
+        """Test that we get the metric unit from the metric."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type", "unit": "oopsies"}, METRIC_ID)
+        self.assertEqual("oopsies", metric.unit)
+
+    def test_missing_unit(self):
+        """Test that we get the metric unit from the data model if the metric has no unit."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
+        self.assertEqual("issues", metric.unit)

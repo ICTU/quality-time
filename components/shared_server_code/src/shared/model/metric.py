@@ -64,6 +64,11 @@ class Metric(dict):
         """Either a custom name or one from the metric type in the data model."""
         return self.get("name") or self.__data_model["metrics"].get(self.type(), {}).get("name")
 
+    @property
+    def unit(self):
+        """Either a custom unit or one from the metric type in the data model."""
+        return self.get("unit") or self.__data_model["metrics"].get(self.type(), {}).get("unit")
+
     def evaluate_targets(self):
         """Return whether the metric is to evaluate its targets. If not, it is considered to be informative."""
         return self.get("evaluate_targets", True)
