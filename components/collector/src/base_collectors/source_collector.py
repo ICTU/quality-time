@@ -21,6 +21,8 @@ from collector_utilities.functions import (
 from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
+from .config import MAX_SLEEP_DURATION
+
 
 class SourceCollector(ABC):
     """Base class for source collectors.
@@ -93,9 +95,10 @@ class SourceCollector(ABC):
         try:
             api_url = await self._api_url()
             safe_api_url = tokenless(api_url) or class_name
-            responses = await self._get_source_responses(api_url)
+            logging.info("%s retrieving %s", class_name, safe_api_url)
+            responses = await asyncio.wait_for(self._get_source_responses(api_url), timeout=MAX_SLEEP_DURATION)
             logging.info("%s retrieved %s", class_name, safe_api_url)
-        except (CollectorError, aiohttp.ClientError) as reason:
+        except (CollectorError, aiohttp.ClientError, asyncio.TimeoutError) as reason:
             error = self.__logsafe_exception(reason)
             logging.warning("%s failed to retrieve %s: %s", class_name, safe_api_url, error)
             responses = SourceResponses(api_url=URL(api_url), connection_error=error)

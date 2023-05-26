@@ -14,6 +14,7 @@ from shared.database.shared_data import create_measurement, get_reports
 from collector_utilities.functions import timer
 from collector_utilities.type import JSONDict
 
+from . import config
 from .metric_collector import MetricCollector
 
 if TYPE_CHECKING:
@@ -22,10 +23,6 @@ if TYPE_CHECKING:
 
 class Collector:
     """Collect measurements for all metrics."""
-
-    MAX_SLEEP_DURATION = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 20))
-    MEASUREMENT_LIMIT = int(os.environ.get("COLLECTOR_MEASUREMENT_LIMIT", 30))
-    MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
         self.__previous_metrics: dict[str, Any] = {}
@@ -58,7 +55,7 @@ class Collector:
             ) as session:
                 with timer() as collection_timer:
                     await self.collect_metrics(session)
-            sleep_duration = max(0, self.MAX_SLEEP_DURATION - collection_timer.duration)
+            sleep_duration = max(0, config.MAX_SLEEP_DURATION - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...",
                 collection_timer.duration,
@@ -70,10 +67,10 @@ class Collector:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports()
         metrics = get_metrics_from_reports(reports)
-        next_fetch = datetime.now(tz=UTC) + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
+        next_fetch = datetime.now(tz=UTC) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
-            if len(tasks) >= self.MEASUREMENT_LIMIT:
+            if len(tasks) >= config.MEASUREMENT_LIMIT:
                 break
             if self.__should_collect(metric_uuid, metric):
                 tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
