@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
 COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
-RUN pip install --no-cache-dir -r /requirements-internal.txt
+RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
 FROM python:3.11.3-alpine3.17
 
