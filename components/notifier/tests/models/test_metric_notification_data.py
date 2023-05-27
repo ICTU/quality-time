@@ -10,17 +10,17 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
 
     def setUp(self):
         """Set variables for the other testcases."""
-        self.metric = dict(
-            type="metric_type",
-            name="default metric 1",
-            unit="units",
-            scale="count",
-        )
+        self.metric = {
+            "type": "metric_type",
+            "name": "default metric 1",
+            "unit": "units",
+            "scale": "count",
+        }
         self.measurements = [
-            dict(count=dict(value=10, status="target_met")),
-            dict(count=dict(value=20, status="target_not_met")),
+            {"count": {"value": 10, "status": "target_met"}},
+            {"count": {"value": 20, "status": "target_not_met"}},
         ]
-        self.subject = dict(type="software", name="Subject")
+        self.subject = {"type": "software", "name": "Subject"}
 
     def test_new_status(self):
         """Test that the new status is set correctly."""

@@ -1,7 +1,9 @@
 """"Unit tests for the notification strategies."""
 
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, UTC
+
+from shared.model.measurement import Measurement
 
 from strategies.notification_strategy import NotificationFinder
 
@@ -15,49 +17,57 @@ class StrategiesTests(unittest.TestCase):
     def setUp(self):
         """Override to create a reports JSON fixture."""
         self.notification_finder = NotificationFinder()
-        self.most_recent_measurement_seen = datetime.min.replace(tzinfo=timezone.utc)
+        self.most_recent_measurement_seen = datetime.min.replace(tzinfo=UTC)
         self.white_metric_status = "unknown"
         self.red_metric = self.metric(name="metric1", status="target_not_met")
         self.red_metric_measurements = [
-            dict(
-                metric_uuid="red_metric",
-                start=self.OLD_TIMESTAMP,
-                end=self.NEW_TIMESTAMP,
-                count=dict(status="target_met", value="5"),
-            ),
-            dict(
-                metric_uuid="red_metric",
-                start=self.NEW_TIMESTAMP,
-                end=self.NEW_TIMESTAMP,
-                count=dict(status="target_not_met", value="10"),
-            ),
+            {
+                "metric_uuid": "red_metric",
+                "start": self.OLD_TIMESTAMP,
+                "end": self.NEW_TIMESTAMP,
+                "count": {"status": "target_met", "value": "5"},
+            },
+            {
+                "metric_uuid": "red_metric",
+                "start": self.NEW_TIMESTAMP,
+                "end": self.NEW_TIMESTAMP,
+                "count": {"status": "target_not_met", "value": "10"},
+            },
         ]
         self.reports = [
-            dict(
-                report_uuid="report1",
-                title="Title",
-                subjects=dict(subject1=dict(metrics=dict(red_metric=self.red_metric), type="software")),
-                notification_destinations=dict(destination_uuid=dict(name="destination")),
-            )
+            {
+                "report_uuid": "report1",
+                "title": "Title",
+                "subjects": {"subject1": {"metrics": {"red_metric": self.red_metric}, "type": "software"}},
+                "notification_destinations": {"destination_uuid": {"name": "destination"}},
+            },
         ]
 
     @staticmethod
-    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
+    def metric(
+        name: str = "metric1",
+        status: str = "target_met",
+        scale: str = "count",
+        recent_measurements: list[Measurement] | None = None,
+        status_start: str | None = None,
+    ) -> dict[str, str | list]:
         """Create a metric."""
-        return dict(
-            name=name,
-            scale=scale,
-            status=status,
-            type="tests",
-            unit="units",
-            recent_measurements=recent_measurements or [],
-            status_start=status_start or "",
-        )
+        return {
+            "name": name,
+            "scale": scale,
+            "status": status,
+            "type": "tests",
+            "unit": "units",
+            "recent_measurements": recent_measurements or [],
+            "status_start": status_start or "",
+        }
 
-    def get_notifications(self, measurements=None):
+    def get_notifications(self, measurements: list[Measurement] | None = None):
         """Return the notifications."""
         return self.notification_finder.get_notifications(
-            self.reports, measurements or [], self.most_recent_measurement_seen
+            self.reports,
+            measurements or [],
+            self.most_recent_measurement_seen,
         )
 
     def test_no_reports(self):
@@ -69,10 +79,14 @@ class StrategiesTests(unittest.TestCase):
         """Test that there is nothing to notify when there are no red metrics."""
         green_metric = self.metric(
             recent_measurements=[
-                dict(start=self.OLD_TIMESTAMP, end=self.NEW_TIMESTAMP, count=dict(status="target_met", value="0"))
-            ]
+                {
+                    "start": self.OLD_TIMESTAMP,
+                    "end": self.NEW_TIMESTAMP,
+                    "count": {"status": "target_met", "value": "0"},
+                },
+            ],
         )
-        self.reports[0]["subjects"]["subject1"]["metrics"] = dict(metric=green_metric)
+        self.reports[0]["subjects"]["subject1"]["metrics"] = {"metric": green_metric}
         self.assertEqual([], self.get_notifications())
 
     def test_old_red_metric(self):
@@ -101,32 +115,32 @@ class StrategiesTests(unittest.TestCase):
         """Test that a metric that turns white is added."""
         metric = self.metric(status=self.white_metric_status)
         measurements = [
-            dict(
-                metric_uuid="metric_uuid",
-                start=self.NEW_TIMESTAMP,
-                end=self.NEW_TIMESTAMP,
-                count=dict(status="target_met"),
-            ),
-            dict(
-                metric_uuid="metric_uuid",
-                start=self.OLD_TIMESTAMP,
-                end=self.OLD_TIMESTAMP,
-                count=dict(status=self.white_metric_status),
-            ),
+            {
+                "metric_uuid": "metric_uuid",
+                "start": self.NEW_TIMESTAMP,
+                "end": self.NEW_TIMESTAMP,
+                "count": {"status": "target_met"},
+            },
+            {
+                "metric_uuid": "metric_uuid",
+                "start": self.OLD_TIMESTAMP,
+                "end": self.OLD_TIMESTAMP,
+                "count": {"status": self.white_metric_status},
+            },
         ]
         self.assertTrue(
-            self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen)
+            self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen),
         )
 
     def test_new_measurement_same_status(self):
         """Test that a metric that was already white isn't added."""
         metric = self.metric(status=self.white_metric_status)
         measurements = [
-            dict(start=self.NEW_TIMESTAMP, count=dict(status=self.white_metric_status)),
-            dict(start=self.OLD_TIMESTAMP, count=dict(status=self.white_metric_status)),
+            {"start": self.NEW_TIMESTAMP, "count": {"status": self.white_metric_status}},
+            {"start": self.OLD_TIMESTAMP, "count": {"status": self.white_metric_status}},
         ]
         self.assertFalse(
-            self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen)
+            self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen),
         )
 
     def test_no_change_due_to_only_one_measurement(self):
@@ -143,28 +157,28 @@ class StrategiesTests(unittest.TestCase):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
         red_metric2 = self.red_metric.copy()
         red_metric2["name"] = "metric2"
-        subject2 = dict(metrics=dict(metric1=red_metric2), type="software")
-        report2 = dict(
-            title="Title",
-            report_uuid="report2",
-            webhook="webhook",
-            subjects=dict(subject=subject2),
-            notification_destinations=dict(uuid1=dict(url="https://report2", name="destination2")),
-        )
+        subject2 = {"metrics": {"metric1": red_metric2}, "type": "software"}
+        report2 = {
+            "title": "Title",
+            "report_uuid": "report2",
+            "webhook": "webhook",
+            "subjects": {"subject": subject2},
+            "notification_destinations": {"uuid1": {"url": "https://report2", "name": "destination2"}},
+        }
         self.reports.append(report2)
         red_metric2_measurements = [
-            dict(
-                metric_uuid="metric1",
-                start=self.OLD_TIMESTAMP,
-                end=self.NEW_TIMESTAMP,
-                count=dict(status="target_met", value="5"),
-            ),
-            dict(
-                metric_uuid="metric1",
-                start=self.NEW_TIMESTAMP,
-                end=self.NEW_TIMESTAMP,
-                count=dict(status="target_not_met", value="10"),
-            ),
+            {
+                "metric_uuid": "metric1",
+                "start": self.OLD_TIMESTAMP,
+                "end": self.NEW_TIMESTAMP,
+                "count": {"status": "target_met", "value": "5"},
+            },
+            {
+                "metric_uuid": "metric1",
+                "start": self.NEW_TIMESTAMP,
+                "end": self.NEW_TIMESTAMP,
+                "count": {"status": "target_not_met", "value": "10"},
+            },
         ]
         metrics = []
         for notification in self.get_notifications(self.red_metric_measurements + red_metric2_measurements):

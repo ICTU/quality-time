@@ -16,7 +16,7 @@ class SendNotificationToTeamsTests(TestCase):
         """Provide the text contents to the rest of the class."""
         self.message = "notification message"
 
-    def test_invalid_webhook(self, mock_send):
+    def test_invalid_webhook(self, mock_send: mock.Mock):
         """Test that exceptions are caught."""
         logging.disable(logging.CRITICAL)
         mock_send.side_effect = OSError("Some error")
@@ -24,7 +24,7 @@ class SendNotificationToTeamsTests(TestCase):
         mock_send.assert_called()
         logging.disable(logging.NOTSET)
 
-    def test_valid_webhook(self, mock_send):
+    def test_valid_webhook(self, mock_send: mock.Mock):
         """Test that a valid message is sent to a valid webhook."""
         send_notification("valid_webhook", self.message)
         mock_send.assert_called()
@@ -35,36 +35,39 @@ class BuildNotificationTextTests(TestCase):
 
     def setUp(self):
         """Provide a default report for the rest of the class."""
-        self.report = dict(title="Report 1", url="https://report1")
-        self.subject = dict(type="software", name="Subject")
+        self.report = {"title": "Report 1", "url": "https://report1"}
+        self.subject = {"type": "software", "name": "Subject"}
 
     def test_changed_status_text(self):
         """Test that the text is correct."""
         scale = "count"
-        metric1 = dict(
-            type="security_warnings",
-            name="Metric",
-            unit="my security warnings",
-            scale=scale,
-        )
+        metric1 = {
+            "type": "security_warnings",
+            "name": "Metric",
+            "unit": "my security warnings",
+            "scale": scale,
+        }
         measurements1 = [
-            dict(count=dict(value=0, status="near_target_met")),
-            dict(count=dict(value=42, status="target_not_met")),
+            {"count": {"value": 0, "status": "near_target_met"}},
+            {"count": {"value": 42, "status": "target_not_met"}},
         ]
-        metric2 = dict(
-            type="security_warnings",
-            name=None,
-            unit=None,
-            scale=scale,
-        )
+        metric2 = {
+            "type": "security_warnings",
+            "name": None,
+            "unit": None,
+            "scale": scale,
+        }
         measurements2 = [
-            dict(count=dict(value=5, status="target_met")),
-            dict(count=dict(value=10, status="target_not_met")),
+            {"count": {"value": 5, "status": "target_met"}},
+            {"count": {"value": 10, "status": "target_not_met"}},
         ]
         metric_notification_data1 = MetricNotificationData(metric1, measurements1, self.subject)
         metric_notification_data2 = MetricNotificationData(metric2, measurements2, self.subject)
         notification = Notification(
-            self.report, [metric_notification_data1, metric_notification_data2], "destination_uuid", {}
+            self.report,
+            [metric_notification_data1, metric_notification_data2],
+            "destination_uuid",
+            {},
         )
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
@@ -78,15 +81,15 @@ class BuildNotificationTextTests(TestCase):
 
     def test_unknown_text(self):
         """Test that the text is correct."""
-        metric1 = dict(
-            type="metric_type",
-            name="Metric",
-            unit="units",
-            scale="count",
-        )
+        metric1 = {
+            "type": "metric_type",
+            "name": "Metric",
+            "unit": "units",
+            "scale": "count",
+        }
         measurements = [
-            dict(count=dict(value=0, status="near_target_met")),
-            dict(count=dict(value=None, status="unknown")),
+            {"count": {"value": 0, "status": "near_target_met"}},
+            {"count": {"value": None, "status": "unknown"}},
         ]
         metric_notification_data1 = MetricNotificationData(metric1, measurements, self.subject)
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})

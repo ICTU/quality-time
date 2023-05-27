@@ -46,5 +46,5 @@ def send_notification(destination: str, text: str) -> None:
     my_teams_message.text(text)
     try:
         my_teams_message.send()
-    except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Could not deliver notification: %s", reason)
+    except Exception:
+        logging.exception("Could not deliver notification")
