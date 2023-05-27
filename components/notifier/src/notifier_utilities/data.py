@@ -3,7 +3,6 @@
 import os
 
 import pymongo
-
 from shared.initialization.database import create_indexes
 from shared.initialization.datamodel import import_datamodel
 from shared.initialization.report import initialize_reports_overview

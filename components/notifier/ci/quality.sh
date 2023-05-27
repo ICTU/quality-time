@@ -24,3 +24,6 @@ run pipx run `spec vulture` --min-confidence 0 src/ tests/ .vulture_ignore_list.
 
 # Black
 run pipx run `spec black` --check src tests
+
+# Isort
+run pipx run `spec isort` --check --diff src tests

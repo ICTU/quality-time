@@ -3,7 +3,7 @@
 import asyncio
 import logging
 import pathlib
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from os import getenv
 from typing import NoReturn
 

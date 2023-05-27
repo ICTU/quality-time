@@ -2,11 +2,10 @@
 
 from typing import Final
 
-from shared_data_model import DATA_MODEL
-from shared.model.metric import Metric
 from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 from shared.model.subject import Subject
-
+from shared_data_model import DATA_MODEL
 
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS: Final = 1
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE: Final = 2
