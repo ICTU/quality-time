@@ -46,15 +46,21 @@ ignore_missing_imports = true
 [tool.ruff]
 target-version = "py311"
 line-length = 120
+src = ["src"]
 select = ["ALL"]
 ignore = [
     "ANN101",  # https://beta.ruff.rs/docs/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
     "D203",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
     "FBT",     # https://beta.ruff.rs/docs/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
-    "I001",    # https://beta.ruff.rs/docs/rules/unsorted-imports/ - (probably) because ruff is run with pipx it cann't differentiate between dependencies and modules
     "PT",      # https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
+
+[tool.ruff.isort]
+section-order = ["future", "standard-library", "third-party", "second-party", "first-party", "local-folder"]
+
+[tool.ruff.isort.sections]
+"second-party" = ["shared", "shared_data_model"]
 
 [tool.ruff.per-file-ignores]
 ".vulture_ignore_list.py" = ["ALL"]
