@@ -1,17 +1,17 @@
 """Unit tests for the date time functions."""
 
-from datetime import datetime, timedelta
 import unittest
+from datetime import datetime, timedelta
 
 from dateutil.tz import tzlocal, tzutc
 
 from collector_utilities.date_time import (
+    datetime_fromparts,
+    datetime_fromtimestamp,
     days_ago,
     days_to_go,
     now,
     parse_datetime,
-    datetime_fromparts,
-    datetime_fromtimestamp,
 )
 
 

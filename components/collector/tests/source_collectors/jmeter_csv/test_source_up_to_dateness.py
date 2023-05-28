@@ -1,6 +1,6 @@
 """Unit tests for the JMeter CSV source-up-to-dateness collector."""
 
-from collector_utilities.date_time import days_ago, datetime_fromtimestamp
+from collector_utilities.date_time import datetime_fromtimestamp, days_ago
 
 from .base import JMeterCSVTestCase
 

@@ -1,7 +1,7 @@
 """Unit tests for the utility functions."""
 
 import unittest
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
 from collector_utilities.date_time import days_ago

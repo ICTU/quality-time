@@ -1,6 +1,6 @@
 """Unit tests for the calendar time remaining collector."""
 
-from collector_utilities.date_time import days_to_go, datetime_fromparts
+from collector_utilities.date_time import datetime_fromparts, days_to_go
 
 from .base import CalendarTestCase
 

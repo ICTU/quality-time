@@ -5,7 +5,7 @@ from typing import Any
 
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import Response, URL
+from collector_utilities.type import URL, Response
 
 
 class QualityTimeCollector(SourceCollector, ABC):

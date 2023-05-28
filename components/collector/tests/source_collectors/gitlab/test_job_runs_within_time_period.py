@@ -1,6 +1,6 @@
 """Unit tests for the GitLab job runs within time period collector."""
 
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 from .base import GitLabTestCase
 

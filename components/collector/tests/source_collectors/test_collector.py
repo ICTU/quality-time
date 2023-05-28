@@ -6,7 +6,7 @@ import aiohttp
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from model import Entity, Entities, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .source_collector_test_case import SourceCollectorTestCase
 

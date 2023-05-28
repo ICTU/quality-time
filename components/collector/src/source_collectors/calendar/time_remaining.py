@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import cast
 
 from base_collectors import TimeRemainingCollector
-from collector_utilities.date_time import parse_datetime, MIN_DATETIME
+from collector_utilities.date_time import MIN_DATETIME, parse_datetime
 from collector_utilities.type import Response
 from model import SourceResponses
 

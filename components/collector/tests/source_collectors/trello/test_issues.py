@@ -1,6 +1,6 @@
 """Unit tests for the Trello issues collector."""
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from .base import TrelloTestCase
 

@@ -5,7 +5,7 @@ from typing import cast
 
 from base_collectors import JSONFileSourceCollector, TimePassedCollector
 from collector_utilities.date_time import now, parse_datetime
-from collector_utilities.type import Response, URL
+from collector_utilities.type import URL, Response
 
 
 class AnchoreSourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):

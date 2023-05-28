@@ -6,7 +6,6 @@ from typing import Final
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-
 MIN_DATETIME: Final = datetime.min.replace(tzinfo=tzlocal())
 MAX_DATETIME: Final = datetime.max.replace(tzinfo=tzlocal())
 

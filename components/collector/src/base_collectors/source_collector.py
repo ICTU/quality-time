@@ -19,7 +19,7 @@ from collector_utilities.functions import (
     tokenless,
 )
 from collector_utilities.type import URL, Response, Value
-from model import Entities, Entity, IssueStatus, SourceParameters, SourceMeasurement, SourceResponses
+from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
 
 class SourceCollector(ABC):

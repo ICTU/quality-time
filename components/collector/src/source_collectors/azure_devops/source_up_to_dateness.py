@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.date_time import parse_datetime, MIN_DATETIME
+from collector_utilities.date_time import MIN_DATETIME, parse_datetime
 from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
@@ -14,6 +14,7 @@ from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
 
 if TYPE_CHECKING:
     from datetime import datetime
+
     import aiohttp
 
 

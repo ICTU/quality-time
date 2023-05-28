@@ -1,7 +1,7 @@
 """Harbor security warnings collector."""
 
 from abc import ABC
-from typing import cast, TypedDict
+from typing import TypedDict, cast
 from urllib.parse import quote, unquote
 
 from base_collectors import SourceCollector

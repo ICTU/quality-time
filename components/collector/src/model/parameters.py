@@ -1,7 +1,7 @@
 """Source parameters."""
 
-from typing import cast
 import urllib
+from typing import cast
 
 from shared_data_model import DATA_MODEL
 

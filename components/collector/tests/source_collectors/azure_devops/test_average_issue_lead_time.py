@@ -1,7 +1,7 @@
 """Unit tests for the Azure DevOps Server average issue lead time collector."""
 
 from copy import deepcopy
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 
 from .base import AzureDevopsTestCase
 

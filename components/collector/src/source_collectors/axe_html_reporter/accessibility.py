@@ -1,14 +1,13 @@
 """Axe HTML reporter accessibility collector."""
 
-from typing import cast
 from collections.abc import Iterator
+from typing import cast
 
 from bs4 import Tag
 
 from base_collectors import HTMLFileSourceCollector
 from collector_utilities.functions import md5_hash
 from model import Entities, Entity, SourceResponses
-
 from source_collectors.axe_core.accessibility import AxeAccessibilityCollector
 
 

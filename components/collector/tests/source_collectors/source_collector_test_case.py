@@ -4,9 +4,9 @@ import io
 import logging
 import unittest
 import zipfile
-from unittest.mock import AsyncMock, PropertyMock, patch
-from unittest.mock import DEFAULT as STOP_SENTINEL
 from typing import Any
+from unittest.mock import DEFAULT as STOP_SENTINEL
+from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
 
@@ -35,7 +35,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         self.sources = {"source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}}
         self.metric = {"type": self.METRIC_TYPE, "sources": self.sources, "addition": self.METRIC_ADDITION}
 
-    async def collect(
+    async def collect(  # noqa: PLR0913
         self,
         *,
         get_request_json_return_value: dict | None = None,

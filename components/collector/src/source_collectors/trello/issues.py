@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from collector_utilities.date_time import days_ago, now, parse_datetime, MAX_DATETIME
+from collector_utilities.date_time import MAX_DATETIME, days_ago, now, parse_datetime
 from model import Entities, Entity, SourceResponses
 
 from .base import TrelloBase

@@ -1,11 +1,11 @@
 """Azure DevOps Server average issue lead time collector."""
 
 from statistics import mean
-from typing import cast, Final
+from typing import Final, cast
 
 from collector_utilities.date_time import days_ago, parse_datetime
 from collector_utilities.type import Value
-from model import SourceResponses, Entity
+from model import Entity, SourceResponses
 
 from .issues import AzureDevopsIssues
 

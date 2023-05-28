@@ -71,7 +71,7 @@ IssueStatusCategory = Literal["todo", "doing", "done"]
 class IssueStatus:
     """Class to hold the status of issues."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         issue_id: str,
         *,

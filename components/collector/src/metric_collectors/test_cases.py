@@ -1,8 +1,8 @@
 """Test cases collector."""
 
 import re
-from typing import cast
 from collections.abc import Sequence
+from typing import cast
 
 from base_collectors import MetricCollector
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement

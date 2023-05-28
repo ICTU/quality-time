@@ -1,8 +1,7 @@
 """Unit tests for the Anchore source up-to-dateness collector."""
 
 import json
-
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from collector_utilities.date_time import days_ago
 

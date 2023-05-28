@@ -1,6 +1,6 @@
 """Unit tests for the GitLab unmerged branches collector."""
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from .base import GitLabTestCase
 

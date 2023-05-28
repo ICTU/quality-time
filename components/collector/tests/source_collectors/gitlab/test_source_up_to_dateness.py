@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, UTC
-from unittest.mock import AsyncMock, Mock, patch, _patch
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock, Mock, _patch, patch
 
 from collector_utilities.date_time import days_ago, parse_datetime
 

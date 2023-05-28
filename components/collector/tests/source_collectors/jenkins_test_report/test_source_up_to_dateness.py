@@ -1,6 +1,6 @@
 """Unit tests for the Jenkins test report source up-to-dateness collector."""
 
-from collector_utilities.date_time import datetime_fromtimestamp, datetime_fromparts, days_ago
+from collector_utilities.date_time import datetime_fromparts, datetime_fromtimestamp, days_ago
 
 from .base import JenkinsTestReportTestCase
 

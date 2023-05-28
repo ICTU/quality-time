@@ -1,6 +1,6 @@
 """Unit tests for the Cobertura source up-to-dateness collector."""
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from .base import CoberturaTestCase
 

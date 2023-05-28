@@ -4,7 +4,7 @@ from statistics import mean
 from typing import cast
 
 from collector_utilities.date_time import days_ago, parse_datetime
-from collector_utilities.type import Value, URL
+from collector_utilities.type import URL, Value
 from model import Entities, Entity
 
 from .issues import JiraIssues

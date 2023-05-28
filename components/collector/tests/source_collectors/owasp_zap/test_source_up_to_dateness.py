@@ -1,6 +1,6 @@
 """Unit tests for the OWASP ZAP source up-to-dateness collector."""
 
-from collector_utilities.date_time import days_ago, datetime_fromparts
+from collector_utilities.date_time import datetime_fromparts, days_ago
 
 from .base import OWASPZAPTestCase
 

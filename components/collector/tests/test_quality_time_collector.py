@@ -2,7 +2,7 @@
 
 import logging
 import unittest
-from unittest.mock import patch, AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, patch
 
 from quality_time_collector import collect
 

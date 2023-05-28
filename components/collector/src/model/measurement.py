@@ -13,7 +13,7 @@ class SourceMeasurement:
 
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         *,
         value: Value = None,

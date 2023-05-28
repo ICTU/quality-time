@@ -6,18 +6,19 @@ import asyncio
 import itertools
 from abc import ABC
 from datetime import datetime, timedelta
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.date_time import days_ago, now, parse_datetime, MIN_DATETIME
-from collector_utilities.type import Response, URL, Value
+from collector_utilities.date_time import MIN_DATETIME, days_ago, now, parse_datetime
+from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 
 from .base import GitLabProjectBase
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
     import aiohttp
 
 

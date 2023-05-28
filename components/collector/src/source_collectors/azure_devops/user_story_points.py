@@ -4,7 +4,7 @@ from typing import Final
 
 from collector_utilities.functions import decimal_round_half_up
 from collector_utilities.type import Value
-from model import SourceResponses, Entity
+from model import Entity, SourceResponses
 
 from .issues import AzureDevopsIssues
 

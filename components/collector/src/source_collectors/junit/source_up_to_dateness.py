@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from base_collectors import TimePassedCollector, XMLFileSourceCollector
-from collector_utilities.date_time import parse_datetime, now
+from collector_utilities.date_time import now, parse_datetime
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 

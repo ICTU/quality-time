@@ -4,8 +4,8 @@ from datetime import datetime
 from urllib import parse
 
 from base_collectors import TimePassedCollector
-from collector_utilities.date_time import parse_datetime, MIN_DATETIME
-from collector_utilities.type import Response, URL
+from collector_utilities.date_time import MIN_DATETIME, parse_datetime
+from collector_utilities.type import URL, Response
 
 from .base import QualityTimeCollector
 

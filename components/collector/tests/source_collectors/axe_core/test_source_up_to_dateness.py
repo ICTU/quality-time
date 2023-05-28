@@ -1,6 +1,6 @@
 """Unit tests for the Axe-core source up-to-dateness collector."""
 
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from collector_utilities.date_time import days_ago
 

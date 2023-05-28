@@ -1,8 +1,7 @@
 """Jira velocity collector."""
 
-from urllib.parse import parse_qs, urlparse
-
 from typing import TypedDict
+from urllib.parse import parse_qs, urlparse
 
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL

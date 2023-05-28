@@ -6,7 +6,6 @@ from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
-
 TestCase = dict[str, str]
 Suite = dict[str, list[TestCase]]
 

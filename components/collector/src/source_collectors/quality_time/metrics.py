@@ -7,11 +7,10 @@ from urllib import parse
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.date_time import now, parse_datetime
-from collector_utilities.type import Response, URL, Value
+from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import QualityTimeCollector
-
 
 Measurements = list[dict[str, dict[str, str]]]
 

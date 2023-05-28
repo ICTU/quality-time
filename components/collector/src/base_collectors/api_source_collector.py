@@ -5,8 +5,8 @@ from datetime import datetime
 
 from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.type import URL, Response
-
 from model import SourceResponses
+
 from .source_collector import SourceCollector, TimePassedCollector
 
 
