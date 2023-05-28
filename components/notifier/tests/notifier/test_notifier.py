@@ -1,14 +1,14 @@
 """Unit tests for the Quality-time notifier."""
 
+import contextlib
 import pathlib
 import unittest
 from copy import deepcopy
-from datetime import datetime, timedelta, UTC
-from unittest.mock import mock_open, patch, Mock
-from tests.fixtures import create_report
+from datetime import UTC, datetime, timedelta
+from unittest.mock import Mock, mock_open, patch
 
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
-import contextlib
+from tests.fixtures import create_report
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):

@@ -1,7 +1,7 @@
 """"Unit tests for the notification strategies."""
 
 import unittest
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from shared.model.measurement import Measurement
 

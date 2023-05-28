@@ -6,7 +6,7 @@ from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
 
-from models.metric_notification_data import MetricNotificationData, NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE
+from models.metric_notification_data import NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE, MetricNotificationData
 from models.notification import Notification
 
 

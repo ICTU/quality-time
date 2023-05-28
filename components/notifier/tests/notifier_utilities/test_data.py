@@ -1,10 +1,11 @@
 """Unit tests for the notifier_utilities.data module."""
 
 import unittest
-from datetime import datetime, timedelta, UTC
-from unittest.mock import patch, Mock
+from datetime import UTC, datetime, timedelta
+from unittest.mock import Mock, patch
 
 import mongomock
+
 from shared.model.report import Report
 
 from notifier_utilities.data import (
