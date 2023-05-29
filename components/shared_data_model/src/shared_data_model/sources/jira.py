@@ -2,16 +2,16 @@
 
 from enum import Enum
 
-from ..meta.entity import Color, EntityAttributeType
-from ..meta.source import Source
-from ..meta.unit import Unit
-from ..parameters import (
-    access_parameters,
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.meta.unit import Unit
+from shared_data_model.parameters import (
     Days,
     IntegerParameter,
     SingleChoiceParameter,
     StringParameter,
     TestResult,
+    access_parameters,
 )
 
 
@@ -24,14 +24,14 @@ class VelocityType(str, Enum):
 
 
 ISSUE_ATTRIBUTES = [
-    dict(name="Key", key="issue_key", url="url"),
-    dict(name="Summary"),
-    dict(name="Issue type", key="type"),
-    dict(name="Status"),
-    dict(name="Priority"),
-    dict(name="Sprint(s)", key="sprint"),
-    dict(name="Created", type=EntityAttributeType.DATETIME),
-    dict(name="Updated", type=EntityAttributeType.DATETIME),
+    {"name": "Key", "key": "issue_key", "url": "url"},
+    {"name": "Summary"},
+    {"name": "Issue type", "key": "type"},
+    {"name": "Status"},
+    {"name": "Priority"},
+    {"name": "Sprint(s)", "key": "sprint"},
+    {"name": "Created", "type": EntityAttributeType.DATETIME},
+    {"name": "Updated", "type": EntityAttributeType.DATETIME},
 ]
 
 ALL_JIRA_METRICS = [
@@ -141,84 +141,92 @@ JIRA = Source(
         ),
         **access_parameters(
             ALL_JIRA_METRICS,
-            kwargs=dict(
-                url=dict(
-                    help="URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'."
-                ),
-                private_token=dict(
-                    help_url="https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html",
-                    validation_path="rest/api/2/myself",
-                ),
-            ),
-            include=dict(landing_url=False),
-        )
-    ),
-    entities=dict(
-        average_issue_lead_time=dict(
-            name="issue",
-            attributes=ISSUE_ATTRIBUTES
-            + [dict(name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER)],
-        ),
-        issues=dict(name="issue", attributes=ISSUE_ATTRIBUTES),
-        manual_test_duration=dict(
-            name=TEST_CASE,
-            measured_attribute="duration",
-            attributes=[
-                dict(name="Key", key="issue_key", url="url"),
-                dict(name="Summary"),
-                dict(name="Duration (minutes)", key="duration", type=EntityAttributeType.INTEGER),
-            ],
-        ),
-        manual_test_execution=dict(
-            name=TEST_CASE,
-            attributes=[
-                dict(name="Key", key="issue_key", url="url"),
-                dict(name="Summary"),
-                dict(name="Date of last test", key="last_test_date", type=EntityAttributeType.DATE),
-                dict(
-                    name="Desired test frequency (days)", key="desired_test_frequency", type=EntityAttributeType.INTEGER
-                ),
-            ],
-        ),
-        test_cases=dict(
-            name=TEST_CASE,
-            attributes=[
-                dict(name="Key", key="issue_key", url="url"),
-                dict(name="Summary"),
-                dict(name="Issue type", key="type"),
-                dict(name="Status"),
-                dict(name="Priority"),
-                dict(
-                    name="Test result",
-                    color=dict(
-                        errored=Color.NEGATIVE,
-                        failed=Color.NEGATIVE,
-                        passed=Color.POSITIVE,
-                        skipped=Color.WARNING,
-                        untested=Color.ACTIVE,
-                    ),
-                ),
-                dict(name="Created", type=EntityAttributeType.DATETIME),
-                dict(name="Updated", type=EntityAttributeType.DATETIME),
-            ],
-        ),
-        user_story_points=dict(
-            name="user story",
-            name_plural="user stories",
-            measured_attribute="points",
-            attributes=ISSUE_ATTRIBUTES + [dict(name="Points", type=EntityAttributeType.FLOAT)],
-        ),
-        velocity=dict(
-            name="sprint",
-            measured_attribute="points_measured",
-            attributes=[
-                dict(name="Sprint name", key="name", url="url"),
-                dict(name="Sprint goal", key="goal"),
-                dict(name="Points committed", type=EntityAttributeType.FLOAT),
-                dict(name="Points completed", type=EntityAttributeType.FLOAT),
-                dict(name="Points completed minus committed", key="points_difference", type=EntityAttributeType.FLOAT),
-                dict(name="Points measured", type=EntityAttributeType.FLOAT, visible=False),
-            ],
+            kwargs={
+                "url": {
+                    "help": "URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.",
+                },
+                "private_token": {
+                    "help_url": "https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html",
+                    "validation_path": "rest/api/2/myself",
+                },
+            },
+            include={"landing_url": False},
         ),
     ),
+    entities={
+        "average_issue_lead_time": {
+            "name": "issue",
+            "attributes": [
+                *ISSUE_ATTRIBUTES,
+                {"name": "Issue lead time in days", "key": "lead_time", "type": EntityAttributeType.INTEGER},
+            ],
+        },
+        "issues": {"name": "issue", "attributes": ISSUE_ATTRIBUTES},
+        "manual_test_duration": {
+            "name": TEST_CASE,
+            "measured_attribute": "duration",
+            "attributes": [
+                {"name": "Key", "key": "issue_key", "url": "url"},
+                {"name": "Summary"},
+                {"name": "Duration (minutes)", "key": "duration", "type": EntityAttributeType.INTEGER},
+            ],
+        },
+        "manual_test_execution": {
+            "name": TEST_CASE,
+            "attributes": [
+                {"name": "Key", "key": "issue_key", "url": "url"},
+                {"name": "Summary"},
+                {"name": "Date of last test", "key": "last_test_date", "type": EntityAttributeType.DATE},
+                {
+                    "name": "Desired test frequency (days)",
+                    "key": "desired_test_frequency",
+                    "type": EntityAttributeType.INTEGER,
+                },
+            ],
+        },
+        "test_cases": {
+            "name": TEST_CASE,
+            "attributes": [
+                {"name": "Key", "key": "issue_key", "url": "url"},
+                {"name": "Summary"},
+                {"name": "Issue type", "key": "type"},
+                {"name": "Status"},
+                {"name": "Priority"},
+                {
+                    "name": "Test result",
+                    "color": {
+                        "errored": Color.NEGATIVE,
+                        "failed": Color.NEGATIVE,
+                        "passed": Color.POSITIVE,
+                        "skipped": Color.WARNING,
+                        "untested": Color.ACTIVE,
+                    },
+                },
+                {"name": "Created", "type": EntityAttributeType.DATETIME},
+                {"name": "Updated", "type": EntityAttributeType.DATETIME},
+            ],
+        },
+        "user_story_points": {
+            "name": "user story",
+            "name_plural": "user stories",
+            "measured_attribute": "points",
+            "attributes": [*ISSUE_ATTRIBUTES, {"name": "Points", "type": EntityAttributeType.FLOAT}],
+        },
+        "velocity": {
+            "name": "sprint",
+            "measured_attribute": "points_measured",
+            "attributes": [
+                {"name": "Sprint name", "key": "name", "url": "url"},
+                {"name": "Sprint goal", "key": "goal"},
+                {"name": "Points committed", "type": EntityAttributeType.FLOAT},
+                {"name": "Points completed", "type": EntityAttributeType.FLOAT},
+                {
+                    "name": "Points completed minus committed",
+                    "key": "points_difference",
+                    "type": EntityAttributeType.FLOAT,
+                },
+                {"name": "Points measured", "type": EntityAttributeType.FLOAT, "visible": False},
+            ],
+        },
+    },
 )

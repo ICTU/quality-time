@@ -1,9 +1,8 @@
 """Composer source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceParameter
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceParameter, access_parameters
 
 COMPOSER = Source(
     name="Composer",
@@ -29,29 +28,29 @@ COMPOSER = Source(
             ["dependencies"],
             source_type="Composer 'outdated' report",
             source_type_format="JSON",
-            kwargs=dict(url=dict(help_url="https://getcomposer.org/doc/03-cli.md#outdated")),
-        )
+            kwargs={"url": {"help_url": "https://getcomposer.org/doc/03-cli.md#outdated"}},
+        ),
     ),
-    entities=dict(
-        dependencies=dict(
-            name="dependency",
-            name_plural="dependencies",
-            attributes=[
-                dict(name="Package", key="name", url="homepage"),
-                dict(name="Description"),
-                dict(name="Current version", key="version"),
-                dict(name="Latest version", key="latest"),
-                dict(
-                    name="Latest version status",
-                    key="latest_status",
-                    color={
+    entities={
+        "dependencies": {
+            "name": "dependency",
+            "name_plural": "dependencies",
+            "attributes": [
+                {"name": "Package", "key": "name", "url": "homepage"},
+                {"name": "Description"},
+                {"name": "Current version", "key": "version"},
+                {"name": "Latest version", "key": "latest"},
+                {
+                    "name": "Latest version status",
+                    "key": "latest_status",
+                    "color": {
                         "up-to-date": Color.POSITIVE,
                         "semver-safe-update": Color.WARNING,
                         "update-possible": Color.NEGATIVE,
                     },
-                ),
-                dict(name="Warning"),
+                },
+                {"name": "Warning"},
             ],
-        ),
-    ),
+        },
+    },
 )

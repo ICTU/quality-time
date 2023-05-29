@@ -20,13 +20,16 @@ class ParameterTest(MetaModelTestCase):
     def test_check_api_values_imply_values(self):
         """Test that if a parameter has API values it also has values."""
         expected_error = "Parameter Parameter has api_values but no values"
-        self.check_validation_error(expected_error, name="Parameter", api_values=dict(value="api_value"))
+        self.check_validation_error(expected_error, name="Parameter", api_values={"value": "api_value"})
 
     def test_check_api_values_subset_of_values(self):
         """Test that the parameter API values are a subset of the parameter values."""
         expected_error = "Parameter Parameter has api_values keys that are not listed in values"
         self.check_validation_error(
-            expected_error, name="Parameter", values=["value"], api_values=dict(other_value="api_value")
+            expected_error,
+            name="Parameter",
+            values=["value"],
+            api_values={"other_value": "api_value"},
         )
 
     def test_check_placeholder(self):
@@ -43,7 +46,10 @@ class ParameterTest(MetaModelTestCase):
         """Test that multiple choice parameters with addition have an empty list as default value."""
         expected_error = "Parameter Parameter is multiple choice with addition but default_value is not empty"
         self.check_validation_error(
-            expected_error, name="Parameter", type="multiple_choice_with_addition", default_value=["value"]
+            expected_error,
+            name="Parameter",
+            type="multiple_choice_with_addition",
+            default_value=["value"],
         )
 
     def test_check_values_too_few(self):
@@ -62,5 +68,8 @@ class ParameterTest(MetaModelTestCase):
         """Test that multiple choice parameters with addition have no values."""
         expected_error = "Parameter Parameter is multiple choice with addition but has values"
         self.check_validation_error(
-            expected_error, name="Parameter", type="multiple_choice_with_addition", values=["value"]
+            expected_error,
+            name="Parameter",
+            type="multiple_choice_with_addition",
+            values=["value"],
         )

@@ -1,18 +1,17 @@
 """JMeter sources."""
 
-from ..meta.entity import EntityAttributeType
-from ..meta.source import Source
-from ..parameters import (
-    access_parameters,
+from shared_data_model.meta.entity import EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
     IntegerParameter,
     MultipleChoiceWithAdditionParameter,
     SingleChoiceParameter,
     TestResult,
+    access_parameters,
 )
 
-
 JMETER_JSON_METRICS = ["slow_transactions", "tests"]
-JMETER_CSV_METRICS = JMETER_JSON_METRICS + ["performancetest_duration", "source_up_to_dateness"]
+JMETER_CSV_METRICS = [*JMETER_JSON_METRICS, "performancetest_duration", "source_up_to_dateness"]
 
 JMETER_URL = "https://jmeter.apache.org"
 
@@ -80,25 +79,25 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
 INTEGER, FLOAT = EntityAttributeType.INTEGER, EntityAttributeType.FLOAT
 HELP = "response time (milliseconds)"
 JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES = [
-    dict(name="Transactions", key="name"),
-    dict(name="Sample count", type=INTEGER),
-    dict(name="Error count", type=INTEGER),
-    dict(name="Error percentage", type=FLOAT),
-    dict(name="Mean", help=f"Mean {HELP}", key="mean_response_time", type=FLOAT),
-    dict(name="Median", help=f"Median {HELP}", key="median_response_time", type=FLOAT),
-    dict(name="Minimum", help=f"Minimum {HELP}", key="min_response_time", type=FLOAT),
-    dict(name="Maximum", help=f"Maximum {HELP}", key="max_response_time", type=FLOAT),
-    dict(name=PERCENTILE_90, help=f"{PERCENTILE_90} {HELP}", key="percentile_90_response_time", type=FLOAT),
-    dict(name=PERCENTILE_95, help=f"{PERCENTILE_95} {HELP}", key="percentile_95_response_time", type=FLOAT),
-    dict(name=PERCENTILE_99, help=f"{PERCENTILE_99} {HELP}", key="percentile_99_response_time", type=FLOAT),
+    {"name": "Transactions", "key": "name"},
+    {"name": "Sample count", "type": INTEGER},
+    {"name": "Error count", "type": INTEGER},
+    {"name": "Error percentage", "type": FLOAT},
+    {"name": "Mean", "help": f"Mean {HELP}", "key": "mean_response_time", "type": FLOAT},
+    {"name": "Median", "help": f"Median {HELP}", "key": "median_response_time", "type": FLOAT},
+    {"name": "Minimum", "help": f"Minimum {HELP}", "key": "min_response_time", "type": FLOAT},
+    {"name": "Maximum", "help": f"Maximum {HELP}", "key": "max_response_time", "type": FLOAT},
+    {"name": PERCENTILE_90, "help": f"{PERCENTILE_90} {HELP}", "key": "percentile_90_response_time", "type": FLOAT},
+    {"name": PERCENTILE_95, "help": f"{PERCENTILE_95} {HELP}", "key": "percentile_95_response_time", "type": FLOAT},
+    {"name": PERCENTILE_99, "help": f"{PERCENTILE_99} {HELP}", "key": "percentile_99_response_time", "type": FLOAT},
 ]
 
-ENTITIES = dict(
-    slow_transactions=dict(
-        name="slow transaction",
-        attributes=JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
-    )
-)
+ENTITIES = {
+    "slow_transactions": {
+        "name": "slow transaction",
+        "attributes": JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
+    },
+}
 
 JMETER_CSV = Source(
     name="JMeter CSV",

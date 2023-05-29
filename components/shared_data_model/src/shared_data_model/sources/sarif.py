@@ -1,9 +1,8 @@
 """SARIF JSON for security warnings source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, Severities
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import Severities, access_parameters
 
 SARIF_JSON = Source(
     name="SARIF",
@@ -16,18 +15,18 @@ SARIF_JSON = Source(
             help="If provided, only count security warnings with the selected levels.",
             values=["none", "note", "warning", "error"],
         ),
-        **access_parameters(["security_warnings"], source_type="SARIF vulnerability report", source_type_format="JSON")
+        **access_parameters(["security_warnings"], source_type="SARIF vulnerability report", source_type_format="JSON"),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            attributes=[
-                dict(name="Message"),
-                dict(name="Level", color=dict(error=Color.NEGATIVE, warning=Color.WARNING, note=Color.ACTIVE)),
-                dict(name="Locations"),
-                dict(name="Rule", url="url"),
-                dict(name="Description"),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": [
+                {"name": "Message"},
+                {"name": "Level", "color": {"error": Color.NEGATIVE, "warning": Color.WARNING, "note": Color.ACTIVE}},
+                {"name": "Locations"},
+                {"name": "Rule", "url": "url"},
+                {"name": "Description"},
             ],
-        )
-    ),
+        },
+    },
 )

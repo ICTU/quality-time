@@ -1,9 +1,8 @@
 """OWASP Dependency-Check source."""
 
-from ..meta.entity import Color, EntityAttributeType
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter, Severities
-
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, Severities, access_parameters
 
 ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
     "dependencies",
@@ -13,13 +12,16 @@ ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
 ]
 
 DEPENDENCY_ATTRIBUTES: list[object] = [
-    dict(name="File path", url="url"),
-    dict(name="File path after applying regular expressions", key="file_path_after_regexp"),
-    dict(name="File name"),
+    {"name": "File path", "url": "url"},
+    {"name": "File path after applying regular expressions", "key": "file_path_after_regexp"},
+    {"name": "File name"},
 ]
 SECURITY_WARNING_ATTRIBUTES = [
-    dict(name="Highest severity", color=dict(Critical=Color.NEGATIVE, High=Color.NEGATIVE, Medium=Color.WARNING)),
-    dict(name="Number of vulnerabilities", key="nr_vulnerabilities", type=EntityAttributeType.INTEGER),
+    {
+        "name": "Highest severity",
+        "color": {"Critical": Color.NEGATIVE, "High": Color.NEGATIVE, "Medium": Color.WARNING},
+    },
+    {"name": "Number of vulnerabilities", "key": "nr_vulnerabilities", "type": EntityAttributeType.INTEGER},
 ]
 
 OWASP_DEPENDENCY_CHECK = Source(
@@ -38,11 +40,16 @@ OWASP_DEPENDENCY_CHECK = Source(
             metrics=["dependencies", "security_warnings"],
         ),
         **access_parameters(
-            ALL_OWASP_DEPENDENCY_CHECK_METRICS, source_type="an OWASP Dependency-Check report", source_type_format="XML"
-        )
+            ALL_OWASP_DEPENDENCY_CHECK_METRICS,
+            source_type="an OWASP Dependency-Check report",
+            source_type_format="XML",
+        ),
     ),
-    entities=dict(
-        security_warnings=dict(name="security warning", attributes=DEPENDENCY_ATTRIBUTES + SECURITY_WARNING_ATTRIBUTES),
-        dependencies=dict(name="dependency", name_plural="dependencies", attributes=DEPENDENCY_ATTRIBUTES),
-    ),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": DEPENDENCY_ATTRIBUTES + SECURITY_WARNING_ATTRIBUTES,
+        },
+        "dependencies": {"name": "dependency", "name_plural": "dependencies", "attributes": DEPENDENCY_ATTRIBUTES},
+    },
 )

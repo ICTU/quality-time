@@ -1,17 +1,17 @@
 """Performancetest-runner source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import (
-    access_parameters,
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
     TestResult,
+    access_parameters,
 )
 
-
 TRANSACTION_METRICS = ["slow_transactions", "tests"]
-ALL_PERFORMANCETEST_RUNNER_METRICS = TRANSACTION_METRICS + [
+ALL_PERFORMANCETEST_RUNNER_METRICS = [
+    *TRANSACTION_METRICS,
     "performancetest_duration",
     "performancetest_stability",
     "scalability",
@@ -30,7 +30,7 @@ PERFORMANCETEST_RUNNER = Source(
             help="If provided, only count transactions that surpass the selected thresholds.",
             placeholder="all thresholds",
             values=["high", "warning"],
-            api_values=dict(high="red", warning="yellow"),
+            api_values={"high": "red", "warning": "yellow"},
             metrics=["slow_transactions"],
         ),
         transactions_to_ignore=MultipleChoiceWithAdditionParameter(
@@ -50,16 +50,16 @@ PERFORMANCETEST_RUNNER = Source(
             ALL_PERFORMANCETEST_RUNNER_METRICS,
             source_type="Performancetest-runner report",
             source_type_format="HTML",
-            include=dict(landing_url=False),
-        )
-    ),
-    entities=dict(
-        slow_transactions=dict(
-            name="slow transaction",
-            attributes=[
-                dict(name="Transaction", key="name"),
-                dict(name="Threshold", color=dict(high=Color.NEGATIVE, warning=Color.WARNING)),
-            ],
+            include={"landing_url": False},
         ),
     ),
+    entities={
+        "slow_transactions": {
+            "name": "slow transaction",
+            "attributes": [
+                {"name": "Transaction", "key": "name"},
+                {"name": "Threshold", "color": {"high": Color.NEGATIVE, "warning": Color.WARNING}},
+            ],
+        },
+    },
 )

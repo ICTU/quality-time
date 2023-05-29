@@ -1,9 +1,8 @@
 """Harbor source."""
 
-from ..meta.entity import EntityAttributeType, Color
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter
-
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, access_parameters
 
 ALL_HARBOR_METRICS = ["security_warnings"]
 
@@ -43,30 +42,30 @@ HARBOR = Source(
         ),
         **access_parameters(
             ALL_HARBOR_METRICS,
-            include=dict(private_token=False, landing_url=False),
-            kwargs=dict(
-                url=dict(
-                    help="URL of the Harbor instance, with port if necessary, but without path. For example "
-                    "'https://demo.goharbor.io'."
-                ),
-                username=dict(mandatory=True),
-                password=dict(mandatory=True),
-            ),
+            include={"private_token": False, "landing_url": False},
+            kwargs={
+                "url": {
+                    "help": "URL of the Harbor instance, with port if necessary, but without path. For example "
+                    "'https://demo.goharbor.io'.",
+                },
+                "username": {"mandatory": True},
+                "password": {"mandatory": True},
+            },
         ),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            measured_attribute="total",
-            attributes=[
-                dict(name="Project"),
-                dict(name="Repository"),
-                dict(name="Tags"),
-                dict(name="Artifact", url="url"),
-                dict(name="Highest severity", color=dict(Critical=Color.NEGATIVE, High=Color.WARNING)),
-                dict(name="Fixable", type=EntityAttributeType.INTEGER),
-                dict(name="Total", type=EntityAttributeType.INTEGER),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "measured_attribute": "total",
+            "attributes": [
+                {"name": "Project"},
+                {"name": "Repository"},
+                {"name": "Tags"},
+                {"name": "Artifact", "url": "url"},
+                {"name": "Highest severity", "color": {"Critical": Color.NEGATIVE, "High": Color.WARNING}},
+                {"name": "Fixable", "type": EntityAttributeType.INTEGER},
+                {"name": "Total", "type": EntityAttributeType.INTEGER},
             ],
-        )
-    ),
+        },
+    },
 )

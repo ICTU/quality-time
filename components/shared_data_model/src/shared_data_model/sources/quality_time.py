@@ -1,10 +1,14 @@
 """Quality-time source."""
 
-from ..meta.entity import Color, EntityAttributeAligment, EntityAttributeType
-from ..meta.source import Source
-from ..meta.unit import Unit
-from ..parameters import IntegerParameter, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, URL
-
+from shared_data_model.meta.entity import Color, EntityAttributeAligment, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.meta.unit import Unit
+from shared_data_model.parameters import (
+    URL,
+    IntegerParameter,
+    MultipleChoiceParameter,
+    MultipleChoiceWithAdditionParameter,
+)
 
 ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_up_to_dateness", "source_version"]
 
@@ -12,15 +16,15 @@ QUALITY_TIME = Source(
     name="Quality-time",
     description="Quality report software for software development and maintenance.",
     url="https://github.com/ICTU/quality-time",
-    parameters=dict(
-        url=URL(
+    parameters={
+        "url": URL(
             name="Quality-time URL",
             help="URL of the Quality-time instance, with port if necessary, but without path. For example, "
             "'https://quality-time.example.org'.",
             validate_on=[],
             metrics=ALL_QUALITY_TIME_METRICS,
         ),
-        status=MultipleChoiceParameter(
+        "status": MultipleChoiceParameter(
             name="Metric statuses",
             placeholder="all statuses",
             values=[
@@ -41,7 +45,7 @@ QUALITY_TIME = Source(
             },
             metrics=["metrics"],
         ),
-        min_status_duration=IntegerParameter(
+        "min_status_duration": IntegerParameter(
             name="Minimum metric status duration",
             short_name="minimum status duration",
             help="Only count metrics whose status has not changed for the given number of days.",
@@ -50,13 +54,13 @@ QUALITY_TIME = Source(
             default_value="0",
             metrics=["metrics"],
         ),
-        reports=MultipleChoiceWithAdditionParameter(
+        "reports": MultipleChoiceWithAdditionParameter(
             name="Report names or identifiers",
             short_name="reports",
             placeholder="all reports",
             metrics=["metrics", "source_up_to_dateness", "missing_metrics"],
         ),
-        metric_type=MultipleChoiceParameter(
+        "metric_type": MultipleChoiceParameter(
             name="Metric types",
             help="If provided, only count metrics with the selected metric types.",
             placeholder="all metric types",
@@ -142,7 +146,7 @@ QUALITY_TIME = Source(
             },
             metrics=["metrics"],
         ),
-        source_type=MultipleChoiceParameter(
+        "source_type": MultipleChoiceParameter(
             name="Source types",
             help="If provided, only count metrics with one or more sources of the selected source types.",
             placeholder="all source types",
@@ -238,51 +242,51 @@ QUALITY_TIME = Source(
             },
             metrics=["metrics"],
         ),
-        subjects_to_ignore=MultipleChoiceWithAdditionParameter(
+        "subjects_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Subjects to ignore (subject names or identifiers)",
             short_name="subjects to ignore",
             help="The Quality-time missing metrics collector will ignore metrics that are missing in the "
             "list of subjects to ignore.",
             metrics=["missing_metrics"],
         ),
-        tags=MultipleChoiceWithAdditionParameter(
+        "tags": MultipleChoiceWithAdditionParameter(
             name="Tags",
             help="If provided, only count metrics with one ore more of the given tags.",
             placeholder="all tags",
             metrics=["metrics"],
         ),
-    ),
-    entities=dict(
-        metrics=dict(
-            name="metric",
-            attributes=[
-                dict(name="Report", url="report_url"),
-                dict(name="Subject", url="subject_url"),
-                dict(name="Metric", url="metric_url"),
-                dict(
-                    name="Status",
-                    type=EntityAttributeType.STATUS,
-                    color=dict(
-                        target_met=Color.POSITIVE,
-                        near_target_met=Color.WARNING,
-                        target_not_met=Color.NEGATIVE,
-                        technical_debt_target_met=Color.ACTIVE,
-                    ),
-                ),
-                dict(name="Status start date", type=EntityAttributeType.DATE),
-                dict(name="Measurement", type=EntityAttributeType.INTEGER),
-                dict(name="Target", alignment=EntityAttributeAligment.RIGHT),
-                dict(name="Unit"),
+    },
+    entities={
+        "metrics": {
+            "name": "metric",
+            "attributes": [
+                {"name": "Report", "url": "report_url"},
+                {"name": "Subject", "url": "subject_url"},
+                {"name": "Metric", "url": "metric_url"},
+                {
+                    "name": "Status",
+                    "type": EntityAttributeType.STATUS,
+                    "color": {
+                        "target_met": Color.POSITIVE,
+                        "near_target_met": Color.WARNING,
+                        "target_not_met": Color.NEGATIVE,
+                        "technical_debt_target_met": Color.ACTIVE,
+                    },
+                },
+                {"name": "Status start date", "type": EntityAttributeType.DATE},
+                {"name": "Measurement", "type": EntityAttributeType.INTEGER},
+                {"name": "Target", "alignment": EntityAttributeAligment.RIGHT},
+                {"name": "Unit"},
             ],
-        ),
-        missing_metrics=dict(
-            name="metric type",
-            attributes=[
-                dict(name="Report", url="report_url"),
-                dict(name="Subject", url="subject_url"),
-                dict(name="Subject type"),
-                dict(name="Metric type"),
+        },
+        "missing_metrics": {
+            "name": "metric type",
+            "attributes": [
+                {"name": "Report", "url": "report_url"},
+                {"name": "Subject", "url": "subject_url"},
+                {"name": "Subject type"},
+                {"name": "Metric type"},
             ],
-        ),
-    ),
+        },
+    },
 )

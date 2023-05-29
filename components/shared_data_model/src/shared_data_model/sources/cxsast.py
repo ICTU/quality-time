@@ -1,8 +1,7 @@
 """Checkmarx CxSAST source."""
 
-from ..meta.source import Source
-from ..parameters import access_parameters, Severities, StringParameter
-
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import Severities, StringParameter, access_parameters
 
 ALL_CXSAST_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
 
@@ -21,15 +20,15 @@ CXSAST = Source(
         severities=Severities(values=["info", "low", "medium", "high"]),
         **access_parameters(
             ALL_CXSAST_METRICS,
-            include=dict(private_token=False, landing_url=False),
-            kwargs=dict(
-                url=dict(
-                    help="URL of the Checkmarx instance, with port if necessary, but without path. For example "
-                    "'https://checkmarx.example.org'."
-                ),
-                username=dict(mandatory=True),
-                password=dict(mandatory=True),
-            ),
-        )
+            include={"private_token": False, "landing_url": False},
+            kwargs={
+                "url": {
+                    "help": "URL of the Checkmarx instance, with port if necessary, but without path. For example "
+                    "'https://checkmarx.example.org'.",
+                },
+                "username": {"mandatory": True},
+                "password": {"mandatory": True},
+            },
+        ),
     ),
 )

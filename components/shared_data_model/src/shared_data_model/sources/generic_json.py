@@ -1,9 +1,8 @@
 """Generic JSON for security warnings source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, Severities
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import Severities, access_parameters
 
 DOCUMENTATION = """In some cases, there are security vulnerabilities not found by automated tools.
 Quality-time has the ability to parse security warnings from JSON files with a generic format.
@@ -38,21 +37,23 @@ Example generic JSON file:
 GENERIC_JSON = Source(
     name="JSON file with security warnings",
     description="A generic vulnerability report with security warnings in JSON format.",
-    documentation=dict(generic=DOCUMENTATION),
+    documentation={"generic": DOCUMENTATION},
     parameters=dict(
         severities=Severities(values=["low", "medium", "high"]),
         **access_parameters(
-            ["security_warnings"], source_type="generic vulnerability report", source_type_format="JSON"
-        )
+            ["security_warnings"],
+            source_type="generic vulnerability report",
+            source_type_format="JSON",
+        ),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            attributes=[
-                dict(name="Title"),
-                dict(name="Description"),
-                dict(name="Severity", color=dict(high=Color.NEGATIVE, medium=Color.WARNING)),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": [
+                {"name": "Title"},
+                {"name": "Description"},
+                {"name": "Severity", "color": {"high": Color.NEGATIVE, "medium": Color.WARNING}},
             ],
-        )
-    ),
+        },
+    },
 )

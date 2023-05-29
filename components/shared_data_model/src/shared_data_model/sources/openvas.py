@@ -1,9 +1,8 @@
 """OpenVAS source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, Severities
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import Severities, access_parameters
 
 ALL_OPENVAS_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
 
@@ -14,18 +13,18 @@ OPENVAS = Source(
     url="https://www.openvas.org",
     parameters=dict(
         severities=Severities(values=["log", "low", "medium", "high"]),
-        **access_parameters(ALL_OPENVAS_METRICS, source_type="an OpenVAS report", source_type_format="XML")
+        **access_parameters(ALL_OPENVAS_METRICS, source_type="an OpenVAS report", source_type_format="XML"),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            attributes=[
-                dict(name="Warning", key="name"),
-                dict(name="Severity", color=dict(High=Color.NEGATIVE, Medium=Color.WARNING)),
-                dict(name="Description", pre=True),
-                dict(name="Host"),
-                dict(name="Port"),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": [
+                {"name": "Warning", "key": "name"},
+                {"name": "Severity", "color": {"High": Color.NEGATIVE, "Medium": Color.WARNING}},
+                {"name": "Description", "pre": True},
+                {"name": "Host"},
+                {"name": "Port"},
             ],
-        ),
-    ),
+        },
+    },
 )

@@ -1,7 +1,6 @@
 """Data model metrics."""
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import Field, validator
 
@@ -18,7 +17,7 @@ class Addition(str, Enum):
 
 
 class Direction(str, Enum):
-    """Is more of the measured value better or is less of the measured value better?"""
+    """Is more of the measured value better or is less of the measured value better?."""
 
     FEWER_IS_BETTER = "<"
     MORE_IS_BETTER = ">"
@@ -51,16 +50,16 @@ class Metric(DescribedModel):
     tags: list[Tag] = []
     rationale: str = ""  # Answers the question "Why measure this metric?", included in documentation and UI
     rationale_urls: list[str] = []
-    explanation: Optional[str] = ""  # Optional explanation of concepts in text format, included in documentation and UI
+    explanation: str | None = ""  # Optional explanation of concepts in text format, included in documentation and UI
     explanation_urls: list[str] = []
-    documentation: Optional[str] = ""  # Optional documentation in Markdown format, only included in the documentation
+    documentation: str | None = ""  # Optional documentation in Markdown format, only included in the documentation
 
     @validator("default_scale", always=True)
-    def set_default_scale(cls, default_scale, values):  # pylint: disable=no-self-argument
+    def set_default_scale(cls, default_scale: str, values: dict[str, list[str]]) -> str:
         """If the metric supports just one scale, make that scale the default scale."""
         scales = values.get("scales", [])
         return scales[0] if len(scales) == 1 else default_scale
 
 
-class Metrics(MappedModel[Metric]):  # pylint: disable=too-few-public-methods
+class Metrics(MappedModel[Metric]):
     """Metrics mapping."""

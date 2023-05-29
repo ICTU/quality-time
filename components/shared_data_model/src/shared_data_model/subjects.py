@@ -2,13 +2,12 @@
 
 from .meta.subject import Subjects
 
-
 SUBJECTS = Subjects.parse_obj(
-    dict(
-        ci=dict(
-            name="CI-environment",
-            description="A continuous integration environment.",
-            metrics=[
+    {
+        "ci": {
+            "name": "CI-environment",
+            "description": "A continuous integration environment.",
+            "metrics": [
                 "failed_jobs",
                 "job_runs_within_time_period",
                 "merge_requests",
@@ -19,11 +18,11 @@ SUBJECTS = Subjects.parse_obj(
                 "unmerged_branches",
                 "unused_jobs",
             ],
-        ),
-        process=dict(
-            name="Process",
-            description="A software development and/or maintenance process.",
-            metrics=[
+        },
+        "process": {
+            "name": "Process",
+            "description": "A software development and/or maintenance process.",
+            "metrics": [
                 "average_issue_lead_time",
                 "issues",
                 "manual_test_duration",
@@ -36,16 +35,16 @@ SUBJECTS = Subjects.parse_obj(
                 "velocity",
                 "sentiment",
             ],
-        ),
-        report=dict(
-            name="Quality report",
-            description="A software quality report.",
-            metrics=["metrics", "missing_metrics"],
-        ),
-        software=dict(
-            name="Software",
-            description="A custom software application or component.",
-            metrics=[
+        },
+        "report": {
+            "name": "Quality report",
+            "description": "A software quality report.",
+            "metrics": ["metrics", "missing_metrics"],
+        },
+        "software": {
+            "name": "Software",
+            "description": "A custom software application or component.",
+            "metrics": [
                 "accessibility",
                 "average_issue_lead_time",
                 "commented_out_code",
@@ -78,6 +77,6 @@ SUBJECTS = Subjects.parse_obj(
                 "user_story_points",
                 "violations",
             ],
-        ),
-    )
+        },
+    },
 )

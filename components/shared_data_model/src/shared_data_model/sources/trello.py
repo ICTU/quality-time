@@ -1,21 +1,26 @@
 """Trello source."""
 
-from ..meta.entity import EntityAttributeType
-from ..meta.source import Source
-from ..parameters import Days, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, StringParameter, URL
-
+from shared_data_model.meta.entity import EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
+    URL,
+    Days,
+    MultipleChoiceParameter,
+    MultipleChoiceWithAdditionParameter,
+    StringParameter,
+)
 
 ALL_TRELLO_METRICS = ["issues", "source_up_to_dateness"]
 
-ISSUE_ENTITY = dict(
-    name="issue",
-    attributes=[
-        dict(name="Title", url="url"),
-        dict(name="List"),
-        dict(name="Due date", type=EntityAttributeType.DATETIME),
-        dict(name="Date of last activity", key="date_last_activity", type=EntityAttributeType.DATETIME),
+ISSUE_ENTITY = {
+    "name": "issue",
+    "attributes": [
+        {"name": "Title", "url": "url"},
+        {"name": "List"},
+        {"name": "Due date", "type": EntityAttributeType.DATETIME},
+        {"name": "Date of last activity", "key": "date_last_activity", "type": EntityAttributeType.DATETIME},
     ],
-)
+}
 
 INACTIVE_DAYS_PARAMETER = Days(
     name="Number of days without activity after which to consider cards inactive",
@@ -42,34 +47,34 @@ TRELLO = Source(
     name="Trello",
     description="Trello is a collaboration tool that organizes projects into boards.",
     url="https://trello.com",
-    parameters=dict(
-        url=URL(
+    parameters={
+        "url": URL(
             name="URL",
             validate_on=["api_key", "token"],
             default_value="https://trello.com",
             metrics=ALL_TRELLO_METRICS,
         ),
-        api_key=StringParameter(
+        "api_key": StringParameter(
             name="API key",
             short_name="API key",
             help_url="https://trello.com/app-key",
             metrics=ALL_TRELLO_METRICS,
         ),
-        token=StringParameter(
+        "token": StringParameter(
             name="Token",
             help_url="https://trello.com/app-key",
             metrics=ALL_TRELLO_METRICS,
         ),
-        board=StringParameter(
+        "board": StringParameter(
             name="Board (title or id)",
             short_name="board",
             help_url="https://trello.com/1/members/me/boards?fields=name",
             mandatory=True,
             metrics=ALL_TRELLO_METRICS,
         ),
-        lists_to_ignore=LISTS_TO_IGNORE_PARAMETER,
-        cards_to_count=CARDS_TO_COUNT_PARAMETER,
-        inactive_days=INACTIVE_DAYS_PARAMETER,
-    ),
-    entities=dict(issues=ISSUE_ENTITY),
+        "lists_to_ignore": LISTS_TO_IGNORE_PARAMETER,
+        "cards_to_count": CARDS_TO_COUNT_PARAMETER,
+        "inactive_days": INACTIVE_DAYS_PARAMETER,
+    },
+    entities={"issues": ISSUE_ENTITY},
 )

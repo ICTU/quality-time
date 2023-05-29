@@ -1,9 +1,8 @@
 """Data model source parameters."""
 
 from enum import Enum
-from typing import Optional, Union
 
-from pydantic import Field, HttpUrl, validator  # pylint: disable=no-name-in-module
+from pydantic import Field, HttpUrl, validator
 
 from .base import MappedModel, NamedModel
 
@@ -15,7 +14,7 @@ class ParameterType(str, Enum):
     INTEGER = "integer"
     MULTIPLE_CHOICE = "multiple_choice"
     MULTIPLE_CHOICE_WITH_ADDITION = "multiple_choice_with_addition"
-    PASSWORD = "password"  # nosec
+    PASSWORD = "password"  # nosec # noqa: S105
     SINGLE_CHOICE = "single_choice"
     STRING = "string"
     URL = "url"
@@ -24,68 +23,74 @@ class ParameterType(str, Enum):
 class Parameter(NamedModel):
     """Source parameter model."""
 
-    short_name: Optional[str] = None
-    help: Optional[str] = Field(None, regex=r".+\.")
-    help_url: Optional[HttpUrl] = None
-    type: ParameterType
-    placeholder: Optional[str] = None
+    short_name: str | None = None
+    help: str | None = Field(None, regex=r".+\.")  # noqa: A003
+    help_url: HttpUrl | None = None
+    type: ParameterType  # noqa: A003
+    placeholder: str | None = None
     mandatory: bool = False
-    default_value: Union[str, list[str]] = ""
-    unit: Optional[str] = None
+    default_value: str | list[str] = ""
+    unit: str | None = None
     metrics: list[str] = Field(..., min_items=1)
-    values: Optional[list[str]] = None
-    api_values: Optional[dict[str, str]] = None
-    validate_on: Optional[list[str]] = None
-
-    # pylint: disable=no-self-argument
+    values: list[str] | None = None
+    api_values: dict[str, str] | None = None
+    validate_on: list[str] | None = None
 
     @validator("short_name", always=True)
-    def set_short_name(cls, short_name: Optional[str], values) -> Optional[str]:
+    def set_short_name(cls, short_name: str | None, values) -> str | None:
         """Set the short name if no value was supplied."""
-        return values["name"].lower() if not short_name else short_name
+        return short_name if short_name else values["name"].lower()
 
     @validator("help_url", always=True)
-    def check_help(cls, help_url: Optional[HttpUrl], values) -> Optional[HttpUrl]:
+    def check_help(cls, help_url: HttpUrl | None, values) -> HttpUrl | None:
         """Check that not both help and help URL are set."""
         if help_url and values.get("help"):
-            raise ValueError(f"Parameter {values['name']} has both help and help_url")
+            msg = f"Parameter {values['name']} has both help and help_url"
+            raise ValueError(msg)
         return help_url
 
     @validator("placeholder", always=True)
-    def check_placeholder(cls, placeholder: Optional[str], values) -> Optional[str]:
+    def check_placeholder(cls, placeholder: str | None, values) -> str | None:
         """Check that a placeholder exist if the parameter type is multiple choice."""
         if cls.is_multiple_choice(values) and not placeholder:
-            raise ValueError(f"Parameter {values['name']} is multiple choice but has no placeholder")
+            msg = f"Parameter {values['name']} is multiple choice but has no placeholder"
+            raise ValueError(msg)
         return placeholder
 
     @validator("default_value", always=True)
-    def check_default_value(cls, default_value: Union[str, list[str]], values) -> Union[str, list[str]]:
+    def check_default_value(cls, default_value: str | list[str], values) -> str | list[str]:
         """Check that the default value is a list if the parameter type is multiple choice."""
         if cls.is_multiple_choice(values) and not isinstance(default_value, list):
-            raise ValueError(f"Parameter {values['name']} is multiple choice but default_value is not a list")
+            msg = f"Parameter {values['name']} is multiple choice but default_value is not a list"
+            raise ValueError(msg)
         if cls.is_multiple_choice_with_addition(values) and isinstance(default_value, list) and default_value:
+            msg = f"Parameter {values['name']} is multiple choice with addition but default_value is not empty"
             raise ValueError(
-                f"Parameter {values['name']} is multiple choice with addition but default_value is not empty"
+                msg,
             )
         return default_value
 
     @validator("values", always=True)
-    def check_values(cls, values_list: Optional[list[str]], values) -> Optional[list[str]]:
+    def check_values(cls, values_list: list[str] | None, values) -> list[str] | None:
         """Check that the there are at least two values if the parameter is multiple choice without addition."""
         parameter_type = values.get("type")
-        if parameter_type == ParameterType.MULTIPLE_CHOICE and (values_list is None or len(values_list) < 2):
-            raise ValueError(f"Parameter {values['name']} is multiple choice but has fewer than two values")
+        if parameter_type == ParameterType.MULTIPLE_CHOICE and (values_list is None or len(values_list) <= 1):
+            msg = f"Parameter {values['name']} is multiple choice but has fewer than two values"
+            raise ValueError(msg)
         if cls.is_multiple_choice_with_addition(values) and values_list:
-            raise ValueError(f"Parameter {values['name']} is multiple choice with addition but has values")
+            msg = f"Parameter {values['name']} is multiple choice with addition but has values"
+            raise ValueError(msg)
         return values_list
 
     @validator("api_values")
-    def check_api_values(cls, api_values: Optional[dict[str, str]], values) -> Optional[dict[str, str]]:
+    def check_api_values(cls, api_values: dict[str, str] | None, values) -> dict[str, str] | None:
         """Check that if the parameter has API values it also has values."""
         if api_values and not values.get("values"):
-            raise ValueError(f"Parameter {values['name']} has api_values but no values")
+            msg = f"Parameter {values['name']} has api_values but no values"
+            raise ValueError(msg)
         if api_values and not set(api_values.keys()).issubset(set(values.get("values", []))):
-            raise ValueError(f"Parameter {values['name']} has api_values keys that are not listed in values")
+            msg = f"Parameter {values['name']} has api_values keys that are not listed in values"
+            raise ValueError(msg)
         return api_values
 
     @classmethod
@@ -99,5 +104,5 @@ class Parameter(NamedModel):
         return bool(values.get("type") == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
 
 
-class Parameters(MappedModel[Parameter]):  # pylint: disable=too-few-public-methods
+class Parameters(MappedModel[Parameter]):
     """Parameter mapping."""

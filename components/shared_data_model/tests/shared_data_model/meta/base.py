@@ -2,7 +2,7 @@
 
 import unittest
 
-from pydantic import BaseModel, ValidationError  # pylint: disable=no-name-in-module
+from pydantic import BaseModel, ValidationError
 
 
 class MetaModelTestCase(unittest.TestCase):
