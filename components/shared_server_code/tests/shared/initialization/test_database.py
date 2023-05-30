@@ -2,8 +2,9 @@
 
 import pathlib
 from unittest.mock import Mock, mock_open, patch
+import mongomock
 
-from shared.initialization.database import init_database
+from shared.initialization.database import init_database, database_connection
 
 from ..base import DataModelTestCase
 
@@ -25,6 +26,12 @@ class DatabaseInitTest(DataModelTestCase):
         self.database.measurements.count_documents.return_value = 0
         self.database.measurements.index_information.return_value = {}
         self.mongo_client().quality_time_db = self.database
+
+    @patch("shared.initialization.database.pymongo", return_value=mongomock)
+    def test_client(self, client) -> None:
+        """Test that the client is called."""
+        database_connection()
+        client.MongoClient.assert_called_once()
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""

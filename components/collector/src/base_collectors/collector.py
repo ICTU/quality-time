@@ -3,15 +3,16 @@
 import asyncio
 import logging
 import os
-import time
 import traceback
-from datetime import datetime, timedelta, UTC
-from typing import Any, Coroutine, Final, NoReturn, cast
+from datetime import UTC, datetime, timedelta
+from typing import Any, Coroutine, NoReturn, cast
 
 import aiohttp
+from shared.database.metrics import get_metrics_from_reports
+from shared.database.shared_data import create_measurement, get_reports
 
 from collector_utilities.functions import timer
-from collector_utilities.type import JSON, JSONDict, URL
+from collector_utilities.type import JSON, URL, JSONDict
 
 from .metric_collector import MetricCollector
 
@@ -23,25 +24,10 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
         json = cast(JSON, await response.json())
         response.close()
         return json
-    except Exception as reason:  # pylint: disable=broad-except
+    except Exception as reason:  # pylint: disable=broad-exception-caught
         logging.error("Getting data from %s failed: %s", api, reason)
         logging.error(traceback.format_exc())
         return {}
-
-
-async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
-    """Post the JSON data to the api url."""
-    start = time.time()
-    text_data = str(data)
-    try:
-        response = await session.post(api, json=data)
-        response.close()
-    except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Posting %s to %s failed: %s", data, api, reason)
-        logging.error(traceback.format_exc())
-    finally:
-        if time.time() - start > 10:  # pragma: no cover
-            logging.info("Posting to %s. Length = %d. First 1000 chars = %s", api, len(text_data), text_data[:1000])
 
 
 class Collector:
@@ -52,9 +38,6 @@ class Collector:
     MEASUREMENT_FREQUENCY = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
 
     def __init__(self) -> None:
-        internal_server_host = os.environ.get("INTERNAL_SERVER_HOST", "localhost")
-        internal_server_port = os.environ.get("INTERNAL_SERVER_PORT", "5002")
-        self.server_url: Final[URL] = URL(f"http://{internal_server_host}:{internal_server_port}")
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
 
@@ -93,7 +76,10 @@ class Collector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/api/metrics"))
+        # metrics = await get(session, URL(f"{self.server_url}/api/metrics"))
+        reports = get_reports()
+        metrics = get_metrics_from_reports(reports)
+
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
@@ -114,8 +100,7 @@ class Collector:
         if measurement := await metric_collector.collect():
             measurement.metric_uuid = metric_uuid
             measurement.report_uuid = metric["report_uuid"]
-            api_url = URL(f"{self.server_url}/api/measurements")
-            await post(session, api_url, measurement.as_dict())
+            create_measurement(measurement.as_dict())
 
     def __sorted_by_edit_status(self, metrics: JSONDict) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""
@@ -128,4 +113,5 @@ class Collector:
         """
         metric_edited = self.__previous_metrics.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
+
         return metric_edited or metric_due

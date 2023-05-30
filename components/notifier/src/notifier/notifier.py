@@ -7,10 +7,10 @@ from datetime import UTC, datetime
 from os import getenv
 from typing import NoReturn
 
+from shared.database.shared_data import get_reports_and_measurements
 from shared.model.measurement import Measurement
 
 from destinations.ms_teams import notification_text, send_notification
-from notifier_utilities.data import get_reports_and_measurements
 from strategies.notification_strategy import NotificationFinder
 
 

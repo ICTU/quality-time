@@ -12,6 +12,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.2.7",
+    "mongomock==4.1.2",
     "pep8-naming==0.13.3",
     "pip==23.1.2",
     "pipx==1.2.0",

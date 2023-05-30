@@ -2,6 +2,7 @@
 
 import logging
 import os
+from typing import Optional
 
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
@@ -12,14 +13,28 @@ from shared.initialization.secrets import initialize_secrets
 
 
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
+def client(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.MongoClient:
+    """Returns a pymongo client."""
+    database_url = os.environ.get("DATABASE_URL", url)
+    return pymongo.MongoClient(database_url)
+
+
+def database_connection(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.database.Database:
+    """Returns a pymongo database."""
+    db_client = client(url)
+    create_indexes(db_client["quality_time_db"])
+    import_datamodel(db_client["quality_time_db"])
+    initialize_secrets(db_client["quality_time_db"])
+    initialize_reports_overview(db_client["quality_time_db"])
+    return db_client["quality_time_db"]
 
 
 def init_database() -> Database:  # pragma: no feature-test-cover
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
-    client: pymongo.MongoClient = pymongo.MongoClient(database_url)
-    set_feature_compatibility_version(client.admin)
-    database = client.quality_time_db
+    db_client: pymongo.MongoClient = pymongo.MongoClient(database_url)
+    set_feature_compatibility_version(db_client.admin)
+    database = db_client.quality_time_db
     logging.info("Connected to database: %s", database)
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})

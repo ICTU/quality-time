@@ -8,8 +8,8 @@ from pymongo.database import Database
 from shared.database.filters import DOES_EXIST
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
-from . import sessions
 
+from . import sessions
 
 # Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
@@ -52,10 +52,6 @@ def _prepare_documents_for_insertion(
             document["delta"]["uuids"] = sorted(list(set(uuids)))
         for key, value in extra_attributes.items():
             document[key] = value
-
-
-# Sort order:
-TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:

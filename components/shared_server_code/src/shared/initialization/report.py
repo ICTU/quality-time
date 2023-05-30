@@ -5,7 +5,6 @@ import logging
 import pathlib
 
 from pymongo.database import Database
-
 from shared.database.reports import (
     insert_new_report,
     insert_new_reports_overview,

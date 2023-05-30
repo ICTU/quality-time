@@ -1,15 +1,60 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, NewType
 
 import pymongo
 from pymongo.database import Database
 
+from shared.initialization.database import database_connection
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import MetricId
+
+MeasurementId = NewType("MeasurementId", str)
+
+
+def latest_successful_measurement(metric: Metric) -> Measurement | None:
+    """Return the latest successful measurement."""
+    database_pointer = database_connection()
+    latest_successful = database_pointer.measurements.find_one(
+        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+    )
+    return None if latest_successful is None else Measurement(metric, latest_successful)
+
+
+def update_measurement_end(measurement_id: MeasurementId):
+    """Set the end date and time of the measurement to the current date and time."""
+    database_pointer = database_connection()
+    return database_pointer.measurements.update_one(
+        filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}}
+    )
+
+
+def get_recent_measurements(metrics: list[Metric], limit_per_metric: int = 2) -> list[Measurement]:
+    """Return recent measurements for the specified metrics, without entities and issue status."""
+    database_pointer = database_connection()
+    projection = {
+        "_id": False,
+        "sources.entities": False,
+        "sources.entity_user_data": False,
+        "issue_status": False,
+    }
+    measurements: list = []
+    for metric in metrics:
+        measurement_data = list(
+            database_pointer["measurements"].find(
+                {"metric_uuid": metric.uuid},
+                limit=limit_per_metric,
+                sort=[("start", pymongo.DESCENDING)],
+                projection=projection,
+            )
+        )
+        for measurement in measurement_data:
+            measurements.append(Measurement(metric, measurement))
+
+    return measurements
 
 
 def latest_measurement(database: Database, metric: Metric) -> Measurement | None:

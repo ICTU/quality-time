@@ -1,7 +1,7 @@
 """Metric collectors."""
 
 from .api_source_collector import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
-from .collector import Collector
+from .collector import Collector, get
 from .file_source_collector import (
     CSVFileSourceCollector,
     FileSourceCollector,
