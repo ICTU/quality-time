@@ -13,20 +13,20 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
+import pathlib
 import sys
 
-sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, str(pathlib.Path(".").resolve()))
 
 # Build reference manual with overview of subjects, metrics, and sources.
-import create_reference_md  # pylint: disable=wrong-import-position
+import create_reference_md  # noqa: E402
 
 create_reference_md.main()
 
 # -- Project information -----------------------------------------------------
 
 project = "Quality-time"
-copyright = "2021-2023, ICTU"  # pylint: disable=redefined-builtin
+copyright = "2021-2023, ICTU"  # noqa: A001
 author = "ICTU"
 
 # -- General configuration ---------------------------------------------------
@@ -43,7 +43,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-# exclude_patterns = []
+exclude_patterns: list[str] = []
 
 # Use a different LaTeX engine to support emoji's in PDF's.
 # See https://docs.readthedocs.io/en/stable/guides/pdf-non-ascii-languages.html
