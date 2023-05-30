@@ -4,16 +4,19 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from packaging.version import InvalidVersion, Version
+
 from shared_data_model import DATA_MODEL
 
 from shared.utils.functions import iso_timestamp, percentage
 from shared.utils.type import Scale, Status, Value
 
-from .metric import Metric
 from .source import Source
+
+if TYPE_CHECKING:
+    from .metric import Metric
 
 
 class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
@@ -25,7 +28,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
         previous_scale_measurement: ScaleMeasurement | None,
         measurement: Measurement,
         **kwargs,
-    ):
+    ) -> None:
         self.__previous_scale_measurement: ScaleMeasurement | None = previous_scale_measurement
         self._measurement: Measurement = measurement
         self._metric: Metric = self._measurement.metric
@@ -33,7 +36,7 @@ class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
 
     def status(self) -> Status | None:
         """Return the measurement status."""
-        return cast(Optional[Status], self.get("status"))
+        return cast(Status | None, self.get("status"))
 
     def status_start(self) -> str | None:
         """Return the start date of the status."""
@@ -138,7 +141,7 @@ class PercentageScaleMeasurement(ScaleMeasurement):
             # The metric specifies to take the minimum or maximum of the percentage of each source, so we first divide
             # the nominators and denominators per source to calculate the percentage per source, and then take the
             # minimum or maximum value
-            value = add([percentage(value, total, direction) for value, total in zip(values, totals)])
+            value = add([percentage(value, total, direction) for value, total in zip(values, totals, strict=True)])
         return str(value)
 
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
@@ -179,11 +182,11 @@ class Measurement(dict):  # lgtm [py/missing-equals]
     # dictionary contains the metric UUID and thus we don't need to compare the instance attributes to know whether
     # two measurements are the same.
 
-    SCALE_CLASSES = dict(
-        count=CountScaleMeasurement,
-        percentage=PercentageScaleMeasurement,
-        version_number=VersionNumberScaleMeasurement,
-    )
+    SCALE_CLASSES = {
+        "count": CountScaleMeasurement,
+        "percentage": PercentageScaleMeasurement,
+        "version_number": VersionNumberScaleMeasurement,
+    }
 
     def __init__(self, metric: Metric, *args, **kwargs) -> None:
         self.metric = metric
@@ -200,17 +203,19 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         # Mypy thinks the SCALE_CLASSES dict lookup results in a class of type ScaleMeasurement and complains that
         # ScaleMeasurement, being abstract, can't be instantiated. Suppress the error.
         return measurement_class(
-            self.get(scale, {}), measurement=self, previous_scale_measurement=previous
+            self.get(scale, {}),
+            measurement=self,
+            previous_scale_measurement=previous,
         )  # type: ignore[abstract]
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""
         return self.__class__(self.metric, super().copy(), previous_measurement=self)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: str):  # noqa: ANN204
         """Override to convert the scale dictionary to a ScaleMeasurement instance before returning it."""
         if item in self.metric.scales() and not isinstance(self.get(item), ScaleMeasurement):
-            self[item] = self.scale_measurement(item)
+            self[item] = self.scale_measurement(cast(Scale, item))
         return super().__getitem__(item)
 
     def equals(self, other: Measurement) -> bool:  # pragma: no feature-test-cover
@@ -244,9 +249,9 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return the status of the measurement."""
         return cast(Status, self.get(self.metric.scale(), {}).get("status", self.get("status")))
 
-    def status_start(self):
+    def status_start(self) -> str:
         """Return the start timestamp of the current status, if any."""
-        return self.get(self.metric.scale(), {}).get("status_start")
+        return cast(str, self.get(self.metric.scale(), {}).get("status_start"))
 
     def copy_entity_user_data(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
         """Copy the entity user data from the measurement to this measurement."""
@@ -282,10 +287,10 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return the value of the measurement."""
         return cast(Value, self[self.metric.scale()].get("value"))
 
-    def summarize(self):
+    def summarize(self) -> dict[str, str | dict[str, str | None]]:
         """Return a summary of this measurement."""
         return {
-            self.metric.scale(): dict(value=self.value(), status=self.status()),
+            self.metric.scale(): {"value": self.value(), "status": self.status()},
             "start": self["start"],
             "end": self["end"],
         }

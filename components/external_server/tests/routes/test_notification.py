@@ -36,15 +36,21 @@ class NotificationTestCase(DataModelTestCase):
 class PostNotificationAttributesTest(NotificationTestCase):
     """Unit tests for the post notification destination attributes route."""
 
+    new_name = "New name"
+    new_url = "https://newurl"
+
     def test_post_notification_destination_attribute(self, request):
         """Test changing the name of a notification destination."""
-        request.json = {"name": "new name"}
+        request.json = {"name": self.new_name}
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual(
+            self.new_name,
+            updated_report["notification_destinations"][NOTIFICATION_DESTINATION_ID]["name"],
+        )
         self.assert_delta(
             description="Jenny changed the 'name' of notification destination 'notification_destination' "
-            "in report 'Report' from 'notification_destination' to 'new name'.",
+            f"in report 'Report' from 'notification_destination' to '{self.new_name}'.",
             report=updated_report,
         )
 
@@ -56,14 +62,16 @@ class PostNotificationAttributesTest(NotificationTestCase):
 
     def test_post_multiple_notification_destination_attributes(self, request):
         """Test changing the name and url of a notification destination."""
-        request.json = {"name": "new name", "url": "https://newurl"}
+        request.json = {"name": self.new_name, "url": self.new_url}
         post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        updated_notification_destination = updated_report["notification_destinations"][NOTIFICATION_DESTINATION_ID]
+        self.assertEqual(self.new_name, updated_notification_destination["name"])
+        self.assertEqual(self.new_url, updated_notification_destination["url"])
         self.assert_delta(
             description="Jenny changed the 'name' and 'url' of notification destination 'notification_destination' "
-            "in report 'Report' from 'notification_destination' and 'https://reporturl' to 'new name' and "
-            "'https://newurl'.",
+            f"in report 'Report' from 'notification_destination' and 'https://reporturl' to '{self.new_name}' and "
+            f"'{self.new_url}'.",
             report=updated_report,
         )
 

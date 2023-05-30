@@ -1,5 +1,6 @@
 """Reports collection."""
 
+from collections.abc import Sequence
 from typing import Any
 
 import pymongo
@@ -7,7 +8,7 @@ from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import ReportId
+from shared.utils.type import ItemId, ReportId
 
 from . import sessions
 
@@ -15,7 +16,12 @@ from . import sessions
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def insert_new_report(database: Database, delta_description: str, uuids, *reports) -> dict[str, Any]:
+def insert_new_report(
+    database: Database,
+    delta_description: str,
+    uuids: list[ItemId],
+    *reports: dict,
+) -> dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
     _prepare_documents_for_insertion(database, delta_description, reports, uuids, last=True)
     report_uuids = [report["report_uuid"] for report in reports]
@@ -24,18 +30,22 @@ def insert_new_report(database: Database, delta_description: str, uuids, *report
         database.reports.insert_many(reports, ordered=False)
     else:
         database.reports.insert_one(reports[0])
-    return dict(ok=True)
+    return {"ok": True}
 
 
-def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> dict[str, Any]:
+def insert_new_reports_overview(database: Database, delta_description: str, reports_overview: dict) -> dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
     _prepare_documents_for_insertion(database, delta_description, [reports_overview])
     database.reports_overviews.insert_one(reports_overview)
-    return dict(ok=True)
+    return {"ok": True}
 
 
 def _prepare_documents_for_insertion(
-    database: Database, delta_description: str, documents, uuids=None, **extra_attributes
+    database: Database,
+    delta_description: str,
+    documents: Sequence[dict],
+    uuids: list[ItemId] | None = None,
+    **extra_attributes,
 ) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
@@ -47,22 +57,22 @@ def _prepare_documents_for_insertion(
         if "_id" in document:
             del document["_id"]
         document["timestamp"] = now
-        document["delta"] = dict(description=description, email=user.email)
+        document["delta"] = {"description": description, "email": user.email}
         if uuids:
-            document["delta"]["uuids"] = sorted(list(set(uuids)))
+            document["delta"]["uuids"] = sorted(set(uuids))
         for key, value in extra_attributes.items():
             document[key] = value
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
     """Return the latest reports overview."""
-    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
+    timestamp_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else None
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
     if overview:  # pragma: no feature-test-cover
         overview["_id"] = str(overview["_id"])
     return overview or {}
 
 
-def report_exists(database: Database, report_uuid: ReportId):
+def report_exists(database: Database, report_uuid: ReportId) -> bool:
     """Return whether a report with the specified report uuid exists."""
     return report_uuid in database.reports.distinct("report_uuid")

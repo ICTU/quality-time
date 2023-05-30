@@ -15,22 +15,26 @@ MeasurementId = NewType("MeasurementId", str)
 
 
 def latest_successful_measurement(
-    database: Database, metric: Metric
+    database: Database,
+    metric: Metric,
 ) -> Measurement | None:  # pragma: no feature-test-cover
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+        {"metric_uuid": metric.uuid, "has_error": False},
+        sort=[("start", pymongo.DESCENDING)],
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def update_measurement_end(database: Database, measurement_id: MeasurementId):  # pragma: no feature-test-cover
+def update_measurement_end(database: Database, measurement_id: MeasurementId) -> None:  # pragma: no feature-test-cover
     """Set the end date and time of the measurement to the current date and time."""
-    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
+    database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
 def get_recent_measurements(
-    database: Database, metrics: list[Metric], limit_per_metric: int = 2
+    database: Database,
+    metrics: list[Metric],
+    limit_per_metric: int = 2,
 ) -> list[Measurement]:  # pragma: no feature-test-cover
     """Return recent measurements for the specified metrics, without entities and issue status."""
     projection = {
@@ -47,7 +51,7 @@ def get_recent_measurements(
                 limit=limit_per_metric,
                 sort=[("start", pymongo.DESCENDING)],
                 projection=projection,
-            )
+            ),
         )
         for measurement in measurement_data:
             measurements.append(Measurement(metric, measurement))
@@ -72,7 +76,10 @@ def insert_new_measurement(database: Database, measurement: Measurement) -> Meas
 
 
 def recent_measurements(
-    database: Database, metrics_dict: dict[MetricId, Metric], max_iso_timestamp: str = "", days: int = 7
+    database: Database,
+    metrics_dict: dict[MetricId, Metric],
+    max_iso_timestamp: str = "",
+    days: int = 7,
 ) -> dict[MetricId, list[Measurement]]:
     """Return all recent measurements, or only those of the specified metrics."""
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()

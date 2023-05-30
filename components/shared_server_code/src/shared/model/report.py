@@ -6,26 +6,25 @@ from shared.model.source import Source
 from shared.utils.type import Color, MetricId, ReportId, SourceId, Status, SubjectId
 
 from .measurement import Measurement
-from .subject import Subject
 from .metric import Metric
-
+from .subject import Subject
 
 STATUS_COLOR_MAPPING = cast(
     dict[Status, Color],
-    dict(
-        target_met="green",
-        debt_target_met="grey",
-        near_target_met="yellow",
-        target_not_met="red",
-        informative="blue",
-    ),
+    {
+        "target_met": "green",
+        "debt_target_met": "grey",
+        "near_target_met": "yellow",
+        "target_not_met": "red",
+        "informative": "blue",
+    },
 )
 
 
 class Report(dict):
     """Class representing a report."""
 
-    def __init__(self, data_model, report_data: dict) -> None:
+    def __init__(self, data_model: dict, report_data: dict) -> None:
         """Instantiate a report."""
         self.__data_model = data_model
 
@@ -56,7 +55,7 @@ class Report(dict):
         return set(self.sources_dict.keys())
 
     @property
-    def uuid(self):
+    def uuid(self) -> ReportId:
         """Return the uuid of this report."""
         return cast(ReportId, self["report_uuid"])  # pragma: no feature-test-cover
 
@@ -70,11 +69,11 @@ class Report(dict):
         """A different access to title."""
         return self.get("title", "")
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Return whether the reports are equal."""
-        return self.uuid == other.uuid  # pragma: no feature-test-cover
+        return self.uuid == other.uuid if isinstance(other, self.__class__) else False  # pragma: no feature-test-cover
 
-    def _subjects(self, subject_data) -> dict[str, Subject]:
+    def _subjects(self, subject_data: dict) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
         subjects = {}
         for subject_uuid, subject in subject_data.items():
@@ -102,7 +101,7 @@ class Report(dict):
     def summarize(self, measurements: dict[MetricId, list[Measurement]]) -> dict:
         """Create a summary dict of this report."""
         summary = dict(self)
-        summary["summary"] = dict(red=0, green=0, yellow=0, grey=0, blue=0, white=0)
+        summary["summary"] = {"red": 0, "green": 0, "yellow": 0, "grey": 0, "blue": 0, "white": 0}
         summary["subjects"] = {subject.uuid: subject.summarize(measurements) for subject in self.subjects}
 
         for metric in self.metrics:
@@ -113,7 +112,9 @@ class Report(dict):
         return summary
 
     def instance_and_parents_for_uuid(
-        self, metric_uuid: MetricId | None = None, source_uuid: SourceId | None = None
+        self,
+        metric_uuid: MetricId | None = None,
+        source_uuid: SourceId | None = None,
     ) -> tuple:
         """Find an instance and its parents.
 
@@ -131,4 +132,5 @@ class Report(dict):
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return source, metric, subject
-        raise RuntimeError("metric_uuid and source_uuid cannot both be None")  # pragma: no feature-test-cover
+        msg = "metric_uuid and source_uuid cannot both be None"
+        raise RuntimeError(msg)  # pragma: no feature-test-cover

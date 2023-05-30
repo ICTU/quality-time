@@ -50,8 +50,8 @@ class PostReportAttributeTest(ReportTestCase):
         """Test that the report title can be changed."""
         request.json = {"title": "New title"}
         self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "title", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual("New title", updated_report["title"])
         self.assertEqual(
             {
                 "uuids": [REPORT_ID],
@@ -65,8 +65,8 @@ class PostReportAttributeTest(ReportTestCase):
         """Test that the report layout can be changed."""
         request.json = {"layout": [{"x": 1, "y": 2}]}
         self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "layout", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual([{"x": 1, "y": 2}], updated_report["layout"])
         self.assertEqual(
             {
                 "uuids": [REPORT_ID],
@@ -80,8 +80,8 @@ class PostReportAttributeTest(ReportTestCase):
         """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
         request.json = {"comment": 'Comment with script<script type="text/javascript">alert("Danger")</script>'}
         self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "comment", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual("Comment with script", updated_report["comment"])
         self.assertEqual(
             {
                 "uuids": [REPORT_ID],
@@ -100,7 +100,6 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         """Test that the issue tracker type can be changed."""
         request.json = {"type": "azure_devops"}
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "type", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -123,7 +122,6 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
         self.assertTrue(result["ok"])
         self.assertEqual(-1, result["availability"][0]["status_code"])
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -141,7 +139,6 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         """Test that the issue tracker username can be changed."""
         request.json = {"username": "jodoe"}
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "username", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -159,7 +156,6 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         """Test that the issue tracker password can be changed."""
         request.json = {"password": "another secret"}
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {

@@ -1,28 +1,36 @@
 """Route value injection plugin."""
 
 import inspect
+from collections.abc import Callable
+from typing import TypeVar
+
+from bottle import Bottle, Route
+
+ValueType = TypeVar("ValueType")
+ReturnType = TypeVar("ReturnType")
 
 
 class InjectionPlugin:
-    """This plugin passes a value to route callbacks that accept a specific keyword argument.
+    """Plugin to pass a value to route callbacks that accept a specific keyword argument.
 
     If a callback does not expect such a parameter, no value is passed.
     """
 
     api = 2
 
-    def __init__(self, value, keyword: str) -> None:
+    def __init__(self, value: ValueType, keyword: str) -> None:
         self.value = value
         self.keyword = keyword
         self.name = f"{keyword}-injection"
 
-    def setup(self, app) -> None:
+    def setup(self, app: Bottle) -> None:
         """Make sure that other installed plugins don't use the same keyword argument."""
         for other in app.plugins:
             if isinstance(other, self.__class__) and other.keyword == self.keyword:  # pragma: no feature-test-cover
-                raise RuntimeError("InjectionPlugin found another plugin with the same keyword.")
+                msg = "InjectionPlugin found another plugin with the same keyword."
+                raise RuntimeError(msg)
 
-    def apply(self, callback, context):
+    def apply(self, callback: Callable[..., ReturnType], context: Route) -> Callable[..., ReturnType]:
         """Apply the plugin to the route."""
         # Override global configuration with route-specific values.
         configuration = context.config.get("injection") or {}
@@ -35,7 +43,7 @@ class InjectionPlugin:
         if keyword not in parameter_names:
             return callback
 
-        def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs) -> ReturnType:
             """Wrap the route."""
             kwargs[keyword] = value
             return callback(*args, **kwargs)

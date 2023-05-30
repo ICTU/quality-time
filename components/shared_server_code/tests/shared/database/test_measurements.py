@@ -1,6 +1,6 @@
 """Unit tests for the measurements collection."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 import mongomock
@@ -15,9 +15,9 @@ from shared.database.shared_data import get_reports, get_reports_and_measurement
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
-from tests.fixtures import METRIC_ID, METRIC_ID2, create_report
 
-from ..base import DataModelTestCase
+from tests.fixtures import METRIC_ID, METRIC_ID2, create_report
+from tests.shared.base import DataModelTestCase
 
 NEW_REPORT = "New Report"
 
@@ -26,11 +26,11 @@ class MeasurementsTest(DataModelTestCase):
     """Unit test for getting and inserting measurements."""
 
     def setUp(self) -> None:
-        """Setup unittests for measurements"""
+        """Set up fixtures for measurements."""
         super().setUp()
         self.database_mock = Mock()
         self.database_mock.measurements.insert_one = self.insert_one_measurement
-        self.metric = Metric(self.DATA_MODEL, dict(type="violations"), "metric_uuid")
+        self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, "metric_uuid")
         self.measurements = [
             {"_id": 1, "start": "0", "end": "1", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},
@@ -41,12 +41,12 @@ class MeasurementsTest(DataModelTestCase):
         ]
 
         self.database = mongomock.MongoClient()["quality_time_db"]
-        self.now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
-        self.just_now = (datetime.now().replace(microsecond=0, tzinfo=timezone.utc) - timedelta(hours=1)).isoformat()
-        self.older = (datetime.now().replace(microsecond=0, tzinfo=timezone.utc) - timedelta(days=1)).isoformat()
+        self.now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
+        self.just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(hours=1)).isoformat()
+        self.older = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(days=1)).isoformat()
 
     @staticmethod
-    def insert_one_measurement(measurement):
+    def insert_one_measurement(measurement: Measurement) -> None:
         """Mock inserting a measurement into the measurements collection."""
         measurement["_id"] = "measurement_id"
 
@@ -87,7 +87,12 @@ class MeasurementsTest(DataModelTestCase):
     @patch("shared.database.shared_data.get_reports")
     @patch("shared.database.shared_data.get_recent_measurements")
     @patch("shared.database.shared_data.get_metrics_from_reports")
-    def test_get_reports_and_measurements(self, fake_metrics, fake_measurements, fake_reports) -> None:
+    def test_get_reports_and_measurements(
+        self,
+        fake_metrics: Mock,
+        fake_measurements: Mock,
+        fake_reports: Mock,
+    ):
         """Test that the reports and measurements are returned."""
         self.database["reports"].insert_one(create_report(NEW_REPORT, metric_id=METRIC_ID))
 
@@ -98,14 +103,14 @@ class MeasurementsTest(DataModelTestCase):
         fake_measurements.assert_called_once()
         fake_metrics.assert_called_once()
 
-    def test_get_reports(self) -> None:
+    def test_get_reports(self):
         """Test that the reports are returned."""
         reports = get_reports(self.database)
-        assert reports == []
+        self.assertEqual(reports, [])
 
         self.database["reports"].insert_one(create_report(NEW_REPORT))
         self.database["reports"].insert_one(create_report("Previous Report", last=False))
-        self.database["reports"].insert_one(create_report("Deleted Report", deleted="now"))
+        self.database["reports"].insert_one(create_report("Deleted Report", deleted=True))
         [report] = get_reports(self.database)
         self.assertEqual(report["title"], NEW_REPORT)
         self.assertEqual(report.__class__, Report)
@@ -119,7 +124,7 @@ class MeasurementsTest(DataModelTestCase):
         for report in reports:
             metrics.extend(report.metrics)
         recent_measurements1 = get_recent_measurements(self.database, metrics)
-        assert not recent_measurements1
+        self.assertEqual([], recent_measurements1)
 
         self.database["measurements"].insert_many(self.measurements)
 
@@ -139,19 +144,24 @@ class MeasurementsTest(DataModelTestCase):
             metrics.extend(report.metrics)
 
         measurements = [
-            dict(
-                metric_uuid=METRIC_ID,
-                end=self.now,
-                start=self.older,
-                count=dict(status="target_not_met", value="0"),
-            ),
-            dict(
-                metric_uuid=METRIC_ID,
-                end=self.just_now,
-                start=self.just_now,
-                count=dict(status="target_not_met", value="30"),
-            ),
-            dict(metric_uuid=METRIC_ID, end=self.now, start=self.now, count=dict(status="target_met", value="100")),
+            {
+                "metric_uuid": METRIC_ID,
+                "end": self.now,
+                "start": self.older,
+                "count": {"status": "target_not_met", "value": "0"},
+            },
+            {
+                "metric_uuid": METRIC_ID,
+                "end": self.just_now,
+                "start": self.just_now,
+                "count": {"status": "target_not_met", "value": "30"},
+            },
+            {
+                "metric_uuid": METRIC_ID,
+                "end": self.now,
+                "start": self.now,
+                "count": {"status": "target_met", "value": "100"},
+            },
         ]
 
         self.database["measurements"].insert_many(measurements)

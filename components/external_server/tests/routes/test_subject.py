@@ -49,8 +49,8 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that the subject name can be changed."""
         request.json = {"name": "new name"}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID, "name", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual("new name", updated_report["subjects"][SUBJECT_ID]["name"])
         self.assert_delta(
             "name of subject 'subject1' in report 'Report' from 'subject1' to 'new name'",
             SUBJECT_ID,
@@ -61,7 +61,6 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that a subject can be moved to the top."""
         request.json = {"position": "first"}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID2, "position", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
@@ -74,7 +73,6 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that a subject can be moved to the bottom."""
         request.json = {"position": "last"}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID, "position", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
@@ -87,7 +85,6 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that a subject can be moved up."""
         request.json = {"position": "previous"}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID2, "position", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
@@ -100,7 +97,6 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that a subject can be moved down."""
         request.json = {"position": "next"}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID, "position", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(updated_report["subjects"].keys()))
         self.assert_delta(
@@ -125,8 +121,8 @@ class PostSubjectAttributeTest(DataModelTestCase):
         """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
         request.json = {"comment": 'Comment with script<script type="text/javascript">alert("Danger")</script>'}
         self.assertEqual({"ok": True}, post_subject_attribute(SUBJECT_ID, "comment", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual("Comment with script", updated_report["subjects"][SUBJECT_ID]["comment"])
         self.assert_delta(
             "comment of subject 'subject1' in report 'Report' from '' to 'Comment with script'",
             SUBJECT_ID,

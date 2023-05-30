@@ -5,6 +5,7 @@ import logging
 import pathlib
 
 from pymongo.database import Database
+
 from shared.database.reports import (
     insert_new_report,
     insert_new_reports_overview,
@@ -23,7 +24,9 @@ def initialize_reports_overview(database: Database) -> None:
     else:
         logging.info("Initializing reports overview")  # pragma: no feature-test-cover
         insert_new_reports_overview(
-            database, "{{user}} initialized the reports overview", dict(title="Reports", subtitle="")
+            database,
+            "{{user}} initialized the reports overview",
+            {"title": "Reports", "subtitle": ""},
         )  # pragma: no feature-test-cover
 
 
