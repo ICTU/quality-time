@@ -13,7 +13,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.6",
+    "coverage==7.2.7",
     "pep8-naming==0.13.3",
     "pip==23.1.2",
     "pipx==1.2.0",
@@ -22,7 +22,7 @@ dev = [
     "pylint==2.17.4",
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.13",
-    "types-requests==2.31.0.0",
+    "types-requests==2.31.0.1",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
