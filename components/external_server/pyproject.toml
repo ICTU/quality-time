@@ -3,7 +3,7 @@ name = "external_server"
 version = "4.10.0"
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==40.0.2",
+    "cryptography==41.0.0",
     "gevent==22.10.2",
     "ldap3==2.9.1",
     "lxml==4.9.2",
