@@ -18,7 +18,7 @@ FROM python:3.11.3-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time external server"
 
-RUN apk add --no-cache curl=8.1.1-r1
+RUN apk add --no-cache curl=8.1.2-r0
 # hadolint ignore=DL3059
 RUN adduser -S server
 WORKDIR /home/server
