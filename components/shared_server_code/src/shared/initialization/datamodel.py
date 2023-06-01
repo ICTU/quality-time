@@ -10,13 +10,13 @@ from shared_data_model import DATA_MODEL_JSON
 from shared.database.datamodels import insert_new_datamodel, latest_datamodel
 
 
-def import_datamodel(database: Database) -> None:
+def import_datamodel(database: Database) -> None:  # pragma: no feature-test-cover
     """Store the data model in the database."""
     data_model = json.loads(DATA_MODEL_JSON)
     if latest := latest_datamodel(database):
         del latest["timestamp"]
         del latest["_id"]
-        if data_model == latest:  # pragma: no feature-test-cover
+        if data_model == latest:
             logging.info("Skipping loading the data model; it is unchanged")
             return
     insert_new_datamodel(database, data_model)

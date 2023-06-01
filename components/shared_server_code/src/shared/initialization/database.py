@@ -13,13 +13,17 @@ from shared.initialization.secrets import initialize_secrets
 
 
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
-def client(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.MongoClient:
+def client(
+    url: Optional[str] = "mongodb://root:root@localhost:27017",
+) -> pymongo.MongoClient:  # pragma: no feature-test-cover
     """Returns a pymongo client."""
     database_url = os.environ.get("DATABASE_URL", url)
     return pymongo.MongoClient(database_url)
 
 
-def database_connection(url: Optional[str] = "mongodb://root:root@localhost:27017") -> pymongo.database.Database:
+def database_connection(
+    url: Optional[str] = "mongodb://root:root@localhost:27017",
+) -> pymongo.database.Database:  # pragma: no feature-test-cover
     """Returns a pymongo database."""
     db_client = client(url)
     create_indexes(db_client["quality_time_db"])
