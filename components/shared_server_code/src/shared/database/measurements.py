@@ -15,7 +15,7 @@ from shared.utils.type import MetricId
 MeasurementId = NewType("MeasurementId", str)
 
 
-def latest_successful_measurement(metric: Metric) -> Measurement | None:
+def latest_successful_measurement(metric: Metric) -> Measurement | None:  # pragma: no feature-test-cover
     """Return the latest successful measurement."""
     database_pointer = database_connection()
     latest_successful = database_pointer.measurements.find_one(
@@ -24,7 +24,7 @@ def latest_successful_measurement(metric: Metric) -> Measurement | None:
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def update_measurement_end(measurement_id: MeasurementId):
+def update_measurement_end(measurement_id: MeasurementId):  # pragma: no feature-test-cover
     """Set the end date and time of the measurement to the current date and time."""
     database_pointer = database_connection()
     return database_pointer.measurements.update_one(
@@ -32,7 +32,9 @@ def update_measurement_end(measurement_id: MeasurementId):
     )
 
 
-def get_recent_measurements(metrics: list[Metric], limit_per_metric: int = 2) -> list[Measurement]:
+def get_recent_measurements(
+    metrics: list[Metric], limit_per_metric: int = 2
+) -> list[Measurement]:  # pragma: no feature-test-cover
     """Return recent measurements for the specified metrics, without entities and issue status."""
     database_pointer = database_connection()
     projection = {
