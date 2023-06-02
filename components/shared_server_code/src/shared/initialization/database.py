@@ -25,10 +25,6 @@ def database_connection(
 ) -> pymongo.database.Database:  # pragma: no feature-test-cover
     """Returns a pymongo database."""
     db_client = client(url)
-    create_indexes(db_client["quality_time_db"])
-    import_datamodel(db_client["quality_time_db"])
-    initialize_secrets(db_client["quality_time_db"])
-    initialize_reports_overview(db_client["quality_time_db"])
     return db_client["quality_time_db"]
 
 

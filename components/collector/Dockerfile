@@ -3,6 +3,7 @@ FROM python:3.11.3-alpine3.17 AS compile-image
 WORKDIR /home/collector
 
 RUN apk add --no-cache gcc=12.2.1_git20220924-r4 make=4.3-r1 libc-dev=0.7.2-r3 libffi-dev=3.4.4-r0
+# hadolint ignore=DL3059
 RUN python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
 COPY collector/requirements/requirements.txt /requirements.txt
