@@ -12,7 +12,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes.
+If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes first.
+
+In this version of *Quality-time* the collector component talks directly to the database (instead of using the internal server). This means that the docker composition **must** be changed:
+
+- In the `collector` section:
+  - Add the same `DATABASE_URL` environment variable as the external server has.
+  - Change the `depends_on: internal_server` into `depends_on: database`.
+  - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
+- Update the version number of all images to `v5.0.0`.
+
+See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) for an overview of all images.
+
+See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/deployment.html) for other configuration options.
 
 ### Fixed
 
