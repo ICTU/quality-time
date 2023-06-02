@@ -15,6 +15,13 @@ from tests.shared.base import DataModelTestCase
 class TestSharedData(DataModelTestCase):
     """Test set for shared_data"""
 
+    database_client = "shared.initialization.database.client"
+    insert_new_measurement = "shared.database.shared_data.insert_new_measurement"
+    sources_exist = "shared.database.shared_data.Measurement.sources_exist"
+    latest_measurement = "shared.database.shared_data.latest_measurement"
+    latest_metric = "shared.database.shared_data.latest_metric"
+    measurement_equals = "shared.database.shared_data.Measurement.equals"
+
     def setUp(self) -> None:
         """Define info that is used in multiple tests."""
 
@@ -62,7 +69,7 @@ class TestSharedData(DataModelTestCase):
                 sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
             )
         )
-        with patch("shared.initialization.database.client", return_value=self.client):
+        with patch(self.database_client, return_value=self.client):
             self.assertEqual(
                 Metric(self.DATA_MODEL, dict(tags=[], type="violations"), METRIC_ID),
                 latest_metric(REPORT_ID, METRIC_ID),
@@ -70,30 +77,29 @@ class TestSharedData(DataModelTestCase):
 
     def test_no_latest_metrics(self):
         """Test that None is returned for missing metrics."""
-        with patch("shared.initialization.database.client", return_value=self.client):
+        with patch(self.database_client, return_value=self.client):
             self.assertIsNone(latest_metric(REPORT_ID, MetricId("non-existing")))
 
     def test_no_latest_report(self):
         """Test that None is returned for missing metrics."""
-        # self.database.reports.find_one.return_value = None
-        with patch("shared.initialization.database.client", return_value=self.client):
+        with patch(self.database_client, return_value=self.client):
             self.assertIsNone(latest_metric(REPORT_ID, METRIC_ID))
 
     def test_create_measurement(self):
         """Test that create measurement is handles by the database"""
-        with patch("shared.initialization.database.client", return_value=self.client) as database_client:
+        with patch(self.database_client, return_value=self.client) as database_client:
             self.database["reports"].insert_one(create_report())
             create_measurement(self.measurement_data)
             database_client.assert_called_with("mongodb://root:root@localhost:27017")
 
     def test_create_measurement_without_latest_measurement(self):
         """Test that create_measurement without a latest measurement inserts new measurement"""
-        with patch("shared.database.shared_data.latest_metric", return_value=self.metric), patch(
-            "shared.database.shared_data.Measurement.sources_exist", return_value=True
-        ), patch("shared.initialization.database.client", return_value=self.client), patch(
-            "shared.database.shared_data.insert_new_measurement"
-        ) as insert_new_measurement, patch(
-            "shared.database.shared_data.latest_measurement", return_value=False
+        with (
+            patch(self.latest_metric, return_value=self.metric),
+            patch(self.sources_exist, return_value=True),
+            patch(self.database_client, return_value=self.client),
+            patch(self.insert_new_measurement) as insert_new_measurement,
+            patch(self.latest_measurement, return_value=False),
         ):
             self.database["reports"].insert_one(create_report())
             create_measurement(self.measurement_data)
@@ -101,13 +107,12 @@ class TestSharedData(DataModelTestCase):
 
     def test_create_measurement_with_latest_measurement(self):
         """Test that create_measurement with a latest measurement inserts new measurement"""
-        with patch("shared.database.shared_data.latest_metric", return_value=self.metric), patch(
-            "shared.database.shared_data.Measurement.sources_exist", return_value=True
-        ), patch("shared.initialization.database.client", return_value=self.client), patch(
-            "shared.database.shared_data.insert_new_measurement"
-        ) as insert_new_measurement, patch(
-            "shared.database.shared_data.latest_measurement",
-            return_value=Measurement(self.metric, self.measurement_data),
+        with (
+            patch(self.latest_metric, return_value=self.metric),
+            patch(self.sources_exist, return_value=True),
+            patch(self.database_client, return_value=self.client),
+            patch(self.insert_new_measurement) as insert_new_measurement,
+            patch(self.latest_measurement, return_value=Measurement(self.metric, self.measurement_data)),
         ):
             self.database["reports"].insert_one(create_report(metric_id=METRIC_ID))
             self.client["quality_time_db"]["measurements"].insert_one(
@@ -123,30 +128,34 @@ class TestSharedData(DataModelTestCase):
 
     def test_create_measurement_with_no_latest_metric(self):
         """Test that create_measurement without a latest metric doesn't insert new measurement"""
-        with patch("shared.initialization.database.client", return_value=self.client), patch(
-            "shared.database.shared_data.insert_new_measurement"
-        ) as insert_new_measurement, patch("shared.database.shared_data.latest_metric", return_value=None):
+        with (
+            patch(self.database_client, return_value=self.client),
+            patch(self.insert_new_measurement) as insert_new_measurement,
+            patch("shared.database.shared_data.latest_metric", return_value=None),
+        ):
             create_measurement(self.measurement_data)
             insert_new_measurement.assert_not_called()
 
     def test_create_measurement_without_source(self):
         """Test that create_measurement without a source doesnt insert new measurement"""
-        with patch("shared.database.shared_data.latest_metric", return_value=self.metric), patch(
-            "shared.database.shared_data.Measurement.sources_exist", return_value=False
-        ), patch("shared.initialization.database.client", return_value=self.client), patch(
-            "shared.database.shared_data.insert_new_measurement"
-        ) as insert_new_measurement:
+        with (
+            patch(self.latest_metric, return_value=self.metric),
+            patch(self.sources_exist, return_value=False),
+            patch(self.database_client, return_value=self.client),
+            patch(self.insert_new_measurement) as insert_new_measurement,
+        ):
             self.database["reports"].insert_one(create_report())
             create_measurement(self.measurement_data)
             insert_new_measurement.assert_not_called()
 
     def test_create_measurement_when_its_equal(self):
         """Test that create_measurement with equal measurement doesn't insert new measurement"""
-        with patch("shared.database.shared_data.latest_metric", return_value=self.metric), patch(
-            "shared.database.shared_data.Measurement.equals", return_value=True
-        ), patch("shared.initialization.database.client", return_value=self.client), patch(
-            "shared.database.shared_data.insert_new_measurement"
-        ) as insert_new_measurement:
+        with (
+            patch(self.latest_metric, return_value=self.metric),
+            patch(self.measurement_equals, return_value=True),
+            patch(self.database_client, return_value=self.client),
+            patch(self.insert_new_measurement) as insert_new_measurement,
+        ):
             self.client["quality_time_db"]["measurements"].insert_one(
                 dict(
                     _id="id",
@@ -161,14 +170,14 @@ class TestSharedData(DataModelTestCase):
 
     def test__latest_report(self):
         """Test that _latest_report returns latest report"""
-        with patch("shared.initialization.database.client", return_value=self.client):
+        with patch(self.database_client, return_value=self.client):
             self.assertIsNone(_latest_report(REPORT_ID))
             self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID))
             self.assertEqual(_latest_report(REPORT_ID)["report_uuid"], "report_uuid")
 
     def test_latest_reports(self):
         """Test that latest reports returns list of latest reports"""
-        with patch("shared.initialization.database.client", return_value=self.client):
+        with patch(self.database_client, return_value=self.client):
             self.assertFalse(latest_reports())
             self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID))
             self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID, last=False, title="Not last"))

@@ -18,6 +18,10 @@ from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
+    sonar_url = "https://sonarcloud.com/api/fake_things"
+    database_client = "shared.initialization.database.client"
+    create_measurement = "base_collectors.collector.create_measurement"
+
     @classmethod
     def setUpClass(cls) -> None:
         """Override to disable logging."""
@@ -79,12 +83,12 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     @aioresponses()
     async def test_get(self, mocked):
         """Tests get method"""
-        mocked.get("http://sonarcloud.com/api/fake_things", status=200, body='{"status": "ok"}')
+        mocked.get(self.sonar_url, status=200, body='{"status": "ok"}')
         session = aiohttp.ClientSession()
-        resp = await get(session, "http://sonarcloud.com/api/fake_things")
+        resp = await get(session, self.sonar_url)
 
         assert resp == {"status": "ok"}
-        mocked.assert_called_once_with("http://sonarcloud.com/api/fake_things")
+        mocked.assert_called_once_with(self.sonar_url)
 
     def test_get_with_error(self):
         """Tests get method with error"""
@@ -92,16 +96,14 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         session = AsyncMock()
         session.get.side_effect = [RuntimeError]
         with patch("base_collectors.collector.logging.error") as logger:
-            _ = loop.run_until_complete(get(session, "http://sonarcloud.com/api/fake_things"))
+            loop.run_until_complete(get(session, self.sonar_url))
         logger.assert_called()
 
     async def test_fetch_successful(self):
         """Test fetching a test metric."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
             dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report1"),
@@ -112,9 +114,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         report_with_no_source = create_report()
         report_with_no_source["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = dict()
         mock_async_get_request = AsyncMock()
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(report_with_no_source)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -126,17 +126,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             type="unsupported_source"
         )
         mock_async_get_request = AsyncMock()
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(report_with_unsupported_source)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
 
     async def test_fetch_with_get_error(self):
         """Test fetching measurement when getting the metrics fails."""
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client, side_effect=RuntimeError
+        with patch(self.create_measurement) as post, patch(
+            self.database_client, return_value=self.client, side_effect=RuntimeError
         ) as _, self.assertRaises(RuntimeError):
             await self._fetch_measurements(AsyncMock())
 
@@ -146,10 +144,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test fetching measurement when getting measurements fails."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.close = Mock()
-        # mock_async_get_request.json.return_value = self.pip_json
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientConnectionError("error")])
         post.assert_called_once_with(
             dict(
@@ -167,9 +162,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """
         mock_async_get_request = AsyncMock()
         mock_async_get_request.close = Mock()
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientPayloadError()])
         post.assert_called_once_with(
             dict(
@@ -184,9 +177,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test fetching measurement when posting fails."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
             dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report1"),
@@ -198,9 +189,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch("shared.initialization.database.client", return_value=self.client), self._patched_get(
-            mock_async_get_request
-        ), patch("base_collectors.collector.create_measurement") as post, self.assertRaises(RuntimeError):
+        with patch(self.database_client, return_value=self.client), self._patched_get(mock_async_get_request), patch(
+            self.create_measurement
+        ) as post, self.assertRaises(RuntimeError):
             await quality_time_collector.collect()
         post.assert_called_once_with(
             dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report1"),
@@ -210,9 +201,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test that the metric is skipped on the second fetch."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(mock_async_get_request, number=2)
         post.assert_called_once_with(
             dict(has_error=False, sources=[self._source()], metric_uuid="metric_uuid", report_uuid="report1"),
@@ -224,9 +213,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
 
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(create_report(metric_id=METRIC_ID2))
             await self._fetch_measurements(mock_async_get_request, number=2)
         expected_call1 = call(
@@ -247,9 +234,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(report1)
             self.client["quality_time_db"]["reports"].insert_one(report2)
             await self._fetch_measurements(mock_async_get_request, number=2)
@@ -269,15 +254,12 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
-        mock_async_get_request = AsyncMock()
         report_without_url_parameter = create_report()
         report_without_url_parameter["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
             "url"
         ] = ""
         mock_async_get_request = AsyncMock()
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(report_without_url_parameter)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -290,9 +272,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             type="manual_number"
         )
         mock_async_get_request = AsyncMock()
-        with patch("base_collectors.collector.create_measurement") as post, patch(
-            "shared.initialization.database.client", return_value=self.client
-        ):
+        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             self.client["quality_time_db"]["reports"].insert_one(report_without_mandatory_parameter)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(

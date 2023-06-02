@@ -76,10 +76,8 @@ class Collector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
-        # metrics = await get(session, URL(f"{self.server_url}/api/metrics"))
         reports = get_reports()
         metrics = get_metrics_from_reports(reports)
-
         next_fetch = datetime.now() + timedelta(seconds=self.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
