@@ -28,5 +28,5 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
             value="2",
             total="4",
             landing_url=f"{self.issues_landing_url}&rules=c:S107,csharpsquid:S107,csharpsquid:S2436,cpp:S107,flex:S107,"
-            "javascript:S107,objc:S107,php:S107,python:S107,java:S107,tsql:S107,typescript:S107",
+            "javascript:S107,kotlin:S107,objc:S107,php:S107,python:S107,java:S107,tsql:S107,typescript:S107",
         )
