@@ -3,7 +3,7 @@ name = "shared_server_code"
 version = "4.10.0"
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==41.0.0",
+    "cryptography==41.0.1",
     "packaging==23.1",
     "pydantic==1.10.8",
     "pymongo==4.3.3"
