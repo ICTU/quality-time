@@ -43,14 +43,13 @@ services:
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
-      - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
-      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
+      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
-      - internal_server
+      - database
     cap_drop:
       - ALL
   external_server:

@@ -24,8 +24,8 @@ digraph {
     database -> internal_server [label=measurements, dir="back"]
     database -> collector [label=metrics]
     database -> collector [label=measurements, dir="back"]
-    internal_server -> notifier [label=metrics]
-    internal_server -> notifier [label=measurements]
+    database -> notifier [label=metrics]
+    database -> notifier [label=measurements]
     renderer -> external_server [label=PDF]
   }
   browser -> proxy [label=measurements, dir="back"]

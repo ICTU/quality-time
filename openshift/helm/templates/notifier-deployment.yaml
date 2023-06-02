@@ -17,10 +17,8 @@ spec:
     spec:
       containers:
         - env:
-            - name: INTERNAL_SERVER_HOST
-              value: {{ .Values.internal_server.name }}
-            - name: INTERNAL_SERVER_PORT
-              value: "5002"
+            - name: DATABASE_URL
+              value: mongodb://root:root@{{ .Values.database.name }}:27017
             - name: NOTIFIER_SLEEP_DURATION
               value: "60"
           image: {{ .Values.notifier.image }}
@@ -32,5 +30,5 @@ spec:
               drop:
                 - ALL
       restartPolicy: Always
-      imagePullSecrets: 
+      imagePullSecrets:
         - name: quality-time-pullsecret
