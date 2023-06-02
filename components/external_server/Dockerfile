@@ -18,18 +18,17 @@ FROM python:3.11.3-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time external server"
 
-RUN apk add --no-cache curl=8.1.2-r0
 # hadolint ignore=DL3059
 RUN adduser -S server
 WORKDIR /home/server
 USER server
 
-HEALTHCHECK CMD curl -f http://localhost:${EXTERNAL_SERVER_PORT:-5001}/api/health || exit 1
-
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY external_server/src /home/server
 COPY shared_data_model /home/shared_data_model
 COPY shared_server_code /home/shared_server_code
+
+HEALTHCHECK CMD python /home/server/healthcheck.py
 
 ENV PATH="/home/server/venv/bin:$PATH"
 CMD ["python", "/home/server/quality_time_server.py"]

@@ -3,8 +3,6 @@ FROM node:18.16.0-alpine3.17
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk --no-cache add curl=8.1.2-r0
-
 RUN apk add --no-cache \
     msttcorefonts-installer=3.8-r1 \
     fontconfig=2.14.1-r0 \
@@ -29,12 +27,12 @@ WORKDIR /home/renderer
 COPY package*.json /home/renderer/
 RUN npm install
 
-COPY src/index.js /home/renderer/index.js
+COPY src/*js /home/renderer/
 
 RUN adduser renderer --disabled-password
 USER renderer
 
-HEALTHCHECK CMD curl -f http://localhost:${RENDERER_PORT:-9000}/api/health || exit 1
+HEALTHCHECK CMD node /home/renderer/healthcheck.cjs
 
 ENV NODE_ENV production
 
