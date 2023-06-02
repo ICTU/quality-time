@@ -54,6 +54,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 - Write a more descriptive issue summary and description for issues created from Quality-time. Closes [#4747](https://github.com/ICTU/quality-time/issues/4747).
 - Change the default sort order of dates in a quality report from descending to ascending. Closes [#5998](https://github.com/ICTU/quality-time/issues/5998).
 - Opt in to the new Chrome headless implementation for PDF-export, see https://developer.chrome.com/articles/new-headless/. Closes [#6149](https://github.com/ICTU/quality-time/issues/6149).
+- Added more SonarQube rules to report on 'suppressed violations' and 'long units' for the Python language. Added a SonarQube rule to report on 'many parameters' for the Kotlin language. Closes [#6193](https://github.com/ICTU/quality-time/issues/6193).
 - Throw a timeout error when collecting measurement data from a source takes longer than the configured time between measurement attempts (this can be changed via the `MAX_SLEEP_DURATION` environment variable which has a default value of 20 seconds). Partially fixes [#6220](https://github.com/ICTU/quality-time/issues/6220).
 
 ## v4.10.0 - 2023-04-26
