@@ -1,6 +1,5 @@
 """Unit tests for the collector main script."""
 
-import asyncio
 import logging
 import unittest
 from datetime import datetime
@@ -8,17 +7,15 @@ from unittest.mock import AsyncMock, Mock, call, mock_open, patch
 
 import aiohttp
 import mongomock
-from aioresponses import aioresponses
 
 import quality_time_collector
-from base_collectors import Collector, get
+from base_collectors import Collector
 from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
-    sonar_url = "https://sonarcloud.com/api/fake_things"
     database_client = "shared.initialization.database.client"
     create_measurement = "base_collectors.collector.create_measurement"
 
@@ -52,8 +49,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def _patched_get(mock_async_get_request, side_effect=None):
         """Return a patched version of aiohttp.ClientSession.get()."""
         mock = AsyncMock(side_effect=side_effect) if side_effect else AsyncMock(return_value=mock_async_get_request)
-        if not side_effect:
-            mock_async_get_request.close = Mock()
         return patch("aiohttp.ClientSession.get", mock)
 
     async def _fetch_measurements(self, mock_async_get_request, number=1, side_effect=None):
@@ -79,25 +74,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             parse_error=None,
             source_uuid="source_uuid",
         )
-
-    @aioresponses()
-    async def test_get(self, mocked):
-        """Tests get method"""
-        mocked.get(self.sonar_url, status=200, body='{"status": "ok"}')
-        session = aiohttp.ClientSession()
-        resp = await get(session, self.sonar_url)
-
-        assert resp == {"status": "ok"}
-        mocked.assert_called_once_with(self.sonar_url)
-
-    def test_get_with_error(self):
-        """Tests get method with error"""
-        loop = asyncio.get_event_loop()
-        session = AsyncMock()
-        session.get.side_effect = [RuntimeError]
-        with patch("base_collectors.collector.logging.error") as logger:
-            loop.run_until_complete(get(session, self.sonar_url))
-        logger.assert_called()
 
     async def test_fetch_successful(self):
         """Test fetching a test metric."""
@@ -142,8 +118,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_with_client_error(self):
         """Test fetching measurement when getting measurements fails."""
-        mock_async_get_request = AsyncMock()
-        mock_async_get_request.close = Mock()
         with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientConnectionError("error")])
         post.assert_called_once_with(
@@ -160,8 +134,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
         This can happen when an exception returns an empty string when converted to string.
         """
-        mock_async_get_request = AsyncMock()
-        mock_async_get_request.close = Mock()
         with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientPayloadError()])
         post.assert_called_once_with(

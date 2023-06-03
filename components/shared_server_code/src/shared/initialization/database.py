@@ -2,7 +2,6 @@
 
 import logging
 import os
-from typing import Optional
 
 import pymongo  # pylint: disable=wrong-import-order
 from pymongo.database import Database
@@ -14,14 +13,14 @@ from shared.initialization.secrets import initialize_secrets
 DEFAULT_DATABASE_URL = "mongodb://root:root@localhost:27017"
 
 
-def client(url: Optional[str] = DEFAULT_DATABASE_URL) -> pymongo.MongoClient:  # pragma: no feature-test-cover
+def client(url: str | None = DEFAULT_DATABASE_URL) -> pymongo.MongoClient:  # pragma: no feature-test-cover
     """Returns a pymongo client."""
     database_url = os.environ.get("DATABASE_URL", url)
     return pymongo.MongoClient(database_url)
 
 
 def database_connection(
-    url: Optional[str] = DEFAULT_DATABASE_URL,
+    url: str | None = DEFAULT_DATABASE_URL,
 ) -> pymongo.database.Database:  # pragma: no feature-test-cover
     """Returns a pymongo database."""
     db_client = client(url)
@@ -29,9 +28,8 @@ def database_connection(
 
 
 def init_database() -> Database:  # pragma: no feature-test-cover
-    """Initialize the database connection and contents."""
-    database_url = os.environ.get("DATABASE_URL", DEFAULT_DATABASE_URL)
-    db_client: pymongo.MongoClient = pymongo.MongoClient(database_url)
+    """Initialize the database contents."""
+    db_client = client()
     set_feature_compatibility_version(db_client.admin)
     database = db_client.quality_time_db
     logging.info("Connected to database: %s", database)

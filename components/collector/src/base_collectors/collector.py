@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import os
-import traceback
 from datetime import UTC, datetime, timedelta
 from typing import Any, Coroutine, NoReturn, cast
 
@@ -12,22 +11,9 @@ from shared.database.metrics import get_metrics_from_reports
 from shared.database.shared_data import create_measurement, get_reports
 
 from collector_utilities.functions import timer
-from collector_utilities.type import JSON, URL, JSONDict
+from collector_utilities.type import JSONDict
 
 from .metric_collector import MetricCollector
-
-
-async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
-    """Get data from the API url."""
-    try:
-        response = await session.get(api)
-        json = cast(JSON, await response.json())
-        response.close()
-        return json
-    except Exception as reason:  # pylint: disable=broad-exception-caught
-        logging.error("Getting data from %s failed: %s", api, reason)
-        logging.error(traceback.format_exc())
-        return {}
 
 
 class Collector:
