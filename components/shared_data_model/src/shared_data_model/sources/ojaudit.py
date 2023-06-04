@@ -1,9 +1,8 @@
 """OJAudit source."""
 
-from ..meta.entity import Color, EntityAttributeType
-from ..meta.source import Source
-from ..parameters import access_parameters, Severities
-
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import Severities, access_parameters
 
 OJAUDIT = Source(
     name="OJAudit",
@@ -15,19 +14,20 @@ OJAUDIT = Source(
             values=["advisory", "incomplete", "warning", "error", "exception"],
             metrics=["violations"],
         ),
-        **access_parameters(["violations"], source_type="an OJAudit report", source_type_format="XML")
+        **access_parameters(["violations"], source_type="an OJAudit report", source_type_format="XML"),
     ),
-    entities=dict(
-        violations=dict(
-            name="violation",
-            attributes=[
-                dict(name="Message"),
-                dict(
-                    name="Severity", color=dict(exception=Color.NEGATIVE, error=Color.NEGATIVE, warning=Color.WARNING)
-                ),
-                dict(name="Component"),
-                dict(name="Number of occurrences", key="count", type=EntityAttributeType.INTEGER),
+    entities={
+        "violations": {
+            "name": "violation",
+            "attributes": [
+                {"name": "Message"},
+                {
+                    "name": "Severity",
+                    "color": {"exception": Color.NEGATIVE, "error": Color.NEGATIVE, "warning": Color.WARNING},
+                },
+                {"name": "Component"},
+                {"name": "Number of occurrences", "key": "count", "type": EntityAttributeType.INTEGER},
             ],
-        )
-    ),
+        },
+    },
 )

@@ -13,13 +13,15 @@ class DescribedModelTest(MetaModelTestCase):
     def test_description(self):
         """Test that a correct description passes the check and that a dot is added."""
         self.assertEqual(
-            "Description.", DescribedModel.parse_obj(dict(name="Name", description="Description")).description
+            "Description.",
+            DescribedModel.parse_obj({"name": "Name", "description": "Description"}).description,
         )
 
     def test_description_with_punctuation(self):
         """Test that a description with punctuation passes the check."""
         self.assertEqual(
-            "Description?", DescribedModel.parse_obj(dict(name="Name", description="Description?")).description
+            "Description?",
+            DescribedModel.parse_obj({"name": "Name", "description": "Description?"}).description,
         )
 
     def test_missing_description(self):
@@ -37,8 +39,8 @@ class MappedModelTest(MetaModelTestCase):
     def setUp(self):
         """Extend to setup the model."""
         super().setUp()
-        described_model_kwargs = dict(name="Name", description="Description")
-        self.mapped_model = MappedModel[DescribedModel].parse_obj(dict(described_model_type=described_model_kwargs))
+        described_model_kwargs = {"name": "Name", "description": "Description"}
+        self.mapped_model = MappedModel[DescribedModel].parse_obj({"described_model_type": described_model_kwargs})
         self.expected_described_model = DescribedModel(**described_model_kwargs)
 
     def test_get_item(self):

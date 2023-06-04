@@ -1,8 +1,8 @@
 """Data model source parameters."""
 
-from typing import Literal, Optional, Union
+from typing import Literal
 
-from pydantic import validator
+from pydantic import HttpUrl, validator
 
 from .meta.parameter import Parameter, ParameterType
 from .meta.unit import Unit
@@ -11,27 +11,28 @@ from .meta.unit import Unit
 class DateParameter(Parameter):
     """Date parameter."""
 
-    type: ParameterType = ParameterType.DATE
+    type: ParameterType = ParameterType.DATE  # noqa: A003
 
 
 class StringParameter(Parameter):
     """String parameter."""
 
-    type: ParameterType = ParameterType.STRING
+    type: ParameterType = ParameterType.STRING  # noqa: A003
 
 
 class IntegerParameter(Parameter):
     """Integer parameter."""
 
-    type: ParameterType = ParameterType.INTEGER
-    default_value: Union[str, list[str]] = "0"
+    type: ParameterType = ParameterType.INTEGER  # noqa: A003
+    default_value: str | list[str] = "0"
     min_value: str = "0"
 
     @validator("unit", always=True)
-    def check_unit(cls, unit, values):  # pylint: disable=no-self-argument
+    def check_unit(cls, unit: str | None, values) -> str:
         """Check that integer-type parameters have a unit."""
         if unit is None:
-            raise ValueError(f"Parameter {values['name']} has no unit")
+            msg = f"Parameter {values['name']} has no unit"
+            raise ValueError(msg)
         return unit
 
 
@@ -42,7 +43,7 @@ class URL(Parameter):
     short_name = "URL"
     mandatory = True
     validate_on: list[str] = ["username", "password", "private_token"]
-    type = ParameterType.URL
+    type = ParameterType.URL  # noqa: A003
 
 
 class LandingURL(StringParameter):
@@ -57,20 +58,20 @@ class LandingURL(StringParameter):
 class SingleChoiceParameter(Parameter):
     """Single choice parameter."""
 
-    type = ParameterType.SINGLE_CHOICE
+    type = ParameterType.SINGLE_CHOICE  # noqa: A003
 
 
 class MultipleChoiceParameter(Parameter):
     """Multiple choice parameter."""
 
-    type = ParameterType.MULTIPLE_CHOICE
-    default_value: Union[str, list[str]] = []
+    type = ParameterType.MULTIPLE_CHOICE  # noqa: A003
+    default_value: str | list[str] = []
 
 
 class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):
     """Multiple choice parameter that allows the user to add additional options."""
 
-    type = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
+    type = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION  # noqa: A003
     placeholder = "none"
 
 
@@ -86,7 +87,7 @@ class Password(Parameter):
 
     name: str = "Password for basic authentication"
     short_name = "password"
-    type = ParameterType.PASSWORD
+    type = ParameterType.PASSWORD  # noqa: A003
 
 
 class PrivateToken(Password):
@@ -112,7 +113,7 @@ class Severities(MultipleChoiceParameter):
     metrics: list[str] = ["security_warnings"]
 
     @validator("help_url", always=True)
-    def set_help(cls, help_url, values):  # pylint: disable=no-self-argument
+    def set_help(cls, help_url: HttpUrl | None, values) -> HttpUrl | None:
         """Add a default help string if a help URL was not provided."""
         if not help_url and not values.get("help"):
             values["help"] = "If provided, only count security warnings with the selected severities."
@@ -123,7 +124,7 @@ class TestResult(MultipleChoiceParameter):
     """Test result parameter."""
 
     name: str = "Test results"
-    help: Optional[str] = (
+    help: str | None = (  # noqa: A003
         "Limit which test results to count. Note: depending on which results are selected, the direction of the "
         "metric may need to be adapted. For example, when counting passed tests, more is better, but when "
         "counting failed tests, fewer is better."
@@ -137,7 +138,7 @@ class Upvotes(IntegerParameter):
 
     name: str = "Minimum number of upvotes"
     short_name = "minimum upvotes"
-    help: Optional[str] = "Only count merge requests with fewer than the minimum number of upvotes."
+    help: str | None = "Only count merge requests with fewer than the minimum number of upvotes."  # noqa: A003
     unit: Unit = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
 
@@ -146,7 +147,7 @@ class Branch(StringParameter):
     """Branch name parameter."""
 
     name: str = "Branch"
-    default_value: Union[str, list[str]] = "master"
+    default_value: str | list[str] = "master"
     metrics: list[str] = ["source_up_to_dateness"]
 
 
@@ -172,7 +173,7 @@ class MergeRequestState(MultipleChoiceParameter):
 
     name: str = "Merge request states"
     short_name = "states"
-    help: Optional[str] = "Limit which merge request states to count."
+    help: str | None = "Limit which merge request states to count."  # noqa: A003
     placeholder = "all states"
     metrics: list[str] = ["merge_requests"]
 
@@ -181,7 +182,7 @@ class FailureType(MultipleChoiceParameter):
     """Failure type parameter."""
 
     name: str = "Failure types"
-    help: Optional[str] = "Limit which failure types to count as failed."
+    help: str | None = "Limit which failure types to count as failed."  # noqa: A003
     placeholder = "all failure types"
     metrics: list[str] = ["failed_jobs"]
 
@@ -191,20 +192,20 @@ def access_parameters(
     include: dict[str, bool] | None = None,
     source_type: str = "",
     source_type_format: Literal["", "CSV", "HTML", "JSON", "XML"] = "",
-    kwargs: dict[str, dict[str, Union[str, bool, list[str]]]] | None = None,
+    kwargs: dict[str, dict[str, str | bool | list[str]]] | None = None,
 ) -> dict[str, Parameter]:
     """Create the access parameters, needed to access the source."""
     include = include or {}
     kwargs = kwargs or {}
-    parameters: dict[str, Parameter] = dict(
-        username=Username(metrics=metrics, **kwargs.get("username", {})),
-        password=Password(metrics=metrics, **kwargs.get("password", {})),
-    )
+    parameters: dict[str, Parameter] = {
+        "username": Username(metrics=metrics, **kwargs.get("username", {})),
+        "password": Password(metrics=metrics, **kwargs.get("password", {})),
+    }
     validate_on = ["username", "password"]
     if include.get("private_token", True):
         parameters["private_token"] = PrivateToken(metrics=metrics, **kwargs.get("private_token", {}))
         validate_on.append("private_token")
-    url_kwargs = kwargs.get("url") or dict(name="URL")
+    url_kwargs = kwargs.get("url") or {"name": "URL"}
     if source_type:
         source_type_article = "an" if source_type.startswith("an ") else "a"
         source_type = source_type[len("an ") :] if source_type.startswith("an ") else source_type

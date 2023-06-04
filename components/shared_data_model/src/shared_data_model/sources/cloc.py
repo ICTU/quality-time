@@ -1,9 +1,8 @@
 """Cloc source."""
 
-from ..meta.entity import EntityAttributeType
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceWithAdditionParameter
-
+from shared_data_model.meta.entity import EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, access_parameters
 
 ALL_CLOC_METRICS = ["loc", "source_version"]
 
@@ -26,19 +25,19 @@ CLOC = Source(
             placeholder="all",
             metrics=["loc"],
         ),
-        **access_parameters(ALL_CLOC_METRICS, source_type="cloc report", source_type_format="JSON")
+        **access_parameters(ALL_CLOC_METRICS, source_type="cloc report", source_type_format="JSON"),
     ),
-    entities=dict(
-        loc=dict(
-            name="language",
-            measured_attribute="code",
-            attributes=[
-                dict(name="Language"),
-                dict(name="Number of files", key="nr_files", type=EntityAttributeType.INTEGER),
-                dict(name="Number of blank lines", key="blank", type=EntityAttributeType.INTEGER),
-                dict(name="Number of comment lines", key="comment", type=EntityAttributeType.INTEGER),
-                dict(name="Number of code lines", key="code", type=EntityAttributeType.INTEGER),
+    entities={
+        "loc": {
+            "name": "language",
+            "measured_attribute": "code",
+            "attributes": [
+                {"name": "Language"},
+                {"name": "Number of files", "key": "nr_files", "type": EntityAttributeType.INTEGER},
+                {"name": "Number of blank lines", "key": "blank", "type": EntityAttributeType.INTEGER},
+                {"name": "Number of comment lines", "key": "comment", "type": EntityAttributeType.INTEGER},
+                {"name": "Number of code lines", "key": "code", "type": EntityAttributeType.INTEGER},
             ],
-        )
-    ),
+        },
+    },
 )

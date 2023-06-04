@@ -15,6 +15,7 @@ exclude_lines =
     raise NotImplementedError
     raise ValueError
     if TYPE_CHECKING:
+    def check_
 omit =
     components/external_server/tests/quality_time_external_server_under_coverage.py
     components/internal_server/tests/quality_time_internal_server_under_coverage.py

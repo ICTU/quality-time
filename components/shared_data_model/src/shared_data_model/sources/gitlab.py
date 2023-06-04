@@ -1,8 +1,9 @@
 """GitLab source."""
 
-from ..meta.entity import Color, EntityAttributeType
-from ..meta.source import Source
-from ..parameters import (
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
+    URL,
     Branch,
     BranchesToIgnore,
     Days,
@@ -10,13 +11,11 @@ from ..parameters import (
     MergeRequestState,
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
-    Upvotes,
     PrivateToken,
     StringParameter,
     TargetBranchesToInclude,
-    URL,
+    Upvotes,
 )
-
 
 ALL_GITLAB_METRICS = [
     "failed_jobs",
@@ -28,20 +27,20 @@ ALL_GITLAB_METRICS = [
     "unused_jobs",
 ]
 
-JOB_ENTITY = dict(
-    name="job",
-    attributes=[
-        dict(name="Job name", key="name", url="url"),
-        dict(name="Job stage", key="stage"),
-        dict(name="Branch or tag", key="branch"),
-        dict(
-            name="Status of most recent build",
-            key="build_status",
-            color=dict(canceled=Color.ACTIVE, failed=Color.NEGATIVE, success=Color.POSITIVE),
-        ),
-        dict(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
+JOB_ENTITY = {
+    "name": "job",
+    "attributes": [
+        {"name": "Job name", "key": "name", "url": "url"},
+        {"name": "Job stage", "key": "stage"},
+        {"name": "Branch or tag", "key": "branch"},
+        {
+            "name": "Status of most recent build",
+            "key": "build_status",
+            "color": {"canceled": Color.ACTIVE, "failed": Color.NEGATIVE, "success": Color.POSITIVE},
+        },
+        {"name": "Date of most recent build", "key": "build_date", "type": EntityAttributeType.DATE},
     ],
-)
+}
 
 GITLAB_BRANCH_HELP_URL = "https://docs.gitlab.com/ee/user/project/repository/branches/"
 
@@ -50,8 +49,8 @@ GITLAB = Source(
     description="GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous "
     "deployment pipelines.",
     url="https://about.gitlab.com/",
-    documentation=dict(
-        generic="""```{note}
+    documentation={
+        "generic": """```{note}
 Some metric sources are documents in JSON, XML, CSV, or HTML format. Examples include JUnit XML reports, JaCoCo XML
 reports and Axe CSV reports. Usually, you add a JUnit (or JaCoCo, or Axe...) source and then simply configure the same
 URL that you use to access the document via the browser. Unfortunately, this does not work if the document is stored in
@@ -82,17 +81,17 @@ ref=<branch>`
 
     If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
 profile/personal_access_tokens.html) with the scope `read_repository` in the private token field.
-```"""
-    ),
-    parameters=dict(
-        url=URL(
+```""",
+    },
+    parameters={
+        "url": URL(
             name="GitLab instance URL",
             help="URL of the GitLab instance, with port if necessary, but without path. For example, "
             "'https://gitlab.com'.",
             validate_on=["private_token"],
             metrics=ALL_GITLAB_METRICS,
         ),
-        project=StringParameter(
+        "project": StringParameter(
             name="Project (name with namespace or id)",
             short_name="project",
             mandatory=True,
@@ -106,53 +105,53 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "unused_jobs",
             ],
         ),
-        private_token=PrivateToken(
+        "private_token": PrivateToken(
             name="Private token (with read_api scope)",
             help_url="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
             metrics=ALL_GITLAB_METRICS,
         ),
-        file_path=StringParameter(
+        "file_path": StringParameter(
             name="File or folder path",
             short_name="path",
             help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
             "is specified, the pipeline is used to determine the up-to-dateness.",
             metrics=["source_up_to_dateness"],
         ),
-        branch=Branch(help_url=GITLAB_BRANCH_HELP_URL),
-        branches_to_ignore=BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),
-        refs_to_ignore=MultipleChoiceWithAdditionParameter(
+        "branch": Branch(help_url=GITLAB_BRANCH_HELP_URL),
+        "branches_to_ignore": BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),
+        "refs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
             metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
-        inactive_days=Days(
+        "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
             short_name="number of days since last commit",
             default_value="7",
             metrics=["unmerged_branches"],
         ),
-        inactive_job_days=Days(
+        "inactive_job_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],
         ),
-        failure_type=FailureType(values=["canceled", "failed", "skipped"]),
-        jobs_to_ignore=MultipleChoiceWithAdditionParameter(
+        "failure_type": FailureType(values=["canceled", "failed", "skipped"]),
+        "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
             metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
-        lookback_days=Days(
+        "lookback_days": Days(
             name="Number of days to look back in selecting pipeline jobs to consider",
             short_name="number of days to look back",
             default_value="90",
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
-        merge_request_state=MergeRequestState(values=["opened", "locked", "merged", "closed"]),
-        approval_state=MultipleChoiceParameter(
+        "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
+        "approval_state": MultipleChoiceParameter(
             name="Approval states to include (requires GitLab Premium)",
             short_name="approval states",
             help_url="https://docs.gitlab.com/ee/user/project/merge_requests/approvals/",
@@ -161,7 +160,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all approval states",
             metrics=["merge_requests"],
         ),
-        pipeline_statuses_to_include=MultipleChoiceParameter(
+        "pipeline_statuses_to_include": MultipleChoiceParameter(
             name="Pipeline statuses to include",
             short_name="pipeline statuses",
             values=[
@@ -181,7 +180,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all pipeline statuses",
             metrics=["source_up_to_dateness"],
         ),
-        pipeline_triggers_to_include=MultipleChoiceParameter(
+        "pipeline_triggers_to_include": MultipleChoiceParameter(
             name="Pipeline triggers to include",
             short_name="pipeline triggers",
             values=[
@@ -211,34 +210,34 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all pipeline triggers",
             metrics=["source_up_to_dateness"],
         ),
-        upvotes=Upvotes(),
-        target_branches_to_include=TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),
-    ),
-    entities=dict(
-        failed_jobs=JOB_ENTITY,
-        job_runs_within_time_period=JOB_ENTITY,
-        merge_requests=dict(
-            name="merge request",
-            attributes=[
-                dict(name="Merge request", key="title", url="url"),
-                dict(name="Target branch"),
-                dict(name="State"),
-                dict(name="Approved"),
-                dict(name="Upvotes", type=EntityAttributeType.INTEGER),
-                dict(name="Downvotes", type=EntityAttributeType.INTEGER),
-                dict(name="Created", type=EntityAttributeType.DATETIME),
-                dict(name="Updated", type=EntityAttributeType.DATETIME),
-                dict(name="Merged", type=EntityAttributeType.DATETIME),
+        "upvotes": Upvotes(),
+        "target_branches_to_include": TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),
+    },
+    entities={
+        "failed_jobs": JOB_ENTITY,
+        "job_runs_within_time_period": JOB_ENTITY,
+        "merge_requests": {
+            "name": "merge request",
+            "attributes": [
+                {"name": "Merge request", "key": "title", "url": "url"},
+                {"name": "Target branch"},
+                {"name": "State"},
+                {"name": "Approved"},
+                {"name": "Upvotes", "type": EntityAttributeType.INTEGER},
+                {"name": "Downvotes", "type": EntityAttributeType.INTEGER},
+                {"name": "Created", "type": EntityAttributeType.DATETIME},
+                {"name": "Updated", "type": EntityAttributeType.DATETIME},
+                {"name": "Merged", "type": EntityAttributeType.DATETIME},
             ],
-        ),
-        unmerged_branches=dict(
-            name="branch",
-            name_plural="branches",
-            attributes=[
-                dict(name="Branch name", key="name", url="url"),
-                dict(name="Date of most recent commit", key="commit_date", type=EntityAttributeType.DATE),
+        },
+        "unmerged_branches": {
+            "name": "branch",
+            "name_plural": "branches",
+            "attributes": [
+                {"name": "Branch name", "key": "name", "url": "url"},
+                {"name": "Date of most recent commit", "key": "commit_date", "type": EntityAttributeType.DATE},
             ],
-        ),
-        unused_jobs=JOB_ENTITY,
-    ),
+        },
+        "unused_jobs": JOB_ENTITY,
+    },
 )

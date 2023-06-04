@@ -12,7 +12,7 @@ class EntityTest(MetaModelTestCase):
 
     def test_check_name_correct(self):
         """Test that a correct name passes the check."""
-        entity = Entity.parse_obj(dict(name="lower case", attributes=[]))
+        entity = Entity.parse_obj({"name": "lower case", "attributes": []})
         self.assertEqual("lower case", entity.name)
 
     def test_check_name_incorrect(self):
@@ -32,6 +32,6 @@ class EntityTest(MetaModelTestCase):
         self.check_validation_error(
             "Measured attribute attribute does not have a number type",
             name="entity",
-            attributes=[dict(name="Attribute", description="Attribute.")],
+            attributes=[{"name": "Attribute", "description": "Attribute."}],
             measured_attribute="attribute",
         )

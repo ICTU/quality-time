@@ -2,9 +2,10 @@
 
 from enum import Enum
 
-from ..meta.entity import Color, EntityAttributeType
-from ..meta.source import Source
-from ..parameters import (
+from shared_data_model.meta.entity import Color, EntityAttributeType
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
+    URL,
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
     PrivateToken,
@@ -12,7 +13,6 @@ from ..parameters import (
     SingleChoiceParameter,
     StringParameter,
     TestResult,
-    URL,
 )
 
 
@@ -23,29 +23,35 @@ class Lines(str, Enum):
     CODE = "lines with code"
 
 
+ViolationEntityAttributes = list[dict[str, str | dict[str, str | Color | EntityAttributeType]]]
+
+
 def violation_entity_attributes(
-    include_review_priority=False, include_resolution=False, include_rationale=False, include_status=False
-):
+    include_review_priority=False,
+    include_resolution=False,
+    include_rationale=False,
+    include_status=False,
+) -> ViolationEntityAttributes:
     """Return the violation entity attributes."""
-    attributes = [
-        dict(name="Message"),
-        dict(name="Severity", color=dict(blocker=Color.NEGATIVE, critical=Color.NEGATIVE, major=Color.WARNING)),
+    attributes: ViolationEntityAttributes = [
+        {"name": "Message"},
+        {"name": "Severity", "color": {"blocker": Color.NEGATIVE, "critical": Color.NEGATIVE, "major": Color.WARNING}},
     ]
     if include_review_priority:
-        attributes.append(dict(name="Review priority", color=dict(high=Color.NEGATIVE, medium=Color.WARNING)))
-    attributes.append(dict(name="Warning type", key="type"))
+        attributes.append({"name": "Review priority", "color": {"high": Color.NEGATIVE, "medium": Color.WARNING}})
+    attributes.append({"name": "Warning type", "key": "type"})
     if include_status:
-        attributes.append(dict(name="Hotspot status"))
+        attributes.append({"name": "Hotspot status"})
     if include_resolution:
-        attributes.append(dict(name="Resolution"))
+        attributes.append({"name": "Resolution"})
     if include_rationale:
-        attributes.append(dict(name="Rationale"))
+        attributes.append({"name": "Rationale"})
     attributes.extend(
         [
-            dict(name="Component", url="url"),
-            dict(name="Created", key="creation_date", type=EntityAttributeType.DATETIME),
-            dict(name="Updated", key="update_date", type=EntityAttributeType.DATETIME),
-        ]
+            {"name": "Component", "url": "url"},
+            {"name": "Created", "key": "creation_date", "type": EntityAttributeType.DATETIME},
+            {"name": "Updated", "key": "update_date", "type": EntityAttributeType.DATETIME},
+        ],
     )
     return attributes
 
@@ -68,23 +74,23 @@ PROJECT_METRICS = [
     "violations",
 ]
 
-ALL_SONARQUBE_METRICS = sorted(PROJECT_METRICS + ["source_version"], key=str)
+ALL_SONARQUBE_METRICS = sorted([*PROJECT_METRICS, "source_version"], key=str)
 
 
-VIOLATION_ENTITY = dict(name="violation", attributes=violation_entity_attributes())
+VIOLATION_ENTITY = {"name": "violation", "attributes": violation_entity_attributes()}
 
 SONARQUBE = Source.parse_obj(
-    dict(
-        name="SonarQube",
-        description="SonarQube is an open-source platform for continuous inspection of code quality to perform "
+    {
+        "name": "SonarQube",
+        "description": "SonarQube is an open-source platform for continuous inspection of code quality to perform "
         "automatic reviews with static analysis of code to detect bugs, code smells, and security "
         "vulnerabilities on 20+ programming languages.",
-        url="https://www.sonarqube.org",
-        configuration=dict(
-            commented_out_rules=dict(
-                metrics=["commented_out_code"],
-                name="Rules used to detect commented out code",
-                value=[
+        "url": "https://www.sonarqube.org",
+        "configuration": {
+            "commented_out_rules": {
+                "metrics": ["commented_out_code"],
+                "name": "Rules used to detect commented out code",
+                "value": [
                     "abap:S125",
                     "c:CommentedCode",
                     "cpp:CommentedCode",
@@ -103,11 +109,11 @@ SONARQUBE = Source.parse_obj(
                     "Web:AvoidCommentedOutCodeCheck",
                     "xml:S125",
                 ],
-            ),
-            complex_unit_rules=dict(
-                metrics=["complex_units"],
-                name="Rules used to detect complex units",
-                value=[
+            },
+            "complex_unit_rules": {
+                "metrics": ["complex_units"],
+                "name": "Rules used to detect complex units",
+                "value": [
                     "csharpsquid:S1541",
                     "csharpsquid:S3776",
                     "flex:FunctionComplexity",
@@ -128,11 +134,11 @@ SONARQUBE = Source.parse_obj(
                     "vbnet:S1541",
                     "vbnet:S3776",
                 ],
-            ),
-            many_parameter_rules=dict(
-                metrics=["many_parameters"],
-                name="Rules used to detect units with many parameters",
-                value=[
+            },
+            "many_parameter_rules": {
+                "metrics": ["many_parameters"],
+                "name": "Rules used to detect units with many parameters",
+                "value": [
                     "c:S107",
                     "csharpsquid:S107",
                     "csharpsquid:S2436",
@@ -147,11 +153,11 @@ SONARQUBE = Source.parse_obj(
                     "tsql:S107",
                     "typescript:S107",
                 ],
-            ),
-            long_unit_rules=dict(
-                metrics=["long_units"],
-                name="Rules used to detect long units",
-                value=[
+            },
+            "long_unit_rules": {
+                "metrics": ["long_units"],
+                "name": "Rules used to detect long units",
+                "value": [
                     "abap:S104",
                     "c:FileLoc",
                     "cpp:FileLoc",
@@ -186,11 +192,11 @@ SONARQUBE = Source.parse_obj(
                     "Web:FileLengthCheck",
                     "Web:LongJavaScriptCheck",
                 ],
-            ),
-            suppression_rules=dict(
-                metrics=["suppressed_violations"],
-                name="Rules used to detect suppressed violations",
-                value=[
+            },
+            "suppression_rules": {
+                "metrics": ["suppressed_violations"],
+                "name": "Rules used to detect suppressed violations",
+                "value": [
                     "csharpsquid:S1309",
                     "php:NoSonar",
                     "Pylint:I0011",
@@ -200,40 +206,41 @@ SONARQUBE = Source.parse_obj(
                     "java:S1310",
                     "java:S1315",
                 ],
-            ),
-        ),
-        parameters=dict(
-            url=URL(
+            },
+        },
+        "parameters": {
+            "url": URL(
                 name="URL",
                 help="URL of the SonarQube instance, with port if necessary, but without path. For example, "
                 "'https://sonarcloud.io'.",
                 validate_on=["private_token"],
                 metrics=ALL_SONARQUBE_METRICS,
             ),
-            private_token=PrivateToken(
-                help_url="https://docs.sonarqube.org/latest/user-guide/user-token/", metrics=ALL_SONARQUBE_METRICS
+            "private_token": PrivateToken(
+                help_url="https://docs.sonarqube.org/latest/user-guide/user-token/",
+                metrics=ALL_SONARQUBE_METRICS,
             ),
-            component=StringParameter(
+            "component": StringParameter(
                 name="Project key",
                 help="The project key can be found by opening the project in SonarQube and looking at the bottom of "
                 "the grey column on the right.",
                 mandatory=True,
                 metrics=PROJECT_METRICS,
             ),
-            branch=StringParameter(
+            "branch": StringParameter(
                 name="Branch (only supported by commercial SonarQube editions)",
                 short_name="branch",
                 help_url="https://docs.sonarqube.org/latest/branches/overview/",
                 default_value="master",
                 metrics=PROJECT_METRICS,
             ),
-            languages_to_ignore=MultipleChoiceWithAdditionParameter(
+            "languages_to_ignore": MultipleChoiceWithAdditionParameter(
                 name="Languages to ignore (regular expressions or language names)",
                 short_name="languages to ignore",
                 help_url="https://docs.sonarqube.org/latest/analysis/languages/overview/",
                 metrics=["loc"],
             ),
-            lines_to_count=SingleChoiceParameter(
+            "lines_to_count": SingleChoiceParameter(
                 name="Lines to count",
                 help="Either count all lines including lines with comments or only count lines with code, excluding "
                 "comments. Note: it's possible to ignore specific languages only when counting lines with code. "
@@ -243,13 +250,13 @@ SONARQUBE = Source.parse_obj(
                 api_values={Lines.ALL: "lines", Lines.CODE: "ncloc"},
                 metrics=["loc"],
             ),
-            test_result=TestResult(values=["errored", "failed", "passed", "skipped"]),
-            severities=Severities(
+            "test_result": TestResult(values=["errored", "failed", "passed", "skipped"]),
+            "severities": Severities(
                 help_url="https://docs.sonarqube.org/latest/user-guide/issues/",
                 values=["info", "minor", "major", "critical", "blocker"],
                 metrics=["security_warnings", "suppressed_violations", "violations"],
             ),
-            hotspot_statuses=MultipleChoiceParameter(
+            "hotspot_statuses": MultipleChoiceParameter(
                 name="Security hotspot statuses",
                 short_name="hotspot statuses",
                 help_url="https://docs.sonarqube.org/latest/user-guide/security-hotspots/",
@@ -258,7 +265,7 @@ SONARQUBE = Source.parse_obj(
                 default_value=["to review", "acknowledged"],
                 metrics=["security_warnings"],
             ),
-            review_priorities=MultipleChoiceParameter(
+            "review_priorities": MultipleChoiceParameter(
                 name="Security hotspot review priorities",
                 short_name="review priorities",
                 help_url="https://docs.sonarqube.org/latest/user-guide/security-hotspots/",
@@ -266,7 +273,7 @@ SONARQUBE = Source.parse_obj(
                 values=["low", "medium", "high"],
                 metrics=["security_warnings"],
             ),
-            effort_types=MultipleChoiceParameter(
+            "effort_types": MultipleChoiceParameter(
                 name="Types of effort",
                 short_name="effort types",
                 placeholder="all effort types",
@@ -283,14 +290,14 @@ SONARQUBE = Source.parse_obj(
                 },
                 metrics=["remediation_effort"],
             ),
-            types=MultipleChoiceParameter(
+            "types": MultipleChoiceParameter(
                 name="Types",
                 placeholder="all violation types",
                 help_url="https://docs.sonarqube.org/latest/user-guide/rules/",
                 values=["code_smell", "bug", "vulnerability"],
                 metrics=["suppressed_violations", "violations"],
             ),
-            security_types=MultipleChoiceParameter(
+            "security_types": MultipleChoiceParameter(
                 name="Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)",
                 short_name="types",
                 placeholder="vulnerability",
@@ -299,37 +306,37 @@ SONARQUBE = Source.parse_obj(
                 values=["security_hotspot", "vulnerability"],
                 metrics=["security_warnings"],
             ),
-        ),
-        entities=dict(
-            commented_out_code=VIOLATION_ENTITY,
-            complex_units=VIOLATION_ENTITY,
-            many_parameters=VIOLATION_ENTITY,
-            loc=dict(
-                name="language",
-                measured_attribute="ncloc",
-                attributes=[
-                    dict(name="Language"),
-                    dict(name="Number of lines with code", key="ncloc", type=EntityAttributeType.INTEGER),
+        },
+        "entities": {
+            "commented_out_code": VIOLATION_ENTITY,
+            "complex_units": VIOLATION_ENTITY,
+            "many_parameters": VIOLATION_ENTITY,
+            "loc": {
+                "name": "language",
+                "measured_attribute": "ncloc",
+                "attributes": [
+                    {"name": "Language"},
+                    {"name": "Number of lines with code", "key": "ncloc", "type": EntityAttributeType.INTEGER},
                 ],
-            ),
-            long_units=VIOLATION_ENTITY,
-            remediation_effort=dict(
-                name="effort type",
-                measured_attribute="effort",
-                attributes=[
-                    dict(name="Effort type", url="url"),
-                    dict(name="Effort (minutes)", key="effort", type=EntityAttributeType.INTEGER),
+            },
+            "long_units": VIOLATION_ENTITY,
+            "remediation_effort": {
+                "name": "effort type",
+                "measured_attribute": "effort",
+                "attributes": [
+                    {"name": "Effort type", "url": "url"},
+                    {"name": "Effort (minutes)", "key": "effort", "type": EntityAttributeType.INTEGER},
                 ],
-            ),
-            security_warnings=dict(
-                name="security warning",
-                attributes=violation_entity_attributes(include_review_priority=True, include_status=True),
-            ),
-            suppressed_violations=dict(
-                name="violation",
-                attributes=violation_entity_attributes(include_resolution=True, include_rationale=True),
-            ),
-            violations=dict(name="violation", attributes=violation_entity_attributes()),
-        ),
-    )
+            },
+            "security_warnings": {
+                "name": "security warning",
+                "attributes": violation_entity_attributes(include_review_priority=True, include_status=True),
+            },
+            "suppressed_violations": {
+                "name": "violation",
+                "attributes": violation_entity_attributes(include_resolution=True, include_rationale=True),
+            },
+            "violations": {"name": "violation", "attributes": violation_entity_attributes()},
+        },
+    },
 )

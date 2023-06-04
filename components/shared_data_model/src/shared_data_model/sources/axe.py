@@ -1,9 +1,8 @@
 """Axe sources."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceParameter, MultipleChoiceWithAdditionParameter
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, access_parameters
 
 ALL_AXE_CORE_METRICS = ["accessibility", "source_up_to_dateness", "source_version"]
 
@@ -56,28 +55,28 @@ RESULT_TYPES = MultipleChoiceParameter(
     metrics=["accessibility"],
 )
 
-ENTITIES = dict(
-    accessibility=dict(
-        name="accessibility violation",
-        attributes=[
-            dict(name="Violation type", url="help"),
-            dict(
-                name="Result type",
-                color=dict(
-                    passes=Color.POSITIVE,
-                    violations=Color.NEGATIVE,
-                    inapplicable=Color.ACTIVE,
-                    incomplete=Color.WARNING,
-                ),
-            ),
-            dict(name="Impact"),
-            dict(name="Page of the violation", key="page", url="url"),
-            dict(name="Element"),
-            dict(name="Description"),
-            dict(name="Tags"),
+ENTITIES = {
+    "accessibility": {
+        "name": "accessibility violation",
+        "attributes": [
+            {"name": "Violation type", "url": "help"},
+            {
+                "name": "Result type",
+                "color": {
+                    "passes": Color.POSITIVE,
+                    "violations": Color.NEGATIVE,
+                    "inapplicable": Color.ACTIVE,
+                    "incomplete": Color.WARNING,
+                },
+            },
+            {"name": "Impact"},
+            {"name": "Page of the violation", "key": "page", "url": "url"},
+            {"name": "Element"},
+            {"name": "Description"},
+            {"name": "Tags"},
         ],
-    )
-)
+    },
+}
 
 AXE_CORE_DOCUMENTATION = """
 When running Axe-core on a webpage, the
@@ -91,9 +90,9 @@ AXE_CORE = Source(
     name="Axe-core",
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
     url="https://github.com/dequelabs/axe-core",
-    documentation=dict(
-        accessibility=AXE_CORE_DOCUMENTATION,
-        source_up_to_dateness=AXE_CORE_DOCUMENTATION
+    documentation={
+        "accessibility": AXE_CORE_DOCUMENTATION,
+        "source_up_to_dateness": AXE_CORE_DOCUMENTATION
         + """
 Axe-core adds a `timestamp` field to each results object. That field is used by *Quality-time* to determine the
 up-to-dateness of the report. If there is more than one results object in the JSON file, *Quality-time* uses the
@@ -103,7 +102,7 @@ first one it encounters, assuming that all timestamps in one JSON file will be r
 When combining results objects, make sure the `timestamp` field is retained in the JSON.
 ```
 """,
-        source_version=AXE_CORE_DOCUMENTATION
+        "source_version": AXE_CORE_DOCUMENTATION
         + """
 Axe-core adds a `testEngine` field to each results object. That field is used by *Quality-time* to determine the
 version of Axe-core used to generate the report. If there is more than one results object in the JSON file,
@@ -113,7 +112,7 @@ version of Axe-core used to generate the report. If there is more than one resul
 When combining results objects, make sure the `testEngine` field is retained in the JSON.
 ```
 """,
-    ),
+    },
     parameters=dict(
         tags_to_include=TAGS_TO_INCLUDE,
         tags_to_ignore=TAGS_TO_IGNORE,
@@ -121,7 +120,7 @@ When combining results objects, make sure the `testEngine` field is retained in 
         element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
         impact=IMPACT,
         result_types=RESULT_TYPES,
-        **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON")
+        **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON"),
     ),
     entities=ENTITIES,
 )
@@ -137,7 +136,7 @@ AXE_HTML_REPORTER = Source(
         element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
         impact=IMPACT,
         result_types=RESULT_TYPES,
-        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML")
+        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML"),
     ),
     entities=ENTITIES,
 )
@@ -150,18 +149,18 @@ AXE_CSV = Source(
         element_include_filter=ELEMENT_INCLUDE_FILTER,
         element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
         impact=IMPACT,
-        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV")
+        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV"),
     ),
-    entities=dict(
-        accessibility=dict(
-            name="accessibility violation",
-            attributes=[
-                dict(name="Violation type", url="help"),
-                dict(name="Impact"),
-                dict(name="Page of the violation", key="page", url="url"),
-                dict(name="Element"),
-                dict(name="Description"),
+    entities={
+        "accessibility": {
+            "name": "accessibility violation",
+            "attributes": [
+                {"name": "Violation type", "url": "help"},
+                {"name": "Impact"},
+                {"name": "Page of the violation", "key": "page", "url": "url"},
+                {"name": "Element"},
+                {"name": "Description"},
             ],
-        )
-    ),
+        },
+    },
 )

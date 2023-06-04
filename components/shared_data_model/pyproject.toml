@@ -8,20 +8,18 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.2.7",
-    "pep8-naming==0.13.3",
     "pip==23.1.2",
     "pipx==1.2.0",
     "pip-tools==6.13.0",  # To add hashes to requirements
-    "pylint==2.17.4",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.5",
     "black==23.3.0",
-    "dlint==0.14.1",
     "mypy==1.3.0",
     "pip-audit==2.5.6",
-    "pydantic==1.10.8",
+    "pydantic==1.10.8",  # Needed to inject into the mypy installation
+    "ruff==0.0.270",
     "safety==2.3.5",
     "vulture==2.7"
 ]
@@ -40,3 +38,34 @@ warn_unused_ignores = true
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src"]
+select = ["ALL"]
+ignore = [
+    "ANN001",  # https://beta.ruff.rs/docs/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
+    "ANN002",  # https://beta.ruff.rs/docs/rules/missing-type-args/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN003",  # https://beta.ruff.rs/docs/rules/missing-type-kwargs/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN101",  # https://beta.ruff.rs/docs/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
+    "ANN102",  # https://beta.ruff.rs/docs/rules/missing-type-cls/ - type checkers can infer the type of `cls`, so annotating it is superfluous
+    "D203",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",     # https://beta.ruff.rs/docs/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+    "PT",      # https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt - pytest isn't used
+]
+
+[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = ["classmethod", "pydantic.validator"]
+
+[tool.ruff.per-file-ignores]
+".vulture_ignore_list.py" = ["ALL"]
+"__init__.py" = [
+    "D104",  # https://beta.ruff.rs/docs/rules/#pydocstyle-d - don't require doc strings in __init__.py files
+    "F401",  # https://beta.ruff.rs/docs/rules/#pyflakes-f - collectors are imported in __init__.py files to flatten the module hierarchy
+]
+"tests/**/*.py" = [
+    "ANN201",  # https://beta.ruff.rs/docs/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
+]

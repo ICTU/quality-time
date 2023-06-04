@@ -1,13 +1,12 @@
 """OWASP ZAP source."""
 
-from ..meta.source import Source
-from ..parameters import (
-    access_parameters,
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import (
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
     SingleChoiceParameter,
+    access_parameters,
 )
-
 
 ALL_OWASP_ZAP_METRICS = ["security_warnings", "source_up_to_dateness", "source_version"]
 
@@ -31,7 +30,7 @@ OWASP_ZAP = Source(
             help="If provided, only count security warnings with the selected risks.",
             placeholder="all risks",
             values=["informational", "low", "medium", "high"],
-            api_values=dict(informational="0", low="1", medium="2", high="3"),
+            api_values={"informational": "0", "low": "1", "medium": "2", "high": "3"},
             metrics=["security_warnings"],
         ),
         variable_url_regexp=MultipleChoiceWithAdditionParameter(
@@ -42,17 +41,17 @@ OWASP_ZAP = Source(
             "warnings are the same only one is reported.",
             metrics=["security_warnings"],
         ),
-        **access_parameters(ALL_OWASP_ZAP_METRICS, source_type="an OWASP ZAP report", source_type_format="XML")
+        **access_parameters(ALL_OWASP_ZAP_METRICS, source_type="an OWASP ZAP report", source_type_format="XML"),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            attributes=[
-                dict(name="Warning", key="name"),
-                dict(
-                    name="Risk (Confidence)",
-                    key="risk",
-                    color={
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": [
+                {"name": "Warning", "key": "name"},
+                {
+                    "name": "Risk (Confidence)",
+                    "key": "risk",
+                    "color": {
                         "High (Low)": "negative",
                         "High (Medium)": "negative",
                         "High (High)": "negative",
@@ -60,10 +59,10 @@ OWASP_ZAP = Source(
                         "Medium (Medium)": "warning",
                         "Medium (High)": "warning",
                     },
-                ),
-                dict(name="Description"),
-                dict(name="Location", url="uri"),
+                },
+                {"name": "Description"},
+                {"name": "Location", "url": "uri"},
             ],
-        ),
-    ),
+        },
+    },
 )

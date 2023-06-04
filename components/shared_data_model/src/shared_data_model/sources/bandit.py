@@ -1,9 +1,8 @@
 """Bandit source."""
 
-from ..meta.entity import Color
-from ..meta.source import Source
-from ..parameters import access_parameters, MultipleChoiceParameter, Severities
-
+from shared_data_model.meta.entity import Color
+from shared_data_model.meta.source import Source
+from shared_data_model.parameters import MultipleChoiceParameter, Severities, access_parameters
 
 ALL_BANDIT_METRICS = ["security_warnings", "source_up_to_dateness"]
 
@@ -20,17 +19,21 @@ BANDIT = Source(
             values=["low", "medium", "high"],
             metrics=["security_warnings"],
         ),
-        **access_parameters(ALL_BANDIT_METRICS, source_type="Bandit report", source_type_format="JSON")
+        **access_parameters(ALL_BANDIT_METRICS, source_type="Bandit report", source_type_format="JSON"),
     ),
-    entities=dict(
-        security_warnings=dict(
-            name="security warning",
-            attributes=[
-                dict(name="Warning", key="issue_text", url="more_info"),
-                dict(name="Location"),
-                dict(name="Confidence", key="issue_confidence"),
-                dict(name="Severity", key="issue_severity", color=dict(High=Color.NEGATIVE, Medium=Color.WARNING)),
+    entities={
+        "security_warnings": {
+            "name": "security warning",
+            "attributes": [
+                {"name": "Warning", "key": "issue_text", "url": "more_info"},
+                {"name": "Location"},
+                {"name": "Confidence", "key": "issue_confidence"},
+                {
+                    "name": "Severity",
+                    "key": "issue_severity",
+                    "color": {"High": Color.NEGATIVE, "Medium": Color.WARNING},
+                },
             ],
-        ),
-    ),
+        },
+    },
 )

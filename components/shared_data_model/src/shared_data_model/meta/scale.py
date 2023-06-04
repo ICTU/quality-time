@@ -3,9 +3,9 @@
 from .base import DescribedModel, MappedModel
 
 
-class Scale(DescribedModel):  # pylint: disable=too-few-public-methods
+class Scale(DescribedModel):
     """Base model for scales."""
 
 
-class Scales(MappedModel[Scale]):  # pylint: disable=too-few-public-methods
+class Scales(MappedModel[Scale]):
     """Scales mapping."""

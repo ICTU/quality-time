@@ -1,6 +1,6 @@
 """Unit tests for the source model."""
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from shared_data_model.meta.source import Sources
 
@@ -14,10 +14,10 @@ class SourcesTest(MetaModelTestCase):
     MODEL = Sources
     DESCRIPTION = "Source."
     URL = "https://example.org"
-    SOURCE = dict(name="Source", description=DESCRIPTION, parameters={}, metrics=["metric"])
+    SOURCE = {"name": "Source", "description": DESCRIPTION, "parameters": {}, "metrics": ["metric"]}
 
     @staticmethod
-    def mock_path(path_class, exists: bool = True):
+    def mock_path(path_class, exists: bool = True) -> Mock:
         """Return a mock path that does or does not exist."""
         path = path_class.return_value
         path.parent = path
@@ -47,12 +47,12 @@ class SourcesTest(MetaModelTestCase):
         self.mock_path(path_class)
         self.check_validation_error(
             "Source Source has a landing URL but no URL",
-            source=dict(
-                name="Source",
-                description=self.DESCRIPTION,
-                url=self.URL,
-                parameters=dict(landing_url=dict(name="Landing URL", type="url", metrics=["metric"])),
-            ),
+            source={
+                "name": "Source",
+                "description": self.DESCRIPTION,
+                "url": self.URL,
+                "parameters": {"landing_url": {"name": "Landing URL", "type": "url", "metrics": ["metric"]}},
+            },
         )
 
     def test_missing_parameter_to_validate_on(self, path_class):
@@ -61,12 +61,14 @@ class SourcesTest(MetaModelTestCase):
         self.check_validation_error(
             "Source Source should validate parameter url when parameter password changes, "
             "but source Source has no parameter password",
-            source=dict(
-                name="Source",
-                description=self.DESCRIPTION,
-                url=self.URL,
-                parameters=dict(url=dict(name="URL", type="url", metrics=["metric"], validate_on=["password"])),
-            ),
+            source={
+                "name": "Source",
+                "description": self.DESCRIPTION,
+                "url": self.URL,
+                "parameters": {
+                    "url": {"name": "URL", "type": "url", "metrics": ["metric"], "validate_on": ["password"]},
+                },
+            },
         )
 
     def test_quality_time_lists_all_source_types(self, path_class):
@@ -74,19 +76,19 @@ class SourcesTest(MetaModelTestCase):
         self.mock_path(path_class)
         self.check_validation_error(
             "Parameter source_type of source quality_time doesn't list source types: Quality-time",
-            quality_time=dict(
-                name="Quality-time",
-                description="Quality-time.",
-                url="https://quality-time.org",
-                parameters=dict(
-                    source_type=dict(
-                        name="Source type",
-                        type="multiple_choice",
-                        default_value=[],
-                        metrics=["metric"],
-                        placeholder="all",
-                        values=["foo", "bar"],
-                    )
-                ),
-            ),
+            quality_time={
+                "name": "Quality-time",
+                "description": "Quality-time.",
+                "url": "https://quality-time.org",
+                "parameters": {
+                    "source_type": {
+                        "name": "Source type",
+                        "type": "multiple_choice",
+                        "default_value": [],
+                        "metrics": ["metric"],
+                        "placeholder": "all",
+                        "values": ["foo", "bar"],
+                    },
+                },
+            },
         )

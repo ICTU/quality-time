@@ -2,19 +2,14 @@
 
 source ../../ci/base.sh
 
+# Ruff
+run pipx run `spec ruff` .
+
 # Mypy
 # pipx run can't be used because mypy needs the pydantic plugin to be installed in the same venv (using pipx inject)
 run pipx install `spec mypy`
 run pipx inject mypy `spec pydantic`
 run $PIPX_BIN_DIR/mypy src --python-executable=$(which python)
-
-# Pylint
-run pylint --rcfile=../../.pylintrc src tests
-
-# Dlint
-unset PYTHONDEVMODE  # Suppress DeprecationWarnings given by flake8/dlint in dev mode
-run pipx run --spec `spec dlint` flake8 --select=DUO src
-export PYTHONDEVMODE=1
 
 # pip-audit
 unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
