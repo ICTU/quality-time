@@ -17,11 +17,10 @@ jobs:
           case $CIRCLE_NODE_INDEX in
             0) component=components/collector;;
             1) component=components/notifier;;
-            2) component=components/internal_server;;
-            3) component=components/external_server;;
-            4) component=components/shared_data_model;;
-            5) component=components/shared_server_code;;
-            6) component=tests/feature_tests;;
+            2) component=components/external_server;;
+            3) component=components/shared_data_model;;
+            4) component=components/shared_server_code;;
+            5) component=tests/feature_tests;;
           esac
           cd $component
           python -m venv venv
@@ -112,7 +111,6 @@ workflows:
             components/database/Dockerfile:\
             components/external_server/Dockerfile:\
             components/frontend/Dockerfile:\
-            components/internal_server/Dockerfile:\
             components/notifier/Dockerfile:\
             components/proxy/Dockerfile:\
             components/renderer/Dockerfile:\

@@ -42,7 +42,7 @@ The advantage of this scenario is that Python and Node.js don't need to be insta
 
 In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers.
 
-The advantage of this scenario is that you don't need to rebuild the bespoke container images while developing. Also, the two server components and the frontend component have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
+The advantage of this scenario is that you don't need to rebuild the bespoke container images while developing. Also, the server component and the frontend component have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
 
 ##### Start standard and test components in Docker
 
@@ -89,20 +89,6 @@ If you're new to Python virtual environments, note that:
 - See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python virtual environments when changing directories.
 ```
 
-##### Start the {index}`internal server <Internal server component>`
-
-Open another terminal and run the internal server:
-
-```console
-cd components/internal_server
-python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
-python src/quality_time_server.py
-```
-
-The API of the internal server is served at [http://localhost:5002](http://localhost:5002), e.g. access [http://localhost:5001/api/metrics](http://localhost:5001/api/metrics) to get the list of metrics.
-
 ##### Start the {index}`collector <Collector component>`
 
 Open another terminal and run the collector:
@@ -141,7 +127,7 @@ python src/quality_time_notifier.py
 
 #### Preparing the shared components
 
-*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared server code component is used by the external and internal servers.
+*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared server code component is used by the external server.
 
 To create a virtual environment for the shared components and install the dependencies run the following:
 
@@ -409,7 +395,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_server_code, components/collector, components/notifier
+cd components/external_server  # or components/shared_data_model, components/shared_server_code, components/collector, components/notifier
 ci/unittest.sh
 ```
 
@@ -425,13 +411,13 @@ npm run test
 To run mypy, Pylint, and some other security and quality checks on the backend components:
 
 ```console
-cd components/external_server  # or components/internal_server, components/shared_data_model, components/shared_server_code, components/collector, components/notifier
+cd components/external_server  # or components/shared_data_model, components/shared_server_code, components/collector, components/notifier
 ci/quality.sh
 ```
 
 ### Feature tests
 
-The feature tests currently test all features through the APIs of the external and internal servers. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
+The feature tests currently test all features through the APIs of the external server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
 
 ```console
 tests/feature_tests/ci/test.sh
@@ -543,7 +529,7 @@ python release.py <bump>  # Where bump is major, minor, patch, rc-major, rc-mino
 
 If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub. The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time). It will also create an {index}`Software Bill of Materials (SBOM) <Software Bill of Materials (SBOM)>` for the release, which can be found under the "Artifacts" header of the workflow run.
 
-The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_external server`, `quality-time_internal_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
+The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_external server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
 
 ## Maintenance
 
@@ -558,7 +544,6 @@ For Python, we follow the [dependency management practice described by James Ben
 Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
 
 - [External server](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile): the Python base image.
-- [Internal server](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile): the Python base image.
 - [Collector](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile): the Python base image.
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
 - [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, the npm version, and the serve version.

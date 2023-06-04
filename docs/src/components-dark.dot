@@ -9,7 +9,6 @@ digraph {
     label="Quality-time"
     color=white
     external_server [label="external server"]
-    internal_server [label="internal server"]
     proxy -> frontend [label=ui, dir="back"]
     proxy -> external_server [label=measurements, dir="back"]
     proxy -> external_server [label=metrics, dir="both"]
@@ -20,8 +19,6 @@ digraph {
     proxy -> renderer [label=measurements]
     external_server -> database [label=metrics, dir="both"]
     external_server -> database [label=measurements, dir="back"]
-    database -> internal_server [label=metrics]
-    database -> internal_server [label=measurements, dir="back"]
     database -> collector [label=metrics]
     database -> collector [label=measurements, dir="back"]
     database -> notifier [label=metrics]

@@ -61,13 +61,6 @@ jobs:
           file: components/external_server/Dockerfile
           tags: ictu/quality-time_external_server:${{ steps.get_version.outputs.version }}
           push: true
-      - name: Push Internal Server to Docker Hub
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: components
-          file: components/internal_server/Dockerfile
-          tags: ictu/quality-time_internal_server:${{ steps.get_version.outputs.version }}
-          push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v4.0.0
         with:

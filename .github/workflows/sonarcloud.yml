@@ -57,16 +57,6 @@ jobs:
         ci/unittest.sh
         export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
         python -m xmlrunner --output-file build/unittests.xml
-    - name: Internal Server
-      if: env.SONAR_TOKEN != null
-      working-directory: components/internal_server
-      run: |
-        python -m venv venv
-        . venv/bin/activate
-        ci/pip-install.sh
-        ci/unittest.sh
-        export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-        python -m xmlrunner --output-file build/unittests.xml
     - name: Shared Data Model
       if: env.SONAR_TOKEN != null
       working-directory: components/shared_data_model
@@ -102,8 +92,6 @@ jobs:
         touch components/__init__.py
         touch components/external_server/__init__.py
         touch components/external_server/src/__init__.py
-        touch components/internal_server/__init__.py
-        touch components/internal_server/src/__init__.py
         touch components/collector/__init__.py
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
@@ -118,7 +106,6 @@ jobs:
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/external_server/build/unittest-coverage.xml
-        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/internal_server/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_data_model/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/shared_server_code/build/unittest-coverage.xml
     - name: Sonarcloud scan
