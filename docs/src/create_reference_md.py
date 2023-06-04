@@ -210,10 +210,7 @@ def parameter_description(parameter: Parameter) -> str:
     elif default_value:
         default_value = [f"`{default_value}`"]
     default_value_text = f" The default value is: {', '.join(sorted(default_value))}." if default_value else ""
-    if parameter.help_url:
-        help_url = f"\n\n  ```{{seealso}}\n  {markdown_link(parameter.help_url)}\n  ```\n\n"
-    else:
-        help_url = ""
+    help_url = f"\n\n  ```{{seealso}}\n  {markdown_link(parameter.help_url)}\n  ```\n\n" if parameter.help_url else ""
     return f"- **{parameter.name}**.{help_text}{values_text}{default_value_text}\n{help_url}"
 
 
@@ -239,26 +236,26 @@ def data_model_as_table() -> str:
         "that *Quality-time* can use to measure subjects, and all [sources](#sources) that *Quality-time* can use to "
         "collect data from to measure the metrics. For each supported "
         "[combination of metric and source](#metric-source-combinations), the parameters that can be used to configure "
-        "the source are listed."
+        "the source are listed.",
     )
     markdown += markdown_header("Subjects", 2)
     markdown += markdown_paragraph(
         "This is an overview of all the subjects that *Quality-time* can measure. For each subject, the "
-        "metrics that can be used to measure the subject are listed."
+        "metrics that can be used to measure the subject are listed.",
     )
     markdown += subject_sections(3)
     markdown += markdown_header("Metrics", 2)
     markdown += markdown_paragraph(
         "This is an overview of all the metrics that *Quality-time* can use to measure subjects. For each metric, the "
         "default target, the supported scales, and the default tags are given. In addition, the sources that "
-        "can be used to collect data from to measure the metric are listed."
+        "can be used to collect data from to measure the metric are listed.",
     )
     markdown += metric_sections(3)
     markdown += markdown_header("Sources", 2)
     markdown += markdown_paragraph(
         "This is an overview of all the sources that *Quality-time* can use to measure metrics. For each source, "
         "the metrics that the source can measure are listed. Also, a link to the source's own documentation "
-        "is provided."
+        "is provided.",
     )
     markdown += source_sections(3)
     markdown += markdown_header("Metric-source combinations", 2)
@@ -266,7 +263,7 @@ def data_model_as_table() -> str:
         "This is an overview of all supported combinations of metrics and sources. For each combination of metric "
         "and source, the mandatory and optional parameters are listed that can be used to configure the source to "
         "measure the metric. If *Quality-time* needs to make certain assumptions about the source, for example which "
-        "SonarQube rules to use to count long methods, then these assumptions are listed under 'configurations'."
+        "SonarQube rules to use to count long methods, then these assumptions are listed under 'configurations'.",
     )
     for metric_key, metric in DATA_MODEL.metrics.items():
         for source_key in metric.sources:

@@ -5,6 +5,9 @@ source ../ci/base.sh
 # Markdownlint
 run ./node_modules/markdownlint-cli/markdownlint.js src/*.md
 
+# Ruff
+run pipx run `spec ruff` .
+
 # Mypy
 run pipx run `spec mypy` --python-executable=$(which python) src
 
@@ -17,14 +20,6 @@ else
     run vale sync
     run vale --no-wrap src/*.md
 fi
-
-# Pylint
-run pylint --rcfile=../.pylintrc src tests
-
-# Dlint
-unset PYTHONDEVMODE  # Suppress DeprecationWarnings given by flake8/dlint in dev mode
-run pipx run --spec `spec dlint` flake8 --select=DUO src
-export PYTHONDEVMODE=1
 
 # pip-audit
 unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
