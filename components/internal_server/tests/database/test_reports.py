@@ -1,9 +1,11 @@
 """Test the reports collection."""
 
+
 from shared.model.metric import Metric
 from shared.utils.type import MetricId
 
-from database.reports import latest_metric
+from routes.measurement import latest_metric
+
 
 from ..base import DataModelTestCase
 from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID

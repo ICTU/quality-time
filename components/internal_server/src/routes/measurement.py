@@ -6,9 +6,9 @@ from pymongo.database import Database
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
+from database.reports import latest_metric, latest_reports
 
 from database.measurements import latest_successful_measurement, recent_measurements, update_measurement_end
-from database.reports import latest_metric, latest_reports
 
 
 @bottle.post("/api/measurements")

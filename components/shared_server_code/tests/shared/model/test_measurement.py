@@ -392,10 +392,10 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         self.source_count += 1
         source_number = "" if self.source_count == 1 else str(self.source_count)
         return Source(
-            f"source_uuid{source_number}",
+            f"source{source_number}",
             metric,
             dict(
-                source_uuid=f"source_uuid{source_number}",
+                source_uuid=f"source{source_number}",
                 connection_error=None,
                 parse_error=parse_error,
                 total=total,

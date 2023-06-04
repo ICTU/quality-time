@@ -57,9 +57,9 @@ As a health check, the favicon is downloaded.
 
 The frontend uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `FRONTEND_PORT` | `5000` | The port the frontend listens on. |
+| Name            | Default value | Description                       |
+|:----------------|:--------------|:----------------------------------|
+| `FRONTEND_PORT` | `5000`        | The port the frontend listens on. |
 
 ## External server
 
@@ -80,19 +80,19 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ext
 
 The external server uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ |:------------|
-| `EXTERNAL_SERVER_PORT` | `5001` | Port of the external server. |
-| `EXTERNAL_SERVER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. |
-| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL. |
-| `LDAP_URL` | `ldap://ldap:389` | Comma-separated list of LDAP connection URL(s). |
-| `LDAP_ROOT_DN` | `dc=example,dc=org` | LDAP root distinguished name. |
-| `LDAP_LOOKUP_USER_DN` | `cn=admin,dc=example,dc=org` | LDAP lookup user distinguished name. |
-| `LDAP_LOOKUP_USER_PASSWORD` | `admin` | LDAP lookup user password. |
-| `LDAP_SEARCH_FILTER` | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
-| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up. |
-| `FORWARD_AUTH_ENABLED` | `False` | Whether or not to enable forward authentication. |
-| `FORWARD_AUTH_HEADER` | `X-Forwarded-User` | Header to use for getting the username if forward authentication is turned on. |
+| Name                        | Default value                             | Description                                                                                                                                                                                                                                                                 |
+|:----------------------------|:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `EXTERNAL_SERVER_PORT`      | `5001`                                    | Port of the external server.                                                                                                                                                                                                                                                |
+| `EXTERNAL_SERVER_LOG_LEVEL` | `WARNING`                                 | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
+| `DATABASE_URL`              | `mongodb://root:root@database:27017`      | Mongo database connection URL.                                                                                                                                                                                                                                              |
+| `LDAP_URL`                  | `ldap://ldap:389`                         | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                             |
+| `LDAP_ROOT_DN`              | `dc=example,dc=org`                       | LDAP root distinguished name.                                                                                                                                                                                                                                               |
+| `LDAP_LOOKUP_USER_DN`       | `cn=admin,dc=example,dc=org`              | LDAP lookup user distinguished name.                                                                                                                                                                                                                                        |
+| `LDAP_LOOKUP_USER_PASSWORD` | `admin`                                   | LDAP lookup user password.                                                                                                                                                                                                                                                  |
+| `LDAP_SEARCH_FILTER`        | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| `LOAD_EXAMPLE_REPORTS`      | `True`                                    | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                       |
+| `FORWARD_AUTH_ENABLED`      | `False`                                   | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
+| `FORWARD_AUTH_HEADER`       | `X-Forwarded-User`                        | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
 
 ## Internal server
 
@@ -108,12 +108,12 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/int
 
 The internal server uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `INTERNAL_SERVER_PORT` | `5001` | Port of the internal server. |
-| `INTERNAL_SERVER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. |
-| `DATABASE_URL` | `mongodb://root:root@database:27017` | Mongo database connection URL. |
-| `LOAD_EXAMPLE_REPORTS` | `True` | Whether or not to import example reports in the database on start up. |
+| Name                        | Default value                        | Description                                                                        |
+|:----------------------------|:-------------------------------------|:-----------------------------------------------------------------------------------|
+| `INTERNAL_SERVER_PORT`      | `5001`                               | Port of the internal server.                                                       |
+| `INTERNAL_SERVER_LOG_LEVEL` | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. |
+| `DATABASE_URL`              | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                     |
+| `LOAD_EXAMPLE_REPORTS`      | `True`                               | Whether or not to import example reports in the database on start up.              |
 
 ## Collector
 
@@ -131,16 +131,15 @@ Every time the collector wakes up, it writes the current date and time in ISO fo
 
 The collector uses the following environment variables:
 
-| Name | Default value | Description                                                                                                                                                                                        |
-| :--- | :------------ |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `COLLECTOR_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                    |
-| `COLLECTOR_SLEEP_DURATION` | `20` | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                    |
-| `COLLECTOR_MEASUREMENT_LIMIT` | `30` | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up.  |
-| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900` | The amount of time (in seconds) after which a metric should be measured again.                                                                                                |
-| `HEALTH_CHECK_FILE` | `/home/collector/health_check.txt` | Path to the file used for health check.                                                                                                                        |
-| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The collector uses this to get the metrics and post the measurements.                                                                       |
-| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The collector uses this to get the metrics and post the measurements.                                                                                      |
-| `HTTP(S)_PROXY` | | Proxy to use by the collector.                                                                                                                                                                        |
+| Name                              | Default value                        | Description                                                                                                                                                                       |
+|:----------------------------------|:-------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `COLLECTOR_LOG_LEVEL`             | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                |
+| `COLLECTOR_SLEEP_DURATION`        | `20`                                 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                |
+| `COLLECTOR_MEASUREMENT_LIMIT`     | `30`                                 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
+| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900`                                | The amount of time (in seconds) after which a metric should be measured again.                                                                                                    |
+| `DATABASE_URL`                    | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                                                                                                                    |
+| `HEALTH_CHECK_FILE`               | `/home/collector/health_check.txt`   | Path to the file used for health check.                                                                                                                                           |
+| `HTTP(S)_PROXY`                   |                                      | Proxy to use by the collector.                                                                                                                                                    |
 
 ```{seealso}
 See the [`aiohttp` documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
@@ -158,13 +157,13 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 The notifier uses the following environment variables:
 
-| Name | Default value | Description                                                                                           |
-| :--- | :------------ |:------------------------------------------------------------------------------------------------------|
-| `HEALTH_CHECK_FILE` | `/home/notifier/health_check.txt` | Path to the file used for health check.                            |
-| `INTERNAL_SERVER_HOST` | `internal_server` | Hostname of the internal server. The notifier uses this to get the metrics.     |
-| `INTERNAL_SERVER_PORT` | `5002` | Port of the internal server. The notifier uses this to get the metrics.                    |
-| `NOTIFIER_LOG_LEVEL` | `WARNING` | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.        |
-| `NOTIFIER_SLEEP_DURATION` | `60` | The amount of time (in seconds) that the notifier sleeps between sending notifications.   |
+| Name                      | Default value                     | Description                                                                             |
+|:--------------------------|:----------------------------------|:----------------------------------------------------------------------------------------|
+| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt` | Path to the file used for health check.                                                 |
+| `INTERNAL_SERVER_HOST`    | `internal_server`                 | Hostname of the internal server. The notifier uses this to get the metrics.             |
+| `INTERNAL_SERVER_PORT`    | `5002`                            | Port of the internal server. The notifier uses this to get the metrics.                 |
+| `NOTIFIER_LOG_LEVEL`      | `WARNING`                         | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.      |
+| `NOTIFIER_SLEEP_DURATION` | `60`                              | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
 ## Shared server code
 
@@ -374,12 +373,12 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 The proxy uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `FRONTEND_HOST` | `frontend` | The host name of the frontend. |
-| `FRONTEND_PORT` | `5000` | The port the frontend listens on. |
-| `EXTERNAL_SERVER_HOST` | `external_server` | The hostname of the external server. |
-| `EXTERNAL_SERVER_PORT` | `5001` | The port the external server listens on. |
+| Name                   | Default value     | Description                              |
+|:-----------------------|:------------------|:-----------------------------------------|
+| `FRONTEND_HOST`        | `frontend`        | The host name of the frontend.           |
+| `FRONTEND_PORT`        | `5000`            | The port the frontend listens on.        |
+| `EXTERNAL_SERVER_HOST` | `external_server` | The hostname of the external server.     |
+| `EXTERNAL_SERVER_PORT` | `5001`            | The port the external server listens on. |
 
 ## Database
 
@@ -397,10 +396,10 @@ Data models, reports, and reports overviews are [temporal objects](https://www.m
 
 The database uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `MONGO_INITDB_ROOT_USERNAME` | `root` | The MongoDB root username. |
-| `MONGO_INITDB_ROOT_PASSWORD` | `root` | The MongoDB root password. |
+| Name                         | Default value | Description                |
+|:-----------------------------|:--------------|:---------------------------|
+| `MONGO_INITDB_ROOT_USERNAME` | `root`        | The MongoDB root username. |
+| `MONGO_INITDB_ROOT_PASSWORD` | `root`        | The MongoDB root password. |
 
 ## Renderer
 
@@ -416,12 +415,12 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ren
 
 The renderer uses the following environment variables:
 
-| Name | Default value | Description |
-| :--- | :------------ | :---------- |
-| `PROXY_HOST` | `www` | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF. |
-| `PROXY_PORT` | `80` | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF. |
-| `LC_ALL` | | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`. |
-| `TZ` | | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
+| Name         | Default value | Description                                                                                                      |
+|:-------------|:--------------|:-----------------------------------------------------------------------------------------------------------------|
+| `PROXY_HOST` | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
+| `PROXY_PORT` | `80`          | Port of the proxy. The renderer uses this to access the reports that need to exported to PDF.                    |
+| `LC_ALL`     |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                        |
+| `TZ`         |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 
 ## Test data
 
@@ -454,7 +453,7 @@ A test LDAP server with test users is included for development and testing purpo
 
 The LDAP database has two users:
 
-| User          | Email address         | Username | Password |
-| ------------- | --------------------- | -------- | -------- |
-| Jane Doe      | `janedoe@example.org` | `jadoe`  | `secret` |
-| John Doe      | `johndoe@example.org` | `jodoe`  | `secret` |
+| User     | Email address         | Username | Password |
+|----------|-----------------------|----------|----------|
+| Jane Doe | `janedoe@example.org` | `jadoe`  | `secret` |
+| John Doe | `johndoe@example.org` | `jodoe`  | `secret` |

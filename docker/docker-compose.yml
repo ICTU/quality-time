@@ -29,8 +29,7 @@ services:
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
-      - INTERNAL_SERVER_HOST=${INTERNAL_SERVER_HOST:-internal_server}
-      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
+      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - COLLECTOR_MEASUREMENT_FREQUENCY=${COLLECTOR_MEASUREMENT_FREQUENCY:-900}
       - COLLECTOR_MEASUREMENT_LIMIT=${COLLECTOR_MEASUREMENT_LIMIT:-30}
       - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
@@ -38,7 +37,7 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
-      - internal_server
+      - database
     cap_drop:
       - ALL
   notifier:

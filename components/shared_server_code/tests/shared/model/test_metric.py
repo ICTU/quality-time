@@ -1,12 +1,11 @@
 """Test the metric model."""
 
-from datetime import date
 import unittest
+from datetime import date
 
-from shared.model.metric import Metric
 from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
-
 from tests.fixtures import METRIC_ID
 
 
@@ -143,3 +142,9 @@ class MetricTest(unittest.TestCase):
         """Test that we get the metric unit from the data model if the metric has no unit."""
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
         self.assertEqual("issues", metric.unit)
+
+    def test___eq__(self):
+        """Tests that __eq__ returns false if Object is not eq"""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
+
+        self.assertFalse(metric == "foo")

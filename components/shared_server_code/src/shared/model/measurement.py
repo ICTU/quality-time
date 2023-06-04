@@ -7,8 +7,8 @@ from collections.abc import Sequence
 from typing import Optional, cast
 
 from packaging.version import InvalidVersion, Version
-
 from shared_data_model import DATA_MODEL
+
 from shared.utils.functions import iso_timestamp, percentage
 from shared.utils.type import Scale, Status, Value
 
