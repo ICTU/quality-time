@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 import pathlib
 import unittest
-from datetime import datetime
-from unittest.mock import AsyncMock, Mock, call, mock_open, patch
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock, Mock, call, mock_open, patch, _patch
 
 import aiohttp
 import mongomock
@@ -75,7 +75,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "entities": [] if connection_error else entities,
             "connection_error": connection_error,
             "parse_error": None,
-            "source_uuid": "source_id",
+            "source_uuid": SOURCE_ID,
         }
 
     async def test_fetch_successful(self):
