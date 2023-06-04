@@ -20,7 +20,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
                     <riskcode>1</riskcode>
                     <confidence>2</confidence>
                     <riskdesc>Low (Medium)</riskdesc>
-                    <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;.</desc>
+                    <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to \
+&apos;nosniff&apos;.</desc>
                     <instances>
                         <instance>
                             <uri>http://www.hackazon.com/products_pictures/Ray_Ban.jpg</uri>
@@ -34,7 +35,8 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
                         </instance>
                     </instances>
                     <count>759</count>
-                    <solution>&lt;p&gt;Ensure that the application/web server sets the Content-Type header appropriately</solution>
+                    <solution>&lt;p&gt;Ensure that the application/web server sets the Content-Type header \
+appropriately</solution>
                     <otherinfo>&lt;p&gt;This issue still applies to error type pages</otherinfo>
                     <reference>&lt;p&gt;http://msdn.microsoft.com/en-us/library/ie/gg622941%28v</reference>
                     <cweid>16</cweid>
@@ -54,22 +56,22 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
-            dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url1}"),
-                name=self.WARNING_NAME,
-                description=self.WARNING_DESCRIPTION,
-                location=f"GET {url1}",
-                uri=url1,
-                risk=self.WARNING_RISK,
-            ),
-            dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url2}"),
-                name=self.WARNING_NAME,
-                description=self.WARNING_DESCRIPTION,
-                location=f"GET {url2}",
-                uri=url2,
-                risk=self.WARNING_RISK,
-            ),
+            {
+                "key": md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url1}"),
+                "name": self.WARNING_NAME,
+                "description": self.WARNING_DESCRIPTION,
+                "location": f"GET {url1}",
+                "uri": url1,
+                "risk": self.WARNING_RISK,
+            },
+            {
+                "key": md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{url2}"),
+                "name": self.WARNING_NAME,
+                "description": self.WARNING_DESCRIPTION,
+                "location": f"GET {url2}",
+                "uri": url2,
+                "risk": self.WARNING_RISK,
+            },
         ]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
@@ -78,12 +80,12 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         self.set_source_parameter("alerts", "alert types")
         response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         expected_entities = [
-            dict(
-                key=md5_hash("X-Content-Type-Options Header Missing:10021:16:15"),
-                name=self.WARNING_NAME,
-                description=self.WARNING_DESCRIPTION,
-                risk=self.WARNING_RISK,
-            ),
+            {
+                "key": md5_hash("X-Content-Type-Options Header Missing:10021:16:15"),
+                "name": self.WARNING_NAME,
+                "description": self.WARNING_DESCRIPTION,
+                "risk": self.WARNING_RISK,
+            },
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
@@ -93,13 +95,13 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
         response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
-            dict(
-                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{stable_url}"),
-                name=self.WARNING_NAME,
-                uri=stable_url,
-                description=self.WARNING_DESCRIPTION,
-                location=f"GET {stable_url}",
-                risk=self.WARNING_RISK,
-            )
+            {
+                "key": md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:GET:{stable_url}"),
+                "name": self.WARNING_NAME,
+                "uri": stable_url,
+                "description": self.WARNING_DESCRIPTION,
+                "location": f"GET {stable_url}",
+                "risk": self.WARNING_RISK,
+            },
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)

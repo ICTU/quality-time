@@ -1,6 +1,6 @@
 """Unit tests for the JaCoCo source up-to-dateness collector."""
 
-from datetime import datetime
+from collector_utilities.date_time import datetime_fromtimestamp, days_ago
 
 from .base import JaCoCoCommonTestsMixin, JaCoCoTestCase
 
@@ -15,7 +15,7 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
     def setUp(self):
         """Extend to set up a common source for the tests."""
         super().setUp()
-        self.expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days
+        self.expected_age = days_ago(datetime_fromtimestamp(1553821197.442))
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

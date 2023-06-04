@@ -1,6 +1,6 @@
 """Unit tests for the Composer dependencies collector."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class ComposerDependenciesTest(SourceCollectorTestCase):
@@ -12,8 +12,8 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
     def setUp(self):
         """Extend to set up the test fixtures."""
         super().setUp()
-        self.composer_json = dict(
-            installed=[
+        self.composer_json = {
+            "installed": [
                 {
                     "name": "package-1",
                     "version": "2.5.2",
@@ -24,29 +24,29 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
                     "warning": "warning",
                 },
                 {"name": "package-2", "version": "2.0.0", "latest": "2.0.0", "latest-status": "up-to-date"},
-            ]
-        )
+            ],
+        }
         self.expected_entities = [
-            dict(
-                key="package-1@2_5_2",
-                name="package-1",
-                version="2.5.2",
-                latest="2.6.1",
-                homepage="https://url",
-                latest_status="semver-safe-update",
-                description="description",
-                warning="warning",
-            ),
-            dict(
-                key="package-2@2_0_0",
-                name="package-2",
-                version="2.0.0",
-                latest="2.0.0",
-                homepage="",
-                latest_status="up-to-date",
-                description="",
-                warning="",
-            ),
+            {
+                "key": "package-1@2_5_2",
+                "name": "package-1",
+                "version": "2.5.2",
+                "latest": "2.6.1",
+                "homepage": "https://url",
+                "latest_status": "semver-safe-update",
+                "description": "description",
+                "warning": "warning",
+            },
+            {
+                "key": "package-2@2_0_0",
+                "name": "package-2",
+                "version": "2.0.0",
+                "latest": "2.0.0",
+                "homepage": "",
+                "latest_status": "up-to-date",
+                "description": "",
+                "warning": "",
+            },
         ]
 
     async def test_dependencies(self):

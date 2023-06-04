@@ -15,7 +15,9 @@ class ClocLOC(JSONFileSourceCollector):
         # The JSON is produced by cloc --json or by cloc --by-file --json, so be prepared for both formats
         languages_to_ignore = self._parameter("languages_to_ignore")
         files_to_include = self._parameter("files_to_include")
-        cloc_by_language: dict[str, dict[str, int]] = defaultdict(lambda: dict(nFiles=0, blank=0, comment=0, code=0))
+        cloc_by_language: dict[str, dict[str, int]] = defaultdict(
+            lambda: {"nFiles": 0, "blank": 0, "comment": 0, "code": 0},
+        )
         total = 0
         for response in responses:
             for key, value in (await response.json(content_type=None)).items():
@@ -27,7 +29,7 @@ class ClocLOC(JSONFileSourceCollector):
                 filename = self.determine_filename(key, value)
                 if filename and files_to_include and not match_string_or_regular_expression(filename, files_to_include):
                     continue
-                for field, default_value in dict(blank=0, comment=0, code=0, nFiles=1).items():
+                for field, default_value in {"blank": 0, "comment": 0, "code": 0, "nFiles": 1}.items():
                     cloc_by_language[language][field] += value.get(field, default_value)
         loc = sum(value["code"] for value in cloc_by_language.values())
         entities = Entities(self.create_entity(key, value) for key, value in cloc_by_language.items())

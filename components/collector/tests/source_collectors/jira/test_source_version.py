@@ -11,5 +11,5 @@ class JiraSourceVersionTest(JiraTestCase):
 
     async def test_version(self):
         """Test that the Jira version is returned."""
-        response = await self.collect(get_request_json_return_value=dict(version="8.3.1"))
+        response = await self.collect(get_request_json_return_value={"version": "8.3.1"})
         self.assert_measurement(response, value="8.3.1")

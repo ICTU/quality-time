@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from base_collectors import TimePassedCollector
+from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.type import Response
 
 from .base import NCoverBase
@@ -17,4 +18,4 @@ class NCoverSourceUpToDateness(NCoverBase, TimePassedCollector):
         script = await self._find_script(response, "ncover.createDateTime")
         match = re.search(r"ncover\.createDateTime = '(\d+)'", script)
         timestamp = match.group(1) if match else ""
-        return datetime.fromtimestamp(float(timestamp) / 1000)
+        return datetime_fromtimestamp(float(timestamp) / 1000)

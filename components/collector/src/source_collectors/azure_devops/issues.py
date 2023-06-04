@@ -27,12 +27,13 @@ class AzureDevopsIssues(SourceCollector):
         wiql_query_segments = ["Select [System.Id] From WorkItems"]
         wiql_parameter = self._parameter("wiql")
         if wiql_parameter := cast(  # type: ignore[redundant-cast]
-            str, wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter
+            str,
+            wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter,
         ):
             if not wiql_parameter.startswith("WHERE"):
                 wiql_query_segments.append("WHERE")
             wiql_query_segments.append(wiql_parameter)
-        return dict(query=" ".join(wiql_query_segments))
+        return {"query": " ".join(wiql_query_segments)}
 
     def _item_select_fields(self) -> list[str]:
         """Return the API fields to select for individual issues."""
@@ -45,7 +46,9 @@ class AzureDevopsIssues(SourceCollector):
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
             await self._session.post(
-                api_url, auth=auth, json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"}
+                api_url,
+                auth=auth,
+                json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"},
             )
             for id_batch in id_iter
         ]

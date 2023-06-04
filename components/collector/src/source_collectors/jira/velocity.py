@@ -1,19 +1,37 @@
 """Jira velocity collector."""
 
+from typing import TypedDict
 from urllib.parse import parse_qs, urlparse
 
-from typing_extensions import TypedDict
-
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import JiraBase
 
 
-Board = TypedDict("Board", {"id": int, "name": str})
-Points = TypedDict("Points", {"text": str, "value": float})
-Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
+class Board(TypedDict):
+    """Type for Jira boards."""
+
+    id: int  # noqa: A003
+    name: str
+
+
+class Points(TypedDict):
+    """Type for Jira user story points."""
+
+    text: str
+    value: float
+
+
+class Sprint(TypedDict):
+    """Type for Jira sprints."""
+
+    id: int  # noqa: A003
+    name: str
+    goal: str
+
+
 SprintPoints = dict[str, Points]
 
 
@@ -31,7 +49,7 @@ class JiraVelocity(JiraBase):
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         entity_url = URL(
-            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint="
+            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint=",
         )
         json = await responses[0].json()
         # The JSON contains a list with sprints and a dict with the committed and completed points, indexed by sprint id
@@ -44,7 +62,8 @@ class JiraVelocity(JiraBase):
             self.__entity(sprint, points[str(sprint["id"])], velocity_type, entity_url) for sprint in sprints
         )
         return SourceMeasurement(
-            value=str(round(sum(sprint_values) / len(sprint_values))) if sprint_values else "0", entities=entities
+            value=str(round(sum(sprint_values) / len(sprint_values))) if sprint_values else "0",
+            entities=entities,
         )
 
     @staticmethod
@@ -61,7 +80,7 @@ class JiraVelocity(JiraBase):
         committed = sprint_points["estimated"]["text"]
         completed = sprint_points["completed"]["text"]
         difference = str(float(sprint_points["completed"]["value"] - sprint_points["estimated"]["value"]))
-        measured = dict(completed=completed, estimated=committed, difference=difference)[velocity_type]
+        measured = {"completed": completed, "estimated": committed, "difference": difference}[velocity_type]
         return Entity(
             key=sprint_id,
             name=sprint["name"],
@@ -95,5 +114,5 @@ class JiraVelocity(JiraBase):
         matching_boards = [b for b in boards if board_name_or_id in (str(b["id"]), b["name"].lower().strip())]
         if not matching_boards:
             message = f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
-            raise CollectorException(message)
+            raise CollectorError(message)
         return str(matching_boards[0]["id"])

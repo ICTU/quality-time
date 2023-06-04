@@ -24,25 +24,25 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.extend(
             [
-                dict(
-                    id="3",
-                    status="success",
-                    name="job1",
-                    stage="stage",
-                    created_at="2018-03-31T19:41:39.927Z",
-                    web_url="https://gitlab/jobs/3",
-                    ref="master",
-                ),
-                dict(
-                    id="4",
-                    status="success",
-                    name="job1",
-                    stage="stage",
-                    created_at="2020-03-31T19:41:39.927Z",
-                    web_url="https://gitlab/jobs/4",
-                    ref="master",
-                ),
-            ]
+                {
+                    "id": "3",
+                    "status": "success",
+                    "name": "job1",
+                    "stage": "stage",
+                    "created_at": "2018-03-31T19:41:39.927Z",
+                    "web_url": "https://gitlab/jobs/3",
+                    "ref": "master",
+                },
+                {
+                    "id": "4",
+                    "status": "success",
+                    "name": "job1",
+                    "stage": "stage",
+                    "created_at": "2020-03-31T19:41:39.927Z",
+                    "web_url": "https://gitlab/jobs/4",
+                    "ref": "master",
+                },
+            ],
         )
         response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])

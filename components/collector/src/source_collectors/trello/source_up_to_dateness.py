@@ -2,9 +2,8 @@
 
 from datetime import datetime
 
-from dateutil.parser import parse
-
 from base_collectors import TimePassedCollector
+from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import Response
 
 from .base import TrelloBase
@@ -21,7 +20,7 @@ class TrelloSourceUpToDateness(TrelloBase, TimePassedCollector):
         dates = [json["dateLastActivity"]] + [
             card["dateLastActivity"] for card in cards if not self.__ignore_card(card, lists)
         ]
-        return parse(max(dates))
+        return parse_datetime(max(dates))
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

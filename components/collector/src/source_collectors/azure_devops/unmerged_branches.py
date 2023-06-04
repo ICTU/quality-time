@@ -3,10 +3,9 @@
 from datetime import datetime
 from typing import Any, cast
 
-from dateutil.parser import parse
-
 from base_collectors import UnmergedBranchesSourceCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.date_time import days_ago, parse_datetime
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceResponses
 
@@ -43,7 +42,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
 
     def _commit_datetime(self, branch) -> datetime:
         """Override to get the date and time of the most recent commit."""
-        return parse(branch["commit"]["committer"]["date"])
+        return parse_datetime(branch["commit"]["committer"]["date"])
 
     def _branch_landing_url(self, branch) -> URL:
         """Override to return the landing URL for the branch."""

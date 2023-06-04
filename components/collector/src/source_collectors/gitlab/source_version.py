@@ -3,7 +3,7 @@
 from packaging.version import InvalidVersion, Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import Response, URL
+from collector_utilities.type import URL, Response
 
 from .base import GitLabBase
 

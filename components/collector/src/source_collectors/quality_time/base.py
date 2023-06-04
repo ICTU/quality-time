@@ -4,8 +4,8 @@ from abc import ABC
 from typing import Any
 
 from base_collectors import SourceCollector
-from collector_utilities.exceptions import CollectorException
-from collector_utilities.type import Response, URL
+from collector_utilities.exceptions import CollectorError
+from collector_utilities.type import URL, Response
 
 
 class QualityTimeCollector(SourceCollector, ABC):
@@ -14,7 +14,7 @@ class QualityTimeCollector(SourceCollector, ABC):
     API_VERSION = "v3"
 
     async def _api_url(self) -> URL:
-        """Get the api url for this api version"""
+        """Get the api url for this api version."""
         api_url = await super()._api_url()
         return URL(f"{api_url}/api/{self.API_VERSION}")
 
@@ -27,5 +27,5 @@ class QualityTimeCollector(SourceCollector, ABC):
             reports = [report for report in reports if report_titles_or_ids & {report["title"], report["report_uuid"]}]
         if not reports:
             message = "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else "")
-            raise CollectorException(message)
+            raise CollectorError(message)
         return reports

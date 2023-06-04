@@ -11,53 +11,53 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     def setUp(self):
         """Extend to set up SonarQube security warnings."""
         super().setUp()
-        self.vulnerabilities_json = dict(
-            total="2",
-            issues=[
-                dict(
-                    key="vulnerability1",
-                    message="message1",
-                    component="component1",
-                    severity="INFO",
-                    type="VULNERABILITY",
-                    creationDate="2020-08-30T22:48:52+0200",
-                    updateDate="2020-09-30T22:48:52+0200",
-                ),
-                dict(
-                    key="vulnerability2",
-                    message="message2",
-                    component="component2",
-                    severity="MAJOR",
-                    type="VULNERABILITY",
-                    creationDate="2019-08-30T22:48:52+0200",
-                    updateDate="2019-09-30T22:48:52+0200",
-                ),
+        self.vulnerabilities_json = {
+            "total": "2",
+            "issues": [
+                {
+                    "key": "vulnerability1",
+                    "message": "message1",
+                    "component": "component1",
+                    "severity": "INFO",
+                    "type": "VULNERABILITY",
+                    "creationDate": "2020-08-30T22:48:52+0200",
+                    "updateDate": "2020-09-30T22:48:52+0200",
+                },
+                {
+                    "key": "vulnerability2",
+                    "message": "message2",
+                    "component": "component2",
+                    "severity": "MAJOR",
+                    "type": "VULNERABILITY",
+                    "creationDate": "2019-08-30T22:48:52+0200",
+                    "updateDate": "2019-09-30T22:48:52+0200",
+                },
             ],
-        )
-        self.hotspots_json = dict(
-            paging=dict(total="2"),
-            hotspots=[
-                dict(
-                    key="hotspot1",
-                    message="message1",
-                    component="component1",
-                    vulnerabilityProbability="MEDIUM",
-                    creationDate="2010-12-13T10:37:07+0000",
-                    updateDate="2019-08-26T09:02:49+0000",
-                    status="TO_REVIEW",
-                ),
-                dict(
-                    key="hotspot2",
-                    message="message2",
-                    component="component2",
-                    vulnerabilityProbability="LOW",
-                    creationDate="2011-10-26T13:34:12+0000",
-                    updateDate="2020-08-31T08:19:00+0000",
-                    status="REVIEWED",
-                    resolution="FIXED",
-                ),
+        }
+        self.hotspots_json = {
+            "paging": {"total": "2"},
+            "hotspots": [
+                {
+                    "key": "hotspot1",
+                    "message": "message1",
+                    "component": "component1",
+                    "vulnerabilityProbability": "MEDIUM",
+                    "creationDate": "2010-12-13T10:37:07+0000",
+                    "updateDate": "2019-08-26T09:02:49+0000",
+                    "status": "TO_REVIEW",
+                },
+                {
+                    "key": "hotspot2",
+                    "message": "message2",
+                    "component": "component2",
+                    "vulnerabilityProbability": "LOW",
+                    "creationDate": "2011-10-26T13:34:12+0000",
+                    "updateDate": "2020-08-31T08:19:00+0000",
+                    "status": "REVIEWED",
+                    "resolution": "FIXED",
+                },
             ],
-        )
+        }
         self.hotspot_entities = [
             self.entity(
                 key="hotspot1",
@@ -106,7 +106,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         self.set_source_parameter("security_types", ["vulnerability", "security_hotspot"])
         show_component_json = {}
         response = await self.collect(
-            get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json]
+            get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json],
         )
         self.assert_measurement(
             response,

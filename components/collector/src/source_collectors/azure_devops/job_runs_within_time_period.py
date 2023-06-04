@@ -2,9 +2,7 @@
 
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, parse_datetime
 from model import Entity
 
 from .base import AzureDevopsPipelines
@@ -18,4 +16,4 @@ class AzureDevopsJobRunsWithinTimePeriod(AzureDevopsPipelines):
         if not super()._include_entity(entity):
             return False
 
-        return days_ago(parse(entity["build_date"])) <= int(cast(str, self._parameter("lookback_days")))
+        return days_ago(parse_datetime(entity["build_date"])) <= int(cast(str, self._parameter("lookback_days")))

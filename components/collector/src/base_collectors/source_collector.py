@@ -11,16 +11,15 @@ from typing import Any, cast
 import aiohttp
 from packaging.version import Version
 
-from collector_utilities.exceptions import CollectorException
+from collector_utilities.date_time import days_ago, days_to_go
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import (
-    days_ago,
-    days_to_go,
     match_string_or_regular_expression,
     stable_traceback,
     tokenless,
 )
 from collector_utilities.type import URL, Response, Value
-from model import Entities, Entity, IssueStatus, SourceParameters, SourceMeasurement, SourceResponses
+from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
 
 class SourceCollector(ABC):
@@ -39,6 +38,7 @@ class SourceCollector(ABC):
         self.__parameters = SourceParameters(source)
 
     def __init_subclass__(cls) -> None:
+        """Register the subclass as source collector."""
         SourceCollector.subclasses.add(cls)
         super().__init_subclass__()
 
@@ -95,14 +95,16 @@ class SourceCollector(ABC):
             safe_api_url = tokenless(api_url) or class_name
             responses = await self._get_source_responses(api_url)
             logging.info("%s retrieved %s", class_name, safe_api_url)
-            return responses
-        except (CollectorException, aiohttp.ClientError) as reason:
+        except (CollectorError, aiohttp.ClientError) as reason:
             error = self.__logsafe_exception(reason)
             logging.warning("%s failed to retrieve %s: %s", class_name, safe_api_url, error)
-        except Exception as reason:  # pylint: disable=broad-except
+            responses = SourceResponses(api_url=URL(api_url), connection_error=error)
+        except Exception as reason:
             error = stable_traceback(traceback.format_exc())
-            logging.error("%s failed to retrieve %s: %s", class_name, safe_api_url, self.__logsafe_exception(reason))
-        return SourceResponses(api_url=URL(api_url), connection_error=error)
+            reason_message = self.__logsafe_exception(reason)
+            logging.error("%s failed to retrieve %s: %s", class_name, safe_api_url, reason_message)  # noqa: TRY400
+            responses = SourceResponses(api_url=URL(api_url), connection_error=error)
+        return responses
 
     @staticmethod
     def __logsafe_exception(exception: Exception) -> str:
@@ -145,7 +147,7 @@ class SourceCollector(ABC):
             return SourceMeasurement(connection_error=responses.connection_error)
         try:
             return await self._parse_source_responses(responses)
-        except Exception:  # pylint: disable=broad-except
+        except Exception:
             return SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -161,19 +163,19 @@ class SourceCollector(ABC):
             value=await self._parse_value(responses),
         )
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:  # pylint: disable=unused-argument
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
         return Entities()  # pragma: no cover
 
-    def _include_entity(self, entity: Entity) -> bool:  # pylint: disable=unused-argument
+    def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
         return True
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:  # pylint: disable=unused-argument
+    async def _parse_value(self, responses: SourceResponses) -> Value:
         """Parse the value from the responses."""
         return None  # pragma: no cover
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:  # pylint: disable=unused-argument
+    async def _parse_total(self, responses: SourceResponses) -> Value:
         """Parse the total from the responses."""
         return "100"  # pragma: no cover
 
@@ -187,10 +189,10 @@ class SourceCollector(ABC):
             return IssueStatus(self._issue_id, connection_error=responses.connection_error)
         try:
             return await self._parse_issue_status(responses)
-        except Exception:  # pylint: disable=broad-except
+        except Exception:
             return IssueStatus(self._issue_id, parse_error=stable_traceback(traceback.format_exc()))
 
-    async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:  # pylint: disable=unused-argument
+    async def _parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
         """Parse the responses to get the status of the metric's linked issue."""
         return IssueStatus(self._issue_id)  # pragma: no cover
 
@@ -202,10 +204,10 @@ class SourceCollector(ABC):
         """
         try:
             return await self._landing_url(responses)
-        except Exception:  # pylint: disable=broad-except
+        except Exception:
             return await self._api_url()
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:  # pylint: disable=unused-argument
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         """Return a user-friendly landing url.
 
         Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
@@ -262,13 +264,13 @@ class TimeCollector(SourceCollector):
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
-    def days(date_time) -> int:
+    def days(date_time: datetime) -> int:
         """Return the time between the current date time and the specified date time."""
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
     def mininum(date_times: Sequence[datetime]) -> datetime:
-        """Allow for overriding what the minimum of the datetimes is: the newest or the oldest?"""
+        """Allow for overriding what the minimum of the datetimes is: the newest or the oldest."""
         return min(date_times)
 
 
@@ -276,7 +278,7 @@ class TimePassedCollector(TimeCollector):
     """Base class for source up-to-dateness collectors."""
 
     @staticmethod
-    def days(date_time) -> int:
+    def days(date_time: datetime) -> int:
         """Override to return the number of days since the date time."""
         return days_ago(date_time)
 
@@ -285,7 +287,7 @@ class TimeRemainingCollector(TimeCollector):
     """Base class for time remaining collectors."""
 
     @staticmethod
-    def days(date_time) -> int:
+    def days(date_time: datetime) -> int:
         """Override to return the number of days until the date time."""
         return days_to_go(date_time)
 
@@ -343,13 +345,15 @@ class SlowTransactionsCollector(SourceCollector):
         self.__response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
         self.__target_response_time = float(cast(int, self._parameter("target_response_time")))
         self.__transaction_specific_target_response_times = cast(
-            list[str], self._parameter("transaction_specific_target_response_times")
+            list[str],
+            self._parameter("transaction_specific_target_response_times"),
         )
 
     def _is_to_be_included_and_is_slow(self, entity: TransactionEntity) -> bool:
         """Return whether the transaction entity is to be included and is slow."""
         return entity.is_to_be_included(
-            self.__transactions_to_include, self.__transactions_to_ignore
+            self.__transactions_to_include,
+            self.__transactions_to_ignore,
         ) and entity.is_slow(
             self.__response_time_to_evaluate,
             self.__target_response_time,

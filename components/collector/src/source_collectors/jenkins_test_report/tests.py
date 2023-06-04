@@ -6,7 +6,6 @@ from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
-
 TestCase = dict[str, str]
 Suite = dict[str, list[TestCase]]
 
@@ -14,9 +13,11 @@ Suite = dict[str, list[TestCase]]
 class JenkinsTestReportTests(SourceCollector):
     """Collector to get the number of tests from a Jenkins test report."""
 
-    JENKINS_TEST_REPORT_COUNTS: Final[dict[str, str]] = dict(
-        failed="failCount", passed="passCount", skipped="skipCount"
-    )
+    JENKINS_TEST_REPORT_COUNTS: Final[dict[str, str]] = {
+        "failed": "failCount",
+        "passed": "passCount",
+        "skipped": "skipCount",
+    }
 
     async def _api_url(self) -> URL:
         """Extend to add the test report API path."""
@@ -64,4 +65,4 @@ class JenkinsTestReportTests(SourceCollector):
         # can be skipped (indicated by the attribute skipped being "true") and/or have a status that can
         # take the values: "failed", "passed", "regression", and "fixed".
         test_case_status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
-        return dict(regression="failed", fixed="passed").get(test_case_status, test_case_status)
+        return {"regression": "failed", "fixed": "passed"}.get(test_case_status, test_case_status)

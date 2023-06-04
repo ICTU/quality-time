@@ -27,12 +27,20 @@ class TestNGTestsTest(TestNGCollectorTestCase):
     </testng-results>
     """
     EXPECTED_ENTITIES = [
-        dict(
-            key="class1_method2", class_name="class1", name="method2", description="description2", test_result="passed"
-        ),
-        dict(
-            key="class1_method3", class_name="class1", name="method3", description="description3", test_result="failed"
-        ),
+        {
+            "key": "class1_method2",
+            "class_name": "class1",
+            "name": "method2",
+            "description": "description2",
+            "test_result": "passed",
+        },
+        {
+            "key": "class1_method3",
+            "class_name": "class1",
+            "name": "method3",
+            "description": "description3",
+            "test_result": "failed",
+        },
     ]
 
     async def test_tests(self):

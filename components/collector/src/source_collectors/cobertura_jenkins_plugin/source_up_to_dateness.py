@@ -6,6 +6,7 @@ from .base import CoberturaJenkinsPluginBaseClass
 
 
 class CoberturaJenkinsPluginSourceUpToDateness(
-    CoberturaJenkinsPluginBaseClass, JenkinsPluginSourceUpToDatenessCollector
+    CoberturaJenkinsPluginBaseClass,
+    JenkinsPluginSourceUpToDatenessCollector,
 ):
     """Collector for the up to dateness of the Cobertura Jenkins plugin coverage report."""

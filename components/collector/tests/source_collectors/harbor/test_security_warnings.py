@@ -1,6 +1,6 @@
 """Unit tests for the Harbor security warnings collector."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class HarborSecurityWarningsTest(SourceCollectorTestCase):
@@ -21,25 +21,28 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
 
     async def collect_data(self):
         """Collect the (fake) Harbor contents."""
+        project = self.PROJECT_NAME
         return await self.collect(
             get_request_json_side_effect=[
-                [dict(name=self.PROJECT_NAME)],
-                [dict(name=self.REPO_NAME)],
+                [{"name": project}],
+                [{"name": self.REPO_NAME}],
                 [
-                    dict(
-                        addition_links=dict(
-                            vulnerabilities=dict(
-                                href=f"/api/v2.0/projects/{self.PROJECT_NAME}/repositories/tianon%252Fpostgres-upgrade/"
+                    {
+                        "addition_links": {
+                            "vulnerabilities": {
+                                "href": f"/api/v2.0/projects/{project}/repositories/tianon%252Fpostgres-upgrade/"
                                 "artifacts/sha256: 43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e/"
-                                "additions/vulnerabilities"
-                            ),
-                        ),
-                        digest="sha256: 43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
-                        project_id=3,
-                        scan_overview={self.SCAN_REPORT_MIME_TYPE: dict(scan_status="Success", summary=dict(total=1))},
-                    )
+                                "additions/vulnerabilities",
+                            },
+                        },
+                        "digest": "sha256: 43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
+                        "project_id": 3,
+                        "scan_overview": {
+                            self.SCAN_REPORT_MIME_TYPE: {"scan_status": "Success", "summary": {"total": 1}},
+                        },
+                    },
                 ],
-            ]
+            ],
         )
 
     async def test_no_projects(self):
@@ -49,20 +52,20 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_no_repositories(self):
         """Test that there are no security warnings if there are no repositories."""
-        response = await self.collect(get_request_json_side_effect=[[dict(name=self.PROJECT_NAME)], []])
+        response = await self.collect(get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], []])
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_no_artifacts(self):
         """Test that there are no security warnings if there are no artifacts."""
         response = await self.collect(
-            get_request_json_side_effect=[[dict(name=self.PROJECT_NAME)], [dict(name=self.REPO_NAME)], []]
+            get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], [{"name": self.REPO_NAME}], []],
         )
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_no_scans(self):
         """Test that there are no security warnings if there are no scans."""
         response = await self.collect(
-            get_request_json_side_effect=[[dict(name=self.PROJECT_NAME)], [dict(name=self.REPO_NAME)], [{}]]
+            get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], [{"name": self.REPO_NAME}], [{}]],
         )
         self.assert_measurement(response, value="0", entities=[])
 
@@ -70,10 +73,10 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         """Test that there are no security warnings if the scan is not successful."""
         response = await self.collect(
             get_request_json_side_effect=[
-                [dict(name=self.PROJECT_NAME)],
-                [dict(name=self.REPO_NAME)],
-                [dict(scan_overview={self.SCAN_REPORT_MIME_TYPE: {}})],
-            ]
+                [{"name": self.PROJECT_NAME}],
+                [{"name": self.REPO_NAME}],
+                [{"scan_overview": {self.SCAN_REPORT_MIME_TYPE: {}}}],
+            ],
         )
         self.assert_measurement(response, value="0", entities=[])
 
@@ -81,10 +84,10 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         """Test that an exceptio is thrown if the scan report format is not recognized."""
         response = await self.collect(
             get_request_json_side_effect=[
-                [dict(name=self.PROJECT_NAME)],
-                [dict(name=self.REPO_NAME)],
-                [dict(scan_overview={"unknown_format": {}})],
-            ]
+                [{"name": self.PROJECT_NAME}],
+                [{"name": self.REPO_NAME}],
+                [{"scan_overview": {"unknown_format": {}}}],
+            ],
         )
         self.assert_measurement(response, parse_error="Harbor scanner vulnerability report contains no known format")
 
@@ -92,10 +95,10 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         """Test that there are no security warnings if the scan has no warnings."""
         response = await self.collect(
             get_request_json_side_effect=[
-                [dict(name=self.PROJECT_NAME)],
-                [dict(name=self.REPO_NAME)],
-                [dict(scan_overview={self.SCAN_REPORT_MIME_TYPE: dict(scan_status="Success", summary={})})],
-            ]
+                [{"name": self.PROJECT_NAME}],
+                [{"name": self.REPO_NAME}],
+                [{"scan_overview": {self.SCAN_REPORT_MIME_TYPE: {"scan_status": "Success", "summary": {}}}}],
+            ],
         )
         self.assert_measurement(response, value="0", entities=[])
 
@@ -106,26 +109,26 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
             response,
             value="1",
             entities=[
-                dict(
-                    artifact="sha256:43f789166",
-                    fixable=0,
-                    highest_severity="Unknown",
-                    key="sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
-                    project=self.PROJECT_NAME,
-                    repository="tianon/postgres-upgrade",
-                    tags="",
-                    total=1,
-                    url=(
+                {
+                    "artifact": "sha256:43f789166",
+                    "fixable": 0,
+                    "highest_severity": "Unknown",
+                    "key": "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
+                    "project": self.PROJECT_NAME,
+                    "repository": "tianon/postgres-upgrade",
+                    "tags": "",
+                    "total": 1,
+                    "url": (
                         "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts/"
                         "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"
                     ),
-                )
+                },
             ],
         )
 
     async def test_pagination(self):
         """Test that pagination works."""
-        links = dict(next=dict(url="https://harbor/next_page"))
+        links = {"next": {"url": "https://harbor/next_page"}}
         response = await self.collect(get_request_links=links, get_request_json_side_effect=[[], []])
         self.assert_measurement(response, value="0", entities=[])
 

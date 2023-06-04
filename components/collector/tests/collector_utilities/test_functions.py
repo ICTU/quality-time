@@ -1,17 +1,17 @@
 """Unit tests for the utility functions."""
 
 import unittest
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
+from collector_utilities.date_time import days_ago
 from collector_utilities.functions import (
-    days_ago,
+    decimal_round_half_up,
     hashless,
     is_regexp,
+    iterable_to_batches,
     stable_traceback,
     tokenless,
-    iterable_to_batches,
-    decimal_round_half_up,
 )
 from collector_utilities.type import URL
 
@@ -39,7 +39,8 @@ class StableTracebackTest(unittest.TestCase):
     def test_no_keys(self):
         """Test that keys are redacted from tracebacks."""
         self.assertEqual(
-            "https://example.com?key=<redacted>&id=5", stable_traceback("https://example.com?key=abcdef45321a&id=5")
+            "https://example.com?key=<redacted>&id=5",
+            stable_traceback("https://example.com?key=abcdef45321a&id=5"),
         )
 
 
@@ -64,10 +65,10 @@ class DaysAgoTest(unittest.TestCase):
 
     def test_days_ago(self):
         """Test that the days ago works properly with timezones."""
-        self.assertEqual(0, days_ago(datetime.now() - timedelta(hours=23)))
-        self.assertEqual(1, days_ago(datetime.now() - timedelta(hours=24)))
-        self.assertEqual(1, days_ago(datetime.now(tz=timezone.utc) - timedelta(hours=47)))
-        self.assertEqual(2, days_ago(datetime.now(tz=timezone.utc) - timedelta(hours=48)))
+        self.assertEqual(0, days_ago(datetime.now(tz=UTC) - timedelta(hours=23)))
+        self.assertEqual(1, days_ago(datetime.now(tz=UTC) - timedelta(hours=24)))
+        self.assertEqual(1, days_ago(datetime.now(tz=UTC) - timedelta(hours=47)))
+        self.assertEqual(2, days_ago(datetime.now(tz=UTC) - timedelta(hours=48)))
 
 
 class StripHashTest(unittest.TestCase):

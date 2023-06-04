@@ -1,21 +1,25 @@
 """GitLab source up-to-dateness collector."""
 
+from __future__ import annotations
+
 import asyncio
 import itertools
 from abc import ABC
-from datetime import datetime, date, timedelta, timezone
-from typing import cast, Sequence
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
-import aiohttp
-from dateutil.parser import parse
-
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Response, URL, Value
+from collector_utilities.date_time import MIN_DATETIME, days_ago, now, parse_datetime
+from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 
 from .base import GitLabProjectBase
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    import aiohttp
 
 
 class GitLabFileUpToDateness(GitLabProjectBase):
@@ -45,7 +49,7 @@ class GitLabFileUpToDateness(GitLabProjectBase):
     async def __get_commits_recursively(self, file_path: str, first_call: bool = True) -> SourceResponses:
         """Get the commits of files recursively."""
         tree_api = await self._gitlab_api_url(
-            f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}"
+            f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}",
         )
         tree_response = (await super()._get_source_responses(tree_api))[0]
         tree = await tree_response.json()
@@ -61,7 +65,7 @@ class GitLabFileUpToDateness(GitLabProjectBase):
     async def __last_commit(self, file_path: str) -> SourceResponses:
         """Return the last, meaning the most recent, commit."""
         files_api_url = await self._gitlab_api_url(
-            f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}"
+            f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}",
         )
         response = await self._session.head(files_api_url, headers=self._headers())
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
@@ -71,7 +75,7 @@ class GitLabFileUpToDateness(GitLabProjectBase):
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Override to parse the dates from the commits."""
         commit_responses = responses[1:]
-        commit_dates = [parse((await response.json())["committed_date"]) for response in commit_responses]
+        commit_dates = [parse_datetime((await response.json())["committed_date"]) for response in commit_responses]
         return str(days_ago(max(commit_dates)))
 
 
@@ -80,7 +84,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
 
     async def _api_url(self) -> URL:
         """Override to return the jobs API."""
-        lookback_date = date.today() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
+        lookback_date = (now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))).date()
         return await self._gitlab_api_url(f"pipelines?updated_after={lookback_date}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -94,7 +98,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
                         (self._datetime(pipeline), pipeline["web_url"])
                         for pipeline in pipelines
                         if self._include_pipeline(pipeline)
-                    ]
+                    ],
                 )
         except StopAsyncIteration:
             pass
@@ -104,10 +108,10 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
         """Override to get the date and time of the pipeline."""
         pipelines = await response.json()
         datetimes = [self._datetime(pipeline) for pipeline in pipelines if self._include_pipeline(pipeline)]
-        return max(datetimes, default=datetime.min.replace(tzinfo=timezone.utc))
+        return max(datetimes, default=MIN_DATETIME)
 
     def _include_pipeline(self, pipeline) -> bool:
-        """Should this pipeline be considered?"""
+        """Return whether this pipeline should be considered."""
         return (
             pipeline["ref"] == self._parameter("branch")
             and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
@@ -117,7 +121,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
     @staticmethod
     def _datetime(pipeline) -> datetime:
         """Return the datetime of the pipeline."""
-        return parse(pipeline.get("updated_at") or pipeline["created_at"])
+        return parse_datetime(pipeline.get("updated_at") or pipeline["created_at"])
 
     @staticmethod
     def mininum(date_times: Sequence[datetime]) -> datetime:
@@ -128,13 +132,13 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
 class GitLabSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either pipelines or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source):
+    def __new__(cls, session: aiohttp.ClientSession, source) -> GitLabSourceUpToDateness:
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = GitLabFileUpToDateness if file_path else GitLabPipelineUpToDateness
         instance = collector_class(session, source)
         instance.source_type = cls.source_type
-        return instance
+        return cast(GitLabSourceUpToDateness, instance)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to document that this class does not parse responses itself."""

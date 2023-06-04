@@ -1,11 +1,10 @@
 """Pyup.io Safety security warnings collector."""
 
-from typing import cast, Final
+from typing import Final, cast
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
-
 
 JSONSafety = list[list[str]]
 
@@ -31,5 +30,5 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                     vulnerability=warning[self.VULNERABILITY],
                 )
                 for warning in cast(JSONSafety, json)
-            ]
+            ],
         )

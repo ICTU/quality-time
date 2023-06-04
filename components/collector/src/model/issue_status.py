@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from collector_utilities.type import ErrorMessage, URL
+from collector_utilities.type import URL, ErrorMessage
 
 
 @dataclass
@@ -16,11 +16,11 @@ class IssueSprint:
 
     def as_dict(self) -> dict:
         """Return the sprint as dict."""
-        return dict(
-            sprint_name=self.name,
-            sprint_state=self.state,
-            sprint_enddate=self.enddate,
-        )
+        return {
+            "sprint_name": self.name,
+            "sprint_state": self.state,
+            "sprint_enddate": self.enddate,
+        }
 
 
 @dataclass
@@ -33,11 +33,11 @@ class IssueRelease:
 
     def as_dict(self) -> dict:
         """Return the release as dict."""
-        return dict(
-            release_name=self.name,
-            release_released=self.released,
-            release_date=self.date,
-        )
+        return {
+            "release_name": self.name,
+            "release_released": self.released,
+            "release_date": self.date,
+        }
 
 
 @dataclass
@@ -68,17 +68,17 @@ class Issue:
 IssueStatusCategory = Literal["todo", "doing", "done"]
 
 
-class IssueStatus:  # pylint: disable=too-few-public-methods
+class IssueStatus:
     """Class to hold the status of issues."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         issue_id: str,
         *,
         issue: Issue | None = None,
         status_category: IssueStatusCategory | None = None,
         connection_error: ErrorMessage | None = None,
-        parse_error: ErrorMessage | None = None
+        parse_error: ErrorMessage | None = None,
     ) -> None:
         self.issue_id = issue_id
         self.issue = issue or Issue()

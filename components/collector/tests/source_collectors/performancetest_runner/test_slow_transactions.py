@@ -42,7 +42,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
         )
         self.set_source_parameter("thresholds", ["warning"])
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="1", entities=[dict(key="Name", name="Name", threshold="warning")])
+        self.assert_measurement(response, value="1", entities=[{"key": "Name", "name": "Name", "threshold": "warning"}])
 
     async def test_ignore_transactions_by_name(self):
         """Test that transactions can be ignored by name."""
@@ -55,7 +55,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
         )
         self.set_source_parameter("transactions_to_ignore", ["T[1|3]"])
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])
+        self.assert_measurement(response, value="1", entities=[{"key": "T2", "name": "T2", "threshold": "warning"}])
 
     async def test_include_transactions_by_name(self):
         """Test that transactions can be included by name."""
@@ -68,4 +68,4 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
         )
         self.set_source_parameter("transactions_to_include", ["T2"])
         response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])
+        self.assert_measurement(response, value="1", entities=[{"key": "T2", "name": "T2", "threshold": "warning"}])

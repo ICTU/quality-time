@@ -1,6 +1,6 @@
 """Unit tests for the JUnit XML test report source up-to-dateness collector."""
 
-from datetime import datetime
+from collector_utilities.date_time import datetime_fromparts, days_ago
 
 from .base import JUnitCollectorTestCase
 
@@ -14,7 +14,7 @@ class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         response = await self.collect(get_request_text=self.JUNIT_XML)
-        expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
+        expected_age = days_ago(datetime_fromparts(2009, 12, 19, 17, 58, 59))
         self.assert_measurement(response, value=str(expected_age))
 
     async def test_empty_test_suites(self):

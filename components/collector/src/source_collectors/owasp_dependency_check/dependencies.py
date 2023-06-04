@@ -23,7 +23,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
                 [
                     self._parse_entity(dependency, index, namespaces, landing_url)
                     for (index, dependency) in enumerate(self._dependencies(tree, namespaces))
-                ]
+                ],
             )
         return entities
 
@@ -32,7 +32,11 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
         return tree.findall(".//ns:dependency", namespaces)
 
     def _parse_entity(
-        self, dependency: Element, dependency_index: int, namespaces: Namespaces, landing_url: str
+        self,
+        dependency: Element,
+        dependency_index: int,
+        namespaces: Namespaces,
+        landing_url: str,
     ) -> Entity:
         """Parse the entity from the dependency."""
         file_path = dependency.findtext("ns:filePath", default="", namespaces=namespaces)

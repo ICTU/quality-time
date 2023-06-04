@@ -23,7 +23,7 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                     more_info=warning["more_info"],
                 )
                 for warning in cast(JSONDict, json).get("results", [])
-            ]
+            ],
         )
 
     def _include_entity(self, entity: Entity) -> bool:

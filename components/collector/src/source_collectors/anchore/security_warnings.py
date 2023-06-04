@@ -19,7 +19,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
                 self._create_entity(vulnerability, filename)
                 for vulnerability in vulnerabilities
                 if vulnerability["severity"] in severities
-            ]
+            ],
         )
         return entities
 

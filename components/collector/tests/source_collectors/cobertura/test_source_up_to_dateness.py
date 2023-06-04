@@ -1,6 +1,6 @@
 """Unit tests for the Cobertura source up-to-dateness collector."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from .base import CoberturaTestCase
 
@@ -15,7 +15,7 @@ class CoberturaSourceUpToDatenessTest(CoberturaTestCase):
     def setUp(self):
         """Extend to compute the expected age of the Cobertura report."""
         super().setUp()
-        self.expected_age = str((datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days)
+        self.expected_age = str((datetime.now(tz=UTC) - datetime.fromtimestamp(1553821197.442, tz=UTC)).days)
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

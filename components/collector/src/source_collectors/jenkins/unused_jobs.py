@@ -2,9 +2,7 @@
 
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, parse_datetime
 from model import Entity
 
 from .base import JenkinsJobs
@@ -18,4 +16,4 @@ class JenkinsUnusedJobs(JenkinsJobs):
         if not (build_date_str := entity["build_date"]):
             return False  # "build_date" is only set if self._build_datetime(job) > datetime.min
         max_days = int(cast(str, self._parameter("inactive_days")))
-        return super()._include_entity(entity) and days_ago(parse(build_date_str)) > max_days
+        return super()._include_entity(entity) and days_ago(parse_datetime(build_date_str)) > max_days

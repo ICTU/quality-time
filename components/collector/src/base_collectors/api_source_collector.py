@@ -3,9 +3,10 @@
 from abc import ABC
 from datetime import datetime
 
+from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.type import URL, Response
-
 from model import SourceResponses
+
 from .source_collector import SourceCollector, TimePassedCollector
 
 
@@ -34,4 +35,4 @@ class JenkinsPluginSourceUpToDatenessCollector(TimePassedCollector):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the job's timestamp."""
-        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.0)
+        return datetime_fromtimestamp(float((await response.json())["timestamp"]) / 1000.0)

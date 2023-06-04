@@ -1,12 +1,12 @@
 """Base classes for JMeter CSV collectors."""
 
 import csv
+from collections.abc import AsyncIterator
 from io import StringIO
-from typing import AsyncIterator, Literal
+from typing import Literal
 
 from base_collectors import CSVFileSourceCollector
 from model import SourceResponses
-
 
 Samples = list[dict[str, str]]
 

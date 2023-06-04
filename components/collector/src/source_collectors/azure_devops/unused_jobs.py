@@ -2,9 +2,7 @@
 
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
+from collector_utilities.date_time import days_ago, parse_datetime
 from model import Entity
 
 from .base import AzureDevopsJobs
@@ -20,5 +18,5 @@ class AzureDevopsUnusedJobs(AzureDevopsJobs):
         max_days = int(cast(str, self._parameter("inactive_job_days")))
         if not (build_date := entity["build_date"]):
             return False
-        actual_days = days_ago(parse(build_date))
+        actual_days = days_ago(parse_datetime(build_date))
         return actual_days > max_days

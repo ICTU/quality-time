@@ -1,16 +1,21 @@
 """Azure DevOps Server up-to-dateness collector."""
 
-from abc import ABC
-from datetime import datetime
+from __future__ import annotations
 
-import aiohttp
-from dateutil.parser import parse
+from abc import ABC
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import SourceCollector, TimePassedCollector
+from collector_utilities.date_time import MIN_DATETIME, parse_datetime
 from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
 from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    import aiohttp
 
 
 class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase):
@@ -36,7 +41,7 @@ class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the commit or the pipeline."""
         json_value = (await response.json())["value"]
-        return parse(json_value[0]["committer"]["date"])
+        return parse_datetime(json_value[0]["committer"]["date"])
 
 
 class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm [py/conflicting-attributes]
@@ -45,20 +50,20 @@ class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the commit or the pipeline."""
         entities = await self._parse_entities(SourceResponses(responses=[response]))  # parse, to call _include_entity
-        build_date_times = [parse(entity["build_date"]) for entity in entities if self._include_entity(entity)]
-        return max(build_date_times, default=datetime.min)
+        build_date_times = [parse_datetime(entity["build_date"]) for entity in entities if self._include_entity(entity)]
+        return max(build_date_times, default=MIN_DATETIME)
 
 
 class AzureDevopsSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either jobs or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source):
+    def __new__(cls, session: aiohttp.ClientSession, source) -> AzureDevopsSourceUpToDateness:
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = AzureDevopsFileUpToDateness if file_path else AzureDevopsJobUpToDateness
         instance = collector_class(session, source)
         instance.source_type = cls.source_type
-        return instance
+        return cast(AzureDevopsSourceUpToDateness, instance)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to document that this class does not parse responses itself."""

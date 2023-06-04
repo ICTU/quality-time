@@ -1,14 +1,14 @@
 """Axe HTML reporter accessibility collector."""
 
-from typing import cast, Iterator
+from collections.abc import Iterator
+from typing import cast
 
 from bs4 import Tag
 
 from base_collectors import HTMLFileSourceCollector
 from collector_utilities.functions import md5_hash
 from model import Entities, Entity, SourceResponses
-
-from ..axe_core.accessibility import AxeAccessibilityCollector
+from source_collectors.axe_core.accessibility import AxeAccessibilityCollector
 
 
 class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityCollector):
@@ -40,17 +40,17 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
             help_url = cast(str, cast(Tag, violated_rule.select_one("a.learnMore"))["href"])
             for violation in violated_rule.select("div.violationNode tbody tr"):
                 element = self.__parse_element(violation)
-                yield dict(
-                    violation_type=violation_type,
-                    description=description,
-                    impact=impact,
-                    element=element,
-                    tags=", ".join(tags),
-                    help=help_url,
-                    page=page_url,
-                    url=page_url,
-                    result_type="violations",
-                )
+                yield {
+                    "violation_type": violation_type,
+                    "description": description,
+                    "impact": impact,
+                    "element": element,
+                    "tags": ", ".join(tags),
+                    "help": help_url,
+                    "page": page_url,
+                    "url": page_url,
+                    "result_type": "violations",
+                }
 
     @staticmethod
     def __parse_rules_from_html_soup(soup: Tag, page_url: str, result_type: str) -> Iterator[dict[str, str]]:
@@ -58,17 +58,17 @@ class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityColl
         for rule in soup.select(f"div#{result_type} tr"):
             if not rule("td"):
                 continue  # Skip the header row
-            yield dict(
-                violation_type=rule("td")[1].get_text(strip=True),
-                description=rule("td")[0].get_text(strip=True),
-                impact="",
-                element="",
-                tags="",
-                help="",
-                page=page_url,
-                url=page_url,
-                result_type=result_type,
-            )
+            yield {
+                "violation_type": rule("td")[1].get_text(strip=True),
+                "description": rule("td")[0].get_text(strip=True),
+                "impact": "",
+                "element": "",
+                "tags": "",
+                "help": "",
+                "page": page_url,
+                "url": page_url,
+                "result_type": result_type,
+            }
 
     @staticmethod
     def __parse_tags(violated_rule: Tag) -> list[str]:

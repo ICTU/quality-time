@@ -4,9 +4,8 @@ from abc import ABC
 from datetime import date, timedelta
 from typing import cast
 
-from dateutil.parser import parse
-
 from base_collectors import SourceCollector
+from collector_utilities.date_time import now, parse_datetime
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
@@ -69,7 +68,8 @@ class GitLabJobsBase(GitLabProjectBase):
         # created or by date run, so we're going to assume that descending order of IDs is roughly equal to descending
         # order of date created and date run. As soon as all jobs on a page have a build date that is outside the
         # lookback period we stop the pagination.
-        lookback_date = date.today() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
+        today = now().date()
+        lookback_date = today - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
         for response in responses:
             for job in await response.json():
                 if self._build_date(job) > lookback_date:
@@ -90,7 +90,7 @@ class GitLabJobsBase(GitLabProjectBase):
                     build_date=str(self._build_date(job)),
                 )
                 for job in await self._jobs(responses)
-            ]
+            ],
         )
 
     @staticmethod
@@ -111,10 +111,11 @@ class GitLabJobsBase(GitLabProjectBase):
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
         return not match_string_or_regular_expression(
-            entity["name"], self._parameter("jobs_to_ignore")
+            entity["name"],
+            self._parameter("jobs_to_ignore"),
         ) and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
 
     @staticmethod
     def _build_date(job: Job) -> date:
         """Return the build date of the job."""
-        return parse(job.get("finished_at") or job["created_at"]).date()
+        return parse_datetime(job.get("finished_at") or job["created_at"]).date()

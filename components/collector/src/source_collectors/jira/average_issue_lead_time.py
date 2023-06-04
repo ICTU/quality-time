@@ -3,10 +3,8 @@
 from statistics import mean
 from typing import cast
 
-from dateutil.parser import parse
-
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Value, URL
+from collector_utilities.date_time import days_ago, parse_datetime
+from collector_utilities.type import URL, Value
 from model import Entities, Entity
 
 from .issues import JiraIssues
@@ -21,7 +19,7 @@ class JiraAverageIssueLeadTime(JiraIssues):
             return False
         if not (finished_date := issue["fields"].get("updated")):
             return False
-        return days_ago(parse(finished_date)) <= int(cast(str, self._parameter("lookback_days")))
+        return days_ago(parse_datetime(finished_date)) <= int(cast(str, self._parameter("lookback_days")))
 
     def _create_entity(self, issue: dict, url: URL) -> Entity:
         """Extend to also add the lead time to the entity."""
@@ -40,4 +38,4 @@ class JiraAverageIssueLeadTime(JiraIssues):
     @staticmethod
     def __lead_time(issue: dict) -> int:
         """Return the lead time of the completed issue."""
-        return (parse(issue["updated"]) - parse(issue["created"])).days
+        return (parse_datetime(issue["updated"]) - parse_datetime(issue["created"])).days

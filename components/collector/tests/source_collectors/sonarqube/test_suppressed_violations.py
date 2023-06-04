@@ -10,38 +10,38 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
 
     async def test_suppressed_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
-        violations_json = dict(
-            total="1",
-            issues=[
-                dict(
-                    key="violation1",
-                    message="message1",
-                    component="component1",
-                    severity="INFO",
-                    type="BUG",
-                    creationDate="2020-07-30T22:48:52+0200",
-                    updateDate="2020-09-30T21:48:52+0200",
-                )
+        violations_json = {
+            "total": "1",
+            "issues": [
+                {
+                    "key": "violation1",
+                    "message": "message1",
+                    "component": "component1",
+                    "severity": "INFO",
+                    "type": "BUG",
+                    "creationDate": "2020-07-30T22:48:52+0200",
+                    "updateDate": "2020-09-30T21:48:52+0200",
+                },
             ],
-        )
-        wont_fix_json = dict(
-            total="1",
-            issues=[
-                dict(
-                    key="violation2",
-                    message="message2",
-                    component="component2",
-                    severity="MAJOR",
-                    type="CODE_SMELL",
-                    resolution="WONTFIX",
-                    creationDate="2019-08-15:50:52+0200",
-                    updateDate="2019-09-30T20:50:52+0200",
-                )
+        }
+        wont_fix_json = {
+            "total": "1",
+            "issues": [
+                {
+                    "key": "violation2",
+                    "message": "message2",
+                    "component": "component2",
+                    "severity": "MAJOR",
+                    "type": "CODE_SMELL",
+                    "resolution": "WONTFIX",
+                    "creationDate": "2019-08-15:50:52+0200",
+                    "updateDate": "2019-09-30T20:50:52+0200",
+                },
             ],
-        )
-        total_violations_json = dict(total="4")
+        }
+        total_violations_json = {"total": "4"}
         response = await self.collect(
-            get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json]
+            get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json],
         )
         expected_entities = [
             self.entity(
@@ -75,17 +75,17 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
 
     async def test_suppressed_with_rationale_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
-        wont_fix_rationale_json = dict(
-            total="1",
-            issues=[
-                dict(
-                    key="violation3",
-                    message="message3",
-                    component="component1",
-                    severity="MAJOR",
-                    type="CODE_SMELL",
-                    resolution="WONTFIX",
-                    comments=[
+        wont_fix_rationale_json = {
+            "total": "1",
+            "issues": [
+                {
+                    "key": "violation3",
+                    "message": "message3",
+                    "component": "component1",
+                    "severity": "MAJOR",
+                    "type": "CODE_SMELL",
+                    "resolution": "WONTFIX",
+                    "comments": [
                         {
                             "login": "test-user",
                             "htmlText": "<strong>TEST</strong>",
@@ -99,14 +99,14 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                             "createdAt": "2023-04-12T09:04:38+0000",
                         },
                     ],
-                    creationDate="2019-08-15:52:52+0200",
-                    updateDate="2019-09-30T20:52:52+0200",
-                )
+                    "creationDate": "2019-08-15:52:52+0200",
+                    "updateDate": "2019-09-30T20:52:52+0200",
+                },
             ],
-        )
-        total_violations_json = dict(total="1")
+        }
+        total_violations_json = {"total": "1"}
         response = await self.collect(
-            get_request_json_side_effect=[{}, {}, wont_fix_rationale_json, total_violations_json]
+            get_request_json_side_effect=[{}, {}, wont_fix_rationale_json, total_violations_json],
         )
         expected_entities = [
             self.entity(

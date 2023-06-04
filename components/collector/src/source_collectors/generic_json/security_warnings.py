@@ -23,6 +23,6 @@ class GenericJSONSecurityWarnings(JSONFileSourceCollector):
                     title=vulnerability["title"],
                     description=vulnerability["description"],
                     severity=vulnerability["severity"],
-                )
+                ),
             )
         return entities

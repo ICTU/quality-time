@@ -1,6 +1,6 @@
 """Unit tests for the calendar source up-to-dateness collector."""
 
-from datetime import datetime
+from collector_utilities.date_time import datetime_fromparts, days_ago
 
 from .base import CalendarTestCase
 
@@ -14,7 +14,7 @@ class CalendarSourceUpToDatenessTest(CalendarTestCase):
         """Test the number of days since the user-specified date."""
         self.set_source_parameter("date", "2019-06-01")
         response = await self.collect()
-        self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 6, 1)).days))
+        self.assert_measurement(response, value=str(days_ago(datetime_fromparts(2019, 6, 1))))
 
     async def test_source_up_to_dateness_with_default(self):
         """Test the number of days without user-specified date."""

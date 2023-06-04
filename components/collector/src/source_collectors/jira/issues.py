@@ -16,9 +16,9 @@ class JiraIssues(JiraBase):
     DEFAULT_MAX_RESULTS: int = 500  # Fallback for maximum number of issues to retrieve per page from Jira
     max_results: int | None = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._field_ids = {}
+        self._field_ids: dict[str, str] = {}
 
     async def _api_url(self) -> URL:
         """Extend to get the fields from Jira and create a field name to field id mapping."""
@@ -68,7 +68,7 @@ class JiraIssues(JiraBase):
         return SourceMeasurement(value=self._compute_value(entities), entities=entities)
 
     @staticmethod
-    async def _issues(responses: SourceResponses):
+    async def _issues(responses: SourceResponses) -> list[dict]:
         """Return the issues from the responses."""
         issues = []
         for response in responses:
@@ -77,7 +77,7 @@ class JiraIssues(JiraBase):
         return issues
 
     @classmethod
-    def _compute_value(cls, entities: Entities) -> Value:  # pylint: disable=unused-argument
+    def _compute_value(cls, entities: Entities) -> Value:  # noqa: ARG003
         """Allow subclasses to compute the value from the entities."""
         return None
 
@@ -89,21 +89,21 @@ class JiraIssues(JiraBase):
         # sure that when users mark an issue as false positive, it remains false positive even the issue is moved to
         # another project and the issue key changes.
         fields = issue["fields"]
-        entity_attributes = dict(
-            issue_key=issue["key"],
-            created=fields["created"],
-            priority=fields.get("priority", {}).get("name"),
-            status=fields.get("status", {}).get("name"),
-            summary=fields["summary"],
-            type=fields.get("issuetype", {}).get("name", "Unknown issue type"),
-            updated=fields.get("updated"),
-            url=f"{url}/browse/{issue['key']}",
-        )
+        entity_attributes = {
+            "issue_key": issue["key"],
+            "created": fields["created"],
+            "priority": fields.get("priority", {}).get("name"),
+            "status": fields.get("status", {}).get("name"),
+            "summary": fields["summary"],
+            "type": fields.get("issuetype", {}).get("name", "Unknown issue type"),
+            "updated": fields.get("updated"),
+            "url": f"{url}/browse/{issue['key']}",
+        }
         if sprint_field_id := self._field_ids.get("sprint"):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
 
-    def _include_issue(self, issue: dict) -> bool:  # pylint: disable=unused-argument
+    def _include_issue(self, issue: dict) -> bool:
         """Return whether this issue should be counted."""
         return True
 

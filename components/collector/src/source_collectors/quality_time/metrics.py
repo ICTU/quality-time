@@ -1,18 +1,16 @@
 """Quality-time metrics collector."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import cast
 from urllib import parse
 
-from dateutil.parser import parse as parse_date
-
 from shared_data_model import DATA_MODEL
 
-from collector_utilities.type import Response, URL, Value
+from collector_utilities.date_time import now, parse_datetime
+from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import QualityTimeCollector
-
 
 Measurements = list[dict[str, dict[str, str]]]
 
@@ -42,7 +40,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         status_start = self.__metric_status_start(entity["status_start_date"])
         if not status_start and min_status_duration > 0:
             return False
-        if status_start and (datetime.now(timezone.utc) - status_start).days < min_status_duration:
+        if status_start and (now() - status_start).days < min_status_duration:
             return False
         return True
 
@@ -102,4 +100,4 @@ class QualityTimeMetrics(QualityTimeCollector):
     @staticmethod
     def __metric_status_start(status_start: str) -> None | datetime:
         """Return the status start date/time of the metric."""
-        return parse_date(status_start) if status_start else None
+        return parse_datetime(status_start) if status_start else None

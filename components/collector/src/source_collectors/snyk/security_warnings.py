@@ -1,12 +1,11 @@
 """Snyk metrics security warnings collector."""
 
 from collections.abc import Collection
-from typing import cast, Literal
+from typing import Literal, cast
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.type import JSON, JSONDict
 from model import Entities, Entity
-
 
 Severity = Literal["low", "medium", "high"]
 
@@ -41,7 +40,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                     url=f"https://snyk.io/vuln/{example_vulnerability[dependency][0]}",
                     example_path=example_vulnerability[dependency][1],
                     highest_severity=self.__highest_severity(severity_set),
-                )
+                ),
             )
         return entities
 

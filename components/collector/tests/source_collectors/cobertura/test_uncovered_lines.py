@@ -1,6 +1,6 @@
 """Unit tests for the Cobertura uncovered lines collector."""
 
-from .base import CoberturaTestCase, CoberturaCoverageTestsMixin
+from .base import CoberturaCoverageTestsMixin, CoberturaTestCase
 
 
 class CoberturaUncoveredLinesTest(CoberturaCoverageTestsMixin, CoberturaTestCase):

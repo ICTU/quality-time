@@ -1,6 +1,6 @@
 """Unit tests for the OJAudit violations collector."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class OJAuditViolationsTest(SourceCollectorTestCase):
@@ -61,20 +61,20 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
 </audit>"""
         response = await self.collect(get_request_text=ojaudit_xml)
         expected_entities = [
-            dict(
-                component="a:20:4",
-                key="894756a0231a17f66b33d0ac18570daa193beea3",
-                message="a",
-                severity="warning",
-                count="1",
-            ),
-            dict(
-                component="b:10:2",
-                key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3",
-                message="b",
-                severity="exception",
-                count="1",
-            ),
+            {
+                "component": "a:20:4",
+                "key": "894756a0231a17f66b33d0ac18570daa193beea3",
+                "message": "a",
+                "severity": "warning",
+                "count": "1",
+            },
+            {
+                "component": "b:10:2",
+                "key": "2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3",
+                "message": "b",
+                "severity": "exception",
+                "count": "1",
+            },
         ]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
@@ -186,12 +186,12 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
 </audit>"""
         response = await self.collect(get_request_text=ojaudit_xml)
         expected_entities = [
-            dict(
-                component="a:20:4",
-                key="894756a0231a17f66b33d0ac18570daa193beea3",
-                message="a",
-                severity="warning",
-                count="2",
-            )
+            {
+                "component": "a:20:4",
+                "key": "894756a0231a17f66b33d0ac18570daa193beea3",
+                "message": "a",
+                "severity": "warning",
+                "count": "2",
+            },
         ]
         self.assert_measurement(response, value="2", entities=expected_entities)

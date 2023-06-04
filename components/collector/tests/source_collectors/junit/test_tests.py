@@ -12,11 +12,11 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         """Extend to set up JUnit test data."""
         super().setUp()
         self.expected_entities = [
-            dict(key="tc1", name="tc1", class_name="cn", test_result="passed"),
-            dict(key="tc2", name="tc2", class_name="cn", test_result="passed"),
-            dict(key="tc3", name="tc3", class_name="cn", test_result="failed"),
-            dict(key="tc4", name="tc4", class_name="cn", test_result="errored"),
-            dict(key="tc5", name="tc5", class_name="cn", test_result="skipped"),
+            {"key": "tc1", "name": "tc1", "class_name": "cn", "test_result": "passed"},
+            {"key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "passed"},
+            {"key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "failed"},
+            {"key": "tc4", "name": "tc4", "class_name": "cn", "test_result": "errored"},
+            {"key": "tc5", "name": "tc5", "class_name": "cn", "test_result": "skipped"},
         ]
 
     async def test_tests(self):
@@ -32,7 +32,7 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
             response,
             value="1",
             total="5",
-            entities=[dict(key="tc3", name="tc3", class_name="cn", test_result="failed")],
+            entities=[{"key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "failed"}],
         )
 
     async def test_zipped_junit_report(self):

@@ -3,10 +3,9 @@
 from datetime import datetime
 from typing import Any, cast
 
-from dateutil.parser import parse
-
 from base_collectors import UnmergedBranchesSourceCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.date_time import days_ago, parse_datetime
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceResponses
 
@@ -22,7 +21,7 @@ class GitLabUnmergedBranches(GitLabProjectBase, UnmergedBranchesSourceCollector)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
+        return URL(f"{await super()._landing_url(responses)!s}/{self._parameter('project')}/-/branches")
 
     async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
         """Override to return a list of unmerged and inactive branches."""
@@ -40,7 +39,7 @@ class GitLabUnmergedBranches(GitLabProjectBase, UnmergedBranchesSourceCollector)
 
     def _commit_datetime(self, branch) -> datetime:
         """Override to parse the commit date from the branch."""
-        return parse(branch["commit"]["committed_date"])
+        return parse_datetime(branch["commit"]["committed_date"])
 
     def _branch_landing_url(self, branch) -> URL:
         """Override to get the landing URL from the branch."""

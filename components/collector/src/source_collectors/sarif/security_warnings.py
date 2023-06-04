@@ -30,7 +30,7 @@ class SARIFJSONSecurityWarnings(JSONFileSourceCollector):
                         rule=rule["shortDescription"]["text"],
                         description=rule["fullDescription"]["text"],
                         url=rule.get("helpUri", ""),
-                    )
+                    ),
                 )
         return entities
 

@@ -3,7 +3,7 @@
 from unittest.mock import patch
 
 from source_collectors.jira.issues import JiraIssues
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class JiraTestCase(SourceCollectorTestCase):
@@ -21,11 +21,18 @@ class JiraTestCase(SourceCollectorTestCase):
         self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
 
-    def issue(self, key="1", **fields):
+    def issue(self, key: str = "1", **fields: str):
         """Create a Jira issue."""
-        return dict(id=key, key=key, fields=dict(created=self.created, summary=f"Summary {key}", **fields))
+        return {"id": key, "key": key, "fields": dict(created=self.created, summary=f"Summary {key}", **fields)}
 
-    def entity(self, key="1", created=None, updated=None, issuetype="Unknown issue type", **kwargs):
+    def entity(
+        self,
+        key: str = "1",
+        created: str | None = None,
+        updated: str | None = None,
+        issuetype: str = "Unknown issue type",
+        **kwargs: str,
+    ) -> dict[str, str | None]:
         """Create an entity."""
         return dict(
             key=key,
@@ -44,5 +51,9 @@ class JiraTestCase(SourceCollectorTestCase):
         """Get the collector's response."""
         with patch.object(JiraIssues, "max_results", 50):
             return await self.collect(
-                get_request_json_side_effect=[fields_json or [dict(id="field", name="Field")], issues_json, issues_json]
+                get_request_json_side_effect=[
+                    fields_json or [{"id": "field", "name": "Field"}],
+                    issues_json,
+                    issues_json,
+                ],
             )

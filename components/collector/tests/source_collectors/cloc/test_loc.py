@@ -1,6 +1,6 @@
 """Unit tests for the cloc LOC collector."""
 
-from ..source_collector_test_case import SourceCollectorTestCase
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class ClocLOCTest(SourceCollectorTestCase):
@@ -12,21 +12,28 @@ class ClocLOCTest(SourceCollectorTestCase):
     def setUp(self):
         """Extend to set up test fixtures."""
         super().setUp()
-        self.cloc_json = dict(
-            header={},
-            SUM={},
-            Python=dict(nFiles=1, blank=5, comment=10, code=60),
-            JavaScript=dict(nFiles=1, blank=2, comment=0, code=30),
-        )
-        self.cloc_by_file_json = dict(
-            header={},
-            SUM={},
-            test_file=dict(blank=5, comment=10, code=60, language="Python"),
-            production_file=dict(blank=2, comment=0, code=30, language="JavaScript"),
-        )
+        self.cloc_json = {
+            "header": {},
+            "SUM": {},
+            "Python": {"nFiles": 1, "blank": 5, "comment": 10, "code": 60},
+            "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30},
+        }
+        self.cloc_by_file_json = {
+            "header": {},
+            "SUM": {},
+            "test_file": {"blank": 5, "comment": 10, "code": 60, "language": "Python"},
+            "production_file": {"blank": 2, "comment": 0, "code": 30, "language": "JavaScript"},
+        }
         self.expected_entities = [
-            dict(key="Python", language="Python", nr_files="1", blank="5", comment="10", code="60"),
-            dict(key="JavaScript", language="JavaScript", nr_files="1", blank="2", comment="0", code="30"),
+            {"key": "Python", "language": "Python", "nr_files": "1", "blank": "5", "comment": "10", "code": "60"},
+            {
+                "key": "JavaScript",
+                "language": "JavaScript",
+                "nr_files": "1",
+                "blank": "2",
+                "comment": "0",
+                "code": "30",
+            },
         ]
 
     async def test_loc(self):

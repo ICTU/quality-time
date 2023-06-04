@@ -6,8 +6,8 @@ import os
 from typing import NoReturn
 
 # Make sure subclasses are registered
-import metric_collectors  # pylint: disable=unused-import # lgtm [py/unused-import]
-import source_collectors  # pylint: disable=unused-import # lgtm [py/unused-import]
+import metric_collectors  # noqa: F401
+import source_collectors  # noqa: F401
 from base_collectors import Collector
 
 

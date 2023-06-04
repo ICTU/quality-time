@@ -1,6 +1,8 @@
 """Unit tests for the JUnit XML test report source."""
 
-from datetime import datetime
+from datetime import UTC, datetime
+
+from collector_utilities.date_time import days_ago
 
 from .base import TestNGCollectorTestCase
 
@@ -18,5 +20,5 @@ class TestNGSourceUpToDatenessTest(TestNGCollectorTestCase):
               <suite name="testMethod" started-at="2020-09-06T19:02:59Z" finished-at="2020-09-06T19:45:45Z"/>
             </testng-results>"""
         response = await self.collect(get_request_text=xml)
-        expected_age = (datetime.utcnow() - datetime(2020, 9, 6, 19, 45, 45)).days
+        expected_age = days_ago(datetime(2020, 9, 6, 19, 45, 45, tzinfo=UTC))
         self.assert_measurement(response, value=str(expected_age))
