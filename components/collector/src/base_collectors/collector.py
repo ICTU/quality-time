@@ -5,10 +5,9 @@ import logging
 import os
 import pathlib
 from datetime import UTC, datetime, timedelta
-from typing import Any, Coroutine, NoReturn, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
-
 from shared.database.metrics import get_metrics_from_reports
 from shared.database.shared_data import create_measurement, get_reports
 
