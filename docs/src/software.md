@@ -157,13 +157,12 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 The notifier uses the following environment variables:
 
-| Name                      | Default value                     | Description                                                                             |
-|:--------------------------|:----------------------------------|:----------------------------------------------------------------------------------------|
-| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt` | Path to the file used for health check.                                                 |
-| `INTERNAL_SERVER_HOST`    | `internal_server`                 | Hostname of the internal server. The notifier uses this to get the metrics.             |
-| `INTERNAL_SERVER_PORT`    | `5002`                            | Port of the internal server. The notifier uses this to get the metrics.                 |
-| `NOTIFIER_LOG_LEVEL`      | `WARNING`                         | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.      |
-| `NOTIFIER_SLEEP_DURATION` | `60`                              | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+| Name                      | Default value                        | Description                                                                             |
+|:--------------------------|:-------------------------------------|:----------------------------------------------------------------------------------------|
+| `DATABASE_URL`            | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                          |
+| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt`    | Path to the file used for health check.                                                 |
+| `NOTIFIER_LOG_LEVEL`      | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.      |
+| `NOTIFIER_SLEEP_DURATION` | `60`                                 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
 ## Shared server code
 
