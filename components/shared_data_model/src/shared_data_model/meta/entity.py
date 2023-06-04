@@ -81,9 +81,7 @@ class Entity(BaseModel):
         attributes = {attribute.key: attribute.type for attribute in values.get("attributes", [])}
         if measured_attribute and measured_attribute not in attributes:
             msg = f"Measured attribute {measured_attribute} is not an attribute of entity {values.get('name')}"
-            raise ValueError(
-                msg,
-            )
+            raise ValueError(msg)
         if attributes[measured_attribute] not in (EntityAttributeType.FLOAT, EntityAttributeType.INTEGER):
             msg = f"Measured attribute {measured_attribute} does not have a number type"
             raise ValueError(msg)

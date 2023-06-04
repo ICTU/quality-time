@@ -17,7 +17,7 @@ class Addition(str, Enum):
 
 
 class Direction(str, Enum):
-    """Is more of the measured value better or is less of the measured value better?."""
+    """Specify whether more of the measured value is better or less of the measured value is better."""
 
     FEWER_IS_BETTER = "<"
     MORE_IS_BETTER = ">"

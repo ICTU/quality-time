@@ -39,7 +39,7 @@ class Parameter(NamedModel):
     @validator("short_name", always=True)
     def set_short_name(cls, short_name: str | None, values) -> str | None:
         """Set the short name if no value was supplied."""
-        return short_name if short_name else values["name"].lower()
+        return short_name or values["name"].lower()
 
     @validator("help_url", always=True)
     def check_help(cls, help_url: HttpUrl | None, values) -> HttpUrl | None:
@@ -65,9 +65,7 @@ class Parameter(NamedModel):
             raise ValueError(msg)
         if cls.is_multiple_choice_with_addition(values) and isinstance(default_value, list) and default_value:
             msg = f"Parameter {values['name']} is multiple choice with addition but default_value is not empty"
-            raise ValueError(
-                msg,
-            )
+            raise ValueError(msg)
         return default_value
 
     @validator("values", always=True)

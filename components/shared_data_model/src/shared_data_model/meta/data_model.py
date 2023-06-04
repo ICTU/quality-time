@@ -90,8 +90,8 @@ class DataModel(BaseModel):
                     raise ValueError(msg)
                 if source_key not in metrics[metric_key].sources:
                     msg = (
-                        f"Configuration {configuration_key} of source {source_key} refers to metric {metric_key}, but "
-                        f"{metric_key} doesn't list {source_key} as source"
+                        f"Configuration {configuration_key} of source {source_key} refers to metric {metric_key}, "
+                        f"but {metric_key} doesn't list {source_key} as source"
                     )
                     raise ValueError(msg)
 

@@ -93,8 +93,8 @@ METRICS = Metrics.parse_obj(
         "duplicated_lines": {
             "name": "Duplicated lines",
             "description": "The number of lines that are duplicated.",
-            "rationale": "Duplicate code makes software larger and thus potentially harder to maintain. Also, if the "
-            "duplicated code contains bugs, they need to be fixed in multiple locations.",
+            "rationale": "Duplicate code makes software larger and thus potentially harder to maintain. "
+            "Also, if the duplicated code contains bugs, they need to be fixed in multiple locations.",
             "rationale_urls": [
                 SIG_TUVIT_EVALUATION_CRITERIA,
             ],
@@ -128,8 +128,8 @@ METRICS = Metrics.parse_obj(
         "job_runs_within_time_period": {
             "name": "Job runs within time period",
             "description": "The number of job runs within a specified time period.",
-            "rationale": "Frequent deployments are associated with smaller, less risky deployments and with lower lead "
-            "times for new features.",
+            "rationale": "Frequent deployments are associated with smaller, less risky deployments "
+            "and with lower lead times for new features.",
             "unit": Unit.CI_JOB_RUNS,
             "direction": Direction.MORE_IS_BETTER,
             "target": "30",
@@ -140,8 +140,8 @@ METRICS = Metrics.parse_obj(
         "loc": {
             "name": "Size (LOC)",
             "description": "The size of the software in lines of code.",
-            "rationale": "The size of software is correlated with the effort it takes to maintain it. Lines of code is "
-            "one of the most widely used metrics to measure size of software.",
+            "rationale": "The size of software is correlated with the effort it takes to maintain it. "
+            "Lines of code is one of the most widely used metrics to measure size of software.",
             "documentation": """To track the **absolute** size of the software, set the scale of the metric to 'count'
 and add one or more sources.
 
@@ -317,8 +317,8 @@ report(s).
             "description": "The number of virtual users (or percentage of the maximum number of virtual users) at "
             "which ramp-up of throughput breaks.",
             "rationale": "When stress testing, the load on the system-under-test has to increase sufficiently to "
-            "detect the point at which the system breaks, as indicated by increasing throughput or error counts. If "
-            "this breakpoint is not detected, the load has not been increased enough.",
+            "detect the point at which the system breaks, as indicated by increasing throughput or error counts. "
+            "If this breakpoint is not detected, the load has not been increased enough.",
             "scales": ["count", "percentage"],
             "unit": Unit.VIRTUAL_USERS,
             "addition": Addition.MIN,
