@@ -2,19 +2,17 @@
 
 import asyncio
 import logging
-import os
 from typing import NoReturn
 
 # Make sure subclasses are registered
 import metric_collectors  # noqa: F401
 import source_collectors  # noqa: F401
-from base_collectors import Collector
+from base_collectors import Collector, config
 
 
 async def collect() -> NoReturn:
     """Collect the measurements indefinitely."""
-    log_level = str(os.getenv("COLLECTOR_LOG_LEVEL", "WARNING"))  # cast to str to keep mypy happy
-    logging.getLogger().setLevel(log_level)
+    logging.getLogger().setLevel(config.LOG_LEVEL)
     await Collector().start()
 
 

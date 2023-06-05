@@ -2,7 +2,7 @@
 
 import logging
 import unittest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, patch
 
 from quality_time_collector import collect
 
@@ -23,7 +23,7 @@ class CollectorTestCase(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("WARNING", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
 
     @patch("base_collectors.Collector.start", AsyncMock())
-    @patch("os.getenv", Mock(return_value="DEBUG"))
+    @patch("base_collectors.config.LOG_LEVEL", "DEBUG")
     async def test_change_log_level(self):
         """Test that the logging level can be changed."""
         await collect()

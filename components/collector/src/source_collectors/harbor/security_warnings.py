@@ -58,9 +58,21 @@ class HarborSecurityWarnings(HarborBase):
         projects_responses = await super()._get_source_responses(projects_api)
         for projects_response in projects_responses:
             for project in await projects_response.json():
+                if self._skip_project(project["name"]):
+                    continue
                 repositories_api = URL(f"{projects_api}/{project['name']}/repositories")
                 responses.extend(await self._get_source_responses_for_project(project, repositories_api))
         return responses
+
+    def _skip_project(self, project_name: str) -> bool:
+        """Return whether the project should be skipped."""
+        projects_to_ignore = self._parameter("projects_to_ignore")
+        if projects_to_ignore and match_string_or_regular_expression(project_name, projects_to_ignore):
+            return True
+        projects_to_include = self._parameter("projects_to_include")
+        if projects_to_include and not match_string_or_regular_expression(project_name, projects_to_include):
+            return True
+        return False
 
     async def _get_source_responses_for_project(self, project, repositories_api: URL) -> SourceResponses:
         """Return the source responses for a specific project."""
@@ -69,11 +81,23 @@ class HarborSecurityWarnings(HarborBase):
         for repositories_response in repositories_responses:
             for repository in await repositories_response.json():
                 repository_name = repository["name"].removeprefix(f"{project['name']}/")
+                if self._skip_repository(repository_name):
+                    continue
                 # The respository name contains a slash. For some reason it needs to be encoded twice.
                 repository_name = quote(quote(repository_name, safe=""), safe="")
                 artifacts_api = URL(f"{repositories_api}/{repository_name}/artifacts?with_scan_overview=true")
                 responses.extend(await super()._get_source_responses(artifacts_api))
         return responses
+
+    def _skip_repository(self, repository_name: str) -> bool:
+        """Return whether the repository should be skipped."""
+        repositories_to_ignore = self._parameter("repositories_to_ignore")
+        if repositories_to_ignore and match_string_or_regular_expression(repository_name, repositories_to_ignore):
+            return True
+        repositories_to_include = self._parameter("repositories_to_include")
+        if repositories_to_include and not match_string_or_regular_expression(repository_name, repositories_to_include):
+            return True
+        return False
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Harbor security warnings."""
@@ -107,24 +131,6 @@ class HarborSecurityWarnings(HarborBase):
             total=scan_summary.get("total", 0),
             fixable=scan_summary.get("fixable", 0),
         )
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the entity."""
-        project = entity["project"]
-        projects_to_ignore = self._parameter("projects_to_ignore")
-        if projects_to_ignore and match_string_or_regular_expression(project, projects_to_ignore):
-            return False
-        projects_to_include = self._parameter("projects_to_include")
-        if projects_to_include and not match_string_or_regular_expression(project, projects_to_include):
-            return False
-        repository = entity["repository"]
-        repositories_to_ignore = self._parameter("repositories_to_ignore")
-        if repositories_to_ignore and match_string_or_regular_expression(repository, repositories_to_ignore):
-            return False
-        repositories_to_include = self._parameter("repositories_to_include")
-        if repositories_to_include and not match_string_or_regular_expression(repository, repositories_to_include):
-            return False
-        return True
 
     def _has_scan_with_warnings(self, artifact) -> bool:
         """Return whether the artifact has a scan and the scan has security warnings."""
