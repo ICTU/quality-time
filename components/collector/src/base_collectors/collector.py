@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import os
 import pathlib
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, NoReturn, cast
@@ -31,7 +30,7 @@ class Collector:
     @staticmethod
     def record_health() -> None:
         """Record the current date and time in a file to allow for health checks."""
-        filename = pathlib.Path(os.getenv("HEALTH_CHECK_FILE", "/home/collector/health_check.txt"))
+        filename = pathlib.Path(config.HEALTH_CHECK_FILE)
         try:
             with filename.open("w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now(tz=UTC).isoformat())
