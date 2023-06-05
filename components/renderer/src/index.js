@@ -16,7 +16,8 @@ app.get("/api/render", async (req, res) => {
         const browser = await puppeteer.launch({
             defaultViewport: { width: 1500, height: 1000 },
             args: ['--disable-dev-shm-usage', '--no-sandbox'],
-            headless: true,
+            // Opt in to new Chrome headless implementation, see https://developer.chrome.com/articles/new-headless/:
+            headless: "new",
         });
         const webPage = await browser.newPage();
         await webPage.goto(url, {
