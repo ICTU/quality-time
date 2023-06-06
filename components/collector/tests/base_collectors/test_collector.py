@@ -19,7 +19,6 @@ from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
-    database_client = "shared.initialization.database.client"
     create_measurement = "base_collectors.collector.create_measurement"
 
     @classmethod
@@ -34,7 +33,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         """Override to set up common test data."""
-        self.collector = Collector()
         self.url = "https://url"
         self.metrics = {
             "metric_uuid": {
@@ -46,7 +44,9 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         }
         self.pip_json = [{"name": "a dependency"}]
         self.client = mongomock.MongoClient()
-        self.client["quality_time_db"]["reports"].insert_one(create_report())
+        self.database = self.client["quality_time_db"]
+        self.collector = Collector(self.database)
+        self.database["reports"].insert_one(create_report())
 
     @staticmethod
     def _patched_get(mock_async_get_request: AsyncMock, side_effect=None) -> _patch[AsyncMock]:
@@ -83,9 +83,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test fetching a test metric."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
@@ -94,7 +95,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         report_with_no_source = create_report()
         report_with_no_source["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = {}
         mock_async_get_request = AsyncMock()
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(report_with_no_source)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -106,7 +107,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "type": "unsupported_source",
         }
         mock_async_get_request = AsyncMock()
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(report_with_unsupported_source)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -114,8 +115,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_fetch_with_get_error(self):
         """Test fetching measurement when getting the metrics fails."""
         with patch(self.create_measurement) as post, patch(
-            self.database_client,
-            return_value=self.client,
+            "base_collectors.collector.get_metrics_from_reports",
+            return_value={},
             side_effect=RuntimeError,
         ) as _, self.assertRaises(RuntimeError):
             await self._fetch_measurements(AsyncMock())
@@ -124,9 +125,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_with_client_error(self):
         """Test fetching measurement when getting measurements fails."""
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientConnectionError("error")])
         post.assert_called_once_with(
+            self.database,
             {
                 "has_error": True,
                 "sources": [self._source(connection_error="error")],
@@ -140,9 +142,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
         This can happen when an exception returns an empty string when converted to string.
         """
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             await self._fetch_measurements(None, side_effect=[aiohttp.ClientPayloadError()])
         post.assert_called_once_with(
+            self.database,
             {
                 "has_error": True,
                 "sources": [self._source(connection_error="ClientPayloadError")],
@@ -155,9 +158,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test fetching measurement when posting fails."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
@@ -167,11 +171,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with patch(self.database_client, return_value=self.client), self._patched_get(mock_async_get_request), patch(
-            self.create_measurement,
-        ) as post, self.assertRaises(RuntimeError):
+        with self._patched_get(mock_async_get_request), patch(
+            "quality_time_collector.database_connection",
+            return_value=self.database,
+        ), patch(self.create_measurement) as post, self.assertRaises(RuntimeError):
             await quality_time_collector.collect()
         post.assert_called_once_with(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
@@ -179,9 +185,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test that the metric is skipped on the second fetch."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             await self._fetch_measurements(mock_async_get_request, number=2)
         post.assert_called_once_with(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
@@ -191,13 +198,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
 
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(create_report(metric_id=METRIC_ID2))
             await self._fetch_measurements(mock_async_get_request, number=2)
         expected_call1 = call(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
         expected_call2 = call(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid2", "report_uuid": "report1"},
         )
         post.assert_has_calls(calls=[expected_call1, expected_call2])
@@ -212,15 +221,17 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json, self.pip_json]
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(report1)
             self.client["quality_time_db"]["reports"].insert_one(report2)
             await self._fetch_measurements(mock_async_get_request, number=2)
 
         expected_call1 = call(
+            self.database,
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
         expected_call2 = call(
+            self.database,
             {
                 "has_error": False,
                 "sources": [self._source(api_url=edited_url, landing_url=edited_url)],
@@ -237,7 +248,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "url"
         ] = ""
         mock_async_get_request = AsyncMock()
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(report_without_url_parameter)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_not_called()
@@ -250,10 +261,11 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "type": "manual_number",
         }
         mock_async_get_request = AsyncMock()
-        with patch(self.create_measurement) as post, patch(self.database_client, return_value=self.client):
+        with patch(self.create_measurement) as post:
             self.client["quality_time_db"]["reports"].insert_one(report_without_mandatory_parameter)
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(
+            self.database,
             {
                 "has_error": False,
                 "sources": [self._source(value="0", entities=[], api_url="", landing_url="")],

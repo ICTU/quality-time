@@ -7,6 +7,8 @@ from datetime import UTC, datetime
 from os import getenv
 from typing import NoReturn
 
+from pymongo.database import Database
+
 from shared.database.shared_data import get_reports_and_measurements
 from shared.model.measurement import Measurement
 
@@ -14,7 +16,7 @@ from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
 
 
-async def notify(sleep_duration: int = 60) -> NoReturn:
+async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     most_recent_measurement_seen = datetime.max.replace(tzinfo=UTC)
     notification_finder = NotificationFinder()
@@ -22,7 +24,7 @@ async def notify(sleep_duration: int = 60) -> NoReturn:
         record_health()
         logging.info("Determining notifications...")
         try:
-            reports, measurements = get_reports_and_measurements()
+            reports, measurements = get_reports_and_measurements(database)
         except Exception:
             logging.exception("Getting reports and measurements failed")
             reports = []
