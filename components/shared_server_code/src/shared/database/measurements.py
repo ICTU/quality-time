@@ -6,7 +6,6 @@ from typing import Any, NewType
 import pymongo
 from pymongo.database import Database
 
-from shared.initialization.database import database_connection
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
@@ -15,28 +14,25 @@ from shared.utils.type import MetricId
 MeasurementId = NewType("MeasurementId", str)
 
 
-def latest_successful_measurement(metric: Metric) -> Measurement | None:  # pragma: no feature-test-cover
+def latest_successful_measurement(
+    database: Database, metric: Metric
+) -> Measurement | None:  # pragma: no feature-test-cover
     """Return the latest successful measurement."""
-    database_pointer = database_connection()
-    latest_successful = database_pointer.measurements.find_one(
+    latest_successful = database.measurements.find_one(
         {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
-def update_measurement_end(measurement_id: MeasurementId):  # pragma: no feature-test-cover
+def update_measurement_end(database: Database, measurement_id: MeasurementId):  # pragma: no feature-test-cover
     """Set the end date and time of the measurement to the current date and time."""
-    database_pointer = database_connection()
-    return database_pointer.measurements.update_one(
-        filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}}
-    )
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
 def get_recent_measurements(
-    metrics: list[Metric], limit_per_metric: int = 2
+    database: Database, metrics: list[Metric], limit_per_metric: int = 2
 ) -> list[Measurement]:  # pragma: no feature-test-cover
     """Return recent measurements for the specified metrics, without entities and issue status."""
-    database_pointer = database_connection()
     projection = {
         "_id": False,
         "sources.entities": False,
@@ -46,7 +42,7 @@ def get_recent_measurements(
     measurements: list = []
     for metric in metrics:
         measurement_data = list(
-            database_pointer["measurements"].find(
+            database["measurements"].find(
                 {"metric_uuid": metric.uuid},
                 limit=limit_per_metric,
                 sort=[("start", pymongo.DESCENDING)],

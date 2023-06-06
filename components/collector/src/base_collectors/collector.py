@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
+from pymongo.database import Database
 from shared.database.metrics import get_metrics_from_reports
 from shared.database.shared_data import create_measurement, get_reports
 
@@ -23,9 +24,10 @@ if TYPE_CHECKING:
 class Collector:
     """Collect measurements for all metrics."""
 
-    def __init__(self) -> None:
+    def __init__(self, database: Database) -> None:
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
+        self.database: Database = database
 
     @staticmethod
     def record_health() -> None:
@@ -64,7 +66,7 @@ class Collector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
-        reports = get_reports()
+        reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
         next_fetch = datetime.now(tz=UTC) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
         tasks: list[Coroutine] = []
@@ -90,7 +92,7 @@ class Collector:
         if measurement := await metric_collector.collect():
             measurement.metric_uuid = metric_uuid
             measurement.report_uuid = metric["report_uuid"]
-            create_measurement(measurement.as_dict())
+            create_measurement(self.database, measurement.as_dict())
 
     def __sorted_by_edit_status(self, metrics: JSONDict) -> list[tuple[str, Any]]:
         """First return the edited metrics, then the rest."""

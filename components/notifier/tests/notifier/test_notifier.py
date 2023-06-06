@@ -7,6 +7,8 @@ from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, mock_open, patch
 
+import mongomock
+
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
 from tests.fixtures import create_report
 
@@ -63,7 +65,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         self.title = "Report 1"
         self.history = "2020-01-01T23:59:00+00:00"
         self.url = "www.url.com"
-
+        self.database = mongomock.MongoClient()["quality_time_db"]
         self.subjects = {
             "subject1": {
                 "type": "software",
@@ -88,7 +90,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         mocked_get.side_effect = OSError
         mocked_sleep.side_effect = RuntimeError
         with contextlib.suppress(RuntimeError):
-            await notify()
+            await notify(self.database)
 
         mocked_log_error.assert_called_once()
         self.assertEqual(mocked_log_error.mock_calls[0].args[0], "Getting reports and measurements failed")
@@ -114,7 +116,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
-            await notify()
+            await notify(self.database)
 
         mocked_send.assert_not_called()
 
@@ -146,7 +148,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
-            await notify()
+            await notify(self.database)
 
         # gets twice, once for the first report, once for the second
         self.assertEqual(mocked_get.call_count, 2)
@@ -192,7 +194,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         mocked_get.return_value = ([report, report], [measurement, measurement])
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
-            await notify()
+            await notify(self.database)
 
         mocked_send.assert_not_called()
 
@@ -213,6 +215,6 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
-            await notify()
+            await notify(self.database)
 
         mocked_send.assert_not_called()
