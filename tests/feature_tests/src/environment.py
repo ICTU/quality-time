@@ -2,6 +2,7 @@
 
 from typing import Any
 
+import pymongo
 import requests
 from behave.model import Step
 from behave.runner import Context
@@ -56,6 +57,7 @@ def before_all(context: Context) -> None:  # noqa: C901
 
     context.base_api_url = "http://localhost:5001/api/v3"
     context.internal_base_api_url = "http://localhost:5002/api"
+    context.database = pymongo.MongoClient("mongodb://root:root@localhost:27017")["quality_time_db"]
     context.session_id = None
     context.report_date = None
     context.min_report_date = None
