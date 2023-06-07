@@ -27,7 +27,7 @@ class DataModelTest(DataModelTestCase):
     @patch("bottle.request")
     def test_get_data_model_unchanged(self, mocked_request):
         """Test that a 304 is returned when the data model is unchanged."""
-        mocked_request.headers = {"If-None-Match": "W/" + md5_hash("now")}
+        mocked_request.headers = {"If-None-Match": md5_hash("now")}
         try:
             get_data_model(self.database)
         except bottle.HTTPError as reason:
