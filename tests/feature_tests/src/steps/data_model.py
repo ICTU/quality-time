@@ -15,7 +15,7 @@ def md5_hash(string: str) -> str:
 @when("the client gets the most recent data model")
 def get_data_model(context: Context) -> None:
     """Get the most recent data model."""
-    headers = {"If-None-Match": f"W/{md5_hash(context.response.json()['timestamp'])}"} if context.response else {}
+    headers = {"If-None-Match": f"{md5_hash(context.response.json()['timestamp'])}"} if context.response else {}
     context.get("datamodel", headers=headers)
 
 
