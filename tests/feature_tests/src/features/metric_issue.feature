@@ -13,6 +13,7 @@ Feature: metric issues
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_url to "https://jira"
+    And the client waits a second
     And the collector measures issue '123' status 'Completed'
     And the client waits a second
     Then the issue status name is 'Completed'

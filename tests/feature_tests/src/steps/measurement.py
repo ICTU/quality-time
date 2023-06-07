@@ -49,6 +49,8 @@ def measure(context: Context, number: str, status: str = "target_met", total: st
 def measure_issue_status(context: Context, issue_id: str, name: str) -> None:
     """Enter a measurement with the issue status into the measurement collection in the database."""
     status_category = "done" if name == "Completed" else "todo"
+    measurement_datetime = datetime.now(tz=UTC)
+    measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
     measurement = {
         "metric_uuid": context.uuid["metric"],
         "report_uuid": context.uuid["report"],
@@ -64,6 +66,8 @@ def measure_issue_status(context: Context, issue_id: str, name: str) -> None:
             },
         ],
         "issue_status": [{"issue_id": issue_id, "name": name, "status_category": status_category}],
+        "start": measurement_timestamp,
+        "end": measurement_timestamp,
     }
     context.database.measurements.insert_one(measurement)
 
@@ -71,6 +75,8 @@ def measure_issue_status(context: Context, issue_id: str, name: str) -> None:
 @when("the collector encounters a parse error")
 def parse_error(context: Context) -> None:
     """Enter a measurement with a parse error into the measurement collection in the database."""
+    measurement_datetime = datetime.now(tz=UTC)
+    measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
     measurement = {
         "metric_uuid": context.uuid["metric"],
         "report_uuid": context.uuid["report"],
@@ -85,6 +91,8 @@ def parse_error(context: Context) -> None:
                 "entities": [],
             },
         ],
+        "start": measurement_timestamp,
+        "end": measurement_timestamp,
     }
     context.database.measurements.insert_one(measurement)
 
