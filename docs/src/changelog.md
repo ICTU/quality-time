@@ -35,6 +35,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 - Reports for tags with spaces in them could not be exported to PDF. Fixes [#4765](https://github.com/ICTU/quality-time/issues/4765).
 - Remove useless popup that appears when hovering tags in the dashboard. Fixes [#5525](https://github.com/ICTU/quality-time/issues/5525).
 - Don't attempt to collect all projects and repositories from Harbor when the user has configured filters on projects and/or repositories. Partially fixes [#6220](https://github.com/ICTU/quality-time/issues/6220).
+- Don't query SonarQube for the rule `plsql:PlSql.FunctionAndProcedureExcessiveParameters` when collecting data for the 'many parameters' metric. Sonarcloud.io gives a permission denied error when querying for that rule. Fixes [#6277](https://github.com/ICTU/quality-time/issues/6277).
 
 ### Added
 

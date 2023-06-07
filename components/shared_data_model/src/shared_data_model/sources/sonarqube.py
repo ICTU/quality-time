@@ -147,7 +147,6 @@ SONARQUBE = Source.parse_obj(
                     "javascript:S107",
                     "objc:S107",
                     "php:S107",
-                    "plsql:PlSql.FunctionAndProcedureExcessiveParameters",
                     "python:S107",
                     "java:S107",
                     "tsql:S107",
