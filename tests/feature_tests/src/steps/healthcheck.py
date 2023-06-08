@@ -5,18 +5,18 @@ from behave import given, then, when
 from behave.runner import Context
 
 
-@given("a healthy {_server_type} server")
-def healthy_server(_context: Context, _server_type: str) -> None:
+@given("a healthy external server")
+def healthy_server(_context: Context) -> None:
     """Server should be healthy by default, so no step implementation needed."""
 
 
-@when("a client checks the {server_type} server health")
-def get_health(context: Context, server_type: str) -> None:
+@when("a client checks the external server health")
+def get_health(context: Context) -> None:
     """Get health status."""
-    context.get("health", internal=server_type == "internal")
+    context.get("health")
 
 
-@then("the {_server_type} server answers")
-def check_health(context: Context, _server_type: str) -> None:
+@then("the external server answers")
+def check_health(context: Context) -> None:
     """Check the server health."""
     assert_equal({}, context.response.json())

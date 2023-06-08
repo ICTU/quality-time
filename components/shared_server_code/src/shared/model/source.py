@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import cast, Optional, TYPE_CHECKING
 
 from shared.utils.type import SourceId
-from shared.utils.functions import days_ago, iso_timestamp
+from shared.utils.functions import iso_timestamp
 
 
 if TYPE_CHECKING:
@@ -44,7 +44,7 @@ class Source(dict):  # lgtm [py/missing-equals]
         """Return the measurement value of the source."""
         return cast(Optional[str], self["value"])
 
-    def copy_entity_user_data(self, source: Source) -> None:
+    def copy_entity_user_data(self, source: Source) -> None:  # pragma: no feature-test-cover
         """Copy the user entity data of the source to this source."""
         new_entity_keys = {entity["key"] for entity in self.get("entities", [])}
         # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
@@ -54,18 +54,17 @@ class Source(dict):  # lgtm [py/missing-equals]
         }
         # Copy the user data of entities, keeping 'orphaned' entity user data around for a while in case the entity
         # returns in a later measurement:
-        max_days_to_keep_orphaned_entity_user_data = 21
+        max_timedelta_to_keep_orphaned_entity_user_data = timedelta(days=21)
         for entity_key, attributes in source.get("entity_user_data", {}).items():
             entity_key = changed_entity_keys.get(entity_key, entity_key)
             if entity_key in new_entity_keys:
                 if "orphaned_since" in attributes:
-                    del attributes["orphaned_since"]  # The entity returned, remove the orphaned since date/time
+                    del attributes["orphaned_since"]  # The entity reappeared, remove the orphaned since date/time
             else:
                 if "orphaned_since" in attributes:
-                    days_since_orphaned = days_ago(datetime.fromisoformat(attributes["orphaned_since"]))
-                    if (
-                        days_since_orphaned > max_days_to_keep_orphaned_entity_user_data
-                    ):  # pragma: no feature-test-cover
+                    orphaned_since = datetime.fromisoformat(attributes["orphaned_since"])
+                    orphaned_timedelta = datetime.now(tz=orphaned_since.tzinfo) - orphaned_since
+                    if orphaned_timedelta > max_timedelta_to_keep_orphaned_entity_user_data:
                         continue  # Don't copy this user data, it has been orphaned too long
                 else:
                     # The entity user data refers to a disappeared entity. Keep it around in case the entity

@@ -9,12 +9,16 @@ from behave.runner import Context
 from sseclient import SSEClient
 
 
-@given('the collector has measured "{number}"')
-@when('the collector measures "{number}"')
-@when('the collector measures "{number}" with status "{status}"')
-@when('the collector measures "{number}" with total "{total}"')
-def measure(context: Context, number: str, status: str = "target_met", total: str = "100") -> None:
-    """Enter a measurement with the given value into the measurement collection in the database."""
+def create_measurement(  # noqa: PLR0913
+    context: Context,
+    status: str | None = None,
+    value: str | None = None,
+    total: str | None = None,
+    issue_id: str | None = None,
+    issue_status_name: str | None = None,
+    parse_error: str | None = None,
+) -> dict:
+    """Create a measurement."""
     entities = []
     if context.table:
         for row in context.table:
@@ -22,78 +26,56 @@ def measure(context: Context, number: str, status: str = "target_met", total: st
             entities.append(entity)
     measurement_datetime = datetime.now(tz=UTC)
     measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
-    measurement = {
+    if issue_id:
+        status_category = "done" if issue_status_name == "Completed" else "todo"
+        issues = [{"issue_id": issue_id, "name": issue_status_name, "status_category": status_category}]
+    else:
+        issues = []
+    return {
         "metric_uuid": context.uuid["metric"],
         "report_uuid": context.uuid["report"],
         "has_error": False,
         "sources": [
             {
                 "source_uuid": context.uuid["source"],
-                "parse_error": None,
+                "parse_error": parse_error,
                 "connection_error": None,
-                "value": number,
+                "value": value,
                 "total": total,
                 "entities": entities,
             },
         ],
-        "count": {"status": status, "value": number},
-        "percentage": {"status": status, "value": number},
-        "version_number": {"status": status, "value": number},
+        "count": {"status": status, "value": value},
+        "percentage": {"status": status, "value": value},
+        "version_number": {"status": status, "value": value},
+        "issue_status": issues,
         "start": measurement_timestamp,
         "end": measurement_timestamp,
     }
+
+
+@given('the collector has measured "{number}"')
+@when('the collector measures "{number}"')
+@when('the collector measures "{number}" with status "{status}"')
+@when('the collector measures "{number}" with total "{total}"')
+def measure(context: Context, number: str, status: str = "target_met", total: str = "100") -> None:
+    """Enter a measurement with the given value into the measurement collection in the database."""
+    measurement = create_measurement(context, status, number, total)
     context.database.measurements.insert_one(measurement)
 
 
 @when("the collector measures issue '{issue_id}' status '{name}'")
-def measure_issue_status(context: Context, issue_id: str, name: str) -> None:
+@when("the collector measures '{number}' with issue '{issue_id}' status '{name}'")
+def measure_issue_status(context: Context, issue_id: str, name: str, number: str = "10") -> None:
     """Enter a measurement with the issue status into the measurement collection in the database."""
-    status_category = "done" if name == "Completed" else "todo"
-    measurement_datetime = datetime.now(tz=UTC)
-    measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
-    measurement = {
-        "metric_uuid": context.uuid["metric"],
-        "report_uuid": context.uuid["report"],
-        "has_error": False,
-        "sources": [
-            {
-                "source_uuid": context.uuid["source"],
-                "parse_error": None,
-                "connection_error": None,
-                "value": "10",
-                "total": "100",
-                "entities": [],
-            },
-        ],
-        "issue_status": [{"issue_id": issue_id, "name": name, "status_category": status_category}],
-        "start": measurement_timestamp,
-        "end": measurement_timestamp,
-    }
+    measurement = create_measurement(context, "target_met", number, "100", issue_id, name)
     context.database.measurements.insert_one(measurement)
 
 
 @when("the collector encounters a parse error")
 def parse_error(context: Context) -> None:
     """Enter a measurement with a parse error into the measurement collection in the database."""
-    measurement_datetime = datetime.now(tz=UTC)
-    measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
-    measurement = {
-        "metric_uuid": context.uuid["metric"],
-        "report_uuid": context.uuid["report"],
-        "has_error": True,
-        "sources": [
-            {
-                "source_uuid": context.uuid["source"],
-                "parse_error": "Parse error",
-                "connection_error": None,
-                "value": None,
-                "total": None,
-                "entities": [],
-            },
-        ],
-        "start": measurement_timestamp,
-        "end": measurement_timestamp,
-    }
+    measurement = create_measurement(context, parse_error="Parse error")
     context.database.measurements.insert_one(measurement)
 
 

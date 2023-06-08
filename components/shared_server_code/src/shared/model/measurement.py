@@ -213,7 +213,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
             self[item] = self.scale_measurement(item)
         return super().__getitem__(item)
 
-    def equals(self, other: Measurement) -> bool:
+    def equals(self, other: Measurement) -> bool:  # pragma: no feature-test-cover
         """Return whether this measurement is unchanged compared to an (older) measurement."""
         scales_equal = all(self[scale] == other[scale] for scale in self.metric.scales())
         issues_statuses_equal = other.get("issue_status") == self.get("issue_status")
@@ -230,7 +230,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         accept_debt_expired = not self.metric.accept_debt() or self.metric.debt_end_date_passed()
         return (accept_debt_expired or self.__all_issues_done()) if any_debt_target else False
 
-    def __all_issues_done(self) -> bool:
+    def __all_issues_done(self) -> bool:  # pragma: no feature-test-cover
         """Return whether all issues have been done. Return False if there are no issues."""
         issues_ids = self.metric.issue_ids()
         if not issues_ids:
@@ -248,7 +248,7 @@ class Measurement(dict):  # lgtm [py/missing-equals]
         """Return the start timestamp of the current status, if any."""
         return self.get(self.metric.scale(), {}).get("status_start")
 
-    def copy_entity_user_data(self, measurement: Measurement) -> None:
+    def copy_entity_user_data(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
         """Copy the entity user data from the measurement to this measurement."""
         old_sources = {source["source_uuid"]: source for source in measurement.sources()}
         for new_source in self.sources():

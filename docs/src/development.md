@@ -417,7 +417,7 @@ ci/quality.sh
 
 ### Feature tests
 
-The feature tests currently test all features through the APIs of the external server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
+The feature tests currently test all features through the API of the external server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
 
 ```console
 tests/feature_tests/ci/test.sh

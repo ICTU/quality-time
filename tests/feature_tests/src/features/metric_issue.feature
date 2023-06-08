@@ -58,15 +58,15 @@ Feature: metric issues
     Then the new issue response error is 'Failed to resolve'
 
   Scenario: completing all issues ignores the accepted technical debt, adding a new issue unignores it
-    When the client changes the metric accept_debt to "True"
-    And the client waits a second
-    And the collector measures "100"
+    When the client waits a second
+    And the client changes the metric accept_debt to "True"
     And the client waits a second
     And the client changes the metric debt_target to "100"
     And the client waits a second
     Then the metric status is "debt_target_met"
-    When the collector measures issue '123' status 'Completed'
+    When the collector measures '42' with issue '123' status 'Completed'
     And the client waits a second
-    And the client changes the metric issue_ids to "123,124"
+    Then the metric status is "target_met"
+    When the client changes the metric issue_ids to "123,124"
     And the client waits a second
     Then the metric status is "debt_target_met"
