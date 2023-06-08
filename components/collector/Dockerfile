@@ -1,4 +1,4 @@
-FROM python:3.11.3-alpine3.17 AS compile-image
+FROM python:3.11.4-alpine3.17 AS compile-image
 
 WORKDIR /home/collector
 
@@ -13,7 +13,7 @@ COPY shared_server_code /home/shared_server_code/
 COPY collector/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
-FROM python:3.11.3-alpine3.17
+FROM python:3.11.4-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time collector"
