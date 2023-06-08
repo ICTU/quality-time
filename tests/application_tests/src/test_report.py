@@ -1,6 +1,9 @@
 """Report tests."""
 
+import pathlib
 import unittest
+
+from axe_selenium_python import Axe
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expect
@@ -88,3 +91,28 @@ class OpenReportTest(unittest.TestCase):
         nr_reports = len(self.driver.find_elements(By.CLASS_NAME, "card"))
         self.driver.find_element(By.CLASS_NAME, "button.primary").click()
         self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports + 1))
+
+    def test_report_axe_accessibility(self):
+        """Run axe accessibility check on a report."""
+        axe = Axe(self.driver)
+        axe.inject()
+
+        # Analyze report page
+        report = self.driver.find_elements(By.CLASS_NAME, "card")[1]
+        report.click()
+        results1 = axe.run()
+
+        # Process axe results
+        violation_results = results1["violations"]
+        axe.write_results(results1, '../../build/a11y.json')
+        readable_report = axe.report(violation_results)
+        filename = pathlib.Path('../../build/a11y_violations.txt')
+        try:
+            with open(filename, "w", encoding="utf8") as report_file:
+                report_file.write(readable_report)
+        except OSError:
+            print("Could not write axe violations report")
+
+        # If there are violations, output the readable report data
+        # TODO - assertEqual 0 in https://github.com/ICTU/quality-time/issues/6354
+        self.assertTrue(6 >= len(violation_results), readable_report)

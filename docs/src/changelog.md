@@ -48,6 +48,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 ### Added
 
 - When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). The default value of this parameter is to show hotspots 'to review' and 'acknowledged'. Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
+- Add axe analysis to Quality-time pipeline. Closes [#5402](https://github.com/ICTU/quality-time/issues/5402).
 
 ### Changed
 
