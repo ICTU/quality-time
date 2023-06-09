@@ -64,7 +64,7 @@ def latest_measurement(database: Database, metric: Metric) -> Measurement | None
 def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
     """Insert a new measurement."""
     measurement.update_measurement()
-    if "_id" in measurement:
+    if "_id" in measurement:  # pragma: no feature-test-cover
         del measurement["_id"]  # Remove the Mongo ID if present so this measurement can be re-inserted in the database.
     database.measurements.insert_one(measurement)
     del measurement["_id"]

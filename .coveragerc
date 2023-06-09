@@ -6,7 +6,6 @@ include =
     tests/*
 omit =
     */conf.py
-    internal_server/src/quality_time_*.py
     tests/*under_coverage.py
     */venv/*
     */.venv/*

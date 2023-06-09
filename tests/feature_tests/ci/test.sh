@@ -17,14 +17,6 @@ coverage erase
 RENDERER_HOST=localhost python tests/quality_time_external_server_under_coverage.py &> ../../build/quality_time_external_server.log &
 deactivate
 cd ../..
-cd components/internal_server || exit
-python3 -m venv venv
-. venv/bin/activate
-ci/pip-install.sh
-coverage erase
-python tests/quality_time_internal_server_under_coverage.py &> ../../build/quality_time_internal_server.log &
-deactivate
-cd ../..
 # We need to start a second external server for the renderer. We start it after the external server under coverage so
 # we can measure the coverage of the startup code, including the containers that depend on the external server.
 docker compose up --detach external_server renderer frontend www
@@ -38,11 +30,10 @@ coverage erase
 coverage run -m behave --format pretty "${1:-tests/feature_tests/src/features}"
 result=$?
 kill -s TERM "$(pgrep -n -f tests/quality_time_external_server_under_coverage.py)"
-kill -s TERM "$(pgrep -n -f tests/quality_time_internal_server_under_coverage.py)"
-sleep 5  # Give servers time to write coverage data
+sleep 5  # Give server time to write coverage data
 if [[ "$result" -eq "0" ]]
 then
-  coverage combine . components/external_server components/internal_server
+  coverage combine . components/external_server
   coverage xml
   coverage html
   coverage report

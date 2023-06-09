@@ -14,8 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes first.
 
-In this version of *Quality-time* the notifier and collector components talk directly to the database (instead of using the internal server). This means that the docker composition **must** be changed:
+In this version of *Quality-time* the internal server component is no longer used. The notifier and collector components talk directly to the database, instead of using the internal server. This means that the docker composition **must** be changed:
 
+- Remove the `internal_server` section.
 - In the `collector` section:
   - Add the same `DATABASE_URL` environment variable as the external server has.
   - Change the `depends_on: internal_server` into `depends_on: database`.

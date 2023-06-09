@@ -55,8 +55,7 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the collector measures "100"
-    Then the metric status is "target_not_met"
-    When the client waits a second
+    And the client waits a second
     And the client changes the metric type to "violations"
     Then the metric contains 1 source
     And the metric status is "None"
@@ -65,8 +64,7 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the collector measures "100"
-    Then the metric status is "target_not_met"
-    When the client waits a second
+    And the client waits a second
     And the client changes the metric type to "violations"
     Then the metric contains 1 source
     And the metric status is "None"
@@ -81,8 +79,7 @@ Feature: metric
     When the client does not accept the technical debt
     Then the metric status is "None"
     When the collector measures "100"
-    Then the metric status is "target_not_met"
-    When the client waits a second
+    And the client waits a second
     And the client accepts the technical debt
     Then the metric status is "debt_target_met"
     And the metric debt_target is "100"

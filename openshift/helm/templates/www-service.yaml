@@ -43,20 +43,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.internal_server.name }}
-spec:
-  ports:
-  - name: 5002-tcp
-    port: 5002
-    protocol: TCP
-    targetPort: 5002
-  selector:
-    app: {{ .Values.internal_server.name }}
-  sessionAffinity: None
----
-apiVersion: v1
-kind: Service
-metadata:
   name: {{ .Values.www.name }}
 spec:
   ports:

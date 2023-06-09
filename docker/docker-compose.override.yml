@@ -29,12 +29,6 @@ services:
     depends_on:
       - ldap
       - renderer
-  internal_server:
-    environment:
-      - INTERNAL_SERVER_LOG_LEVEL=${INTERNAL_SERVER_LOG_LEVEL:-INFO}
-    build:
-      context: ../components
-      dockerfile: internal_server/Dockerfile
   database:
     build: ../components/database
     ports:

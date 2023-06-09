@@ -74,19 +74,6 @@ services:
       - database
     cap_drop:
       - ALL
-  internal_server:
-    image: ictu/quality-time_internal_server:${QUALITY_TIME_VERSION}
-    environment:
-      - INTERNAL_SERVER_PORT=${INTERNAL_SERVER_PORT:-5002}
-      - INTERNAL_SERVER_LOG_LEVEL=${INTERNAL_SERVER_LOG_LEVEL:-WARNING}
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
-      - LOAD_EXAMPLE_REPORTS=${LOAD_EXAMPLE_REPORTS:-True}
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
-    depends_on:
-      - database
-    cap_drop:
-      - ALL
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
     command: --quiet

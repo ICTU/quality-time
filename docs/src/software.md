@@ -16,15 +16,14 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
 
 ### Bespoke components
 
-There are five bespoke components:
+There are four bespoke components:
 
 - A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Semantic UI React](https://react.semantic-ui.com).
 - An [external server](#external-server) serving the API for the user interface. The external server is written in Python using [Bottle](https://bottlepy.org) as web framework.
-- An [internal server](#internal-server) serving the API for the internal components. The internal server is written in Python using Bottle as web framework.
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the internal server, the collector, and the notifier. The shared server code is used by the external server and the internal server.
+Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the collector, and the notifier. The shared server code is used by the external server.
 
 ### Standard components
 
@@ -94,30 +93,9 @@ The external server uses the following environment variables:
 | `FORWARD_AUTH_ENABLED`      | `False`                                   | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
 | `FORWARD_AUTH_HEADER`       | `X-Forwarded-User`                        | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
 
-## Internal server
-
-### API
-
-The API of the internal server is not versioned.
-
-### Health check
-
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/internal_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the server.
-
-### Environment variables
-
-The internal server uses the following environment variables:
-
-| Name                        | Default value                        | Description                                                                        |
-|:----------------------------|:-------------------------------------|:-----------------------------------------------------------------------------------|
-| `INTERNAL_SERVER_PORT`      | `5001`                               | Port of the internal server.                                                       |
-| `INTERNAL_SERVER_LOG_LEVEL` | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. |
-| `DATABASE_URL`              | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                     |
-| `LOAD_EXAMPLE_REPORTS`      | `True`                               | Whether or not to import example reports in the database on start up.              |
-
 ## Collector
 
-The collector is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of its sources and posts a new measurement to the internal server.
+The collector is responsible for collecting measurement data from sources. It wakes up periodically and retrieves a list of all metrics from the database. For each metric, the collector gets the measurement data from each of its sources and stores a new measurement to the database.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 

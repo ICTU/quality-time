@@ -60,20 +60,17 @@ The hostnames and ports of the different containers can be configured via enviro
 
 ## Configuring example reports (optional)
 
-By default, the server components will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for both the external and the internal server:
+By default, the server will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for the external server:
 
 ```yaml
   external_server:
-    environment:
-      - LOAD_EXAMPLE_REPORTS=False
-  internal_server:
     environment:
       - LOAD_EXAMPLE_REPORTS=False
 ```
 
 ## Configuring measurement frequency (optional)
 
-The collector component is responsible for collecting measurement data from sources. It wakes up periodically and asks the internal server for a list of all metrics. For each metric, the collector gets the measurement data from each of its sources and posts a new measurement to the internal server.
+The collector component is responsible for collecting measurement data from sources. It wakes up periodically and gets a list of all metrics from the database. For each metric, the collector gets the measurement data from each of its sources and stores a new measurement in the database.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 
@@ -93,7 +90,7 @@ Note that the frontend warns users when metrics have not been measured for a lon
 
 ## Configuring notification frequency (optional)
 
-The notifier component is responsible for notifying users via MS Teams about changed metric statuses. It wakes up periodically and asks the internal server fo a list of all metrics. For each metric, the notifier decides whether a notification is possible and needed.
+The notifier component is responsible for notifying users via MS Teams about changed metric statuses. It wakes up periodically and gets a list of all metrics from the database. For each metric, the notifier decides whether a notification is possible and needed.
 
 By default, the notifier wakes up every minute to check for changed metric statuses. This frequency can be changed as follows:
 
@@ -136,13 +133,12 @@ The options for configuring logging are limited at the moment. The MongoDB daemo
     command: --quiet
 ```
 
-The collector, notifier, external server, and internal server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
+The collector, notifier, and external server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
 
 | Component       | Log level environment variable |
 | :-------------- | :----------------------------- |
 | Collector       | `COLLECTOR_LOG_LEVEL`          |
 | External server | `EXTERNAL_SERVER_LOG_LEVEL`    |
-| Internal server | `INTERNAL_SERVER_LOG_LEVEL`    |
 | Notifier        | `NOTIFIER_LOG_LEVEL`           |
 
 The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.

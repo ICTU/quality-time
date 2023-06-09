@@ -20,6 +20,7 @@ Feature: time travel
     And the client creates a metric
     And the client creates a source
     And the collector measures "0"
+    And the client waits a second
     Then the metric latest_measurement.count.value is "0"
     When the client enters a report date that's not too old
     And the collector measures "100"

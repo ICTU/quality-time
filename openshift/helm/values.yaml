@@ -2,44 +2,40 @@ pullsecret: mybase64encodedsecret
 
 collector:
   name: collector
-  image: docker.io/ictu/quality-time_collector:v4.5.0
+  image: docker.io/ictu/quality-time_collector:v5.0.0
 
 database:
   name: database
-  image: docker.io/ictu/quality-time_database:v4.5.0
+  image: docker.io/ictu/quality-time_database:v5.0.0
   claimName: database
   accessMode: ReadWriteOnce
   storageSize: 5Gi
   storageClassName: ocs-storagecluster-cephfs
-  
+
 external_server:
   name: externalserver
-  image: docker.io/ictu/quality-time_external_server:v4.5.0
+  image: docker.io/ictu/quality-time_external_server:v5.0.0
 
 frontend:
   name: frontend
-  image: docker.io/ictu/quality-time_frontend:v4.5.0
+  image: docker.io/ictu/quality-time_frontend:v5.0.0
 
-internal_server:
-  name: internalserver
-  image: docker.io/ictu/quality-time_internal_server:v4.5.0
-  
 ldap:
   rootDN: dc=example,dc=org
   lookupUserDN: cn=admin,dc=example,dc=org
   lookupUserPassword: admin
   search: (|(uid=$$username)(cn=$$username))
   url: ldap://ldap:389
-  
+
 notifier:
   name: notifier
-  image: docker.io/ictu/quality-time_notifier:v4.5.0
-  
+  image: docker.io/ictu/quality-time_notifier:v5.0.0
+
 renderer:
   name: renderer
-  image: docker.io/ictu/quality-time_renderer:v4.5.0
+  image: docker.io/ictu/quality-time_renderer:v5.0.0
 
 www:
   name: www
-  image: docker.io/ictu/quality-time_proxy:v4.5.0
+  image: docker.io/ictu/quality-time_proxy:v5.0.0
 

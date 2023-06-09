@@ -64,11 +64,6 @@ As a `role` I want to `action` so that `goal`
 - [ ] Change `destination`
 - [ ] Add ...
 
-### Internal server
-
-- [ ] Change endpoint `endpoint`
-- [ ] Add ...
-
 ## Feature tests
 
 - [ ] `role` does `action`

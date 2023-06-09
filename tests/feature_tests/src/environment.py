@@ -2,6 +2,7 @@
 
 from typing import Any
 
+import pymongo
 import requests
 from behave.model import Step
 from behave.runner import Context
@@ -15,14 +16,13 @@ def before_all(context: Context) -> None:  # noqa: C901
         """Return the cookies."""
         return {"session_id": context.session_id} if context.session_id else {}
 
-    def api_url(api: str, internal: bool = False) -> str:
+    def api_url(api: str) -> str:
         """Return the API URL."""
-        base_api_url = context.internal_base_api_url if internal else context.base_api_url
-        return f"{base_api_url}/{api}"
+        return f"{context.base_api_url}/{api}"
 
-    def get(api: str, headers: dict[str, str] | None = None, internal: bool = False) -> requests.Response | Any:
+    def get(api: str, headers: dict[str, str] | None = None) -> requests.Response | Any:
         """Get the resource."""
-        url = api_url(api, internal)
+        url = api_url(api)
         for attribute in ("report_date", "min_report_date"):
             if value := getattr(context, attribute):
                 sep = "&" if "?" in url else "?"
@@ -30,9 +30,9 @@ def before_all(context: Context) -> None:  # noqa: C901
         context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def post(api: str, json: dict | list | None = None, internal: bool = False) -> requests.Response | Any:
+    def post(api: str, json: dict | list | None = None) -> requests.Response | Any:
         """Post the resource."""
-        url = api_url(api, internal)
+        url = api_url(api)
         response = requests.post(url, json=json, cookies=cookies(), timeout=timeout)
         context.post_response = context.response = response
         if not response.ok:
@@ -41,9 +41,9 @@ def before_all(context: Context) -> None:  # noqa: C901
             context.session_id = response.cookies["session_id"]
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
-    def put(api: str, json: dict | list | None = None, internal: bool = False) -> requests.Response | Any:
+    def put(api: str, json: dict | list | None = None) -> requests.Response | Any:
         """Post the resource."""
-        url = api_url(api, internal)
+        url = api_url(api)
         response = requests.put(url, json=json, cookies=cookies(), timeout=timeout)
         context.put_response = context.response = response
         # Ignore non-ok responses for now since we don't have testcases where they apply
@@ -55,7 +55,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     context.base_api_url = "http://localhost:5001/api/v3"
-    context.internal_base_api_url = "http://localhost:5002/api"
+    context.database = pymongo.MongoClient("mongodb://root:root@localhost:27017")["quality_time_db"]
     context.session_id = None
     context.report_date = None
     context.min_report_date = None
