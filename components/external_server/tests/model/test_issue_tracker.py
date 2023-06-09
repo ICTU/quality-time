@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker, IssueTrackerCredentials
 
-from ..base import disable_logging
+from tests.base import disable_logging
 
 
 class IssueTrackerTest(unittest.TestCase):
@@ -54,7 +54,7 @@ class IssueTrackerTest(unittest.TestCase):
     def test_get_suggestions(self, requests_get):
         """Test that issue suggestions are returned."""
         response = Mock()
-        response.json.return_value = dict(issues=[dict(key="FOO-42", fields=dict(summary=self.ISSUE_SUMMARY))])
+        response.json.return_value = {"issues": [{"key": "FOO-42", "fields": {"summary": self.ISSUE_SUMMARY}}]}
         requests_get.return_value = response
         self.assertEqual([IssueSuggestion("FOO-42", "Issue summary")], self.issue_tracker.get_suggestions("Summ"))
 
@@ -67,7 +67,7 @@ class IssueTrackerTest(unittest.TestCase):
     def test_create_issue(self, requests_post):
         """Test that an issue can be created."""
         response = Mock()
-        response.json.return_value = dict(key="FOO-42")
+        response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response
         self.assertEqual(("FOO-42", ""), self.issue_tracker.create_issue(self.ISSUE_SUMMARY))
 

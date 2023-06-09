@@ -52,14 +52,14 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
                 summarized_reports.append(report)
 
     hide_credentials(data_model, *summarized_reports)
-    return dict(reports=summarized_reports)
+    return {"reports": summarized_reports}
 
 
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
-    report["delta"] = dict(uuids=[report["report_uuid"]])
+    report["delta"] = {"uuids": [report["report_uuid"]]}
 
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
@@ -76,7 +76,7 @@ def post_report_import(database: Database):
         bottle.response.status = 400
         return {
             "error": "Decryption of source credentials failed. \
-                Did you use the public key of this Quality-time instance to encrypt this report?"
+                Did you use the public key of this Quality-time instance to encrypt this report?",
         }
 
     replace_report_uuids(report)
@@ -90,7 +90,7 @@ def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
     delta_description = "{user} created a new report."
-    report = dict(report_uuid=report_uuid, title="New report", subjects={})
+    report = {"report_uuid": report_uuid, "title": "New report", "subjects": {}}
     result = insert_new_report(database, delta_description, [report_uuid], report)
     result["new_report_uuid"] = report_uuid
     return result
@@ -131,8 +131,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     report = latest_report(database, data_model, report_uuid)
 
     if report:
-        # pylint doesn't seem to be able to see that bottle.request.query is dict(like) at runtime
-        if "public_key" in bottle.request.query:  # pylint: disable=unsupported-membership-test
+        if "public_key" in bottle.request.query:
             public_key = bottle.request.query["public_key"]
         else:  # default to own public key
             document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
@@ -174,7 +173,8 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 
 
 @bottle.post(
-    "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+    "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>",
+    permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
     """Set the issue tracker attribute."""
@@ -186,7 +186,7 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
     else:
         old_value = report.get("issue_tracker", {}).get("parameters", {}).get(tracker_attribute) or ""
     if old_value == new_value:
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
     if tracker_attribute == "type":
         report.setdefault("issue_tracker", {})["type"] = new_value
     else:
@@ -214,7 +214,7 @@ def get_report_issue_tracker_suggestions(report_uuid: ReportId, query: str, data
     data_model = latest_datamodel(database)
     report = latest_report(database, data_model, report_uuid)
     issue_tracker = report.issue_tracker()
-    return dict(suggestions=[issue.as_dict() for issue in issue_tracker.get_suggestions(query)])
+    return {"suggestions": [issue.as_dict() for issue in issue_tracker.get_suggestions(query)]}
 
 
 @bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=False)
@@ -236,12 +236,12 @@ def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
 
     report = Report(
         data_model,
-        dict(
-            title=f'Report for tag "{tag}"',
-            subtitle="Note: tag reports are read-only",
-            report_uuid=f"tag-{tag}",
-            timestamp=iso_timestamp(),
-            subjects=subjects,
-        ),
+        {
+            "title": f'Report for tag "{tag}"',
+            "subtitle": "Note: tag reports are read-only",
+            "report_uuid": f"tag-{tag}",
+            "timestamp": iso_timestamp(),
+            "subjects": subjects,
+        },
     )
     return report

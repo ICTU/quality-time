@@ -10,19 +10,19 @@ from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 from database import measurements, reports
 
 
-def _get_changelog(database: Database, nr_changes: str, **uuids: str):
+def _get_changelog(database: Database, nr_changes: str, **uuids: str) -> dict[str, list[dict[str, str]]]:
     """Return the recent most nr_changes changes from the changelog."""
     limit = int(nr_changes)
     changes = [
-        dict(
-            delta=item["delta"]["description"],
-            email=item["delta"].get("email", ""),
-            timestamp=item.get("timestamp") or item["start"],
-        )
+        {
+            "delta": item["delta"]["description"],
+            "email": item["delta"].get("email", ""),
+            "timestamp": item.get("timestamp") or item["start"],
+        }
         for item in list(measurements.changelog(database, limit, **uuids))
         + list(reports.changelog(database, limit, **uuids))
     ]
-    return dict(changelog=sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))[:limit])
+    return {"changelog": sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))[:limit]}
 
 
 @bottle.get("/api/v3/changelog/source/<source_uuid>/<nr_changes>", authentication_required=False)

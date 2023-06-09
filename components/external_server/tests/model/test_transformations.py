@@ -2,8 +2,8 @@
 
 from model.transformations import hide_credentials, CREDENTIALS_REPLACEMENT_TEXT
 
-from ..base import DataModelTestCase
-from ..fixtures import create_report, SUBJECT_ID, METRIC_ID, SOURCE_ID
+from tests.base import DataModelTestCase
+from tests.fixtures import create_report, SUBJECT_ID, METRIC_ID, SOURCE_ID
 
 
 class HideCredentialsTest(DataModelTestCase):

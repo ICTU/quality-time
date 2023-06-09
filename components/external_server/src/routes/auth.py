@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import string
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from http.cookies import Morsel
 from typing import cast
 
@@ -30,7 +30,7 @@ def create_session(database: Database, user: User) -> datetime:
     database and the session cookie.
     """
     session_id = cast(SessionId, uuid())
-    session_expiration_datetime = datetime.now(timezone.utc) + timedelta(hours=24)
+    session_expiration_datetime = datetime.now(UTC) + timedelta(hours=24)
     sessions.upsert(database, user, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
     return session_expiration_datetime
@@ -46,8 +46,8 @@ def delete_session(database: Database) -> None:
 def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:
     """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     # Monkey patch support for SameSite, see https://github.com/bottlepy/bottle/issues/982#issuecomment-315064376
-    Morsel._reserved["same-site"] = "SameSite"  # type: ignore  # pylint: disable=protected-access
-    options = dict(expires=expires_datetime, path="/", httponly=True, same_site="strict")
+    Morsel._reserved["same-site"] = "SameSite"  # type: ignore[attr-defined] # noqa: SLF001
+    options = {"expires": expires_datetime, "path": "/", "httponly": True, "same_site": "strict"}
     bottle.response.set_cookie("session_id", session_id, **options)
 
 
@@ -63,7 +63,7 @@ def check_password(ssha_ldap_salted_password, password) -> bool:
     digest_salt = base64.b64decode(digest_salt_b64)
     digest = digest_salt[:20]
     salt = digest_salt[20:]
-    sha = hashlib.sha1(bytes(password, "utf-8"))  # noqa: DUO130, # nosec
+    sha = hashlib.sha1(bytes(password, "utf-8"))  # nosec, # noqa: S324
     sha.update(salt)  # nosec
     return digest == sha.digest()
 
@@ -80,14 +80,13 @@ def get_credentials() -> tuple[str, str]:
 def get_ldap_config(username):
     """Get LDAP config from environment."""
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
-    ldap_config = dict(
-        ldap_root_dn=os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),
-        ldap_urls=os.environ.get("LDAP_URL", "ldap://localhost:389").split(","),
-        ldap_lookup_user_dn=os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org"),
-        ldap_lookup_user_pw=os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin"),
-        ldap_search_filter=string.Template(ldap_search_filter_template).substitute(username=username),
-    )
-    return ldap_config
+    return {
+        "ldap_root_dn": os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),
+        "ldap_urls": os.environ.get("LDAP_URL", "ldap://localhost:389").split(","),
+        "ldap_lookup_user_dn": os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org"),
+        "ldap_lookup_user_pw": os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin"),
+        "ldap_search_filter": string.Template(ldap_search_filter_template).substitute(username=username),
+    }
 
 
 def verify_user(database: Database, username: str, password: str) -> User:
@@ -102,7 +101,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
             password=ldap_config.get("ldap_lookup_user_pw"),
         ) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no feature-test-cover
-                raise exceptions.LDAPBindError
+                raise exceptions.LDAPBindError  # noqa: TRY301
             lookup_connection.search(
                 ldap_config.get("ldap_root_dn"),
                 ldap_config.get("ldap_search_filter"),
@@ -113,11 +112,11 @@ def verify_user(database: Database, username: str, password: str) -> User:
             if check_password(salted_password, password):
                 logging.info("LDAP salted password check for %s succeeded", username)
             else:
-                raise exceptions.LDAPInvalidCredentialsResult
+                raise exceptions.LDAPInvalidCredentialsResult  # noqa: TRY301
         else:  # pragma: no feature-test-cover
             with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
                 logging.info("LDAP bind for %s succeeded", username)
-    except Exception as reason:  # pylint: disable=broad-except
+    except Exception as reason:  # noqa: BLE001
         user = User(username)
         logging.warning("LDAP error: %s", reason)
     else:
@@ -139,23 +138,23 @@ def login(database: Database) -> dict[str, bool | str]:
     else:
         username, password = get_credentials()
         user = verify_user(database, username, password)
-    if user.verified:
-        session_expiration_datetime = create_session(database, user)
-    else:
-        session_expiration_datetime = datetime.min.replace(tzinfo=timezone.utc)
-    return dict(ok=user.verified, email=user.email, session_expiration_datetime=session_expiration_datetime.isoformat())
+    session_expiration_datetime = create_session(database, user) if user.verified else datetime.min.replace(tzinfo=UTC)
+    return {
+        "ok": user.verified,
+        "email": user.email,
+        "session_expiration_datetime": session_expiration_datetime.isoformat(),
+    }
 
 
 @bottle.post("/api/v3/logout", authentication_required=True)
 def logout(database: Database) -> dict[str, bool]:
     """Log the user out."""
     delete_session(database)
-    return dict(ok=True)
+    return {"ok": True}
 
 
 @bottle.get("/api/v3/public_key", authentication_required=False)
 def get_public_key(database: Database) -> dict:
     """Return a serialized version of the public key."""
     public_key = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
-    public_key_as_dict = cast(dict, public_key)
-    return public_key_as_dict
+    return cast(dict, public_key)

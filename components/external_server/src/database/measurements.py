@@ -47,14 +47,15 @@ def measurements_by_metric(
                 "sources.entity_user_data": False,
                 "issue_status": False,
             },
-        )
+        ),
     )
 
 
 def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
     """Return the latest successful measurement."""
     latest_successful = database.measurements.find_one(
-        {"metric_uuid": metric.uuid, "has_error": False}, sort=[("start", pymongo.DESCENDING)]
+        {"metric_uuid": metric.uuid, "has_error": False},
+        sort=[("start", pymongo.DESCENDING)],
     )
     return None if latest_successful is None else Measurement(metric, latest_successful)
 
@@ -69,7 +70,9 @@ def all_metric_measurements(
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_measurement_complete = database.measurements.find_one(
-        measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False}
+        measurement_filter,
+        sort=[("start", pymongo.DESCENDING)],
+        projection={"_id": False},
     )
     if not latest_measurement_complete:
         return []

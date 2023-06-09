@@ -2,7 +2,7 @@
 
 from model.actions import copy_metric, copy_report, copy_source, copy_subject
 
-from ..base import DataModelTestCase
+from tests.base import DataModelTestCase
 
 
 class CopySourceTest(DataModelTestCase):
@@ -11,7 +11,7 @@ class CopySourceTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the source under test."""
         super().setUp()
-        self.source = dict(name="Source", type="pip")
+        self.source = {"name": "Source", "type": "pip"}
 
     def test_copy_name(self):
         """Test that the copy name is changed."""
@@ -36,9 +36,11 @@ class CopyMetricTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.metric = dict(
-            name="Metric", type="security_warnings", sources=dict(source_uuid=dict(type="owasp_zap", name="Source"))
-        )
+        self.metric = {
+            "name": "Metric",
+            "type": "security_warnings",
+            "sources": {"source_uuid": {"type": "owasp_zap", "name": "Source"}},
+        }
 
     def test_copy_name(self):
         """Test that the copy name is changed."""
@@ -68,11 +70,11 @@ class CopySubjectTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the subject under test."""
         super().setUp()
-        self.subject = dict(
-            type="software",
-            name="Subject",
-            metrics=dict(metric_uuid=dict(type="violations", name="Metric", sources={})),
-        )
+        self.subject = {
+            "type": "software",
+            "name": "Subject",
+            "metrics": {"metric_uuid": {"type": "violations", "name": "Metric", "sources": {}}},
+        }
 
     def test_copy_name(self):
         """Test that the copy name is changed."""
@@ -102,11 +104,11 @@ class CopyReportTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the report under test."""
         super().setUp()
-        self.report = dict(
-            report_uuid="report_uuid",
-            title="Report",
-            subjects=dict(subject_uuid=dict(name="Subject", type="software", metrics={})),
-        )
+        self.report = {
+            "report_uuid": "report_uuid",
+            "title": "Report",
+            "subjects": {"subject_uuid": {"name": "Subject", "type": "software", "metrics": {}}},
+        }
 
     def test_copy_title(self):
         """Test that the copy title is changed."""

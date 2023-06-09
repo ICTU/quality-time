@@ -6,6 +6,6 @@ def is_password_parameter(data_model, source_type: str, parameter: str) -> bool:
     # If the parameter key can't be found (this can happen when the parameter is removed from the data model),
     # err on the safe side and assume it was a password type
     parameter_type = (
-        data_model["sources"].get(source_type, {}).get("parameters", {}).get(parameter, dict(type="password"))["type"]
+        data_model["sources"].get(source_type, {}).get("parameters", {}).get(parameter, {"type": "password"})["type"]
     )
     return str(parameter_type) == "password"

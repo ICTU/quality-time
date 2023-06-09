@@ -5,8 +5,7 @@ from pymongo.database import Database
 
 from shared.routes.plugins import InjectionPlugin
 
-# pylint: disable=wildcard-import,unused-wildcard-import
-from routes import *  # lgtm [py/unused-import]
+from routes import *  # lgtm [py/unused-import], # noqa: F403
 from routes.plugins import AuthPlugin
 
 

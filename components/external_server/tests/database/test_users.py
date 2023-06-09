@@ -4,7 +4,7 @@ from shared.utils.type import User
 
 from database import users
 
-from ..base import DatabaseTestCase
+from tests.base import DatabaseTestCase
 
 
 class UsersTest(DatabaseTestCase):
@@ -13,7 +13,7 @@ class UsersTest(DatabaseTestCase):
     def setUp(self):
         """Extend to set up the users collection."""
         super().setUp()
-        self.database.users.find_one.return_value = dict(username="username")
+        self.database.users.find_one.return_value = {"username": "username"}
 
     def test_upsert(self):
         """Test upsert function."""
@@ -21,7 +21,7 @@ class UsersTest(DatabaseTestCase):
             users.upsert_user(
                 database=self.database,
                 user=User(username="test", email="info@test.com"),
-            )
+            ),
         )
         self.database.users.replace_one.assert_called_with(
             {"username": "test"},
@@ -32,7 +32,7 @@ class UsersTest(DatabaseTestCase):
     def test_get(self):
         """Test get user."""
         user = users.get_user(self.database, "username")
-        self.assertDictEqual(user.to_dict(), dict(username="username", email="", common_name="", settings={}))
+        self.assertDictEqual(user.to_dict(), {"username": "username", "email": "", "common_name": "", "settings": {}})
         self.database.users.find_one.assert_called_once_with({"username": "username"}, {"_id": False})
 
     def test_get_nonexisting(self):

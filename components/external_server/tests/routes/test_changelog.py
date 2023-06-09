@@ -8,9 +8,9 @@ from routes import (
     get_subject_changelog,
 )
 
-from ..fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
-from ..base import DatabaseTestCase
+from tests.base import DatabaseTestCase
 
 
 class ChangeLogTest(DatabaseTestCase):
@@ -22,16 +22,16 @@ class ChangeLogTest(DatabaseTestCase):
         self.database.sessions.find_one.return_value = JENNY
         self.database.reports_overviews.find.return_value = []
         self.database.reports.find.return_value = [
-            dict(timestamp="2", delta=dict(description="delta2", email=JENNY["email"])),
-            dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
+            {"timestamp": "2", "delta": {"description": "delta2", "email": JENNY["email"]}},
+            {"timestamp": "1", "delta": {"description": "delta1", "email": JENNY["email"]}},
         ]
         self.database.measurements.find.return_value = []
-        self.expected_changelog = dict(
-            changelog=[
-                dict(delta="delta2", email=JENNY["email"], timestamp="2"),
-                dict(delta="delta1", email=JENNY["email"], timestamp="1"),
-            ]
-        )
+        self.expected_changelog = {
+            "changelog": [
+                {"delta": "delta2", "email": JENNY["email"], "timestamp": "2"},
+                {"delta": "delta1", "email": JENNY["email"], "timestamp": "1"},
+            ],
+        }
 
     def test_get_changelog(self):
         """Test that the changelog is returned."""
@@ -44,9 +44,9 @@ class ChangeLogTest(DatabaseTestCase):
     def test_get_changelog_with_measurements(self):
         """Test that the changelog is returned."""
         self.database.measurements.find.return_value = [
-            dict(delta=dict(description="delta3", email=JENNY["email"]), start="3")
+            {"delta": {"description": "delta3", "email": JENNY["email"]}, "start": "3"},
         ]
-        self.expected_changelog["changelog"].insert(0, dict(delta="delta3", email=JENNY["email"], timestamp="3"))
+        self.expected_changelog["changelog"].insert(0, {"delta": "delta3", "email": JENNY["email"], "timestamp": "3"})
         self.assertEqual(self.expected_changelog, get_metric_changelog(METRIC_ID, "10", self.database))
 
     def test_get_subject_changelog(self):
@@ -64,8 +64,8 @@ class ChangeLogTest(DatabaseTestCase):
     def test_get_moved_item_changelog(self):
         """Test that the changelog does not contain the moved item twice."""
         self.database.reports.find.return_value = [
-            dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
-            dict(timestamp="1", delta=dict(description="delta1", email=JENNY["email"])),
+            {"timestamp": "1", "delta": {"description": "delta1", "email": JENNY["email"]}},
+            {"timestamp": "1", "delta": {"description": "delta1", "email": JENNY["email"]}},
         ]
-        expected_changelog = dict(changelog=[dict(delta="delta1", email=JENNY["email"], timestamp="1")])
+        expected_changelog = {"changelog": [{"delta": "delta1", "email": JENNY["email"], "timestamp": "1"}]}
         self.assertEqual(expected_changelog, get_changelog("10", self.database))

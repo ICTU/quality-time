@@ -23,44 +23,46 @@ SUBJECT_ID = cast(SubjectId, "subject_uuid")
 SUBJECT_ID2 = cast(SubjectId, "subject_uuid2")
 SUBJECT_ID3 = cast(SubjectId, "subject_uuid3")
 
-JOHN = dict(user="John", email="john@example.org", common_name="John Doe")
-JENNY = dict(user="Jenny", email="jenny@example.org", common_name="Jenny Doe")
+JOHN = {"user": "John", "email": "john@example.org", "common_name": "John Doe"}
+JENNY = {"user": "Jenny", "email": "jenny@example.org", "common_name": "Jenny Doe"}
 
 
 def create_report():
     """Return a test report."""
-    return dict(
-        _id=REPORT_ID,
-        report_uuid=REPORT_ID,
-        title="Report",
-        subjects={
-            SUBJECT_ID: dict(
-                name="Subject",
-                type="software",
-                metrics={
-                    METRIC_ID: dict(
-                        name="Metric",
-                        type="violations",
-                        addition="sum",
-                        target="0",
-                        accept_debt=False,
-                        tags=["security"],
-                        scales=["count", "percentage"],
-                        sources={
-                            SOURCE_ID: dict(
-                                type="sonarqube",
-                                name="Source",
-                                parameters=dict(url="https://url", password="password"),
-                            )
+    return {
+        "_id": REPORT_ID,
+        "report_uuid": REPORT_ID,
+        "title": "Report",
+        "subjects": {
+            SUBJECT_ID: {
+                "name": "Subject",
+                "type": "software",
+                "metrics": {
+                    METRIC_ID: {
+                        "name": "Metric",
+                        "type": "violations",
+                        "addition": "sum",
+                        "target": "0",
+                        "accept_debt": False,
+                        "tags": ["security"],
+                        "scales": ["count", "percentage"],
+                        "sources": {
+                            SOURCE_ID: {
+                                "type": "sonarqube",
+                                "name": "Source",
+                                "parameters": {"url": "https://url", "password": "password"},
+                            },
                         },
-                    )
+                    },
                 },
-            )
+            },
         },
-        notification_destinations={
-            NOTIFICATION_DESTINATION_ID: dict(
-                teams_webhook="", name="notification_destination", url="https://reporturl"
-            )
+        "notification_destinations": {
+            NOTIFICATION_DESTINATION_ID: {
+                "teams_webhook": "",
+                "name": "notification_destination",
+                "url": "https://reporturl",
+            },
         },
-        issue_tracker=dict(type="jira", parameters=dict(username="jadoe", password="secret")),
-    )
+        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},
+    }

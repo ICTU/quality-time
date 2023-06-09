@@ -2,7 +2,7 @@
 
 from database.datamodels import default_subject_attributes
 
-from ..base import DataModelTestCase
+from tests.base import DataModelTestCase
 
 
 class DefaultSubjectAttributesTest(DataModelTestCase):
@@ -11,6 +11,11 @@ class DefaultSubjectAttributesTest(DataModelTestCase):
     def test_default_attributes(self):
         """Test the default attributes for a specific subject type."""
         self.assertEqual(
-            dict(type="software", name=None, description="A custom software application or component.", metrics={}),
+            {
+                "type": "software",
+                "name": None,
+                "description": "A custom software application or component.",
+                "metrics": {},
+            },
             default_subject_attributes(self.database, "software"),
         )

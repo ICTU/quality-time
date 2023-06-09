@@ -1,9 +1,9 @@
 """Quality-time specific types."""
 
-from typing import Literal, NewType, Union
+from typing import Literal, NewType
 
 
-Change = dict[str, Union[str, dict[str, str]]]
+Change = dict[str, str | dict[str, str]]
 EditScope = Literal["source", "metric", "subject", "report", "reports"]
 Position = Literal["first", "last", "next", "previous"]
 URL = NewType("URL", str)

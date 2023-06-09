@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 
 from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
-from ..base import DatabaseTestCase, DataModelTestCase
-from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from tests.base import DatabaseTestCase, DataModelTestCase
+from tests.fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
 
 class GetMetricMeasurementsTest(DatabaseTestCase):
@@ -14,20 +14,20 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
     def setUp(self):
         """Extend to set up the measurements."""
         super().setUp()
-        self.measurements = [dict(start="0"), dict(start="1")]
+        self.measurements = [{"start": "0"}, {"start": "1"}]
         self.database.measurements.find_one.return_value = self.measurements[-1]
         self.database.measurements.find.return_value = self.measurements
 
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
-        self.assertEqual(dict(measurements=self.measurements), get_metric_measurements(METRIC_ID, self.database))
+        self.assertEqual({"measurements": self.measurements}, get_metric_measurements(METRIC_ID, self.database))
 
     @patch("bottle.request")
     def test_get_old_but_not_new_measurements(self, request):
         """Test that the measurements for the requested metric and report date are returned."""
-        database_entries = [dict(start="0"), dict(start="1"), dict(start="2")]
+        database_entries = [{"start": "0"}, {"start": "1"}, {"start": "2"}]
 
-        def find_side_effect(query, projection, sort=None):  # pylint: disable=unused-argument
+        def find_side_effect(query, projection, sort=None) -> list[dict[str, str]]:  # noqa: ARG001
             """Side effect for mocking the database measurements."""
             min_iso_timestamp = query["end"]["$gt"] if "end" in query else ""
             max_iso_timestamp = query["start"]["$lt"] if "start" in query else ""
@@ -38,23 +38,24 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
                 and (not max_iso_timestamp or m["start"] < max_iso_timestamp)
             ]
 
-        def find_one_side_effect(query, projection, sort=None):
+        def find_one_side_effect(query, projection, sort=None) -> dict[str, str]:
             """Side effect for mocking the last database measurement."""
             return find_side_effect(query, projection, sort)[-1]
 
         self.database.measurements.find_one.side_effect = find_one_side_effect
         self.database.measurements.find.side_effect = find_side_effect
 
-        request.query = dict(report_date="2")
+        request.query = {"report_date": "2"}
 
         self.assertEqual(
-            dict(measurements=[dict(start="0"), dict(start="1")]), get_metric_measurements(METRIC_ID, self.database)
+            {"measurements": [{"start": "0"}, {"start": "1"}]},
+            get_metric_measurements(METRIC_ID, self.database),
         )
 
     def test_get_measurements_when_there_are_none(self):
         """Tests that the measurements for the requested metric are returned."""
         self.database.measurements.find_one.return_value = None
-        self.assertEqual(dict(measurements=[]), get_metric_measurements(METRIC_ID, self.database))
+        self.assertEqual({"measurements": []}, get_metric_measurements(METRIC_ID, self.database))
 
 
 class GetMeasurementsTest(DataModelTestCase):
@@ -65,39 +66,40 @@ class GetMeasurementsTest(DataModelTestCase):
         super().setUp()
         self.email = "jenny@example.org"
         self.other_mail = "john@example.org"
-        self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        self.measurement = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            count=dict(status="target_not_met"),
-            sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-        )
+        self.database.sessions.find_one.return_value = {"user": "jenny", "email": self.email}
+        self.database.reports_overviews.find_one.return_value = {"_id": "id", "title": "Reports", "subtitle": ""}
+        self.measurement = {
+            "_id": "id",
+            "metric_uuid": METRIC_ID,
+            "count": {"status": "target_not_met"},
+            "sources": [{"source_uuid": SOURCE_ID, "parse_error": None, "connection_error": None, "value": "42"}],
+        }
         self.database.measurements.find.return_value = [self.measurement]
 
     def test_no_reports(self):
         """Test no reports."""
         self.database.reports.find.return_value = []
-        self.assertEqual(dict(measurements=[]), get_measurements(self.database))
+        self.assertEqual({"measurements": []}, get_measurements(self.database))
 
     def test_with_report(self):
         """Test a report with measurements."""
         self.database.reports.find.return_value = [
-            dict(report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})})
+            {"report_uuid": REPORT_ID, "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}},
         ]
         self.database.measurements.find.return_value = [self.measurement]
-        self.assertEqual(dict(measurements=[self.measurement]), get_measurements(self.database))
+        self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
     @patch("bottle.request")
     def test_with_report_and_time_travel(self, request):
         """Test a report with measurements."""
-        request.query = dict(report_date="2022-04-19T23:59:59.000Z")
+        request.query = {"report_date": "2022-04-19T23:59:59.000Z"}
         self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = dict(
-            report_uuid=REPORT_ID, subjects={SUBJECT_ID: dict(metrics={METRIC_ID: {}})}
-        )
+        self.database.reports.find_one.return_value = {
+            "report_uuid": REPORT_ID,
+            "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}},
+        }
         self.database.measurements.find.return_value = [self.measurement]
-        self.assertEqual(dict(measurements=[self.measurement]), get_measurements(self.database))
+        self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
 
 class SetEntityAttributeTest(DataModelTestCase):
@@ -107,24 +109,24 @@ class SetEntityAttributeTest(DataModelTestCase):
         """Set up test mocks."""
         super().setUp()
         self.database.sessions.find_one.return_value = JOHN
-        self.measurement = self.database.measurements.find_one.return_value = dict(
-            _id="id",
-            metric_uuid=METRIC_ID,
-            status="red",
-            sources=[
-                dict(
-                    source_uuid=SOURCE_ID,
-                    parse_error=None,
-                    connection_error=None,
-                    value="42",
-                    total=None,
-                    entities=[dict(key="entity_key", title="entity title", other="foo", missing=None)],
-                )
+        self.measurement = self.database.measurements.find_one.return_value = {
+            "_id": "id",
+            "metric_uuid": METRIC_ID,
+            "status": "red",
+            "sources": [
+                {
+                    "source_uuid": SOURCE_ID,
+                    "parse_error": None,
+                    "connection_error": None,
+                    "value": "42",
+                    "total": None,
+                    "entities": [{"key": "entity_key", "title": "entity title", "other": "foo", "missing": None}],
+                },
             ],
-        )
+        }
         self.database.measurements.find.return_value = [self.measurement]
 
-        def insert_one(new_measurement):
+        def insert_one(new_measurement) -> None:
             """Fake setting an id on the inserted measurement."""
             new_measurement["_id"] = "id"
 
@@ -134,16 +136,16 @@ class SetEntityAttributeTest(DataModelTestCase):
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
-        with patch("bottle.request", Mock(json=dict(attribute="value"))):
+        with patch("bottle.request", Mock(json={"attribute": "value"})):
             measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual(dict(attribute="value"), entity)
+        self.assertEqual({"attribute": "value"}, entity)
         self.assertEqual(
-            dict(
-                description="John Doe changed the attribute of 'entity title/foo/None' from '' to 'value'.",
-                email=JOHN["email"],
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
-            ),
+            {
+                "description": "John Doe changed the attribute of 'entity title/foo/None' from '' to 'value'.",
+                "email": JOHN["email"],
+                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+            },
             measurement["delta"],
         )
 
@@ -154,7 +156,7 @@ class StreamNrMeasurementsTest(DatabaseTestCase):
     def test_stream(self):
         """Test that the stream returns the number of measurements whenever it changes."""
 
-        def sleep(seconds):
+        def sleep(seconds: float) -> float:
             """Fake the time.sleep method."""
             return seconds
 

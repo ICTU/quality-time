@@ -20,9 +20,11 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     report = latest_report(database, data_model, report_uuid)
     if "notification_destinations" not in report:
         report["notification_destinations"] = {}
-    report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
-        webhook="", name="Microsoft Teams webhook", sleep_duration=0
-    )
+    report["notification_destinations"][(notification_destination_uuid := uuid())] = {
+        "webhook": "",
+        "name": "Microsoft Teams webhook",
+        "sleep_duration": 0,
+    }
     delta_description = f"{{user}} created a new destination for notifications in report '{report.name}'."
     uuids = [report_uuid, notification_destination_uuid]
     result = insert_new_report(database, delta_description, uuids, report)
@@ -35,7 +37,9 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def delete_notification_destination(
-    report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database
+    report_uuid: ReportId,
+    notification_destination_uuid: NotificationDestinationId,
+    database: Database,
 ):
     """Delete a destination from a report."""
     data_model = latest_datamodel(database)
@@ -52,7 +56,9 @@ def delete_notification_destination(
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def post_notification_destination_attributes(
-    report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database
+    report_uuid: ReportId,
+    notification_destination_uuid: NotificationDestinationId,
+    database: Database,
 ):
     """Set specified notification destination attributes."""
     data_model = latest_datamodel(database)
@@ -65,7 +71,7 @@ def post_notification_destination_attributes(
         report["notification_destinations"][notification_destination_uuid][key] = attributes[key]
 
     if set(old_values) == set(attributes.values()):
-        return dict(ok=True)  # Nothing to do
+        return {"ok": True}  # Nothing to do
 
     separator = "' and '"
     delta_description = (

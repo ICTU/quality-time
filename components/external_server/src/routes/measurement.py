@@ -26,7 +26,11 @@ from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
     permissions_required=[EDIT_ENTITY_PERMISSION],
 )
 def set_entity_attribute(
-    metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
+    metric_uuid: MetricId,
+    source_uuid: SourceId,
+    entity_key: str,
+    attribute: str,
+    database: Database,
 ) -> Measurement:
     """Set an entity attribute."""
     data_model = latest_datamodel(database)
@@ -35,17 +39,17 @@ def set_entity_attribute(
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
-    entity_description = "/".join([str(entity[key]) for key in entity.keys() if key not in ("key", "url")])
+    entity_description = "/".join([str(entity[key]) for key in entity if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
     user = sessions.find_user(database)
-    new_measurement["delta"] = dict(
-        uuids=[report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
-        description=f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to "
+    new_measurement["delta"] = {
+        "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
+        "description": f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to "
         f"'{new_value}'.",
-        email=user.email,
-    )
+        "email": user.email,
+    }
     return insert_new_measurement(database, new_measurement)
 
 
@@ -73,10 +77,11 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
     logging.info("Initializing nr_measurements stream with %s measurements", nr_measurements)
     yield sse_pack(event_id, "init", nr_measurements)
     skipped = 0
+    max_skipped = 5
     # Now give the client updates as they arrive
     while True:
         time.sleep(10)
-        if (new_nr_measurements := count_measurements(database)) > nr_measurements or skipped > 5:
+        if (new_nr_measurements := count_measurements(database)) > nr_measurements or skipped > max_skipped:
             skipped = 0
             nr_measurements = new_nr_measurements
             event_id += 1
@@ -97,13 +102,13 @@ def get_measurements(database: Database):
     for report in reports:
         metric_uuids |= report.metric_uuids
     measurements = list(
-        measurements_by_metric(database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time)
+        measurements_by_metric(database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time),
     )
-    return dict(measurements=measurements)
+    return {"measurements": measurements}
 
 
 @bottle.get("/api/v3/measurements/<metric_uuid>", authentication_required=False)
 def get_metric_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    return dict(measurements=list(all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time())))
+    return {"measurements": list(all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time()))}
