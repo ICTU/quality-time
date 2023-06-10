@@ -1,6 +1,5 @@
 """Configuration file for the Sphinx documentation builder."""
 
-# pylint: disable=invalid-name
 # pragma: no cover
 
 # This file only contains a selection of the most common options. For a full
