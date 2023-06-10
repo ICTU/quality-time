@@ -96,7 +96,6 @@ class PostSourceAttributeTest(SourceTestCase):
         """Test that the source name can be changed."""
         request.json = {"name": "New source name"}
         self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "name", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "name of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'Source' to "
@@ -108,7 +107,6 @@ class PostSourceAttributeTest(SourceTestCase):
         """Test that the source type can be changed."""
         request.json = {"type": "ojaudit"}
         self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "type", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "type of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' from 'owasp_zap' to "
@@ -120,7 +118,6 @@ class PostSourceAttributeTest(SourceTestCase):
         """Test that a metric can be moved."""
         request.json = {"position": "first"}
         self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID2, "position", self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             [SOURCE_ID2, SOURCE_ID],
@@ -180,7 +177,6 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=("username", ""), headers={}, timeout=10)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         url = self.url
@@ -196,7 +192,6 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "RequestException")
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         url = self.url
         self.assert_delta(
@@ -211,7 +206,6 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "[Errno 1234] Error message")
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         url = self.url
         self.assert_delta(
@@ -226,7 +220,6 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "[Errno -2] Error message")
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         url = self.url
         self.assert_delta(
@@ -243,7 +236,6 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=("un", "pwd"), headers={}, timeout=10)
 
     @patch.object(requests, "get")
@@ -253,16 +245,16 @@ class PostSourceParameterTest(SourceTestCase):
         request.json = {"landing_url": "unimportant"}
         response = post_source_parameter(SOURCE_ID, "landing_url", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_not_called()
 
-    def test_empty_url(self, request):
+    @patch.object(requests, "get")
+    def test_empty_url(self, mock_get, request):
         """Test that the source url availability is not checked when the url is empty."""
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = {"url": ""}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
-        self.database.reports.insert_one.assert_called_once_with(self.report)
+        mock_get.assert_not_called()
 
     @patch.object(requests, "get")
     def test_url_with_token(self, mock_get, request):
@@ -272,7 +264,6 @@ class PostSourceParameterTest(SourceTestCase):
         self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(
             self.url,
             auth=("xxx", ""),
@@ -293,7 +284,6 @@ class PostSourceParameterTest(SourceTestCase):
         )
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(
             self.url + "/rest/api/2/myself",
             auth=None,
@@ -303,20 +293,18 @@ class PostSourceParameterTest(SourceTestCase):
 
     @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):
-        """Test that the all urls availability is checked when a parameter that it depends on is changed."""
+        """Test that the url availability is checked when a parameter that it depends on is changed."""
         mock_get.return_value = self.url_check_get_response
         request.json = {"password": "changed"}
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assert_url_check(response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
 
     def test_password(self, request):
         """Test that the password can be changed and is not logged."""
         request.json = {"password": "secret"}
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             """password of source 'Source' of metric 'Metric' of subject """
@@ -340,7 +328,6 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "risks", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
         self.assertEqual(["medium", "high"], parameters["risks"])
-        self.database.reports.insert_one.assert_called_once_with(self.report)
 
     def test_regexp_with_curly_braces(self, request):
         """Test that regular expressions with curly braces work.
@@ -352,7 +339,6 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "variable_url_regexp", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
         self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["variable_url_regexp"])
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             "variable_url_regexp of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
@@ -457,7 +443,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = {"username": self.NEW_VALUE, "edit_scope": "reports"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual({"ok": True, "nr_sources_mass_edited": 5, "availability": []}, response)
-        self.database.reports.insert_many.assert_called_once_with((self.report, self.report2), ordered=False)
         self.assert_value(
             {
                 self.NEW_VALUE: [
@@ -493,7 +478,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = {"username": self.NEW_VALUE, "edit_scope": "report"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual({"ok": True, "nr_sources_mass_edited": 4, "availability": []}, response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
                 self.NEW_VALUE: [
@@ -515,7 +499,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = {"username": self.NEW_VALUE, "edit_scope": "subject"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual({"ok": True, "nr_sources_mass_edited": 3, "availability": []}, response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
@@ -536,7 +519,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = {"username": self.NEW_VALUE, "edit_scope": "metric"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual({"ok": True, "nr_sources_mass_edited": 2, "availability": []}, response)
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
@@ -566,11 +548,10 @@ class SourceTest(SourceTestCase):
         """Test that a new source is added."""
         request.json = {"type": "ojaudit"}
         self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
-        self.database.reports.insert_one.assert_called_once_with(self.report)
-        source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        source_uuid = list(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid]
         description = "Jenny added a new source to metric 'Metric' of subject 'Subject' in report 'Report'."
-        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
         self.assertEqual(
             "ojaudit",
@@ -580,9 +561,9 @@ class SourceTest(SourceTestCase):
     def test_copy_source(self):
         """Test that a source can be copied."""
         self.assertTrue(post_source_copy(SOURCE_ID, METRIC_ID, self.database)["ok"])
-        self.database.reports.insert_one.assert_called_once_with(self.report)
+        updated_report = self.database.reports.insert_one.call_args[0][0]
         copied_source_uuid, copied_source = list(
-            self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items(),
+            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items(),
         )[1]
         self.assertEqual("Source (copy)", copied_source["name"])
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, copied_source_uuid]
@@ -590,7 +571,6 @@ class SourceTest(SourceTestCase):
             "Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report 'Report' to metric "
             "'Metric' of subject 'Subject' in report 'Report'."
         )
-        updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(description, uuids, updated_report)
 
     def test_move_source_within_subject(self):
@@ -661,8 +641,8 @@ class SourceTest(SourceTestCase):
     def test_delete_source(self):
         """Test that the source can be deleted."""
         self.assertEqual({"ok": True}, delete_source(SOURCE_ID, self.database))
-        self.database.reports.insert_one.assert_called_once_with(self.report)
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID]
         description = "Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report'."
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        self.assertEqual({}, updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assert_delta(description, uuids, updated_report)

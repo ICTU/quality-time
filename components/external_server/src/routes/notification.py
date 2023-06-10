@@ -5,7 +5,7 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.database.reports import insert_new_report
-from shared.utils.type import ReportId, NotificationDestinationId
+from shared.utils.type import ItemId, ReportId, NotificationDestinationId
 
 from database.reports import latest_report
 from utils.functions import uuid
@@ -47,7 +47,7 @@ def delete_notification_destination(
     destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     del report["notification_destinations"][notification_destination_uuid]
     delta_description = f"{{user}} deleted destination {destination_name} from report '{report.name}'."
-    uuids = [report_uuid, notification_destination_uuid]
+    uuids: list[ItemId] = [report_uuid, notification_destination_uuid]
     return insert_new_report(database, delta_description, uuids, report)
 
 

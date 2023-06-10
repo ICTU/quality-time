@@ -1,4 +1,4 @@
-"""Module for shared metric methods"""
+"""Module for shared metric methods."""
 
 from shared.model.metric import Metric
 from shared.model.report import Report

@@ -1,12 +1,12 @@
 """Test the sessions."""
 
 import unittest
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 from shared.database import sessions
 
-from ...fixtures import JOHN
+from tests.fixtures import JOHN
 
 
 class SessionsTest(unittest.TestCase):
@@ -15,16 +15,16 @@ class SessionsTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the database."""
         self.database = Mock()
-        self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.reports_overviews.find_one.return_value = {"_id": "id"}
 
-    def create_session(self, session_expiration_datetime=None):
+    def create_session(self, session_expiration_datetime: datetime | None = None):
         """Create a fake session in the mock database."""
-        session_expiration_datetime = session_expiration_datetime or datetime.now() + timedelta(seconds=5)
-        session = JOHN | dict(session_id="5", session_expiration_datetime=session_expiration_datetime)
+        session_expiration_datetime = session_expiration_datetime or datetime.now(tz=UTC) + timedelta(seconds=5)
+        session = JOHN | {"session_id": "5", "session_expiration_datetime": session_expiration_datetime}
         self.database.sessions.find_one.return_value = session
 
     @patch("bottle.request")
-    def test_user(self, bottle_mock):
+    def test_user(self, bottle_mock: Mock):
         """Test user function."""
         bottle_mock.get_cookie.return_value = 4
         self.create_session()

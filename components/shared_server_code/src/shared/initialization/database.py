@@ -3,7 +3,7 @@
 import logging
 import os
 
-import pymongo  # pylint: disable=wrong-import-order
+import pymongo
 from pymongo.database import Database
 
 from shared.initialization.datamodel import import_datamodel
@@ -14,7 +14,7 @@ DEFAULT_DATABASE_URL = "mongodb://root:root@localhost:27017"
 
 
 def client(url: str | None = DEFAULT_DATABASE_URL) -> pymongo.MongoClient:  # pragma: no feature-test-cover
-    """Returns a pymongo client."""
+    """Return a pymongo client."""
     database_url = os.environ.get("DATABASE_URL", url)
     return pymongo.MongoClient(database_url)
 
@@ -22,7 +22,7 @@ def client(url: str | None = DEFAULT_DATABASE_URL) -> pymongo.MongoClient:  # pr
 def database_connection(
     url: str | None = DEFAULT_DATABASE_URL,
 ) -> pymongo.database.Database:  # pragma: no feature-test-cover
-    """Returns a pymongo database."""
+    """Return a pymongo database."""
     db_client = client(url)
     return db_client["quality_time_db"]
 
@@ -61,6 +61,6 @@ def create_indexes(database: Database) -> None:
     start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
     latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.DESCENDING)])
     latest_successful_measurement_index = pymongo.IndexModel(
-        [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)]
+        [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)],
     )
     database.measurements.create_indexes([start_index, latest_measurement_index, latest_successful_measurement_index])

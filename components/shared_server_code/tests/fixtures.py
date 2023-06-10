@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId, NotificationDestinationId
+from shared.utils.type import MetricId, NotificationDestinationId, ReportId, SourceId, SubjectId
 
 METRIC_ID = cast(MetricId, "metric_uuid")
 METRIC_ID2 = cast(MetricId, "metric_uuid2")
@@ -13,50 +13,57 @@ SUBJECT_ID = cast(SubjectId, "subject_uuid")
 REPORT_ID = cast(ReportId, "report_uuid")
 REPORT_ID2 = cast(ReportId, "report_uuid2")
 
-JOHN = dict(user="John", email="john@example.org", common_name="John Doe")
-"""Fixtures for tests."""
+JOHN = {"user": "John", "email": "john@example.org", "common_name": "John Doe"}
 
 
 def create_report(
-    title: str = "Title", report_uuid: str = "report1", last: bool = True, deleted=None, metric_id: MetricId = METRIC_ID
+    title: str = "Title",
+    report_uuid: str = "report1",
+    last: bool = True,
+    deleted: bool | None = None,
+    metric_id: MetricId = METRIC_ID,
 ) -> dict:
-    """Returns a fake report."""
-    report = dict(
-        report_uuid=report_uuid,
-        title=title,
-        subjects={
-            SUBJECT_ID: dict(
-                name="Subject",
-                type="subject_type",
-                metrics={
-                    metric_id: dict(
-                        name="Metric",
-                        type="violations",
-                        addition="sum",
-                        target="0",
-                        accept_debt=False,
-                        tags=["security"],
-                        scale="count",
-                        unit="foo",
-                        webhook="www.webhook.com",
-                        scales=["count", "percentage"],
-                        sources={
-                            SOURCE_ID: dict(
-                                type="sonarqube",
-                                name="Source",
-                                parameters=dict(url="https://url", password="password"),
-                            )
+    """Return a fake report."""
+    report = {
+        "report_uuid": report_uuid,
+        "title": title,
+        "subjects": {
+            SUBJECT_ID: {
+                "name": "Subject",
+                "type": "subject_type",
+                "metrics": {
+                    metric_id: {
+                        "name": "Metric",
+                        "type": "violations",
+                        "addition": "sum",
+                        "target": "0",
+                        "accept_debt": False,
+                        "tags": ["security"],
+                        "scale": "count",
+                        "unit": "foo",
+                        "webhook": "www.webhook.com",
+                        "scales": ["count", "percentage"],
+                        "sources": {
+                            SOURCE_ID: {
+                                "type": "sonarqube",
+                                "name": "Source",
+                                "parameters": {"url": "https://url", "password": "password"},
+                            },
                         },
-                    )
+                    },
                 },
-            )
+            },
         },
-        notification_destinations={
-            NOTIFICATION_DESTINATION_ID: dict(webhook="", name="notification_destination", url="https://reporturl")
+        "notification_destinations": {
+            NOTIFICATION_DESTINATION_ID: {
+                "webhook": "",
+                "name": "notification_destination",
+                "url": "https://reporturl",
+            },
         },
-        issue_tracker=dict(type="jira", parameters=dict(username="jadoe", password="secret")),
-        last=last,
-    )
+        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},
+        "last": last,
+    }
     if deleted is not None:
         report.update({"deleted": deleted})
         return report

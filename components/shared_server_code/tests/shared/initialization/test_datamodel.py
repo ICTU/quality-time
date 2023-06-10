@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 from shared.initialization.datamodel import import_datamodel
 
-from ..base import DataModelTestCase
+from tests.shared.base import DataModelTestCase
 
 
 class DataModelImportTest(DataModelTestCase):

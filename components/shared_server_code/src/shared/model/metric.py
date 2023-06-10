@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from datetime import date
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.type import (
     Direction,
@@ -18,7 +18,6 @@ from shared.utils.type import (
 
 from .source import Source
 
-
 if TYPE_CHECKING:
     from .measurement import Measurement
 
@@ -28,14 +27,14 @@ class Metric(dict):
 
     def __init__(
         self,
-        data_model,
-        metric_data,
+        data_model: dict,
+        metric_data: dict,
         metric_uuid: MetricId,
-        subject_uuid: SubjectId = cast(SubjectId, ""),
+        subject_uuid: SubjectId | None = None,
     ) -> None:
         self.__data_model = data_model
         self.uuid = metric_uuid
-        self.subject_uuid = subject_uuid
+        self.subject_uuid = subject_uuid or cast(SubjectId, "")
 
         source_data = metric_data.get("sources", {})
         metric_data["sources"] = {
@@ -46,11 +45,11 @@ class Metric(dict):
         self.sources = list(self.sources_dict.values())
         self.source_uuids = list(self.sources_dict.keys())
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Return whether the metrics are equal."""
         return self.uuid == other.uuid if isinstance(other, self.__class__) else False  # pragma: no feature-test-cover
 
-    def type(self) -> str | None:
+    def type(self) -> str | None:  # noqa: A003
         """Return the type of the metric."""
         return str(self["type"]) if "type" in self else None
 
@@ -60,16 +59,20 @@ class Metric(dict):
         return self.get("sources", {})
 
     @property
-    def name(self):
+    def name(self) -> str | None:
         """Either a custom name or one from the metric type in the data model."""
-        return self.get("name") or self.__data_model["metrics"].get(self.type(), {}).get("name")
+        if name := self.get("name"):
+            return str(name)
+        if default_name := self.__data_model["metrics"].get(self.type(), {}).get("name"):
+            return str(default_name)
+        return None
 
     @property
-    def unit(self):
+    def unit(self) -> str:
         """Either a custom unit or one from the metric type in the data model."""
-        return self.get("unit") or self.__data_model["metrics"].get(self.type(), {}).get("unit")
+        return cast(str, self.get("unit") or self.__data_model["metrics"].get(self.type(), {}).get("unit"))
 
-    def evaluate_targets(self):
+    def evaluate_targets(self) -> bool:
         """Return whether the metric is to evaluate its targets. If not, it is considered to be informative."""
         return self.get("evaluate_targets", True)
 
@@ -88,10 +91,11 @@ class Metric(dict):
         """Return the ids of this metric's issues."""
         return self.get("issue_ids", [])
 
-    def addition(self):
+    def addition(self) -> Callable:
         """Return the addition operator of the metric: sum, min, or max."""
         addition = self.get("addition") or self.__data_model["metrics"][self.type()]["addition"]
-        return dict(max=max, min=min, sum=sum)[addition]
+        # The cast works around https://github.com/python/mypy/issues/10740
+        return cast(Callable, {"max": max, "min": min, "sum": sum}[addition])
 
     def direction(self) -> Direction:
         """Return the direction of the metric: < or >."""
@@ -122,7 +126,8 @@ class Metric(dict):
 
     def debt_end_date_passed(self) -> bool:
         """Return whether the end date of the accepted technical debt has passed."""
-        return date.today().isoformat() > self.debt_end_date()
+        # The debt end date is a date in ISO-format without timezone information; suppress the Ruff error
+        return date.today().isoformat() > self.debt_end_date()  # noqa: DTZ011
 
     def get_target(self, target_type: TargetType) -> str | None:
         """Return the target."""
@@ -148,7 +153,7 @@ class Metric(dict):
         attribute = {attr["key"]: attr for attr in entity.get("attributes", [])}.get(str(attribute_key), {})
         return str(attribute.get("type", "text"))
 
-    def summarize(self, measurements: list[Measurement], **kwargs):
+    def summarize(self, measurements: list[Measurement], **kwargs) -> dict:
         """Add a summary of the metric to the report."""
         latest_measurement = measurements[-1] if measurements else None
         summary = dict(self)

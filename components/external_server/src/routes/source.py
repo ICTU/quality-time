@@ -7,7 +7,7 @@ from pymongo.database import Database
 
 from shared.database.datamodels import latest_datamodel
 from shared.database.reports import insert_new_report
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
+from shared.utils.type import ItemId, MetricId, SourceId
 
 from database.datamodels import default_source_parameters
 from database.reports import latest_report_for_uuids, latest_reports
@@ -80,7 +80,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         f"'{target_subject.name}' in report '{reports[1].name}'."
     )
     target_metric["sources"][source_uuid] = source
-    uuids: list[ReportId | SubjectId | MetricId | SourceId | None] = [
+    uuids: list[ItemId] = [
         reports[1].uuid,
         target_subject.uuid,
         target_metric_uuid,

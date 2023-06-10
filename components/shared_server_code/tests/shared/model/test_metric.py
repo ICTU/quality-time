@@ -6,13 +6,19 @@ from datetime import date
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
+
 from tests.fixtures import METRIC_ID
 
 
 class MetricTest(unittest.TestCase):
     """Test the metric model."""
 
-    DATA_MODEL = {"metrics": {"fixture_metric_type": {"name": "fixture_metric_type", "unit": "issues"}}}
+    DATA_MODEL = {
+        "metrics": {
+            "fixture_metric_type": {"name": "fixture_metric_type", "unit": "issues"},
+            "fixture_metric_type_without_name": {"unit": "issues"},
+        },
+    }
 
     def test_summarize_empty_metric(self):
         """Test that a minimal metric returns a summary."""
@@ -64,7 +70,7 @@ class MetricTest(unittest.TestCase):
                         "count": {"status": "target_met", "value": 1},
                         "end": measurement_timestamp,
                         "start": measurement_timestamp,
-                    }
+                    },
                 ],
                 "sources": {},
             },
@@ -133,6 +139,11 @@ class MetricTest(unittest.TestCase):
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
         self.assertEqual("fixture_metric_type", metric.name)
 
+    def test_missing_default_name(self):
+        """Test that the metric name is None if both the metric and the data model have no name for the metric."""
+        metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type_without_name"}, METRIC_ID)
+        self.assertIsNone(metric.name)
+
     def test_unit(self):
         """Test that we get the metric unit from the metric."""
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type", "unit": "oopsies"}, METRIC_ID)
@@ -144,7 +155,7 @@ class MetricTest(unittest.TestCase):
         self.assertEqual("issues", metric.unit)
 
     def test___eq__(self):
-        """Tests that __eq__ returns false if Object is not eq"""
+        """Tests that __eq__ returns false if Object is not eq."""
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
 
         self.assertFalse(metric == "foo")

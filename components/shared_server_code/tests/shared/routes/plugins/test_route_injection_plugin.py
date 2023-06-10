@@ -26,7 +26,7 @@ class RouteInjectionPluginTest(unittest.TestCase):
     def test_apply_plugin(self):
         """Test that the plugin can be applied to a route."""
 
-        def route(keyword):
+        def route(keyword: str) -> str:
             """Fake route."""
             return keyword
 
@@ -37,7 +37,7 @@ class RouteInjectionPluginTest(unittest.TestCase):
     def test_apply_plugin_to_route_that_does_not_take_keyword(self):
         """Test that the plugin can be applied to a route."""
 
-        def route():
+        def route() -> str:
             """Fake route."""
             return "route"
 

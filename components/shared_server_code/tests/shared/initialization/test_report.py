@@ -6,7 +6,7 @@ from unittest.mock import Mock, mock_open, patch
 
 from shared.initialization.report import import_example_reports, import_report
 
-from ..base import DataModelTestCase
+from tests.shared.base import DataModelTestCase
 
 
 class ReportInitTest(DataModelTestCase):
@@ -18,20 +18,23 @@ class ReportInitTest(DataModelTestCase):
         self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = self.DATA_MODEL
         self.report_json = json.dumps(
-            dict(
-                report_uuid="id",
-                subjects=[
-                    dict(
-                        name="name",
-                        type="software",
-                        metrics=[
-                            dict(type="security_warnings", sources=[dict(type="sonarqube", parameters=dict(url={}))])
+            {
+                "report_uuid": "id",
+                "subjects": [
+                    {
+                        "name": "name",
+                        "type": "software",
+                        "metrics": [
+                            {
+                                "type": "security_warnings",
+                                "sources": [{"type": "sonarqube", "parameters": {"url": {}}}],
+                            },
                         ],
-                    )
+                    },
                 ],
-            )
+            },
         )
-        self.database.sessions.find_one.return_value = dict(user="jadoe")
+        self.database.sessions.find_one.return_value = {"user": "jadoe"}
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""
@@ -52,7 +55,9 @@ class ReportInitTest(DataModelTestCase):
     def test_import_example_report(self):
         """Test that the example reports are imported."""
         with patch.object(pathlib.Path, "glob", Mock(return_value=[pathlib.Path("example-report.json")])), patch.object(
-            pathlib.Path, "open", mock_open(read_data=self.report_json)
+            pathlib.Path,
+            "open",
+            mock_open(read_data=self.report_json),
         ):
             import_example_reports(self.database)
         self.database.reports.insert_one.assert_called_once()

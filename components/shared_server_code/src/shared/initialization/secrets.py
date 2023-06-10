@@ -1,10 +1,9 @@
 """Generate a public and private key pair if it doesn't already exist."""
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from pymongo.database import Database
-
 
 EXPORT_FIELDS_KEYS_NAME = "export_fields_keys"
 EXPORT_FIELDS_USAGE_DESCRIPTION = """
@@ -29,7 +28,8 @@ def initialize_secrets(database: Database) -> None:
         encryption_algorithm=serialization.NoEncryption(),
     )
     public_key_bytes = public_key.public_bytes(
-        encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
     database.secrets.insert_one(
@@ -38,5 +38,5 @@ def initialize_secrets(database: Database) -> None:
             "description": EXPORT_FIELDS_USAGE_DESCRIPTION,
             "private_key": private_key_bytes.decode(),
             "public_key": public_key_bytes.decode(),
-        }
+        },
     )

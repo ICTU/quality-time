@@ -2,11 +2,12 @@
 
 import pathlib
 from unittest.mock import Mock, mock_open, patch
+
 import mongomock
 
-from shared.initialization.database import init_database, database_connection
+from shared.initialization.database import database_connection, init_database
 
-from ..base import DataModelTestCase
+from tests.shared.base import DataModelTestCase
 
 
 class DatabaseInitTest(DataModelTestCase):
@@ -22,13 +23,13 @@ class DatabaseInitTest(DataModelTestCase):
         self.database.reports_overviews.find_one.return_value = None
         self.database.reports_overviews.find.return_value = []
         self.database.reports.count_documents.return_value = 0
-        self.database.sessions.find_one.return_value = dict(user="jodoe")
+        self.database.sessions.find_one.return_value = {"user": "jodoe"}
         self.database.measurements.count_documents.return_value = 0
         self.database.measurements.index_information.return_value = {}
         self.mongo_client().quality_time_db = self.database
 
     @patch("shared.initialization.database.pymongo", return_value=mongomock)
-    def test_client(self, client) -> None:
+    def test_client(self, client: Mock) -> None:
         """Test that the client is called."""
         database_connection()
         client.MongoClient.assert_called_once()
@@ -36,7 +37,9 @@ class DatabaseInitTest(DataModelTestCase):
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
         with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock, patch.object(
-            pathlib.Path, "open", mock_open(read_data=data_model_json)
+            pathlib.Path,
+            "open",
+            mock_open(read_data=data_model_json),
         ), patch("pymongo.MongoClient", self.mongo_client):
             init_database()
         if assert_glob_called:
@@ -53,7 +56,7 @@ class DatabaseInitTest(DataModelTestCase):
     def test_init_initialized_database(self):
         """Test the initialization of an initialized database."""
         self.database.datamodels.find_one.return_value = self.DATA_MODEL
-        self.database.reports_overviews.find_one.return_value = dict(_id="id")
+        self.database.reports_overviews.find_one.return_value = {"_id": "id"}
         self.database.reports.count_documents.return_value = 10
         self.database.measurements.count_documents.return_value = 20
         self.init_database("{}")
