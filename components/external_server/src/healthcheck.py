@@ -6,7 +6,6 @@ from urllib.request import urlopen
 import sys
 
 external_server_port = getenv("EXTERNAL_SERVER_PORT", "5001")
-# pylint: disable=invalid-name
 exit_code = 1
 try:
     with urlopen(f"http://localhost:{external_server_port}/api/health") as response:  # nosec B310 # noqa: S310

@@ -408,7 +408,7 @@ npm run test
 
 ### Quality checks
 
-To run mypy, Pylint, and some other security and quality checks on the backend components:
+To run ruff, mypy, and some other security and quality checks on the backend components:
 
 ```console
 cd components/external_server  # or components/shared_data_model, components/shared_server_code, components/collector, components/notifier

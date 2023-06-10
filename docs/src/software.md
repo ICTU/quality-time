@@ -235,7 +235,7 @@ The `url` links to a landing page describing the source type.
 In cases where *Quality-time* needs information about sources that doesn't need to be parameterizable, `Configurations` can be added to the source. A configuration consists of a name (via `NamedModel`), a list of metrics to which the configuration applies, and a value:
 
 ```python
-class Configuration(NamedModel):  # pylint: disable=too-few-public-methods
+class Configuration(NamedModel):
     """Configuration for specific metrics."""
 
     metrics: list[str] = Field(..., min_items=1)
