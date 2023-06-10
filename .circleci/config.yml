@@ -17,7 +17,7 @@ jobs:
           case $CIRCLE_NODE_INDEX in
             0) component=components/collector;;
             1) component=components/notifier;;
-            2) component=components/external_server;;
+            2) component=components/api_server;;
             3) component=components/shared_data_model;;
             4) component=components/shared_server_code;;
             5) component=tests/feature_tests;;
@@ -109,7 +109,7 @@ workflows:
           context: QualityTime
       - docker/hadolint:
           context: QualityTime
-          dockerfiles: "components/collector/Dockerfile:components/database/Dockerfile:co\
-            mponents/external_server/Dockerfile:components/frontend/Dockerfile:\
-            components/notifier/Dockerfile:components/proxy/Dockerfile:componen\
-            ts/renderer/Dockerfile:components/testdata/Dockerfile"
+          dockerfiles: "components/collector/Dockerfile:components/database/Dockerfile:\
+            components/api_server/Dockerfile:components/frontend/Dockerfile:\
+            components/notifier/Dockerfile:components/proxy/Dockerfile:\
+            components/renderer/Dockerfile:components/testdata/Dockerfile"

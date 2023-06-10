@@ -24,7 +24,7 @@ If your organization uses its own certificate authority, you need to add the cer
     RUN cd /usr/local/share/ca-certificates/ ; for key in $(ls *.crt) ;do cat $key >> /usr/lib/ssl/cert.pem ; done
     ENV REQUESTS_CA_BUNDLE /usr/lib/ssl/cert.pem
 
-[Dockerfile.externalserver](./Dockerfile.externalserver) shows how to add the certificate and enable it at OS level and Python application level.
+[Dockerfile.apiserver](./Dockerfile.apiserver) shows how to add the certificate and enable it at OS level and Python application level.
 
 ## Changes for non-root process
 

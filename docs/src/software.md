@@ -19,11 +19,11 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
 There are four bespoke components:
 
 - A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Semantic UI React](https://react.semantic-ui.com).
-- An [external server](#external-server) serving the API for the user interface. The external server is written in Python using [Bottle](https://bottlepy.org) as web framework.
+- An [API-server](#api-server) serving the API for the user interface. The API-server is written in Python using [Bottle](https://bottlepy.org) as web framework.
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the collector, and the notifier. The shared server code is used by the external server.
+Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the API-server, the collector, and the notifier. The shared server code is used by the API-server.
 
 ### Standard components
 
@@ -60,29 +60,29 @@ The frontend uses the following environment variables:
 |:----------------|:--------------|:----------------------------------|
 | `FRONTEND_PORT` | `5000`        | The port the frontend listens on. |
 
-## External server
+## API-server
 
 ```{index} API
 ```
 
 ### API
 
-The API of the external server is versioned. The version is not changed when backwards compatible changes are made, such as the addition of new endpoints.
+The API of the API-server is versioned. The version is not changed when backwards compatible changes are made, such as the addition of new endpoints.
 
 API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v3 (all routes for a specific version, in this case version 3), and http://www.quality-time.example.org/api/v3/<route_fragment> (all routes matching a specific text fragment).
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/external_server/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the server.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/api_server/Dockerfile) contains a health check that uses curl to retrieve an end-point (api/health) from the API-server. Officially, this end-point does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the API-server.
 
 ### Environment variables
 
-The external server uses the following environment variables:
+The API-server uses the following environment variables:
 
 | Name                        | Default value                             | Description                                                                                                                                                                                                                                                                 |
 |:----------------------------|:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `EXTERNAL_SERVER_PORT`      | `5001`                                    | Port of the external server.                                                                                                                                                                                                                                                |
-| `EXTERNAL_SERVER_LOG_LEVEL` | `WARNING`                                 | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
+| `API_SERVER_PORT`           | `5001`                                    | Port of the API- server.                                                                                                                                                                                                                                                    |
+| `API_SERVER_LOG_LEVEL`      | `WARNING`                                 | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
 | `DATABASE_URL`              | `mongodb://root:root@database:27017`      | Mongo database connection URL.                                                                                                                                                                                                                                              |
 | `LDAP_URL`                  | `ldap://ldap:389`                         | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                             |
 | `LDAP_ROOT_DN`              | `dc=example,dc=org`                       | LDAP root distinguished name.                                                                                                                                                                                                                                               |
@@ -350,12 +350,12 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 The proxy uses the following environment variables:
 
-| Name                   | Default value     | Description                              |
-|:-----------------------|:------------------|:-----------------------------------------|
-| `FRONTEND_HOST`        | `frontend`        | The host name of the frontend.           |
-| `FRONTEND_PORT`        | `5000`            | The port the frontend listens on.        |
-| `EXTERNAL_SERVER_HOST` | `external_server` | The hostname of the external server.     |
-| `EXTERNAL_SERVER_PORT` | `5001`            | The port the external server listens on. |
+| Name              | Default value | Description                         |
+|:------------------|:--------------|:------------------------------------|
+| `FRONTEND_HOST`   | `frontend`    | The host name of the frontend.      |
+| `FRONTEND_PORT`   | `5000`        | The port the frontend listens on.   |
+| `API_SERVER_HOST` | `api_server`  | The hostname of the API-server.     |
+| `API_SERVER_PORT` | `5001`        | The port the API-server listens on. |
 
 ## Database
 
@@ -367,7 +367,7 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 The two server components are the only components that directly interacts with the database.
 
-Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the external server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
+Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the API-server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
 
 ### Environment variables
 

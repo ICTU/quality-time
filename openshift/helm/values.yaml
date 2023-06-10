@@ -12,9 +12,9 @@ database:
   storageSize: 5Gi
   storageClassName: ocs-storagecluster-cephfs
 
-external_server:
-  name: externalserver
-  image: docker.io/ictu/quality-time_external_server:v5.0.0
+api_server:
+  name: apiserver
+  image: docker.io/ictu/quality-time_api_server:v5.0.0
 
 frontend:
   name: frontend

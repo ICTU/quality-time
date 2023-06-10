@@ -49,7 +49,7 @@ As a `role` I want to `action` so that `goal`
 - [ ] Change endpoint `endpoint`
 - [ ] Extend the example reports
 
-### External server
+### API-server
 
 - [ ] Change endpoint `endpoint`
 - [ ] Add ...

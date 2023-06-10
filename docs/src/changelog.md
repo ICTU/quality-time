@@ -17,14 +17,21 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 In this version of *Quality-time* the internal server component is no longer used. The notifier and collector components talk directly to the database, instead of using the internal server. This means that the docker composition **must** be changed:
 
 - Remove the `internal_server` section.
+- Rename the `external_server` section to `api_server` and make the following changes in that section:
+  - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
+  - Rename `EXTERNAL_SERVER_LOG_LEVEL` to `API_SERVER_LOG_LEVEL`.
+- In the `proxy` section:
+  - Rename `EXTERNAL_SERVER_HOST` to `API_SERVER_HOST`.
+  - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
+  - Change the `depends_on: external_server` into `depends_on: api_server`.
 - In the `collector` section:
   - Add the same `DATABASE_URL` environment variable as the external server has.
-  - Change the `depends_on: internal_server` into `depends_on: database`.
   - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
+  - Change the `depends_on: internal_server` into `depends_on: database`.
 - In the `notifier` section:
   - Add the same `DATABASE_URL` environment variable as the external server has.
-  - Change the `depends_on: internal_server` into `depends_on: database`.
   - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
+  - Change the `depends_on: internal_server` into `depends_on: database`.
 - Update the version number of all images to `v5.0.0`.
 
 See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) for an overview of all images.
