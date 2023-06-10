@@ -23,7 +23,7 @@ There are four bespoke components:
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared server code](#shared-server-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the API-server, the collector, and the notifier. The shared server code is used by the API-server.
+Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared code](#shared-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the API-server, the collector, and the notifier. The shared code is used by the API-server.
 
 ### Standard components
 
@@ -142,13 +142,13 @@ The notifier uses the following environment variables:
 | `NOTIFIER_LOG_LEVEL`      | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.      |
 | `NOTIFIER_SLEEP_DURATION` | `60`                                 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
 
-## Shared server code
+## Shared code
 
-The [shared server code component](https://github.com/ICTU/quality-time/tree/master/components/shared_server_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
+The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
 
 ### Example reports
 
-The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_server_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
+The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
 
 ## Shared data model
 
@@ -415,7 +415,7 @@ python3 -m http.server
 
 ### Adding test data
 
-Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_server_code/src/shared/example-reports) in the shared server code component.
+Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) in the shared code component.
 
 ### Acknowledgements
 
