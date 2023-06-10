@@ -63,9 +63,8 @@ class Metric(dict):
         """Either a custom name or one from the metric type in the data model."""
         if name := self.get("name"):
             return str(name)
-        if default_name := self.__data_model["metrics"].get(self.type(), {}).get("name"):
-            return str(default_name)
-        return None
+        default_name = self.__data_model["metrics"].get(self.type(), {}).get("name")
+        return str(default_name) if default_name else None
 
     @property
     def unit(self) -> str:

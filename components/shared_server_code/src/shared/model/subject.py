@@ -53,9 +53,8 @@ class Subject(dict):
         """Either a custom name or one from the subject type in the data model."""
         if name := self.get("name"):
             return str(name)
-        if default_name := self.__data_model["subjects"].get(self.type, {}).get("name"):
-            return str(default_name)
-        return None
+        default_name = self.__data_model["subjects"].get(self.type, {}).get("name")
+        return str(default_name) if default_name else None
 
     def tag_subject(self, tag: str) -> Optional["Subject"]:
         """Return a Subject instance with only metrics belonging to one tag."""

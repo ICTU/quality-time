@@ -123,14 +123,14 @@ class Report(dict):
 
         Only one of the uuid arguments should be filled. If more are filled, all but the first one will be ignored.
         """
-        if metric_uuid is not None:
+        if metric_uuid:
             metric = self.metrics_dict[metric_uuid]
             subject = self.subjects_dict[metric.subject_uuid]
             return metric, subject
-        if source_uuid is not None:
+        if source_uuid:  # pragma: no feature-test-cover
             source = self.sources_dict[source_uuid]
             metric = source.metric
             subject = self.subjects_dict[metric.subject_uuid]
             return source, metric, subject
-        msg = "metric_uuid and source_uuid cannot both be None"
+        msg = "metric_uuid and source_uuid cannot both be None"  # pragma: no feature-test-cover
         raise RuntimeError(msg)  # pragma: no feature-test-cover
