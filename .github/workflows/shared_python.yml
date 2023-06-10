@@ -1,4 +1,4 @@
-name: Shared Server Code
+name: Shared Code
 
 on: [push]
 
@@ -15,13 +15,13 @@ jobs:
         python-version: '3.11'
     - name: Install dependencies
       run: |
-        cd components/shared_server_code
+        cd components/shared_code
         ci/pip-install.sh
     - name: Test
       run: |
-        cd components/shared_server_code
+        cd components/shared_code
         ci/unittest.sh
     - name: Quality
       run: |
-        cd components/shared_server_code
+        cd components/shared_code
         ci/quality.sh

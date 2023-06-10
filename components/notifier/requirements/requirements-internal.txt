@@ -1,2 +1,2 @@
 -e ../shared_data_model
--e ../shared_server_code
+-e ../shared_code

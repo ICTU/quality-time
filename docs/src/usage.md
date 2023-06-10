@@ -508,7 +508,7 @@ $ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key
 
 ### Importing reports
 
-The importing endpoint is available via `https://quality-time.destination.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_server_code/src/shared/example-reports) for the format.
+The importing endpoint is available via `https://quality-time.destination.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) for the format.
 
 For example, using curl, and assuming you have logged in as shown above:
 

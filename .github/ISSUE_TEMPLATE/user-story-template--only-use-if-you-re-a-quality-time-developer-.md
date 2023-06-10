@@ -44,7 +44,7 @@ As a `role` I want to `action` so that `goal`
 - [ ] Add source `source` to the data model
 - [ ] Add logo for source `source`
 
-### Shared server code
+### Shared code
 
 - [ ] Change endpoint `endpoint`
 - [ ] Extend the example reports

@@ -1,5 +1,5 @@
 [project]
-name = "shared_server_code"
+name = "shared_code"
 version = "4.10.0"
 dependencies = [
     "bottle==0.12.25",
