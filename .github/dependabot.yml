@@ -97,12 +97,6 @@ updates:
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
-  directory: "/components/shared_data_model"
-  schedule:
-    interval: "daily"
-  open-pull-requests-limit: 100
-
-- package-ecosystem: pip
   directory: "/components/shared_code"
   schedule:
     interval: "daily"

@@ -23,7 +23,7 @@ There are four bespoke components:
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared code](#shared-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the external server, the collector, and the notifier. The shared code is used by the external server.
+Source code that is shared between the Python components lives in the [shared code](#shared-code) component. This is a run-time components. The code of this component is shared at build time, when the Docker images are created.
 
 ### Standard components
 
@@ -144,15 +144,11 @@ The notifier uses the following environment variables:
 
 ## Shared code
 
-The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
+The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), the [data model](#data-model), code to initialize the server and code to access the database.
 
 ### Example reports
 
 The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
-
-## Shared data model
-
-The [shared data model component](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model) contains the data model that is shared between all Python components.
 
 ### Data model
 

@@ -4,6 +4,7 @@ import asyncio
 from collections.abc import Coroutine
 
 import aiohttp
+
 from shared_data_model import DATA_MODEL
 
 from model import MetricMeasurement
