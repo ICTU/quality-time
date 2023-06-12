@@ -54,12 +54,12 @@ jobs:
           file: components/notifier/Dockerfile
           tags: ictu/quality-time_notifier:${{ steps.get_version.outputs.version }}
           push: true
-      - name: Push External Server to Docker Hub
+      - name: Push API-server to Docker Hub
         uses: docker/build-push-action@v4.1.0
         with:
           context: components
-          file: components/external_server/Dockerfile
-          tags: ictu/quality-time_external_server:${{ steps.get_version.outputs.version }}
+          file: components/api_server/Dockerfile
+          tags: ictu/quality-time_api_server:${{ steps.get_version.outputs.version }}
           push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v4.1.0

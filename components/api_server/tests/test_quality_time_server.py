@@ -1,4 +1,4 @@
-"""Unit tests for the external server main script."""
+"""Unit tests for the API-server main script."""
 
 import logging
 import unittest
@@ -9,8 +9,8 @@ from quality_time_server import serve
 
 @patch("quality_time_server.init_database", Mock())
 @patch("bottle.install", Mock())
-class ExternalServerTestCase(unittest.TestCase):
-    """Unit tests for starting the external server."""
+class APIServerTestCase(unittest.TestCase):
+    """Unit tests for starting the API-server."""
 
     @patch("bottle.run")
     def test_start(self, mocked_run):

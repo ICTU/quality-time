@@ -31,9 +31,9 @@ jobs:
           - component: renderer
             build_path: components/renderer
             docker_file: Dockerfile
-          - component: external_server
+          - component: api_server
             build_path: components
-            docker_file: external_server/Dockerfile
+            docker_file: api_server/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3

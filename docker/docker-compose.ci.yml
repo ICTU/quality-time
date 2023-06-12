@@ -15,10 +15,10 @@ services:
     build:
       context: ../components
       dockerfile: notifier/Dockerfile
-  external_server:
+  api_server:
     build:
       context: ../components
-      dockerfile: external_server/Dockerfile
+      dockerfile: api_server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:

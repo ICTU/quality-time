@@ -1,6 +1,6 @@
 Feature: healthcheck
 
-  Scenario: healthcheck external server
-    Given a healthy external server
-    When a client checks the external server health
-    Then the external server answers
+  Scenario: healthcheck API-server
+    Given a healthy server
+    When a client checks the server health
+    Then the server answers

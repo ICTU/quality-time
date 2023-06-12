@@ -9,12 +9,12 @@ services:
     environment:
       - FRONTEND_HOST=${FRONTEND_HOST:-frontend}
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
-      - EXTERNAL_SERVER_HOST=${EXTERNAL_SERVER_HOST:-external_server}
-      - EXTERNAL_SERVER_PORT=${EXTERNAL_SERVER_PORT:-5001}
+      - API_SERVER_HOST=${API_SERVER_HOST:-api_server}
+      - API_SERVER_PORT=${API_SERVER_PORT:-5001}
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
-      - external_server
+      - api_server
       - frontend
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
@@ -23,7 +23,7 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
-      - external_server
+      - api_server
     cap_drop:
       - ALL
   collector:
@@ -52,11 +52,11 @@ services:
       - database
     cap_drop:
       - ALL
-  external_server:
-    image: ictu/quality-time_external_server:${QUALITY_TIME_VERSION}
+  api_server:
+    image: ictu/quality-time_api_server:${QUALITY_TIME_VERSION}
     environment:
-      - EXTERNAL_SERVER_PORT=${EXTERNAL_SERVER_PORT:-5001}
-      - EXTERNAL_SERVER_LOG_LEVEL=${EXTERNAL_SERVER_LOG_LEVEL:-WARNING}
+      - API_SERVER_PORT=${API_SERVER_PORT:-5001}
+      - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-WARNING}
       - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - LDAP_URL=${LDAP_URL:-ldap://ldap:389}
       - LDAP_ROOT_DN=${LDAP_ROOT_DN:-dc=example,dc=org}

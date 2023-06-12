@@ -1,3 +1,3 @@
-"""Bottle external route plugins."""
+"""Bottle route plugins."""
 
 from .auth_plugin import AuthPlugin

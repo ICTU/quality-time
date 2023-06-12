@@ -17,9 +17,9 @@ spec:
     spec:
       containers:
         - env:
-            - name: EXTERNAL_SERVER_HOST
-              value: {{ .Values.external_server.name }}
-            - name: EXTERNAL_SERVER_PORT
+            - name: API_SERVER_HOST
+              value: {{ .Values.api_server.name }}
+            - name: API_SERVER_PORT
               value: "5001"
             - name: FRONTEND_HOST
               value: {{ .Values.frontend.name }}
@@ -32,5 +32,5 @@ spec:
             - containerPort: 8080
           resources: {}
       restartPolicy: Always
-      imagePullSecrets: 
+      imagePullSecrets:
         - name: quality-time-pullsecret

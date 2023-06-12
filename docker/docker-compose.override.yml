@@ -20,12 +20,12 @@ services:
     build:
       context: ../components
       dockerfile: notifier/Dockerfile
-  external_server:
+  api_server:
     environment:
-      - EXTERNAL_SERVER_LOG_LEVEL=${EXTERNAL_SERVER_LOG_LEVEL:-INFO}
+      - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-INFO}
     build:
       context: ../components
-      dockerfile: external_server/Dockerfile
+      dockerfile: api_server/Dockerfile
     depends_on:
       - ldap
       - renderer

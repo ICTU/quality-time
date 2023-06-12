@@ -6,9 +6,9 @@ RUN apk add --no-cache gcc=12.2.1_git20220924-r4 make=4.3-r1 libc-dev=0.7.2-r3 l
 # hadolint ignore=DL3059
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
-COPY external_server/requirements/requirements.txt /requirements.txt
+COPY api_server/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
-COPY external_server/requirements/requirements-internal.txt /requirements-internal.txt
+COPY api_server/requirements/requirements-internal.txt /requirements-internal.txt
 COPY shared_data_model /home/shared_data_model/
 COPY shared_server_code /home/shared_server_code/
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 FROM python:3.11.4-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
-LABEL description="Quality-time external server"
+LABEL description="Quality-time API-server"
 
 # hadolint ignore=DL3059
 RUN adduser -S server
@@ -24,7 +24,7 @@ WORKDIR /home/server
 USER server
 
 COPY --from=compile-image /home/server/venv /home/server/venv
-COPY external_server/src /home/server
+COPY api_server/src /home/server
 COPY shared_data_model /home/shared_data_model
 COPY shared_server_code /home/shared_server_code
 

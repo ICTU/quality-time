@@ -2,24 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ .Values.external_server.name }}
-  name: {{ .Values.external_server.name }}
+    app: {{ .Values.api_server.name }}
+  name: {{ .Values.api_server.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.external_server.name }}
+      app: {{ .Values.api_server.name }}
   strategy: {}
   template:
     metadata:
       labels:
-        app: {{ .Values.external_server.name }}
+        app: {{ .Values.api_server.name }}
     spec:
       containers:
         - env:
             - name: DATABASE_URL
               value: mongodb://root:root@{{ .Values.database.name }}:27017
-            - name: EXTERNAL_SERVER_PORT
+            - name: API_SERVER_PORT
               value: "5001"
             - name: FORWARD_AUTH_ENABLED
               value: "False"
@@ -37,14 +37,14 @@ spec:
               value: {{ .Values.ldap.url }}
             - name: LOAD_EXAMPLE_REPORTS
               value: "True"
-          image: {{ .Values.external_server.image }}
+          image: {{ .Values.api_server.image }}
           imagePullPolicy: Always
-          name: {{ .Values.external_server.name }}
+          name: {{ .Values.api_server.name }}
           resources: {}
           securityContext:
             capabilities:
               drop:
                 - ALL
       restartPolicy: Always
-      imagePullSecrets: 
+      imagePullSecrets:
         - name: quality-time-pullsecret

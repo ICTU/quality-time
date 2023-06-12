@@ -18,10 +18,10 @@ You need to either configure an LDAP server to authenticate users with or config
 
 To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables.
 Note that `LDAP_URL` may be a comma-separated list of LDAP connection URL(s).
-Add the LDAP environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+Add the LDAP environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
-  external_server:
+  api_server:
     environment:
       - LDAP_URL=ldap://ldap:389
       - LDAP_ROOT_DN=dc=example,dc=org
@@ -41,10 +41,10 @@ See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more in
 
 ### Forwarded authentication
 
-To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the external server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
+To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
-  external_server:
+  api_server:
     environment:
       - FORWARD_AUTH_ENABLED=True
       - FORWARD_AUTH_HEADER=X-Forwarded-User
@@ -60,10 +60,10 @@ The hostnames and ports of the different containers can be configured via enviro
 
 ## Configuring example reports (optional)
 
-By default, the server will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for the external server:
+By default, the server will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for the API-server:
 
 ```yaml
-  external_server:
+  api_server:
     environment:
       - LOAD_EXAMPLE_REPORTS=False
 ```
@@ -133,13 +133,13 @@ The options for configuring logging are limited at the moment. The MongoDB daemo
     command: --quiet
 ```
 
-The collector, notifier, and external server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
+The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
 
-| Component       | Log level environment variable |
-| :-------------- | :----------------------------- |
-| Collector       | `COLLECTOR_LOG_LEVEL`          |
-| External server | `EXTERNAL_SERVER_LOG_LEVEL`    |
-| Notifier        | `NOTIFIER_LOG_LEVEL`           |
+| Component  | Log level environment variable |
+|:-----------|:-------------------------------|
+| Collector  | `COLLECTOR_LOG_LEVEL`          |
+| API-server | `API_SERVER_LOG_LEVEL`         |
+| Notifier   | `NOTIFIER_LOG_LEVEL`           |
 
 The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.
 

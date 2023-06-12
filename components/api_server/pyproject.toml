@@ -1,5 +1,5 @@
 [project]
-name = "external_server"
+name = "api_server"
 version = "4.10.0"
 dependencies = [
     "bottle==0.12.25",

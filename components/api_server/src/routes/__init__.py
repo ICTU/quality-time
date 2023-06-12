@@ -1,4 +1,4 @@
-"""External routes."""
+"""Routes."""
 
 from .auth import login, logout, get_public_key
 from .changelog import (

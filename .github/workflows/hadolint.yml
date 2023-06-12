@@ -12,7 +12,7 @@ jobs:
         include:
           - component: collector
           - component: database
-          - component: external_server
+          - component: api_server
           - component: frontend
           - component: notifier
           - component: proxy

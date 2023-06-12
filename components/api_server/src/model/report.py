@@ -6,7 +6,7 @@ from .issue_tracker import IssueParameters, IssueTracker, IssueTrackerCredential
 
 
 class Report(SharedReport):
-    """Subclass the shared report class to add methods specific for the external server."""
+    """Subclass the shared report class to add methods specific for the API-server."""
 
     def issue_tracker(self) -> IssueTracker:
         """Return the issue tracker of the report."""
