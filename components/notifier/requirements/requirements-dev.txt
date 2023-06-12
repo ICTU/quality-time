@@ -97,9 +97,9 @@ aiosignal==1.3.1 \
     --hash=sha256:54cd96e15e1649b75d6c87526a6ff0b6c1b0dd3459f43d9ca11d48c339b68cfc \
     --hash=sha256:f8376fb07dd1e86a584e4fcdec80b36b7f81aac666ebc724e2c090300dd83b17
     # via aiohttp
-argcomplete==3.0.8 \
-    --hash=sha256:b9ca96448e14fa459d7450a4ab5a22bbf9cee4ba7adddf03e65c398b5daeea28 \
-    --hash=sha256:e36fd646839933cbec7941c662ecb65338248667358dd3d968405a4506a60d9b
+argcomplete==3.1.1 \
+    --hash=sha256:35fa893a88deea85ea7b20d241100e64516d6af6d7b0ae2bed1d263d26f70948 \
+    --hash=sha256:6c4c563f14f01440aaffa3eae13441c5db2357b5eec639abe7c0b15334627dff
     # via pipx
 async-timeout==4.0.2 \
     --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
