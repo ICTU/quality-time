@@ -5,12 +5,10 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
-from shared.database.reports import insert_new_report
 from shared.utils.type import ItemId, MetricId, SourceId
 
-from database.datamodels import default_source_parameters
-from database.reports import latest_report_for_uuids, latest_reports
+from database.datamodels import default_source_parameters, latest_datamodel
+from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_source, move_item
 from model.queries import is_password_parameter
 from model.report import Report

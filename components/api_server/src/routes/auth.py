@@ -15,12 +15,11 @@ from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
 from pymongo.database import Database
 
-from shared.initialization.secrets import EXPORT_FIELDS_KEYS_NAME
-from shared.utils.type import SessionId, User
-
 from database.users import upsert_user, get_user
 from database import sessions
+from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from utils.functions import uuid
+from utils.type import SessionId, User
 
 
 def create_session(database: Database, user: User) -> datetime:

@@ -1,17 +1,20 @@
 """Reports collection."""
 
-from typing import cast
+from collections.abc import Sequence
+from typing import Any, cast
 
 import pymongo
 from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import ItemId
+from shared.utils.type import ItemId, ReportId
 
 from model.report import Report
 from utils.functions import unique
 from utils.type import Change
+
+from . import sessions
 
 
 # Sort order:
@@ -99,3 +102,63 @@ def latest_report_for_uuids(all_reports: list[Report], *uuids: ItemId) -> list[R
                 reports.append(report)
                 break
     return reports
+
+
+def report_exists(database: Database, report_uuid: ReportId) -> bool:
+    """Return whether a report with the specified report uuid exists."""
+    return report_uuid in database.reports.distinct("report_uuid")
+
+
+def insert_new_reports_overview(database: Database, delta_description: str, reports_overview: dict) -> dict[str, Any]:
+    """Insert a new reports overview in the reports overview collection."""
+    prepare_documents_for_insertion(database, delta_description, [reports_overview])
+    database.reports_overviews.insert_one(reports_overview)
+    return {"ok": True}
+
+
+def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
+    """Return the latest reports overview."""
+    timestamp_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else None
+    overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
+    if overview:  # pragma: no feature-test-cover
+        overview["_id"] = str(overview["_id"])
+    return overview or {}
+
+
+def insert_new_report(
+    database: Database,
+    delta_description: str,
+    uuids: list[ItemId],
+    *reports: dict,
+) -> dict[str, Any]:
+    """Insert one or more new reports in the reports collection."""
+    prepare_documents_for_insertion(database, delta_description, reports, uuids, last=True)
+    report_uuids = [report["report_uuid"] for report in reports]
+    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
+    if len(reports) > 1:
+        database.reports.insert_many(reports, ordered=False)
+    else:
+        database.reports.insert_one(reports[0])
+    return {"ok": True}
+
+
+def prepare_documents_for_insertion(
+    database: Database,
+    delta_description: str,
+    documents: Sequence[dict],
+    uuids: list[ItemId] | None = None,
+    **extra_attributes,
+) -> None:
+    """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
+    now = iso_timestamp()
+    user = sessions.find_user(database)
+    username = user.name() or "An operator"
+    # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
+    description = delta_description.replace("{user}", username, 1)
+    for document in documents:
+        if "_id" in document:
+            del document["_id"]
+        document["timestamp"] = now
+        document["delta"] = {"description": description, "email": user.email, "uuids": sorted(set(uuids or []))}
+        for key, value in extra_attributes.items():
+            document[key] = value

@@ -1,78 +1,12 @@
-"""Reports collection."""
+"""Module with collection of methods that touch multiple data types."""
 
-from collections.abc import Sequence
-from typing import Any
-
-import pymongo
 from pymongo.database import Database
 
-from shared.database.filters import DOES_EXIST
-from shared.utils.functions import iso_timestamp
-from shared.utils.type import ItemId, ReportId
-
-from . import sessions
-
-# Sort order:
-TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
+from shared.model.report import Report
+from shared_data_model import DATA_MODEL
 
 
-def insert_new_report(
-    database: Database,
-    delta_description: str,
-    uuids: list[ItemId],
-    *reports: dict,
-) -> dict[str, Any]:
-    """Insert one or more new reports in the reports collection."""
-    _prepare_documents_for_insertion(database, delta_description, reports, uuids, last=True)
-    report_uuids = [report["report_uuid"] for report in reports]
-    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
-    if len(reports) > 1:
-        database.reports.insert_many(reports, ordered=False)
-    else:
-        database.reports.insert_one(reports[0])
-    return {"ok": True}
-
-
-def insert_new_reports_overview(database: Database, delta_description: str, reports_overview: dict) -> dict[str, Any]:
-    """Insert a new reports overview in the reports overview collection."""
-    _prepare_documents_for_insertion(database, delta_description, [reports_overview])
-    database.reports_overviews.insert_one(reports_overview)
-    return {"ok": True}
-
-
-def _prepare_documents_for_insertion(
-    database: Database,
-    delta_description: str,
-    documents: Sequence[dict],
-    uuids: list[ItemId] | None = None,
-    **extra_attributes,
-) -> None:
-    """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
-    now = iso_timestamp()
-    user = sessions.find_user(database)
-    username = user.name() or "An operator"
-    # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
-    description = delta_description.replace("{user}", username, 1)
-    for document in documents:
-        if "_id" in document:
-            del document["_id"]
-        document["timestamp"] = now
-        document["delta"] = {"description": description, "email": user.email}
-        if uuids:
-            document["delta"]["uuids"] = sorted(set(uuids))
-        for key, value in extra_attributes.items():
-            document[key] = value
-
-
-def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
-    """Return the latest reports overview."""
-    timestamp_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else None
-    overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
-    if overview:  # pragma: no feature-test-cover
-        overview["_id"] = str(overview["_id"])
-    return overview or {}
-
-
-def report_exists(database: Database, report_uuid: ReportId) -> bool:
-    """Return whether a report with the specified report uuid exists."""
-    return report_uuid in database.reports.distinct("report_uuid")
+def get_reports(database: Database) -> list[Report]:
+    """Return a list of reports."""
+    query = {"last": True, "deleted": {"$exists": False}}
+    return [Report(DATA_MODEL.dict(), report_dict) for report_dict in database["reports"].find(filter=query)]

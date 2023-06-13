@@ -2,7 +2,7 @@
 
 import unittest
 
-from shared.utils.type import User
+from utils.type import User
 
 
 class UserTests(unittest.TestCase):

@@ -13,6 +13,7 @@ import mongomock
 
 import quality_time_collector
 from base_collectors import Collector, config
+
 from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
@@ -120,7 +121,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             side_effect=RuntimeError,
         ) as _, self.assertRaises(RuntimeError):
             await self._fetch_measurements(AsyncMock())
-
         post.assert_not_called()
 
     async def test_fetch_with_client_error(self):

@@ -1,8 +1,7 @@
 """Test the sessions."""
 
-from shared.utils.type import User
-
 from database import users
+from utils.type import User
 
 from tests.base import DatabaseTestCase
 

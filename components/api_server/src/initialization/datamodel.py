@@ -5,8 +5,9 @@ import logging
 
 from pymongo.database import Database
 
-from shared.database.datamodels import insert_new_datamodel, latest_datamodel
 from shared_data_model import DATA_MODEL_JSON
+
+from database.datamodels import insert_new_datamodel, latest_datamodel
 
 
 def import_datamodel(database: Database) -> None:  # pragma: no feature-test-cover

@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from source_collectors.jira.issues import JiraIssues
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 

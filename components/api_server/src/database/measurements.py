@@ -1,10 +1,14 @@
 """Measurements collection."""
 
+from datetime import datetime, timedelta
+from typing import Any
+
 import pymongo
 from pymongo.database import Database
 
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
+from shared.utils.functions import iso_timestamp
 from shared.utils.type import MetricId
 
 
@@ -51,15 +55,6 @@ def measurements_by_metric(
     )
 
 
-def latest_successful_measurement(database: Database, metric: Metric) -> Measurement | None:
-    """Return the latest successful measurement."""
-    latest_successful = database.measurements.find_one(
-        {"metric_uuid": metric.uuid, "has_error": False},
-        sort=[("start", pymongo.DESCENDING)],
-    )
-    return None if latest_successful is None else Measurement(metric, latest_successful)
-
-
 def all_metric_measurements(
     database: Database,
     metric_uuid: MetricId,
@@ -78,3 +73,29 @@ def all_metric_measurements(
         return []
     all_measurements_stripped = measurements_by_metric(database, metric_uuid, max_iso_timestamp=max_iso_timestamp)
     return list(all_measurements_stripped)[:-1] + [latest_measurement_complete]
+
+
+def recent_measurements(
+    database: Database,
+    metrics_dict: dict[MetricId, Metric],
+    max_iso_timestamp: str = "",
+    days: int = 7,
+) -> dict[MetricId, list[Measurement]]:
+    """Return all recent measurements, or only those of the specified metrics."""
+    max_iso_timestamp = max_iso_timestamp or iso_timestamp()
+    min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
+    measurement_filter: dict[str, Any] = {"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}}
+    measurement_filter["metric_uuid"] = {"$in": list(metrics_dict.keys())}
+    projection = {"_id": False, "sources.entities": False, "entity_user_data": False}
+    measurements = database.measurements.find(
+        measurement_filter,
+        sort=[("start", pymongo.ASCENDING)],
+        projection=projection,
+    )
+    measurements_by_metric_uuid: dict[MetricId, list] = {}
+    for measurement_dict in measurements:
+        metric_uuid = measurement_dict["metric_uuid"]
+        metric = metrics_dict[metric_uuid]
+        measurement = Measurement(metric, measurement_dict)
+        measurements_by_metric_uuid.setdefault(metric_uuid, []).append(measurement)
+    return measurements_by_metric_uuid

@@ -4,7 +4,7 @@ import unittest
 
 import bottle
 
-from shared.routes.plugins import InjectionPlugin
+from routes.plugins import InjectionPlugin
 
 
 class RouteInjectionPluginTest(unittest.TestCase):

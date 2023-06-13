@@ -5,13 +5,11 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
-from shared.database.reports import insert_new_report
 from shared.model.subject import Subject
 from shared.utils.type import ReportId, SubjectId
 
-from database.datamodels import default_subject_attributes
-from database.reports import latest_report_for_uuids, latest_reports
+from database.datamodels import default_subject_attributes, latest_datamodel
+from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_subject, move_item
 from utils.functions import sanitize_html, uuid
 

@@ -1,13 +1,13 @@
 """Test the sessions."""
 
-from datetime import UTC, datetime
-
-from shared.utils.type import SessionId, User
+from datetime import UTC, datetime, timedelta
+from unittest.mock import Mock, patch
 
 from database import sessions
+from utils.type import SessionId, User
 
 from tests.base import DatabaseTestCase
-from tests.fixtures import JENNY
+from tests.fixtures import JENNY, JOHN
 
 
 class SessionsTest(DatabaseTestCase):
@@ -46,3 +46,18 @@ class SessionsTest(DatabaseTestCase):
         session = sessions.get(self.database, "session_id")
         self.assertDictEqual(session, {"_id": "session_id"})
         self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})
+
+    @patch("bottle.request")
+    def test_user(self, bottle_mock: Mock):
+        """Test user function."""
+        session_expiration_datetime = datetime.now(tz=UTC) + timedelta(seconds=5)
+        session = JOHN | {"session_id": "5", "session_expiration_datetime": session_expiration_datetime}
+        self.database.sessions.find_one.return_value = session
+        bottle_mock.get_cookie.return_value = 4
+        user = sessions.find_user(database=self.database)
+        self.assertEqual(JOHN["user"], user.username)
+        self.assertEqual(JOHN["email"], user.email)
+        self.assertEqual(JOHN["common_name"], user.common_name)
+        self.assertEqual(False, user.verified)
+        self.assertEqual("John Doe", user.name())
+        self.database.sessions.find_one.assert_called_with({"session_id": 4})

@@ -10,6 +10,7 @@ from unittest.mock import Mock, mock_open, patch
 import mongomock
 
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
+
 from tests.fixtures import create_report
 
 

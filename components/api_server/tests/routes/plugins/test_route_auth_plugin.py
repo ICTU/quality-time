@@ -6,10 +6,9 @@ from unittest.mock import Mock
 
 import bottle
 
-from shared.routes.plugins import InjectionPlugin
-from shared.utils.type import User
-
-from routes.plugins.auth_plugin import AuthPlugin, EDIT_REPORT_PERMISSION
+from routes.plugins import AuthPlugin, InjectionPlugin
+from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from utils.type import User
 
 from tests.base import DatabaseTestCase
 

@@ -6,11 +6,10 @@ from typing import TypeVar
 
 import bottle
 
-from shared.database.reports import latest_reports_overview
-from shared.database import sessions
-from shared.utils.type import SessionId
-
+from database import sessions
+from database.reports import latest_reports_overview
 from model.session import Session
+from utils.type import SessionId
 
 
 EDIT_REPORT_PERMISSION = "edit_reports"
