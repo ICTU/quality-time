@@ -8,7 +8,6 @@ RUN python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
 COPY notifier/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
-COPY shared_data_model /home/shared_data_model/
 COPY shared_code /home/shared_code/
 COPY notifier/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
@@ -28,7 +27,6 @@ HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta, UTC; 
 
 COPY --from=compile-image /home/notifier/venv /home/notifier/venv
 COPY notifier/src /home/notifier
-COPY shared_data_model /home/shared_data_model
 COPY shared_code /home/shared_code
 
 ENV PATH="/home/notifier/venv/bin:$PATH"

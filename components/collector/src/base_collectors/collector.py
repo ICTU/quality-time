@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
 from pymongo.database import Database
+
 from shared.database.metrics import get_metrics_from_reports
 from shared.database.shared_data import create_measurement, get_reports
 

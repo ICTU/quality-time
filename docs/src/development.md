@@ -125,14 +125,14 @@ ci/pip-install.sh
 python src/quality_time_notifier.py
 ```
 
-#### Preparing the shared components
+#### Preparing the shared component
 
-*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared code component is used by the API-server.
+*Quality-time* has one shared component, containing code used by multiple Python components.
 
-To create a virtual environment for the shared components and install the dependencies run the following:
+To create a virtual environment for the shared component and install the dependencies run the following:
 
 ```console
-cd components/shared_data_model  # or components/shared_code
+cd components/shared_code
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
@@ -148,7 +148,7 @@ Most of the coding standard are enforced by the [quality checks](#quality-checks
 
 To enable autoformatting of Python code using black, a git pre-commit hook is provided at `git-hooks/pre-commit`. To use it and automatically format all changed Python files on committing, copy this script into your local `.git/hooks` folder of this repository.
 
-Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
+Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> list[str]`.
 
 Production code and unit tests are organized in parallel hierarchies. Each Python component has a `src` with the production code and a `tests` folder with the unit tests. The folder layout of the `tests` follows the layout of the `src` hierarchy.
 
@@ -166,10 +166,10 @@ Production code and unit tests are organized together in one `src` folder hierar
 
 To add a new metric you need to make two changes to the data model:
 
-1. Add a specification of the new metric to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model and the different metric fields.
+1. Add a specification of the new metric to the data model. See the documentation of the [shared code](software.md#shared-code) component for a description of the data model and the different metric fields.
 2. Update the `metric_type` parameter of the `quality_time` source in the data model. You need to add the human readable name of the new metric to the `values` list of the `metric_type` parameter and you need to add a key-value pair to the `api_values` mapping of the `metric_type` parameter, where the key is the human readable name of the metric and the value is the metric key.
 
-Be sure to run the unit tests of the shared data model component after adding a metric to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail. Other than changing the data model, no code changes are needed to support new metrics.
+Be sure to run the unit tests of the shared code after adding a metric to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail. Other than changing the data model, no code changes are needed to support new metrics.
 
 Suppose we want to add a lines of code metric to the data model, to measure the size of software. We would add the metric to the `METRICS` model in `src/shared_data_model/metrics.py`:
 
@@ -237,7 +237,7 @@ To add a new source you need to make three changes to the data model:
 
 1. Add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model and the different source fields.
 2. Update the `source_type` parameter of the `quality_time` source in the data model. You need to add the human readable name of the new source to the `values` list of the `source_type` parameter and you need to add a key-value pair to the `api_values` mapping of the `source_type` parameter, where the key is the human readable name of the source and the value is the metric source key (`cloc` in the example below).
-3. Add a small PNG file of the logo in [`components/shared_data_model/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`. The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
+3. Add a small PNG file of the logo in [`components/shared_code/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`. The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
 
 Be sure to run the unit tests of the shared data model component after adding a source to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail.
 
@@ -395,7 +395,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/api_server  # or components/shared_data_model, components/shared_code, components/collector, components/notifier
+cd components/api_server  # or components/collector, components/notifier, components/shared_code
 ci/unittest.sh
 ```
 
@@ -411,7 +411,7 @@ npm run test
 To run ruff, mypy, and some other security and quality checks on the backend components:
 
 ```console
-cd components/api_server  # or components/shared_data_model, components/shared_code, components/collector, components/notifier
+cd components/api_server  # or components/collector, components/notifier, components/shared_code
 ci/quality.sh
 ```
 
