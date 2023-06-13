@@ -9,7 +9,6 @@ ENV PATH="/home/server/venv/bin:$PATH"
 COPY api_server/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
 COPY api_server/requirements/requirements-internal.txt /requirements-internal.txt
-COPY shared_data_model /home/shared_data_model/
 COPY shared_code /home/shared_code/
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
@@ -25,7 +24,6 @@ USER server
 
 COPY --from=compile-image /home/server/venv /home/server/venv
 COPY api_server/src /home/server
-COPY shared_data_model /home/shared_data_model
 COPY shared_code /home/shared_code
 
 HEALTHCHECK CMD python /home/server/healthcheck.py

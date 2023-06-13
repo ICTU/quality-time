@@ -2,8 +2,6 @@
 
 from pymongo.database import Database
 
-from shared_data_model import DATA_MODEL
-
 from shared.database.filters import DOES_NOT_EXIST
 from shared.database.measurements import (
     get_recent_measurements,
@@ -17,6 +15,7 @@ from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.utils.type import MetricId, ReportId
+from shared_data_model import DATA_MODEL
 
 
 def get_reports_and_measurements(database: Database) -> tuple[list[Report], list[Measurement]]:

@@ -6,7 +6,10 @@ source ../../ci/base.sh
 run pipx run `spec ruff` .
 
 # Mypy
-run pipx run `spec mypy` --python-executable=$(which python) src
+# pipx run can't be used because mypy needs the pydantic plugin to be installed in the same venv (using pipx inject)
+run pipx install `spec mypy`
+run pipx inject mypy `spec pydantic`
+run $PIPX_BIN_DIR/mypy src --python-executable=$(which python)
 
 # pip-audit
 unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
