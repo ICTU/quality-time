@@ -144,15 +144,15 @@ The notifier uses the following environment variables:
 
 ## Shared code
 
-The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), and code to initialize the servers, access the database, and provide endpoints.
+The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), a [shared data model](#shared-data-model), and code to initialize the servers, access the database, and provide endpoints.
 
 ### Example reports
 
-The [`example-reports`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
+The [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
 
 ## Shared data model
 
-The [shared data model component](https://github.com/ICTU/quality-time/tree/master/components/shared_data_model) contains the data model that is shared between all Python components.
+The [shared data model](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared_data_model) contains the data model that is shared between all Python components.
 
 ### Data model
 

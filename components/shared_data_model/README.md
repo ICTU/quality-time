@@ -1,1 +1,0 @@
-This package contains the shared data model intended for use in different Quality-time components only.

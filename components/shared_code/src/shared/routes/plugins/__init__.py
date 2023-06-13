@@ -1,3 +1,3 @@
 """Bottle route plugins."""
 
-from .injection_plugin import InjectionPlugin  # noqa: F401
+from .injection_plugin import InjectionPlugin

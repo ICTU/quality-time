@@ -8,10 +8,9 @@ from typing import TYPE_CHECKING, cast
 
 from packaging.version import InvalidVersion, Version
 
-from shared_data_model import DATA_MODEL
-
 from shared.utils.functions import iso_timestamp, percentage
 from shared.utils.type import Scale, Status, Value
+from shared_data_model import DATA_MODEL
 
 from .source import Source
 

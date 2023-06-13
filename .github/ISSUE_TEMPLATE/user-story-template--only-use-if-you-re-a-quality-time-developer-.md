@@ -37,17 +37,14 @@ As a `role` I want to `action` so that `goal`
 - [ ] Add `user interface element`
 - [ ] Update `user interface element`
 
-### Shared data model
-
-- [ ] Add subject `subject` to the data model
-- [ ] Add metric `metric` to the data model
-- [ ] Add source `source` to the data model
-- [ ] Add logo for source `source`
-
 ### Shared code
 
 - [ ] Change endpoint `endpoint`
 - [ ] Extend the example reports
+- [ ] Add subject `subject` to the data model
+- [ ] Add metric `metric` to the data model
+- [ ] Add source `source` to the data model
+- [ ] Add logo for source `source`
 
 ### API-server
 
