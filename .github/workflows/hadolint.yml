@@ -10,9 +10,9 @@ jobs:
     strategy:
       matrix:
         include:
+          - component: api_server
           - component: collector
           - component: database
-          - component: api_server
           - component: frontend
           - component: notifier
           - component: proxy

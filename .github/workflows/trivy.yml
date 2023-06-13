@@ -13,6 +13,9 @@ jobs:
     strategy:
       matrix:
         include:
+          - component: api_server
+            build_path: components
+            docker_file: api_server/Dockerfile
           - component: collector
             build_path: components
             docker_file: collector/Dockerfile
@@ -31,9 +34,6 @@ jobs:
           - component: renderer
             build_path: components/renderer
             docker_file: Dockerfile
-          - component: api_server
-            build_path: components
-            docker_file: api_server/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.5.3
