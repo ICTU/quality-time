@@ -127,12 +127,12 @@ python src/quality_time_notifier.py
 
 #### Preparing the shared components
 
-*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared server code component is used by the API-server.
+*Quality-time* has two components that only contain shared code. The shared data model is used by all Python components. The code in the shared code component is used by the API-server.
 
 To create a virtual environment for the shared components and install the dependencies run the following:
 
 ```console
-cd components/shared_data_model  # or components/shared_server_code
+cd components/shared_data_model  # or components/shared_code
 python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
@@ -395,7 +395,7 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/api_server  # or components/shared_data_model, components/shared_server_code, components/collector, components/notifier
+cd components/api_server  # or components/shared_data_model, components/shared_code, components/collector, components/notifier
 ci/unittest.sh
 ```
 
@@ -411,7 +411,7 @@ npm run test
 To run ruff, mypy, and some other security and quality checks on the backend components:
 
 ```console
-cd components/api_server  # or components/shared_data_model, components/shared_server_code, components/collector, components/notifier
+cd components/api_server  # or components/shared_data_model, components/shared_code, components/collector, components/notifier
 ci/quality.sh
 ```
 
