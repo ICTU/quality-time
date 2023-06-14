@@ -4,7 +4,7 @@ version = "4.10.0"
 dependencies = [
     "furo==2023.5.20",
     "gitpython==3.1.31",
-    "myst-parser==1.0.0",
+    "myst-parser==2.0.0",
     "Sphinx==6.2.1",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.4.1"
