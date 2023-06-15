@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from .metric import Metric
 
 
-class ScaleMeasurement(dict):  # lgtm [py/missing-equals]
+class ScaleMeasurement(dict):
     """Class representing a measurement on a specific scale."""
 
     def __init__(
@@ -174,12 +174,8 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
         return Version("0")
 
 
-class Measurement(dict):  # lgtm [py/missing-equals]
+class Measurement(dict):
     """Class representing a measurement."""
-
-    # LGTM wants us to implement __eq__ because this class has extra instance attributes. However, the measurement
-    # dictionary contains the metric UUID and thus we don't need to compare the instance attributes to know whether
-    # two measurements are the same.
 
     SCALE_CLASSES = {
         "count": CountScaleMeasurement,
