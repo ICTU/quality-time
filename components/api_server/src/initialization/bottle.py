@@ -3,7 +3,7 @@
 import bottle
 from pymongo.database import Database
 
-from routes import *  # lgtm [py/unused-import], # noqa: F403
+from routes import *  # noqa: F403
 from routes.plugins import AuthPlugin, InjectionPlugin
 
 

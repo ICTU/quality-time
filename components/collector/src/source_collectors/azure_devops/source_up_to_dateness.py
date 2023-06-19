@@ -44,7 +44,7 @@ class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase
         return parse_datetime(json_value[0]["committer"]["date"])
 
 
-class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):  # lgtm [py/conflicting-attributes]
+class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):
     """Collector class to measure the up-to-dateness of a job/pipeline."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
