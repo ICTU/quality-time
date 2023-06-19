@@ -24,7 +24,7 @@ class ReportsOverviewTest(DataModelTestCase):
         inserted = self.database.reports_overviews.insert_one.call_args_list[0][0][0]
         delta = f" from '{old_value}' to '{new_value}'" if old_value and new_value else ""
         description = f"jenny changed the {attribute} of the reports overview{delta}."
-        self.assertEqual({"email": self.email, "description": description}, inserted["delta"])
+        self.assertEqual({"email": self.email, "description": description, "uuids": []}, inserted["delta"])
 
     @patch("bottle.request")
     def test_change_title(self, request):

@@ -6,15 +6,12 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
-from shared.database.measurements import insert_new_measurement, latest_measurement
-from shared.database.reports import insert_new_report
+from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
 from shared.model.metric import Metric
 from shared.utils.type import MetricId, SubjectId, Value
 
-from database.datamodels import default_metric_attributes
-from database.measurements import latest_successful_measurement
-from database.reports import latest_report_for_uuids, latest_reports
+from database.datamodels import default_metric_attributes, latest_datamodel
+from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item
 from utils.functions import sanitize_html, uuid
 
@@ -24,8 +21,7 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.post("/api/v3/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
-    data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
     metric_type = str(dict(bottle.request.json)["type"])
@@ -42,7 +38,7 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
     data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, subject_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
@@ -63,8 +59,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
 @bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
-    data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, target_subject_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
@@ -90,8 +85,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 @bottle.delete("/api/v3/metric/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
-    data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     description = f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report '{report.name}'."
@@ -118,7 +112,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     old_metric_name = metric.name  # in case the name is the attribute that will be changed
@@ -151,7 +145,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     """Turn the technical debt on or off, including technical debt target and end date."""
     new_accept_debt = dict(bottle.request.json)["accept_debt"]
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
+    report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     if new_accept_debt:
         # Get the latest measurement to get the current metric value:
@@ -189,7 +183,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
 def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
     data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
+    report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     last_measurement = latest_successful_measurement(database, metric)
     measured_value = last_measurement.value() if last_measurement else "missing"

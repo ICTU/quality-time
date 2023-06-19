@@ -134,3 +134,15 @@ class Report(dict):
             return source, metric, subject
         msg = "metric_uuid and source_uuid cannot both be None"  # pragma: no feature-test-cover
         raise RuntimeError(msg)  # pragma: no feature-test-cover
+
+
+def get_metrics_from_reports(reports: list[Report]) -> dict[MetricId, Metric]:  # pragma: no feature-test-cover
+    """Return the metrics from the reports."""
+    metrics: dict[MetricId, Metric] = {}
+
+    for report in reports:
+        metrics_dict: dict[MetricId, Metric] = report.metrics_dict.copy()
+        for metric in metrics_dict.values():
+            metric["report_uuid"] = report["report_uuid"]
+        metrics.update(metrics_dict)
+    return metrics

@@ -8,11 +8,13 @@ from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
 from pymongo.database import Database
-from shared.database.metrics import get_metrics_from_reports
-from shared.database.shared_data import create_measurement, get_reports
+
+from shared.database.reports import get_reports
+from shared.model.report import get_metrics_from_reports
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSONDict
+from database.measurements import create_measurement
 
 from . import config
 from .metric_collector import MetricCollector

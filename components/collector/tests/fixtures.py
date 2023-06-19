@@ -1,11 +1,13 @@
 """Fixture for reports."""
+
 from typing import cast
 
-from shared.utils.type import MetricId, NotificationDestinationId, SourceId, SubjectId
+from shared.utils.type import MetricId, NotificationDestinationId, ReportId, SourceId, SubjectId
 
 METRIC_ID = cast(MetricId, "metric_uuid")
 METRIC_ID2 = cast(MetricId, "metric_uuid2")
 NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination1")
+REPORT_ID = cast(ReportId, "report_uuid")
 SOURCE_ID = cast(SourceId, "source_uuid")
 SUBJECT_ID = cast(SubjectId, "subject_uuid")
 
@@ -71,6 +73,5 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
 
     if deleted is not None:
         report.update({"deleted": deleted})
-        return report
 
     return report

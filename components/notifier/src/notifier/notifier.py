@@ -9,9 +9,9 @@ from typing import NoReturn
 
 from pymongo.database import Database
 
-from shared.database.shared_data import get_reports_and_measurements
 from shared.model.measurement import Measurement
 
+from database.reports import get_reports_and_measurements
 from destinations.ms_teams import notification_text, send_notification
 from strategies.notification_strategy import NotificationFinder
 

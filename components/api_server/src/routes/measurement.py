@@ -8,14 +8,14 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from shared.database import sessions
-from shared.database.datamodels import latest_datamodel
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.utils.type import MetricId, SourceId
 
+from database import sessions
+from database.datamodels import latest_datamodel
 from database.measurements import count_measurements, all_metric_measurements, measurements_by_metric
-from database.reports import latest_report_for_uuids, latest_reports
+from database.reports import latest_report_for_uuids, latest_reports, latest_reports_before_timestamp
 from utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -33,8 +33,7 @@ def set_entity_attribute(
     database: Database,
 ) -> Measurement:
     """Set an entity attribute."""
-    data_model = latest_datamodel(database)
-    report = latest_report_for_uuids(latest_reports(database, data_model), metric_uuid)[0]
+    report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
@@ -97,7 +96,7 @@ def get_measurements(database: Database):
     date_time = report_date_time()
     min_date_time = report_date_time("min_report_date")
     data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, data_model, date_time)
+    reports = latest_reports_before_timestamp(database, data_model, date_time)
     metric_uuids: set[MetricId] = set()
     for report in reports:
         metric_uuids |= report.metric_uuids

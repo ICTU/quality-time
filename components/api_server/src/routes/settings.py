@@ -6,10 +6,9 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from shared.utils.type import SessionId, User
-
 from database.sessions import get
 from database.users import upsert_user, get_user
+from utils.type import SessionId, User
 
 
 def find_user(database: Database) -> User | None:

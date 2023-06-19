@@ -11,9 +11,6 @@ SOURCE_ID = cast(SourceId, "source")
 SOURCE_ID2 = cast(SourceId, "source2")
 SUBJECT_ID = cast(SubjectId, "subject_uuid")
 REPORT_ID = cast(ReportId, "report_uuid")
-REPORT_ID2 = cast(ReportId, "report_uuid2")
-
-JOHN = {"user": "John", "email": "john@example.org", "common_name": "John Doe"}
 
 
 def create_report(

@@ -30,6 +30,7 @@ def create_report(deleted: bool = False) -> dict:
                 "url": "https://reporturl",
             },
         },
+        "last": True,
     }
     if deleted:
         report.update({"deleted": deleted})

@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 
-from shared.utils.type import SessionData
+from utils.type import SessionData
 
 
 class Session:

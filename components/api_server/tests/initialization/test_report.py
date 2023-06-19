@@ -4,9 +4,9 @@ import json
 import pathlib
 from unittest.mock import Mock, mock_open, patch
 
-from shared.initialization.report import import_example_reports, import_report
+from initialization.report import import_example_reports, import_report
 
-from tests.shared.base import DataModelTestCase
+from tests.base import DataModelTestCase
 
 
 class ReportInitTest(DataModelTestCase):

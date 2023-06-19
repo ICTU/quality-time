@@ -9,9 +9,8 @@ import os
 
 import bottle
 
-from shared.initialization.database import init_database
-
-from initialization import init_bottle
+from initialization.database import init_database
+from initialization.bottle import init_bottle
 
 
 def serve() -> None:  # pragma: no feature-test-cover

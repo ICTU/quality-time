@@ -1,11 +1,16 @@
 """Unit tests for the report class."""
 
+import unittest
+
+import mongomock
+
+from shared.database.reports import get_reports
 from shared.model.metric import Metric
-from shared.model.report import Report
+from shared.model.report import Report, get_metrics_from_reports
 from shared.model.source import Source
 from shared.model.subject import Subject
 
-from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 from tests.shared.base import DataModelTestCase
 
 
@@ -110,3 +115,19 @@ class ReportTest(DataModelTestCase):
     def test_find_without_source_and_metric_uuid(self):
         """Test that passing neither a source or a metric uuid throws an exception."""
         self.assertRaises(RuntimeError, self.report.instance_and_parents_for_uuid)
+
+
+class TestMetrics(unittest.TestCase):
+    """Test set for metrics."""
+
+    def setUp(self) -> None:
+        """Define info that is used in multiple tests."""
+        self.database = mongomock.MongoClient()["quality_time_db"]
+
+    def test_get_metrics_from_reports(self):
+        """Test that the metrics are returned."""
+        report = create_report(metric_id=METRIC_ID)
+        self.database["reports"].insert_one(report)
+        reports = get_reports(self.database)
+        metrics = get_metrics_from_reports(reports)
+        self.assertEqual(metrics[METRIC_ID]["name"], report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"])

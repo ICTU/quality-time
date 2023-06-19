@@ -1,6 +1,8 @@
 """Test the measurements collection."""
 
-from database.measurements import all_metric_measurements, measurements_by_metric
+from database.measurements import all_metric_measurements, measurements_by_metric, recent_measurements
+
+from shared.model.metric import Metric
 
 from tests.base import DatabaseTestCase
 from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
@@ -57,3 +59,15 @@ class MeasurementsByMetricTest(DatabaseTestCase):
         self.assertEqual(len(measurements), 3)
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
+
+    def test_recent_measurements(self):
+        """Test that we get all measurements with all metric ids."""
+        self.database.measurements.find.return_value = self.measurements[0:6]
+        metric_1 = Metric({}, {}, METRIC_ID)
+        metric_2 = Metric({}, {}, METRIC_ID2)
+        measurements = recent_measurements(self.database, metrics_dict={METRIC_ID: metric_1, METRIC_ID2: metric_2})
+        self.assertEqual(len(measurements), 2)
+        self.assertIn(METRIC_ID, measurements)
+        self.assertEqual(len(measurements[METRIC_ID]), 3)
+        self.assertIn(METRIC_ID2, measurements)
+        self.assertEqual(len(measurements[METRIC_ID2]), 3)

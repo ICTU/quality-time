@@ -5,13 +5,11 @@ from typing import cast
 import bottle
 from pymongo.database import Database
 
-from shared.database.datamodels import latest_datamodel
-from shared.database.reports import insert_new_report
 from shared.model.subject import Subject
 from shared.utils.type import ReportId, SubjectId
 
-from database.datamodels import default_subject_attributes
-from database.reports import latest_report_for_uuids, latest_reports
+from database.datamodels import default_subject_attributes, latest_datamodel
+from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_subject, move_item
 from utils.functions import sanitize_html, uuid
 
@@ -21,8 +19,7 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.post("/api/v3/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, report_uuid)[0]
     subject_type = str(dict(bottle.request.json)["type"])
     subject_uuid = cast(SubjectId, uuid())
@@ -38,7 +35,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, report_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
@@ -58,8 +55,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
 @bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, target_report_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
@@ -77,8 +73,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
 @bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
     del report["subjects"][subject_uuid]
@@ -94,8 +89,7 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     new_value = dict(bottle.request.json)[subject_attribute]
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
     old_subject_name = subject.name  # In case the name is the attribute that is changed

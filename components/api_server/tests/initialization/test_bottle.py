@@ -4,10 +4,8 @@ import unittest
 from unittest.mock import Mock
 import bottle
 
-from shared.routes.plugins import InjectionPlugin
-
-from routes.plugins import AuthPlugin
-from initialization import init_bottle
+from initialization.bottle import init_bottle
+from routes.plugins import AuthPlugin, InjectionPlugin
 
 
 class BottleInitTest(unittest.TestCase):

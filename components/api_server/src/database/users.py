@@ -2,7 +2,7 @@
 
 from pymongo.database import Database
 
-from shared.utils.type import User
+from utils.type import User
 
 
 def upsert_user(database: Database, user: User) -> None:
