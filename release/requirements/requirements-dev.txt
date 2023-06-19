@@ -71,9 +71,9 @@ pip-tools==6.13.0 \
     --hash=sha256:50943f151d87e752abddec8158622c34ad7f292e193836e90e30d87da60b19d9 \
     --hash=sha256:61d46bd2eb8016ed4a924e196e6e5b0a268cd3babd79e593048720db23522bb1
     # via release (pyproject.toml)
-platformdirs==3.5.3 \
-    --hash=sha256:0ade98a4895e87dc51d47151f7d2ec290365a585151d97b4d8d6312ed6132fed \
-    --hash=sha256:e48fabd87db8f3a7df7150a4a5ea22c546ee8bc39bc2473244730d4b56d2cc4e
+platformdirs==3.6.0 \
+    --hash=sha256:57e28820ca8094678b807ff529196506d7a21e17156cb1cddb3e74cebce54640 \
+    --hash=sha256:ffa199e3fbab8365778c4a10e1fbf1b9cd50707de826eb304b50e57ec0cc8d38
     # via black
 pyproject-hooks==1.0.0 \
     --hash=sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8 \
