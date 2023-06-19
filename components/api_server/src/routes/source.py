@@ -22,8 +22,7 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 @bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
-    data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     source_type = dict(bottle.request.json)["type"]
@@ -43,8 +42,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
 def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
     data_model = latest_datamodel(database)
-
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=metric_uuid)
@@ -65,8 +63,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
 @bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
-    data_model = latest_datamodel(database)
-    all_reports = latest_reports(database, data_model)
+    all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, target_metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=target_metric_uuid)
@@ -101,8 +98,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 @bottle.delete("/api/v3/source/<source_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, source_uuid)[0]
     source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     delta_description = (
@@ -117,8 +113,7 @@ def delete_source(source_uuid: SourceId, database: Database):
 @bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     report = latest_report_for_uuids(reports, source_uuid)[0]
     source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
     old_source_name = source.name  # in case the name is the attribute that is changed
@@ -145,7 +140,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data_model = latest_datamodel(database)
-    reports = latest_reports(database, data_model)
+    reports = latest_reports(database)
     items = _items(reports, source_uuid)
     new_value = new_parameter_value(data_model, items[0], parameter_key)
     old_value = items[0]["parameters"].get(parameter_key) or ""

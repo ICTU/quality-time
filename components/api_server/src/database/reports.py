@@ -7,6 +7,7 @@ import pymongo
 from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
+from shared.database.reports import get_reports
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import ItemId, ReportId
 
@@ -72,19 +73,23 @@ def latest_report(database: Database, data_model, report_uuid: str):
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 
-def latest_reports(database: Database, data_model: dict, max_iso_timestamp: str = "") -> list[Report]:
+def latest_reports(database: Database) -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection."""
-    if max_iso_timestamp and max_iso_timestamp < iso_timestamp():
-        report_filter = {"timestamp": {"$lt": max_iso_timestamp}}
-        report_uuids = database.reports.distinct("report_uuid", report_filter)
-        report_dicts = []
-        for report_uuid in report_uuids:
-            report_filter["report_uuid"] = report_uuid
-            report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
-            if report_dict and "deleted" not in report_dict:
-                report_dicts.append(report_dict)
-    else:
-        report_dicts = cast(list, database.reports.find({"last": True, "deleted": DOES_NOT_EXIST}))
+    return cast(list[Report], get_reports(database, Report))
+
+
+def latest_reports_before_timestamp(database: Database, data_model: dict, max_iso_timestamp: str) -> list[Report]:
+    """Return the latest, undeleted, reports in the reports collection before the max timestamp."""
+    if not max_iso_timestamp or max_iso_timestamp >= iso_timestamp():
+        return latest_reports(database)
+    report_filter = {"timestamp": {"$lt": max_iso_timestamp}}
+    report_uuids = database.reports.distinct("report_uuid", report_filter)
+    report_dicts = []
+    for report_uuid in report_uuids:
+        report_filter["report_uuid"] = report_uuid
+        report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
+        if report_dict and "deleted" not in report_dict:
+            report_dicts.append(report_dict)
     return [Report(data_model, report_dict) for report_dict in report_dicts]
 
 

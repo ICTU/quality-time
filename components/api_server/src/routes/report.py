@@ -12,7 +12,7 @@ from shared.utils.type import ReportId
 
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements
-from database.reports import insert_new_report, latest_report, latest_reports
+from database.reports import insert_new_report, latest_report, latest_reports_before_timestamp
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.report import Report
@@ -34,7 +34,7 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
-    reports = latest_reports(database, data_model, date_time)
+    reports = latest_reports_before_timestamp(database, data_model, date_time)
     summarized_reports = []
 
     if report_uuid and report_uuid.startswith("tag-"):
