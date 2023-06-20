@@ -114,5 +114,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         measures: list[dict[str, str]] = []
         for response in responses:
             measures.extend((await response.json()).get("component", {}).get("measures", []))
+        # Note that the SonarQube api sometimes omits values (when they are 0) from the component measurement endpoint
+        # This has not (yet) been observed for the 'functions' metric and current code would iterate over an empty list
         measurement.total = str(sum(int(measure["value"]) for measure in measures))
         return measurement
