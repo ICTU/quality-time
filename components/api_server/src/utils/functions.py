@@ -38,7 +38,7 @@ def check_url_availability(
 ) -> dict[str, int | str]:
     """Check the availability of the URL."""
     headers = _headers(source_parameters)
-    if token_validation_path and "private_token" in source_parameters:  # pragma: no feature-test-cover
+    if token_validation_path and "private_token" in source_parameters:
         url = URL(url.rstrip("/") + "/" + token_validation_path.lstrip("/"))
         credentials = None
     else:
