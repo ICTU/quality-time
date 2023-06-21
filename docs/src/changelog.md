@@ -44,6 +44,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 - Remove useless popup that appears when hovering tags in the dashboard. Fixes [#5525](https://github.com/ICTU/quality-time/issues/5525).
 - Don't attempt to collect all projects and repositories from Harbor when the user has configured filters on projects and/or repositories. Partially fixes [#6220](https://github.com/ICTU/quality-time/issues/6220).
 - Don't query SonarQube for the rule `plsql:PlSql.FunctionAndProcedureExcessiveParameters` when collecting data for the 'many parameters' metric. Sonarcloud.io gives a permission denied error when querying for that rule. Fixes [#6277](https://github.com/ICTU/quality-time/issues/6277).
+- Assume metric value 0 when it is omitted from SonarQube API response. Fixes [#6346](https://github.com/ICTU/quality-time/issues/6346).
 
 ### Added
 

@@ -71,8 +71,8 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return f"{value_key},{total_key}" if total_key else value_key
 
     def _value(self, metrics: Metrics) -> str:
-        """Return the metric value."""
-        return str(sum(int(metrics[key]) for key in self._value_key().split(",")))
+        """Return the metric value, assuming 0 when it is omitted from SonarQube api response."""
+        return str(sum(int(metrics.get(key, "0")) for key in self._value_key().split(",")))
 
     def _total(self, metrics: Metrics) -> str:
         """Return the total value."""
