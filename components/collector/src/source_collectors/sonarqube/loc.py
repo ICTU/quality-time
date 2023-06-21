@@ -1,5 +1,7 @@
 """SonarQube LOC collector."""
 
+from typing import ClassVar
+
 from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity
 
@@ -9,7 +11,7 @@ from .base import SonarQubeMetricsBaseClass
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
-    LANGUAGES = {
+    LANGUAGES: ClassVar[dict[str, str]] = {
         "abap": "ABAP",
         "apex": "Apex",
         "c": "C",

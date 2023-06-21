@@ -6,7 +6,7 @@ import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, cast
+from typing import Any, ClassVar, cast
 
 import aiohttp
 from packaging.version import Version
@@ -32,7 +32,7 @@ class SourceCollector(ABC):
     """
 
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
-    subclasses: set[type["SourceCollector"]] = set()
+    subclasses: ClassVar[set[type["SourceCollector"]]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, source) -> None:
         self._session = session

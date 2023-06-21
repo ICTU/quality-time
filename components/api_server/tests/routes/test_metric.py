@@ -82,9 +82,9 @@ class PostMetricAttributeTestCase(DataModelTestCase):
     def assert_delta(
         self,
         description: str,
-        uuids: list[str] = None,
+        uuids: list[str] | None = None,
         email: str = JOHN["email"],
-        report: Report = None,
+        report: Report | None = None,
     ):
         """Assert that the report delta contains the correct data."""
         report = report if report is not None else self.report
@@ -497,7 +497,7 @@ class MetricTest(DataModelTestCase):
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
 
-    def assert_delta(self, description: str, uuids: list[str] = None, email: str = JOHN["email"], report=None):
+    def assert_delta(self, description: str, uuids: list[str] | None = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
         uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         report = report or self.report

@@ -1,5 +1,7 @@
 """Unit tests for the JaCoCo Jenkins plugin uncovered branches collector."""
 
+from typing import ClassVar
+
 from .base import JaCoCoJenkinsPluginTestCase
 
 
@@ -7,7 +9,7 @@ class JaCoCoJenkinsPluginUncoveredBranchesTest(JaCoCoJenkinsPluginTestCase):
     """Unit tests for the JaCoCo Jenkins plugin uncovered branches collector."""
 
     METRIC_TYPE = "uncovered_branches"
-    JACOCO_JENKINS_PLUGIN_JSON = {"branchCoverage": {"total": 6, "missed": 2}}
+    JACOCO_JENKINS_PLUGIN_JSON: ClassVar[dict[str, dict[str, int]]] = {"branchCoverage": {"total": 6, "missed": 2}}
 
     async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the total number of branches are returned."""

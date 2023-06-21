@@ -74,7 +74,7 @@ class GitLabMergeRequests(GitLabBase):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        return URL(f"{await super()._landing_url(responses)!s}/{self._parameter('project')}/-/merge_requests")
+        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/merge_requests")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to use the GitLab GraphQL API to retrieve the merge requests.

@@ -13,7 +13,7 @@ from .base import JiraBase
 class Board(TypedDict):
     """Type for Jira boards."""
 
-    id: int  # noqa: A003
+    id: int
     name: str
 
 
@@ -27,7 +27,7 @@ class Points(TypedDict):
 class Sprint(TypedDict):
     """Type for Jira sprints."""
 
-    id: int  # noqa: A003
+    id: int
     name: str
     goal: str
 

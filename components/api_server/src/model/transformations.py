@@ -1,6 +1,7 @@
 """Model transformations."""
 
 import json
+from typing import cast
 
 from collections.abc import Iterator
 from json.decoder import JSONDecodeError
@@ -12,8 +13,6 @@ from utils.type import EditScope
 
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
-import contextlib
-
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
 
@@ -78,7 +77,7 @@ def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
                 report["issue_tracker"]["parameters"][secret_attribute] = credential
 
 
-def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> str:
+def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> str | tuple[str, str]:
     """Decrypt the credential if it's encrypted, otherwise return it unchanged."""
     if isinstance(credential, str):
         return credential
@@ -86,10 +85,10 @@ def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> s
         decrypted_credential = asymmetric_decrypt(private_key, credential)
     except ValueError as error:
         raise DecryptionError from error
-    with contextlib.suppress(JSONDecodeError):
-        decrypted_credential = json.loads(decrypted_credential)
-
-    return decrypted_credential
+    try:
+        return cast(tuple[str, str], json.loads(decrypted_credential))
+    except JSONDecodeError:
+        return decrypted_credential
 
 
 def replace_report_uuids(*reports) -> None:

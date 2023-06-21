@@ -1,9 +1,9 @@
 """Metric and parameter units."""
 
-from enum import Enum
+from .base import StrEnum
 
 
-class Unit(str, Enum):
+class Unit(StrEnum):
     """Supported units."""
 
     BLOCKS = "blocks"

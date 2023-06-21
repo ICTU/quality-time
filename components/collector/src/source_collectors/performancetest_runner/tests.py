@@ -1,6 +1,6 @@
 """Performancetest-runner tests collector."""
 
-from typing import cast
+from typing import ClassVar, cast
 
 from bs4 import Tag
 
@@ -15,7 +15,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of (successful and/or failing) performance test transactions."""
 
     # For each tests status, the column in the HMTL table that contains the number of tests with that status:
-    COLUMN_INDICES = {"failed": 7, "success": 1}
+    COLUMN_INDICES: ClassVar[dict[str, int]] = {"failed": 7, "success": 1}
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the transactions from the responses and return the transactions with the desired status."""

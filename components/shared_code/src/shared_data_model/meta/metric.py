@@ -1,14 +1,12 @@
 """Data model metrics."""
 
-from enum import Enum
-
 from pydantic import Field, validator
 
-from .base import DescribedModel, MappedModel
+from .base import DescribedModel, MappedModel, StrEnum
 from .unit import Unit
 
 
-class Addition(str, Enum):
+class Addition(StrEnum):
     """How measurements from sources should be combined."""
 
     MAX = "max"
@@ -16,14 +14,14 @@ class Addition(str, Enum):
     SUM = "sum"
 
 
-class Direction(str, Enum):
+class Direction(StrEnum):
     """Specify whether more of the measured value is better or less of the measured value is better."""
 
     FEWER_IS_BETTER = "<"
     MORE_IS_BETTER = ">"
 
 
-class Tag(str, Enum):
+class Tag(StrEnum):
     """Metric tags."""
 
     ACCESSIBILITY = "accessibility"

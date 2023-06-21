@@ -2,10 +2,17 @@
 
 import string
 from collections.abc import ItemsView, ValuesView
+from enum import Enum
 from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field, validator
 from pydantic.generics import GenericModel
+
+
+class StrEnum(str, Enum):
+    """Enums that use strings as values."""
+
+    __slots__ = ()
 
 
 class NamedModel(BaseModel):

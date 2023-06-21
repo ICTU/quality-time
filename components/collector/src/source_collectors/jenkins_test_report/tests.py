@@ -1,6 +1,6 @@
 """Jenkins test report metric tests collector."""
 
-from typing import Final, cast
+from typing import ClassVar, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
@@ -13,7 +13,7 @@ Suite = dict[str, list[TestCase]]
 class JenkinsTestReportTests(SourceCollector):
     """Collector to get the number of tests from a Jenkins test report."""
 
-    JENKINS_TEST_REPORT_COUNTS: Final[dict[str, str]] = {
+    JENKINS_TEST_REPORT_COUNTS: ClassVar[dict[str, str]] = {
         "failed": "failCount",
         "passed": "passCount",
         "skipped": "skipCount",

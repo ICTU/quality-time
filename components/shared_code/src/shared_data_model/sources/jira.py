@@ -1,7 +1,6 @@
 """Jira source."""
 
-from enum import Enum
-
+from shared_data_model.meta.base import StrEnum
 from shared_data_model.meta.entity import Color, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
@@ -15,7 +14,7 @@ from shared_data_model.parameters import (
 )
 
 
-class VelocityType(str, Enum):
+class VelocityType(StrEnum):
     """Velocity types Jira can report."""
 
     COMMITTED = "committed points"

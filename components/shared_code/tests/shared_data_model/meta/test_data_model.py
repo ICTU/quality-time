@@ -1,5 +1,6 @@
 """Data model unit tests."""
 
+from typing import ClassVar
 from unittest.mock import patch
 
 from shared_data_model.meta.data_model import DataModel
@@ -12,8 +13,10 @@ class DataModelTest(MetaModelTestCase):
 
     MODEL = DataModel
     DESCRIPTION = "Description."
-    SCALES = {"count": {"name": "Count", "description": "The count scale."}}
-    METRICS = {"metric": {"name": "Metric", "description": "Description.", "scales": ["count"], "sources": ["source"]}}
+    SCALES: ClassVar[dict] = {"count": {"name": "Count", "description": "The count scale."}}
+    METRICS: ClassVar[dict] = {
+        "metric": {"name": "Metric", "description": "Description.", "scales": ["count"], "sources": ["source"]},
+    }
 
     @classmethod
     def source(cls, **kwargs) -> dict[str, str | dict]:

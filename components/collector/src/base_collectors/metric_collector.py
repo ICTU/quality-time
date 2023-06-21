@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Coroutine
+from typing import ClassVar
 
 import aiohttp
 
@@ -15,7 +16,7 @@ from .source_collector import SourceCollector, SourceParameters
 class MetricCollector:
     """Collect measurements for a specific metric."""
 
-    subclasses: set[type["MetricCollector"]] = set()
+    subclasses: ClassVar[set[type["MetricCollector"]]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, metric) -> None:
         self.__session = session

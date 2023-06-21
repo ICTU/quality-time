@@ -2,6 +2,7 @@
 
 import unittest
 from datetime import date
+from typing import ClassVar
 
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
@@ -13,7 +14,7 @@ from tests.fixtures import METRIC_ID
 class MetricTest(unittest.TestCase):
     """Test the metric model."""
 
-    DATA_MODEL = {
+    DATA_MODEL: ClassVar[dict] = {
         "metrics": {
             "fixture_metric_type": {"name": "fixture_metric_type", "unit": "issues"},
             "fixture_metric_type_without_name": {"unit": "issues"},

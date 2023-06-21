@@ -1,7 +1,6 @@
 """SonarQube source."""
 
-from enum import Enum
-
+from shared_data_model.meta.base import StrEnum
 from shared_data_model.meta.entity import Color, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
@@ -16,7 +15,7 @@ from shared_data_model.parameters import (
 )
 
 
-class Lines(str, Enum):
+class Lines(StrEnum):
     """Line types that SonarQube can report on."""
 
     ALL = "all lines"
