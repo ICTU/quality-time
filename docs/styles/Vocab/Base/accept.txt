@@ -16,6 +16,7 @@ OJAudit
 OpenShift
 PDFs
 Pydantic
+Robocop
 Snyk
 Trello
 Trivy
