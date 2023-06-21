@@ -10,6 +10,15 @@ This document describes how to deploy, and if needed move, the *Quality-time* ap
 
 This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repository contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
 
+To deploy *Quality-time* locally, follow these steps:
+
+1. Make a directory, e.g. `quality_time` and change directory to it.
+2. Download the docker compose files from the docker folder](https://github.com/ICTU/quality-time/tree/master/docker) and place them in the folder created in the previous step.
+3. Set the version number: `export QUALITY_TIME_VERSION=v4.10.0`.
+4. Run `docker compose up`.
+5. Go to http://localhost to access the application.
+6. To log in, use one of the default users available in the [test LDAP server](software.md#test-ldap-server).
+
 ## Configuring authentication (mandatory)
 
 You need to either configure an LDAP server to authenticate users with or configure forwarded authentication.
