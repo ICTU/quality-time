@@ -25,11 +25,11 @@ In this version of *Quality-time* the internal server component is no longer use
   - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
   - Change the `depends_on: external_server` into `depends_on: api_server`.
 - In the `collector` section:
-  - Add the same `DATABASE_URL` environment variable as the external server has.
+  - Add the same `DATABASE_URL` environment variable as the `api_server` section has.
   - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
   - Change the `depends_on: internal_server` into `depends_on: database`.
 - In the `notifier` section:
-  - Add the same `DATABASE_URL` environment variable as the external server has.
+  - Add the same `DATABASE_URL` environment variable as the `api_server` section has.
   - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
   - Change the `depends_on: internal_server` into `depends_on: database`.
 - Update the version number of all images to `v5.0.0`.
@@ -57,6 +57,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 - Opt in to the new Chrome headless implementation for PDF-export, see https://developer.chrome.com/articles/new-headless/. Closes [#6149](https://github.com/ICTU/quality-time/issues/6149).
 - Added more SonarQube rules to report on 'suppressed violations' and 'long units' for the Python language. Added a SonarQube rule to report on 'many parameters' for the Kotlin language. Closes [#6193](https://github.com/ICTU/quality-time/issues/6193).
 - Throw a timeout error when collecting measurement data from a source takes longer than the configured time between measurement attempts (this can be changed via the `MAX_SLEEP_DURATION` environment variable which has a default value of 20 seconds). Partially fixes [#6220](https://github.com/ICTU/quality-time/issues/6220).
+- Upgrade MongoDB from 5.0 to 6.0. Closes [#6358](https://github.com/ICTU/quality-time/issues/6358).
 
 ## v4.10.0 - 2023-04-26
 
