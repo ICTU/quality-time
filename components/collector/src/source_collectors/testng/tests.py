@@ -1,6 +1,6 @@
 """TestNG tests collector."""
 
-from typing import cast
+from typing import ClassVar, cast
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
@@ -11,7 +11,8 @@ from model import Entities, Entity, SourceMeasurement, SourceResponses
 class TestNGTests(XMLFileSourceCollector):
     """Collector for TestNG tests."""
 
-    TEST_RESULT = {"FAIL": "failed", "PASS": "passed", "SKIP": "skipped"}  # nosec # Test status to test result mapping
+    # Test status to test result mapping
+    TEST_RESULT: ClassVar[dict[str, str]] = {"FAIL": "failed", "PASS": "passed", "SKIP": "skipped"}  # nosec
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the tests for the TestNG XML."""

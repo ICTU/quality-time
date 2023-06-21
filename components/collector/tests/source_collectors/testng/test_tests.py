@@ -1,5 +1,7 @@
 """Unit tests for the JUnit XML tests collector."""
 
+from typing import ClassVar
+
 from .base import TestNGCollectorTestCase
 
 
@@ -26,7 +28,7 @@ class TestNGTestsTest(TestNGCollectorTestCase):
       </suite>
     </testng-results>
     """
-    EXPECTED_ENTITIES = [
+    EXPECTED_ENTITIES: ClassVar[list[dict[str, str]]] = [
         {
             "key": "class1_method2",
             "class_name": "class1",

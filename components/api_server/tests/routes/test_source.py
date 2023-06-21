@@ -152,7 +152,7 @@ class PostSourceParameterTest(SourceTestCase):
         }
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
-    def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
+    def assert_url_check(self, response, status_code: int | None = None, status_code_reason: str | None = None):
         """Check the url check result."""
         status_code = status_code or self.STATUS_CODE
         status_code_reason = status_code_reason or self.STATUS_CODE_REASON

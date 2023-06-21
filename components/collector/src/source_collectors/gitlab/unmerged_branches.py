@@ -21,7 +21,7 @@ class GitLabUnmergedBranches(GitLabProjectBase, UnmergedBranchesSourceCollector)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        return URL(f"{await super()._landing_url(responses)!s}/{self._parameter('project')}/-/branches")
+        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/branches")
 
     async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
         """Override to return a list of unmerged and inactive branches."""

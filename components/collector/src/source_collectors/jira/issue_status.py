@@ -1,6 +1,6 @@
 """Jira issue status collector."""
 
-from typing import cast
+from typing import ClassVar, cast
 
 from collector_utilities.type import URL
 from model import Issue, IssueRelease, IssueSprint, IssueStatus, IssueStatusCategory, SourceResponses
@@ -12,7 +12,7 @@ class JiraIssueStatus(JiraBase):
     """Jira issue status collector."""
 
     # Map the Jira status categories, the keys, to the Quality-time status categories, the values:
-    STATUS_CATEGORY_MAPPING = {"done": "done", "indeterminate": "doing", "new": "todo"}
+    STATUS_CATEGORY_MAPPING: ClassVar[dict[str, str]] = {"done": "done", "indeterminate": "doing", "new": "todo"}
 
     # Note, Jira distinguishes statuses and status categories. Statuses can be added, but the list of status
     # categories is fixed, per https://jira.atlassian.com/browse/JRASERVER-36241. As Quality-time only needs to know

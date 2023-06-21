@@ -446,7 +446,13 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         super().setUp()
         self.source_count = 0
 
-    def source(self, metric: Metric, parse_error: str = None, total: str = None, value: str = None) -> Source:
+    def source(
+        self,
+        metric: Metric,
+        parse_error: str | None = None,
+        total: str | None = None,
+        value: str | None = None,
+    ) -> Source:
         """Create a source fixture."""
         self.source_count += 1
         source_number = "" if self.source_count == 1 else str(self.source_count)

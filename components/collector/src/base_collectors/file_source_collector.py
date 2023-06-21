@@ -5,7 +5,7 @@ import zipfile
 from abc import ABC
 from http import HTTPStatus
 from json import loads
-from typing import cast
+from typing import ClassVar, cast
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup, Tag
@@ -39,7 +39,7 @@ class FakeResponse:
 class FileSourceCollector(SourceCollector, ABC):
     """Base class for source collectors that retrieve files."""
 
-    file_extensions: list[str] = []  # Subclass responsibility
+    file_extensions: ClassVar[list[str]] = []  # Subclass responsibility
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to unzip any zipped responses."""
@@ -85,13 +85,13 @@ class FileSourceCollector(SourceCollector, ABC):
 class CSVFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve CSV files."""
 
-    file_extensions = ["csv"]
+    file_extensions: ClassVar[list[str]] = ["csv"]
 
 
 class HTMLFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve HTML files."""
 
-    file_extensions = ["html", "htm"]
+    file_extensions: ClassVar[list[str]] = ["html", "htm"]
 
     @staticmethod
     async def _soup(response: Response) -> Tag:
@@ -102,7 +102,7 @@ class HTMLFileSourceCollector(FileSourceCollector, ABC):
 class JSONFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve JSON files."""
 
-    file_extensions = ["json"]
+    file_extensions: ClassVar[list[str]] = ["json"]
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the entities from the JSON in the responses."""
@@ -121,4 +121,4 @@ class JSONFileSourceCollector(FileSourceCollector, ABC):
 class XMLFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve XML files."""
 
-    file_extensions = ["xml"]
+    file_extensions: ClassVar[list[str]] = ["xml"]

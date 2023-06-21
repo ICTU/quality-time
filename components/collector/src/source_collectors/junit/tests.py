@@ -1,6 +1,6 @@
 """JUnit tests collector."""
 
-from typing import cast
+from typing import ClassVar, cast
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from base_collectors import XMLFileSourceCollector
@@ -11,7 +11,7 @@ from model import Entities, Entity, SourceMeasurement, SourceResponses
 class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
-    JUNIT_STATUS_NODES = {"errored": "error", "failed": "failure", "skipped": "skipped"}
+    JUNIT_STATUS_NODES: ClassVar[dict[str, str]] = {"errored": "error", "failed": "failure", "skipped": "skipped"}
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the tests from the JUnit XML."""

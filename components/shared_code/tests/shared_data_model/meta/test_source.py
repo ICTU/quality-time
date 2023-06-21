@@ -1,5 +1,6 @@
 """Unit tests for the source model."""
 
+from typing import ClassVar
 from unittest.mock import Mock, patch
 
 from shared_data_model.meta.source import Sources
@@ -14,7 +15,7 @@ class SourcesTest(MetaModelTestCase):
     MODEL = Sources
     DESCRIPTION = "Source."
     URL = "https://example.org"
-    SOURCE = {"name": "Source", "description": DESCRIPTION, "parameters": {}, "metrics": ["metric"]}
+    SOURCE: ClassVar[dict] = {"name": "Source", "description": DESCRIPTION, "parameters": {}, "metrics": ["metric"]}
 
     @staticmethod
     def mock_path(path_class, exists: bool = True) -> Mock:

@@ -1,13 +1,11 @@
 """Data model source parameters."""
 
-from enum import Enum
-
 from pydantic import Field, HttpUrl, validator
 
-from .base import MappedModel, NamedModel
+from .base import MappedModel, NamedModel, StrEnum
 
 
-class ParameterType(str, Enum):
+class ParameterType(StrEnum):
     """Parameter type."""
 
     DATE = "date"

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from packaging.version import InvalidVersion, Version
 
@@ -177,7 +177,7 @@ class VersionNumberScaleMeasurement(ScaleMeasurement):
 class Measurement(dict):
     """Class representing a measurement."""
 
-    SCALE_CLASSES = {
+    SCALE_CLASSES: ClassVar[dict[str, type[ScaleMeasurement]]] = {
         "count": CountScaleMeasurement,
         "percentage": PercentageScaleMeasurement,
         "version_number": VersionNumberScaleMeasurement,
@@ -201,7 +201,7 @@ class Measurement(dict):
             self.get(scale, {}),
             measurement=self,
             previous_scale_measurement=previous,
-        )  # type: ignore[abstract]
+        )
 
     def copy(self) -> Measurement:
         """Extend to return an instance of this class instead of a dict."""

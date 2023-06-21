@@ -1,5 +1,7 @@
 """Base classes for Gatling collectors."""
 
+from typing import ClassVar
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -9,7 +11,7 @@ class GatlingTestCase(SourceCollectorTestCase):
     SOURCE_TYPE = "gatling"
     API1 = "Foo"
     API2 = "Bar"
-    GATLING_JSON = {
+    GATLING_JSON: ClassVar[dict[str, dict[str, dict[str, dict[str, str | dict[str, int | float | str]]]]]] = {
         "contents": {
             "transaction1": {
                 "stats": {

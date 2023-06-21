@@ -1,13 +1,11 @@
 """Data model measurement entities."""
 
-from enum import Enum
-
 from pydantic import BaseModel, Field, validator
 
-from .base import MappedModel, NamedModel
+from .base import MappedModel, NamedModel, StrEnum
 
 
-class Color(str, Enum):
+class Color(StrEnum):
     """Entity color, corresponding to the Semantic UI React states for table rows.
 
     See https://react.semantic-ui.com/collections/table/#states-positive-negative.
@@ -20,7 +18,7 @@ class Color(str, Enum):
     WARNING = "warning"
 
 
-class EntityAttributeType(str, Enum):
+class EntityAttributeType(StrEnum):
     """Type of the entity attribute. If not specified, the entity attribute type is string."""
 
     DATE = "date"
@@ -30,7 +28,7 @@ class EntityAttributeType(str, Enum):
     STATUS = "status"
 
 
-class EntityAttributeAligment(str, Enum):
+class EntityAttributeAligment(StrEnum):
     """Alignment of the entity attribute."""
 
     LEFT = "left"

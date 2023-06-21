@@ -1,5 +1,7 @@
 """Base classes for JMeter JSON collectors."""
 
+from typing import ClassVar
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -9,7 +11,7 @@ class JMeterJSONTestCase(SourceCollectorTestCase):
     SOURCE_TYPE = "jmeter_json"
     API1 = "/api/foo"
     API2 = "/api/bar"
-    JMETER_JSON = {
+    JMETER_JSON: ClassVar[dict[str, dict[str, str | int | float]]] = {
         "transaction1": {
             "transaction": API1,
             "sampleCount": 123,

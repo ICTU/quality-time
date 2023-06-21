@@ -2,10 +2,12 @@
 
 import re
 from collections.abc import Sequence
-from typing import cast
+from typing import ClassVar, Literal, cast
 
 from base_collectors import MetricCollector
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement
+
+TestResult = Literal["untested", "passed", "skipped", "failed", "errored"]
 
 
 class TestCases(MetricCollector):
@@ -17,7 +19,7 @@ class TestCases(MetricCollector):
     # case and the next test result found. The value is the resulting test result. For example,
     # {("passed", "skipped"), "skipped"} means that if a test case has passed so far and we see a skipped test result,
     # the updated test result state of the test case is skipped.
-    TEST_RESULT_STATE = {
+    TEST_RESULT_STATE: ClassVar[dict[tuple[TestResult, TestResult], TestResult]] = {
         ("untested", "passed"): "passed",
         ("untested", "skipped"): "skipped",
         ("untested", "failed"): "failed",
@@ -40,12 +42,12 @@ class TestCases(MetricCollector):
         ("errored", "errored"): "errored",
     }
     # Mapping to uniformize the test results from different sources:
-    UNIFORMIZED_TEST_RESULTS = {"fail": "failed", "pass": "passed", "skip": "skipped"}
+    UNIFORMIZED_TEST_RESULTS: ClassVar[dict[str, TestResult]] = {"fail": "failed", "pass": "passed", "skip": "skipped"}
     # Regular expression to identify test case ids in test names and descriptions:
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
     # The supported source types for test cases and test reports:
-    TEST_CASE_SOURCE_TYPES = ["jira"]
-    TEST_REPORT_SOURCE_TYPES = ["jenkins_test_report", "junit", "robot_framework", "testng"]
+    TEST_CASE_SOURCE_TYPES: ClassVar[list[str]] = ["jira"]
+    TEST_REPORT_SOURCE_TYPES: ClassVar[list[str]] = ["jenkins_test_report", "junit", "robot_framework", "testng"]
 
     async def collect(self) -> MetricMeasurement | None:
         """Override to add the test results from the test report(s) to the test cases."""
@@ -56,7 +58,7 @@ class TestCases(MetricCollector):
         # Derive the test result of the test cases from the test results of the tests
         for entity in self.test_report_entities(measurement.sources):
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
-                test_result_so_far = test_cases[test_case_key]["test_result"]
+                test_result_so_far = cast(TestResult, test_cases[test_case_key]["test_result"])
                 test_result = self.test_result(entity)
                 test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
         # Set the value of the test report sources to zero as this metric only counts test cases
@@ -97,15 +99,15 @@ class TestCases(MetricCollector):
         text_attributes = " ".join(entity.get(attribute_key, "") for attribute_key in ("name", "description"))
         return set(re.findall(cls.TEST_CASE_KEY_RE, text_attributes))
 
-    def test_results_to_count(self, source: SourceMeasurement) -> list[str]:
+    def test_results_to_count(self, source: SourceMeasurement) -> list[TestResult]:
         """Return the test results to count for the source."""
-        return [status.lower() for status in cast(list[str], self._parameters[source.source_uuid].get("test_result"))]
+        return [cast(TestResult, result.lower()) for result in self._parameters[source.source_uuid].get("test_result")]
 
     def source_type(self, source: SourceMeasurement) -> str:
         """Return the source type."""
         return str(self._metric["sources"][source.source_uuid]["type"])
 
     @classmethod
-    def test_result(cls, entity: Entity) -> str:
+    def test_result(cls, entity: Entity) -> TestResult:
         """Return the (uniformized) test result of the entity."""
         return cls.UNIFORMIZED_TEST_RESULTS.get(entity["test_result"], entity["test_result"])

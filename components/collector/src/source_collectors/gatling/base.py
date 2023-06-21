@@ -1,6 +1,7 @@
 """Base classes for Gatling collectors."""
 
 import re
+from typing import ClassVar
 
 from base_collectors import FileSourceCollector, JSONFileSourceCollector, SourceCollector
 from collector_utilities.type import URL
@@ -30,7 +31,7 @@ class GatlingJSONCollector(JSONFileSourceCollector, GatlingCollector):
 class GatlingLogCollector(FileSourceCollector, GatlingCollector):
     """Base class for Gatling collectors that read the simulation.log file."""
 
-    file_extensions = ["log"]
+    file_extensions: ClassVar[list[str]] = ["log"]
     FILEPATH = "/simulation.log"
 
     @classmethod

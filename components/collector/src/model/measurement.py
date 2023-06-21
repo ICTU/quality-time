@@ -16,11 +16,11 @@ class SourceMeasurement:
     def __init__(  # noqa: PLR0913
         self,
         *,
-        value: Value = None,
+        value: Value | None = None,
         total: Value = "100",
         entities: Entities | None = None,
-        connection_error: ErrorMessage = None,
-        parse_error: ErrorMessage = None,
+        connection_error: ErrorMessage | None = None,
+        parse_error: ErrorMessage | None = None,
     ) -> None:
         self.value = str(len(entities)) if value is None and entities is not None else value
         self.entities = Entities() if entities is None else entities

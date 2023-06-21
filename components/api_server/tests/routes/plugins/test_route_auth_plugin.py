@@ -37,7 +37,7 @@ class AuthPluginTest(DatabaseTestCase):
         logging.disable(logging.NOTSET)
 
     @staticmethod
-    def route(database: Mock, user: User = None) -> tuple[Mock, User]:
+    def route(database: Mock, user: User | None = None) -> tuple[Mock, User]:
         """Route handler with injected parameters. Returns the parameters for test purposes."""
         return database, user
 

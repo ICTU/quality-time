@@ -1,5 +1,7 @@
 """Unit tests for the SARIF JSON security warnings collector."""
 
+from typing import ClassVar
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -8,7 +10,7 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
 
     SOURCE_TYPE = "sarif_json"
     METRIC_TYPE = "security_warnings"
-    VULNERABILITIES_JSON = {
+    VULNERABILITIES_JSON: ClassVar[dict[str, list]] = {
         "runs": [
             {
                 "tool": {

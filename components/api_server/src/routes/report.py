@@ -233,7 +233,7 @@ def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
             if tag_subject := subject.tag_subject(tag):
                 subjects[subject.uuid] = tag_subject
 
-    report = Report(
+    return Report(
         data_model,
         {
             "title": f'Report for tag "{tag}"',
@@ -243,4 +243,3 @@ def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
             "subjects": subjects,
         },
     )
-    return report
