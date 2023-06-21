@@ -115,15 +115,15 @@ Feature: source
     And the availability status code equals "-1"
     And the availability status reason equals either "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
 
-  Scenario: change source token parameter with token validation path
-    Given an existing source with type "jira" and parameter url "https://jira.test"
-    When the client sets the source parameter private_token to "secret"
-    Then the source parameter private_token equals "this string replaces credentials"
-    And the availability status code equals "-1"
-    And the availability status reason equals either "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"
-
   Scenario: when the client clears the url, no availability check is done
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter url to "None"
     Then the source parameter url equals "None"
     And the availability status code equals "[]"
+
+  Scenario: change source token parameter with token validation path, attempt 4
+    Given an existing source with type "jira" and parameter url "https://jira.doesnotexist"
+    When the client sets the source parameter private_token to "secret"
+    Then the source parameter private_token equals "this string replaces credentials"
+    And the availability status code equals "-1"
+    And the availability status reason equals either "[Errno 8] nodename nor servname provided, or not known" or "[Errno -2] Name or service not known"

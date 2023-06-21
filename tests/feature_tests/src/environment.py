@@ -10,7 +10,7 @@ from behave.runner import Context
 
 def before_all(context: Context) -> None:  # noqa: C901
     """Create shortcuts to send requests to the server API."""
-    timeout = 10
+    timeout = 20  # Make timeout long enough to not time out when generating the PDF.
 
     def cookies() -> dict[str, str]:
         """Return the cookies."""
