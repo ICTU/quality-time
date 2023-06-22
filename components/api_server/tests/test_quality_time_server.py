@@ -25,7 +25,10 @@ class APIServerTestCase(unittest.TestCase):
         self.assertEqual("WARNING", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
 
     @patch("bottle.run", Mock())
-    @patch("os.getenv", Mock(return_value="DEBUG"))
+    @patch(
+        "os.getenv",
+        Mock(side_effect=lambda key, default=None: "DEBUG" if key == "API_SERVER_LOG_LEVEL" else default),
+    )
     def test_change_log_level(self):
         """Test that the logging level can be changed."""
         serve()

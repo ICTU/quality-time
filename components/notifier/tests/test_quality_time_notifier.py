@@ -16,7 +16,7 @@ class NotifierTestCase(unittest.TestCase):
         start_notifications()
         self.assertEqual("WARNING", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
 
-    @patch("os.getenv", Mock(side_effect=["DEBUG", "60"]))
+    @patch("os.getenv", Mock(side_effect=lambda key, default=None: "DEBUG" if key == "NOTIFIER_LOG_LEVEL" else default))
     def test_change_log_level(self):
         """Test that the logging level can be changed."""
         start_notifications()
