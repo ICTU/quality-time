@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.0.0-rc.1 - 2023-06-21
+## [Unreleased]
 
 ### Deployment notes
 
@@ -18,10 +18,11 @@ In this version of *Quality-time* the internal server component is no longer use
 
 - Remove the `internal_server` section.
 - Rename the `external_server` section to `api_server` and make the following changes in that section:
+  - Rename the `image` to `ictu/quality-time_api_server`
   - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
   - Rename `EXTERNAL_SERVER_LOG_LEVEL` to `API_SERVER_LOG_LEVEL`.
-- In the `proxy` section:
-  - Rename `EXTERNAL_SERVER_HOST` to `API_SERVER_HOST`.
+- In the `www` section:
+  - Rename `EXTERNAL_SERVER_HOST` to `API_SERVER_HOST=api_server`.
   - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
   - Change the `depends_on: external_server` into `depends_on: api_server`.
 - In the `collector` section:
@@ -32,6 +33,8 @@ In this version of *Quality-time* the internal server component is no longer use
   - Add the same `DATABASE_URL` environment variable as the `api_server` section has.
   - Remove the `INTERNAL_SERVER_HOST` and `INTERNAL_SERVER_PORT` environment variables.
   - Change the `depends_on: internal_server` into `depends_on: database`.
+- In the `frontend` section:
+  - Change the `depends_on: external_server` into `depends_on: database`.
 - Update the version number of all images to `v5.0.0`.
 
 See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) for an overview of all images.
