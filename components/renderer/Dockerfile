@@ -1,4 +1,4 @@
-FROM node:18.16.0-alpine3.17
+FROM node:18.16.1-alpine3.17
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
@@ -18,7 +18,7 @@ RUN apk add --no-cache \
 RUN update-ms-fonts \
     && fc-cache -f
 
-RUN npm install -g npm@9.6.7
+RUN npm install -g npm@9.7.2
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
