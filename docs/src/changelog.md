@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.0.0-rc.2 - 2023-06-23
+## [Unreleased]
 
 ### Deployment notes
 
@@ -22,7 +22,7 @@ In this version of *Quality-time* the internal server component is no longer use
   - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
   - Rename `EXTERNAL_SERVER_LOG_LEVEL` to `API_SERVER_LOG_LEVEL`.
 - In the `www` section:
-  - Rename `EXTERNAL_SERVER_HOST` to `API_SERVER_HOST=api_server`.
+  - Rename `EXTERNAL_SERVER_HOST=external_server` to `API_SERVER_HOST=api_server`.
   - Rename `EXTERNAL_SERVER_PORT` to `API_SERVER_PORT`.
   - Change the `depends_on: external_server` into `depends_on: api_server`.
 - In the `collector` section:
