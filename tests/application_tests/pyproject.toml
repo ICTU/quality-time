@@ -1,6 +1,6 @@
 [project]
 name = "application_tests"
-version = "5.0.0-rc.2"
+version = "5.0.0"
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.31.0",

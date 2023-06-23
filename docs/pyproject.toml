@@ -1,6 +1,6 @@
 [project]
 name = "docs"
-version = "5.0.0-rc.2"
+version = "5.0.0"
 dependencies = [
     "furo==2023.5.20",
     "gitpython==3.1.31",

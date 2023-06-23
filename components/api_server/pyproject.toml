@@ -1,6 +1,6 @@
 [project]
 name = "api_server"
-version = "5.0.0-rc.2"
+version = "5.0.0"
 dependencies = [
     "bottle==0.12.25",
     "cryptography==41.0.1",
