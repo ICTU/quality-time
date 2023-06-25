@@ -4,42 +4,47 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function EditableIntegerInput(props) {
-    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
+    let { allowEmpty, editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
     const minValue = min || 0;
 
-    function is_valid(a_value) {
-        if (Number.isNaN(parseInt(a_value))) {
+    function isValid(aValue) {
+        if (aValue === "") {
+            return allowEmpty
+        }
+        if (Number.isNaN(parseInt(aValue))) {
             return false
         }
-        if (Number(a_value) < Number(minValue)) {
+        if (Number(aValue) < Number(minValue)) {
             return false
         }
-        if (props.max !== null && Number(a_value) > Number(props.max)) {
+        if (props.max !== null && Number(aValue) > Number(props.max)) {
             return false
         }
         return true
     }
-    function submit_if_changed_and_valid() {
-        if (value !== initialValue && is_valid(value)) {
+
+    function submitIfChangedAndValid() {
+        if (value !== initialValue && isValid(value)) {
             set_value(value)
         }
     }
+
     return (
         <Form>
             <Form.Input
                 {...otherProps}
-                error={!is_valid(value)}
+                error={!isValid(value)}
                 fluid
                 focus
                 label={editableLabel || label}
                 labelPosition={unit ? "right" : "left"}
                 min={minValue}
-                onBlur={() => { submit_if_changed_and_valid() }}
-                onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
+                onBlur={() => { submitIfChangedAndValid() }}
+                onChange={(event) => { if (isValid(event.target.value)) { setValue(event.target.value) } }}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") { submit_if_changed_and_valid() }
+                    if (event.key === "Enter") { submitIfChangedAndValid() }
                     if (event.key === "Escape") { setValue(initialValue) }
                 }}
                 type="number"
