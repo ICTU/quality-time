@@ -13,7 +13,7 @@ import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { IssueTracker } from './IssueTracker';
-import { metricReactionDeadline } from '../defaults';
+import { defaultDesiredResponsetimes } from '../defaults';
 import { setDocumentTitle } from './document_title';
 
 function ReportConfiguration({ report, reload }) {
@@ -66,7 +66,7 @@ function ReactionTimes({ report, reload}) {
                             set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                         }}
                         unit="days"
-                        value={report?.desired_response_times?.["unknown"] ?? metricReactionDeadline["unknown"]}
+                        value={report?.desired_response_times?.["unknown"] ?? defaultDesiredResponsetimes["unknown"]}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -78,7 +78,7 @@ function ReactionTimes({ report, reload}) {
                             set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                         }}
                         unit="days"
-                        value={report?.desired_response_times?.["target_not_met"] ?? metricReactionDeadline["target_not_met"]}
+                        value={report?.desired_response_times?.["target_not_met"] ?? defaultDesiredResponsetimes["target_not_met"]}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -90,7 +90,7 @@ function ReactionTimes({ report, reload}) {
                             set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                         }}
                         unit="days"
-                        value={report?.desired_response_times?.["near_target_met"] ?? metricReactionDeadline["near_target_met"]}
+                        value={report?.desired_response_times?.["near_target_met"] ?? defaultDesiredResponsetimes["near_target_met"]}
                     />
                 </Grid.Column>
                 <Grid.Column>
@@ -102,7 +102,7 @@ function ReactionTimes({ report, reload}) {
                             set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                         }}
                         unit="days"
-                        value={report?.desired_response_times?.["debt_target_met"] ?? metricReactionDeadline["debt_target_met"]}
+                        value={report?.desired_response_times?.["debt_target_met"] ?? defaultDesiredResponsetimes["debt_target_met"]}
                     />
                 </Grid.Column>
             </Grid.Row>
