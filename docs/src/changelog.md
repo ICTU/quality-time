@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
+- When measuring velocity using Jira as source, the number of sprints to base velocity on can be changed via a parameter. Add help text to the parameter to explain how velocity is calculated. Fixes [#6349](https://github.com/ICTU/quality-time/issues/6349).
 - When measuring average issue lead time, users can configure how far back *Quality-time* should look for selecting issues. Add a tool tip to this lookback parameter explaining which issues are selected: "Issues are selected if they are completed and have been updated within the number of days configured". Fixes [#6350](https://github.com/ICTU/quality-time/issues/6350).
 - Jira issue statuses were not collected. Fixes [#6435](https://github.com/ICTU/quality-time/issues/6435).
 - Jira issues created from *Quality-time* would have an incorrect unit in the issue title and description. Fixes [#6437](https://github.com/ICTU/quality-time/issues/6437).
