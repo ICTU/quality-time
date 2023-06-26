@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - Jira issue statuses were not collected. Fixes [#6435](https://github.com/ICTU/quality-time/issues/6435).
+- Jira issues created from *Quality-time* would have an incorrect unit in the issue title and description. Fixes [#6437](https://github.com/ICTU/quality-time/issues/6437).
 
 ## v5.0.0 - 2023-06-23
 

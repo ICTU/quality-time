@@ -4,6 +4,9 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 import requests
+
+from shared_data_model.meta.metric import Unit
+
 from model.report import Report
 
 from routes import (
@@ -604,7 +607,7 @@ class MetricIssueTest(DataModelTestCase):
                             METRIC_ID: {
                                 "type": "violations",
                                 "name": "name",
-                                "unit": "oopsies",
+                                "unit": Unit.VIOLATIONS,
                                 "sources": self.sources,
                             },
                         },
@@ -625,8 +628,8 @@ class MetricIssueTest(DataModelTestCase):
             "fields": {
                 "project": {"key": "KEY"},
                 "issuetype": {"name": "BUG"},
-                "summary": "Fix 42 oopsies from Source",
-                "description": "The metric [name|https://quality_time/metric42] in Quality-time reports 42 oopsies "
+                "summary": "Fix 42 violations from Source",
+                "description": "The metric [name|https://quality_time/metric42] in Quality-time reports 42 violations "
                 "from Source.\nPlease go to https://zap for more details.\n",
             },
         }
