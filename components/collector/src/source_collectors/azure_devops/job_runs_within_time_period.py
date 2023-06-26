@@ -15,5 +15,6 @@ class AzureDevopsJobRunsWithinTimePeriod(AzureDevopsPipelines):
         """Return whether to include this run or not."""
         if not super()._include_entity(entity):
             return False
-
-        return days_ago(parse_datetime(entity["build_date"])) <= int(cast(str, self._parameter("lookback_days")))
+        build_age = days_ago(parse_datetime(entity["build_date"]))
+        max_build_age = int(cast(str, self._parameter("lookback_days_pipeline_runs")))
+        return build_age <= max_build_age

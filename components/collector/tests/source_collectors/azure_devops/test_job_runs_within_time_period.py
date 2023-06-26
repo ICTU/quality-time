@@ -12,7 +12,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
     async def test_pipeline_runs(self):
         """Test that the pipeline runs are counted."""
-        self.set_source_parameter("lookback_days", "424242")
+        self.set_source_parameter("lookback_days_pipeline_runs", "424242")
 
         response = await self.collect(
             get_request_json_return_value=self.pipeline_runs,
@@ -23,7 +23,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
     async def test_pipeline_runs_jobs_exclude(self):
         """Test that the pipeline runs are filtered by name exclude."""
-        self.set_source_parameter("lookback_days", "424242")
+        self.set_source_parameter("lookback_days_pipeline_runs", "424242")
         self.set_source_parameter("jobs_to_ignore", ["azure-pipelines.*"])
 
         response = await self.collect(
@@ -35,7 +35,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
     async def test_pipeline_runs_jobs_empty_include(self):
         """Test that counting pipeline runs filtered by a not-matching name include, works."""
-        self.set_source_parameter("lookback_days", "424242")
+        self.set_source_parameter("lookback_days_pipeline_runs", "424242")
         self.set_source_parameter("jobs_to_include", ["bogus"])
 
         response = await self.collect(
@@ -47,7 +47,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
     async def test_pipeline_runs_lookback_days(self):
         """Test that the pipeline runs are filtered correctly by lookback_days."""
-        self.set_source_parameter("lookback_days", "3")
+        self.set_source_parameter("lookback_days_pipeline_runs", "3")
 
         now_dt = datetime.now(tz=UTC)
         now_timestamp = now_dt.isoformat()

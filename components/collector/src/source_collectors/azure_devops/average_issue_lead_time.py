@@ -26,7 +26,9 @@ class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
             return False
         if not entity["lead_time"]:  # no lead time means no changed date
             return False
-        return days_ago(parse_datetime(entity["changed_field"])) <= int(cast(str, self._parameter("lookback_days")))
+        change_age = days_ago(parse_datetime(entity["changed_field"]))
+        max_change_age = int(cast(str, self._parameter("lookback_days_issues")))
+        return change_age <= max_change_age
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Calculate the average lead time of the completed work items."""
