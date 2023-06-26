@@ -3,7 +3,7 @@
 import string
 from collections.abc import ItemsView, ValuesView
 from enum import Enum
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, cast
 
 from pydantic import BaseModel, Field, validator
 from pydantic.generics import GenericModel
@@ -13,6 +13,10 @@ class StrEnum(str, Enum):
     """Enums that use strings as values."""
 
     __slots__ = ()
+
+    def __format__(self, _spec) -> str:
+        """Override to return the value."""
+        return cast(str, self.value)
 
 
 class NamedModel(BaseModel):

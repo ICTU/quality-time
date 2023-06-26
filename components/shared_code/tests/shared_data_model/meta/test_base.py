@@ -1,6 +1,8 @@
 """Unit tests for the base models."""
 
-from shared_data_model.meta.base import DescribedModel, MappedModel
+import unittest
+
+from shared_data_model.meta.base import DescribedModel, MappedModel, StrEnum
 
 from .base import MetaModelTestCase
 
@@ -58,3 +60,17 @@ class MappedModelTest(MetaModelTestCase):
     def test_values(self):
         """Test that the values can be retrieved."""
         self.assertEqual([self.expected_described_model], list(self.mapped_model.values()))
+
+
+class StrEnumTest(unittest.TestCase):
+    """Unit tests for the string enumeration class."""
+
+    def test_format(self):
+        """Test that the format method returns the value."""
+
+        class FooEnum(StrEnum):
+            """Concrete string enum."""
+
+            FOO = "foo"
+
+        self.assertEqual("foo", f"{FooEnum.FOO}")
