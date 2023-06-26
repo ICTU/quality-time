@@ -118,6 +118,9 @@ JIRA = Source(
         test_result=TestResult(metrics=["test_cases"], values=["errored", "failed", "passed", "skipped", "untested"]),
         velocity_sprints=IntegerParameter(
             name="Number of sprints to base velocity on",
+            help="Velocity is defined as the number of user story points realized per sprint. By default, velocity "
+            "is calculated by averaging the number of user story points realized in the three most recently "
+            "completed sprints. The number of sprints to use can be changed via this parameter.",
             short_name="number of sprints",
             mandatory=True,
             unit=Unit.SPRINTS,
