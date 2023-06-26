@@ -144,5 +144,6 @@ def get_metrics_from_reports(reports: list[Report]) -> dict[MetricId, Metric]:  
         metrics_dict: dict[MetricId, Metric] = report.metrics_dict.copy()
         for metric in metrics_dict.values():
             metric["report_uuid"] = report["report_uuid"]
+            metric["issue_tracker"] = report.get("issue_tracker", {})
         metrics.update(metrics_dict)
     return metrics
