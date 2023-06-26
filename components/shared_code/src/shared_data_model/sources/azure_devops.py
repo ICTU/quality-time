@@ -156,11 +156,19 @@ AZURE_DEVOPS = Source(
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
-        "lookback_days": Days(
-            name="Number of days to look back in selecting pipeline runs or work items to consider",
+        "lookback_days_pipeline_runs": Days(
+            name="Number of days to look back for selecting pipeline runs",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["average_issue_lead_time", "job_runs_within_time_period"],
+            metrics=["job_runs_within_time_period"],
+        ),
+        "lookback_days_issues": Days(
+            name="Number of days to look back for work items",
+            help="Work items are selected if they are completed and have been updated within the number of days "
+            "configured.",
+            short_name="number of days to look back",
+            default_value="90",
+            metrics=["average_issue_lead_time"],
         ),
         "failure_type": FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],
