@@ -131,3 +131,4 @@ class TestMetrics(unittest.TestCase):
         reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
         self.assertEqual(metrics[METRIC_ID]["name"], report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"])
+        self.assertEqual(metrics[METRIC_ID]["issue_tracker"], report["issue_tracker"])
