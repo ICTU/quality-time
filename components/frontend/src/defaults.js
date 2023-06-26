@@ -4,4 +4,8 @@ export const defaultDesiredResponsetimes = {
     near_target_met: 21,
     target_not_met: 7,
     unknown: 3,
+    confirmed: "",
+    false_positive: "",
+    wont_fix: "",
+    fixed: "",
 }

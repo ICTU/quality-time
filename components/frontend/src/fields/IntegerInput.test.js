@@ -103,3 +103,13 @@ it('renders values less than the maximum as valid', () => {
     render(<IntegerInput value="42" max="100" />)
     expect(screen.getByDisplayValue(/42/)).toBeValid()
 });
+
+it('renders missing value as 0 when empty is not allowed', () => {
+    render(<IntegerInput />)
+    expect(screen.queryAllByDisplayValue(/0/).length).toBe(1);
+})
+
+it('renders missing value as empty string when empty is allowed', () => {
+    render(<IntegerInput allowEmpty />)
+    expect(screen.queryAllByDisplayValue(/0/).length).toBe(0);
+})

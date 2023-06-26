@@ -5,7 +5,7 @@ import { ReadOnlyInput } from './ReadOnlyInput';
 
 function EditableIntegerInput(props) {
     let { allowEmpty, editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
-    const initialValue = props.value || 0;
+    const initialValue = allowEmpty ? props.value : props.value || 0;
     const [value, setValue] = useState(initialValue)
     const minValue = min || 0;
 

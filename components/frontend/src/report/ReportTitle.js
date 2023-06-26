@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
-import { Tab } from '../semantic_ui_react_wrappers';
+import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
@@ -52,61 +52,129 @@ function ReportConfiguration({ report, reload }) {
     )
 }
 
-function ReactionTimes({ report, reload}) {
+function ReactionTimes({ report, reload }) {
     const desiredResponseTimes = report.desired_response_times ?? {}
     return (
-        <Grid stackable>
-            <Grid.Row columns={4}>
-                <Grid.Column>
-                    <IntegerInput
-                        id="desired-response-time-white"
-                        label="Time to resolve metrics with unknown status (white)"
-                        set_value={(value) => {
-                            desiredResponseTimes["unknown"] = parseInt(value)
-                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
-                        }}
-                        unit="days"
-                        value={report?.desired_response_times?.["unknown"] ?? defaultDesiredResponsetimes["unknown"]}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <IntegerInput
-                        id="desired-response-time-red"
-                        label="Time to resolve metrics not meeting their target (red)"
-                        set_value={(value) => {
-                            desiredResponseTimes["target_not_met"] = parseInt(value)
-                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
-                        }}
-                        unit="days"
-                        value={report?.desired_response_times?.["target_not_met"] ?? defaultDesiredResponsetimes["target_not_met"]}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <IntegerInput
-                        id="desired-response-time-yellow"
-                        label="Time to resolve metrics near their target (yellow)"
-                        set_value={(value) => {
-                            desiredResponseTimes["near_target_met"] = parseInt(value)
-                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
-                        }}
-                        unit="days"
-                        value={report?.desired_response_times?.["near_target_met"] ?? defaultDesiredResponsetimes["near_target_met"]}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <IntegerInput
-                        id="desired-response-time-grey"
-                        label="Time to resolve metrics with accepted technical debt (grey)"
-                        set_value={(value) => {
-                            desiredResponseTimes["debt_target_met"] = parseInt(value)
-                            set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
-                        }}
-                        unit="days"
-                        value={report?.desired_response_times?.["debt_target_met"] ?? defaultDesiredResponsetimes["debt_target_met"]}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+        <>
+            <Segment>
+                <Label attached="top">
+                    Desired time to resolve metrics
+                </Label>
+                <Grid stackable>
+                    <Grid.Row columns={4}>
+                        <Grid.Column>
+                            <IntegerInput
+                                id="desired-response-time-white"
+                                label="Time to resolve metrics with unknown status (white)"
+                                set_value={(value) => {
+                                    desiredResponseTimes["unknown"] = parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["unknown"] ?? defaultDesiredResponsetimes["unknown"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                id="desired-response-time-red"
+                                label="Time to resolve metrics not meeting their target (red)"
+                                set_value={(value) => {
+                                    desiredResponseTimes["target_not_met"] = parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["target_not_met"] ?? defaultDesiredResponsetimes["target_not_met"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                id="desired-response-time-yellow"
+                                label="Time to resolve metrics near their target (yellow)"
+                                set_value={(value) => {
+                                    desiredResponseTimes["near_target_met"] = parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["near_target_met"] ?? defaultDesiredResponsetimes["near_target_met"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                id="desired-response-time-grey"
+                                label="Time to resolve metrics with accepted technical debt (grey)"
+                                set_value={(value) => {
+                                    desiredResponseTimes["debt_target_met"] = parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["debt_target_met"] ?? defaultDesiredResponsetimes["debt_target_met"]}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Segment>
+            <Segment>
+                <Label attached="top">
+                    Desired time to resolve measurement entities
+                </Label>
+                <Grid stackable>
+                    <Grid.Row columns={4}>
+                        <Grid.Column>
+                            <IntegerInput
+                                allowEmpty
+                                id="desired-response-time-confirmed"
+                                label="Time to resolve measurement entities marked as confirmed"
+                                set_value={(value) => {
+                                    desiredResponseTimes["confirmed"] = value === "" ? value : parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["confirmed"] ?? defaultDesiredResponsetimes["confirmed"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                allowEmpty
+                                id="desired-response-time-false-positive"
+                                label="Time to resolve measurement entities marked as false positive"
+                                set_value={(value) => {
+                                    desiredResponseTimes["false_positive"] = value === "" ? value : parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["false_positive"] ?? defaultDesiredResponsetimes["false_positive"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                allowEmpty
+                                id="desired-response-time-fixed"
+                                label="Time to resolve measurement entities marked as will be fixed"
+                                set_value={(value) => {
+                                    desiredResponseTimes["fixed"] = value === "" ? value : parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["fixed"] ?? defaultDesiredResponsetimes["fixed"]}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <IntegerInput
+                                allowEmpty
+                                id="desired-response-time-wont-fix"
+                                label="Time to resolve measurement entities marked as won't fix"
+                                set_value={(value) => {
+                                    desiredResponseTimes["wont_fix"] = value === "" ? value : parseInt(value)
+                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                }}
+                                unit="days"
+                                value={desiredResponseTimes["wont_fix"] ?? defaultDesiredResponsetimes["wont_fix"]}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Segment>
+        </>
     )
 }
 
