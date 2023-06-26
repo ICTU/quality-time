@@ -61,7 +61,7 @@ class OJAuditViolations(XMLFileSourceCollector):
     ) -> Entity | None:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
-        if not location:
+        if location is None:
             raise OJAuditViolationLocationError(violation)
         severity = violation.findtext("./ns:values/ns:value", default="", namespaces=namespaces)
         if severities and severity not in severities:

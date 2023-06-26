@@ -164,8 +164,8 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
     async def test_excluded_entity(self):
         """Test that metric collection correctly excludes entities."""
         self.response.json.side_effect = [
-            [],
             self.JENKINS_JOBS_JSON,
+            [],
             self.tickets_json,
             self.tickets_json,
         ]
@@ -187,8 +187,8 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         """Test that issues are not matched to deployments that were done later."""
         self.tickets_json["issues"][0]["fields"]["created"] = self.EARLY_DT.isoformat().replace("+", ".000+")
         self.response.json.side_effect = [
-            [],
             self.JENKINS_JOBS_JSON,
+            [],
             self.tickets_json,
             self.tickets_json,
         ]
