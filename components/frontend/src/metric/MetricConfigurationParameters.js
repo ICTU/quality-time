@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Grid, Header } from 'semantic-ui-react';
-import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -8,6 +7,7 @@ import { set_metric_attribute } from '../api/metric';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { dropdownOptions, getMetricDirection, getMetricScale, getReportTags, getMetricTags } from '../utils';
+import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
 
@@ -118,7 +118,7 @@ function EvaluateTargets({ metric, metric_uuid, reload }) {
         <SingleChoiceInput
             aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Evaluate metric targets? <Popup on={['hover', 'focus']} content={help} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            label={<LabelWithHelp labelId={labelId} label="Evaluate metric targets?" help={help} />}
             value={metric.evaluate_targets ?? true}
             options={[
                 { key: true, text: "Yes", value: true },
