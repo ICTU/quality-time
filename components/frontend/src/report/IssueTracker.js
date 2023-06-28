@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Grid, Header, Icon, Message } from 'semantic-ui-react';
-import { Popup } from '../semantic_ui_react_wrappers';
-import { StringInput } from '../fields/StringInput';
-import { HyperLink } from '../widgets/HyperLink';
+import { Grid, Header, Message } from 'semantic-ui-react';
+import { LabelWithHelp } from '../widgets/LabelWithHelp';
+import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { get_report_issue_tracker_options, set_report_issue_tracker_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { PasswordInput } from '../fields/PasswordInput';
@@ -68,7 +68,7 @@ export function IssueTracker({ report, reload }) {
     if (report.issue_tracker) {
         const help_url = dataModel.sources[report.issue_tracker?.type]?.parameters?.private_token?.help_url;
         if (help_url) {
-            privateTokenLabel = <label>{privateTokenLabel} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
+            privateTokenLabel = <LabelWithHyperLink label={privateTokenLabel} url={help_url} />
         }
     }
     const report_uuid = report.report_uuid;
@@ -139,7 +139,12 @@ export function IssueTracker({ report, reload }) {
                         error={!!report.issue_tracker?.type && !projectValid}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         required={!!report.issue_tracker?.type}
-                        label={<label>Project for new issues <Popup on={['hover', 'focus']} content={"The projects available for new issues are determined by the configured credentials"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        label={
+                            <LabelWithHelp
+                                label="Project for new issues"
+                                help="The projects available for new issues are determined by the configured credentials"
+                            />
+                        }
                         options={projectOptions}
                         placeholder="None"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "project_key", value, reload)}
@@ -152,7 +157,12 @@ export function IssueTracker({ report, reload }) {
                         error={!!report.issue_tracker?.type && !issueTypeValid}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         required={!!report.issue_tracker?.type}
-                        label={<label>Issue type for new issues <Popup on={['hover', 'focus']} content={"The issue types available for new issues are determined by the selected project"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        label={
+                            <LabelWithHelp
+                                label="Issue type for new issues"
+                                help="The issue types available for new issues are determined by the selected project"
+                            />
+                        }
                         options={issueTypeOptions}
                         placeholder="None"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "issue_type", value, reload)}
@@ -165,7 +175,12 @@ export function IssueTracker({ report, reload }) {
                     <SingleChoiceInput
                         id="tracker-issue-epic-link"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label={<label>Epic link for new issues <Popup on={['hover', 'focus']} content={"The epics available for new issues are determined by the selected project"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        label={
+                            <LabelWithHelp
+                                label="Epic link for new issues"
+                                help="The epics available for new issues are determined by the selected project"
+                            />
+                        }
                         placeholder="None"
                         options={issueEpicOptions}
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "epic_link", value, reload)}
@@ -184,7 +199,12 @@ export function IssueTracker({ report, reload }) {
                         allowAdditions
                         id="tracker-issue-labels"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label={<label>Labels for new issues <Popup on={['hover', 'focus']} content={"Spaces in labels are allowed here, but they will be replaced by underscores in Jira"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+                        label={
+                            <LabelWithHelp
+                                label="Labels for new issues"
+                                help="Spaces in labels are allowed here, but they will be replaced by underscores in Jira"
+                            />
+                        }
                         placeholder="Enter one or more labels here"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "issue_labels", value, reload)}
                         value={report.issue_tracker?.parameters?.issue_labels}

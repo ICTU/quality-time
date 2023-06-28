@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Grid } from 'semantic-ui-react';
-import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_issue_tracker_suggestions } from '../api/report';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -8,8 +7,9 @@ import { Comment } from '../fields/Comment';
 import { set_metric_attribute, set_metric_debt, add_metric_issue } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 import { ActionButton } from '../widgets/Button';
-import { HyperLink } from '../widgets/HyperLink';
 import { LabelWithDate } from '../widgets/LabelWithDate';
+import { LabelWithHelp } from '../widgets/LabelWithHelp';
+import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { get_metric_issue_ids } from '../utils';
@@ -21,7 +21,13 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
         <SingleChoiceInput
             aria-labelledby={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon tabIndex="0" name="help circle" link /></HyperLink></label>}
+            label={
+                <LabelWithHyperLink
+                    labelId={labelId}
+                    label="Accept technical debt?"
+                    url="https://en.wikipedia.org/wiki/Technical_debt"
+                />
+            }
             value={metric.accept_debt ? "yes" : "no"}
             options={[
                 { key: "yes", text: "Yes", value: "yes" },
@@ -53,7 +59,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label=<LabelWithDate date={metric.debt_end_date} labelId={labelId} help={help} labelText="Technical debt end date"/>
+            label=<LabelWithDate date={metric.debt_end_date} labelId={labelId} help={help} label="Technical debt end date"/>
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
@@ -87,7 +93,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, repo
                 }
             }}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Issue identifiers <Popup on={['hover', 'focus']} content={issueStatusHelp} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
+            label={<LabelWithHelp labelId={labelId} label="Issue identifiers" help={issueStatusHelp} />}
             options={suggestions}
             set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
             value={issue_ids}

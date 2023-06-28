@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Icon, Popup } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';
@@ -8,7 +7,8 @@ import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { LabelWithDropdown } from '../widgets/LabelWithDropdown';
-import { HyperLink } from '../widgets/HyperLink';
+import { LabelWithHelp } from '../widgets/LabelWithHelp';
+import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { LabelDate } from '../widgets/LabelWithDate';
 import { dropdownOptions } from '../utils';
 
@@ -84,10 +84,10 @@ export function SourceParameter({
     }
     let label = parameter_name;
     if (help_url) {
-        label = <label>{parameter_name} <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>
+        label = <LabelWithHyperLink label={parameter_name} url={help_url} />
     }
     if (help) {
-        label = <label>{parameter_name} <Popup on={['hover', 'focus']} content={help} trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />} /></label>
+        label = <LabelWithHelp label={parameter_name} help={help} />
     }
     if (parameter_type === "date") {
         const date = new Date(Date.parse(parameter_value))

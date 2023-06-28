@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid, Message } from 'semantic-ui-react';
-import { Icon, Popup, Segment } from '../semantic_ui_react_wrappers';
+import { Segment } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
+import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { HyperLink } from '../widgets/HyperLink';
@@ -10,17 +11,6 @@ import { HyperLink } from '../widgets/HyperLink';
 function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {
     const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
     const teams_hyperlink = <HyperLink url={help_url}>Microsoft Teams</HyperLink>
-    const label = <label>
-        Webhook
-        <Popup
-            hoverable={true}
-            on={['hover', 'focus']}
-            trigger={<Icon tabIndex="0" name="help circle" />}>
-            <Popup.Content>
-                Paste a {teams_hyperlink} webhook URL here.
-            </Popup.Content>
-        </Popup>
-    </label>;
     return (
         <Segment vertical key={destination_uuid}>
             <Grid stackable>
@@ -39,7 +29,13 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Column width={10}>
                         <StringInput
                             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            label={label}
+                            label={
+                                <LabelWithHelp
+                                    label="Webhook"
+                                    help={<>Paste a {teams_hyperlink} webhook URL here.</>}
+                                    hoverable
+                                />
+                            }
                             placeholder="https://example.webhook.office.com/webhook..."
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { webhook: value, url: window.location.href }, reload)

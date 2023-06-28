@@ -46,7 +46,7 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                             <LabelWithDate
                                 date={status_end_date}
                                 labelId={entity.key}
-                                labelText={`${capitalize(name)} status end date`}
+                                label={`${capitalize(name)} status end date`}
                                 help={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`}
                             />
                         }
