@@ -15,17 +15,22 @@ function entity_status_option(status, text, content, subheader) {
     }
 }
 
-function entity_status_options(entity_type) {
+function entity_status_options(entity_type, report, status_end_date) {
+    const desired_response_times = report?.desired_response_times ?? {}
+    const fixed_menu_item = "Resolve as will be fixed" + (!status_end_date && desired_response_times["fixed"] ? ` and set status end date ${desired_response_times["fixed"]} days from now` : "")
+    const false_positive_menu_item = "Resolve as false positive" + (!status_end_date && desired_response_times["false_positive"] ? ` and set status end date ${desired_response_times["false_positive"]} days from now` : "")
+    const wont_fix_menu_item = "Resolve as won't fix" + (!status_end_date && desired_response_times["wont_fix"] ? ` and set status end date ${desired_response_times["wont_fix"]} days from now` : "")
+    const confirmed_menu_item = "Confirm" + (!status_end_date && desired_response_times["confirmed"] ? ` and set status end date ${desired_response_times["confirmed"]} days from now` : "")
     return [
         entity_status_option('unconfirmed', status_name.unconfirmed, 'Unconfirm', `This ${entity_type} should be reviewed to decide what to do with it.`),
-        entity_status_option('fixed', status_name.fixed, "Resolve as will be fixed", `This ${entity_type} will be fixed shortly and then disappear.`),
-        entity_status_option('false_positive', status_name.false_positive, 'Resolve as false positive', `This ${entity_type} can be ignored because it's been incorrectly identified as ${entity_type}.`),
-        entity_status_option('wont_fix', status_name.wont_fix, "Resolve as won't fix", `This ${entity_type} will not be fixed.`),
-        entity_status_option('confirmed', status_name.confirmed, 'Confirm', `This ${entity_type} has been reviewed and should be dealt with.`),
+        entity_status_option('fixed', status_name.fixed, fixed_menu_item, `This ${entity_type} will be fixed shortly and then disappear.`),
+        entity_status_option('false_positive', status_name.false_positive, false_positive_menu_item, `This ${entity_type} can be ignored because it's been incorrectly identified as ${entity_type}.`),
+        entity_status_option('wont_fix', status_name.wont_fix, wont_fix_menu_item, `This ${entity_type} will not be fixed.`),
+        entity_status_option('confirmed', status_name.confirmed, confirmed_menu_item, `This ${entity_type} has been reviewed and should be dealt with.`),
     ]
 }
 
-export function SourceEntityDetails({ entity, metric_uuid, name, rationale, reload, status, status_end_date, source_uuid }) {
+export function SourceEntityDetails({ entity, metric_uuid, name, rationale, reload, report, status, status_end_date, source_uuid }) {
     return (
         <Grid stackable>
             <Grid.Row>
@@ -33,7 +38,7 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
                         label={`${capitalize(name)} status`}
-                        options={entity_status_options(name)}
+                        options={entity_status_options(name, report, status_end_date)}
                         set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)}
                         value={status}
                         sort={false}
