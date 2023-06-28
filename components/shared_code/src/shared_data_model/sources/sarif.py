@@ -12,14 +12,29 @@ SARIF_JSON = Source(
         levels=Severities(
             name="Levels",
             placeholder="all levels",
-            help="If provided, only count security warnings with the selected levels.",
+            help="If provided, only count entities with the selected levels.",
             values=["none", "note", "warning", "error"],
+            metrics=["security_warnings", "violations"],
         ),
-        **access_parameters(["security_warnings"], source_type="SARIF vulnerability report", source_type_format="JSON"),
+        **access_parameters(
+            ["security_warnings", "violations"],
+            source_type="SARIF vulnerability report",
+            source_type_format="JSON",
+        ),
     ),
     entities={
         "security_warnings": {
             "name": "security warning",
+            "attributes": [
+                {"name": "Message"},
+                {"name": "Level", "color": {"error": Color.NEGATIVE, "warning": Color.WARNING, "note": Color.ACTIVE}},
+                {"name": "Locations"},
+                {"name": "Rule", "url": "url"},
+                {"name": "Description"},
+            ],
+        },
+        "violations": {
+            "name": "violation",
             "attributes": [
                 {"name": "Message"},
                 {"name": "Level", "color": {"error": Color.NEGATIVE, "warning": Color.WARNING, "note": Color.ACTIVE}},

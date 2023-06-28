@@ -22,11 +22,20 @@ jobs:
             4) component=tests/feature_tests;;
           esac
           cd $component
+          mkdir -p build
           python -m venv venv
           . venv/bin/activate
           ci/pip-install.sh
           ci/unittest.sh
           ci/quality.sh
+      - store_artifacts:
+          path: components/collector/build
+      - store_artifacts:
+          path: components/notifier/build
+      - store_artifacts:
+          path: components/api_server/build
+      - store_artifacts:
+          path: components/shared_code/build
 
   unittest_frontend:
     docker:

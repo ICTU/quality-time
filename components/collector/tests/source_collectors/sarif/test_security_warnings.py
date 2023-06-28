@@ -46,7 +46,6 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
                         ],
                     },
                     {
-                        "ruleId": "CVE-2019-18276",
                         "ruleIndex": 0,
                         "level": "note",
                         "message": {
