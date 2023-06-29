@@ -49,12 +49,14 @@ def set_entity_attribute(
     ]
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})
     entity_user_data[attribute] = new_value
-    if attribute == "status" and entity_user_data.get("status_end_date") is None:
+    if attribute == "status":
         desired_reponse_time = report.desired_measurement_entity_response_time(new_value)
-        if desired_reponse_time is not None:
+        if desired_reponse_time:
             end_date = str((datetime.now(tz=tzlocal()) + timedelta(days=desired_reponse_time)).date())
-            entity_user_data["status_end_date"] = end_date
-            description.append(f"changed the status end date to '{end_date}'")
+        else:
+            end_date = None
+        entity_user_data["status_end_date"] = end_date
+        description.append(f"changed the status end date to '{end_date}'")
     new_measurement["delta"] = {
         "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
         "description": " and ".join(description) + ".",

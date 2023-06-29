@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
-import { defaultDesiredResponsetimes } from './defaults';
+import { defaultDesiredResponseTimes } from './defaults';
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
@@ -76,7 +76,7 @@ export function getMetricResponseDeadline(metric, report) {
         if (metric.debt_end_date) {
             deadline = new Date(metric.debt_end_date)
         }
-    } else if ((metric.status || "unknown") in defaultDesiredResponsetimes && metric.status_start) {
+    } else if ((metric.status || "unknown") in defaultDesiredResponseTimes && metric.status_start) {
         deadline = new Date(metric.status_start)
         deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))
     }
@@ -113,7 +113,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
     const overruns = []
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
-        if (status in defaultDesiredResponsetimes) {
+        if (status in defaultDesiredResponseTimes) {
             const desiredResponseTime = getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY;
             const actualResponseTime = (new Date(measurement.end)).getTime() - (new Date(measurement.start)).getTime()
             const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
@@ -136,7 +136,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
 }
 
 function getMetricDesiredResponseTime(report, status) {
-    return report?.desired_response_times?.[status] ?? (defaultDesiredResponsetimes[status] ?? defaultDesiredResponsetimes["unknown"])
+    return report?.desired_response_times?.[status] ?? (defaultDesiredResponseTimes[status] ?? defaultDesiredResponseTimes["unknown"])
 }
 
 export function get_metric_value(metric) {

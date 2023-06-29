@@ -13,7 +13,7 @@ import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { IssueTracker } from './IssueTracker';
-import { defaultDesiredResponsetimes } from '../defaults';
+import { defaultDesiredResponseTimes } from '../defaults';
 import { setDocumentTitle } from './document_title';
 
 function ReportConfiguration({ report, reload }) {
@@ -57,118 +57,122 @@ function ReactionTimes({ report, reload }) {
     return (
         <>
             <Segment>
-                <Label attached="top">
-                    Desired time to resolve metrics
+                <Label attached="top" size="large">
+                    Desired time to respond to metrics ...
                 </Label>
                 <Grid stackable>
                     <Grid.Row columns={4}>
                         <Grid.Column>
                             <IntegerInput
                                 id="desired-response-time-white"
-                                label="Time to resolve metrics with unknown status (white)"
+                                label="With unknown status (white)"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["unknown"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["unknown"] ?? defaultDesiredResponsetimes["unknown"]}
+                                value={desiredResponseTimes["unknown"] ?? defaultDesiredResponseTimes["unknown"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
                                 id="desired-response-time-red"
-                                label="Time to resolve metrics not meeting their target (red)"
+                                label="Not meeting their target (red)"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["target_not_met"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["target_not_met"] ?? defaultDesiredResponsetimes["target_not_met"]}
+                                value={desiredResponseTimes["target_not_met"] ?? defaultDesiredResponseTimes["target_not_met"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
                                 id="desired-response-time-yellow"
-                                label="Time to resolve metrics near their target (yellow)"
+                                label="Near their target (yellow)"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["near_target_met"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["near_target_met"] ?? defaultDesiredResponsetimes["near_target_met"]}
+                                value={desiredResponseTimes["near_target_met"] ?? defaultDesiredResponseTimes["near_target_met"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
                                 id="desired-response-time-grey"
-                                label="Time to resolve metrics with accepted technical debt (grey)"
+                                label="With accepted technical debt (grey)"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["debt_target_met"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["debt_target_met"] ?? defaultDesiredResponsetimes["debt_target_met"]}
+                                value={desiredResponseTimes["debt_target_met"] ?? defaultDesiredResponseTimes["debt_target_met"]}
                             />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Segment>
             <Segment>
-                <Label attached="top">
-                    Desired time to resolve measurement entities
+                <Label attached="top" size="large">
+                    Desired time after which to review measurement entities (violations, warnings, issues, etc.) marked as ...
                 </Label>
                 <Grid stackable>
                     <Grid.Row columns={4}>
                         <Grid.Column>
                             <IntegerInput
-                                allowEmpty
                                 id="desired-response-time-confirmed"
-                                label="Time to resolve measurement entities marked as confirmed"
+                                label="Confirmed"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
-                                    desiredResponseTimes["confirmed"] = value === "" ? value : parseInt(value)
+                                    desiredResponseTimes["confirmed"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["confirmed"] ?? defaultDesiredResponsetimes["confirmed"]}
+                                value={desiredResponseTimes["confirmed"] ?? defaultDesiredResponseTimes["confirmed"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
-                                allowEmpty
                                 id="desired-response-time-false-positive"
-                                label="Time to resolve measurement entities marked as false positive"
+                                label="False positive"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
-                                    desiredResponseTimes["false_positive"] = value === "" ? value : parseInt(value)
+                                    desiredResponseTimes["false_positive"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["false_positive"] ?? defaultDesiredResponsetimes["false_positive"]}
+                                value={desiredResponseTimes["false_positive"] ?? defaultDesiredResponseTimes["false_positive"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
-                                allowEmpty
                                 id="desired-response-time-fixed"
-                                label="Time to resolve measurement entities marked as will be fixed"
+                                label="Will be fixed"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
-                                    desiredResponseTimes["fixed"] = value === "" ? value : parseInt(value)
+                                    desiredResponseTimes["fixed"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["fixed"] ?? defaultDesiredResponsetimes["fixed"]}
+                                value={desiredResponseTimes["fixed"] ?? defaultDesiredResponseTimes["fixed"]}
                             />
                         </Grid.Column>
                         <Grid.Column>
                             <IntegerInput
-                                allowEmpty
                                 id="desired-response-time-wont-fix"
-                                label="Time to resolve measurement entities marked as won't fix"
+                                label="Won't fix"
+                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
-                                    desiredResponseTimes["wont_fix"] = value === "" ? value : parseInt(value)
+                                    desiredResponseTimes["wont_fix"] = parseInt(value)
                                     set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["wont_fix"] ?? defaultDesiredResponsetimes["wont_fix"]}
+                                value={desiredResponseTimes["wont_fix"] ?? defaultDesiredResponseTimes["wont_fix"]}
                             />
                         </Grid.Column>
                     </Grid.Row>

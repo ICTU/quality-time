@@ -73,7 +73,7 @@ it('sets the target not met status reaction time', async () => {
     render_report_title();
     fireEvent.click(screen.getByTitle(/expand/));
     await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
-    await userEvent.type(screen.getByLabelText(/not meeting their target/), '5{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 1 });
+    await userEvent.type(screen.getByLabelText(/Not meeting their target/), '5{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 1 });
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "target_not_met": 5 }, reload);
 })
 
@@ -81,7 +81,7 @@ it('sets the near target met status reaction time', async () => {
     render_report_title();
     fireEvent.click(screen.getByTitle(/expand/));
     await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
-    await userEvent.type(screen.getByLabelText(/near their target/), '6{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 2 });
+    await userEvent.type(screen.getByLabelText(/Near their target/), '6{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 2 });
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "near_target_met": 6 }, reload);
 })
 

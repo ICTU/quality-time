@@ -4,15 +4,12 @@ import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 
 function EditableIntegerInput(props) {
-    let { allowEmpty, editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
-    const initialValue = allowEmpty ? props.value : props.value || 0;
+    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
+    const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
     const minValue = min || 0;
 
     function isValid(aValue) {
-        if (aValue === "") {
-            return allowEmpty
-        }
         if (Number.isNaN(parseInt(aValue))) {
             return false
         }

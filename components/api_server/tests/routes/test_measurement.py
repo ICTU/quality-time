@@ -172,15 +172,16 @@ class SetEntityAttributeTest(DataModelTestCase):
             measurement["delta"],
         )
 
-    def test_set_status_does_not_set_status_end_date_if_status_has_no_desired_response_time(self):
-        """Test that setting the status also sets the end date when a the desired status resolution has been set."""
-        with patch("bottle.request", Mock(json={"status": "false_positive"})):
+    def test_set_status_resets_status_end_date_if_status_is_unconfirmed(self):
+        """Test that setting the status to unconfirmed also resets the end date."""
+        with patch("bottle.request", Mock(json={"status": "unconfirmed"})):
             measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "status", self.database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"status": "false_positive"}, entity)
+        self.assertEqual({"status": "unconfirmed", "status_end_date": None}, entity)
         self.assertEqual(
             {
-                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive'.",
+                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'unconfirmed' "
+                "and changed the status end date to 'None'.",
                 "email": JOHN["email"],
                 "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
             },

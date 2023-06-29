@@ -15,18 +15,19 @@ function entity_status_option(status, text, content, subheader) {
     }
 }
 
-function entity_status_options(entity_type, report, status_end_date) {
+function entity_status_options(entity_type, report) {
     const desired_response_times = report?.desired_response_times ?? {}
-    const fixed_menu_item = "Resolve as will be fixed" + (!status_end_date && desired_response_times["fixed"] ? ` and set status end date ${desired_response_times["fixed"]} days from now` : "")
-    const false_positive_menu_item = "Resolve as false positive" + (!status_end_date && desired_response_times["false_positive"] ? ` and set status end date ${desired_response_times["false_positive"]} days from now` : "")
-    const wont_fix_menu_item = "Resolve as won't fix" + (!status_end_date && desired_response_times["wont_fix"] ? ` and set status end date ${desired_response_times["wont_fix"]} days from now` : "")
-    const confirmed_menu_item = "Confirm" + (!status_end_date && desired_response_times["confirmed"] ? ` and set status end date ${desired_response_times["confirmed"]} days from now` : "")
+    const unconfirmed_subheader = `This ${entity_type} should be reviewed to decide what to do with it.`
+    const confirmed_subheader = `This ${entity_type} has been reviewed and should be dealt with within ${desired_response_times["wont_fix"]} days.`
+    const fixed_subheader = `Ignore this ${entity_type} for ${desired_response_times["fixed"]} days because it will be fixed shortly.`
+    const false_positive_subheader = `Ignore this ${entity_type} for ${desired_response_times["false_positive"]} days because it's been incorrectly identified as ${entity_type}.`
+    const wont_fix_subheader = `Ignore this ${entity_type} for ${desired_response_times["wont_fix"]} days because it will not be fixed.`
     return [
-        entity_status_option('unconfirmed', status_name.unconfirmed, 'Unconfirm', `This ${entity_type} should be reviewed to decide what to do with it.`),
-        entity_status_option('fixed', status_name.fixed, fixed_menu_item, `This ${entity_type} will be fixed shortly and then disappear.`),
-        entity_status_option('false_positive', status_name.false_positive, false_positive_menu_item, `This ${entity_type} can be ignored because it's been incorrectly identified as ${entity_type}.`),
-        entity_status_option('wont_fix', status_name.wont_fix, wont_fix_menu_item, `This ${entity_type} will not be fixed.`),
-        entity_status_option('confirmed', status_name.confirmed, confirmed_menu_item, `This ${entity_type} has been reviewed and should be dealt with.`),
+        entity_status_option('unconfirmed', status_name.unconfirmed, 'Unconfirm', unconfirmed_subheader),
+        entity_status_option('confirmed', status_name.confirmed, "Confirm", confirmed_subheader),
+        entity_status_option('fixed', status_name.fixed, "Resolve as will be fixed", fixed_subheader),
+        entity_status_option('false_positive', status_name.false_positive, "Resolve as false positive", false_positive_subheader),
+        entity_status_option('wont_fix', status_name.wont_fix, "Resolve as won't fix", wont_fix_subheader),
     ]
 }
 
@@ -38,7 +39,7 @@ export function SourceEntityDetails({ entity, metric_uuid, name, rationale, relo
                     <SingleChoiceInput
                         requiredPermissions={[EDIT_ENTITY_PERMISSION]}
                         label={`${capitalize(name)} status`}
-                        options={entity_status_options(name, report, status_end_date)}
+                        options={entity_status_options(name, report)}
                         set_value={(value) => set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)}
                         value={status}
                         sort={false}
