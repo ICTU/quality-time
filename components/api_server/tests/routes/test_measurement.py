@@ -5,6 +5,8 @@ from unittest.mock import Mock, patch
 
 from dateutil.tz import tzlocal
 
+from shared.model.measurement import Measurement
+
 from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
 from tests.base import DatabaseTestCase, DataModelTestCase
@@ -138,10 +140,14 @@ class SetEntityAttributeTest(DataModelTestCase):
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
 
+    def set_entity_attribute(self, attribute: str = "attribute", value: str = "value") -> Measurement:
+        """Set the entity attribute and return the new measurement."""
+        with patch("bottle.request", Mock(json={attribute: value})):
+            return set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", attribute, self.database)
+
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
-        with patch("bottle.request", Mock(json={"attribute": "value"})):
-            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database)
+        measurement = self.set_entity_attribute()
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual({"attribute": "value"}, entity)
         self.assertEqual(
@@ -158,8 +164,7 @@ class SetEntityAttributeTest(DataModelTestCase):
         now = datetime.now(tz=tzlocal())
         deadline = (now + timedelta(days=10)).date()
         self.report["desired_response_times"] = {"false_positive": 10}
-        with patch("bottle.request", Mock(json={"status": "false_positive"})):
-            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "status", self.database)
+        measurement = self.set_entity_attribute("status", "false_positive")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual({"status": "false_positive", "status_end_date": str(deadline)}, entity)
         self.assertEqual(
@@ -174,8 +179,7 @@ class SetEntityAttributeTest(DataModelTestCase):
 
     def test_set_status_resets_status_end_date_if_status_is_unconfirmed(self):
         """Test that setting the status to unconfirmed also resets the end date."""
-        with patch("bottle.request", Mock(json={"status": "unconfirmed"})):
-            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "status", self.database)
+        measurement = self.set_entity_attribute("status", "unconfirmed")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual({"status": "unconfirmed", "status_end_date": None}, entity)
         self.assertEqual(
