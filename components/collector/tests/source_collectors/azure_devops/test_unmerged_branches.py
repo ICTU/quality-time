@@ -17,7 +17,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
 
     async def test_no_branches_except_master(self):
         """Test that the number of unmerged branches is returned."""
-        branches = {"value": [{"name": "master", "isBaseVersion": True}]}
+        branches = {"value": [{"name": "main", "isBaseVersion": True}]}
         response = await self.collect(get_request_json_side_effect=[self.repositories, branches])
         self.assert_measurement(response, value="0", entities=[], landing_url=self.landing_url)
 
@@ -26,7 +26,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
         timestamp = "2019-09-03T20:43:00Z"
         branches = {
             "value": [
-                {"name": "master", "isBaseVersion": True},
+                {"name": "main", "isBaseVersion": True},
                 {
                     "name": "branch",
                     "isBaseVersion": False,

@@ -18,14 +18,14 @@ Example generic JSON file:
     "vulnerabilities": [
         {
             "title": "ISO27001:2013 A9 Insufficient Access Control",
-            "description": "The Application does not enforce Two-Factor Authentication and therefore not satisfy \
+            "description": "The Application does not enforce Two-Factor Authentication and therefore does not satisfy \
                 security best practices.",
             "severity": "high"
         },
         {
-            "title": "Threat Model Finding: Uploading Malicious of Malicious files",
-            "description": "An attacker can upload malicious files with low privileges can perform direct API calls \
-                and perform unwanted mutations or see unauthorized information.",
+            "title": "Threat Model Finding: Uploading Malicious Files",
+            "description": "An attacker can upload malicious files with low privileges that can perform direct API \
+                calls and perform unwanted mutations or see unauthorized information.",
             "severity": "medium"
         }
     ]
