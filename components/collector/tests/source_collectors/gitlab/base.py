@@ -23,7 +23,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "created_at": "2019-03-31T19:40:39.927Z",
                 "pipeline": {"web_url": "https://gitlab/project/-/pipelines/1"},
                 "web_url": "https://gitlab/job1",
-                "ref": "master",
+                "ref": "main",
             },
             {
                 "id": "2",
@@ -40,7 +40,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "key": "1",
                 "name": "job1",
                 "stage": "stage",
-                "branch": "master",
+                "branch": "main",
                 "url": "https://gitlab/job1",
                 "build_date": "2019-03-31",
                 "build_status": "failed",

@@ -31,7 +31,7 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
                     "stage": "stage",
                     "created_at": "2018-03-31T19:41:39.927Z",
                     "web_url": "https://gitlab/jobs/3",
-                    "ref": "master",
+                    "ref": "main",
                 },
                 {
                     "id": "4",
@@ -40,7 +40,7 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
                     "stage": "stage",
                     "created_at": "2020-03-31T19:41:39.927Z",
                     "web_url": "https://gitlab/jobs/4",
-                    "ref": "master",
+                    "ref": "main",
                 },
             ],
         )
