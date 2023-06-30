@@ -93,6 +93,38 @@ it('sets the tech debt target status reaction time', async () => {
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "debt_target_met": 6 }, reload);
 })
 
+it('sets the confirmed measurement entity status reaction time', async () => {
+    render_report_title();
+    fireEvent.click(screen.getByTitle(/expand/));
+    await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
+    await userEvent.type(screen.getByLabelText(/Confirmed/), '60{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "confirmed": 60 }, reload);
+})
+
+it('sets the false positive measurement entity status reaction time', async () => {
+    render_report_title();
+    fireEvent.click(screen.getByTitle(/expand/));
+    await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
+    await userEvent.type(screen.getByLabelText(/False positive/), '70{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "false_positive": 70 }, reload);
+})
+
+it('sets the will be fixed measurement entity status reaction time', async () => {
+    render_report_title();
+    fireEvent.click(screen.getByTitle(/expand/));
+    await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
+    await userEvent.type(screen.getByLabelText(/Will be fixed/), '80{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "fixed": 80 }, reload);
+})
+
+it("sets the won't fixed measurement entity status reaction time", async () => {
+    render_report_title();
+    fireEvent.click(screen.getByTitle(/expand/));
+    await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
+    await userEvent.type(screen.getByLabelText(/Won't fix/), '90{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "wont_fix": 90 }, reload);
+})
+
 it('sets the issue tracker type', async () => {
     render_report_title();
     fireEvent.click(screen.getByTitle(/expand/));

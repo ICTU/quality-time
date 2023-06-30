@@ -271,7 +271,8 @@ it("returns the metric response overrun when there is no overrun", () => {
 })
 
 it("returns the metric response overrun when there is one long measurement", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}])).toStrictEqual(
+    const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}]
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
         {
             "overruns": [
                 {
@@ -284,6 +285,50 @@ it("returns the metric response overrun when there is one long measurement", () 
                 }
             ],
             "totalOverrun": 27
+        }
+    )
+})
+
+it("returns the metric response overrun when there is one long measurement and the report has desired response times", () => {
+    const report = {"desired_response_times": {"unknown": 10}}
+    const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}]
+    expect(getMetricResponseOverrun("uuid", {}, report, measurements)).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "unknown",
+                    "start": "2000-01-01",
+                    "end": "2000-01-31",
+                    "actual_response_time": 30,
+                    "desired_response_time": 10,
+                    "overrun": 20
+                }
+            ],
+            "totalOverrun": 20
+        }
+    )
+})
+
+it("returns the metric response overrun when the metric status is target met", () => {
+    const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31", "count": {"status": "target_met"}}]
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
+})
+
+it("returns the metric response overrun when the metric status is target not met", () => {
+    const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31", "count": {"status": "target_not_met"}}]
+    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+        {
+            "overruns": [
+                {
+                    "status": "target_not_met",
+                    "start": "2000-01-01",
+                    "end": "2000-01-31",
+                    "actual_response_time": 30,
+                    "desired_response_time": 7,
+                    "overrun": 23
+                }
+            ],
+            "totalOverrun": 23
         }
     )
 })

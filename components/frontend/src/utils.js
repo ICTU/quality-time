@@ -72,13 +72,14 @@ export function getMetricUnit(metric, dataModel) {
 
 export function getMetricResponseDeadline(metric, report) {
     let deadline = null;
-    if (metric.status === "debt_target_met") {
+    const status = metric.status || "unknown"
+    if (status === "debt_target_met") {
         if (metric.debt_end_date) {
             deadline = new Date(metric.debt_end_date)
         }
-    } else if ((metric.status || "unknown") in defaultDesiredResponseTimes && metric.status_start) {
+    } else if (status in defaultDesiredResponseTimes && metric.status_start) {
         deadline = new Date(metric.status_start)
-        deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, metric.status))
+        deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, status))
     }
     return deadline
 }
@@ -136,7 +137,8 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
 }
 
 function getMetricDesiredResponseTime(report, status) {
-    return report?.desired_response_times?.[status] ?? (defaultDesiredResponseTimes[status] ?? defaultDesiredResponseTimes["unknown"])
+    // Status should be in defaultDesiredResponseTimes
+    return report?.desired_response_times?.[status] ?? defaultDesiredResponseTimes[status]
 }
 
 export function get_metric_value(metric) {
