@@ -137,7 +137,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
 }
 
 function getMetricDesiredResponseTime(report, status) {
-    // Status should be in defaultDesiredResponseTimes
+    // Precondition: status is a key of defaultDesiredResponseTimes
     return report?.desired_response_times?.[status] ?? defaultDesiredResponseTimes[status]
 }
 
