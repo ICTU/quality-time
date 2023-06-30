@@ -1,0 +1,317 @@
+{
+    "database": {
+        "advisory-count": 549,
+        "last-commit": "84c633df9cfd422193fd3dc104a5e7cbfca9d328",
+        "last-updated": "2023-06-13T13:10:24Z"
+    },
+    "lockfile": {
+        "dependency-count": 375
+    },
+    "settings": {
+        "target_arch": null,
+        "target_os": null,
+        "severity": null,
+        "ignore": [],
+        "informational_warnings": [
+            "unmaintained",
+            "unsound",
+            "notice"
+        ]
+    },
+    "vulnerabilities": {
+        "found": true,
+        "count": 2,
+        "list": [
+            {
+                "advisory": {
+                    "id": "RUSTSEC-2022-0090",
+                    "package": "libsqlite3-sys",
+                    "title": "`libsqlite3-sys` via C SQLite CVE-2022-35737",
+                    "description": "It was sometimes possible for SQLite versions >= 1.0.12, < 3.39.2 to allow an array-bounds overflow when large string were input into SQLite's `printf` function.\n\nAs `libsqlite3-sys` bundles SQLite, it is susceptible to the vulnerability. `libsqlite3-sys` was updated to bundle the patched version of SQLite [here](https://github.com/rusqlite/rusqlite/releases/tag/sys0.25.1).",
+                    "date": "2022-08-03",
+                    "aliases": [
+                        "CVE-2022-35737",
+                        "GHSA-jw36-hf63-69r9"
+                    ],
+                    "related": [],
+                    "collection": "crates",
+                    "categories": [
+                        "denial-of-service",
+                        "code-execution"
+                    ],
+                    "keywords": [],
+                    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                    "informational": null,
+                    "references": [],
+                    "source": null,
+                    "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-35737",
+                    "withdrawn": null
+                },
+                "versions": {
+                    "patched": [
+                        ">=0.25.1"
+                    ],
+                    "unaffected": []
+                },
+                "affected": null,
+                "package": {
+                    "name": "libsqlite3-sys",
+                    "version": "0.24.2",
+                    "source": "registry+https://github.com/rust-lang/crates.io-index",
+                    "checksum": "898745e570c7d0453cc1fbc4a701eb6c662ed54e8fec8b7d14be137ebeeb9d14",
+                    "dependencies": [
+                        {
+                            "name": "cc",
+                            "version": "1.0.79",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "openssl-sys",
+                            "version": "0.9.86",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "pkg-config",
+                            "version": "0.3.26",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "vcpkg",
+                            "version": "0.2.15",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        }
+                    ],
+                    "replace": null
+                }
+            },
+            {
+                "advisory": {
+                    "id": "RUSTSEC-2020-0071",
+                    "package": "time",
+                    "title": "Potential segfault in the time crate",
+                    "description": "### Impact\n\nUnix-like operating systems may segfault due to dereferencing a dangling pointer in specific circumstances. This requires an environment variable to be set in a different thread than the affected functions. This may occur without the user's knowledge, notably in a third-party library.\n\nThe affected functions from time 0.2.7 through 0.2.22 are:\n\n- `time::UtcOffset::local_offset_at`\n- `time::UtcOffset::try_local_offset_at`\n- `time::UtcOffset::current_local_offset`\n- `time::UtcOffset::try_current_local_offset`\n- `time::OffsetDateTime::now_local`\n- `time::OffsetDateTime::try_now_local`\n\nThe affected functions in time 0.1 (all versions) are:\n\n- `at`\n- `at_utc`\n- `now`\n\nNon-Unix targets (including Windows and wasm) are unaffected.\n\n### Patches\n\nPending a proper fix, the internal method that determines the local offset has been modified to always return `None` on the affected operating systems. This has the effect of returning an `Err` on the `try_*` methods and `UTC` on the non-`try_*` methods.\n\nUsers and library authors with time in their dependency tree should perform `cargo update`, which will pull in the updated, unaffected code.\n\nUsers of time 0.1 do not have a patch and should upgrade to an unaffected version: time 0.2.23 or greater or the 0.3 series.\n\n### Workarounds\n\nA possible workaround for crates affected through the transitive dependency in `chrono`, is to avoid using the default `oldtime` feature dependency of the `chrono` crate by disabling its `default-features` and manually specifying the required features instead.\n\n#### Examples:\n\n`Cargo.toml`:  \n\n```toml\nchrono = { version = \"0.4\", default-features = false, features = [\"serde\"] }\n```\n\n```toml\nchrono = { version = \"0.4.22\", default-features = false, features = [\"clock\"] }\n```\n\nCommandline:  \n\n```bash\ncargo add chrono --no-default-features -F clock\n```\n\nSources:  \n - [chronotope/chrono#602 (comment)](https://github.com/chronotope/chrono/issues/602#issuecomment-1242149249)  \n - [vityafx/serde-aux#21](https://github.com/vityafx/serde-aux/issues/21)",
+                    "date": "2020-11-18",
+                    "aliases": [
+                        "CVE-2020-26235",
+                        "GHSA-wcg3-cvx6-7396"
+                    ],
+                    "related": [],
+                    "collection": "crates",
+                    "categories": [
+                        "code-execution",
+                        "memory-corruption"
+                    ],
+                    "keywords": [
+                        "segfault"
+                    ],
+                    "cvss": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                    "informational": null,
+                    "references": [],
+                    "source": null,
+                    "url": "https://github.com/time-rs/time/issues/293",
+                    "withdrawn": null
+                },
+                "versions": {
+                    "patched": [
+                        ">=0.2.23"
+                    ],
+                    "unaffected": [
+                        "=0.2.0",
+                        "=0.2.1",
+                        "=0.2.2",
+                        "=0.2.3",
+                        "=0.2.4",
+                        "=0.2.5",
+                        "=0.2.6"
+                    ]
+                },
+                "affected": {
+                    "arch": [],
+                    "os": [
+                        "linux",
+                        "redox",
+                        "solaris",
+                        "android",
+                        "ios",
+                        "macos",
+                        "netbsd",
+                        "openbsd",
+                        "freebsd"
+                    ],
+                    "functions": {
+                        "time::OffsetDateTime::now_local": [
+                            "<0.2.23"
+                        ],
+                        "time::OffsetDateTime::try_now_local": [
+                            "<0.2.23"
+                        ],
+                        "time::UtcOffset::current_local_offset": [
+                            "<0.2.23"
+                        ],
+                        "time::UtcOffset::local_offset_at": [
+                            "<0.2.23"
+                        ],
+                        "time::UtcOffset::try_current_local_offset": [
+                            "<0.2.23"
+                        ],
+                        "time::UtcOffset::try_local_offset_at": [
+                            "<0.2.23"
+                        ],
+                        "time::at": [
+                            "^0.1"
+                        ],
+                        "time::at_utc": [
+                            "^0.1"
+                        ],
+                        "time::now": [
+                            "^0.1"
+                        ]
+                    }
+                },
+                "package": {
+                    "name": "time",
+                    "version": "0.1.45",
+                    "source": "registry+https://github.com/rust-lang/crates.io-index",
+                    "checksum": "1b797afad3f312d1c66a56d11d0316f916356d11bd158fbc6ca6389ff6bf805a",
+                    "dependencies": [
+                        {
+                            "name": "libc",
+                            "version": "0.2.140",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "wasi",
+                            "version": "0.10.0+wasi-snapshot-preview1",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "winapi",
+                            "version": "0.3.9",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        }
+                    ],
+                    "replace": null
+                }
+            }
+        ]
+    },
+    "warnings": {
+        "unsound": [
+            {
+                "kind": "unsound",
+                "package": {
+                    "name": "ouroboros",
+                    "version": "0.15.6",
+                    "source": "registry+https://github.com/rust-lang/crates.io-index",
+                    "checksum": "e1358bd1558bd2a083fed428ffeda486fbfb323e698cdda7794259d592ca72db",
+                    "dependencies": [
+                        {
+                            "name": "aliasable",
+                            "version": "0.1.3",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "ouroboros_macro",
+                            "version": "0.15.6",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        }
+                    ],
+                    "replace": null
+                },
+                "advisory": {
+                    "id": "RUSTSEC-2023-0042",
+                    "package": "ouroboros",
+                    "title": "Ouroboros is Unsound",
+                    "description": "## Summary\n\nOuroboros has a soundness problem. A fix was attempted but \nunsuccessful, leaving the crate unmaintained. Migrate code to use \n[self_cell](https://github.com/Voultapher/self_cell) instead.\n\n## More details:\n\nCurrently, Ouroboros works internally by creating a struct where all \nuses of 'this are replaced by 'static. However, a recent addition to \nMiri checks that references passed to functions are valid during the \nentire execution of the function, even when those references are \npassed inside a struct. This poses an issue for dropping \nself-referencing values, as the reference becomes invalid during the \ndropping process. Effectively, since self-referencing structs are \nnot allowed in vanilla Rust, there is no allowance for dropping data\nduring a function that has also been given a reference to that data. \nThere's usually no way to pass a and &a to the same function.\n\nA fix was attempted, where the struct would be turned in to a raw \nbyte array and only transformed back into the underlying data type \ninside each function. This is allowable as a reference can be \ncreated and die over the body of a function, as long as the \nreference was created inside the function. However, this is also \nnot sound if the original struct contains padding. There is no \nway to initialize padding bytes to a known value that Miri will \naccept, so when it is cast to an array some of the bytes contain \nuninitialized values. This is not acceptable (despite the fact \nthat these bytes are never read) due to the potential for \noptimizations that may read from the uninitialized bytes. Besides \nwhich, this fix does not allow for template or constant parameters \nas there is no way to check the size of a templated type without \ngiving specific, concrete values for the template parameters.\n\nThe crate at this point is no longer maintained, and previous\nusers should migrate their code to use \n[self_cell](https://github.com/Voultapher/self_cell) instead.",
+                    "date": "2023-06-11",
+                    "aliases": [],
+                    "related": [],
+                    "collection": "crates",
+                    "categories": [],
+                    "keywords": [],
+                    "cvss": null,
+                    "informational": "unsound",
+                    "references": [],
+                    "source": null,
+                    "url": "https://github.com/joshua-maros/ouroboros/issues/88",
+                    "withdrawn": null
+                },
+                "versions": {
+                    "patched": [],
+                    "unaffected": []
+                }
+            }
+        ],
+        "yanked": [
+            {
+                "kind": "yanked",
+                "package": {
+                    "name": "h2",
+                    "version": "0.3.17",
+                    "source": "registry+https://github.com/rust-lang/crates.io-index",
+                    "checksum": "66b91535aa35fea1523ad1b86cb6b53c28e0ae566ba4a460f4457e936cad7c6f",
+                    "dependencies": [
+                        {
+                            "name": "bytes",
+                            "version": "1.4.0",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "fnv",
+                            "version": "1.0.7",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "futures-core",
+                            "version": "0.3.28",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "futures-sink",
+                            "version": "0.3.28",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "futures-util",
+                            "version": "0.3.28",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "http",
+                            "version": "0.2.9",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "indexmap",
+                            "version": "1.9.3",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "slab",
+                            "version": "0.4.8",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "tokio",
+                            "version": "1.27.0",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "tokio-util",
+                            "version": "0.7.7",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        },
+                        {
+                            "name": "tracing",
+                            "version": "0.1.37",
+                            "source": "registry+https://github.com/rust-lang/crates.io-index"
+                        }
+                    ],
+                    "replace": null
+                },
+                "advisory": null,
+                "versions": null
+            }
+        ]
+    }
+}
