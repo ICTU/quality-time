@@ -3,15 +3,15 @@
 import logging
 import time
 from collections.abc import Iterator
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import cast
 
 import bottle
-from dateutil.tz import tzlocal
 from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
+from shared.utils.date_time import now
 from shared.utils.type import MetricId, SourceId
 
 from database import sessions
@@ -44,22 +44,17 @@ def set_entity_attribute(
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]
     user = sessions.find_user(database)
-    description = [
-        f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'",
-    ]
+    description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})
     entity_user_data[attribute] = new_value
     if attribute == "status":
         desired_reponse_time = report.desired_measurement_entity_response_time(new_value)
-        if desired_reponse_time:
-            end_date = str((datetime.now(tz=tzlocal()) + timedelta(days=desired_reponse_time)).date())
-        else:
-            end_date = None
+        end_date = str((now() + timedelta(days=desired_reponse_time)).date()) if desired_reponse_time else None
         entity_user_data["status_end_date"] = end_date
-        description.append(f"changed the status end date to '{end_date}'")
+        description += f" and changed the status end date to '{end_date}'"
     new_measurement["delta"] = {
         "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
-        "description": " and ".join(description) + ".",
+        "description": description + ".",
         "email": user.email,
     }
     return insert_new_measurement(database, new_measurement)

@@ -1,8 +1,8 @@
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
 
-export function LabelWithHelp({labelId, label, help, hoverable}){
+export function LabelWithHelp({labelId, labelFor, label, help, hoverable}){
     return (
-        <label id={labelId}>
+        <label id={labelId} htmlFor={labelFor}>
             {label}{" "}
             <Popup
                 hoverable={hoverable}

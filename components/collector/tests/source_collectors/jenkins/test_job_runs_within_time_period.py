@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from collector_utilities.date_time import now
+from shared.utils.date_time import now
 
 from .base import JenkinsTestCase
 

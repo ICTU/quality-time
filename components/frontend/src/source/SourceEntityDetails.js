@@ -18,7 +18,7 @@ function entity_status_option(status, text, content, subheader) {
 function entity_status_options(entity_type, report) {
     const desired_response_times = report?.desired_response_times ?? {}
     const unconfirmed_subheader = `This ${entity_type} should be reviewed to decide what to do with it.`
-    const confirmed_subheader = `This ${entity_type} has been reviewed and should be dealt with within ${desired_response_times["wont_fix"]} days.`
+    const confirmed_subheader = `This ${entity_type} has been reviewed and should be dealt with within ${desired_response_times["confirmed"]} days.`
     const fixed_subheader = `Ignore this ${entity_type} for ${desired_response_times["fixed"]} days because it will be fixed shortly.`
     const false_positive_subheader = `Ignore this ${entity_type} for ${desired_response_times["false_positive"]} days because it's been incorrectly identified as ${entity_type}.`
     const wont_fix_subheader = `Ignore this ${entity_type} for ${desired_response_times["wont_fix"]} days because it will not be fixed.`

@@ -1,11 +1,10 @@
 """Unit tests for the measurement routes."""
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest.mock import Mock, patch
 
-from dateutil.tz import tzlocal
-
 from shared.model.measurement import Measurement
+from shared.utils.date_time import now
 
 from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
@@ -160,9 +159,8 @@ class SetEntityAttributeTest(DataModelTestCase):
         )
 
     def test_set_status_also_sets_status_end_date_if_status_has_a_desired_response_time(self):
-        """Test that setting the status also sets the end date when a the desired status resolution has been set."""
-        now = datetime.now(tz=tzlocal())
-        deadline = (now + timedelta(days=10)).date()
+        """Test that setting the status also sets the end date when the desired status resolution has been set."""
+        deadline = (now() + timedelta(days=10)).date()
         self.report["desired_response_times"] = {"false_positive": 10}
         measurement = self.set_entity_attribute("status", "false_positive")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]

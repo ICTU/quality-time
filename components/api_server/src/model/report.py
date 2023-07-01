@@ -43,7 +43,7 @@ class Report(SharedReport):
         defaults = {
             "confirmed": 180,
             "false_positive": 180,
-            "wont_fix": 190,
+            "wont_fix": 180,
             "fixed": 7,
         }
         default = defaults.get(status)

@@ -351,7 +351,9 @@ An entity is a measured entity like for example one single failed job in GitLab 
 
 To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
 
-When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Every action can be enriched with a comment for explanation.
+When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Entities marked as false positive, will be fixed, or won't fix are crossed out and subtracted from the measurement value. For example, if a source reports 14 security warnings and two are marked as false positive, the measurement value will be 12.
+
+When setting the status of an entity, the end date of that status is also set. By default, the status end date is set to 180 days after the current date for confirmed, false positive, and won't fix. The status end date for will be fixed is 7 days as 'will be fixed' means the entity should disappear shortly. These defaults can be customized, see the [Desired reaction times](#desired-reaction-times) section below.
 
 ## Customizing quality reports
 
@@ -375,13 +377,19 @@ The dashboard layout is persisted in the database and thus shared with other use
 
 ### Desired reaction times
 
-The default desired metric reaction times can be changed via the report's title. Expand the title and navigate to the 'Desired reaction times' tab. Each of the metric states that require action - target not met (red), near target (yellow), and status unknown (white) - has a desired reaction time in days that can be changed.
+The default desired response times for metrics and measurement entities (violations, issues, security warnings, etc.) can be changed via the report's title. Expand the report title and navigate to the 'Desired reaction times' tab.
+
+#### Desired metric response times
+
+Each of the metric states that require action - target not met (red), near target (yellow), accepted technical debt (grey), and status unknown (white) - has a desired reaction time in days that can be changed.
 
 For each metric that requires action, *Quality-time* shows the time left to respond in the time left column. When the deadline is missed, the time left column shows '0 days' with a red background. Hovering over the time left value shows the deadline.
 
-Metrics with accepted technical debt don't have a default desired reaction time. If a metric has accepted technical debt with an explicit end date though, that date will be used to show how much time is left in the metrics table.
-
 When showing multiple dates in the metric table (this can be done via the Settings panel), *Quality-time* shows an 'overrun' column with the number of days that the metric deadline was missed in the displayed period. The purpose of this information is to gain an understanding of how well the team is responding to metrics that require action.
+
+#### Desired time after which to review measurement entities
+
+Measurement entities (violations, issues, security warnings, etc.) can have one of five possible status: unconfirmed, confirmed, false positive, will be fixed, and won't fix. When setting the state of a measurement entity to a state other than unconfirmed, the end date of the status is also set. The reason is to encourage the status of measurement entities to be periodically reviewed. The default values can be changed.
 
 ```{index} Trend table
 ```

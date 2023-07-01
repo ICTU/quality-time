@@ -1,6 +1,6 @@
 """Unit tests for the Quality-time metrics collector."""
 
-from collector_utilities.date_time import now
+from shared.utils.date_time import now
 
 from .base import QualityTimeTestCase
 
