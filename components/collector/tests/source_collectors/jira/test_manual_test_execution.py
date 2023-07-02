@@ -2,7 +2,9 @@
 
 from datetime import timedelta
 
-from collector_utilities.date_time import now, parse_datetime
+from shared.utils.date_time import now
+
+from collector_utilities.date_time import parse_datetime
 
 from .base import JiraTestCase
 

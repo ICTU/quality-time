@@ -12,7 +12,7 @@ export function alignment(attribute_type, attribute_alignment) {
     return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[attribute_type];
 }
 
-export function SourceEntities({ metric, metric_uuid, source, reload }) {
+export function SourceEntities({ metric, metric_uuid, report, source, reload }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
     const [sortColumn, setSortColumn] = useState(null);
@@ -100,6 +100,7 @@ export function SourceEntities({ metric, metric_uuid, source, reload }) {
             key={entity.key}
             metric_uuid={metric_uuid}
             reload={reload}
+            report={report}
             status={source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"}
             status_end_date={source.entity_user_data?.[entity.key]?.status_end_date ?? ""}
             rationale={source.entity_user_data?.[entity.key]?.rationale ?? ""}

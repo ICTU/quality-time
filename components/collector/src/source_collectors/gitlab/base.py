@@ -4,8 +4,10 @@ from abc import ABC
 from datetime import date, timedelta
 from typing import cast
 
+from shared.utils.date_time import now
+
 from base_collectors import SourceCollector
-from collector_utilities.date_time import now, parse_datetime
+from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses

@@ -9,8 +9,10 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
+from shared.utils.date_time import now
+
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.date_time import MIN_DATETIME, days_ago, now, parse_datetime
+from collector_utilities.date_time import MIN_DATETIME, days_ago, parse_datetime
 from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 

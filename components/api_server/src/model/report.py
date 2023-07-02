@@ -37,3 +37,14 @@ class Report(SharedReport):
         }
         default = defaults.get(status, defaults["unknown"])
         return int(self.get("desired_response_times", {}).get(status, default))
+
+    def desired_measurement_entity_response_time(self, status: str) -> int | None:
+        """Return the desired response time for the measurement entity status."""
+        defaults = {
+            "confirmed": 180,
+            "false_positive": 180,
+            "wont_fix": 180,
+            "fixed": 7,
+        }
+        default = defaults.get(status)
+        return int(self.get("desired_response_times", {}).get(status, default)) if status in defaults else None

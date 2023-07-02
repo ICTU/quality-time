@@ -126,7 +126,7 @@ export function MetricDetails({
             const source_name = get_source_name(report_source, dataModel);
             panes.push({
                 menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-                render: () => <Tab.Pane><SourceEntities metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
+                render: () => <Tab.Pane><SourceEntities report={report} metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
             });
         });
     }

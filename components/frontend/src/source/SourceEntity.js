@@ -14,7 +14,7 @@ function entityCanBeIgnored(status, status_end_date) {
     return ["wont_fix", "fixed", "false_positive"].includes(status);
 }
 
-export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload, status, status_end_date }) {
+export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload, report, status, status_end_date }) {
     const [expanded, setExpanded] = useState(false);
 
     const ignoredEntity = entityCanBeIgnored(status, status_end_date)
@@ -36,6 +36,7 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
         name={entity_name}
         rationale={rationale}
         reload={reload}
+        report={report}
         source_uuid={source_uuid}
         status={status}
         status_end_date={status_end_date}

@@ -1,6 +1,10 @@
 """Unit tests for the measurement routes."""
 
+from datetime import timedelta
 from unittest.mock import Mock, patch
+
+from shared.model.measurement import Measurement
+from shared.utils.date_time import now
 
 from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
@@ -132,17 +136,54 @@ class SetEntityAttributeTest(DataModelTestCase):
 
         self.database.measurements.insert_one = insert_one
         self.database.reports = Mock()
-        self.database.reports.find.return_value = [create_report()]
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
+
+    def set_entity_attribute(self, attribute: str = "attribute", value: str = "value") -> Measurement:
+        """Set the entity attribute and return the new measurement."""
+        with patch("bottle.request", Mock(json={attribute: value})):
+            return set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", attribute, self.database)
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
-        with patch("bottle.request", Mock(json={"attribute": "value"})):
-            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", self.database)
+        measurement = self.set_entity_attribute()
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual({"attribute": "value"}, entity)
         self.assertEqual(
             {
                 "description": "John Doe changed the attribute of 'entity title/foo/None' from '' to 'value'.",
+                "email": JOHN["email"],
+                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+            },
+            measurement["delta"],
+        )
+
+    def test_set_status_also_sets_status_end_date_if_status_has_a_desired_response_time(self):
+        """Test that setting the status also sets the end date when the desired status resolution has been set."""
+        deadline = (now() + timedelta(days=10)).date()
+        self.report["desired_response_times"] = {"false_positive": 10}
+        measurement = self.set_entity_attribute("status", "false_positive")
+        entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
+        self.assertEqual({"status": "false_positive", "status_end_date": str(deadline)}, entity)
+        self.assertEqual(
+            {
+                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive' "
+                f"and changed the status end date to '{deadline}'.",
+                "email": JOHN["email"],
+                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+            },
+            measurement["delta"],
+        )
+
+    def test_set_status_resets_status_end_date_if_status_is_unconfirmed(self):
+        """Test that setting the status to unconfirmed also resets the end date."""
+        measurement = self.set_entity_attribute("status", "unconfirmed")
+        entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
+        self.assertEqual({"status": "unconfirmed", "status_end_date": None}, entity)
+        self.assertEqual(
+            {
+                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'unconfirmed' "
+                "and changed the status end date to 'None'.",
                 "email": JOHN["email"],
                 "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
             },

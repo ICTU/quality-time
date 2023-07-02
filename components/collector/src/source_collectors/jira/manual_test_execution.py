@@ -2,7 +2,9 @@
 
 from datetime import datetime
 
-from collector_utilities.date_time import days_ago, now, parse_datetime
+from shared.utils.date_time import now
+
+from collector_utilities.date_time import days_ago, parse_datetime
 from collector_utilities.type import URL
 from model import Entity
 

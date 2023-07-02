@@ -2,8 +2,10 @@
 
 from datetime import datetime
 
+from shared.utils.date_time import now
+
 from base_collectors import TimePassedCollector
-from collector_utilities.date_time import datetime_fromtimestamp, now
+from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.type import Response
 from model import SourceResponses
 

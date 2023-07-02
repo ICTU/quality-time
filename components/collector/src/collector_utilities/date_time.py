@@ -43,8 +43,3 @@ def datetime_fromparts(  # noqa: PLR0913
 def datetime_fromtimestamp(timestamp: float) -> datetime:
     """Create a datetime from a timestamp and add the local timezone."""
     return datetime.fromtimestamp(timestamp, tz=tzlocal())
-
-
-def now() -> datetime:
-    """Return now in the local timezone."""
-    return datetime.now(tz=tzlocal())
