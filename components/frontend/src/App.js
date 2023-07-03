@@ -39,16 +39,9 @@ class App extends Component {
             reportDate.setHours(23, 59, 59);
         }
         this.login_forwardauth();
+        this.initUserSession()
         this.connect_to_nr_measurements_event_source();
-        if (new Date(localStorage.getItem("session_expiration_datetime")) < new Date()) {
-            this.set_user(null)  // The session expired while the user was away
-        }
-        this.setState(
-            {
-                report_uuid: report_uuid, report_date: reportDate, loading: true,
-                user: localStorage.getItem("user"), email: localStorage.getItem("email")
-            },
-            () => this.reload());
+        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload());
     }
 
     componentWillUnmount() {
@@ -90,7 +83,7 @@ class App extends Component {
 
     check_session(json) {
         if (json.ok === false && json.status === 401) {
-            this.set_user(null);
+            this.setUserSession();
             if (this.login_forwardauth() === false) {
                 show_message("warning", "Your session expired", "Please log in to renew your session");
             }
@@ -152,25 +145,51 @@ class App extends Component {
         login("", "")
             .then(function (json) {
                 if (json.ok) {
-                    self.set_user(json.email, json.email, json.session_expiration_datetime);
+                    self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime));
                     return true;
                 }
             });
         return false;
     }
 
-    set_user(username, email, session_expiration_datetime) {
-        const email_address = email && email.indexOf("@") > -1 ? email : null;
-        this.setState({ user: username, email: email_address });
-        if (username === null) {
+    initUserSession() {
+        // Check if there is a session expiration datetime in the local storage. If so, restore the session as long as
+        // it has not expired. Otherwise, nothing needs to be done.
+        const sessionExpirationDateTimeISOString = localStorage.getItem("session_expiration_datetime")
+        if (sessionExpirationDateTimeISOString) {
+            const sessionExpirationDateTime = new Date(sessionExpirationDateTimeISOString)
+            if (sessionExpirationDateTime < new Date()) {
+                // The session expired while the user was away. Reset it and notify the user of the expired session.
+                this.onUserSessionExpiration()
+            } else {
+                // Session is still active, restore it from local storage.
+                this.setUserSession(localStorage.getItem("user"), localStorage.getItem("email"), sessionExpirationDateTime)
+            }
+        }
+    }
+
+    setUserSession(username, email, sessionExpirationDateTime) {
+        if (username) {
+            const emailAddress = email && email.indexOf("@") > -1 ? email : null;
+            this.setState({ user: username, email: emailAddress });
+            localStorage.setItem("user", username);
+            localStorage.setItem("email", emailAddress);
+            localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString());
+            this.sessionExpirationTimeoutId = setTimeout(
+                () => this.onUserSessionExpiration(), sessionExpirationDateTime - new Date()
+            )
+        } else {
+            this.setState({ user: null, email: null });
             localStorage.removeItem("user");
             localStorage.removeItem("email");
             localStorage.removeItem("session_expiration_datetime");
-        } else {
-            localStorage.setItem("user", username);
-            localStorage.setItem("email", email_address);
-            localStorage.setItem("session_expiration_datetime", session_expiration_datetime.toISOString());
+            clearTimeout(this.sessionExpirationTimeoutId)
         }
+    }
+
+    onUserSessionExpiration() {
+        this.setUserSession();
+        show_message("warning", "Your session expired", "Please log in to renew your session");
     }
 
     render() {
@@ -191,7 +210,7 @@ class App extends Component {
                 report_uuid={this.state.report_uuid}
                 reports={this.state.reports}
                 reports_overview={this.state.reports_overview}
-                set_user={(username, email, session_expiration_datetime) => this.set_user(username, email, session_expiration_datetime)}
+                set_user={(username, email, sessionExpirationDateTime) => this.setUserSession(username, email, sessionExpirationDateTime)}
                 user={this.state.user}
             />
         );
