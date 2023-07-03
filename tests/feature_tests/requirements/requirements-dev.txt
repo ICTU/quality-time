@@ -384,9 +384,9 @@ parse==1.19.1 \
     # via
     #   behave
     #   parse-type
-parse-type==0.6.0 \
-    --hash=sha256:20b43c660e48ed47f433bce5873a2a3d4b9b6a7ba47bd7f7d2a7cec4bec5551f \
-    --hash=sha256:c148e88436bd54dab16484108e882be3367f44952c649c9cd6b82a7370b650cb
+parse-type==0.6.1 \
+    --hash=sha256:696502e748843a1a26bd47367ad248f790b825d6b2ea8b8208ef7cd37d6f3ddd \
+    --hash=sha256:c909b884f065c46a81feadbf63dbf5d82da94ad61780fcf219d3f5c295fe455c
     # via behave
 pip-tools==6.13.0 \
     --hash=sha256:50943f151d87e752abddec8158622c34ad7f292e193836e90e30d87da60b19d9 \
