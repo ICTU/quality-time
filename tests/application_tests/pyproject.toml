@@ -10,5 +10,5 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pip==23.1.2",
-    "pip-tools==6.13.0"  # To add hashes to requirements
+    "pip-tools==6.14.0"  # To add hashes to requirements
 ]
