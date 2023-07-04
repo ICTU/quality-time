@@ -12,7 +12,6 @@ class Notification:
 
     report: JSON
     metrics: list[MetricNotificationData]
-    destination_uuid: str
     destination: dict[str, str]
 
     @property

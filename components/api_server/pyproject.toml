@@ -28,7 +28,7 @@ tools = [
     "black==23.3.0",
     "mypy==1.4.1",
     "pip-audit==2.6.0",
-    "ruff==0.0.275",
+    "ruff==0.0.277",
     "safety==2.3.5",
     "vulture==2.7"
 ]

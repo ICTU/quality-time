@@ -84,22 +84,20 @@ class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
     @staticmethod
     def __parse_violation(violation: dict[str, list], result_type: str, url: str) -> list[dict[str, Any]]:
         """Parse a violation."""
-        entity_attributes = []
-        for node in violation.get("nodes", []) or [violation]:  # Use the violation as node if it has no nodes
-            entity_attributes.append(
-                {
-                    "description": violation.get("description"),
-                    "element": node.get("html"),
-                    "help": violation.get("helpUrl"),
-                    "impact": node.get("impact"),
-                    "page": url,
-                    "url": url,
-                    "result_type": result_type,
-                    "tags": ", ".join(sorted(violation.get("tags", []))),
-                    "violation_type": violation.get("id"),
-                },
-            )
-        return entity_attributes
+        return [
+            {
+                "description": violation.get("description"),
+                "element": node.get("html"),
+                "help": violation.get("helpUrl"),
+                "impact": node.get("impact"),
+                "page": url,
+                "url": url,
+                "result_type": result_type,
+                "tags": ", ".join(sorted(violation.get("tags", []))),
+                "violation_type": violation.get("id"),
+            }
+            for node in violation.get("nodes", []) or [violation]  # Use the violation as node if it has no nodes
+        ]
 
     @staticmethod
     def __create_key(attributes) -> str:

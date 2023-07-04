@@ -63,12 +63,7 @@ class BuildNotificationTextTests(TestCase):
         ]
         metric_notification_data1 = MetricNotificationData(metric1, measurements1, self.subject)
         metric_notification_data2 = MetricNotificationData(metric2, measurements2, self.subject)
-        notification = Notification(
-            self.report,
-            [metric_notification_data1, metric_notification_data2],
-            "destination_uuid",
-            {},
-        )
+        notification = Notification(self.report, [metric_notification_data1, metric_notification_data2], {})
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
             "* Subject:\n"
@@ -92,7 +87,7 @@ class BuildNotificationTextTests(TestCase):
             {"count": {"value": None, "status": "unknown"}},
         ]
         metric_notification_data1 = MetricNotificationData(metric1, measurements, self.subject)
-        notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
+        notification = Notification(self.report, [metric_notification_data1], {})
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"
             "* Subject:\n"
