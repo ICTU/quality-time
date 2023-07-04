@@ -28,21 +28,18 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
             nr_vulnerabilities[dependency] = nr_vulnerabilities.get(dependency, 0) + 1
             path = " ➜ ".join(str(dependency) for dependency in vulnerability["from"])
             example_vulnerability[dependency] = (vulnerability["id"], path)
-
-        entities = Entities()
-        for dependency, severity_set in severities.items():
-            entities.append(
-                Entity(
-                    key=dependency,
-                    dependency=dependency,
-                    nr_vulnerabilities=nr_vulnerabilities[dependency],
-                    example_vulnerability=example_vulnerability[dependency][0],
-                    url=f"https://snyk.io/vuln/{example_vulnerability[dependency][0]}",
-                    example_path=example_vulnerability[dependency][1],
-                    highest_severity=self.__highest_severity(severity_set),
-                ),
+        return Entities(
+            Entity(
+                key=dependency,
+                dependency=dependency,
+                nr_vulnerabilities=nr_vulnerabilities[dependency],
+                example_vulnerability=example_vulnerability[dependency][0],
+                url=f"https://snyk.io/vuln/{example_vulnerability[dependency][0]}",
+                example_path=example_vulnerability[dependency][1],
+                highest_severity=self.__highest_severity(severity_set),
             )
-        return entities
+            for dependency, severity_set in severities.items()
+        )
 
     @staticmethod
     def __highest_severity(severities: Collection[Severity]) -> Severity:

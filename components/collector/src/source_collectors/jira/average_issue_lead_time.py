@@ -30,9 +30,7 @@ class JiraAverageIssueLeadTime(JiraIssues):
     @classmethod
     def _compute_value(cls, entities: Entities) -> Value:
         """Calculate the average lead time of the completed issues."""
-        lead_times = []
-        for issue in entities:
-            lead_times.append(cls.__lead_time(issue))
+        lead_times = [cls.__lead_time(issue) for issue in entities]
         return str(round(mean(lead_times))) if entities else None
 
     @staticmethod

@@ -41,5 +41,6 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
             if test_result in test_results:
                 nr_of_tests += int(stats.get(test_result, 0))
                 for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/.."):
-                    entities.append(Entity(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
+                    entity = Entity(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result)
+                    entities.append(entity)
         return nr_of_tests, total_nr_of_tests, entities

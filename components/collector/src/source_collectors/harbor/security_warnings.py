@@ -104,9 +104,8 @@ class HarborSecurityWarnings(HarborBase):
         entities = Entities()
         for response in responses:
             json = await response.json(content_type=None)
-            for artifact in json:
-                if self._has_scan_with_warnings(artifact):
-                    entities.append(await self._create_entity(artifact))
+            artifacts = [artifact for artifact in json if self._has_scan_with_warnings(artifact)]
+            entities.extend([await self._create_entity(artifact) for artifact in artifacts])
         return entities
 
     async def _create_entity(self, artifact: dict) -> Entity:

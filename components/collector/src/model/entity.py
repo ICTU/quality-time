@@ -46,4 +46,4 @@ class Entities(list[Entity]):
     def extend(self, entities: Iterable[Entity]) -> None:
         """Extend to only add entities that aren't already in the list."""
         for entity in entities:
-            self.append(entity)
+            self.append(entity)  # noqa: PERF402

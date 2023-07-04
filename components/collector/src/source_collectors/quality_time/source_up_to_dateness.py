@@ -26,5 +26,5 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
             for subject in report.get("subjects", {}).values():
                 for metric in subject.get("metrics", {}).values():
                     if recent_measurements := metric.get("recent_measurements", []):
-                        measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))
+                        measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))  # noqa: PERF401
         return min(measurement_dates, default=MIN_DATETIME)

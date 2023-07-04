@@ -33,10 +33,7 @@ class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Calculate the average lead time of the completed work items."""
         if work_items := await self._work_items(responses):
-            lead_times = []
-            for item in work_items:
-                if lead_time := self.__lead_time(item):  # sadly, mypy does not understand short-circuiting this
-                    lead_times.append(lead_time)
+            lead_times = [lead_time for item in work_items if ((lead_time := self.__lead_time(item)) is not None)]
             if lead_times:
                 return str(round(mean(lead_times)))
         return None

@@ -180,9 +180,8 @@ class StrategiesTests(unittest.TestCase):
                 "count": {"status": "target_not_met", "value": "10"},
             },
         ]
-        metrics = []
-        for notification in self.get_notifications(self.red_metric_measurements + red_metric2_measurements):
-            metrics.append(notification.metrics)
+        red_measurements = self.red_metric_measurements + red_metric2_measurements
+        metrics = [notification.metrics for notification in self.get_notifications(red_measurements)]
         self.assertEqual(["metric1", "metric2"], [metrics[0][0].metric_name, metrics[1][0].metric_name])
 
     def test_no_notification_destinations_configured(self):

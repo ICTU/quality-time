@@ -30,8 +30,10 @@ class NotificationFinder:
                     if self.status_changed(metric, metric_measurements, most_recent_measurement_seen):
                         notable_metrics.append(MetricNotificationData(metric, metric_measurements, subject))
             if notable_metrics:
-                for destination_uuid, destination in report.get("notification_destinations", {}).items():
-                    notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
+                destinations = report.get("notification_destinations", {}).values()
+                notifications.extend(
+                    [Notification(report, notable_metrics, destination) for destination in destinations],
+                )
         return notifications
 
     @staticmethod

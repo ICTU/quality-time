@@ -29,7 +29,5 @@ def get_recent_measurements(
                 projection=projection,
             ),
         )
-        for measurement in measurement_data:
-            measurements.append(Measurement(metric, measurement))
-
+        measurements.extend([Measurement(metric, measurement) for measurement in measurement_data])
     return measurements
