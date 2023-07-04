@@ -450,6 +450,7 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
                 "anchore",
                 "anchore_jenkins_plugin",
                 "bandit",
+                "cargo_audit",
                 "cxsast",
                 "generic_json",
                 "harbor",

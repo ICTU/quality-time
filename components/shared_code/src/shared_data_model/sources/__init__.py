@@ -7,6 +7,7 @@ from .axe import AXE_CORE, AXE_CSV, AXE_HTML_REPORTER
 from .azure_devops import AZURE_DEVOPS
 from .bandit import BANDIT
 from .calendar import CALENDAR
+from .cargo_audit import CARGO_AUDIT
 from .cloc import CLOC
 from .cobertura import COBERTURA, COBERTURA_JENKINS_PLUGIN
 from .composer import COMPOSER
@@ -48,6 +49,7 @@ SOURCES = Sources.parse_obj(
         "azure_devops": AZURE_DEVOPS,
         "bandit": BANDIT,
         "calendar": CALENDAR,
+        "cargo_audit": CARGO_AUDIT,
         "cloc": CLOC,
         "cobertura": COBERTURA,
         "cobertura_jenkins_plugin": COBERTURA_JENKINS_PLUGIN,

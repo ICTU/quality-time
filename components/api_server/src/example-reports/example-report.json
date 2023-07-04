@@ -462,6 +462,16 @@
                                 "password": "",
                                 "private_token": ""
                             }
+                        },
+                        "80f231b2-52fb-4200-75cb-1445aa08e336": {
+                            "type": "cargo_audit",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/cargo_audit/cargo_audit.json",
+                                "landing_url": "http://localhost:8000/reports/cargo_audit/cargo_audit.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
+                            }
                         }
                     },
                     "name": null,
