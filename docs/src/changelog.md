@@ -16,7 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
-- Fix the landing url for Harbor artifacts. Closes [#6485](https://github.com/ICTU/quality-time/issues/6485)
+- Fix the landing URL for Harbor artifacts. Closes [#6485](https://github.com/ICTU/quality-time/issues/6485)
 
 ### Added
 
