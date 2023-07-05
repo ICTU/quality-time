@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - When changing the status of measurement entities (violations, warnings, issues, etc.) also set the status end date. The default end dates can be changed by expanding the report title and navigating to the 'Desired reaction times' tab. For individual measurement entities, the default can be overridden by first changing the status and then changing or removing the status end date. Closes [#5099](https://github.com/ICTU/quality-time/issues/5099).
 - Add support for [Cargo Audit](https://docs.rs/cargo-audit/latest/cargo_audit/), a linter for Rust Cargo.lock files for crates, as source for the 'security warnings' metric. Closes [#6347](https://github.com/ICTU/quality-time/issues/6347).
+- Add SonarQube Swift rules for complex units, methods with too many lines and functions with too many parameters. Closes [#6493](https://github.com/ICTU/quality-time/issues/6493).
 
 ## v5.0.1 - 2023-06-26
 
