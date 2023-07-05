@@ -119,7 +119,7 @@ class HarborSecurityWarnings(HarborBase):
         repository = unquote(url.split("/repositories/")[1].split("/artifacts/")[0])
         api_url = await super()._api_url()
         project_id = artifact["project_id"]
-        artifact_landing_url = f"{api_url}/harbor/projects/{project_id}/repositories/{repository}/artifacts/{digest}"
+        artifact_landing_url = f"{api_url}/harbor/projects/{project_id}/repositories/{repository}/artifacts-tab/artifacts/{digest}"
         return Entity(
             key=digest,
             url=artifact_landing_url,

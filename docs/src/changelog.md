@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Fixed
+
+- Fix the landing url for Harbor artifacts. Closes [#6485](https://github.com/ICTU/quality-time/issues/6485)
+
 ### Added
 
 - When changing the status of measurement entities (violations, warnings, issues, etc.) also set the status end date. The default end dates can be changed by expanding the report title and navigating to the 'Desired reaction times' tab. For individual measurement entities, the default can be overridden by first changing the status and then changing or removing the status end date. Closes [#5099](https://github.com/ICTU/quality-time/issues/5099).
