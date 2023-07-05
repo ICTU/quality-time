@@ -5,7 +5,7 @@ dependencies = [
     "bottle==0.12.25",
     "cryptography==41.0.1",
     "packaging==23.1",
-    "pydantic==1.10.9",
+    "pydantic==2.0.1",
     "pymongo==4.4.0",
     "python-dateutil==2.8.2",
 ]
@@ -25,7 +25,7 @@ tools = [
     "black==23.3.0",
     "mypy==1.4.1",
     "pip-audit==2.6.0",
-    "pydantic==1.10.9",
+    "pydantic==2.0.1",
     "ruff==0.0.277",
     "safety==2.3.5",
     "vulture==2.7"
