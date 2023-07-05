@@ -119,8 +119,8 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
                     "tags": "",
                     "total": 1,
                     "url": (
-                        "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts-tab/artifacts/"
-                        "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"
+                        "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts-tab/"
+                        "artifacts/sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"
                     ),
                 },
             ],
