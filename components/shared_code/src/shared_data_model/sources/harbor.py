@@ -48,8 +48,6 @@ HARBOR = Source(
                     "help": "URL of the Harbor instance, with port if necessary, but without path. For example "
                     "'https://demo.goharbor.io'.",
                 },
-                "username": {"mandatory": True},
-                "password": {"mandatory": True},
             },
         ),
     ),

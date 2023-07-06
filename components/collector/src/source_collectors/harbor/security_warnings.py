@@ -14,8 +14,13 @@ from model import Entities, Entity, SourceResponses
 class HarborBase(SourceCollector, ABC):
     """Base class for Harbor collectors."""
 
+    async def _api_url(self) -> URL:
+        """Extend to add the Harbor REST API base path."""
+        return URL(await super()._api_url() + "/api/v2.0")
+
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow Harbor pagination links, if necessary."""
+        await self._check_credentials()
         all_responses = responses = await super()._get_source_responses(*urls)
         while next_urls := self._next_urls(responses):
             # Retrieving consecutive big responses without reading the response hangs the client, see
@@ -24,6 +29,16 @@ class HarborBase(SourceCollector, ABC):
                 await response.read()
             all_responses.extend(responses := await super()._get_source_responses(*next_urls))
         return all_responses
+
+    async def _check_credentials(self) -> None:
+        """Check that the credentials are valid.
+
+        This needs to be done explicitly because Harbor doesn't throw an error on invalid credentials but quietly only
+        returns public projects, making it hard for the user to see that there is something wrong.
+        """
+        if self._parameter("username"):
+            # This will raise an exception for status >= 400:
+            await super()._get_source_responses(URL(await self._api_url() + "/users/current"))
 
     def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses."""
@@ -46,10 +61,6 @@ class ScanOverview(TypedDict):
 
 class HarborSecurityWarnings(HarborBase):
     """Harbor collector for security warnings."""
-
-    async def _api_url(self) -> URL:
-        """Extend to add the Harbor REST API base path."""
-        return URL(await super()._api_url() + "/api/v2.0")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend because we need to do multiple requests to get all the data we need."""
@@ -83,7 +94,7 @@ class HarborSecurityWarnings(HarborBase):
                 repository_name = repository["name"].removeprefix(f"{project['name']}/")
                 if self._skip_repository(repository_name):
                     continue
-                # The respository name contains a slash. For some reason it needs to be encoded twice.
+                # The repository name contains a slash. For some reason it needs to be encoded twice.
                 repository_name = quote(quote(repository_name, safe=""), safe="")
                 artifacts_api = URL(f"{repositories_api}/{repository_name}/artifacts?with_scan_overview=true")
                 responses.extend(await super()._get_source_responses(artifacts_api))
@@ -116,7 +127,7 @@ class HarborSecurityWarnings(HarborBase):
         url = artifact["addition_links"]["vulnerabilities"]["href"]
         project = url.split("/projects/")[1].split("/repositories")[0]
         repository = unquote(url.split("/repositories/")[1].split("/artifacts/")[0])
-        api_url = await super()._api_url()
+        api_url = await super(HarborBase, self)._api_url()  # Get the base API URL without /api/v2.0
         project_id = artifact["project_id"]
         artifact_landing_url = (
             f"{api_url}/harbor/projects/{project_id}/repositories/{repository}/artifacts-tab/artifacts/{digest}"
