@@ -1,5 +1,7 @@
 """Unit tests for the Harbor security warnings collector."""
 
+import aiohttp
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -12,12 +14,6 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
     PROJECT_NAME = "docker.io"
     REPO_NAME = f"{PROJECT_NAME}/repo"
     SCAN_REPORT_MIME_TYPE = "application/vnd.security.vulnerability.report; version=1.1"
-
-    def setUp(self) -> None:
-        """Set up the test fixtures."""
-        super().setUp()
-        self.set_source_parameter("username", "username")
-        self.set_source_parameter("password", "password")
 
     async def collect_data(self):
         """Collect the (fake) Harbor contents."""
@@ -44,6 +40,13 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
                 ],
             ],
         )
+
+    async def test_invalid_credentials(self):
+        """Test that invalid credentials result in an error."""
+        self.set_source_parameter("username", "user")
+        self.set_source_parameter("password", "invalid")
+        response = await self.collect(get_request_json_side_effect=aiohttp.ClientError)
+        self.assert_measurement(response, connection_error="ClientError")
 
     async def test_no_projects(self):
         """Test that there are no security warnings if there are no projects."""
