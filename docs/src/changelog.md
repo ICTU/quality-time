@@ -16,8 +16,9 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
-- Show warning message when the user session expires. Closes [#5327](https://github.com/ICTU/quality-time/issues/5327).
-- Fix the landing URL for Harbor artifacts. Closes [#6485](https://github.com/ICTU/quality-time/issues/6485)
+- When changing the metric type, tags in the tags field would not be updated immediately. Fixes [#5116](https://github.com/ICTU/quality-time/issues/5116).
+- Show warning message when the user session expires. Fixes [#5327](https://github.com/ICTU/quality-time/issues/5327).
+- Fix the landing URL for Harbor artifacts. Fixes [#6485](https://github.com/ICTU/quality-time/issues/6485)
 
 ### Added
 

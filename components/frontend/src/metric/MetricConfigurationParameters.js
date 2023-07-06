@@ -142,7 +142,7 @@ export function MetricConfigurationParameters({ report, subject, metric, metric_
                     <MetricName metric={metric} metricType={metricType} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+                    <Tags key={metric.type} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
