@@ -10,7 +10,7 @@ import './Menubar.css';
 function Login({ set_user }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [login_error, setLoginError] = useState(false);
+    const [error, setError] = useState('');
 
     function submit() {
         login(username, password)
@@ -18,23 +18,32 @@ function Login({ set_user }) {
                 if (json.ok) {
                     set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
                 } else {
-                    setLoginError(true);
+                    setError("credentials");
                 }
             })
             .catch(function (_error) {
-                setLoginError(true);
+                setError("connection");
             });
     }
 
+    let messageHeader = "Heads up"
+    let messageContent = "Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged."
+    if (error === "connection") {
+        messageHeader = "Connection error"
+        messageContent = "Can't reach the server. Please check your connection."
+    }
+    if (error === "credentials") {
+        messageHeader = "Invalid credentials"
+        messageContent = "Username and/or password are invalid. Please try again."
+    }
     return (
-        <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny' onClose={() => setLoginError(false)} >
+        <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny' onClose={() => setError("")} >
             <Modal.Header content='Login' />
             <Modal.Content>
-                <Form error={login_error} warning={!login_error} onSubmit={() => submit()} >
+                <Form error={!!error} warning={!error} onSubmit={() => submit()} >
                     <Form.Input autoFocus id='username' name='username' label='Username' onChange={(_event, { value }) => setUsername(value)} />
                     <Form.Input id='password' name='password' type='password' label='Password' onChange={(_event, { value }) => setPassword(value)} />
-                    <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
-                    <Message warning header='Heads up' content='Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged.' />
+                    <Message error={!!error} warning={!error} header={messageHeader} content={messageContent} />
                     <Form.Button>Submit</Form.Button>
                 </Form>
             </Modal.Content>
