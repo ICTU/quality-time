@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 import requests
 
 from shared_data_model.meta.metric import Unit
+from shared_data_model import DATA_MODEL
 
 from model.report import Report
 
@@ -60,7 +61,7 @@ class PostMetricAttributeTestCase(DataModelTestCase):
                                 "near_target": "10",
                                 "debt_target": None,
                                 "accept_debt": False,
-                                "tags": [],
+                                "tags": [tag.value for tag in DATA_MODEL.metrics["security_warnings"].tags],
                                 "sources": {
                                     SOURCE_ID: {"type": "owasp_dependency_check"},
                                     SOURCE_ID2: {"type": "snyk"},
@@ -114,6 +115,7 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
     @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed and that sources are not removed."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"].append("user-supplied tag")
         sources = [
             {"source_uuid": SOURCE_ID, "parse_error": None, "connection_error": None, "value": "0"},
             {"source_uuid": SOURCE_ID2, "parse_error": None, "connection_error": None, "value": "0"},
@@ -159,10 +161,12 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
         request.json = {"type": "dependencies"}
         self.assertDictEqual(expected_new_measurement, post_metric_attribute(METRIC_ID, "type", self.database))
         updated_report = self.database.reports.insert_one.call_args[0][0]
+        updated_metric = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
         self.assertEqual(
             {SOURCE_ID: {"type": "owasp_dependency_check"}, SOURCE_ID2: {"type": "snyk"}},
-            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"],
+            updated_metric["sources"],
         )
+        self.assertEqual(["maintainability", "user-supplied tag"], updated_metric["tags"])
         self.assert_delta(
             "type of metric 'name' of subject 'Subject' in report 'Report' from 'security_warnings' to 'dependencies'",
             report=updated_report,

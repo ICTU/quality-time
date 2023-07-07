@@ -125,10 +125,13 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         old_value = metric.get(metric_attribute) or ""
     if old_value == new_value:
         return {"ok": True}  # Nothing to do
-    metric[metric_attribute] = new_value
     if metric_attribute == "type":
-        # Update the metric attributes, but keep the sources
+        # Update the metric attributes, but keep the sources and the user supplied tags
+        default_tags_old_type = data_model["metrics"][metric.type()]["tags"]
+        user_supplied_tags = [tag for tag in metric["tags"] if tag not in default_tags_old_type]
         metric.update(default_metric_attributes(database, new_value), sources=metric["sources"])
+        metric["tags"].extend(user_supplied_tags)
+    metric[metric_attribute] = new_value
     description = (
         f"{{user}} changed the {metric_attribute} of metric '{old_metric_name}' of subject "
         f"'{subject.name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
