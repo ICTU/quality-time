@@ -361,3 +361,7 @@ export function sum(object) {
     const list = typeof object == Array ? object : Object.values(object)
     return list.reduce((a, b) => a + b, 0)
 }
+
+export function reportIsTagReport(report_uuid) {
+    return report_uuid.slice(0, 4) === "tag-"
+}

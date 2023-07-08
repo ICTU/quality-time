@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getUserPermissions, reportIsTagReport, userPrefersDarkMode, useURLSearchQuery } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -49,7 +49,7 @@ export function AppUI({
     }, [uiMode, setUIMode]);
 
     const user_permissions = getUserPermissions(
-        user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
+        user, email, reportIsTagReport(report_uuid), report_date, reports_overview.permissions || {}
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
     const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);

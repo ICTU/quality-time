@@ -2,7 +2,8 @@ import { renderHook, act } from '@testing-library/react'
 import { createMemoryHistory } from 'history';
 import {
     capitalize, getUserPermissions, getMetricTags, get_metric_target, get_source_name, get_subject_name,
-    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery, getMetricResponseOverrun
+    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery,
+    getMetricResponseOverrun, reportIsTagReport
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
@@ -361,4 +362,9 @@ it("returns the metric response overrun when there are two measurements with dif
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05", count: {status: "target_met"}}
     ]
     expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
+})
+
+it("returns whether a report is a tag report", () => {
+    expect(reportIsTagReport("report")).toBe(false)
+    expect(reportIsTagReport("tag-report")).toBe(true)
 })

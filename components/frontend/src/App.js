@@ -5,7 +5,7 @@ import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, registeredURLSearchParams } from './utils'
+import { isValidDate_YYYYMMDD, registeredURLSearchParams, reportIsTagReport } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -99,6 +99,13 @@ class App extends Component {
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         this.history.replace({ search: search.length > 0 ? "?" + search : "" })
+        if (value && value !== this.state.report_date) {
+            showMessage(
+                "info",
+                "Historic information is read-only",
+                "You are viewing historic information. Editing is not possible."
+            )
+        }
         this.setState({ report_date: value, loading: true }, () => this.reload())
     }
 
@@ -112,6 +119,13 @@ class App extends Component {
     open_report(event, report_uuid) {
         event.preventDefault();
         this.history_push(encodeURI(report_uuid))
+        if (reportIsTagReport(report_uuid)) {
+            showMessage(
+                "info",
+                "Tag reports are read-only",
+                "You opened a report for a specific metric tag. These reports are generated dynamically. Editing is not possible."
+            )
+        }
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     }
 
@@ -134,10 +148,6 @@ class App extends Component {
                 self.setState({ nr_measurements: 0 });
             }
         }, false);
-    }
-
-    current_report_is_tag_report() {
-        return this.state.report_uuid.slice(0, 4) === "tag-"
     }
 
     login_forwardauth() {
@@ -165,6 +175,12 @@ class App extends Component {
                 // Session is still active, restore it from local storage.
                 this.setUserSession(localStorage.getItem("user"), localStorage.getItem("email"), sessionExpirationDateTime)
             }
+        } else {
+            showMessage(
+                "info",
+                "Not logged in",
+                "You are not logged in. Editing is not possible until you do."
+            )
         }
     }
 
@@ -189,7 +205,7 @@ class App extends Component {
 
     onUserSessionExpiration() {
         this.setUserSession();
-        showMessage("warning", "Your session expired", "Please log in to renew your session");
+        showMessage("warning", "Your session expired", "Please log in to renew your session.");
     }
 
     render() {
