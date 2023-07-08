@@ -237,7 +237,6 @@ def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
         data_model,
         {
             "title": f'Report for tag "{tag}"',
-            "subtitle": "Note: tag reports are read-only",
             "report_uuid": f"tag-{tag}",
             "timestamp": iso_timestamp(),
             "subjects": subjects,

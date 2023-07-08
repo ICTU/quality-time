@@ -433,7 +433,6 @@ class ReportTest(ReportTestCase):
                     {
                         "summary": expected_counts,
                         "title": 'Report for tag "tag"',
-                        "subtitle": "Note: tag reports are read-only",
                         "report_uuid": "tag-tag",
                         "timestamp": now.replace(microsecond=0).isoformat(),
                         "subjects": {
