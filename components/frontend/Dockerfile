@@ -5,7 +5,7 @@ LABEL description="Quality-time frontend"
 
 WORKDIR /work
 COPY . /work
-RUN npm install -g npm@9.7.2 && \
+RUN npm install -g npm@9.8.0 && \
     npm install && \
     npm install -g serve@14.2.0 && \
     npm run build
