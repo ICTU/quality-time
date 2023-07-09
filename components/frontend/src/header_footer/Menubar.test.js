@@ -19,6 +19,40 @@ it('logs in', async () => {
     expect(set_user).toHaveBeenCalledWith("user@example.org", "user@example.org", expected_date)
 });
 
+it('shows invalid credential message', async () => {
+    auth.login = jest.fn().mockResolvedValue({ ok: false });
+    const set_user = jest.fn();
+    render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
+    fireEvent.click(screen.getByText(/Login/));
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: 'user@example.org' } })
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: 'secret' } })
+    await act(async () => fireEvent.click(screen.getByText(/Submit/)));
+    expect(screen.getAllByText(/Invalid credentials/).length).toBe(1);
+    expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
+    expect(set_user).not.toHaveBeenCalled()
+});
+
+it('shows connection error message', async () => {
+    auth.login = jest.fn().mockRejectedValue(new Error('Async error message'));
+    const set_user = jest.fn();
+    render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
+    fireEvent.click(screen.getByText(/Login/));
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: 'user@example.org' } })
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: 'secret' } })
+    await act(async () => fireEvent.click(screen.getByText(/Submit/)));
+    expect(screen.getAllByText(/Connection error/).length).toBe(1);
+    expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
+    expect(set_user).not.toHaveBeenCalled()
+});
+
+it('closes the dialog on escape', async() => {
+    const set_user = jest.fn();
+    render(<Menubar report_date_string="2019-10-10" onDate={() => {/* Dummy handler */ }} user={null} set_user={set_user} />);
+    fireEvent.click(screen.getByText(/Login/));
+    await userEvent.type(screen.getByLabelText("Username"), "{Escape}");
+    expect(screen.queryAllByText(/Username/).length).toBe(0);
+})
+
 it('logs out', async () => {
     auth.logout = jest.fn().mockResolvedValue({ ok: true });
     const set_user = jest.fn();
