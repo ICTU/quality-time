@@ -51,8 +51,10 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
         />
     )
     const dates = Object.keys(summary);
+    const bbWidth = boundingBox.width ?? 0;
+    const bbHeight = boundingBox.height ?? 0;
     const label = (
-        <VictoryPortal x={(boundingBox.width ?? 0) / 2} y={(boundingBox.height ?? 0) / 2}>
+        <VictoryPortal x={bbWidth / 2} y={bbHeight / 2}>
             <VictoryLabel
                 textAnchor="middle"
                 style={{ fontFamily: "Arial", fontSize: 12, fill: labelColor }}
@@ -63,17 +65,17 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
     const chartProps = {
         animate: animate,
         colors: colors,
-        height: boundingBox.height,
+        height: Math.max(bbHeight, 1),  // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
         label: label,
         maxY: maxY,
         style: style,
         tooltip: tooltip,
-        width: boundingBox.width,
+        width: Math.max(bbWidth, 1),  // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
     }
     return (
         <Card style={{ height: "100%" }} onClick={onClick} onKeyPress={onClick} tabIndex="0">
             <div ref={ref} style={{ width: "100%", height: "72%" }} aria-label={ariaChartLabel(summary)}>
-                <VictoryContainer width={boundingBox.width ?? 0} height={boundingBox.height ?? 0}>
+                <VictoryContainer width={bbWidth} height={bbHeight}>
                     {dates.length > 1 ?
                         <StatusBarChart summary={summary} nrdates={dates.length} {...chartProps} />
                         :
