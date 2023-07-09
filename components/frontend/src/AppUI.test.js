@@ -49,21 +49,29 @@ beforeAll(() => {
     });
 });
 
+beforeEach(() => {
+    history.push("")
+})
+
+async function renderAppUI() {
+    return await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+}
+
 it('supports dark mode', async () => {
     matchMediaMatches = true
-    const { container } = await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
 })
 
 it('supports light mode', async () => {
     matchMediaMatches = false
-    const { container } = await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
 })
 
 it('follows OS mode when switching to light mode', async () => {
     matchMediaMatches = true
-    const { container } = await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
     act(() => {
         changeMode({matches: false})
@@ -73,8 +81,7 @@ it('follows OS mode when switching to light mode', async () => {
 
 it('follows OS mode when switching to dark mode', async () => {
     matchMediaMatches = false
-    history.push("")
-    const { container } = await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
         changeMode({matches: true})
@@ -85,7 +92,7 @@ it('follows OS mode when switching to dark mode', async () => {
 it('ignores OS mode when mode explicitly set', async () => {
     matchMediaMatches = false
     history.push("?ui_mode=light")
-    const { container } = await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
         changeMode({matches: true})

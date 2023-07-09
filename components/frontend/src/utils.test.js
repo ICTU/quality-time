@@ -7,6 +7,20 @@ import {
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
+let matchMediaMatches
+
+beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+        value: jest.fn().mockImplementation(_query => ({
+            matches: matchMediaMatches,
+        })),
+    });
+});
+
+beforeEach(() => {
+    history.push("")
+})
+
 it('capitalizes strings', () => {
     expect(capitalize("")).toBe("")
     expect(capitalize("A")).toBe("A")
@@ -109,7 +123,6 @@ it('gets a boolean value', () => {
 })
 
 it('gets the default boolean value', () => {
-    history.push("")
     const { result } = renderHook(() => useURLSearchQuery("key", "boolean", false))
     expect(result.current[0]).toBe(false)
 })
@@ -136,7 +149,6 @@ it('gets an integer value', () => {
 })
 
 it('gets the default integer value', () => {
-    history.push("")
     const { result } = renderHook(() => useURLSearchQuery("key", "integer", 7))
     expect(result.current[0]).toBe(7)
 })
@@ -162,7 +174,6 @@ it('gets an array value', () => {
 })
 
 it('sets an array value', () => {
-    history.push("")
     const { result } = renderHook(() => useURLSearchQuery("key", "array"))
     act(() => { result.current[1]("a") })
     act(() => { result.current[1]("b") })
@@ -202,7 +213,6 @@ it('gets a string value', () => {
 })
 
 it('gets the default string value', () => {
-    history.push("")
     const { result } = renderHook(() => useURLSearchQuery("key", "string", "default"))
     expect(result.current[0]).toBe("default")
 })
@@ -235,16 +245,6 @@ it("returns true when the user sets dark mode", () => {
 it("returns false when the user sets light mode", () => {
     expect(userPrefersDarkMode("light")).toBe(false)
 })
-
-let matchMediaMatches
-
-beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockImplementation(_query => ({
-            matches: matchMediaMatches,
-        })),
-    });
-});
 
 it("returns true when the user prefers dark mode", () => {
     matchMediaMatches = true

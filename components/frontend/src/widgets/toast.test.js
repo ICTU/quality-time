@@ -1,15 +1,23 @@
 import * as react_toastify from 'react-toastify';
+import history from 'history/browser';
 import { showMessage, showConnectionMessage } from './toast';
 
 jest.mock("react-toastify");
 
 beforeEach(() => {
     jest.resetAllMocks()
+    history.push("")
 });
 
 it('shows a message', () => {
     showMessage("error", "Error", "Description");
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(<><h4>Error</h4><p>Description</p></>);
+});
+
+it('does not show a message when showing toasts has been turned off', () => {
+    history.push("?hide_toasts=true")
+    showMessage("error", "Error", "Description");
+    expect(react_toastify.toast.mock.calls.length).toBe(0);
 });
 
 it('shows a custom icon', () => {

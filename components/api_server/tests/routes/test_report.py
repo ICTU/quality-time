@@ -517,14 +517,20 @@ class ReportTest(ReportTestCase):
         response.content = b"PDF"
         requests_get.return_value = response
         self.assertEqual(b"PDF", export_report_as_pdf(REPORT_ID))
-        requests_get.assert_called_once_with(f"http://renderer:9000/api/render?path={REPORT_ID}", timeout=120)
+        requests_get.assert_called_once_with(
+            f"http://renderer:9000/api/render?path={REPORT_ID}%3Fhide_toasts%3Dtrue",
+            timeout=120,
+        )
 
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):
         """Test that a PDF version of a tag report can be retrieved."""
         requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security")))
-        requests_get.assert_called_once_with("http://renderer:9000/api/render?path=tag-security", timeout=120)
+        requests_get.assert_called_once_with(
+            "http://renderer:9000/api/render?path=tag-security%3Fhide_toasts%3Dtrue",
+            timeout=120,
+        )
 
     def test_delete_report(self):
         """Test that the report can be deleted."""

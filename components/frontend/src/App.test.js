@@ -25,10 +25,13 @@ beforeAll(() => {
     });
 });
 
-it('goes home', async () => {
+beforeEach(() => {
+    history.push("")
+})
+
+it('shows spinner', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<App />);
-    fireEvent.click(screen.getAllByText("Quality-time")[0])
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 });
 
