@@ -27,7 +27,6 @@ export function PageContent({
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
-    history,
     issueSettings,
     loading,
     go_home,
@@ -66,7 +65,6 @@ export function PageContent({
                 hiddenColumns={hiddenColumns}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 issueSettings={issueSettings}
-                history={history}
                 measurements={measurements}
                 reload={reload}
                 report={current_report}

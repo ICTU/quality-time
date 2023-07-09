@@ -233,10 +233,10 @@ function ReactionTimes({ report, reload }) {
     )
 }
 
-function ButtonRow({ report_uuid, go_home, history }) {
+function ButtonRow({ report_uuid, go_home }) {
     return (
         <>
-            <DownloadAsPDFButton report_uuid={report_uuid} history={history} />
+            <DownloadAsPDFButton report_uuid={report_uuid} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <DeleteButton
                     item_type='report'
@@ -247,7 +247,7 @@ function ButtonRow({ report_uuid, go_home, history }) {
     )
 }
 
-export function ReportTitle({ report, go_home, history, reload }) {
+export function ReportTitle({ report, go_home, reload }) {
     const report_uuid = report.report_uuid;
     const reportUrl = `${window.location}`;
     const panes = [
@@ -282,7 +282,7 @@ export function ReportTitle({ report, go_home, history, reload }) {
             <>
                 <Tab panes={panes} />
                 <div style={{ marginTop: "20px" }}>
-                    <ButtonRow report_uuid={report_uuid} go_home={go_home} history={history} />
+                    <ButtonRow report_uuid={report_uuid} go_home={go_home} />
                 </div>
             </>
         </HeaderWithDetails>

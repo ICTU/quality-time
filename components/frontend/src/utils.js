@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import history from 'history/browser';
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
 import { defaultDesiredResponseTimes } from './defaults';
@@ -263,7 +264,7 @@ export function days(timeInMs) {
 
 const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
 
-export function useURLSearchQuery(history, key, state_type, default_value) {
+export function useURLSearchQuery(key, state_type, default_value) {
     // state_type can either be "boolean", "integer", "string", or "array"
     const [state, setState] = useState(getState());
     registeredURLSearchQueryKeys.add(key);
@@ -311,7 +312,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
     return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
 }
 
-export function registeredURLSearchParams(history) {
+export function registeredURLSearchParams() {
     // Return registered URL search parameters only; to prevent CodeQL js/client-side-unvalidated-url-redirection
     let parsed = new URLSearchParams(history.location.search)
     for (let key of parsed.keys()) {

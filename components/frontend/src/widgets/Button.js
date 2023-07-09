@@ -164,10 +164,10 @@ function download_pdf(report_uuid, query_string, callback) {
         }).finally(() => callback());
 }
 
-export function DownloadAsPDFButton({ report_uuid, history }) {
+export function DownloadAsPDFButton({ report_uuid }) {
     const [loading, setLoading] = useState(false);
     // Make sure the report_url contains only registered query parameters
-    const query = registeredURLSearchParams(history);
+    const query = registeredURLSearchParams();
     const queryString = query.toString() ? ("?" + query.toString()) : ""
     query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash);
     return (

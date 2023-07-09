@@ -100,7 +100,6 @@ export function Report({
     handleSort,
     hiddenColumns,
     hideMetricsNotRequiringAction,
-    history,
     issueSettings,
     measurements,
     reload,
@@ -139,7 +138,7 @@ export function Report({
                 reload={reload}
                 report_date={report_date}
                 reports={reports}
-                history={history} />
+            />
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}

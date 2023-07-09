@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { createBrowserHistory, Action } from 'history';
+import history from 'history/browser';
+import { Action } from 'history';
 import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
@@ -17,8 +18,7 @@ class App extends Component {
             datamodel: {}, reports: [], report_uuid: '', report_date: null, reports_overview: {},
             nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
         };
-        this.history = createBrowserHistory();
-        this.history.listen(({ location, action }) => this.on_history({ location, action }));
+        history.listen(({ location, action }) => this.on_history({ location, action }));
     }
 
     on_history({ location, action }) {
@@ -30,9 +30,9 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const pathname = this.history.location.pathname;
+        const pathname = history.location.pathname;
         const report_uuid = decodeURI(pathname.slice(1, pathname.length));
-        const report_date_iso_string = registeredURLSearchParams(this.history).get("report_date") || "";
+        const report_date_iso_string = registeredURLSearchParams().get("report_date") || "";
         let reportDate = null;
         if (isValidDate_YYYYMMDD(report_date_iso_string)) {
             reportDate = new Date(report_date_iso_string);
@@ -91,14 +91,14 @@ class App extends Component {
     }
 
     handleDateChange(_event, { name, value }) {
-        let parsed = registeredURLSearchParams(this.history);
+        let parsed = registeredURLSearchParams();
         if (!!value) {
             parsed.set("report_date", value.toISOString().split("T")[0]);
         } else {
             parsed.delete("report_date")
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
-        this.history.replace({ search: search.length > 0 ? "?" + search : "" })
+        history.replace({ search: search.length > 0 ? "?" + search : "" })
         if (value && value !== this.state.report_date) {
             showMessage(
                 "info",
@@ -110,7 +110,7 @@ class App extends Component {
     }
 
     go_home() {
-        if (this.history.location.pathname !== "/") {
+        if (history.location.pathname !== "/") {
             this.history_push("/")
             this.setState({ report_uuid: "", loading: true }, () => this.reload());
         }
@@ -130,8 +130,8 @@ class App extends Component {
     }
 
     history_push(target) {
-        const search = registeredURLSearchParams(this.history).toString().replace(/%2C/g, ",")  // No need to encode commas
-        this.history.push(target + (search.length > 0 ? "?" + search : ""));
+        const search = registeredURLSearchParams().toString().replace(/%2C/g, ",")  // No need to encode commas
+        history.push(target + (search.length > 0 ? "?" + search : ""));
     }
 
     connect_to_nr_measurements_event_source() {
@@ -216,7 +216,6 @@ class App extends Component {
                 email={this.state.email}
                 go_home={() => this.go_home()}
                 handleDateChange={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-                history={this.history}
                 last_update={this.state.last_update}
                 loading={this.state.loading}
                 nr_measurements={this.state.nr_measurements}

@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --maxWorkers 2",
+    "test": "react-scripts test --maxWorkers 2 --transformIgnorePatterns \"node_modules/(?!history)/\"",
     "eject": "react-scripts eject",
     "preinstall": "npx npm-force-resolutions"
   },
