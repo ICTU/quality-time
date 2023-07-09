@@ -262,7 +262,7 @@ export function days(timeInMs) {
     return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
-const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
+const registeredURLSearchQueryKeys = new Set(["report_date", "report_url", "hide_toasts"]);
 
 export function useURLSearchQuery(key, state_type, default_value) {
     // state_type can either be "boolean", "integer", "string", or "array"

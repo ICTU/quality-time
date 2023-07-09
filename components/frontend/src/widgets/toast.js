@@ -1,8 +1,12 @@
 import { toast } from 'react-toastify';
+import { registeredURLSearchParams } from '../utils'
 
 export function showMessage(type, title, description) {
-    const toast_message = title && description ? <><h4>{title}</h4><p>{description}</p></> : title;
-    toast(toast_message, { type: type, autoClose: 20000 });
+    const hideToasts = registeredURLSearchParams().get("hide_toasts");
+    if (hideToasts !== "true") {
+        const toast_message = title && description ? <><h4>{title}</h4><p>{description}</p></> : title;
+        toast(toast_message, { type: type, autoClose: 20000 });
+    }
 }
 
 export function showConnectionMessage(json) {

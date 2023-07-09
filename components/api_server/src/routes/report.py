@@ -114,7 +114,7 @@ def export_report_as_pdf(report_uuid: ReportId):
     renderer_host = os.environ.get("RENDERER_HOST", "renderer")
     renderer_port = os.environ.get("RENDERER_PORT", "9000")
     render_url = f"http://{renderer_host}:{renderer_port}/api/render"
-    query_string = f"?{bottle.request.query_string}" if bottle.request.query_string else ""
+    query_string = "?hide_toasts=true" + f"&{bottle.request.query_string}" if bottle.request.query_string else ""
     report_path = parse.quote(f"{report_uuid}{query_string}")
     response = requests.get(f"{render_url}?path={report_path}", timeout=120)
     response.raise_for_status()

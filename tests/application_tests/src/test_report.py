@@ -47,7 +47,7 @@ class OpenReportTest(unittest.TestCase):
         self.driver = webdriver.Remote("http://selenium:4444", options=firefox_options)
         self.driver.implicitly_wait(10)
         self.wait = WebDriverWait(self.driver, 10)
-        self.driver.get("http://www:80")
+        self.driver.get("http://www:80?hide_toasts=true")
 
     def tearDown(self):
         """Override to close the driver."""
