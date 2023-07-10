@@ -12,6 +12,8 @@ from shared_data_model.parameters import (
     access_parameters,
 )
 
+AUTHENTICATION_URL = "https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/"
+
 
 def jenkins_access_parameters(*args, **kwargs) -> dict[str, Parameter]:
     """Create Jenkins specific access parameters."""
@@ -20,18 +22,16 @@ def jenkins_access_parameters(*args, **kwargs) -> dict[str, Parameter]:
         kwargs["kwargs"]["url"]["name"] = "URL to Jenkins job"
     kwargs["kwargs"]["password"] = {
         "name": "Password or API token for basic authentication",
-        "help_url": "https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/",
+        "help_url": AUTHENTICATION_URL,
     }
     return access_parameters(*args, **kwargs)
 
 
 # Put the Jenkins token documentation in a temporary variable that doesn't trigger a security warning so we can
 # suppress the false positive Bandit warning below.
-_TMP_DOC = """To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username
-and password or a username and
-[API token](https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/). Note that, unlike
-other sources, when using the API token Jenkins also requires the username to which the token
-belongs."""
+_TMP_DOC = f"""To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and
+password or a username and [API token]({AUTHENTICATION_URL}). Note that, unlike other sources, when using the API token
+Jenkins also requires the username to which the token belongs."""
 JENKINS_TOKEN_DOCS = _TMP_DOC  # nosec hardcoded_password_string
 
 ALL_JENKINS_METRICS = [
@@ -64,6 +64,18 @@ JENKINS = Source(
     name="Jenkins",
     description="Jenkins is an open source continuous integration/continuous deployment server.",
     documentation={
+        "generic": f"""```{{note}}
+Some metric sources are documents in JSON, XML, CSV, or HTML format. Examples include JUnit XML reports, JaCoCo XML
+reports and Axe CSV reports. Usually, you add a JUnit (or JaCoCo, or Axe...) source and then simply configure the same
+URL that you use to access the document via the browser. If the document is stored in Jenkins and *Quality-time* needs
+to be authorized to access resources in Jenkins, there are [two options]({AUTHENTICATION_URL}):
+
+1. Configure a Jenkins user and password. The username of the Jenkins user needs to be entered in the "Username" field
+and the password in the "Password" field.
+
+2. Configure a Jenkins user and a private token of that user. The username of the Jenkins user needs to be entered in
+the "Username" field and the private token in the "**Password**" field.
+```""",
         "unused_jobs": JENKINS_TOKEN_DOCS,
         "failed_jobs": JENKINS_TOKEN_DOCS,
         "source_up_to_dateness": JENKINS_TOKEN_DOCS,
