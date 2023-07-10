@@ -6,7 +6,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { add_source, copy_source, move_source } from '../api/source';
 import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
 import { source_options } from '../widgets/menu_options';
-import { show_message } from '../widgets/toast';
+import { showMessage } from '../widgets/toast';
 import { pluralize } from '../utils';
 import { Source } from './Source';
 import { sourceTypeOptions } from './SourceType';
@@ -63,7 +63,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     const reload_source = (json) => {
         const nr_sources = json.nr_sources_mass_edited
         if (nr_sources > 0) {
-            show_message("info", `Changed ${nr_sources} ${pluralize("source", nr_sources)}`)
+            showMessage("info", `Changed ${nr_sources} ${pluralize("source", nr_sources)}`)
         }
         reload(json)
     }
