@@ -1,5 +1,5 @@
 import { fetch_server_api } from "./fetch_server_api";
-import { show_message } from '../widgets/toast';
+import { showMessage } from '../widgets/toast';
 
 export function add_metric(subject_uuid, metricType, reload) {
     fetch_server_api('post', `metric/new/${subject_uuid}`, { type: metricType }).then(reload)
@@ -30,7 +30,7 @@ export function add_metric_issue(metric_uuid, reload) {
         if (json.ok) {
             window.open(json.issue_url)
         } else {
-            show_message("error", `Error creating issue: ${json.error}`)
+            showMessage("error", `Error creating issue: ${json.error}`)
         }
     }).then(reload)
 }

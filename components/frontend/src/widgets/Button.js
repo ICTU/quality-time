@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
-import { show_message } from '../widgets/toast';
+import { showMessage } from '../widgets/toast';
 import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
@@ -151,7 +151,7 @@ function download_pdf(report_uuid, query_string, callback) {
     get_report_pdf(report_uuid, query_string)
         .then(response => {
             if (response.ok === false) {
-                show_message("error", "PDF rendering failed", "HTTP code " + response.status + ": " + response.statusText)
+                showMessage("error", "PDF rendering failed", "HTTP code " + response.status + ": " + response.statusText)
             } else {
                 let url = window.URL.createObjectURL(response);
                 let a = document.createElement('a');
@@ -272,9 +272,9 @@ export function PermLinkButton({ url }) {
                 as="div"
                 labelPosition="right"
                 onClick={() => navigator.clipboard.writeText(url).then(function () {
-                    show_message("success", 'Copied URL to clipboard')
+                    showMessage("success", 'Copied URL to clipboard')
                 }, function () {
-                    show_message("error", 'Failed to copy URL to clipboard')
+                    showMessage("error", 'Failed to copy URL to clipboard')
                 })}
             >
                 <Button
@@ -309,7 +309,7 @@ export function PermLinkButton({ url }) {
                         let urlText = document.querySelector("#permlink")
                         urlText.select()
                         document.execCommand("copy")
-                        show_message("success", 'Copied URL to clipboard')
+                        showMessage("success", 'Copied URL to clipboard')
                     }}
                     style={{ fontWeight: "bold" }}
                 />

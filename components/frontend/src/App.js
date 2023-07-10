@@ -4,7 +4,7 @@ import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
-import { show_message, show_connection_messages } from './widgets/toast';
+import { showMessage, showConnectionMessage } from './widgets/toast';
 import { isValidDate_YYYYMMDD, registeredURLSearchParams } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
@@ -50,11 +50,11 @@ class App extends Component {
 
     reload(json) {
         if (json) {
-            show_connection_messages(json);
+            showConnectionMessage(json);
             this.changed_fields = json.availability ? json.availability.filter((url_key) => url_key.status_code !== 200) : null;
             this.check_session(json)
         }
-        const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
+        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
         this.loadAndSetState(show_error)
     }
 
@@ -85,7 +85,7 @@ class App extends Component {
         if (json.ok === false && json.status === 401) {
             this.setUserSession();
             if (this.login_forwardauth() === false) {
-                show_message("warning", "Your session expired", "Please log in to renew your session");
+                showMessage("warning", "Your session expired", "Please log in to renew your session");
             }
         }
     }
@@ -189,7 +189,7 @@ class App extends Component {
 
     onUserSessionExpiration() {
         this.setUserSession();
-        show_message("warning", "Your session expired", "Please log in to renew your session");
+        showMessage("warning", "Your session expired", "Please log in to renew your session");
     }
 
     render() {
