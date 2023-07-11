@@ -31,7 +31,7 @@ export function PageContent({
     loading,
     go_home,
     nrDates,
-    nr_measurements,
+    nrMeasurements,
     open_report,
     reload,
     report_date,
@@ -51,7 +51,7 @@ export function PageContent({
             setMeasurements(json.measurements ?? [])
         })
         // eslint-disable-next-line
-    }, [report_date, nr_measurements, dateInterval, nrDates]);
+    }, [report_date, nrMeasurements, dateInterval, nrDates]);
     let content;
     if (loading) {
         content = <Segment basic placeholder aria-label="Loading..."><Loader active size="massive" /></Segment>

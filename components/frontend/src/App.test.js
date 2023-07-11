@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import history from 'history/browser';
 import App from './App';
 import * as fetch_server_api from './api/fetch_server_api';
+import * as toast from './widgets/toast';
 
 function set_user_in_local_storage(session_expiration_datetime, email) {
     localStorage.setItem("user", "admin");
@@ -28,6 +29,10 @@ beforeAll(() => {
 beforeEach(() => {
     history.push("")
 })
+
+afterEach(() => {
+    jest.restoreAllMocks();
+});
 
 it('shows spinner', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
@@ -83,4 +88,30 @@ it('handles a date reset', async () => {
     render(<App />);
     await act(async () => { fireEvent.click(screen.getByTestId("datepicker-clear-icon")) })
     expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)
+});
+
+it('handles the nr of measurements event source', async () => {
+    const eventSourceInstance = {
+        addEventListener: jest.fn(),
+        close: jest.fn(),
+    };
+    const eventListeners = {}
+
+    eventSourceInstance.addEventListener.mockImplementation((event, listener) => {
+        eventListeners[event] = listener
+    });
+
+    const showMessage = jest.spyOn(toast, "showMessage");
+    global.EventSource = jest.fn(() => eventSourceInstance);
+
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    render(<App />);
+    await act(async () => eventListeners["init"]({data: 42}))
+    expect(showMessage).toHaveBeenCalledWith("info", "Not logged in", "You are not logged in. Editing is not possible until you are.")
+    await act(async () => eventListeners["delta"]({data: 42}))
+    await act(async () => eventListeners["delta"]({data: 43}))
+    await act(async () => eventListeners["error"]())
+    expect(showMessage).toHaveBeenCalledWith("error", "Server unreachable", "Trying to reconnect to server...")
+    await act(async () => eventListeners["init"]({data: 43}))
+    expect(showMessage).toHaveBeenCalledWith("success", "Connected to server", "Successfully reconnected to server.")
 });

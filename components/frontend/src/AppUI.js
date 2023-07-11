@@ -22,7 +22,7 @@ export function AppUI({
     handleDateChange,
     last_update,
     loading,
-    nr_measurements,
+    nrMeasurements,
     open_report,
     reload,
     report_date,
@@ -150,7 +150,7 @@ export function AppUI({
                             issueSettings={issueSettings}
                             loading={loading}
                             nrDates={nrDates}
-                            nr_measurements={nr_measurements}
+                            nrMeasurements={nrMeasurements}
                             open_report={open_report}
                             reload={reload}
                             report_date={report_date}
