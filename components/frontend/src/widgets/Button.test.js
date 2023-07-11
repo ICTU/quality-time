@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import history from 'history/browser';
 import { AddButton, AddDropdownButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, PermLinkButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as toast from './toast';
@@ -153,10 +154,8 @@ test('DeleteButton has the correct label', () => {
     });
 });
 
-const history = { location: { search: "" } };
-
 test("DownloadAsPDFButton has the correct label", () => {
-    render(<DownloadAsPDFButton history={history} />);
+    render(<DownloadAsPDFButton />);
     expect(screen.getAllByText(/report as PDF/).length).toBe(1);
 
 });
@@ -165,7 +164,7 @@ const test_report = { report_uuid: "report_uuid" };
 
 test("DownloadAsPDFButton indicates loading on click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" history={history} />);
+    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
@@ -175,8 +174,8 @@ test("DownloadAsPDFButton indicates loading on click", async () => {
 
 test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    history.location.search = "unregister_key=value&nr_dates=4"
-    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" history={history} />);
+    history.push("?unregister_key=value&nr_dates=4");
+    render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
@@ -185,7 +184,7 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
 
 test("DownloadAsPDFButton ignores a second click", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    render(<DownloadAsPDFButton report={test_report} history={history} />);
+    render(<DownloadAsPDFButton report={test_report} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
@@ -196,7 +195,7 @@ test("DownloadAsPDFButton ignores a second click", async () => {
 test("DownloadAsPDFButton stops loading after returning pdf", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue("pdf");
     window.URL.createObjectURL = jest.fn();
-    render(<DownloadAsPDFButton report={test_report} history={history} />);
+    render(<DownloadAsPDFButton report={test_report} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });
@@ -206,7 +205,7 @@ test("DownloadAsPDFButton stops loading after returning pdf", async () => {
 test("DownloadAsPDFButton stops loading after receiving error", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false });
     window.URL.createObjectURL = jest.fn();
-    render(<DownloadAsPDFButton report={test_report} history={history} />);
+    render(<DownloadAsPDFButton report={test_report} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));
     });

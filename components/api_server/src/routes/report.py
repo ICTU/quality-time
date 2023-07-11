@@ -114,7 +114,8 @@ def export_report_as_pdf(report_uuid: ReportId):
     renderer_host = os.environ.get("RENDERER_HOST", "renderer")
     renderer_port = os.environ.get("RENDERER_PORT", "9000")
     render_url = f"http://{renderer_host}:{renderer_port}/api/render"
-    query_string = f"?{bottle.request.query_string}" if bottle.request.query_string else ""
+    # Tell the frontend to not display toast messages to prevent them from being included in the PDF:
+    query_string = "?hide_toasts=true" + (f"&{bottle.request.query_string}" if bottle.request.query_string else "")
     report_path = parse.quote(f"{report_uuid}{query_string}")
     response = requests.get(f"{render_url}?path={report_path}", timeout=120)
     response.raise_for_status()
@@ -237,7 +238,6 @@ def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
         data_model,
         {
             "title": f'Report for tag "{tag}"',
-            "subtitle": "Note: tag reports are read-only",
             "report_uuid": f"tag-{tag}",
             "timestamp": iso_timestamp(),
             "subjects": subjects,

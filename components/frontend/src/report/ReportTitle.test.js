@@ -23,7 +23,6 @@ function render_report_title() {
         <DataModel.Provider value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
-                    history={{ location: {} }}
                     report={{ report_uuid: "report_uuid", title: "Report" }}
                     reload={reload}
                 />

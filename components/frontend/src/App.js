@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { createBrowserHistory, Action } from 'history';
+import history from 'history/browser';
+import { Action } from 'history';
 import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, registeredURLSearchParams } from './utils'
+import { isValidDate_YYYYMMDD, registeredURLSearchParams, reportIsTagReport } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -17,8 +18,7 @@ class App extends Component {
             datamodel: {}, reports: [], report_uuid: '', report_date: null, reports_overview: {},
             nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
         };
-        this.history = createBrowserHistory();
-        this.history.listen(({ location, action }) => this.on_history({ location, action }));
+        history.listen(({ location, action }) => this.on_history({ location, action }));
     }
 
     on_history({ location, action }) {
@@ -30,9 +30,9 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const pathname = this.history.location.pathname;
+        const pathname = history.location.pathname;
         const report_uuid = decodeURI(pathname.slice(1, pathname.length));
-        const report_date_iso_string = registeredURLSearchParams(this.history).get("report_date") || "";
+        const report_date_iso_string = registeredURLSearchParams().get("report_date") || "";
         let reportDate = null;
         if (isValidDate_YYYYMMDD(report_date_iso_string)) {
             reportDate = new Date(report_date_iso_string);
@@ -91,19 +91,26 @@ class App extends Component {
     }
 
     handleDateChange(_event, { name, value }) {
-        let parsed = registeredURLSearchParams(this.history);
+        let parsed = registeredURLSearchParams();
         if (!!value) {
             parsed.set("report_date", value.toISOString().split("T")[0]);
         } else {
             parsed.delete("report_date")
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
-        this.history.replace({ search: search.length > 0 ? "?" + search : "" })
+        history.replace({ search: search.length > 0 ? "?" + search : "" })
+        if (value && value !== this.state.report_date) {
+            showMessage(
+                "info",
+                "Historic information is read-only",
+                "You are viewing historic information. Editing is not possible."
+            )
+        }
         this.setState({ report_date: value, loading: true }, () => this.reload())
     }
 
     go_home() {
-        if (this.history.location.pathname !== "/") {
+        if (history.location.pathname !== "/") {
             this.history_push("/")
             this.setState({ report_uuid: "", loading: true }, () => this.reload());
         }
@@ -112,12 +119,19 @@ class App extends Component {
     open_report(event, report_uuid) {
         event.preventDefault();
         this.history_push(encodeURI(report_uuid))
+        if (reportIsTagReport(report_uuid)) {
+            showMessage(
+                "info",
+                "Tag reports are read-only",
+                "You opened a report for a specific metric tag. These reports are generated dynamically. Editing is not possible."
+            )
+        }
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     }
 
     history_push(target) {
-        const search = registeredURLSearchParams(this.history).toString().replace(/%2C/g, ",")  // No need to encode commas
-        this.history.push(target + (search.length > 0 ? "?" + search : ""));
+        const search = registeredURLSearchParams().toString().replace(/%2C/g, ",")  // No need to encode commas
+        history.push(target + (search.length > 0 ? "?" + search : ""));
     }
 
     connect_to_nr_measurements_event_source() {
@@ -134,10 +148,6 @@ class App extends Component {
                 self.setState({ nr_measurements: 0 });
             }
         }, false);
-    }
-
-    current_report_is_tag_report() {
-        return this.state.report_uuid.slice(0, 4) === "tag-"
     }
 
     login_forwardauth() {
@@ -165,6 +175,12 @@ class App extends Component {
                 // Session is still active, restore it from local storage.
                 this.setUserSession(localStorage.getItem("user"), localStorage.getItem("email"), sessionExpirationDateTime)
             }
+        } else {
+            showMessage(
+                "info",
+                "Not logged in",
+                "You are not logged in. Editing is not possible until you are."
+            )
         }
     }
 
@@ -189,7 +205,7 @@ class App extends Component {
 
     onUserSessionExpiration() {
         this.setUserSession();
-        showMessage("warning", "Your session expired", "Please log in to renew your session");
+        showMessage("warning", "Your session expired", "Please log in to renew your session.");
     }
 
     render() {
@@ -200,7 +216,6 @@ class App extends Component {
                 email={this.state.email}
                 go_home={() => this.go_home()}
                 handleDateChange={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-                history={this.history}
                 last_update={this.state.last_update}
                 loading={this.state.loading}
                 nr_measurements={this.state.nr_measurements}

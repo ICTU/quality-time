@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+import history from 'history/browser';
 import { datamodel, report } from "./__fixtures__/fixtures";
 import { AppUI } from './AppUI';
 
@@ -15,13 +15,12 @@ jest.mock('./api/fetch_server_api', () => {
 });
 
 it('shows an error message when there are no reports', async () => {
-    await act(async () => render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />))
+    await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
 })
 
 it('handles sorting', async () => {
-    const history = createMemoryHistory()
-    await act(async () => render(<AppUI datamodel={datamodel} history={history} report_date={null} report_uuid="report_uuid" reports={[report]} reports_overview={{}} user="xxx" />))
+    await act(async () => render(<AppUI datamodel={datamodel} report_date={null} report_uuid="report_uuid" reports={[report]} reports_overview={{}} user="xxx" />))
     fireEvent.click(screen.getAllByText("Comment")[0])
     expect(history.location.search).toEqual("?sort_column=comment")
     fireEvent.click(screen.getAllByText("Status")[0])
@@ -50,21 +49,29 @@ beforeAll(() => {
     });
 });
 
+beforeEach(() => {
+    history.push("")
+})
+
+async function renderAppUI() {
+    return await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+}
+
 it('supports dark mode', async () => {
     matchMediaMatches = true
-    const { container } = await act(async () => render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
 })
 
 it('supports light mode', async () => {
     matchMediaMatches = false
-    const { container } = await act(async () => render(<AppUI history={{ location: { search: "" } }} report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
 })
 
 it('follows OS mode when switching to light mode', async () => {
     matchMediaMatches = true
-    const { container } = await act(async () => render(<AppUI history={{ location: { search: "" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
     act(() => {
         changeMode({matches: false})
@@ -74,7 +81,7 @@ it('follows OS mode when switching to light mode', async () => {
 
 it('follows OS mode when switching to dark mode', async () => {
     matchMediaMatches = false
-    const { container } = await act(async () => render(<AppUI history={{ location: { search: "" }, replace: () => { /*  Dummy implementation */ } }} report_uuid="" reports={[]} reports_overview={{}} />))
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
         changeMode({matches: true})
@@ -84,7 +91,8 @@ it('follows OS mode when switching to dark mode', async () => {
 
 it('ignores OS mode when mode explicitly set', async () => {
     matchMediaMatches = false
-    const { container } = await act(async () => render(<AppUI history={{ location: { search: "?ui_mode=light" }}} report_uuid="" reports={[]} reports_overview={{}} />))
+    history.push("?ui_mode=light")
+    const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
         changeMode({matches: true})

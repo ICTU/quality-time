@@ -1,6 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
+import history from 'history/browser';
 import App from './App';
 import * as fetch_server_api from './api/fetch_server_api';
 
@@ -24,10 +25,13 @@ beforeAll(() => {
     });
 });
 
-it('goes home', async () => {
+beforeEach(() => {
+    history.push("")
+})
+
+it('shows spinner', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<App />);
-    fireEvent.click(screen.getAllByText("Quality-time")[0])
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 });
 
@@ -68,14 +72,14 @@ it('handles a date change', async () => {
 
 it('reads the report date query parameter', () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    history.pushState({}, "", "/?report_date=2020-03-13")
+    history.push("/?report_date=2020-03-13")
     render(<App />);
     expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 });
 
 it('handles a date reset', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-    history.pushState({}, "", "/?report_date=2020-03-13")
+    history.push("/?report_date=2020-03-13")
     render(<App />);
     await act(async () => { fireEvent.click(screen.getByTestId("datepicker-clear-icon")) })
     expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)

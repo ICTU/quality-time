@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getUserPermissions, reportIsTagReport, userPrefersDarkMode, useURLSearchQuery } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -20,7 +20,6 @@ export function AppUI({
     email,
     go_home,
     handleDateChange,
-    history,
     last_update,
     loading,
     nr_measurements,
@@ -33,7 +32,7 @@ export function AppUI({
     set_user,
     user
 }) {
-    const [uiMode, setUIMode] = useURLSearchQuery(history, "ui_mode", "string", null);
+    const [uiMode, setUIMode] = useURLSearchQuery("ui_mode", "string", null);
     useEffect(() => {
         const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
         mediaQueryList.addEventListener("change", changeMode);
@@ -49,23 +48,23 @@ export function AppUI({
     }, [uiMode, setUIMode]);
 
     const user_permissions = getUserPermissions(
-        user, email, report_uuid.slice(0, 4) === "tag-", report_date, reports_overview.permissions || {}
+        user, email, reportIsTagReport(report_uuid), report_date, reports_overview.permissions || {}
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
-    const [dateInterval, setDateInterval] = useURLSearchQuery(history, "date_interval", "integer", 7);
-    const [dateOrder, setDateOrder] = useURLSearchQuery(history, "date_order", "string", "ascending");
-    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(history, "hidden_columns", "array");
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(history, "hide_metrics_not_requiring_action", "boolean", false);
-    const [nrDates, setNrDates] = useURLSearchQuery(history, "nr_dates", "integer", 1);
-    const [sortColumn, setSortColumn] = useURLSearchQuery(history, "sort_column", "string", null);
-    const [sortDirection, setSortDirection] = useURLSearchQuery(history, "sort_direction", "string", "ascending");
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(history, "tabs", "array");
-    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery(history, "show_issue_summary", "boolean", false);
-    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery(history, "show_issue_creation_date", "boolean", false);
-    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery(history, "show_issue_update_date", "boolean", false);
-    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery(history, "show_issue_due_date", "boolean", false);
-    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery(history, "show_issue_release", "boolean", false);
-    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery(history, "show_issue_sprint", "boolean", false);
+    const [dateInterval, setDateInterval] = useURLSearchQuery("date_interval", "integer", 7);
+    const [dateOrder, setDateOrder] = useURLSearchQuery("date_order", "string", "ascending");
+    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns", "array");
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action", "boolean", false);
+    const [nrDates, setNrDates] = useURLSearchQuery("nr_dates", "integer", 1);
+    const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column", "string", null);
+    const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction", "string", "ascending");
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery("tabs", "array");
+    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery("show_issue_summary", "boolean", false);
+    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery("show_issue_creation_date", "boolean", false);
+    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery("show_issue_update_date", "boolean", false);
+    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery("show_issue_due_date", "boolean", false);
+    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery("show_issue_release", "boolean", false);
+    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery("show_issue_sprint", "boolean", false);
     const issueSettings = {
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
@@ -148,7 +147,6 @@ export function AppUI({
                             handleSort={handleSort}
                             hiddenColumns={hiddenColumns}
                             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-                            history={history}
                             issueSettings={issueSettings}
                             loading={loading}
                             nrDates={nrDates}

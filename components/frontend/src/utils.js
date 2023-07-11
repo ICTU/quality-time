@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import history from 'history/browser';
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
 import { defaultDesiredResponseTimes } from './defaults';
@@ -261,9 +262,9 @@ export function days(timeInMs) {
     return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
-const registeredURLSearchQueryKeys = new Set(["report_date", "report_url"]);
+const registeredURLSearchQueryKeys = new Set(["report_date", "report_url", "hide_toasts"]);
 
-export function useURLSearchQuery(history, key, state_type, default_value) {
+export function useURLSearchQuery(key, state_type, default_value) {
     // state_type can either be "boolean", "integer", "string", or "array"
     const [state, setState] = useState(getState());
     registeredURLSearchQueryKeys.add(key);
@@ -311,7 +312,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
     return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
 }
 
-export function registeredURLSearchParams(history) {
+export function registeredURLSearchParams() {
     // Return registered URL search parameters only; to prevent CodeQL js/client-side-unvalidated-url-redirection
     let parsed = new URLSearchParams(history.location.search)
     for (let key of parsed.keys()) {
@@ -360,4 +361,8 @@ export function slugify(name) {
 export function sum(object) {
     const list = typeof object == Array ? object : Object.values(object)
     return list.reduce((a, b) => a + b, 0)
+}
+
+export function reportIsTagReport(report_uuid) {
+    return report_uuid.slice(0, 4) === "tag-"
 }
