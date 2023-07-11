@@ -31,6 +31,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - Add SonarQube Swift rules for complex units, methods with too many lines and functions with too many parameters. Closes [#6493](https://github.com/ICTU/quality-time/issues/6493).
 - Add a note to the [reference manual](https://quality-time.readthedocs.io/en/latest/reference.html#jenkins) about how to configure Jenkins private tokens in *Quality-time*. Closes [#6557](https://github.com/ICTU/quality-time/issues/6557).
 
+### Changed
+
+- Rename the 'will be fixed' status of measurement entities (violations, warnings, issues, etc.) to 'fixed'. Closes [#6556](https://github.com/ICTU/quality-time/issues/6556).
+
 ## v5.0.1 - 2023-06-26
 
 ### Deployment notes

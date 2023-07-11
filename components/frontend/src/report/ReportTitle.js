@@ -175,8 +175,8 @@ function ReactionTimes({ report, reload }) {
                                 label={
                                     <LabelWithHelp
                                         labelFor="desired-response-time-fixed"
-                                        label="Will be fixed"
-                                        help="Will be fixed means that an entity can be ignored because it will be fixed shortly and thus disappear."
+                                        label="Fixed"
+                                        help="Fixed means that an entity can be ignored because it has been fixed, or will be fixed shortly, and thus disappear."
                                     />
                                 }
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}

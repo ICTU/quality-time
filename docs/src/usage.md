@@ -351,9 +351,9 @@ An entity is a measured entity like for example one single failed job in GitLab 
 
 To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
 
-When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Entities marked as false positive, will be fixed, or won't fix are crossed out and subtracted from the measurement value. For example, if a source reports 14 security warnings and two are marked as false positive, the measurement value will be 12.
+When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Entities marked as fixed, false positive, or won't fix are crossed out and subtracted from the measurement value. For example, if a source reports 14 security warnings and two are marked as false positive, the measurement value will be 12.
 
-When setting the status of an entity, the end date of that status is also set. By default, the status end date is set to 180 days after the current date for confirmed, false positive, and won't fix. The status end date for will be fixed is 7 days as 'will be fixed' means the entity should disappear shortly. These defaults can be customized, see the [Desired reaction times](#desired-reaction-times) section below.
+When setting the status of an entity, the end date of that status is also set. By default, the status end date is set to 180 days after the current date for confirmed, false positive, and won't fix. The status end date for fixed is 7 days as 'fixed' means the entity should disappear shortly. These defaults can be customized, see the [Desired reaction times](#desired-reaction-times) section below.
 
 ## Customizing quality reports
 
@@ -389,7 +389,7 @@ When showing multiple dates in the metric table (this can be done via the Settin
 
 #### Desired time after which to review measurement entities
 
-Measurement entities (violations, issues, security warnings, etc.) can have one of five possible status: unconfirmed, confirmed, false positive, will be fixed, and won't fix. When setting the state of a measurement entity to a state other than unconfirmed, the end date of the status is also set. The reason is to encourage the status of measurement entities to be periodically reviewed. The default values can be changed.
+Measurement entities (violations, issues, security warnings, etc.) can have one of five possible status: unconfirmed, confirmed, fixed, false positive, and won't fix. When setting the state of a measurement entity to a state other than unconfirmed, the end date of the status is also set. The reason is to encourage the status of measurement entities to be periodically reviewed. The default values can be changed.
 
 ```{index} Trend table
 ```

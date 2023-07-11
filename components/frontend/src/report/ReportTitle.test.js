@@ -108,11 +108,11 @@ it('sets the false positive measurement entity status reaction time', async () =
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "false_positive": 70 }, reload);
 })
 
-it('sets the will be fixed measurement entity status reaction time', async () => {
+it('sets the fixed measurement entity status reaction time', async () => {
     render_report_title();
     fireEvent.click(screen.getByTitle(/expand/));
     await act(async () => { fireEvent.click(screen.getByText(/reaction times/)) });
-    await userEvent.type(screen.getByLabelText(/Will be fixed/), '80{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
+    await userEvent.type(screen.getByLabelText(/Fixed/), '80{Enter}}', { initialSelectionStart: 0, initialSelectionEnd: 3 });
     expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "desired_response_times", { "fixed": 80 }, reload);
 })
 
