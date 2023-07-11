@@ -15,8 +15,17 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            datamodel: {}, reports: [], report_uuid: '', report_date: null, reports_overview: {},
-            nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
+            datamodel: {},
+            reports: [],
+            report_uuid: '',
+            report_date: null,
+            reports_overview: {},
+            nrMeasurements: 0,
+            nrMeasurementsStreamConnected: true,  // Assume initial connection will be successful
+            loading: true,
+            user: null,
+            email: null,
+            last_update: new Date()
         };
         history.listen(({ location, action }) => this.on_history({ location, action }));
     }
@@ -40,7 +49,7 @@ class App extends Component {
         }
         this.login_forwardauth();
         this.initUserSession()
-        this.connect_to_nr_measurements_event_source();
+        this.connectToNrMeasurementsEventSource();
         this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload());
     }
 
@@ -54,7 +63,7 @@ class App extends Component {
             this.changed_fields = json.availability ? json.availability.filter((url_key) => url_key.status_code !== 200) : null;
             this.check_session(json)
         }
-        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
+        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.");
         this.loadAndSetState(show_error)
     }
 
@@ -134,20 +143,28 @@ class App extends Component {
         history.push(target + (search.length > 0 ? "?" + search : ""));
     }
 
-    connect_to_nr_measurements_event_source() {
+    connectToNrMeasurementsEventSource() {
         this.source = new EventSource(nr_measurements_api);
         let self = this;
-        this.source.addEventListener('init', function (e) {
-            self.setState({ nr_measurements: Number(e.data) });
-        }, false);
-        this.source.addEventListener('delta', function (e) {
-            self.setState({ nr_measurements: Number(e.data) }, () => self.reload());
-        }, false);
-        this.source.addEventListener('error', function (e) {
-            if (e.readyState === EventSource.CLOSED || e.readyState === EventSource.OPEN) {
-                self.setState({ nr_measurements: 0 });
+        this.source.addEventListener("init", (message) => {
+            const newNrMeasurements = Number(message.data);
+            if (!self.state.nrMeasurementsStreamConnected) {
+                showMessage("success", "Connected to server", "Successfully reconnected to server.")
+                self.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () => self.reload());
+            } else {
+                self.setState({ nrMeasurements: newNrMeasurements });
             }
-        }, false);
+        });
+        this.source.addEventListener("delta", (message) => {
+            const newNrMeasurements = Number(message.data);
+            if (newNrMeasurements !== self.state.nrMeasurements) {
+                self.setState({ nrMeasurements: newNrMeasurements }, () => self.reload());
+            }
+        });
+        this.source.addEventListener("error", () => {
+            showMessage("error", "Server unreachable", "Trying to reconnect to server...")
+            self.setState({ nrMeasurementsStreamConnected: false })
+        });
     }
 
     login_forwardauth() {
@@ -218,7 +235,7 @@ class App extends Component {
                 handleDateChange={(e, { name, value }) => this.handleDateChange(e, { name, value })}
                 last_update={this.state.last_update}
                 loading={this.state.loading}
-                nr_measurements={this.state.nr_measurements}
+                nrMeasurements={this.state.nrMeasurements}
                 open_report={(e, r) => this.open_report(e, r)}
                 reload={(json) => this.reload(json)}
                 report_date={this.state.report_date}

@@ -60,7 +60,7 @@ def set_entity_attribute(
     return insert_new_measurement(database, new_measurement)
 
 
-def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
+def sse_pack(event_id: int, event: str, data: int, retry: str = "20000") -> str:
     """Pack data in Server-Sent Events (SSE) format."""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 

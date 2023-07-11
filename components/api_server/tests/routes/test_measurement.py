@@ -205,9 +205,9 @@ class StreamNrMeasurementsTest(DatabaseTestCase):
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements(self.database)
             try:
-                self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
-                self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
-                self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
+                self.assertEqual("retry: 20000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
+                self.assertEqual("retry: 20000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
+                self.assertEqual("retry: 20000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
             except StopIteration:  # pragma: no cover
                 # DeepSource says: calls to next() should be inside try-except block.
                 self.fail("Unexpected StopIteration")
