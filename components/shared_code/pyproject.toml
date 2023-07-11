@@ -22,7 +22,7 @@ dev = [
 ]
 tools = [
     "bandit==1.7.5",
-    "black==23.3.0",
+    "black==23.7.0",
     "mypy==1.4.1",
     "pip-audit==2.6.0",
     "pydantic==1.10.9",
