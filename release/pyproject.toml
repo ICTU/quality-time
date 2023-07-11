@@ -4,7 +4,7 @@ version = "5.0.1"
 dependencies = [
     "black==23.3.0",  # The pre-commit hook (../githooks/pre-commit) calls black
     "bump2version==1.0.1",
-    "gitpython==3.1.31",
+    "gitpython==3.1.32",
 ]
 
 [project.optional-dependencies]
