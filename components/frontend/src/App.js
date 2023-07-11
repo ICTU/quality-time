@@ -179,7 +179,7 @@ class App extends Component {
             showMessage(
                 "info",
                 "Not logged in",
-                "You are not logged in. Editing is not possible until you do."
+                "You are not logged in. Editing is not possible until you are."
             )
         }
     }

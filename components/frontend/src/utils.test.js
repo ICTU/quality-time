@@ -232,7 +232,6 @@ it('removes the string value when set to the default value', () => {
 })
 
 it('returns registered URL search parameters only', () => {
-    //const history = createMemoryHistory({ initialEntries: ['?unregistered_key=value&report_date=2022-02-11'] })
     history.push('?unregistered_key=value&report_date=2022-02-11')
     const expected = new URLSearchParams("?report_date=2022-02-11")
     expect(registeredURLSearchParams().toString()).toEqual(expected.toString())
