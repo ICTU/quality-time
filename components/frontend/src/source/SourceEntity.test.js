@@ -30,7 +30,7 @@ it('renders the unconfirmed status', () => {
 
 it('renders the fixed status', () => {
     renderSourceEntity({ status: "fixed" });
-    expect(screen.getAllByText(/Will be fixed/).length).toBe(1);
+    expect(screen.getAllByText(/Fixed/).length).toBe(1);
 })
 
 it('renders the status end date', () => {
@@ -51,5 +51,5 @@ it('renders the status and rationale past end date', () => {
 
 it('renders nothing if the status is to be ignored', () => {
     renderSourceEntity({ status: "fixed", hide_ignored_entities: true });
-    expect(screen.queryAllByText(/Will be fixed/).length).toBe(0);
+    expect(screen.queryAllByText(/Fixed/).length).toBe(0);
 })
