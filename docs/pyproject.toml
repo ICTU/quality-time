@@ -3,7 +3,7 @@ name = "docs"
 version = "5.0.1"
 dependencies = [
     "furo==2023.5.20",
-    "gitpython==3.1.31",
+    "gitpython==3.1.32",
     "myst-parser==2.0.0",
     "Sphinx==6.2.1",
     "sphinx-copybutton==0.5.2",
