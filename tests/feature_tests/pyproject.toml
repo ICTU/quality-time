@@ -4,7 +4,7 @@ version = "5.0.1"
 dependencies = [
     "asserts==0.12.0",
     "behave==1.2.6",
-    "gevent==22.10.2",
+    "gevent==23.7.0",
     "pymongo==4.4.0",
     "requests==2.31.0",
     "sseclient==0.0.27"
