@@ -1,6 +1,6 @@
 """Unit tests for the measurements collection."""
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import mongomock
 
@@ -9,11 +9,13 @@ from shared.database.reports import get_reports
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
+from shared.utils.functions import iso_timestamp
 
 from tests.fixtures import METRIC_ID, METRIC_ID2, create_report
 from tests.shared.base import DataModelTestCase
 
 
+@patch("shared.model.measurement.iso_timestamp", Mock(return_value=iso_timestamp()))
 class MeasurementsTest(DataModelTestCase):
     """Unit test for getting and inserting measurements."""
 
