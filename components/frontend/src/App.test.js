@@ -71,8 +71,16 @@ it('resets the user when the user clicks logout', async () => {
 it('handles a date change', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     render(<App />);
-    await userEvent.type(screen.getByTestId("datepicker-input"), "2020-03-13")
+    await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "2020-03-13")
     expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
+});
+
+it('handles a date change between two dates in the past', async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    history.push("/?report_date=2022-03-13")
+    render(<App />);
+    await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "{Backspace}4")
+    expect(screen.getAllByDisplayValue("2022-03-14").length).toBe(1)
 });
 
 it('reads the report date query parameter', () => {
@@ -86,7 +94,7 @@ it('handles a date reset', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     history.push("/?report_date=2020-03-13")
     render(<App />);
-    await act(async () => { fireEvent.click(screen.getByTestId("datepicker-clear-icon")) })
+    await act(async () => { fireEvent.click(screen.getByRole("button", {"name": "Close"})) })
     expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)
 });
 

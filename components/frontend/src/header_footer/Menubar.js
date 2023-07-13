@@ -3,8 +3,8 @@ import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from 'semantic-u
 import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
-import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
+import { DatePicker } from '../widgets/DatePicker';
 import './Menubar.css';
 
 function Login({ set_user }) {
@@ -89,7 +89,7 @@ export function Menubar({
                         disabled={atHome}
                         trigger={
                             <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
-                                <Menu.Item header onClick={atHome ? null : () => { setPanelVisible(false); go_home() } }>
+                                <Menu.Item header onClick={atHome ? null : () => { setPanelVisible(false); go_home() }}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
@@ -133,9 +133,16 @@ export function Menubar({
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" position="left center" trigger={
                         <Menu.Item>
-                            <DatePicker onDate={onDate} value={report_date} label="Report date" />
-                        </Menu.Item>}
-                    />
+                            <Form>
+                                <DatePicker
+                                    isClearable={true}
+                                    maxDate={new Date()}
+                                    onChange={onDate}
+                                    selected={report_date}
+                                />
+                            </Form>
+                        </Menu.Item>
+                    } />
                     <Menu.Item>
                         {(user !== null) ? <Logout email={email} user={user} set_user={set_user} /> : <Login set_user={set_user} />}
                     </Menu.Item>

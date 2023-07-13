@@ -167,7 +167,7 @@ export function getStatusName(status) {
 
 export function getMetricTags(metric) {
     const tags = metric.tags ?? [];
-    tags.sort();
+    tags.sort((t1, t2) => t1.localeCompare(t2));
     return tags
 }
 
@@ -179,7 +179,7 @@ export function getReportTags(report) {
         })
     })
     const sortedTags = Array.from(tags);
-    sortedTags.sort();
+    sortedTags.sort((t1, t2) => t1.localeCompare(t2));
     return sortedTags
 }
 
@@ -189,7 +189,7 @@ export function getReportsTags(reports) {
         getReportTags(report).forEach((tag) => tags.add(tag))
     });
     const sortedTags = Array.from(tags);
-    sortedTags.sort();
+    sortedTags.sort((t1, t2) => t1.localeCompare(t2));
     return sortedTags
 }
 
@@ -336,6 +336,11 @@ export function isValidDate_YYYYMMDD(string) {
         return !isNaN(milliseconds_since_epoch)
     }
     return false
+}
+
+export function toISODateStringInCurrentTZ(date) {
+    // Return an ISO date string without changing the timezone to UTC as Date.toISOString does
+    return `${String(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
 export function getUserPermissions(username, email, current_report_is_tag_report, report_date, permissions) {

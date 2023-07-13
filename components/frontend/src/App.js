@@ -6,7 +6,7 @@ import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, registeredURLSearchParams, reportIsTagReport } from './utils'
+import { isValidDate_YYYYMMDD, registeredURLSearchParams, reportIsTagReport, toISODateStringInCurrentTZ } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -99,23 +99,27 @@ class App extends Component {
         }
     }
 
-    handleDateChange(_event, { name, value }) {
+    handleDateChange(date) {
         let parsed = registeredURLSearchParams();
-        if (!!value) {
-            parsed.set("report_date", value.toISOString().split("T")[0]);
+        if (date && toISODateStringInCurrentTZ(date) < toISODateStringInCurrentTZ(new Date())) {
+            // We're time traveling, set the report_date query parameter
+            parsed.set("report_date", toISODateStringInCurrentTZ(date));
+            if (!this.state.report_date) {
+                // We're time traveling from the present, warn the user
+                showMessage(
+                    "info",
+                    "Historic information is read-only",
+                    "You are viewing historic information. Editing is not possible."
+                )
+            }
         } else {
+            // We're (back) in the present
             parsed.delete("report_date")
+            date = null
         }
         const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
         history.replace({ search: search.length > 0 ? "?" + search : "" })
-        if (value && value !== this.state.report_date) {
-            showMessage(
-                "info",
-                "Historic information is read-only",
-                "You are viewing historic information. Editing is not possible."
-            )
-        }
-        this.setState({ report_date: value, loading: true }, () => this.reload())
+        this.setState({ report_date: date, loading: true }, () => this.reload())
     }
 
     go_home() {
@@ -232,7 +236,7 @@ class App extends Component {
                 datamodel={this.state.datamodel}
                 email={this.state.email}
                 go_home={() => this.go_home()}
-                handleDateChange={(e, { name, value }) => this.handleDateChange(e, { name, value })}
+                handleDateChange={(date) => this.handleDateChange(date)}
                 last_update={this.state.last_update}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}

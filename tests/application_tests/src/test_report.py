@@ -56,7 +56,7 @@ class OpenReportTest(unittest.TestCase):
     def login(self):
         """Login a user."""
         self.driver.find_element(By.XPATH, '//button[text()="Login"]').click()
-        login_form = self.driver.find_element(By.CLASS_NAME, "form")
+        login_form = self.driver.find_element(By.CLASS_NAME, "modal")
         login_form.find_element(By.NAME, "username").send_keys("jadoe")
         login_form.find_element(By.NAME, "password").send_keys("secret")
         login_form.find_element(By.CLASS_NAME, "button").click()

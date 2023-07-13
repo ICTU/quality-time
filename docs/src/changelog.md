@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When the frontend cannot reach the server, notify the user of the problem. When the server is reachable, notify the user as well. Fixes [#3580](https://github.com/ICTU/quality-time/issues/3580).
 - In the login dialog, don't tell the user credentials are invalid when in fact the server couldn't be reached. Fixes [#4704](https://github.com/ICTU/quality-time/issues/4704).
 - When changing the metric type, tags in the tags field would not be updated immediately. Fixes [#5116](https://github.com/ICTU/quality-time/issues/5116).
+- Use another date picker widget with better usability. Fixes [#5446](https://github.com/ICTU/quality-time/issues/5446).
 - Show warning message when the user session expires. Fixes [#5327](https://github.com/ICTU/quality-time/issues/5327).
 - When accessing Harbor with invalid credentials, Harbor returns data from public projects only. To prevent the invalid credentials from going unnoticed, explicitly check Harbor credentials before retrieving data. Fixes [#6484](https://github.com/ICTU/quality-time/issues/6485).
 - Fix the landing URL for Harbor artifacts. Fixes [#6485](https://github.com/ICTU/quality-time/issues/6485).
