@@ -1,0 +1,3 @@
+.react-datepicker__close-icon::after {
+    background-color: grey !important;
+}
