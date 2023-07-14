@@ -7,7 +7,7 @@ dependencies = [
     "gevent==23.7.0",
     "ldap3==2.9.1",
     "lxml==4.9.3",
-    "pymongo==4.4.0",
+    "pymongo==4.4.1",
     "requests==2.31.0"
 ]
 
