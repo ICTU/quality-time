@@ -82,9 +82,9 @@ cffi==1.15.1 \
     --hash=sha256:fa6693661a4c91757f4412306191b6dc88c1703f780c8234035eac011922bc01 \
     --hash=sha256:fcd131dd944808b5bdb38e6f5b53013c5aa4f334c5cad0c72742f6eba4b73db0
     # via cryptography
-click==8.1.4 \
-    --hash=sha256:2739815aaa5d2c986a88f1e9230c55e17f0caad3d958a5e13ad0797c166db9e3 \
-    --hash=sha256:b97d0c74955da062a7d4ef92fadb583806a585b2ea81958a81bd72726cbb8e37
+click==8.1.5 \
+    --hash=sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367 \
+    --hash=sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548
     # via
     #   pip-tools
     #   userpath
