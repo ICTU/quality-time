@@ -86,7 +86,7 @@ class Collector:
         metric: dict,
         next_fetch: datetime,
     ) -> None:
-        """Collect measurements for the metric and post it to the server."""
+        """Collect measurements for the metric and add them to the database."""
         self.__previous_metrics[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
         metric_collector_class = MetricCollector.get_subclass(metric["type"])

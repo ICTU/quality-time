@@ -15,8 +15,9 @@ class TestMeasurements(unittest.TestCase):
     def setUp(self) -> None:
         """Set up fixtures."""
         self.measurement_data = {
-            "start": "0",
-            "end": "1",
+            "start": "2023-07-19T16:50:47+00:000",
+            "end": "2023-07-19T16:50:47+00:001",
+            "has_error": False,
             "sources": [
                 {
                     "type": "sonarqube",
@@ -27,6 +28,7 @@ class TestMeasurements(unittest.TestCase):
                     "connection_error": None,
                     "value": "10",
                     "total": "100",
+                    "entities": [{"key": "key", "first_seen": "2023-07-18"}],
                 },
             ],
             "metric_uuid": METRIC_ID,
@@ -74,3 +76,14 @@ class TestMeasurements(unittest.TestCase):
         create_measurement(self.database, self.measurement_data)
         create_measurement(self.database, self.measurement_data)
         self.assertEqual(1, len(list(self.database.measurements.find())))
+
+    def test_copy_first_seen_timestamps(self):
+        """Test that the first seen timestamps are copied from the latest successful measurement."""
+        self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID))
+        create_measurement(self.database, self.measurement_data)
+        self.measurement_data["sources"][0]["entities"][0]["first_seen"] = "2023-07-19"
+        create_measurement(self.database, self.measurement_data)
+        self.assertEqual(
+            "2023-07-18",
+            next(self.database.measurements.find())["sources"][0]["entities"][0]["first_seen"],
+        )

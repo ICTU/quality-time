@@ -3,7 +3,9 @@ import { Table } from 'semantic-ui-react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { SourceEntity } from './SourceEntity';
 
-function renderSourceEntity({ status = "unconfirmed", status_end_date = "", rationale = "", hide_ignored_entities = false }) {
+function renderSourceEntity(
+    { status = "unconfirmed", status_end_date = "", rationale = "", hide_ignored_entities = false, first_seen = null }
+) {
     return render(
         <Table>
             <Table.Body>
@@ -11,8 +13,8 @@ function renderSourceEntity({ status = "unconfirmed", status_end_date = "", rati
                     status={status}
                     status_end_date={status_end_date}
                     hide_ignored_entities={hide_ignored_entities}
-                    entity_attributes={[{key: "attr1"}, {key: "attr2", color: {bad: "warning"}}]}
-                    entity={{ attr1: "good", attr2: "bad" }}
+                    entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
+                    entity={{ attr1: "good", attr2: "bad", first_seen: first_seen }}
                     entity_name="entity"
                     rationale={rationale}
                 />
@@ -22,7 +24,7 @@ function renderSourceEntity({ status = "unconfirmed", status_end_date = "", rati
 }
 
 it('renders the unconfirmed status', () => {
-    renderSourceEntity({ });
+    renderSourceEntity({});
     fireEvent.click(screen.getByRole("button"))
     expect(screen.getAllByText(/Unconfirmed/).length).toBe(1);
     expect(screen.getByText(/Unconfirmed/).closest("tr").className).toContain("warning_status")
@@ -41,6 +43,11 @@ it('renders the status end date', () => {
 it('renders the status rationale', () => {
     renderSourceEntity({ status: "fixed", rationale: "Why?" });
     expect(screen.getAllByText(/Why\?/).length).toBe(1);
+})
+
+it('renders the first seen datetime', () => {
+    renderSourceEntity({ first_seen: "2023-07-17" });
+    expect(screen.getAllByText(/ago/).length).toBe(1);
 })
 
 it('renders the status and rationale past end date', () => {

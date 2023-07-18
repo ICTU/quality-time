@@ -7,7 +7,7 @@
 
 mkdir -p build
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
-docker compose build --progress quiet database api_server renderer frontend www
+docker compose --progress quiet build database api_server renderer frontend www
 docker compose up --detach database ldap
 cd components/api_server || exit
 python3 -m venv venv

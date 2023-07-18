@@ -248,6 +248,13 @@ class Measurement(dict):
         """Return the start timestamp of the current status, if any."""
         return cast(str, self.get(self.metric.scale(), {}).get("status_start"))
 
+    def copy_entity_first_seen_timestamps(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
+        """Copy the first seen timestamps of the measurement's entities to this measurement."""
+        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
+        for new_source in self.sources():
+            if old_source := old_sources.get(new_source["source_uuid"]):
+                new_source.copy_entity_first_seen_timestamps(old_source)
+
     def copy_entity_user_data(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
         """Copy the entity user data from the measurement to this measurement."""
         old_sources = {source["source_uuid"]: source for source in measurement.sources()}

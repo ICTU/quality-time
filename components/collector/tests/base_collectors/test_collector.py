@@ -17,6 +17,7 @@ from base_collectors import Collector, config
 from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 
+@patch("model.entity.iso_timestamp", new=Mock(return_value="2023-01-01"))
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
@@ -67,7 +68,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         connection_error = kwargs.get("connection_error")
         entities = kwargs.get(
             "entities",
-            [{"name": "a dependency", "key": "a dependency@?", "version": "unknown", "latest": "unknown"}],
+            [
+                {
+                    "name": "a dependency",
+                    "key": "a dependency@?",
+                    "version": "unknown",
+                    "latest": "unknown",
+                    "first_seen": "2023-01-01",
+                },
+            ],
         )
         return {
             "api_url": str(kwargs.get("api_url", self.url)),

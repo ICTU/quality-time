@@ -46,3 +46,13 @@ class SourceTest(unittest.TestCase):
         """Test that we get the expected type."""
         source = Source(SOURCE_ID, metric=None, type="test")
         self.assertEqual(source.type, "test")
+
+    def test_copy_first_seen_timestamps(self):
+        """Test that the first seen timestamps can be copied."""
+        entities1 = [{"key": "key_1"}, {"key": "key_2", "first_seen": "2023-07-17"}]
+        source1 = Source(SOURCE_ID, metric=None, entities=entities1)
+        entities2 = [{"key": "key_1", "first_seen": "2023-07-18"}, {"key": "key_2", "first_seen": "2023-07-19"}]
+        source2 = Source(SOURCE_ID, metric=None, entities=entities2)
+        source2.copy_entity_first_seen_timestamps(source1)
+        self.assertEqual("2023-07-18", source2["entities"][0]["first_seen"])
+        self.assertEqual("2023-07-17", source2["entities"][1]["first_seen"])
