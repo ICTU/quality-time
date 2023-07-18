@@ -24,7 +24,8 @@ def create_measurement(database: Database, measurement_data: dict) -> None:
     if not measurement.sources_exist():
         return  # Measurement has sources that the metric does not have, must've been deleted while being measured
     if latest:
-        latest_successful = latest_successful_measurement(database, metric)
+        if latest_successful := latest_successful_measurement(database, metric):
+            measurement.copy_entity_first_seen_timestamps(latest_successful)
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
         measurement.update_measurement()  # Update the scales so we can compare the two measurements
         if measurement.equals(latest):

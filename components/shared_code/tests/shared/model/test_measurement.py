@@ -250,6 +250,37 @@ class MeasurementTest(MeasurementTestCase):
             if source["source_uuid"] == SOURCE_ID:
                 self.assertTrue("entity_user_data" in source)
 
+    def test_copy_first_seen_timestamps(self):
+        """Test that the first seen timestamps can be copied."""
+        measurement_1 = Measurement(
+            self.metric(),
+            sources=[
+                {
+                    "source_uuid": SOURCE_ID,
+                    "type": "azure_devops",
+                    "entities": [{"key": "key1", "first_seen": "2023-07-15"}],
+                },
+            ],
+        )
+        measurement_2 = Measurement(
+            self.metric(),
+            sources=[
+                {
+                    "source_uuid": SOURCE_ID,
+                    "type": "azure_devops",
+                    "entities": [{"key": "key1", "first_seen": "2023-07-16"}],
+                },
+                {
+                    "source_uuid": SOURCE_ID2,
+                    "type": "azure_devops",
+                    "entities": [{"key": "key1", "first_seen": "2023-07-17"}],
+                },
+            ],
+        )
+        measurement_2.copy_entity_first_seen_timestamps(measurement_1)
+        self.assertEqual("2023-07-15", measurement_2["sources"][0]["entities"][0]["first_seen"])
+        self.assertEqual("2023-07-17", measurement_2["sources"][1]["entities"][0]["first_seen"])
+
     def test_status_missing(self):
         """Test the measurement status is missing if the measurement has no sources."""
         measurement = Measurement(self.metric())

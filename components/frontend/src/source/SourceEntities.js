@@ -61,6 +61,12 @@ export function SourceEntities({ metric, metric_uuid, report, source, reload }) 
             <Table.HeaderCell sorted={sorted("rationale")} onClick={() => sort("rationale")}>
                 Status rationale
             </Table.HeaderCell>
+            <Table.HeaderCell
+                onClick={() => sort("first_seen", "datetime")}
+                sorted={sorted("first_seen")}
+            >
+                {capitalize(entity_name)} first seen
+            </Table.HeaderCell>
             {entity_attributes.map((entity_attribute) =>
                 <Table.HeaderCell
                     key={entity_attribute.key}

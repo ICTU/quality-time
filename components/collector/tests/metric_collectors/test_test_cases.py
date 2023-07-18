@@ -88,6 +88,12 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         with patch.object(JiraIssues, "max_results", 500):
             return await test_cases_collector_class(self.session, metric).collect()
 
+    def assert_equal_entities(self, expected_entities, actual_entities):
+        """Assert that the expected entities equal the actual entities, ignoring the first seen timestamp."""
+        for expected_entity, actual_entity in zip(expected_entities, actual_entities, strict=True):
+            expected_entity["first_seen"] = actual_entity["first_seen"] = "ignore"
+            self.assertDictEqual(expected_entity, actual_entity)
+
     async def test_missing_sources(self):
         """Test missing sources."""
         self.assertEqual(None, await self.collect({}))
@@ -95,7 +101,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
     async def test_no_test_report(self):
         """Test missing test report."""
         measurement = await self.collect({"jira": {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}})
-        self.assertDictEqual(self.jira_entity(), measurement.sources[0].entities[0])
+        self.assert_equal_entities([self.jira_entity()], measurement.sources[0].entities[:1])
         self.assertEqual("2", measurement.sources[0].value)
 
     async def test_matching_test_case_testng(self):
@@ -104,7 +110,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         testng = {"type": "testng", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "testng": testng})
-        self.assertListEqual(
+        self.assert_equal_entities(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")],
             measurement.sources[0].entities,
         )
@@ -117,7 +123,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         junit = {"type": "junit", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "junit": junit})
-        self.assertListEqual(
+        self.assert_equal_entities(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")],
             measurement.sources[0].entities,
         )
@@ -130,7 +136,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         robot_framework = {"type": "robot_framework", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "robot_framework": robot_framework})
-        self.assertListEqual(
+        self.assert_equal_entities(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")],
             measurement.sources[0].entities,
         )
@@ -155,7 +161,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         jenkins_test_report = {"type": "jenkins_test_report", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "jenkins_test_report": jenkins_test_report})
-        self.assertListEqual(
+        self.assert_equal_entities(
             [self.jira_entity(test_result="failed"), self.jira_entity("key-2")],
             measurement.sources[0].entities,
         )
@@ -168,6 +174,6 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql", "test_result": ["untested"]}}
         testng = {"type": "testng", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "testng": testng})
-        self.assertListEqual([self.jira_entity("key-2")], measurement.sources[0].entities)
+        self.assert_equal_entities([self.jira_entity("key-2")], measurement.sources[0].entities)
         self.assertEqual("1", measurement.sources[0].value)
         self.assertEqual("0", measurement.sources[1].value)

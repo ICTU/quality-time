@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
+import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 import { source_entity_status_name } from './source_entity_status';
@@ -10,7 +11,7 @@ import "./SourceEntity.css";
 function entityCanBeIgnored(status, status_end_date) {
     const statusEndDate = new Date(status_end_date);
     const now = new Date();
-    if (statusEndDate < now) { return false}
+    if (statusEndDate < now) { return false }
     return ["wont_fix", "fixed", "false_positive"].includes(status);
 }
 
@@ -41,22 +42,20 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
         status={status}
         status_end_date={status_end_date}
     />;
-    const entityCells = <>
-        <Table.Cell style={style}>{source_entity_status_name[status]}</Table.Cell>
-        <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
-        <Table.Cell style={style}>{status === "unconfirmed" ? "" : rationale}</Table.Cell>
-        {entity_attributes.map((entity_attribute, col_index) =>
-            <Table.Cell
-                key={col_index}
-                style={style}
-                textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
-            >
-                <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />
-            </Table.Cell>)}
-    </>;
     return (
         <TableRowWithDetails className={statusClassName} details={details} key={entity.key} expanded={expanded} onExpand={setExpanded}>
-            {entityCells}
+            <Table.Cell style={style}>{source_entity_status_name[status]}</Table.Cell>
+            <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
+            <Table.Cell style={style}>{status === "unconfirmed" ? "" : rationale}</Table.Cell>
+            <Table.Cell style={style}>{entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}</Table.Cell>
+            {entity_attributes.map((entity_attribute) =>
+                <Table.Cell
+                    key={entity_attribute.key}
+                    style={style}
+                    textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
+                >
+                    <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />
+                </Table.Cell>)}
         </TableRowWithDetails>
     );
 }

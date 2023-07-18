@@ -41,6 +41,14 @@ class Source(dict):
         """Return the measurement value of the source."""
         return cast(str | None, self["value"])
 
+    def copy_entity_first_seen_timestamps(self, source: Source) -> None:  # pragma: no feature-test-cover
+        """Copy the first seen timestamps of the source's entities to this source."""
+        entities = {entity["key"]: entity for entity in self.get("entities", [])}
+        for old_entity in source.get("entities", []):
+            key = old_entity["key"]
+            if key in entities and (first_seen := old_entity.get("first_seen")):
+                entities[key]["first_seen"] = first_seen
+
     def copy_entity_user_data(self, source: Source) -> None:  # pragma: no feature-test-cover
         """Copy the user entity data of the source to this source."""
         new_entity_keys = {entity["key"] for entity in self.get("entities", [])}

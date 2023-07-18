@@ -40,6 +40,7 @@ const source = {
     entities: [
         {
             key: "1",
+            first_seen: "2023-07-01",
             integer: "1",
             float: "0.3",
             text: "CCC",
@@ -50,6 +51,7 @@ const source = {
         },
         {
             key: "2",
+            first_seen: "2023-07-03",
             integer: "3",
             float: "0.2",
             text: "BBB",
@@ -60,6 +62,7 @@ const source = {
         },
         {
             key: "3",
+            first_seen: "2023-07-02",
             integer: "2",
             float: "0.1",
             text: "AAA",
@@ -103,6 +106,15 @@ it('sorts the entities by status rationale', async () => {
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status rationale/))
     assertOrder(["A", "B", "C"])
+})
+
+it('sorts the entities by first seen date', async () => {
+    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/first seen/))
+    assertOrder(["C", "A", "B"])
+    await userEvent.click(screen.getByText(/first seen/))
+    assertOrder(["B", "A", "C"])
 })
 
 it('sorts the entities by integer', async () => {

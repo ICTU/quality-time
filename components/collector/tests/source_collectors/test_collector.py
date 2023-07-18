@@ -80,7 +80,7 @@ class CollectorTest(SourceCollectorTestCase):
         self.assert_measurement(response, value="0")
 
     async def test_including_entities(self):
-        """Test that only entities marked for inclusion, are included."""
+        """Test that only entities marked for inclusion are included."""
 
         class ThreeParsedEntities(SourceCollector):
             """Fake collector returning parsed entities."""
@@ -89,11 +89,11 @@ class CollectorTest(SourceCollectorTestCase):
                 """Return three parsed entities."""
                 return Entities([Entity(str(x)) for x in range(3)])
 
-        with patch("base_collectors.SourceCollector._include_entity", side_effect=[True, False, True]):
-            async with aiohttp.ClientSession() as session:
-                collector = ThreeParsedEntities(session, {})
-                res = await collector._parse_source_responses(SourceResponses())  # noqa: SLF001
+            def _include_entity(self, entity: Entity) -> bool:
+                """Return whether to include the entity in the measurement."""
+                return bool(entity["key"] != "1")
 
-        self.assertEqual(len(res.entities), 2)
-        self.assertNotIn({"key": "1"}, res.entities)
-        self.assertIn({"key": "2"}, res.entities)
+        async with aiohttp.ClientSession() as session:
+            collector = ThreeParsedEntities(session, {})
+            measurement = await collector._parse_source_responses(SourceResponses())  # noqa: SLF001
+        self.assertEqual(["0", "2"], [entity["key"] for entity in measurement.entities])
