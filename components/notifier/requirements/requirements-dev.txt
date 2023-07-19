@@ -196,9 +196,9 @@ charset-normalizer==3.2.0 \
     # via
     #   aiohttp
     #   requests
-click==8.1.5 \
-    --hash=sha256:4be4b1af8d665c6d942909916d31a213a106800c47d0eeba73d34da3cbc11367 \
-    --hash=sha256:e576aa487d679441d7d30abb87e1b43d24fc53bffb8758443b1a9e1cee504548
+click==8.1.6 \
+    --hash=sha256:48ee849951919527a045bfe3bf7baa8a959c423134e1a5b98c05c20ba75a1cbd \
+    --hash=sha256:fa244bb30b3b5ee2cae3da8f55c9e5e0c0e86093306301fb418eb9dc40fbded5
     # via
     #   pip-tools
     #   userpath
@@ -590,9 +590,9 @@ urllib3==2.0.3 \
     --hash=sha256:48e7fafa40319d358848e1bc6809b208340fafe2096f1725d05d67443d0483d1 \
     --hash=sha256:bee28b5e56addb8226c96f7f13ac28cb4c301dd5ea8a6ca179c0b9835e032825
     # via requests
-userpath==1.8.0 \
-    --hash=sha256:04233d2fcfe5cff911c1e4fb7189755640e1524ff87a4b82ab9d6b875fee5787 \
-    --hash=sha256:f133b534a8c0b73511fc6fa40be68f070d9474de1b5aada9cded58cdf23fb557
+userpath==1.9.0 \
+    --hash=sha256:8069f754d31edfbdb2c3b2e9abada057ce7518290838dac35d1c8cee1b4cc7b0 \
+    --hash=sha256:85e3274543174477c62d5701ed43a3ef1051824a9dd776968adc411e58640dd1
     # via pipx
 wheel==0.40.0 \
     --hash=sha256:cd1196f3faee2b31968d626e1731c94f99cbdb67cf5a46e4f5656cbee7738873 \
