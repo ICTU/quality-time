@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import history from 'history/browser';
 import App from './App';
+import * as auth from './api/auth';
 import * as fetch_server_api from './api/fetch_server_api';
 import * as toast from './widgets/toast';
 
@@ -62,6 +63,7 @@ it('resets the user when the session is expired on mount', () => {
 
 it('resets the user when the user clicks logout', async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z");
+    auth.logout = jest.fn().mockResolvedValue({ ok: true });
     render(<App />);
     await act(async () => { fireEvent.click(screen.getByText(/admin/)) })
     await act(async () => { fireEvent.click(screen.getByText(/Logout/)) })
