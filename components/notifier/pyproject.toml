@@ -2,7 +2,7 @@
 name = "notifier"
 version = "5.0.1"
 dependencies = [
-    "aiohttp==3.8.4",
+    "aiohttp==3.8.5",
     "pymsteams==0.2.2"
 ]
 
