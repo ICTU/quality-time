@@ -13,7 +13,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.2.7",
-    "pip==23.2",
+    "pip==23.2.1",
     "pipx==1.2.0",
     "pip-tools==7.1.0",  # To add hashes to requirements
     "types-requests==2.31.0.1",
