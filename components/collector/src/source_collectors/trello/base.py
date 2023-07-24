@@ -2,6 +2,8 @@
 
 from abc import ABC
 
+from shared.utils.functions import first
+
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import SourceResponses
@@ -26,7 +28,7 @@ class TrelloBase(SourceCollector, ABC):
         """Return the id of the board specified by the user."""
         url = await self.__url_with_auth("1/members/me/boards?fields=name")
         boards = await (await super()._get_source_responses(url))[0].json()
-        return str([board for board in boards if self._parameter("board") in board.values()][0]["id"])
+        return str(first(boards, lambda board: self._parameter("board") in board.values())["id"])
 
     async def __url_with_auth(self, api_part: str) -> URL:
         """Return the authentication URL parameters."""

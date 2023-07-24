@@ -10,7 +10,7 @@ dependencies = [
 dev = [
     "coverage==7.2.7",
     "mongomock==4.1.2",
-    "pip==23.2",
+    "pip==23.2.1",
     "pipx==1.2.0",
     "pip-tools==7.1.0",  # To add hashes to requirements
     "pydantic==1.10.9",  # Needed for importing the data model in the tests from the shared data model component
@@ -21,7 +21,7 @@ tools = [
     "black==23.7.0",
     "mypy==1.4.1",
     "pip-audit==2.6.0",
-    "ruff==0.0.278",
+    "ruff==0.0.280",
     "safety==2.3.5",
     "vulture==2.7"
 ]

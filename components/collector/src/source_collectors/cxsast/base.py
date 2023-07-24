@@ -5,6 +5,8 @@ from typing import cast
 
 import aiohttp
 
+from shared.utils.functions import first
+
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Response
 from model import SourceResponses
@@ -84,4 +86,4 @@ class CxSASTScanBase(CxSASTBase):
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = self._parameter("project")
         projects = await project_response.json()
-        return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
+        return str(first(projects, lambda project: project_name_or_id in (project["name"], project["id"]))["id"])

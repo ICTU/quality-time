@@ -102,9 +102,9 @@ def get_item(context: Context, item: str) -> dict:
         else context.get(f"report/{context.uuid['report']}")
     )
     if item != "reports_overview":
-        item_instance = [
+        item_instance = next(  # pragma: no feature-test-cover
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
-        ][0]
+        )
         if item == "notification_destination":
             return cast(dict, item_instance["notification_destinations"][context.uuid["notification_destination"]])
         if item != "report":
@@ -150,7 +150,9 @@ def check_item_does_not_exist(context: Context, item: str) -> None:
 def get_container(context: Context, container: str) -> dict:
     """Return the container."""
     reports = context.get("report/")
-    container_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
+    container_instance = next(  # pragma: no feature-test-cover
+        report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]
+    )
     if container != "report":
         container_instance = container_instance["subjects"][context.uuid["subject"]]
         if container != "subject":
