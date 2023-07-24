@@ -2,6 +2,8 @@
 
 from abc import ABC
 
+from shared.utils.functions import first
+
 from base_collectors import JenkinsPluginCollector
 from model import SourceMeasurement, SourceResponses
 
@@ -21,6 +23,6 @@ class CoberturaJenkinsPluginCoverageBaseClass(CoberturaJenkinsPluginBaseClass):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the coverage measurements."""
         elements = (await responses[0].json())["results"]["elements"]
-        coverage = [element for element in elements if element["name"].lower() == self.coverage_type][0]
+        coverage = first(elements, lambda element: element["name"].lower() == self.coverage_type)
         total = int(coverage["denominator"])
         return SourceMeasurement(value=str(total - int(coverage["numerator"])), total=str(total))

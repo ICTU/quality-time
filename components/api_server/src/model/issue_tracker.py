@@ -4,6 +4,8 @@ from dataclasses import asdict, dataclass, field
 from typing import cast
 import logging
 
+from shared.utils.functions import first
+
 import requests
 
 from utils.type import URL
@@ -199,7 +201,7 @@ class IssueTracker:
             # Current issue type is not an option, maybe the project was changed? Anyhow, no use getting fields
             return []
         fields = []
-        issue_type_id = [issue_type for issue_type in issue_types if issue_type.name == current_issue_type][0].key
+        issue_type_id = first(issue_types, lambda issue_type: issue_type.name == current_issue_type).key
         api_url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
         try:
             fields = cast(JiraFieldsJSON, self.__get_json(api_url))["values"]

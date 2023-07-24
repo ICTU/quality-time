@@ -2,6 +2,7 @@
 
 from typing import cast
 
+from shared.utils.functions import first
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.functions import parse_source_response_xml
@@ -35,7 +36,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
         """Parse a Robot Framework XML."""
         nr_of_tests, total_nr_of_tests, entities = 0, 0, Entities()
         tree = await parse_source_response_xml(response)
-        stats = [stat for stat in tree.findall("statistics/total/stat") if (stat.text or "").lower() == "all tests"][0]
+        stats = first(tree.findall("statistics/total/stat"), lambda stat: (stat.text or "").lower() == "all tests")
         for test_result in all_test_results:
             total_nr_of_tests += int(stats.get(test_result, 0))
             if test_result in test_results:

@@ -1,5 +1,6 @@
 """SonarQube remediation effort collector."""
 
+from shared.utils.functions import first
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.type import URL
@@ -27,7 +28,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
         entities = Entities()
         api_values = DATA_MODEL.sources[self.source_type].parameters["effort_types"].api_values or {}
         for effort_type in self.__effort_types():
-            effort_type_description = [param for param, api_key in api_values.items() if effort_type == api_key][0]
+            effort_type_description = first([param for param, api_key in api_values.items() if effort_type == api_key])
             entities.append(
                 Entity(
                     key=effort_type,

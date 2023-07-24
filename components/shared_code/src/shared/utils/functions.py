@@ -1,7 +1,9 @@
 """Utility functions."""
 
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
+from typing import TypeVar
 
 from .type import Direction
 
@@ -16,3 +18,11 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     if denominator == 0:  # pragma: no feature-test-cover
         return 0 if direction == "<" else 100
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
+
+
+T = TypeVar("T")
+
+
+def first(sequence: Sequence[T], where: Callable[[T], bool] = lambda _item: True) -> T:  # pragma: no feature-test-cover
+    """Return the first item in the sequence."""
+    return next(item for item in sequence if where(item))

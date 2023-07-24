@@ -1,5 +1,7 @@
 """Unit tests for the model actions."""
 
+from shared.utils.functions import first
+
 from model.actions import copy_metric, copy_report, copy_source, copy_subject
 
 from tests.base import DataModelTestCase
@@ -61,7 +63,7 @@ class CopyMetricTest(DataModelTestCase):
     def test_copy_sources(self):
         """Test that the sources are copied too."""
         metric_copy = copy_metric(self.metric, self.DATA_MODEL)
-        self.assertEqual("Source", list(metric_copy["sources"].values())[0]["name"])
+        self.assertEqual("Source", first(metric_copy["sources"].values())["name"])
 
 
 class CopySubjectTest(DataModelTestCase):
@@ -95,7 +97,7 @@ class CopySubjectTest(DataModelTestCase):
     def test_copy_metrics(self):
         """Test that the metrics are copied too."""
         subject_copy = copy_subject(self.subject, self.DATA_MODEL)
-        self.assertEqual("Metric", list(subject_copy["metrics"].values())[0]["name"])
+        self.assertEqual("Metric", first(subject_copy["metrics"].values())["name"])
 
 
 class CopyReportTest(DataModelTestCase):
@@ -123,4 +125,4 @@ class CopyReportTest(DataModelTestCase):
     def test_copy_subjects(self):
         """Test that the subjects are copied too."""
         report_copy = copy_report(self.report, self.DATA_MODEL)
-        self.assertEqual("Subject", list(report_copy["subjects"].values())[0]["name"])
+        self.assertEqual("Subject", first(report_copy["subjects"].values())["name"])

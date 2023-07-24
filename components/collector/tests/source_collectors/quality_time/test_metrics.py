@@ -15,7 +15,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         super().setUp()
         self.api_url = f"{self.url}/api/v3/report"
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: str) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api and landing URLs."""
         attributes["api_url"] = self.api_url
         super().assert_measurement(measurement, source_index=source_index, **attributes)

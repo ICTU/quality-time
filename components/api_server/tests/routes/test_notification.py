@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from shared.model.report import Report
+from shared.utils.functions import first
 
 from routes import (
     post_new_notification_destination,
@@ -95,7 +96,7 @@ class NotificationDestinationTest(NotificationTestCase):
         del self.report["notification_destinations"]
         self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
-        notification_destinations_uuid = list(updated_report["notification_destinations"].keys())[0]
+        notification_destinations_uuid = first(updated_report["notification_destinations"].keys())
         self.assert_delta(
             description="Jenny created a new destination for notifications in report 'Report'.",
             uuids=[REPORT_ID, notification_destinations_uuid],

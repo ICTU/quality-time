@@ -15,7 +15,7 @@
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path(".").resolve()))
+sys.path.insert(0, str(pathlib.Path().resolve()))
 
 # Build reference manual with overview of subjects, metrics, and sources.
 import create_reference_md  # noqa: E402

@@ -12,6 +12,7 @@ from pymongo.database import Database
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.utils.date_time import now
+from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId
 
 from database import sessions
@@ -38,8 +39,8 @@ def set_entity_attribute(
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
-    source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
-    entity = [e for e in source["entities"] if e["key"] == entity_key][0]
+    source = first(new_measurement["sources"], lambda source: source["source_uuid"] == source_uuid)
+    entity = first(source["entities"], lambda entity: entity["key"] == entity_key)
     entity_description = "/".join([str(entity[key]) for key in entity if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = dict(bottle.request.json)[attribute]

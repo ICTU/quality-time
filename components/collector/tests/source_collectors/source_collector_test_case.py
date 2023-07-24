@@ -4,7 +4,6 @@ import io
 import logging
 import unittest
 import zipfile
-from typing import Any
 from unittest.mock import DEFAULT as STOP_SENTINEL
 from unittest.mock import AsyncMock, PropertyMock, patch
 
@@ -100,7 +99,13 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         post_response.json = AsyncMock(return_value=json_return_value, side_effect=json_side_effect)
         return post_response
 
-    def assert_measurement(self, measurement: MetricMeasurement, *, source_index: int = 0, **attributes) -> None:
+    def assert_measurement(
+        self,
+        measurement: MetricMeasurement,
+        *,
+        source_index: int = 0,
+        **attributes: list | str | None,
+    ) -> None:
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:
@@ -115,7 +120,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     def __assert_measurement_source_attribute(
         self,
         attribute_key: str,
-        expected_attribute_value: list | Any,
+        expected_attribute_value: list | str | None,
         measurement: MetricMeasurement,
         source_index: int,
     ) -> None:

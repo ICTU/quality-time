@@ -33,7 +33,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
         expected_age = days_ago(datetime.min)
         self.assert_measurement(response, value=str(expected_age), total="100", entities=[])
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: str) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api URLs."""
         attributes["api_url"] = self.api_url
         super().assert_measurement(measurement, source_index=source_index, **attributes)

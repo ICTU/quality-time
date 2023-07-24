@@ -95,7 +95,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):
             ],
         }
 
-    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: str) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api and landing URLs."""
         attributes["landing_url"] = self.url
         super().assert_measurement(measurement, source_index=source_index, **attributes)
