@@ -54,10 +54,11 @@ class MetricCollector:
         """Create the source collectors for the metric."""
         collectors = []
         for source in self._metric["sources"].values():
-            if not self.__has_all_mandatory_parameters(source):
-                return []
-            if collector_class := SourceCollector.get_subclass(source["type"], self._metric["type"]):
+            collector_class = SourceCollector.get_subclass(source["type"], self._metric["type"])
+            if collector_class and self.__has_all_mandatory_parameters(source):
                 collectors.append(collector_class(self.__session, source).collect())
+            else:
+                return []
         return collectors
 
     def __issue_status_collectors(self) -> list[Coroutine]:
@@ -74,11 +75,7 @@ class MetricCollector:
 
     def __has_all_mandatory_parameters(self, source) -> bool:
         """Return whether the user has specified all mandatory parameters for the source."""
-        try:
-            parameters = DATA_MODEL.sources[source["type"]].parameters
-        except KeyError:
-            # This can happen if the source type has been removed from the data model, problem will be logged elsewhere
-            return True
+        parameters = DATA_MODEL.sources[source["type"]].parameters
         for parameter_key, parameter in parameters.items():
             if (
                 parameter.mandatory
