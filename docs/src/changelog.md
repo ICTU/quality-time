@@ -36,6 +36,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Changed
 
 - Rename the 'will be fixed' status of measurement entities (violations, warnings, issues, etc.) to 'fixed'. Closes [#6556](https://github.com/ICTU/quality-time/issues/6556).
+- Set the feature compatibility of the database to MongoDB 6.0 to prepare for the upcoming 7.0 release of MongoDB. Closes [#6662](https://github.com/ICTU/quality-time/issues/6662).
 
 ## v5.0.1 - 2023-06-26
 
