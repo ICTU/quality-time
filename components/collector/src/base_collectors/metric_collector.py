@@ -44,10 +44,13 @@ class MetricCollector:
         issue_status_collectors = self.__issue_status_collectors()
         if not source_collectors and not issue_status_collectors:
             return None
-        measurements = await asyncio.gather(*source_collectors)
-        for source_measurement, source_uuid in zip(measurements, self._metric["sources"], strict=True):
-            source_measurement.source_uuid = source_uuid
-        issue_statuses = await asyncio.gather(*issue_status_collectors)
+        measurements, issue_statuses = [], []
+        if source_collectors:
+            measurements = await asyncio.gather(*source_collectors)
+            for source_measurement, source_uuid in zip(measurements, self._metric["sources"], strict=True):
+                source_measurement.source_uuid = source_uuid
+        if issue_status_collectors:
+            issue_statuses = await asyncio.gather(*issue_status_collectors)
         return MetricMeasurement(measurements, issue_statuses)
 
     def __source_collectors(self) -> list[Coroutine]:
