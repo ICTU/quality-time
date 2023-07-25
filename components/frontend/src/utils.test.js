@@ -31,15 +31,23 @@ it('capitalizes strings', () => {
 });
 
 it('rounds numbers nicely', () => {
+    expect(nice_number(0)).toBe(10);
+    expect(nice_number(1)).toBe(10);
+    expect(nice_number(9)).toBe(10);
+    expect(nice_number(10)).toBe(12);
+    expect(nice_number(12)).toBe(15);
     expect(nice_number(15)).toBe(20);
     expect(nice_number(16)).toBe(20);
     expect(nice_number(17)).toBe(20);
     expect(nice_number(39)).toBe(50);
     expect(nice_number(40)).toBe(50);
     expect(nice_number(41)).toBe(50);
-    expect(nice_number(79)).toBe(90);
-    expect(nice_number(80)).toBe(90);
-    expect(nice_number(81)).toBe(90);
+    expect(nice_number(79)).toBe(100);
+    expect(nice_number(80)).toBe(100);
+    expect(nice_number(81)).toBe(100);
+    expect(nice_number(90)).toBe(100);
+    expect(nice_number(100)).toBe(120);
+    expect(nice_number(125)).toBe(150);
 });
 
 it('adds a scale', () => {
