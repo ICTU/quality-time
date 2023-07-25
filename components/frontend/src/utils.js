@@ -225,7 +225,7 @@ export function pluralize(word, count) {
 }
 
 export function nice_number(number) {
-    let rounded_numbers = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+    let rounded_numbers = [10, 12, 15, 20, 30, 50, 75];
     do {
         for (let rounded_number of rounded_numbers) {
             if (number <= ((9 * rounded_number) / 10)) {
