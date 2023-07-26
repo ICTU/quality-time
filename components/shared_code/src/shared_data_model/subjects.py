@@ -23,6 +23,7 @@ SUBJECTS = {
         description="A software development and/or maintenance process.",
         metrics=[
             "average_issue_lead_time",
+            "change_failure_rate",
             "issues",
             "manual_test_duration",
             "manual_test_execution",
@@ -46,6 +47,7 @@ SUBJECTS = {
         metrics=[
             "accessibility",
             "average_issue_lead_time",
+            "change_failure_rate",
             "commented_out_code",
             "complex_units",
             "dependencies",

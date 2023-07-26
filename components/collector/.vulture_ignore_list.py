@@ -12,3 +12,4 @@ FixedVersion  # unused variable (src/source_collectors/trivy/security_warnings.p
 References  # unused variable (src/source_collectors/trivy/security_warnings.py:20)
 Target  # unused variable (src/source_collectors/trivy/security_warnings.py:26)
 Vulnerabilities  # unused variable (src/source_collectors/trivy/security_warnings.py:27)
+ChangeFailureRate  # unused class (src/metric_collectors/change_failure_rate.py:12)

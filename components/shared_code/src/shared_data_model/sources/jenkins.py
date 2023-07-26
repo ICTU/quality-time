@@ -37,6 +37,7 @@ Jenkins also requires the username to which the token belongs."""
 JENKINS_TOKEN_DOCS = _TMP_DOC  # nosec hardcoded_password_string
 
 ALL_JENKINS_METRICS = [
+    "change_failure_rate",
     "failed_jobs",
     "job_runs_within_time_period",
     "source_up_to_dateness",
@@ -44,10 +45,11 @@ ALL_JENKINS_METRICS = [
     "unused_jobs",
 ]
 
+_JOB_ENTITY_NAME_NAME = "Job name"
 JOB_ENTITY = Entity(
     name="job",
     attributes=[
-        EntityAttribute(name="Job name", key="name", url="url"),
+        EntityAttribute(name=_JOB_ENTITY_NAME_NAME, key="name", url="url"),
         EntityAttribute(
             name="Status of most recent build",
             key="build_status",
@@ -97,20 +99,32 @@ the "Username" field and the private token in the "**Password**" field.
             help="Jobs to include can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             placeholder="all",
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=[
+                "change_failure_rate",
+                "failed_jobs",
+                "job_runs_within_time_period",
+                "source_up_to_dateness",
+                "unused_jobs",
+            ],
         ),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=[
+                "change_failure_rate",
+                "failed_jobs",
+                "job_runs_within_time_period",
+                "source_up_to_dateness",
+                "unused_jobs",
+            ],
         ),
         "lookback_days": Days(
             name="Number of days to look back for selecting job builds",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["job_runs_within_time_period"],
+            metrics=["change_failure_rate", "job_runs_within_time_period"],
         ),
         "result_type": MultipleChoiceParameter(
             name="Build result types",
@@ -133,11 +147,19 @@ the "Username" field and the private token in the "**Password**" field.
         ),
     },
     entities={
+        "change_failure_rate": Entity(
+            name="deployment",
+            attributes=[
+                EntityAttribute(name=_JOB_ENTITY_NAME_NAME, key="name", url="url"),
+                EntityAttribute(name="Status of most recent build", key="build_status"),
+                EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
+            ],
+        ),
         "failed_jobs": JOB_ENTITY,
         "job_runs_within_time_period": Entity(
             name="build",
             attributes=[
-                EntityAttribute(name="Job name", key="name", url="url"),
+                EntityAttribute(name=_JOB_ENTITY_NAME_NAME, key="name", url="url"),
                 EntityAttribute(
                     name="Number of builds in time period",
                     key="build_count",
