@@ -21,11 +21,12 @@ class ChangeFailureRate(MetricCollector):
         """Override to calculate the composite value."""
         if (measurement := await super().collect()) is None:
             return None
+        # No need to keep track of deployments in Azure DevOps here, this is handled by its source collector
         issues = self.issue_entities(measurement.sources)
         deployments = self.deployment_entities(measurement.sources)
         if deployments:
             deployments.sort(key=lambda d: self.deployment_timestamp(d))  # oldest to newest
-            for this_dep, next_dep in pairwise(deployments):
+            for this_dep, next_dep in pairwise(deployments):  # only iterate if there are at least two deployments
                 this_dep["failed"] = self.issues_in_interval(
                     issues,
                     self.deployment_timestamp(this_dep),
@@ -70,11 +71,13 @@ class ChangeFailureRate(MetricCollector):
         """Return the entities from sources of total deployments."""
         return Entities(entity for source in self.deployment_sources(sources) for entity in source.entities)
 
-    def issue_timestamp(self, entity: Entity) -> datetime:
+    @staticmethod
+    def issue_timestamp(issue: Entity) -> datetime:
         """Return the datetime of issue entities."""
-        return parse_datetime(entity["created"])  # Jira only
+        return parse_datetime(issue["created"])  # Jira only
 
-    def deployment_timestamp(self, entity: Entity) -> datetime:
+    @staticmethod
+    def deployment_timestamp(entity: Entity) -> datetime:
         """Return the datetime of deployment entities."""
         return parse_datetime(entity["build_date"])  # same for both GitLab and Jenkins
 

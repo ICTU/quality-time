@@ -37,12 +37,15 @@ METRICS = {
         documentation="""Because this metric is a "rate", it needs a numerator (the number of failed deployments
 in the look back period) and a denominator (the number of deployments in the look back period). The metric can be
 configured with a combination of Jira, and either Jenkins or GitLab CI as source. Jira is used as source for the number
-of failures (numerator). Either Jenkins or GitLab CI is used as source for the number of deployments (denominator).""",
+of failures (numerator). Either Jenkins or GitLab CI is used as source for the number of deployments (denominator).
+
+When configuring Azure DevOps as source for the metric it is used both for number of failures (numerator) and for
+number of deployments (denominator). Azure DevOps needs to be added as source only once.""",
         scales=["percentage"],
         unit=Unit.FAILED_DEPLOYMENTS,
         target="0",
         near_target="5",
-        sources=["jenkins", "jira", "gitlab"],
+        sources=["azure_devops", "jenkins", "jira", "gitlab"],
         tags=[Tag.PROCESS_EFFICIENCY],
     ),
     "commented_out_code": Metric(
