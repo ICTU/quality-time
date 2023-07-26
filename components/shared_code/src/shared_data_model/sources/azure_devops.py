@@ -22,6 +22,7 @@ from shared_data_model.parameters import (
 
 ALL_AZURE_DEVOPS_METRICS = [
     "average_issue_lead_time",
+    "change_failure_rate",
     "failed_jobs",
     "issues",
     "job_runs_within_time_period",
@@ -83,7 +84,7 @@ AZURE_DEVOPS = Source(
             help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
             "For example, use the following clause to hide issues marked as done: \"[System.State] <> 'Done'\". "
             "See https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops.",
-            metrics=["average_issue_lead_time", "issues", "user_story_points"],
+            metrics=["average_issue_lead_time", "change_failure_rate", "issues", "user_story_points"],
         ),
         "file_path": StringParameter(
             name="File or folder path",
@@ -153,20 +154,32 @@ AZURE_DEVOPS = Source(
             help="Pipelines to include can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             placeholder="all",
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=[
+                "change_failure_rate",
+                "failed_jobs",
+                "job_runs_within_time_period",
+                "source_up_to_dateness",
+                "unused_jobs",
+            ],
         ),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Pipelines to ignore (regular expressions or pipeline names)",
             short_name="pipelines to ignore",
             help="Pipelines to ignore can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=[
+                "change_failure_rate",
+                "failed_jobs",
+                "job_runs_within_time_period",
+                "source_up_to_dateness",
+                "unused_jobs",
+            ],
         ),
         "lookback_days_pipeline_runs": Days(
             name="Number of days to look back for selecting pipeline runs",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["job_runs_within_time_period"],
+            metrics=["change_failure_rate", "job_runs_within_time_period"],
         ),
         "lookback_days_issues": Days(
             name="Number of days to look back for work items",
@@ -174,7 +187,7 @@ AZURE_DEVOPS = Source(
             "configured.",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["average_issue_lead_time"],
+            metrics=["average_issue_lead_time", "change_failure_rate"],
         ),
         "failure_type": FailureType(
             values=["canceled", "failed", "no result", "partially succeeded"],
@@ -201,6 +214,13 @@ AZURE_DEVOPS = Source(
                     key="lead_time",
                     type=EntityAttributeType.INTEGER,
                 ),
+            ],
+        ),
+        "change_failure_rate": Entity(
+            name="pipeline",
+            attributes=[
+                EntityAttribute(name="Pipeline", key="name", url="url"),
+                EntityAttribute(name="Date of build", key="build_date", type=EntityAttributeType.DATE),
             ],
         ),
         "failed_jobs": Entity(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),

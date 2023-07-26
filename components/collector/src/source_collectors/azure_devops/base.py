@@ -8,7 +8,7 @@ from base_collectors import SourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Job
+from collector_utilities.type import URL, Job, Response
 from model import Entities, Entity, SourceResponses
 
 
@@ -101,19 +101,19 @@ class AzureDevopsPipelines(SourceCollector):
     """Base class for pipeline collectors."""
 
     async def _api_url(self) -> URL:
-        """Extend to add the pipelines API path."""
-        # currently the pipelines api is not available in any version which is not a -preview version
-        return URL(f"{await super()._api_url()}/_apis/pipelines?api-version=6.0-preview.1")
+        """Stub to the pipelines API path."""
+        return await self._api_pipelines_url()
 
-    async def _api_runs_url(self, pipeline_id: int) -> URL:
-        """Add the pipeline runs API path."""
-        split_api_url = urllib.parse.urlsplit(await self._api_url())
-        new_api_url_parts = split_api_url._replace(path=f"{split_api_url[2]}/{pipeline_id}/runs")
-        return URL(urllib.parse.urlunsplit(new_api_url_parts))
+    async def _api_pipelines_url(self, pipeline_id: int | None = None) -> URL:
+        """Add the pipelines API, or runs API path if needed."""
+        extra_path = "" if not pipeline_id else f"/{pipeline_id}/runs"
+        # currently the pipelines api is not available in any version which is not a -preview version
+        api_url = await SourceCollector._api_url(self)  # noqa: SLF001
+        return URL(f"{api_url}/_apis/pipelines{extra_path}?api-version=6.0-preview.1")
 
     async def _active_pipelines(self) -> list[int]:
         """Find all active pipeline ids to traverse."""
-        api_pipelines_url = await self._api_url()
+        api_pipelines_url = await self._api_pipelines_url()
         pipelines_response = await super()._get_source_responses(api_pipelines_url)
         pipelines = (await pipelines_response[0].json())["value"]
         return [pipeline["id"] for pipeline in pipelines if "id" in pipeline]
@@ -121,29 +121,36 @@ class AzureDevopsPipelines(SourceCollector):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to first query the pipeline ids to separately get the entities."""
         pipeline_ids = await self._active_pipelines()
-        api_pipelines_urls = [await self._api_runs_url(pipeline_id) for pipeline_id in pipeline_ids]
+        api_pipelines_urls = [await self._api_pipelines_url(pipeline_id) for pipeline_id in pipeline_ids]
         return await super()._get_source_responses(*api_pipelines_urls)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the pipelines."""
+        """Override to parse the pipeline responses."""
         entities = Entities()
         for pipeline_response in responses:
-            for pipeline_run in (await pipeline_response.json())["value"]:
-                if not bool(pipeline_run.get("finishedDate")):
-                    continue  # The pipeline has not completed
+            entities.extend(await self._parse_pipeline_entities(pipeline_response))
+        return entities
 
-                pipeline_id = pipeline_run["pipeline"]["id"]
-                pipeline_name = pipeline_run["pipeline"]["name"]
-                entities.append(
-                    Entity(
-                        key="-".join([str(pipeline_id), pipeline_run["name"]]),
-                        name=pipeline_run["name"],
-                        pipeline=pipeline_name,
-                        url=pipeline_run["_links"]["web"]["href"],
-                        build_date=str(parse_datetime(pipeline_run["finishedDate"])),
-                        build_status=pipeline_run["state"],
-                    ),
-                )
+    @staticmethod
+    async def _parse_pipeline_entities(pipeline_response: Response) -> Entities:
+        """Parse the entities from all runs of a pipeline."""
+        entities = Entities()
+        for pipeline_run in (await pipeline_response.json())["value"]:
+            if not bool(pipeline_run.get("finishedDate")):
+                continue  # The pipeline has not completed
+
+            pipeline_id = pipeline_run["pipeline"]["id"]
+            pipeline_name = pipeline_run["pipeline"]["name"]
+            entities.append(
+                Entity(
+                    key="-".join([str(pipeline_id), pipeline_run["name"]]),
+                    name=pipeline_run["name"],
+                    pipeline=pipeline_name,
+                    url=pipeline_run["_links"]["web"]["href"],
+                    build_date=str(parse_datetime(pipeline_run["finishedDate"])),
+                    build_status=pipeline_run["state"],
+                ),
+            )
         return entities
 
     def _include_entity(self, entity: Entity) -> bool:

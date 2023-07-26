@@ -24,6 +24,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Add a new metric 'CI-pipeline duration'. Supported source is GitLab CI (Jenkins and Azure DevOps will follow later). Partially implements [#6423](https://github.com/ICTU/quality-time/issues/6423).
+- Add a new metric 'Change Failure Rate' that reports the percentage of deployments causing a failure in production. Closes [#3499](https://github.com/ICTU/quality-time/issues/3499).
 
 ## v5.7.0 - 2024-01-31
 

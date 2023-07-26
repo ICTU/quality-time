@@ -1,4 +1,4 @@
-"""Unit tests for the Azure DevOps Server unused jobs collectors."""
+"""Unit tests for the Azure DevOps Server unused jobs collector."""
 
 from .base import AzureDevopsJobsTestCase
 

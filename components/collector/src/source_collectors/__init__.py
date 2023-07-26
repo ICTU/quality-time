@@ -10,6 +10,7 @@ from .axe_core.violations import AxeCoreViolations
 from .axe_csv.violations import AxeCSVViolations
 from .axe_html_reporter.violations import AxeHTMLReporterViolations
 from .azure_devops.average_issue_lead_time import AzureDevopsAverageIssueLeadTime
+from .azure_devops.change_failure_rate import AzureDevopsChangeFailureRate
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
 from .azure_devops.issues import AzureDevopsIssues
 from .azure_devops.job_runs_within_time_period import AzureDevopsJobRunsWithinTimePeriod

@@ -19,8 +19,12 @@ class AzureDevopsIssues(SourceCollector):
     _issue_ids_to_fetch: list[int]
 
     async def _api_url(self) -> URL:
+        """Stub to the WIQL API path."""
+        return await self._api_wit_url()
+
+    async def _api_wit_url(self, endpoint: str = "wiql") -> URL:
         """Extend to add the WIQL or WorkItems API path."""
-        return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=6.0")
+        return URL(f"{await SourceCollector._api_url(self)}/_apis/wit/{endpoint}?api-version=6.0")  # noqa: SLF001
 
     def _api_list_query(self) -> dict[str, str]:
         """Combine API select and where fields to correct WIQL query."""
@@ -41,7 +45,7 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> SourceResponses:
         """Separately get each work item from the API."""
-        api_url = URL((await self._api_url()).replace("wit/wiql", "wit/workitemsbatch"))
+        api_url = await self._api_wit_url(endpoint="workitemsbatch")
         batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
         responses = [
