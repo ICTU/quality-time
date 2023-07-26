@@ -1,18 +1,18 @@
-FROM node:18.17.0-alpine3.17
+FROM node:18.17.0-alpine3.18
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
 RUN apk add --no-cache \
     msttcorefonts-installer=3.8-r1 \
-    fontconfig=2.14.1-r0 \
-    font-noto=0_git20211101-r6 \
-    freetype=2.12.1-r0 \
-    ttf-dejavu=2.37-r3 \
+    fontconfig=2.14.2-r3 \
+    font-noto=23.5.1-r0 \
+    freetype=2.13.0-r5 \
+    ttf-dejavu=2.37-r5 \
     ttf-droid=20200215-r2 \
-    ttf-freefont=20120503-r3 \
+    ttf-freefont=20120503-r4 \
     ttf-liberation=2.1.5-r2 \
-    chromium=112.0.5615.165-r0 && \
+    chromium=115.0.5790.110-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
