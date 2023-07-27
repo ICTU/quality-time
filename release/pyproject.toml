@@ -1,6 +1,6 @@
 [project]
 name = "release"
-version = "5.0.1"
+version = "5.1.0-rc.1"
 dependencies = [
     "black==23.7.0",  # The pre-commit hook (../githooks/pre-commit) calls black
     "bump2version==1.0.1",
