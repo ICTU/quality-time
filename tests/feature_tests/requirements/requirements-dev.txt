@@ -175,9 +175,9 @@ coverage==7.2.7 \
     --hash=sha256:f75f7168ab25dd93110c8a8117a22450c19976afbc44234cbf71481094c1b850 \
     --hash=sha256:fdec9e8cbf13a5bf63290fc6013d216a4c7232efb51548594ca3631a7f13c3a3
     # via feature-tests (pyproject.toml)
-dnspython==2.4.0 \
-    --hash=sha256:46b4052a55b56beea3a3bdd7b30295c292bd6827dd442348bc116f2d35b17f0a \
-    --hash=sha256:758e691dbb454d5ccf4e1b154a19e52847f79e21a42fef17b969144af29a4e6c
+dnspython==2.4.1 \
+    --hash=sha256:5b7488477388b8c0b70a8ce93b227c5603bc7b77f1565afe8e729c36c51447d7 \
+    --hash=sha256:c33971c79af5be968bb897e95c2448e11a645ee84d93b265ce0b7aabe5dfdca8
     # via pymongo
 gevent==23.7.0 \
     --hash=sha256:11b9bb0bce45170ff992760385a86e6955ccb88dba4a82a64d5ce9459290d8d6 \
