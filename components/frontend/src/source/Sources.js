@@ -36,9 +36,9 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
     )
 }
 
-function SourceSegment({ report, metric, source_uuid, index, last_index, measurement_source, changed_fields, reload} ) {
+function SourceSegment({ report, metric, sourceUuid, index, last_index, measurement_source, changed_fields, reload} ) {
     return (
-        <Segment vertical>
+        <Segment vertical id={sourceUuid}>
             <Source
                 first_source={index === 0}
                 last_source={index === last_index}
@@ -46,7 +46,7 @@ function SourceSegment({ report, metric, source_uuid, index, last_index, measure
                 measurement_source={measurement_source}
                 reload={reload}
                 report={report}
-                source_uuid={source_uuid}
+                source_uuid={sourceUuid}
                 changed_fields={changed_fields}
             />
         </Segment>
@@ -73,9 +73,9 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
         return (
             <SourceSegment
                 key={sourceUuid}
-                report={report}
                 metric={metric}
-                source_uuid={sourceUuid}
+                report={report}
+                sourceUuid={sourceUuid}
                 index={index}
                 last_index={lastIndex}
                 measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
