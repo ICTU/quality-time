@@ -4,7 +4,7 @@ version = "5.1.0-rc.1"
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.31.0",
-    "selenium==4.11.0"
+    "selenium==4.11.2"
 ]
 
 [project.optional-dependencies]
