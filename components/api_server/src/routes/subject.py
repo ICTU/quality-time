@@ -8,9 +8,9 @@ from pymongo.database import Database
 from shared.model.subject import Subject
 from shared.utils.type import ReportId, SubjectId
 
-from database.datamodels import default_subject_attributes, latest_datamodel
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_subject, move_item
+from model.defaults import default_subject_attributes
 from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -23,7 +23,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     report = latest_report_for_uuids(reports, report_uuid)[0]
     subject_type = str(dict(bottle.request.json)["type"])
     subject_uuid = cast(SubjectId, uuid())
-    report.subjects_dict[subject_uuid] = cast(Subject, default_subject_attributes(database, subject_type))
+    report.subjects_dict[subject_uuid] = cast(Subject, default_subject_attributes(subject_type))
     delta_description = f"{{user}} created a new subject in report '{report.name}'."
     uuids = [report_uuid, subject_uuid]
     result = insert_new_report(database, delta_description, uuids, report)
@@ -34,14 +34,13 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 @bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
-    data_model = latest_datamodel(database)
     reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, report_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
     subject = source_report.subjects_dict[subject_uuid]
     subject_copy_uuid = cast(SubjectId, uuid())
-    target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject, data_model)
+    target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject)
     delta_description = (
         f"{{user}} copied the subject '{subject.name}' from report "
         f"'{source_report.name}' to report '{target_report.name}'."

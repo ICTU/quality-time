@@ -101,6 +101,27 @@ def get_non_existing_report(context: Context) -> None:
     context.get(f"report/{report_uuid}")
 
 
+@when("the client copies a non-existing report")
+def copy_non_existing_report(context: Context) -> None:
+    """Copy a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.post(f"report/{report_uuid}/copy")
+
+
+@when("the client deletes a non-existing report")
+def delete_non_existing_report(context: Context) -> None:
+    """Delete a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.delete(f"report/{report_uuid}")
+
+
+@when('the client changes a non-existing report title to "New title"')
+def change_title_of_non_existing_report(context: Context) -> None:
+    """Change the title of a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.post(f"report/{report_uuid}/attribute/title", json={"title": "New title"})
+
+
 @then("the import failed")
 def import_failed(context: Context) -> None:
     """Check the JSON."""
@@ -118,3 +139,24 @@ def get_measurements(context: Context, has_or_had: str, expected_number: str) ->
     response = context.get("measurements")
     report_measurements = [m for m in response["measurements"] if m["report_uuid"] == context.uuid["report"]]
     assert_equal(int(expected_number), len(report_measurements))
+
+
+@when('the client changes a non-existing report tracker_type to "jira"')
+def change_non_existing_report_tracker_type(context: Context) -> None:
+    """Change the issue tracker type of a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.post(f"report/{report_uuid}/issue_tracker/type", json={"type": "jira"})
+
+
+@when("the client retrieves a non-existing report's issue tracker options")
+def get_non_existing_report_tracker_options(context: Context) -> None:
+    """Get the issue tracker options of a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.get(f"report/{report_uuid}/issue_tracker/options")
+
+
+@when("the client retrieves a non-existing report's issue tracker suggestions")
+def get_non_existing_report_tracker_suggestions(context: Context) -> None:
+    """Get the issue tracker suggestions of a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.get(f"report/{report_uuid}/issue_tracker/suggestions/query")

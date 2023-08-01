@@ -5,18 +5,19 @@ from pymongo.database import Database
 
 from shared.utils.type import ItemId, ReportId, NotificationDestinationId
 
-from database.datamodels import latest_datamodel
 from database.reports import insert_new_report, latest_report
 from utils.functions import uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from .report import report_not_found_response
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
+    report = latest_report(database, report_uuid)
+    if report is None:
+        return report_not_found_response(report_uuid)
     if "notification_destinations" not in report:
         report["notification_destinations"] = {}
     report["notification_destinations"][(notification_destination_uuid := uuid())] = {
@@ -41,8 +42,9 @@ def delete_notification_destination(
     database: Database,
 ):
     """Delete a destination from a report."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
+    report = latest_report(database, report_uuid)
+    if report is None:
+        return report_not_found_response(report_uuid)
     destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     del report["notification_destinations"][notification_destination_uuid]
     delta_description = f"{{user}} deleted destination {destination_name} from report '{report.name}'."
@@ -60,8 +62,9 @@ def post_notification_destination_attributes(
     database: Database,
 ):
     """Set specified notification destination attributes."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
+    report = latest_report(database, report_uuid)
+    if report is None:
+        return report_not_found_response(report_uuid)
     notification_destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     attributes = dict(bottle.request.json)
     old_values = []

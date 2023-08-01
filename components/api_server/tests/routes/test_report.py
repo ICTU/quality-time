@@ -22,6 +22,7 @@ from routes import (
     post_report_new,
     post_report_issue_tracker_attribute,
 )
+from routes.report import report_not_found_response
 from utils.functions import asymmetric_encrypt
 
 from tests.base import DataModelTestCase, disable_logging
@@ -91,6 +92,13 @@ class PostReportAttributeTest(ReportTestCase):
             },
             updated_report["delta"],
         )
+
+    def test_non_existing_report(self, request):
+        """Test that changing the attribute of a non-existing report results in an error message."""
+        self.database.reports.find_one.return_value = None
+        request.json = {"title": "New title"}
+        self.assertEqual(report_not_found_response(REPORT_ID), post_report_attribute(REPORT_ID, "title", self.database))
+        self.database.reports.insert_one.assert_not_called()
 
 
 @patch("bottle.request")
@@ -177,6 +185,16 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
         self.database.reports.insert_one.assert_not_called()
 
+    def test_non_existing_report(self, request):
+        """Test that an error is returned when the report does not exist."""
+        self.database.reports.find_one.return_value = None
+        request.json = {"username": "jodoe"}
+        self.assertEqual(
+            report_not_found_response(REPORT_ID),
+            post_report_issue_tracker_attribute(REPORT_ID, "username", self.database),
+        )
+        self.database.reports.insert_one.assert_not_called()
+
 
 class ReportIssueTrackerGetTest(ReportTestCase):
     """Unit tests for the issue tracker GET routes."""
@@ -205,7 +223,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         response.json.return_value = {"issues": [{"key": "FOO-42", "fields": {"summary": "Summary"}}]}
         requests_get.return_value = response
         suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
-        self.assertEqual({"suggestions": [{"key": "FOO-42", "text": "Summary"}]}, suggested_issues)
+        self.assertEqual({"ok": True, "suggestions": [{"key": "FOO-42", "text": "Summary"}]}, suggested_issues)
 
     @patch("requests.get")
     def test_get_issue_tracker_options_without_configured_report(self, requests_get):
@@ -213,6 +231,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = {"type": "jira", "parameters": {"url": self.ISSUE_TRACKER_URL}}
         requests_get.return_value = self.project_response
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
@@ -229,6 +248,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
@@ -246,6 +266,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response, self.fields_response]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [
@@ -265,7 +286,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "parameters": {"url": self.ISSUE_TRACKER_URL, "project_key": "FOO", "issue_type": "Bug"},
         }
         requests_get.side_effect = RuntimeError("yo")
-        expected_options = {"projects": [], "issue_types": [], "fields": [], "epic_links": []}
+        expected_options = {"ok": True, "projects": [], "issue_types": [], "fields": [], "epic_links": []}
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
 
     @patch("requests.get")
@@ -278,6 +299,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, RuntimeError("yo")]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
@@ -295,6 +317,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response, RuntimeError("yo")]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
@@ -322,6 +345,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             RuntimeError("yo"),
         ]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [
@@ -331,6 +355,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+
+    def test_non_existing_report(self):
+        """Test that an error is returned if the report does not exist."""
+        self.database.reports.find_one.return_value = None
+        error_message = report_not_found_response(REPORT_ID)
+        self.assertEqual(error_message, get_report_issue_tracker_suggestions(REPORT_ID, "query", self.database))
+        self.assertEqual(error_message, get_report_issue_tracker_options(REPORT_ID, self.database))
 
 
 class ReportTest(ReportTestCase):
@@ -429,6 +460,7 @@ class ReportTest(ReportTestCase):
         expected_counts = {"blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 1}
         self.assertDictEqual(
             {
+                "ok": True,
                 "reports": [
                     {
                         "summary": expected_counts,
@@ -481,7 +513,7 @@ class ReportTest(ReportTestCase):
                 },
             },
         ]
-        self.assertDictEqual({"reports": []}, get_report(self.database, "tag-non-existing-tag"))
+        self.assertDictEqual({"ok": True, "reports": []}, get_report(self.database, "tag-non-existing-tag"))
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -509,6 +541,12 @@ class ReportTest(ReportTestCase):
             },
             inserted_report["delta"],
         )
+
+    def test_copy_non_existing_report(self):
+        """Test that copying a non-existing report results in an error message."""
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(report_not_found_response(REPORT_ID), post_report_copy(REPORT_ID, self.database))
+        self.database.reports.insert_one.assert_not_called()
 
     @patch("requests.get")
     def test_get_pdf_report(self, requests_get):
@@ -540,6 +578,11 @@ class ReportTest(ReportTestCase):
             {"uuids": [REPORT_ID], "email": JENNY["email"], "description": "Jenny Doe deleted the report 'Report'."},
             inserted["delta"],
         )
+
+    def test_delete_non_existing_report(self):
+        """Test that deleting a non-existing report results in an error."""
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(report_not_found_response(REPORT_ID), delete_report(REPORT_ID, self.database))
 
 
 class ReportImportAndExportTest(ReportTestCase):
@@ -599,10 +642,7 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_nonexisting_json_report(self):
         """Test that None is returned if report doesn't exist."""
         self.database.reports.find_one.return_value = None
-
-        # Without provided public key
-        exported_report = export_report_as_json(self.database, "non_existing_report")
-        self.assertIsNone(exported_report)
+        self.assertEqual(report_not_found_response(REPORT_ID), export_report_as_json(self.database, REPORT_ID))
 
     def test_get_json_report_without_public_key(self):
         """Test that an error message is returned if the database has no public key."""

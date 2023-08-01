@@ -6,10 +6,12 @@ import bottle
 from pymongo.database import Database
 
 from shared.utils.type import ItemId, MetricId, SourceId
+from shared_data_model import DATA_MODEL
+from shared_data_model.parameters import PrivateToken
 
-from database.datamodels import default_source_parameters, latest_datamodel
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_source, move_item
+from model.defaults import default_source_parameters
 from model.queries import is_password_parameter
 from model.report import Report
 from model.transformations import change_source_parameter
@@ -26,7 +28,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     source_type = dict(bottle.request.json)["type"]
-    parameters = default_source_parameters(database, metric.type(), source_type)
+    parameters = default_source_parameters(metric.type(), source_type)
     metric.sources_dict[(source_uuid := uuid())] = {"type": source_type, "parameters": parameters}
     delta_description = (
         f"{{user}} added a new source to metric '{metric.name}' of subject "
@@ -41,13 +43,12 @@ def post_source_new(metric_uuid: MetricId, database: Database):
 @bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
-    data_model = latest_datamodel(database)
     all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=metric_uuid)
 
-    target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source, data_model)
+    target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source)
     delta_description = (
         f"{{user}} copied the source '{source.name}' of metric '{source_metric.name}' of subject "
         f"'{source_subject.name}' from report '{reports[0].name}' "
@@ -132,17 +133,16 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     )
     uuids = [report.uuid, subject.uuid, metric.uuid, source.uuid]
     if source_attribute == "type":
-        source["parameters"] = default_source_parameters(database, metric["type"], value)
+        source["parameters"] = default_source_parameters(metric["type"], value)
     return insert_new_report(database, delta_description, uuids, report)
 
 
 @bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
-    data_model = latest_datamodel(database)
     reports = latest_reports(database)
     items = _items(reports, source_uuid)
-    new_value = new_parameter_value(data_model, items[0], parameter_key)
+    new_value = _new_parameter_value(items[0], parameter_key)
     old_value = items[0]["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return {"ok": True}  # Nothing to do
@@ -155,16 +155,16 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
         new_value,
         edit_scope,
     )
-    if is_password_parameter(data_model, items[0].type, parameter_key):
+    if is_password_parameter(items[0].type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
-    source_description = _source_description(data_model, items, edit_scope, parameter_key, old_value)
+    source_description = _source_description(items, edit_scope, parameter_key, old_value)
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
     reports_to_insert = [report for report in reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
     result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
-    result["availability"] = _availability_checks(data_model, items[0], parameter_key)
+    result["availability"] = _availability_checks(items[0], parameter_key)
     return result
 
 
@@ -174,19 +174,19 @@ def _items(reports: list[Report], source_uuid: SourceId) -> tuple:
     return (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
 
 
-def new_parameter_value(data_model, source, parameter_key: str):
+def _new_parameter_value(source, parameter_key: str) -> str | list[str]:
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
     new_value = dict(bottle.request.json)[parameter_key]
-    source_parameter = data_model["sources"][source.type]["parameters"][parameter_key]
-    if source_parameter["type"] == "multiple_choice":
-        new_value = [value for value in new_value if value in source_parameter["values"]]
-    return new_value
+    source_parameter = DATA_MODEL.sources[source.type].parameters[parameter_key]
+    if source_parameter.type == "multiple_choice":
+        new_value = [value for value in new_value if value in (source_parameter.values or [])]
+    return cast(str, new_value)
 
 
-def _source_description(data_model, items, edit_scope, parameter_key, old_value) -> str:
+def _source_description(items, edit_scope, parameter_key, old_value) -> str:
     """Return the description of the source."""
     source, metric, subject, report = items
-    source_type_name = data_model["sources"][source.type]["name"]
+    source_type_name = DATA_MODEL.sources[source.type].name
     source_description = (
         f"source '{source.name}'"
         if edit_scope == "source"
@@ -200,16 +200,16 @@ def _source_description(data_model, items, edit_scope, parameter_key, old_value)
     return source_description
 
 
-def _availability_checks(data_model, source, parameter_key: str) -> list[dict[str, str | int]]:
+def _availability_checks(source, parameter_key: str) -> list[dict[str, str | int]]:
     """Check the availability of the URLs."""
-    source_model = data_model["sources"][source["type"]]
-    parameters = source_model["parameters"]
-    token_validation_path = parameters.get("private_token", {}).get("validation_path", "")
+    parameters = DATA_MODEL.sources[source["type"]].parameters
+    private_token = cast(PrivateToken, parameters.get("private_token"))
+    token_validation_path = private_token.validation_path if private_token else ""
     source_parameters = source["parameters"]
     url_parameter_keys = [
         key
         for key, value in parameters.items()
-        if value["type"] == "url" and parameter_key == key or parameter_key in value.get("validate_on", [])
+        if value.type == "url" and parameter_key == key or parameter_key in (value.validate_on or [])
     ]
     availability_checks = []
     for url_parameter_key in url_parameter_keys:

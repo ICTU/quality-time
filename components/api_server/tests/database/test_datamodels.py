@@ -3,9 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from database.datamodels import default_subject_attributes, insert_new_datamodel, latest_datamodel
-
-from tests.base import DataModelTestCase
+from database.datamodels import insert_new_datamodel, latest_datamodel
 
 
 class DataModelsTest(unittest.TestCase):
@@ -34,19 +32,3 @@ class DataModelsTest(unittest.TestCase):
         """Test that a new data model can be inserted."""
         insert_new_datamodel(self.database, {})
         self.database.datamodels.insert_one.assert_called_once()
-
-
-class DefaultSubjectAttributesTest(DataModelTestCase):
-    """Test the default subject attributes."""
-
-    def test_default_attributes(self):
-        """Test the default attributes for a specific subject type."""
-        self.assertEqual(
-            {
-                "type": "software",
-                "name": None,
-                "description": "A custom software application or component.",
-                "metrics": {},
-            },
-            default_subject_attributes(self.database, "software"),
-        )

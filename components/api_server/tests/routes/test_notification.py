@@ -10,6 +10,7 @@ from routes import (
     delete_notification_destination,
     post_notification_destination_attributes,
 )
+from routes.report import report_not_found_response
 
 from tests.base import DataModelTestCase
 from tests.fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
@@ -76,6 +77,15 @@ class PostNotificationAttributesTest(NotificationTestCase):
             report=updated_report,
         )
 
+    def test_non_existing_report(self, request):
+        """Test that an error is returned if the report is missing."""
+        request.json = {"name": self.new_name}
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(
+            report_not_found_response(REPORT_ID),
+            post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database),
+        )
+
 
 class NotificationDestinationTest(NotificationTestCase):
     """Unit tests for adding and deleting notification destinations."""
@@ -114,4 +124,14 @@ class NotificationDestinationTest(NotificationTestCase):
             description="Jenny deleted destination notification_destination from report 'Report'.",
             uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
             report=updated_report,
+        )
+
+    def test_non_existing_report(self):
+        """Test that an error is returned if the report is missing."""
+        self.database.reports.find_one.return_value = None
+        error_message = report_not_found_response(REPORT_ID)
+        self.assertEqual(error_message, post_new_notification_destination(REPORT_ID, self.database))
+        self.assertEqual(
+            error_message,
+            delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database),
         )
