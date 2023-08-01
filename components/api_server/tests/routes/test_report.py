@@ -368,12 +368,13 @@ class ReportTest(ReportTestCase):
 
     def test_get_report_and_info_about_other_reports(self):
         """Test that a report can be retrieved, and that other reports are also returned."""
-        self.database.reports.find.return_value.insert(0, {"_id": "id2", "report_uuid": REPORT_ID2})
+        self.database.reports.distinct.return_value = [REPORT_ID2, REPORT_ID]
+        self.database.reports.find_one.side_effect = [{"_id": "id2", "report_uuid": REPORT_ID2}, self.report]
         self.assertEqual(2, len(get_report(self.database, REPORT_ID)["reports"]))
 
     def test_get_report_missing(self):
         """Test that a non-existant report can not be retrieved."""
-        self.database.reports.find.return_value = []
+        self.database.reports.distinct.return_value = []
         self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
 
     @patch("bottle.request")
@@ -409,24 +410,22 @@ class ReportTest(ReportTestCase):
     def test_get_tag_report(self, date_time):
         """Test that a tag report can be retrieved."""
         date_time.now.return_value = now = datetime.now(tz=UTC)
-        self.database.reports.find.return_value = [
-            {
-                "_id": "id",
-                "report_uuid": REPORT_ID,
-                "title": "Report",
-                "subjects": {
-                    "subject_without_metrics": {"metrics": {}},
-                    SUBJECT_ID: {
-                        "name": "Subject",
-                        "type": "software",
-                        "metrics": {
-                            "metric_with_tag": {"type": "violations", "tags": ["tag"]},
-                            "metric_without_tag": {"type": "violations", "tags": ["other tag"]},
-                        },
+        self.database.reports.find_one.return_value = {
+            "_id": "id",
+            "report_uuid": REPORT_ID,
+            "title": "Report",
+            "subjects": {
+                "subject_without_metrics": {"metrics": {}},
+                SUBJECT_ID: {
+                    "name": "Subject",
+                    "type": "software",
+                    "metrics": {
+                        "metric_with_tag": {"type": "violations", "tags": ["tag"]},
+                        "metric_without_tag": {"type": "violations", "tags": ["other tag"]},
                     },
                 },
             },
-        ]
+        }
         expected_counts = {"blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 1}
         self.assertDictEqual(
             {

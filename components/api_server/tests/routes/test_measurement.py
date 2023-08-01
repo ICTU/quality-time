@@ -68,10 +68,6 @@ class GetMeasurementsTest(DataModelTestCase):
     def setUp(self):
         """Extend to set up the database contents."""
         super().setUp()
-        self.email = "jenny@example.org"
-        self.other_mail = "john@example.org"
-        self.database.sessions.find_one.return_value = {"user": "jenny", "email": self.email}
-        self.database.reports_overviews.find_one.return_value = {"_id": "id", "title": "Reports", "subtitle": ""}
         self.measurement = {
             "_id": "id",
             "metric_uuid": METRIC_ID,
@@ -82,15 +78,16 @@ class GetMeasurementsTest(DataModelTestCase):
 
     def test_no_reports(self):
         """Test no reports."""
-        self.database.reports.find.return_value = []
+        self.database.reports.distinct.return_value = []
         self.assertEqual({"measurements": []}, get_measurements(self.database))
 
     def test_with_report(self):
         """Test a report with measurements."""
-        self.database.reports.find.return_value = [
-            {"report_uuid": REPORT_ID, "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}}},
-        ]
-        self.database.measurements.find.return_value = [self.measurement]
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = {
+            "report_uuid": REPORT_ID,
+            "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}},
+        }
         self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
     @patch("bottle.request")
@@ -102,7 +99,6 @@ class GetMeasurementsTest(DataModelTestCase):
             "report_uuid": REPORT_ID,
             "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}},
         }
-        self.database.measurements.find.return_value = [self.measurement]
         self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
 

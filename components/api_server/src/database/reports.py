@@ -80,9 +80,7 @@ def latest_reports(database: Database) -> list[Report]:
 
 def latest_reports_before_timestamp(database: Database, data_model: dict, max_iso_timestamp: str) -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection before the max timestamp."""
-    if not max_iso_timestamp or max_iso_timestamp >= iso_timestamp():
-        return latest_reports(database)
-    report_filter = {"timestamp": {"$lt": max_iso_timestamp}}
+    report_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else {}
     report_uuids = database.reports.distinct("report_uuid", report_filter)
     report_dicts = []
     for report_uuid in report_uuids:
