@@ -3,7 +3,7 @@ name = "api_server"
 version = "5.1.0-rc.1"
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==41.0.2",
+    "cryptography==41.0.3",
     "gevent==23.7.0",
     "ldap3==2.9.1",
     "lxml==4.9.3",
@@ -28,7 +28,7 @@ tools = [
     "black==23.7.0",
     "mypy==1.4.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.281",
+    "ruff==0.0.282",
     "safety==2.3.5",
     "vulture==2.7"
 ]
