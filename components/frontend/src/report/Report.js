@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Message } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
@@ -9,7 +9,7 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
-import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS } from '../utils';
+import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
 import { metricStatusOnDate } from './report_utils';
 
@@ -35,7 +35,7 @@ function summarizeTagOnDate(report, measurements, tag, date) {
     return summary
 }
 
-function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags, selectedTags, reload }) {
+function ReportDashboard({ dates, measurements, report, onClick, selectedTags, toggleSelectedTag, reload }) {
     const dataModel = useContext(DataModel)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     function subject_cards() {
@@ -66,7 +66,7 @@ function ReportDashboard({ dates, measurements, report, onClick, setSelectedTags
                     header={<Tag tag={tag} selected={selectedTags.includes(tag)} />}
                     key={tag}
                     maxY={nrMetrics}
-                    onClick={() => setSelectedTags(tag_list => (tag_list.includes(tag) ? tag_list.filter((value) => value !== tag) : [tag, ...tag_list]))}
+                    onClick={() => toggleSelectedTag(tag)}
                     summary={summary}
                 />
             )
@@ -118,12 +118,7 @@ export function Report({
         window.scrollBy(0, 163);  // Correct for menubar and subject title margin
     }
 
-    const [selectedTags, setSelectedTags] = useState([]);
-    useEffect(() => {
-        // Make sure we only filter by tags that are actually used in this report
-        setSelectedTags(prev_tags => prev_tags.filter(tag => getReportTags(report).includes(tag)))
-    }, [report]);
-
+    const [selectedTags, toggleSelectedTag] = useURLSearchQuery("selected_tags", "array");
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
     }
@@ -144,8 +139,8 @@ export function Report({
                 dates={dates}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                setSelectedTags={setSelectedTags}
                 selectedTags={selectedTags}
+                toggleSelectedTag={toggleSelectedTag}
                 report={report}
                 reload={reload}
             />
@@ -163,7 +158,7 @@ export function Report({
                 report_date={report_date}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
-                tags={selectedTags}
+                tags={selectedTags.filter((tag) => getReportTags(report).includes(tag))}  // Only filter by tags that are actually used in this report
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
