@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.1.0-rc.1 - 2023-07-27
+## [Unreleased]
 
 ### Deployment notes
 
@@ -26,6 +26,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - Fix the landing URL for Harbor artifacts. Fixes [#6485](https://github.com/ICTU/quality-time/issues/6485).
 - When changing the metric type, don't remove tags the user added to the metric. Fixes [#6524](https://github.com/ICTU/quality-time/issues/6524).
 - Don't make the vertical axis of trend graphs 200 high when the maximum value is 100 (for example, when displaying metrics with a percentage scale). Fixes [#6621](https://github.com/ICTU/quality-time/issues/6621).
+- Clicking "Reset all settings" in the Settings panel would result in a type error in the user interface. Fixes [#6759](https://github.com/ICTU/quality-time/issues/6759).
 
 ### Added
 
