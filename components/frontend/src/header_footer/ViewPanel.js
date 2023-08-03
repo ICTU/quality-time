@@ -72,7 +72,7 @@ export function ViewPanel({
                                     clearVisibleDetailsTabs();
                                     setHideMetricsNotRequiringAction(false);
                                     clearHiddenColumns();
-                                    handleDateChange({}, {name: "", value: null});
+                                    handleDateChange(null);
                                     handleSort(null);
                                     setNrDates(1);
                                     setDateInterval(7);
