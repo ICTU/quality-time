@@ -12,6 +12,8 @@ updates:
     python:
       patterns:
         - "*"
+      exclude-patterns:
+        - "pydantic"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -59,6 +61,8 @@ updates:
     python:
       patterns:
         - "*"
+      exclude-patterns:
+        - "pydantic"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -112,6 +116,8 @@ updates:
     python:
       patterns:
         - "*"
+      exclude-patterns:
+        - "pydantic"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -122,6 +128,8 @@ updates:
     python:
       patterns:
         - "*"
+      exclude-patterns:
+        - "pydantic"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -141,6 +149,8 @@ updates:
     npm:
       patterns:
         - "*"
+      exclude-patterns:
+        - "pydantic"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
