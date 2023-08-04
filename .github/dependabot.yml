@@ -8,6 +8,10 @@ updates:
 
 - package-ecosystem: pip
   directory: "/components/collector"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -41,12 +45,20 @@ updates:
 
 - package-ecosystem: npm
   directory: "/components/frontend"
+  groups:
+    npm:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/notifier"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -77,6 +89,10 @@ updates:
 
 - package-ecosystem: npm
   directory: "/components/renderer"
+  groups:
+    npm:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -92,12 +108,20 @@ updates:
 
 - package-ecosystem: pip
   directory: "/components/api_server"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/components/shared_code"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
@@ -113,30 +137,50 @@ updates:
 
 - package-ecosystem: npm
   directory: "/docs"
+  groups:
+    npm:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/docs"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/release"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/application_tests"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests"
+  groups:
+    python:
+      patterns:
+        - "*"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 100
