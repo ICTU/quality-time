@@ -25,6 +25,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When accessing Harbor with invalid credentials, Harbor returns data from public projects only. To prevent the invalid credentials from going unnoticed, explicitly check Harbor credentials before retrieving data. Fixes [#6484](https://github.com/ICTU/quality-time/issues/6485).
 - Fix the landing URL for Harbor artifacts. Fixes [#6485](https://github.com/ICTU/quality-time/issues/6485).
 - When changing the metric type, don't remove tags the user added to the metric. Fixes [#6524](https://github.com/ICTU/quality-time/issues/6524).
+- When time traveling, *Quality-time* would show measurements as being outdated. While technically correct, this doesn't constitute an issue that needs to be fixed and shouldn't be flagged as a problem. Fixes [#6555](https://github.com/ICTU/quality-time/issues/6555).
 - Don't make the vertical axis of trend graphs 200 high when the maximum value is 100 (for example, when displaying metrics with a percentage scale). Fixes [#6621](https://github.com/ICTU/quality-time/issues/6621).
 - Clicking "Reset all settings" in the Settings panel would result in a type error in the user interface. Fixes [#6759](https://github.com/ICTU/quality-time/issues/6759).
 
