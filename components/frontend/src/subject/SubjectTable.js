@@ -115,7 +115,7 @@ export function SubjectTable({
                             {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={reversedMeasurements} />}
                             {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-                            {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} /></Table.Cell>}
+                            {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} reportDate={reportDate} /></Table.Cell>}
                             {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
                             {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
                             {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
