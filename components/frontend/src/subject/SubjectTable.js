@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
+import { IssueStatus } from '../issue/IssueStatus';
 import { MetricDetails } from '../metric/MetricDetails';
-import { IssueStatus } from '../measurement/IssueStatus';
 import { MeasurementSources } from '../measurement/MeasurementSources';
 import { MeasurementTarget } from '../measurement/MeasurementTarget';
 import { MeasurementValue } from '../measurement/MeasurementValue';
@@ -94,17 +94,18 @@ export function SubjectTable({
                             className={nrDates === 1 ? metric.status || "unknown" : ""}
                             details={
                                 <MetricDetails
+                                    changed_fields={changed_fields}
                                     first_metric={index === 0}
                                     last_metric={index === last_index}
+                                    metric_uuid={metric_uuid}
+                                    reload={reload}
                                     report_date={reportDate}
                                     reports={reports}
                                     report={report}
-                                    subject_uuid={subject_uuid}
-                                    metric_uuid={metric_uuid}
-                                    changed_fields={changed_fields}
-                                    visibleDetailsTabs={settings.visibleDetailsTabs}
+                                    settings={settings}
                                     stopSorting={() => handleSort(null)}
-                                    reload={reload}
+                                    subject_uuid={subject_uuid}
+                                    visibleDetailsTabs={settings.visibleDetailsTabs}
                                 />
                             }
                             expanded={settings.visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}

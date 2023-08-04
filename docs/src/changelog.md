@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Added
 
+- Support creating issues for specific measurement entities. Closes [#5955](https://github.com/ICTU/quality-time/issues/5955).
 - Add an endpoint `api/v3/report/<report_uuid>/metric_status_summary` that returns a summary of the metric statuses for the specified report in JSON format. Closes [#6146](https://github.com/ICTU/quality-time/issues/6146).
 
 ## v5.3.1 - 2023-11-08

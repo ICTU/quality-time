@@ -5,6 +5,7 @@ import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { HyperLink } from '../widgets/HyperLink';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from '../sharedPropTypes';
+import { getMetricIssueIds } from '../utils';
 
 function IssueWithoutTracker({ issueId }) {
     return (
@@ -156,26 +157,31 @@ issuePopupContent.propTypes = {
     issueStatus: issueStatusPropType
 }
 
-function IssuesWithTracker({ metric, settings }) {
+function IssuesWithTracker({ issueIds, metric, settings }) {
     const issueStatuses = metric.issue_status || [];
-    return <>{issueStatuses.map((issueStatus) => <IssueWithTracker
-        key={issueStatus.issue_id}
-        issueStatus={issueStatus}
-        settings={settings}
-    />)}</>
+    return <>
+        {
+            issueStatuses.filter((issueStatus) => issueIds.indexOf(issueStatus.issue_id) > -1).map((issueStatus) =>
+                <IssueWithTracker key={issueStatus.issue_id} issueStatus={issueStatus} settings={settings} />
+            )
+        }
+    </>
 }
 IssuesWithTracker.propTypes = {
+    issueIds: stringsPropType,
     metric: metricPropType,
     settings: settingsPropType
 }
 
-export function IssueStatus({ metric, issueTrackerMissing, settings }) {
-    if (issueTrackerMissing && metric.issue_ids?.length > 0) {
-        return <IssuesWithoutTracker issueIds={metric.issue_ids} />
+export function IssueStatus({ entityKey, metric, issueTrackerMissing, settings }) {
+    const issueIds = getMetricIssueIds(metric, entityKey)
+    if (issueTrackerMissing && issueIds.length > 0) {
+        return <IssuesWithoutTracker issueIds={issueIds} />
     }
-    return <IssuesWithTracker metric={metric} settings={settings} />
+    return <IssuesWithTracker issueIds={issueIds} metric={metric} settings={settings} />
 }
 IssueStatus.propTypes = {
+    entityKey: PropTypes.string,
     issueTrackerMissing: PropTypes.bool,
     metric: metricPropType,
     settings: settingsPropType

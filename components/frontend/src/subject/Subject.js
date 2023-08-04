@@ -11,7 +11,7 @@ import {
 } from '../sharedPropTypes';
 import {
     get_metric_comment,
-    get_metric_issue_ids,
+    getMetricIssueIds,
     get_metric_name,
     get_metric_status,
     getMetricTags,
@@ -64,8 +64,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_sources.join().localeCompare(m2_sources.join())
         },
         issues: (m1, m2) => {
-            const m1_issues = get_metric_issue_ids(m1[1]).join();
-            const m2_issues = get_metric_issue_ids(m2[1]).join();
+            const m1_issues = getMetricIssueIds(m1[1]).join();
+            const m2_issues = getMetricIssueIds(m2[1]).join();
             return m1_issues.localeCompare(m2_issues)
         },
         tags: (m1, m2) => {

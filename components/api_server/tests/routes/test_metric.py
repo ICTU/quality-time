@@ -651,6 +651,12 @@ class MetricIssueTest(DataModelTestCase):
         inserted_issue_ids = inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"]
         self.assertEqual(["FOO-42"], inserted_issue_ids)
 
+    def assert_entity_issue_inserted(self):
+        """Check that the entity issue is inserted in the database."""
+        inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
+        inserted_entity_issue_ids = inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["entity_issue_ids"]
+        self.assertEqual({"key": ["FOO-42"]}, inserted_entity_issue_ids)
+
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
@@ -660,6 +666,16 @@ class MetricIssueTest(DataModelTestCase):
         self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
         self.assert_issue_posted(requests_post)
         self.assert_issue_inserted()
+
+    @patch("bottle.request", Mock(json={"entity_key": "key", "metric_url": METRIC_URL}))
+    def test_add_metric_entity_issue(self, requests_post):
+        """Test that an issue can be added to the issue tracker and linked to a measurement entity."""
+        response = Mock()
+        response.json.return_value = {"key": "FOO-42"}
+        requests_post.return_value = response
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
+        self.assert_issue_posted(requests_post)
+        self.assert_entity_issue_inserted()
 
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @patch("model.issue_tracker.requests.get")

@@ -70,10 +70,10 @@ class MetricCollector:
         tracker_type = tracker.get("type")
         has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
         if has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
-            return [
-                collector_class(self.__session, tracker).collect_issue_status(issue_id)
-                for issue_id in self._metric.get("issue_ids", [])
-            ]
+            issue_ids = self._metric.get("issue_ids", [])
+            for entity_issue_id_list in self._metric.get("entity_issue_ids", {}).values():
+                issue_ids.extend(entity_issue_id_list)
+            return [collector_class(self.__session, tracker).collect_issue_status(issue_id) for issue_id in issue_ids]
         return []
 
     def __has_all_mandatory_parameters(self, source) -> bool:

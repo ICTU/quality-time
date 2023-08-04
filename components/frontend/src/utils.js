@@ -222,10 +222,17 @@ export function nrMetricsInReports(reports) {
     return nrMetrics
 }
 
-export function get_metric_issue_ids(metric) {
-    let issue_ids = metric.issue_ids ?? [];
-    issue_ids.sort();
-    return issue_ids
+export function getMetricIssueIds(metric, entityKey) {
+    let issueIds = [];
+    if (entityKey) {
+        issueIds = metric.entity_issue_ids?.[entityKey] ?? [];
+    } else {
+        issueIds = metric.issue_ids ?? [];
+        Object.values(metric?.entity_issue_ids ?? {}).forEach((entityIssueIds) => issueIds.push(...entityIssueIds))
+    }
+    issueIds = [...new Set(issueIds)];
+    issueIds.sort((id1, id2) => id1.localeCompare(id2));
+    return issueIds
 }
 
 export function capitalize(string) {
