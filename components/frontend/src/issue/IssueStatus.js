@@ -172,14 +172,15 @@ IssuesWithTracker.propTypes = {
     settings: settingsPropType
 }
 
-export function IssueStatus({ metric, issueTrackerMissing, settings }) {
-    const issueIds = getMetricIssueIds(metric)
+export function IssueStatus({ entityKey, metric, issueTrackerMissing, settings }) {
+    const issueIds = getMetricIssueIds(metric, entityKey)
     if (issueTrackerMissing && issueIds.length > 0) {
         return <IssuesWithoutTracker issueIds={issueIds} />
     }
     return <IssuesWithTracker issueIds={issueIds} metric={metric} settings={settings} />
 }
 IssueStatus.propTypes = {
+    entityKey: PropTypes.string,
     issueTrackerMissing: bool,
     metric: metricPropType,
     settings: settingsPropType

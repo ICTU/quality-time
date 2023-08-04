@@ -8,7 +8,8 @@ import { capitalize } from '../utils';
 import { source_entity_status_name as status_name } from './source_entity_status';
 import { EDIT_ENTITY_PERMISSION } from '../context/Permissions';
 import { LabelWithDate } from '../widgets/LabelWithDate';
-import { entityPropType, entityStatusPropType, reportPropType } from '../sharedPropTypes';
+import { IssuesRows } from '../issue/IssuesRows';
+import { entityPropType, entityStatusPropType, metricPropType, reportPropType } from '../sharedPropTypes';
 
 function entityStatusOption(status, text, content, subheader) {
     return {
@@ -45,6 +46,7 @@ entityStatusOptions.propTypes = {
 export function SourceEntityDetails(
     {
         entity,
+        metric,
         metric_uuid,
         name,
         rationale,
@@ -95,11 +97,13 @@ export function SourceEntityDetails(
                     />
                 </Grid.Column>
             </Grid.Row>
+            <IssuesRows entityKey={entity.key} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} target={name} />
         </Grid>
     );
 }
 SourceEntityDetails.propTypes = {
     entity: entityPropType,
+    metric: metricPropType,
     metric_uuid: string,
     name: string,
     rationale: string,

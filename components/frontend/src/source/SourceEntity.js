@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { bool, func, string } from 'prop-types';
 import { Table } from 'semantic-ui-react';
+import { IssueStatus } from '../issue/IssueStatus';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 import { source_entity_status_name } from './source_entity_status';
 import { alignment } from './SourceEntities';
-import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from '../sharedPropTypes';
+import { entityAttributesPropType, entityPropType, entityStatusPropType, metricPropType, reportPropType, settingsPropType } from '../sharedPropTypes';
 import "./SourceEntity.css";
 
 function entityCanBeIgnored(status, statusEndDateString) {
@@ -23,6 +24,7 @@ entityCanBeIgnored.propTypes = {
 
 export function SourceEntity(
     {
+        metric,
         metric_uuid,
         source_uuid,
         hide_ignored_entities,
@@ -32,6 +34,7 @@ export function SourceEntity(
         rationale,
         reload,
         report,
+        settings,
         status,
         status_end_date
     }
@@ -53,6 +56,7 @@ export function SourceEntity(
     }
     const details = <SourceEntityDetails
         entity={entity}
+        metric={metric}
         metric_uuid={metric_uuid}
         name={entity_name}
         rationale={rationale}
@@ -68,6 +72,9 @@ export function SourceEntity(
             <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
             <Table.Cell style={style}>{status === "unconfirmed" ? "" : rationale}</Table.Cell>
             <Table.Cell style={style}>{entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}</Table.Cell>
+            <Table.Cell>
+                <IssueStatus entityKey={entity.key} metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
+            </Table.Cell>
             {entity_attributes.map((entity_attribute) =>
                 <Table.Cell
                     key={entity_attribute.key}
@@ -80,6 +87,7 @@ export function SourceEntity(
     );
 }
 SourceEntity.propTypes = {
+    metric: metricPropType,
     metric_uuid: string,
     source_uuid: string,
     hide_ignored_entities: bool,
@@ -89,6 +97,7 @@ SourceEntity.propTypes = {
     rationale: string,
     reload: func,
     report: reportPropType,
+    settings: settingsPropType,
     status: entityStatusPropType,
     status_end_date: string,
 }

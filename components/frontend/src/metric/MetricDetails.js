@@ -18,7 +18,7 @@ import { MetricConfigurationParameters } from './MetricConfigurationParameters';
 import { MetricDebtParameters } from './MetricDebtParameters';
 import { MetricTypeHeader } from './MetricTypeHeader';
 import { TrendGraph } from './TrendGraph';
-import { datePropType, reportPropType, reportsPropType, stringsPropType, stringsURLSearchQueryPropType} from '../sharedPropTypes';
+import { datePropType, reportPropType, reportsPropType, settingsPropType, stringsPropType, stringsURLSearchQueryPropType } from '../sharedPropTypes';
 
 function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting }) {
     return (
@@ -54,7 +54,6 @@ fetchMeasurements.propTypes = {
     setMeasurements: func
 }
 
-
 export function MetricDetails({
     changed_fields,
     isFirstMetric,
@@ -64,6 +63,7 @@ export function MetricDetails({
     report_date,
     reports,
     report,
+    settings,
     stopFilteringAndSorting,
     subject_uuid,
     expandedItems,
@@ -142,7 +142,7 @@ export function MetricDetails({
             const source_name = get_source_name(report_source, dataModel);
             panes.push({
                 menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-                render: () => <Tab.Pane><SourceEntities report={report} metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} /></Tab.Pane>
+                render: () => <Tab.Pane><SourceEntities report={report} metric={metric} metric_uuid={metric_uuid} source={source} reload={measurementsReload} settings={settings} /></Tab.Pane>
             });
         });
     }
@@ -174,6 +174,7 @@ MetricDetails.propTypes = {
     report_date: datePropType,
     reports: reportsPropType,
     report: reportPropType,
+    settings: settingsPropType,
     stopFilteringAndSorting: func,
     subject_uuid: string,
     expandedItems: stringsURLSearchQueryPropType

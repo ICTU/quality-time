@@ -25,8 +25,8 @@ export function set_metric_debt(metric_uuid, value, reload) {
     fetch_server_api('post', `metric/${metric_uuid}/debt`, { "accept_debt": value }).then(reload)
 }
 
-export function add_metric_issue(metric_uuid, reload) {
-    const payload = {metric_url: `${window.location}#${metric_uuid}`}
+export function add_metric_issue(entityKey, metric_uuid, reload) {
+    const payload = {metric_url: `${window.location}#${metric_uuid}`, entity_key: entityKey}
     return fetch_server_api('post', `metric/${metric_uuid}/issue/new`, payload).then((json) => {
         if (json.ok) {
             window.open(json.issue_url)

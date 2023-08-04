@@ -191,18 +191,26 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     last_measurement = latest_successful_measurement(database, metric)
     measured_value = last_measurement.value() if last_measurement else "missing"
+    entity_key = dict(bottle.request.json).get("entity_key")
     issue_tracker = report.issue_tracker()
     issue_key, error = issue_tracker.create_issue(*create_issue_text(metric, measured_value))
     if error:
         return {"ok": False, "error": error}
     else:  # pragma: no feature-test-cover # noqa: RET505
-        old_issue_ids = metric.get("issue_ids") or []
-        new_issue_ids = sorted([issue_key, *old_issue_ids])
+        new_issue_ids: list[str] | dict[str, list[str]]
+        if entity_key:
+            old_issue_ids = metric.get("entity_issue_ids", {})
+            new_issue_ids = {**old_issue_ids}
+            new_issue_ids.setdefault(entity_key, []).append(issue_key)
+            report["subjects"][subject.uuid]["metrics"][metric_uuid]["entity_issue_ids"] = new_issue_ids
+        else:
+            old_issue_ids = metric.get("issue_ids") or []
+            new_issue_ids = sorted([issue_key, *old_issue_ids])
+            report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
         description = (
-            f"{{user}} changed the issue_ids of metric '{metric.name}' of subject "
+            f"{{user}} changed the {'entity_' if entity_key else ''}issue_ids of metric '{metric.name}' of subject "
             f"'{subject.name}' in report '{report.name}' from '{old_issue_ids}' to '{new_issue_ids}'."
         )
-        report["subjects"][subject.uuid]["metrics"][metric_uuid]["issue_ids"] = new_issue_ids
         insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
         return {"ok": True, "issue_url": issue_tracker.browse_url(issue_key)}
 
