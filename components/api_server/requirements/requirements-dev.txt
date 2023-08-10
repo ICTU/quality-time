@@ -256,9 +256,9 @@ cryptography==41.0.3 \
     --hash=sha256:ce785cf81a7bdade534297ef9e490ddff800d956625020ab2ec2780a556c313e \
     --hash=sha256:d0d651aa754ef58d75cec6edfbd21259d93810b73f6ec246436a21b7841908de
     # via api-server (pyproject.toml)
-dnspython==2.4.1 \
-    --hash=sha256:5b7488477388b8c0b70a8ce93b227c5603bc7b77f1565afe8e729c36c51447d7 \
-    --hash=sha256:c33971c79af5be968bb897e95c2448e11a645ee84d93b265ce0b7aabe5dfdca8
+dnspython==2.4.2 \
+    --hash=sha256:57c6fbaaeaaf39c891292012060beb141791735dbb4004798328fc2c467402d8 \
+    --hash=sha256:8dcfae8c7460a2f84b4072e26f1c9f4101ca20c071649cb7c34e8b6a93d58984
     # via pymongo
 gevent==23.7.0 \
     --hash=sha256:11b9bb0bce45170ff992760385a86e6955ccb88dba4a82a64d5ce9459290d8d6 \
@@ -465,9 +465,9 @@ packaging==23.1 \
     # via
     #   build
     #   pipx
-pip-tools==7.2.0 \
-    --hash=sha256:360b8d30bc9ee2531857494afb98c41e96534f2eec9dad6500ae2a71f7c631c4 \
-    --hash=sha256:616488b539e14b8aa85436ed597a33c291f4885c1d2e0bec97400abe5aff2c0d
+pip-tools==7.3.0 \
+    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
+    --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
     # via api-server (pyproject.toml)
 pipx==1.2.0 \
     --hash=sha256:a94c4bca865cd6e85b37cd6717a22481744890fe36b70db081a78d1feb923ce0 \
@@ -639,9 +639,9 @@ userpath==1.9.0 \
     --hash=sha256:8069f754d31edfbdb2c3b2e9abada057ce7518290838dac35d1c8cee1b4cc7b0 \
     --hash=sha256:85e3274543174477c62d5701ed43a3ef1051824a9dd776968adc411e58640dd1
     # via pipx
-wheel==0.41.0 \
-    --hash=sha256:55a0f0a5a84869bce5ba775abfd9c462e3a6b1b7b7ec69d72c0b83d673a5114d \
-    --hash=sha256:7e9be3bbd0078f6147d82ed9ed957e323e7708f57e134743d2edef3a7b7972a9
+wheel==0.41.1 \
+    --hash=sha256:12b911f083e876e10c595779709f8a88a59f45aacc646492a67fe9ef796c1b47 \
+    --hash=sha256:473219bd4cbedc62cea0cb309089b593e47c15c4a2531015f94e4e3b9a0f6981
     # via pip-tools
 zope-event==5.0 \
     --hash=sha256:2832e95014f4db26c47a13fdaef84cef2f4df37e66b59d8f1f4a8f319a632c26 \
