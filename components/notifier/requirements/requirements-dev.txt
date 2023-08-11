@@ -101,9 +101,9 @@ argcomplete==3.1.1 \
     --hash=sha256:35fa893a88deea85ea7b20d241100e64516d6af6d7b0ae2bed1d263d26f70948 \
     --hash=sha256:6c4c563f14f01440aaffa3eae13441c5db2357b5eec639abe7c0b15334627dff
     # via pipx
-async-timeout==4.0.2 \
-    --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
-    --hash=sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c
+async-timeout==4.0.3 \
+    --hash=sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f \
+    --hash=sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028
     # via aiohttp
 attrs==23.1.0 \
     --hash=sha256:1f28b4522cdc2fb4256ac1a020c78acf9cba2c6b461ccd2c126f3aa8e8335d04 \
@@ -518,9 +518,9 @@ packaging==23.1 \
     #   build
     #   mongomock
     #   pipx
-pip-tools==7.2.0 \
-    --hash=sha256:360b8d30bc9ee2531857494afb98c41e96534f2eec9dad6500ae2a71f7c631c4 \
-    --hash=sha256:616488b539e14b8aa85436ed597a33c291f4885c1d2e0bec97400abe5aff2c0d
+pip-tools==7.3.0 \
+    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
+    --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
     # via notifier (pyproject.toml)
 pipx==1.2.0 \
     --hash=sha256:a94c4bca865cd6e85b37cd6717a22481744890fe36b70db081a78d1feb923ce0 \
@@ -594,9 +594,9 @@ userpath==1.9.0 \
     --hash=sha256:8069f754d31edfbdb2c3b2e9abada057ce7518290838dac35d1c8cee1b4cc7b0 \
     --hash=sha256:85e3274543174477c62d5701ed43a3ef1051824a9dd776968adc411e58640dd1
     # via pipx
-wheel==0.41.0 \
-    --hash=sha256:55a0f0a5a84869bce5ba775abfd9c462e3a6b1b7b7ec69d72c0b83d673a5114d \
-    --hash=sha256:7e9be3bbd0078f6147d82ed9ed957e323e7708f57e134743d2edef3a7b7972a9
+wheel==0.41.1 \
+    --hash=sha256:12b911f083e876e10c595779709f8a88a59f45aacc646492a67fe9ef796c1b47 \
+    --hash=sha256:473219bd4cbedc62cea0cb309089b593e47c15c4a2531015f94e4e3b9a0f6981
     # via pip-tools
 yarl==1.9.2 \
     --hash=sha256:04ab9d4b9f587c06d801c2abfe9317b77cdf996c65a90d5e84ecc45010823571 \
