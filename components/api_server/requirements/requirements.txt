@@ -180,9 +180,9 @@ cryptography==41.0.3 \
     --hash=sha256:ce785cf81a7bdade534297ef9e490ddff800d956625020ab2ec2780a556c313e \
     --hash=sha256:d0d651aa754ef58d75cec6edfbd21259d93810b73f6ec246436a21b7841908de
     # via api-server (pyproject.toml)
-dnspython==2.4.1 \
-    --hash=sha256:5b7488477388b8c0b70a8ce93b227c5603bc7b77f1565afe8e729c36c51447d7 \
-    --hash=sha256:c33971c79af5be968bb897e95c2448e11a645ee84d93b265ce0b7aabe5dfdca8
+dnspython==2.4.2 \
+    --hash=sha256:57c6fbaaeaaf39c891292012060beb141791735dbb4004798328fc2c467402d8 \
+    --hash=sha256:8dcfae8c7460a2f84b4072e26f1c9f4101ca20c071649cb7c34e8b6a93d58984
     # via pymongo
 gevent==23.7.0 \
     --hash=sha256:11b9bb0bce45170ff992760385a86e6955ccb88dba4a82a64d5ce9459290d8d6 \
