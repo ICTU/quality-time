@@ -15,18 +15,18 @@ dev = [
     "coverage==7.2.7",
     "pip==23.2.1",
     "pipx==1.2.0",
-    "pip-tools==7.2.0",  # To add hashes to requirements
+    "pip-tools==7.3.0",  # To add hashes to requirements
     "types-requests==2.31.0.2",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.5",
     "black==23.7.0",
-    "mypy==1.4.1",
+    "mypy==1.5.0",
     "pip-audit==2.6.1",
-    "ruff==0.0.282",
+    "ruff==0.0.284",
     "safety==2.3.5",
-    "vulture==2.7"
+    "vulture==2.8"
 ]
 
 [tool.black]
