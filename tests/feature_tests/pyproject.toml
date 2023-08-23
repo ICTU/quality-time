@@ -5,28 +5,28 @@ dependencies = [
     "asserts==0.12.0",
     "behave==1.2.6",
     "gevent==23.7.0",
-    "pymongo==4.4.1",
+    "pymongo==4.5.0",
     "requests==2.31.0",
     "sseclient==0.0.27"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.7",
+    "coverage==7.3.0",
     "pip==23.2.1",
     "pipx==1.2.0",
-    "pip-tools==7.2.0",  # To add hashes to requirements
+    "pip-tools==7.3.0",  # To add hashes to requirements
     "types-requests==2.31.0.2",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.5",
     "black==23.7.0",
-    "mypy==1.4.1",
+    "mypy==1.5.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.282",
+    "ruff==0.0.285",
     "safety==2.3.5",
-    "vulture==2.7"
+    "vulture==2.9.1"
 ]
 
 [tool.black]
