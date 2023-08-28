@@ -2,7 +2,7 @@
 name = "docs"
 version = "5.1.0-rc.1"
 dependencies = [
-    "furo==2023.7.26",
+    "furo==2023.8.19",
     "gitpython==3.1.32",
     "myst-parser==2.0.0",
     "Sphinx==7.1.2",
@@ -12,7 +12,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.7",
+    "coverage==7.3.0",
     "pip==23.2.1",
     "pipx==1.2.0",
     "pip-tools==7.3.0",  # To add hashes to requirements
@@ -22,11 +22,11 @@ dev = [
 tools = [
     "black==23.7.0",
     "bandit==1.7.5",
-    "mypy==1.4.1",
+    "mypy==1.5.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.282",
+    "ruff==0.0.286",
     "safety==2.3.5",
-    "vulture==2.7"
+    "vulture==2.9.1"
 ]
 
 [tool.black]

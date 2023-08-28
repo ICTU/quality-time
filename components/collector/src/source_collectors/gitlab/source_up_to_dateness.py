@@ -1,13 +1,14 @@
 """GitLab source up-to-dateness collector."""
 
-from __future__ import annotations
-
 import asyncio
 import itertools
 from abc import ABC
+from collections.abc import Sequence
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, cast
+from typing import Self, cast
 from urllib.parse import quote
+
+import aiohttp
 
 from shared.utils.date_time import now
 
@@ -17,11 +18,6 @@ from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 
 from .base import GitLabProjectBase
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
-
-    import aiohttp
 
 
 class GitLabFileUpToDateness(GitLabProjectBase):
@@ -134,13 +130,13 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
 class GitLabSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either pipelines or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source) -> GitLabSourceUpToDateness:
+    def __new__(cls, session: aiohttp.ClientSession, source) -> Self:
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = GitLabFileUpToDateness if file_path else GitLabPipelineUpToDateness
         instance = collector_class(session, source)
         instance.source_type = cls.source_type
-        return cast(GitLabSourceUpToDateness, instance)
+        return cast(Self, instance)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to document that this class does not parse responses itself."""

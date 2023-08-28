@@ -1,9 +1,10 @@
 """Azure DevOps Server up-to-dateness collector."""
 
-from __future__ import annotations
-
 from abc import ABC
-from typing import TYPE_CHECKING, cast
+from datetime import datetime
+from typing import Self, cast
+
+import aiohttp
 
 from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
@@ -11,11 +12,6 @@ from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
 from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
-
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    import aiohttp
 
 
 class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase):
@@ -57,13 +53,13 @@ class AzureDevopsJobUpToDateness(TimePassedCollector, AzureDevopsJobs):
 class AzureDevopsSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either jobs or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source) -> AzureDevopsSourceUpToDateness:
+    def __new__(cls, session: aiohttp.ClientSession, source) -> Self:
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = AzureDevopsFileUpToDateness if file_path else AzureDevopsJobUpToDateness
         instance = collector_class(session, source)
         instance.source_type = cls.source_type
-        return cast(AzureDevopsSourceUpToDateness, instance)
+        return cast(Self, instance)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to document that this class does not parse responses itself."""

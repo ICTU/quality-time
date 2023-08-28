@@ -364,6 +364,6 @@ class SlowTransactionsCollector(SourceCollector):
         )
 
     @staticmethod
-    def _round(value: float | int) -> float:
+    def _round(value: float) -> float:
         """Round the value at exactly one decimal."""
         return round(float(value), 1)

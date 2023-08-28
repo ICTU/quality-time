@@ -8,7 +8,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.2.7",
+    "coverage==7.3.0",
     "mongomock==4.1.2",
     "pip==23.2.1",
     "pipx==1.2.0",
@@ -19,11 +19,11 @@ dev = [
 tools = [
     "bandit==1.7.5",
     "black==23.7.0",
-    "mypy==1.4.1",
+    "mypy==1.5.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.282",
+    "ruff==0.0.286",
     "safety==2.3.5",
-    "vulture==2.7"
+    "vulture==2.9.1"
 ]
 
 [tool.black]

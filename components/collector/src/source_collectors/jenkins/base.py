@@ -40,8 +40,7 @@ class JenkinsJobs(SourceCollector):
                 job["name"] = f"{parent_job_name}/{job['name']}"
             if job.get("buildable"):
                 yield job
-            for child_job in self._jobs(job.get("jobs", []), parent_job_name=job["name"]):
-                yield child_job
+            yield from self._jobs(job.get("jobs", []), parent_job_name=job["name"])
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job should be counted."""
