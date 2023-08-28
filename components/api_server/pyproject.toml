@@ -16,7 +16,7 @@ dev = [
     "coverage==7.2.7",
     "pip==23.2.1",
     "pipx==1.2.0",
-    "pip-tools==7.2.0",  # To add hashes to requirements
+    "pip-tools==7.3.0",  # To add hashes to requirements
     "pydantic==1.10.9",  # Needed for importing the data model in the tests from the shared data model component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.14",
