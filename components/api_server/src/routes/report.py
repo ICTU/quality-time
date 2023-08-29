@@ -1,8 +1,10 @@
 """Report routes."""
 
 import os
+from collections.abc import Callable
+from functools import partial, wraps
 from http import HTTPStatus
-from typing import cast
+from typing import TypeVar, cast
 from urllib import parse
 
 import bottle
@@ -31,10 +33,30 @@ from utils.functions import DecryptionError, check_url_availability, report_date
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-def report_not_found_response(report_uuid: ReportId) -> dict[str, str | bool]:
-    """Response for a report that can not be found."""
-    bottle.response.status = HTTPStatus.NOT_FOUND
-    return {"ok": False, "error": f"Report with UUID {report_uuid} not found."}
+ReturnType = TypeVar("ReturnType")
+
+
+def with_report(
+    route: Callable[..., ReturnType] | None = None,
+    pass_report_uuid: bool = True,
+):
+    """Return a decorator to fetch a report from the database and pass it to the route, or bail if it can't be found."""
+    if route is None:  # Allow for using the decorator without brackets, e.g. @with_report
+        return partial(with_report, pass_report_uuid=pass_report_uuid)
+
+    @wraps(route)
+    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:
+        report = latest_report(database, report_uuid)
+        if report is None:
+            bottle.response.status = HTTPStatus.NOT_FOUND
+            return {"ok": False, "error": f"Report with UUID {report_uuid} not found."}
+        route_args: list[Report | ReportId | Database] = [database, report]
+        if pass_report_uuid:
+            route_args.append(report_uuid)
+        route_args.extend(args)
+        return route(*route_args, **kwargs)
+
+    return wrapper
 
 
 @bottle.get("/api/v3/report", authentication_required=False)
@@ -104,11 +126,9 @@ def post_report_new(database: Database):
 
 
 @bottle.post("/api/v3/report/<report_uuid>/copy", permissions_required=[EDIT_REPORT_PERMISSION])
-def post_report_copy(report_uuid: ReportId, database: Database):
+@with_report
+def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
     """Copy a report."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     report_copy = copy_report(report)
     delta_description = f"{{user}} copied the report '{report.name}'."
     uuids = [report_uuid, report_copy["report_uuid"]]
@@ -133,19 +153,16 @@ def export_report_as_pdf(report_uuid: ReportId):
 
 
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
-def export_report_as_json(database: Database, report_uuid: ReportId):
+@with_report(pass_report_uuid=False)
+def export_report_as_json(database: Database, report: Report):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
-    report = latest_report(database, report_uuid)
-    if not report:
-        return report_not_found_response(report_uuid)
     if "public_key" in bottle.request.query:
         public_key = bottle.request.query["public_key"]
     else:  # default to own public key
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         if not document:  # pragma: no feature-test-cover
-            bottle.response.status = 500
-            bottle.response.content_type = "application/json"
-            return {"error": "Cannot find the public key of this Quality-time instance."}
+            bottle.response.status = HTTPStatus.INTERNAL_SERVER_ERROR
+            return {"ok": False, "error": "Cannot find the public key of this Quality-time instance."}
         public_key = document["public_key"]
 
     encrypt_credentials(public_key, report)
@@ -153,22 +170,18 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
 
 
 @bottle.delete("/api/v3/report/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
-def delete_report(report_uuid: ReportId, database: Database):
+@with_report
+def delete_report(database: Database, report: Report, report_uuid: ReportId):
     """Delete a report."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     report["deleted"] = "true"
     delta_description = f"{{user}} deleted the report '{report.name}'."
     return insert_new_report(database, delta_description, [report_uuid], report)
 
 
 @bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
-def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
+@with_report
+def post_report_attribute(database: Database, report: Report, report_uuid: ReportId, report_attribute: str):
     """Set a report attribute."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     new_value = dict(bottle.request.json)[report_attribute]
     if report_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
@@ -183,11 +196,14 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
-def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute: str, database: Database):
+@with_report
+def post_report_issue_tracker_attribute(
+    database: Database,
+    report: Report,
+    report_uuid: ReportId,
+    tracker_attribute: str,
+):
     """Set the issue tracker attribute."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     new_value = dict(bottle.request.json)[tracker_attribute]
     if tracker_attribute == "type":
         old_value = report.get("issue_tracker", {}).get("type") or ""
@@ -217,21 +233,17 @@ def post_report_issue_tracker_attribute(report_uuid: ReportId, tracker_attribute
 
 
 @bottle.get("/api/v3/report/<report_uuid>/issue_tracker/suggestions/<query>", authentication_required=True)
-def get_report_issue_tracker_suggestions(report_uuid: ReportId, query: str, database: Database):
+@with_report(pass_report_uuid=False)
+def get_report_issue_tracker_suggestions(database: Database, report: Report, query: str):  # noqa: ARG001
     """Get suggestions for issue ids from the issue tracker using the query string."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     issue_tracker = report.issue_tracker()
     return {"ok": True, "suggestions": [issue.as_dict() for issue in issue_tracker.get_suggestions(query)]}
 
 
 @bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=False)
-def get_report_issue_tracker_options(report_uuid: ReportId, database: Database):
+@with_report(pass_report_uuid=False)
+def get_report_issue_tracker_options(database: Database, report: Report):  # noqa: ARG001
     """Get options for the issue tracker attributes such as project key and issue type."""
-    report = latest_report(database, report_uuid)
-    if report is None:
-        return report_not_found_response(report_uuid)
     issue_tracker = report.issue_tracker()
     return issue_tracker.get_options().as_dict() | {"ok": True}
 
