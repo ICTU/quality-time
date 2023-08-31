@@ -10,6 +10,7 @@ from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.database.reports import get_reports
 from shared.utils.functions import iso_timestamp
 from shared.utils.type import ItemId, ReportId
+from shared_data_model import DATA_MODEL
 
 from model.report import Report
 from utils.functions import unique
@@ -63,10 +64,10 @@ def _get_change_key(change: Change) -> str:
     return f"{change['timestamp']}:{','.join(sorted(changed_uuids))}:{description}"
 
 
-def latest_report(database: Database, data_model, report_uuid: str):
+def latest_report(database: Database, report_uuid: str) -> Report | None:
     """Get latest report with this uuid."""
     report_dict = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    return Report(data_model, report_dict) if report_dict else None
+    return Report(DATA_MODEL.dict(), report_dict) if report_dict else None
 
 
 # Sort order:

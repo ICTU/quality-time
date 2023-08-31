@@ -13,10 +13,18 @@ Feature: report
     When the client deletes the report
     Then the report does not exist
 
+  Scenario: delete not-existing report
+    When the client deletes a non-existing report
+    Then the server returns a 404
+
   Scenario: copy report
     Given an existing report
     When the client copies the report
     Then the report title is "New report (copy)"
+
+  Scenario: copy non-existing report
+    When the client copies a non-existing report
+    Then the server returns a 404
 
   Scenario: copy report with subject
     Given an existing report
@@ -29,6 +37,10 @@ Feature: report
     When the client creates a report
     And the client changes the report title to "New title"
     Then the report title is "New title"
+
+  Scenario: change report title of non-existing report
+    When the client changes a non-existing report title to "New title"
+    Then the server returns a 404
 
   Scenario: add comment without HTML
    Given an existing report

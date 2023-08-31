@@ -5,18 +5,18 @@ from pymongo.database import Database
 
 from shared.utils.type import ItemId, ReportId, NotificationDestinationId
 
-from database.datamodels import latest_datamodel
-from database.reports import insert_new_report, latest_report
+from database.reports import insert_new_report
+from model.report import Report
 from utils.functions import uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+from .report import with_report
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])
-def post_new_notification_destination(report_uuid: ReportId, database: Database):
+@with_report
+def post_new_notification_destination(database: Database, report: Report, report_uuid: ReportId):
     """Create a new notification destination."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
     if "notification_destinations" not in report:
         report["notification_destinations"] = {}
     report["notification_destinations"][(notification_destination_uuid := uuid())] = {
@@ -35,14 +35,14 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
+@with_report
 def delete_notification_destination(
+    database: Database,
+    report: Report,
     report_uuid: ReportId,
     notification_destination_uuid: NotificationDestinationId,
-    database: Database,
 ):
     """Delete a destination from a report."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
     destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     del report["notification_destinations"][notification_destination_uuid]
     delta_description = f"{{user}} deleted destination {destination_name} from report '{report.name}'."
@@ -54,14 +54,14 @@ def delete_notification_destination(
     "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
+@with_report
 def post_notification_destination_attributes(
+    database: Database,
+    report: Report,
     report_uuid: ReportId,
     notification_destination_uuid: NotificationDestinationId,
-    database: Database,
 ):
     """Set specified notification destination attributes."""
-    data_model = latest_datamodel(database)
-    report = latest_report(database, data_model, report_uuid)
     notification_destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
     attributes = dict(bottle.request.json)
     old_values = []

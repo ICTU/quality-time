@@ -42,17 +42,23 @@ class ReportTestCase(DataModelTestCase):
         self.database.reports.find_one.return_value = self.report
         self.database.measurements.find.return_value = []
 
+    def assert_report_not_found(self, response):
+        """Assert that the response is a report-not-found error message."""
+        self.assertEqual({"ok": False, "error": f"Report with UUID {REPORT_ID} not found."}, response)
+
 
 @patch("bottle.request")
 class PostReportAttributeTest(ReportTestCase):
     """Unit tests for the post report attribute route."""
 
+    TITLE = "New title"
+
     def test_post_report_title(self, request):
         """Test that the report title can be changed."""
-        request.json = {"title": "New title"}
-        self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "title", self.database))
+        request.json = {"title": self.TITLE}
+        self.assertEqual({"ok": True}, post_report_attribute(self.database, REPORT_ID, "title"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assertEqual("New title", updated_report["title"])
+        self.assertEqual(self.TITLE, updated_report["title"])
         self.assertEqual(
             {
                 "uuids": [REPORT_ID],
@@ -65,7 +71,7 @@ class PostReportAttributeTest(ReportTestCase):
     def test_post_report_layout(self, request):
         """Test that the report layout can be changed."""
         request.json = {"layout": [{"x": 1, "y": 2}]}
-        self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "layout", self.database))
+        self.assertEqual({"ok": True}, post_report_attribute(self.database, REPORT_ID, "layout"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual([{"x": 1, "y": 2}], updated_report["layout"])
         self.assertEqual(
@@ -80,7 +86,7 @@ class PostReportAttributeTest(ReportTestCase):
     def test_post_unsafe_comment(self, request):
         """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
         request.json = {"comment": 'Comment with script<script type="text/javascript">alert("Danger")</script>'}
-        self.assertEqual({"ok": True}, post_report_attribute(REPORT_ID, "comment", self.database))
+        self.assertEqual({"ok": True}, post_report_attribute(self.database, REPORT_ID, "comment"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual("Comment with script", updated_report["comment"])
         self.assertEqual(
@@ -92,6 +98,13 @@ class PostReportAttributeTest(ReportTestCase):
             updated_report["delta"],
         )
 
+    def test_non_existing_report(self, request):
+        """Test that changing the attribute of a non-existing report results in an error message."""
+        self.database.reports.find_one.return_value = None
+        request.json = {"title": self.TITLE}
+        self.assert_report_not_found(post_report_attribute(self.database, REPORT_ID, "title"))
+        self.database.reports.insert_one.assert_not_called()
+
 
 @patch("bottle.request")
 class ReportIssueTrackerPostAttributeTest(ReportTestCase):
@@ -100,7 +113,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
     def test_post_report_issue_tracker_type(self, request):
         """Test that the issue tracker type can be changed."""
         request.json = {"type": "azure_devops"}
-        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "type", self.database))
+        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "type"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -120,7 +133,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         """Test that the issue tracker url can be changed."""
         self.report["issue_tracker"] = {"type": "jira"}
         request.json = {"url": self.ISSUE_TRACKER_URL}
-        result = post_report_issue_tracker_attribute(REPORT_ID, "url", self.database)
+        result = post_report_issue_tracker_attribute(self.database, REPORT_ID, "url")
         self.assertTrue(result["ok"])
         self.assertEqual(-1, result["availability"][0]["status_code"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
@@ -139,7 +152,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
     def test_post_report_issue_tracker_username(self, request):
         """Test that the issue tracker username can be changed."""
         request.json = {"username": "jodoe"}
-        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "username", self.database))
+        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "username"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -156,7 +169,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
     def test_post_report_issue_tracker_password(self, request):
         """Test that the issue tracker password can be changed."""
         request.json = {"password": "another secret"}
-        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "password"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
@@ -174,7 +187,14 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         """Test that nothing happens when the new issue tracker password is unchanged."""
         self.report["issue_tracker"] = {"type": "jira", "parameters": {"password": "secret"}}
         request.json = {"password": "secret"}
-        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(REPORT_ID, "password", self.database))
+        self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "password"))
+        self.database.reports.insert_one.assert_not_called()
+
+    def test_non_existing_report(self, request):
+        """Test that an error is returned when the report does not exist."""
+        self.database.reports.find_one.return_value = None
+        request.json = {"username": "jodoe"}
+        self.assert_report_not_found(post_report_issue_tracker_attribute(self.database, REPORT_ID, "username"))
         self.database.reports.insert_one.assert_not_called()
 
 
@@ -204,8 +224,8 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         response = Mock()
         response.json.return_value = {"issues": [{"key": "FOO-42", "fields": {"summary": "Summary"}}]}
         requests_get.return_value = response
-        suggested_issues = get_report_issue_tracker_suggestions(REPORT_ID, "summ", self.database)
-        self.assertEqual({"suggestions": [{"key": "FOO-42", "text": "Summary"}]}, suggested_issues)
+        suggested_issues = get_report_issue_tracker_suggestions(self.database, REPORT_ID, "summ")
+        self.assertEqual({"ok": True, "suggestions": [{"key": "FOO-42", "text": "Summary"}]}, suggested_issues)
 
     @patch("requests.get")
     def test_get_issue_tracker_options_without_configured_report(self, requests_get):
@@ -213,12 +233,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         self.report["issue_tracker"] = {"type": "jira", "parameters": {"url": self.ISSUE_TRACKER_URL}}
         requests_get.return_value = self.project_response
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     def test_get_issue_tracker_options_without_configured_issue_type(self, requests_get):
@@ -229,12 +250,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     @disable_logging
@@ -246,6 +268,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response, self.fields_response]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [
@@ -254,7 +277,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             ],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     @disable_logging
@@ -265,8 +288,8 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "parameters": {"url": self.ISSUE_TRACKER_URL, "project_key": "FOO", "issue_type": "Bug"},
         }
         requests_get.side_effect = RuntimeError("yo")
-        expected_options = {"projects": [], "issue_types": [], "fields": [], "epic_links": []}
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        expected_options = {"ok": True, "projects": [], "issue_types": [], "fields": [], "epic_links": []}
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     @disable_logging
@@ -278,12 +301,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, RuntimeError("yo")]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     @disable_logging
@@ -295,12 +319,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
         }
         requests_get.side_effect = [self.project_response, self.issue_types_response, RuntimeError("yo")]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
     @disable_logging
@@ -322,6 +347,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             RuntimeError("yo"),
         ]
         expected_options = {
+            "ok": True,
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [
@@ -330,7 +356,13 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             ],
             "epic_links": [],
         }
-        self.assertEqual(expected_options, get_report_issue_tracker_options(REPORT_ID, self.database))
+        self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
+
+    def test_non_existing_report(self):
+        """Test that an error is returned if the report does not exist."""
+        self.database.reports.find_one.return_value = None
+        self.assert_report_not_found(get_report_issue_tracker_suggestions(self.database, REPORT_ID, "query"))
+        self.assert_report_not_found(get_report_issue_tracker_options(self.database, REPORT_ID))
 
 
 class ReportTest(ReportTestCase):
@@ -429,6 +461,7 @@ class ReportTest(ReportTestCase):
         expected_counts = {"blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 1}
         self.assertDictEqual(
             {
+                "ok": True,
                 "reports": [
                     {
                         "summary": expected_counts,
@@ -481,7 +514,7 @@ class ReportTest(ReportTestCase):
                 },
             },
         ]
-        self.assertDictEqual({"reports": []}, get_report(self.database, "tag-non-existing-tag"))
+        self.assertDictEqual({"ok": True, "reports": []}, get_report(self.database, "tag-non-existing-tag"))
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -496,7 +529,7 @@ class ReportTest(ReportTestCase):
 
     def test_copy_report(self):
         """Test that a report can be copied."""
-        self.assertTrue(post_report_copy(REPORT_ID, self.database)["ok"])
+        self.assertTrue(post_report_copy(self.database, REPORT_ID)["ok"])
         self.database.reports.insert_one.assert_called_once()
         inserted_report = self.database.reports.insert_one.call_args[0][0]
         inserted_report_uuid = inserted_report[REPORT_ID]
@@ -509,6 +542,15 @@ class ReportTest(ReportTestCase):
             },
             inserted_report["delta"],
         )
+
+    def test_copy_non_existing_report(self):
+        """Test that copying a non-existing report results in an error message."""
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(
+            {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."},
+            post_report_copy(self.database, REPORT_ID),
+        )
+        self.database.reports.insert_one.assert_not_called()
 
     @patch("requests.get")
     def test_get_pdf_report(self, requests_get):
@@ -534,11 +576,19 @@ class ReportTest(ReportTestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        self.assertEqual({"ok": True}, delete_report(REPORT_ID, self.database))
+        self.assertEqual({"ok": True}, delete_report(self.database, REPORT_ID))
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
         self.assertEqual(
             {"uuids": [REPORT_ID], "email": JENNY["email"], "description": "Jenny Doe deleted the report 'Report'."},
             inserted["delta"],
+        )
+
+    def test_delete_non_existing_report(self):
+        """Test that deleting a non-existing report results in an error."""
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(
+            {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."},
+            delete_report(self.database, REPORT_ID),
         )
 
 
@@ -599,10 +649,10 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_nonexisting_json_report(self):
         """Test that None is returned if report doesn't exist."""
         self.database.reports.find_one.return_value = None
-
-        # Without provided public key
-        exported_report = export_report_as_json(self.database, "non_existing_report")
-        self.assertIsNone(exported_report)
+        self.assertEqual(
+            {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."},
+            export_report_as_json(self.database, REPORT_ID),
+        )
 
     def test_get_json_report_without_public_key(self):
         """Test that an error message is returned if the database has no public key."""

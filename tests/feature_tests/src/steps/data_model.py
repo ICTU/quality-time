@@ -32,12 +32,6 @@ def check_data_model(context: Context) -> None:
     assert_true("timestamp" in context.response.json())
 
 
-@then("the server returns a {http_status_code}")
-def check_http_status_code(context: Context, http_status_code: str) -> None:
-    """Check that the server returns the specified HTTP status code."""
-    assert_equal(str(http_status_code), str(context.response.status_code))
-
-
 @then("the server returns an empty data model")
 def check_too_old_data_model(context: Context) -> None:
     """Check that the server returns an empty data model."""

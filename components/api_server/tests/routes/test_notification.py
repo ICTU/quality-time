@@ -43,7 +43,7 @@ class PostNotificationAttributesTest(NotificationTestCase):
     def test_post_notification_destination_attribute(self, request):
         """Test changing the name of a notification destination."""
         request.json = {"name": self.new_name}
-        post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
+        post_notification_destination_attributes(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             self.new_name,
@@ -58,13 +58,13 @@ class PostNotificationAttributesTest(NotificationTestCase):
     def test_post_notification_destination_unchanged_attribute(self, request):
         """Test changing the name of a notification destination."""
         request.json = {"name": "notification_destination"}
-        post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
+        post_notification_destination_attributes(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID)
         self.database.reports.insert_one.assert_not_called()
 
     def test_post_multiple_notification_destination_attributes(self, request):
         """Test changing the name and url of a notification destination."""
         request.json = {"name": self.new_name, "url": self.new_url}
-        post_notification_destination_attributes(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database)
+        post_notification_destination_attributes(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID)
         updated_report = self.database.reports.insert_one.call_args[0][0]
         updated_notification_destination = updated_report["notification_destinations"][NOTIFICATION_DESTINATION_ID]
         self.assertEqual(self.new_name, updated_notification_destination["name"])
@@ -76,13 +76,22 @@ class PostNotificationAttributesTest(NotificationTestCase):
             report=updated_report,
         )
 
+    def test_non_existing_report(self, request):
+        """Test that an error is returned if the report is missing."""
+        request.json = {"name": self.new_name}
+        self.database.reports.find_one.return_value = None
+        self.assertEqual(
+            {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."},
+            post_notification_destination_attributes(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID),
+        )
+
 
 class NotificationDestinationTest(NotificationTestCase):
     """Unit tests for adding and deleting notification destinations."""
 
     def test_add_new_notification_destination(self):
         """Test that a notification destination can be added."""
-        self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
+        self.assertTrue(post_new_notification_destination(self.database, REPORT_ID)["ok"])
         notification_destinations_uuid = list(self.report["notification_destinations"].keys())[1]
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
@@ -94,7 +103,7 @@ class NotificationDestinationTest(NotificationTestCase):
     def test_add_first_new_notification_destination(self):
         """Test that a notification destination can be added."""
         del self.report["notification_destinations"]
-        self.assertTrue(post_new_notification_destination(REPORT_ID, self.database)["ok"])
+        self.assertTrue(post_new_notification_destination(self.database, REPORT_ID)["ok"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         notification_destinations_uuid = first(updated_report["notification_destinations"].keys())
         self.assert_delta(
@@ -107,11 +116,21 @@ class NotificationDestinationTest(NotificationTestCase):
         """Test that a notification destination can be deleted."""
         self.assertEqual(
             {"ok": True},
-            delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database),
+            delete_notification_destination(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID),
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             description="Jenny deleted destination notification_destination from report 'Report'.",
             uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID],
             report=updated_report,
+        )
+
+    def test_non_existing_report(self):
+        """Test that an error is returned if the report is missing."""
+        self.database.reports.find_one.return_value = None
+        error_message = {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."}
+        self.assertEqual(error_message, post_new_notification_destination(self.database, REPORT_ID))
+        self.assertEqual(
+            error_message,
+            delete_notification_destination(self.database, REPORT_ID, NOTIFICATION_DESTINATION_ID),
         )

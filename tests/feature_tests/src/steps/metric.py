@@ -22,7 +22,7 @@ def assert_issue_status(context: Context, attribute: str, value: str) -> None:
 def assert_issue_id_suggestions(context: Context) -> None:
     """Check the issue id suggestions."""
     suggestions = context.get(f"report/{context.uuid['report']}/issue_tracker/suggestions/random_query")
-    assert_equal({"suggestions": []}, suggestions)
+    assert_equal({"ok": True, "suggestions": []}, suggestions)
 
 
 @when("the client retrieves the issue tracker options")
@@ -34,7 +34,7 @@ def retrieve_issue_tracker_options(context: Context) -> None:
 @then("the issue tracker options are missing")
 def assert_issue_tracker_options(context: Context) -> None:
     """Check the issue tracker options."""
-    assert_equal({"fields": [], "issue_types": [], "projects": [], "epic_links": []}, context.response)
+    assert_equal({"ok": True, "fields": [], "issue_types": [], "projects": [], "epic_links": []}, context.response)
 
 
 @when("the client opens a new issue")

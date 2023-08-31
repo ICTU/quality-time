@@ -34,10 +34,18 @@ Feature: metric issues
     When the client retrieves the issue tracker options
     Then the issue tracker options are missing
 
+  Scenario: issue tracker options are missing because the report does not exist
+    When the client retrieves a non-existing report's issue tracker options
+    Then the server returns a 404
+
   Scenario: issue id suggestions
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     Then the issue id suggestions are missing
+
+  Scenario: issue tracker suggestions are missing because the report does not exist
+    When the client retrieves a non-existing report's issue tracker suggestions
+    Then the server returns a 404
 
   Scenario: creating a new issue without an issue tracker
     When the client opens a new issue
@@ -70,3 +78,7 @@ Feature: metric issues
     When the client changes the metric issue_ids to "123,124"
     And the client waits a second
     Then the metric status is "debt_target_met"
+
+  Scenario: change issue tracker type of non-existing report
+    When the client changes a non-existing report tracker_type to "jira"
+    Then the server returns a 404
