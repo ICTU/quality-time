@@ -140,9 +140,9 @@ requests==2.31.0 \
     --hash=sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f \
     --hash=sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1
     # via application-tests (pyproject.toml)
-selenium==4.11.2 \
-    --hash=sha256:98e72117b194b3fa9c69b48998f44bf7dd4152c7bd98544911a1753b9f03cc7d \
-    --hash=sha256:9f9a5ed586280a3594f7461eb1d9dab3eac9d91e28572f365e9b98d9d03e02b5
+selenium==4.12.0 \
+    --hash=sha256:95be6aa449a0ab4ac1198bb9de71bbe9170405e04b9752f4b450dc7292a21828 \
+    --hash=sha256:b2c48b1440db54a0653300d9955f5421390723d53b36ec835e18de8e13bbd401
     # via
     #   application-tests (pyproject.toml)
     #   axe-selenium-python
