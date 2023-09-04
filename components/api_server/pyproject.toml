@@ -4,7 +4,7 @@ version = "5.1.0-rc.2"
 dependencies = [
     "bottle==0.12.25",
     "cryptography==41.0.3",
-    "gevent==23.7.0",
+    "gevent==23.9.0.post1",
     "ldap3==2.9.1",
     "lxml==4.9.3",
     "pymongo==4.5.0",
@@ -28,7 +28,7 @@ tools = [
     "black==23.7.0",
     "mypy==1.5.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.286",
+    "ruff==0.0.287",
     "safety==2.3.5",
     "vulture==2.9.1"
 ]
