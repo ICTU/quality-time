@@ -59,7 +59,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_type in self.data_model["subjects"]["software"]["metrics"]:
                     if metric_type not in ["violations", "accessibility", "loc"]:
-                        self.entities.append(  # noqa: PERF401
+                        self.entities.append(
                             {
                                 "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
                                 "report": report["title"],
