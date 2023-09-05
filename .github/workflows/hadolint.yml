@@ -20,7 +20,7 @@ jobs:
           - component: testdata
 
     steps:
-    - uses: actions/checkout@v3.6.0
+    - uses: actions/checkout@v4.0.0
     - name: Hadolint ${{ matrix.component }}
       uses: hadolint/hadolint-action@v3.1.0
       with:
