@@ -14,9 +14,9 @@ axe-selenium-python==2.1.6 \
     --hash=sha256:21d10014c0bc3c999c1bfab54b9ef6a5d67f200ffca3db3629e0b315b3f1f136 \
     --hash=sha256:9203ff59c79edcfbcbd676ae55ca35f257e9afb663adbcbc210e3b0d802255ae
     # via application-tests (pyproject.toml)
-build==0.10.0 \
-    --hash=sha256:af266720050a66c893a6096a2f410989eeac74ff9a68ba194b3f6473e8e26171 \
-    --hash=sha256:d5b71264afdb5951d6704482aac78de887c80691c52b88a9ad195983ca2c9269
+build==1.0.0 \
+    --hash=sha256:49a60f212df4d9925727c2118e1cbe3abf30b393eff7d0e7287d2170eb36844d \
+    --hash=sha256:f4c7b45e70e2c345e673902253d435a9a7729ff09ab574924420cf120c60bcc9
     # via pip-tools
 certifi==2023.7.22 \
     --hash=sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082 \
@@ -150,9 +150,9 @@ pysocks==1.7.1 \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
     # via urllib3
-pytest==7.4.0 \
-    --hash=sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32 \
-    --hash=sha256:b4bf8c45bd59934ed84001ad51e11b4ee40d40a1229d2c79f9c592b0a3f6bd8a
+pytest==7.4.1 \
+    --hash=sha256:2f2301e797521b23e4d2585a0a3d7b5e50fdddaaf7e7d6773ea26ddb17c213ab \
+    --hash=sha256:460c9a59b14e27c602eb5ece2e47bec99dc5fc5f6513cf924a7d03a578991b1f
     # via axe-selenium-python
 requests==2.31.0 \
     --hash=sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f \
