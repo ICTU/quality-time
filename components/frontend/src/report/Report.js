@@ -9,7 +9,7 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
-import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, useURLSearchQuery } from '../utils';
+import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS } from '../utils';
 import { ReportTitle } from './ReportTitle';
 import { metricStatusOnDate } from './report_utils';
 
@@ -106,8 +106,10 @@ export function Report({
     report,
     report_date,
     reports,
+    selectedTags,
     sortColumn,
     sortDirection,
+    toggleSelectedTag,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -118,7 +120,6 @@ export function Report({
         window.scrollBy(0, 163);  // Correct for menubar and subject title margin
     }
 
-    const [selectedTags, toggleSelectedTag] = useURLSearchQuery("selected_tags", "array");
     if (!report) {
         return <ReportErrorMessage report_date={report_date} />
     }

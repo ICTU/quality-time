@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The "Reset all settings" button did not reset filtered tags. Fixes [#6947](https://github.com/ICTU/quality-time/issues/6947).
+
 ## v5.1.0 - 2023-09-05
 
 ### Deployment notes
