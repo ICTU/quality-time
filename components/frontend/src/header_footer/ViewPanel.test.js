@@ -5,6 +5,7 @@ import { ViewPanel } from './ViewPanel';
 function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),
+        clearSelectedTags: jest.fn(),
         clearVisibleDetailsTabs: jest.fn(),
         handleDateChange: jest.fn(),
         handleSort: jest.fn(),
@@ -50,8 +51,9 @@ it('resets the settings', () => {
         />
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
-    expect(props.clearVisibleDetailsTabs).toHaveBeenCalledWith()
     expect(props.clearHiddenColumns).toHaveBeenCalledWith()
+    expect(props.clearSelectedTags).toHaveBeenCalledWith()
+    expect(props.clearVisibleDetailsTabs).toHaveBeenCalledWith()
     expect(props.handleDateChange).toHaveBeenCalledWith(null)
     expect(props.handleSort).toHaveBeenCalledWith(null)
     expect(props.setDateInterval).toHaveBeenCalledWith(7)
@@ -87,6 +89,7 @@ it('does not reset the settings when all have the default value', () => {
             }
             nrDates={1}
             reportDate={null}
+            selectedTags={[]}
             sortColumn={null}
             sortDirection="ascending"
             uiMode={null}
@@ -95,8 +98,9 @@ it('does not reset the settings when all have the default value', () => {
         />
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
-    expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
+    expect(props.clearSelectedTags).not.toHaveBeenCalled()
+    expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.handleDateChange).not.toHaveBeenCalled()
     expect(props.handleSort).not.toHaveBeenCalled()
     expect(props.setDateInterval).not.toHaveBeenCalled()

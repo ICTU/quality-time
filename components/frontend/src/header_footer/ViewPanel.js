@@ -8,6 +8,7 @@ const activeColor = "grey"
 
 export function ViewPanel({
     clearHiddenColumns,
+    clearSelectedTags,
     clearVisibleDetailsTabs,
     dateInterval,
     dateOrder,
@@ -18,6 +19,7 @@ export function ViewPanel({
     issueSettings,
     nrDates,
     reportDate,
+    selectedTags,
     setDateInterval,
     setDateOrder,
     setHideMetricsNotRequiringAction,
@@ -51,6 +53,7 @@ export function ViewPanel({
                         <Grid.Column>
                             <Button
                                 disabled={
+                                    selectedTags?.length === 0 &&
                                     visibleDetailsTabs?.length === 0 &&
                                     !hideMetricsNotRequiringAction &&
                                     hiddenColumns?.length === 0 &&
@@ -69,6 +72,7 @@ export function ViewPanel({
                                     uiMode === null
                                 }
                                 onClick={() => {
+                                    clearSelectedTags();
                                     clearVisibleDetailsTabs();
                                     setHideMetricsNotRequiringAction(false);
                                     clearHiddenColumns();

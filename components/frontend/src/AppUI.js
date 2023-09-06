@@ -55,6 +55,7 @@ export function AppUI({
     const [dateOrder, setDateOrder] = useURLSearchQuery("date_order", "string", "descending");
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns", "array");
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action", "boolean", false);
+    const [selectedTags, toggleSelectedTag, clearSelectedTags] = useURLSearchQuery("selected_tags", "array");
     const [nrDates, setNrDates] = useURLSearchQuery("nr_dates", "integer", 1);
     const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column", "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction", "string", "ascending");
@@ -107,6 +108,7 @@ export function AppUI({
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
+                        clearSelectedTags={clearSelectedTags}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
@@ -117,6 +119,7 @@ export function AppUI({
                         issueSettings={issueSettings}
                         nrDates={nrDates}
                         reportDate={report_date}
+                        selectedTags={selectedTags}
                         setDateInterval={setDateInterval}
                         setDateOrder={setDateOrder}
                         setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
@@ -157,8 +160,10 @@ export function AppUI({
                             report_uuid={report_uuid}
                             reports={reports}
                             reports_overview={reports_overview}
+                            selectedTags={selectedTags}
                             sortColumn={sortColumn}
                             sortDirection={sortDirection}
+                            toggleSelectedTag={toggleSelectedTag}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             visibleDetailsTabs={visibleDetailsTabs}
                         />

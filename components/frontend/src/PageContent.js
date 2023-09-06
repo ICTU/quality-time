@@ -38,8 +38,10 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
+    selectedTags,
     sortColumn,
     sortDirection,
+    toggleSelectedTag,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -70,8 +72,10 @@ export function PageContent({
                 report={current_report}
                 reports={reports}
                 report_date={report_date}
+                selectedTags={selectedTags}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
+                toggleSelectedTag={toggleSelectedTag}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />

@@ -38,7 +38,7 @@ const report = {
     }
 };
 
-function renderReport(reportToRender, { dates = [new Date()], report_date = null, hiddenColumns = [], handleSort = null, sortColumn = null, sortDirection = "ascending" } = {}) {
+function renderReport(reportToRender, { dates = [new Date()], report_date = null, hiddenColumns = [], handleSort = null, selectedTags = [], sortColumn = null, sortDirection = "ascending", toggleSelectedTag = null } = {}) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
@@ -50,8 +50,10 @@ function renderReport(reportToRender, { dates = [new Date()], report_date = null
                     hiddenColumns={hiddenColumns}
                     handleSort={handleSort}
                     measurements={[]}
+                    selectedTags={selectedTags}
                     sortColumn={sortColumn}
                     sortDirection={sortDirection}
+                    toggleSelectedTag={toggleSelectedTag}
                     visibleDetailsTabs={[]}
                 />
             </DataModel.Provider>
@@ -115,9 +117,9 @@ it('sorts another column', async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
-it('filters by tag', async () => {
-    await act(async () => renderReport(report))
-    expect(screen.getAllByText(/Metric name/).length).toBe(2)
+it('invokes callback on clicking tag', async () => {
+    let toggleSelectedTag = jest.fn();
+    await act(async () => renderReport(report, { toggleSelectedTag: toggleSelectedTag }))
     fireEvent.click(screen.getAllByText(/tag/)[0])
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
+    expect(toggleSelectedTag).toHaveBeenCalledWith("tag")
 });
